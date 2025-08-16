@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://ddsujucvu82d8"]
+
+[ext_resource type="FontFile" uid="uid://c6leiv23hkihe" path="res://fonts/Livingst.ttf" id="1_xuctb"]
+
+[resource]
+default_font = ExtResource("1_xuctb")
+default_font_size = 24
+Label/font_sizes/font_size = 24
+Label/fonts/font = ExtResource("1_xuctb")

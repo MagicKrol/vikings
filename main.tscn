@@ -1,0 +1,299 @@
+[gd_scene load_steps=16 format=3 uid="uid://cs6dvuoqlrn4w"]
+
+[ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
+[ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
+[ext_resource type="Script" path="res://camera_controller.gd" id="3_camera"]
+[ext_resource type="Texture2D" uid="uid://bs6ny0gliop65" path="res://images/warrior.png" id="4_warrior"]
+[ext_resource type="Script" path="res://place_armies.gd" id="5_place"]
+[ext_resource type="Script" path="res://click_manager.gd" id="6_click"]
+[ext_resource type="Script" path="res://game_manager.gd" id="7_game"]
+[ext_resource type="Script" path="res://ui_manager.gd" id="8_ui"]
+[ext_resource type="Script" path="res://ui_modal.gd" id="9_modal"]
+[ext_resource type="Script" path="res://region_tooltip.gd" id="10_tooltip"]
+[ext_resource type="Script" path="res://army_window.gd" id="11_army_window"]
+[ext_resource type="Script" path="res://army.gd" id="12_army"]
+[ext_resource type="Script" path="res://battle_modal.gd" id="13_battle_modal"]
+[ext_resource type="Script" path="res://sound_manager.gd" id="14_sound"]
+[ext_resource type="Theme" uid="uid://ddsujucvu82d8" path="res://themes/region_tooltip_theme.tres" id="15_theme"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("5_place")
+
+[node name="Map" type="Node2D" parent="."]
+script = ExtResource("1_m7t5v")
+
+[node name="Background" type="Sprite2D" parent="."]
+visible = false
+z_index = -100
+position = Vector2(-442, -619)
+scale = Vector2(2, 2)
+texture = ExtResource("1_bgtex")
+centered = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1000, 1000)
+limit_left = 0
+limit_top = 0
+limit_right = 2000
+limit_bottom = 2000
+script = ExtResource("3_camera")
+
+[node name="ClickManager" type="Node" parent="."]
+script = ExtResource("6_click")
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("7_game")
+
+[node name="SoundManager" type="Node" parent="."]
+script = ExtResource("14_sound")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="UIManager" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_ui")
+
+[node name="ArmyModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_modal")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/ArmyModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="RegionModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_modal")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/RegionModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="RegionTooltip" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("10_tooltip")
+
+[node name="Background" type="ColorRect" parent="UI/RegionTooltip"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="Label" type="Label" parent="UI/RegionTooltip"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("15_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ArmyWindow" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 200.0
+offset_bottom = 160.0
+script = ExtResource("11_army_window")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/ArmyWindow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ArmyLabel" type="Label" parent="UI/ArmyWindow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.25
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "No Army Selected"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MovementLabel" type="Label" parent="UI/ArmyWindow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.45
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Movement: 0 / 5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CompositionLabel" type="Label" parent="UI/ArmyWindow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.45
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "Composition:
+Peasants: 0
+Archers: 0
+Knights: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="BattleModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("13_battle_modal")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/BattleModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="LeftSide" type="VBoxContainer" parent="UI/BattleModal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.85
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ArmyLabel" type="Label" parent="UI/BattleModal/LeftSide"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Army 1"
+horizontal_alignment = 1
+
+[node name="ArmyCompositionLabel" type="Label" parent="UI/BattleModal/LeftSide"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Peasants: 20
+Archers: 0
+Knights: 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="RightSide" type="VBoxContainer" parent="UI/BattleModal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.85
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RegionLabel" type="Label" parent="UI/BattleModal/RightSide"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Region 123
+(Region Name)"
+horizontal_alignment = 1
+
+[node name="RegionCompositionLabel" type="Label" parent="UI/BattleModal/RightSide"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Peasants: 15
+Archers: 0
+Knights: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="OkButton" type="Button" parent="UI/BattleModal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.35
+anchor_top = 0.85
+anchor_right = 0.65
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+text = "OK"
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player1" type="Node2D" parent="Players"]
+
+[node name="Armies" type="Node2D" parent="Players/Player1"]
+
+[node name="Army1" type="Sprite2D" parent="Players/Player1/Armies"]
+z_index = 100
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("4_warrior")
+script = ExtResource("12_army")
