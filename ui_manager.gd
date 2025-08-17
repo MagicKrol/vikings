@@ -6,6 +6,9 @@ var battle_modal: BattleModal
 var map_generator: MapGenerator
 var last_hovered_region: Region = null
 
+# Modal mode system
+var is_modal_active: bool = false
+
 func _ready():
 	# Ensure UI is on top but doesn't block input
 	z_index = 1000
@@ -28,6 +31,12 @@ func _ready():
 	if map_generator == null:
 		print("[UIManager] Error: MapGenerator not found")
 
+func set_modal_active(active: bool) -> void:
+	"""Set the modal mode state"""
+	is_modal_active = active
+	if is_modal_active and region_tooltip and region_tooltip.visible:
+		region_tooltip.hide_tooltip()
+
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
@@ -38,8 +47,8 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 	if not region_tooltip or not map_generator:
 		return
 	
-	# Don't show tooltips when BattleModal is visible
-	if battle_modal and battle_modal.visible:
+	# Don't show tooltips when any modal is active
+	if is_modal_active:
 		if region_tooltip.visible:
 			region_tooltip.hide_tooltip()
 		return

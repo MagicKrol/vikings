@@ -1,10 +1,9 @@
 extends Node
 
 # This script finds the first non-ocean region center from MapGenerator
-# and positions Army1 there, scaled appropriately.
+# and creates the initial army there using proper Roman numeral naming.
 
 @onready var map_generator: MapGenerator = get_node_or_null("MapGenerator") as MapGenerator
-@onready var army1: Sprite2D = get_node_or_null("Players/Player1/Armies/Army1") as Sprite2D
 
 func _ready() -> void:
 	# If MapGenerator already has data, try to place immediately; otherwise, defer a bit
@@ -18,19 +17,59 @@ func _call_deferred_placement() -> void:
 	while tries < 30 and (map_generator == null or map_generator.regions.is_empty()):
 		await get_tree().process_frame
 		tries += 1
-	_place_army1_on_first_land_center()
+	
+	# Wait for ClickManager and ArmyManager to be ready
+	var click_manager = get_node_or_null("ClickManager")
+	var army_manager_tries := 0
+	while army_manager_tries < 30 and (click_manager == null or not click_manager.has_method("get_army_manager") or click_manager.get_army_manager() == null):
+		await get_tree().process_frame
+		army_manager_tries += 1
+		click_manager = get_node_or_null("ClickManager")
+	
+	_create_initial_army()
 
-func _place_army1_on_first_land_center() -> void:
-	if map_generator == null or army1 == null:
+func _create_initial_army() -> void:
+	if map_generator == null:
 		return
-	# Iterate regions to find the first non-ocean with a valid center
+	
+	# Find the first non-ocean region
+	var target_region_container = null
 	for region_data in map_generator.regions:
 		var is_ocean := bool(region_data.get("ocean", false))
 		if is_ocean:
 			continue
-		var center_data = region_data.get("center", [])
-		if center_data.size() == 2:
-			var center := Vector2(center_data[0], center_data[1])
-			army1.position = center
-			# Ensure consistent scale reduction (sprite already scaled to 0.2x in scene)
-			return
+		
+		# Get the region ID to find the corresponding region container
+		var region_id = region_data.get("id", -1)
+		if region_id > 0:
+			var regions_node = map_generator.get_node_or_null("Regions")
+			if regions_node != null:
+				target_region_container = regions_node.get_node_or_null("Region" + str(region_id))
+				if target_region_container != null:
+					break
+	
+	if target_region_container == null:
+		print("[PlaceArmies] No suitable region found for initial army")
+		return
+	
+	# Get army manager from ClickManager
+	var click_manager = get_node_or_null("ClickManager")
+	if click_manager == null or not click_manager.has_method("get_army_manager"):
+		print("[PlaceArmies] Cannot find army manager")
+		return
+	
+	var army_manager = click_manager.get_army_manager()
+	if army_manager == null:
+		print("[PlaceArmies] Army manager is null")
+		return
+	
+	print("[PlaceArmies] Army manager found, armies_by_player: ", army_manager.armies_by_player)
+	
+	# Create the initial army using proper Roman numeral naming
+	print("[PlaceArmies] Creating initial army in region: ", target_region_container.name)
+	var new_army = army_manager.create_army(target_region_container, 1)
+	
+	if new_army != null:
+		print("[PlaceArmies] Successfully created initial army: ", new_army.name)
+	else:
+		print("[PlaceArmies] Failed to create initial army")

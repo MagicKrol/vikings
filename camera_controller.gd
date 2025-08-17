@@ -53,6 +53,9 @@ func _ready() -> void:
 	set_process(true)
 
 func _process(delta: float) -> void:
+	# Handle continuous keyboard input for smooth movement
+	_handle_continuous_keyboard_input(delta)
+	
 	if not touch_enabled:
 		return
 		
@@ -68,9 +71,9 @@ func _process(delta: float) -> void:
 		zoom = target_zoom
 
 func _input(event: InputEvent) -> void:
-	# Handle keyboard controls as fallback
+	# Handle keyboard controls for discrete actions (zoom, reset)
 	if event is InputEventKey and event.pressed:
-		_handle_keyboard_input(event)
+		_handle_discrete_keyboard_input(event)
 	elif event is InputEventMouseButton:
 		_handle_mouse_input(event)
 	elif event is InputEventMouseMotion:
@@ -125,19 +128,26 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 		last_mouse_position = event.position
 	
 
-func _handle_keyboard_input(event: InputEventKey) -> void:
-	var pan_amount = 100.0 / zoom.x  # Scale pan amount by zoom level (increased from 50)
+func _handle_continuous_keyboard_input(delta: float) -> void:
+	"""Handle continuous keyboard input for smooth camera movement"""
+	var pan_speed_per_second = 400.0 / zoom.x  # Pixels per second, scaled by zoom
+	var pan_amount = pan_speed_per_second * delta
+	
+	# Check for continuous movement keys
+	if Input.is_action_pressed("ui_up") or Input.is_key_pressed(KEY_W):
+		target_position.y -= pan_amount
+	if Input.is_action_pressed("ui_down") or Input.is_key_pressed(KEY_S):
+		target_position.y += pan_amount
+	if Input.is_action_pressed("ui_left") or Input.is_key_pressed(KEY_A):
+		target_position.x -= pan_amount
+	if Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_D):
+		target_position.x += pan_amount
+
+func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
+	"""Handle discrete keyboard input for zoom and reset actions"""
 	var zoom_amount = 0.2  # Increased zoom speed
 	
 	match event.keycode:
-		KEY_W, KEY_UP:
-			target_position.y -= pan_amount
-		KEY_S, KEY_DOWN:
-			target_position.y += pan_amount
-		KEY_A, KEY_LEFT:
-			target_position.x -= pan_amount
-		KEY_D, KEY_RIGHT:
-			target_position.x += pan_amount
 		KEY_Q:
 			var new_zoom = target_zoom * (1.0 + zoom_amount)
 			target_zoom = Vector2(

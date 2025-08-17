@@ -8,7 +8,7 @@ var map_generator: MapGenerator
 var region_manager: RegionManager
 
 # Reference to the army modal for UI updates
-var army_modal: ArmyWindow = null
+var army_modal: InfoModal = null
 
 # Reference to the battle modal for UI updates
 var battle_modal: BattleModal = null
@@ -33,7 +33,7 @@ func _init(map_gen: MapGenerator, region_mgr: RegionManager):
 	# Try to find the army modal
 	_find_army_modal()
 
-func set_army_modal(modal: ArmyWindow) -> void:
+func set_army_modal(modal: InfoModal) -> void:
 	"""Set the army modal reference"""
 	army_modal = modal
 
@@ -50,19 +50,23 @@ func _find_army_modal() -> void:
 	# This will be called later when the scene is ready
 	# For now, we'll set it to null and find it when needed
 
-func create_army(region_container: Node, player_id: int) -> Army:
+func create_army(region_container: Node, player_id: int, is_raised: bool = false) -> Army:
 	"""Create a new army in the specified region"""
-	# Remove any existing army for this player in this region
-	var existing_army = region_container.get_node_or_null("Army_" + str(player_id))
-	if existing_army != null:
-		existing_army.queue_free()
+	if is_raised:
+		print("[ArmyManager] create_army called for raised army, player ", player_id, " in region ", region_container.name)
 	
-	# Create army instance
+	# Create army instance with Roman numeral naming
 	var army := Sprite2D.new()
-	army.name = "Army_" + str(player_id)
 	# Explicitly attach the Army script
 	army.set_script(load("res://army.gd"))
-	army.setup_army(player_id)
+	var roman_number = _get_next_army_roman_numeral(player_id)
+	army.name = "Army " + roman_number
+	
+	# Setup army based on type
+	if is_raised:
+		army.setup_raised_army(player_id, roman_number)
+	else:
+		army.setup_army(player_id, roman_number)
 	
 	# Position army at region center with appropriate offset
 	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
@@ -80,8 +84,14 @@ func create_army(region_container: Node, player_id: int) -> Army:
 		armies_by_player[player_id] = []
 	armies_by_player[player_id].append(army)
 	
-
+	if is_raised:
+		print("[ArmyManager] Raised new army for player ", player_id, " in region ", region_container.name)
+	
 	return army
+
+func create_raised_army(region_container: Node, player_id: int) -> Army:
+	"""Create a new raised army with 0 movement points and no soldiers"""
+	return create_army(region_container, player_id, true)
 
 func _get_army_position_offset(region_container: Node) -> Vector2:
 	"""Get the appropriate position offset for army based on region contents"""
@@ -202,8 +212,8 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	_show_move_arrows(target_region_container)
 	
 	# Update army modal with new movement points
-	if army_modal != null:
-		army_modal.update_movement_points()
+	if army_modal != null and selected_army != null:
+		army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - allow continued movement
 	
 	print("[ArmyManager] Army moved (cost: ", terrain_cost, ", remaining points: ", remaining_points, ")")
 	
@@ -355,13 +365,17 @@ func reset_all_army_movement_points() -> void:
 	
 	# Update army modal if an army is currently selected
 	if army_modal != null and selected_army != null:
-		army_modal.update_movement_points()
+		army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - just update info
 	
 	print("[ArmyManager] Reset movement points for ", total_armies, " armies")
 
 func get_army_in_region(region_container: Node, player_id: int) -> Army:
 	"""Get the army for a specific player in a region, or null if not found"""
-	return region_container.get_node_or_null("Army_" + str(player_id)) as Army
+	# Search through children since we now use Roman numeral naming
+	for child in region_container.get_children():
+		if child is Army and child.get_player_id() == player_id:
+			return child as Army
+	return null
 
 func get_all_armies() -> Array[Army]:
 	"""Get all armies in the game"""
@@ -450,3 +464,30 @@ func _show_battle_modal(attacking_army: Army, defending_region: Region) -> void:
 		battle_modal.show_battle(attacking_army, defending_region)
 	else:
 		print("[ArmyManager] Error: BattleModal not available")
+
+func _get_next_army_roman_numeral(player_id: int) -> String:
+	"""Get the next Roman numeral for army naming based on existing armies"""
+	var army_count = 0
+	
+	# Count all armies for this player across all regions
+	if armies_by_player.has(player_id):
+		army_count = armies_by_player[player_id].size()
+	
+	# Convert to Roman numeral (next number)
+	return _int_to_roman(army_count + 1)
+
+func _int_to_roman(num: int) -> String:
+	"""Convert integer to Roman numeral"""
+	if num <= 0:
+		return "I"  # Default to I for invalid numbers
+	
+	var values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+	var symbols = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+	
+	var result = ""
+	for i in range(values.size()):
+		while num >= values[i]:
+			result += symbols[i]
+			num -= values[i]
+	
+	return result

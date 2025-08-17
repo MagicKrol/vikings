@@ -198,10 +198,10 @@ func _update_region_point_visibility(region_container: Node) -> void:
 		return
 	
 	# Check for armies - hide if present
-	var army = region_container.get_node_or_null("Army_1")  # Assuming player 1 for now
-	if army != null:
-		region_point.visible = false
-		return
+	for child in region_container.get_children():
+		if child is Army:
+			region_point.visible = false
+			return
 	
 	# No buildings or armies, show the region point
 	region_point.visible = true

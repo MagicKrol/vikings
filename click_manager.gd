@@ -16,8 +16,13 @@ func _unhandled_input(event: InputEvent) -> void:
 @onready var _map_script: MapGenerator = get_node_or_null("../Map") as MapGenerator
 @onready var _region_manager: RegionManager
 @onready var _army_manager: ArmyManager
-@onready var _army_modal: ArmyWindow = get_node_or_null("../UI/ArmyWindow") as ArmyWindow
+@onready var _army_modal: InfoModal = get_node_or_null("../UI/InfoModal") as InfoModal
 @onready var _battle_modal: BattleModal = get_node_or_null("../UI/BattleModal") as BattleModal
+@onready var _select_modal: SelectModal = get_node_or_null("../UI/SelectModal") as SelectModal
+@onready var _region_modal: RegionModal = get_node_or_null("../UI/RegionModal") as RegionModal
+@onready var _region_select_modal: RegionSelectModal = get_node_or_null("../UI/RegionSelectModal") as RegionSelectModal
+@onready var _army_select_modal: ArmySelectModal = get_node_or_null("../UI/ArmySelectModal") as ArmySelectModal
+@onready var _ui_manager: UIManager = get_node_or_null("../UI/UIManager") as UIManager
 @onready var _sound_manager: SoundManager = get_node_or_null("../SoundManager") as SoundManager
 
 func _ready():
@@ -55,6 +60,11 @@ var current_player_id: int = 1
 
 
 func _on_left_click(screen_pos: Vector2) -> void:
+	# Check if any modal is active and close them first
+	if _ui_manager and _ui_manager.is_modal_active:
+		_close_active_modals()
+		return
+	
 	# Get the camera and convert screen to world coordinates properly
 	var camera := get_node_or_null("../Camera2D") as Camera2D
 	var world_pos: Vector2
@@ -84,7 +94,7 @@ func _on_left_click(screen_pos: Vector2) -> void:
 
 		return
 	
-	
+	var region_clicked = false
 	
 	# Iterate regions and test polygon hit
 	for region_container in regions_node.get_children():
@@ -96,7 +106,12 @@ func _on_left_click(screen_pos: Vector2) -> void:
 		# Only non-ocean regions have Polygon nodes here
 		if _point_in_polygon(world_pos, polygon):
 			_handle_region_click(region_container)
+			region_clicked = true
 			break
+	
+	# If no region was clicked and we have a selected army, deselect it
+	if not region_clicked and _army_manager and _army_manager.selected_army != null:
+		_army_manager.deselect_army()
 
 func _point_in_polygon(p: Vector2, polygon: Polygon2D) -> bool:
 	# Convert world position into polygon local space and use Geometry2D
@@ -142,30 +157,54 @@ func _handle_castle_placement(region_container: Node) -> void:
 		_sound_manager.click_sound()
 
 func _handle_army_selection_and_movement(region_container: Node) -> void:
-	# Check if this region has an army
-	var army = _army_manager.get_army_in_region(region_container, 1)  # Assuming player 1 for now
+	# Get all armies in this region
+	var armies_in_region: Array[Army] = []
+	for child in region_container.get_children():
+		if child is Army:
+			armies_in_region.append(child as Army)
 	
-	if army != null:
-		# If clicking on the same region as selected army, deselect it
-		if _army_manager.selected_army == army:
-			_army_manager.deselect_army()
-			return
-		
-		# Select this army (even if it has moved, we want to show disabled arrows)
-		_army_manager.select_army(army, region_container)
-		# # Play click sound for army selection
-		# if _sound_manager:
-		# 	_sound_manager.click_sound()
-		# return
+	# If there are armies in this region, show SelectModal
+	if not armies_in_region.is_empty():
+		var region = region_container as Region
+		if region != null and _select_modal != null:
+			_select_modal.show_selection(region, armies_in_region)
+			# Play click sound for opening modal
+			if _sound_manager:
+				_sound_manager.click_sound()
+		return
 	
 	# If we have a selected army, try to move it to this region
 	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
 		# Check if selected army has movement points
 		if _army_manager.selected_army.get_movement_points() <= 0:
+			# Deselect army if no movement points
+			_army_manager.deselect_army()
 			return
 		
-		_army_manager.move_army_to_region(region_container)
+		# Try to move army - if it fails (unreachable), deselect army
+		var move_success = _army_manager.move_army_to_region(region_container)
+		if not move_success:
+			_army_manager.deselect_army()
 		return
+	
+	# If no armies in region and no selected army, check ownership
+	var region = region_container as Region
+	if region != null:
+		var region_id = region.get_region_id()
+		var region_owner = _region_manager.get_region_owner(region_id)
+		
+		# If region is owned by current player, open RegionSelectModal
+		if region_owner == current_player_id and _region_select_modal != null:
+			_region_select_modal.show_region_actions(region)
+			# Play click sound for opening modal
+			if _sound_manager:
+				_sound_manager.click_sound()
+		# Otherwise, open RegionModal for unowned/enemy regions
+		elif _region_modal != null:
+			_region_modal.show_region_info(region)
+			# Play click sound for opening modal
+			if _sound_manager:
+				_sound_manager.click_sound()
 
 func _place_castle_visual(region_container: Node) -> void:
 	# Remove any existing castle
@@ -214,3 +253,14 @@ func reset_army_moves() -> void:
 		_army_manager.reset_all_army_movement_points()
 	else:
 		print("[ClickManager] Error: ArmyManager not available")
+
+func _close_active_modals() -> void:
+	"""Close any active modals"""
+	if _select_modal and _select_modal.visible:
+		_select_modal.hide_modal()
+	if _army_select_modal and _army_select_modal.visible:
+		_army_select_modal.hide_modal()
+	if _region_select_modal and _region_select_modal.visible:
+		_region_select_modal.hide_modal()
+	if _region_modal and _region_modal.visible:
+		_region_modal.hide_modal()

@@ -1,20 +1,24 @@
-[gd_scene load_steps=16 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=20 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
 [ext_resource type="Script" path="res://camera_controller.gd" id="3_camera"]
-[ext_resource type="Texture2D" uid="uid://bs6ny0gliop65" path="res://images/warrior.png" id="4_warrior"]
 [ext_resource type="Script" path="res://place_armies.gd" id="5_place"]
 [ext_resource type="Script" path="res://click_manager.gd" id="6_click"]
 [ext_resource type="Script" path="res://game_manager.gd" id="7_game"]
 [ext_resource type="Script" path="res://ui_manager.gd" id="8_ui"]
 [ext_resource type="Script" path="res://ui_modal.gd" id="9_modal"]
 [ext_resource type="Script" path="res://region_tooltip.gd" id="10_tooltip"]
-[ext_resource type="Script" path="res://army_window.gd" id="11_army_window"]
-[ext_resource type="Script" path="res://army.gd" id="12_army"]
 [ext_resource type="Script" path="res://battle_modal.gd" id="13_battle_modal"]
 [ext_resource type="Script" path="res://sound_manager.gd" id="14_sound"]
 [ext_resource type="Theme" uid="uid://ddsujucvu82d8" path="res://themes/region_tooltip_theme.tres" id="15_theme"]
+[ext_resource type="Script" path="res://select_modal.gd" id="16_select"]
+[ext_resource type="Script" path="res://region_modal.gd" id="17_region"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="18_standard_theme"]
+[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="19_header_theme"]
+[ext_resource type="Script" path="res://army_select_modal.gd" id="20_army_select"]
+[ext_resource type="Script" path="res://info_modal.gd" id="21_info_modal"]
+[ext_resource type="Script" path="res://region_select_modal.gd" id="22_region_select"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -61,17 +65,11 @@ script = ExtResource("8_ui")
 [node name="ArmyModal" type="Control" parent="UI"]
 visible = false
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 460.0
+offset_bottom = 370.0
 script = ExtResource("9_modal")
 
 [node name="OuterFrame" type="ColorRect" parent="UI/ArmyModal"]
@@ -83,21 +81,72 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.717647, 0.592157, 0.368627, 1)
 
+[node name="ContentContainer" type="VBoxContainer" parent="UI/ArmyModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 15.0
+offset_right = -40.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ArmyHeader" type="Label" parent="UI/ArmyModal/ContentContainer"]
+layout_mode = 2
+theme = ExtResource("19_header_theme")
+text = "ARMY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer1" type="Control" parent="UI/ArmyModal/ContentContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="MovementLabel" type="Label" parent="UI/ArmyModal/ContentContainer"]
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+text = "Movement: 5 / 5"
+vertical_alignment = 1
+
+[node name="MoraleLabel" type="Label" parent="UI/ArmyModal/ContentContainer"]
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+text = "Morale: 100%"
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="UI/ArmyModal/ContentContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="CompositionContainer" type="VBoxContainer" parent="UI/ArmyModal/ContentContainer"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="UI/ArmyModal"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"
+
 [node name="RegionModal" type="Control" parent="UI"]
 visible = false
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("9_modal")
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 460.0
+offset_bottom = 370.0
+script = ExtResource("17_region")
 
 [node name="OuterFrame" type="ColorRect" parent="UI/RegionModal"]
 layout_mode = 1
@@ -107,6 +156,178 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="CloseButton" type="Button" parent="UI/RegionModal"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"
+
+[node name="SelectModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("16_select")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/SelectModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ButtonContainer" type="VBoxContainer" parent="UI/SelectModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ArmySelectModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("20_army_select")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/ArmySelectModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ButtonContainer" type="VBoxContainer" parent="UI/ArmySelectModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InfoModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 460.0
+offset_bottom = 370.0
+script = ExtResource("21_info_modal")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/InfoModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ContentContainer" type="VBoxContainer" parent="UI/InfoModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 15.0
+offset_right = -40.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CloseButton" type="Button" parent="UI/InfoModal"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"
+
+[node name="RegionSelectModal" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("22_region_select")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/RegionSelectModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ButtonContainer" type="VBoxContainer" parent="UI/RegionSelectModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="RegionTooltip" type="Control" parent="UI"]
 layout_mode = 3
@@ -131,67 +352,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("15_theme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="ArmyWindow" type="Control" parent="UI"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 200.0
-offset_bottom = 160.0
-script = ExtResource("11_army_window")
-
-[node name="OuterFrame" type="ColorRect" parent="UI/ArmyWindow"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.717647, 0.592157, 0.368627, 1)
-
-[node name="ArmyLabel" type="Label" parent="UI/ArmyWindow"]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.25
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "No Army Selected"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MovementLabel" type="Label" parent="UI/ArmyWindow"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.25
-anchor_right = 1.0
-anchor_bottom = 0.45
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "Movement: 0 / 5"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CompositionLabel" type="Label" parent="UI/ArmyWindow"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.45
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 12
-text = "Composition:
-Peasants: 0
-Archers: 0
-Knights: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -233,7 +393,7 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "Army 1"
+text = "Army"
 horizontal_alignment = 1
 
 [node name="ArmyCompositionLabel" type="Label" parent="UI/BattleModal/LeftSide"]
@@ -291,9 +451,3 @@ text = "OK"
 [node name="Player1" type="Node2D" parent="Players"]
 
 [node name="Armies" type="Node2D" parent="Players/Player1"]
-
-[node name="Army1" type="Sprite2D" parent="Players/Player1/Armies"]
-z_index = 100
-scale = Vector2(0.07, 0.07)
-texture = ExtResource("4_warrior")
-script = ExtResource("12_army")

@@ -8,12 +8,17 @@ var composition_label: Label
 
 # Current army reference
 var current_army: Army = null
+# UI manager reference for modal mode
+var ui_manager: UIManager = null
 
 func _ready():
 	# Get references to UI elements from the scene tree
 	army_label = get_node_or_null("ArmyLabel") as Label
 	movement_label = get_node_or_null("MovementLabel") as Label
 	composition_label = get_node_or_null("CompositionLabel") as Label
+	
+	# Get UI manager reference
+	ui_manager = get_node_or_null("../UIManager") as UIManager
 	
 	# Initially hidden
 	visible = false
@@ -27,11 +32,19 @@ func show_army_info(army: Army) -> void:
 	current_army = army
 	_update_display()
 	visible = true
+	
+	# Set modal mode active
+	if ui_manager:
+		ui_manager.set_modal_active(true)
 
 func hide_modal() -> void:
 	"""Hide the modal"""
 	current_army = null
 	visible = false
+	
+	# Set modal mode inactive
+	if ui_manager:
+		ui_manager.set_modal_active(false)
 
 func update_movement_points() -> void:
 	"""Update the movement points display"""

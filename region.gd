@@ -6,6 +6,7 @@ var region_id: int = -1
 var region_name: String = ""
 var biome: String = ""
 var region_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND
+var region_level: RegionLevelEnum.Level = RegionLevelEnum.Level.MARCH
 var is_ocean: bool = false
 var center: Vector2 = Vector2.ZERO
 
@@ -66,6 +67,18 @@ func is_passable() -> bool:
 func is_ocean_region() -> bool:
 	"""Check if this is an ocean region"""
 	return is_ocean
+
+func get_region_level() -> RegionLevelEnum.Level:
+	"""Get the region level"""
+	return region_level
+
+func set_region_level(level: RegionLevelEnum.Level) -> void:
+	"""Set the region level"""
+	region_level = level
+
+func get_region_level_string() -> String:
+	"""Get the region level as a string"""
+	return RegionLevelEnum.level_to_string(region_level)
 
 # Garrison management methods
 func get_garrison() -> ArmyComposition:
