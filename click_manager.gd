@@ -125,13 +125,15 @@ func _handle_region_click(region_container: Node) -> void:
 		_handle_army_selection_and_movement(region_container)
 
 func _handle_castle_placement(region_container: Node) -> void:
-	# Get region ID from the container name (e.g., "Region123" -> 123)
-	var region_name = region_container.name
-	var region_id_str = region_name.replace("Region", "")
-	var region_id = int(region_id_str)
+	# Get region ID from the Region script
+	var region = region_container as Region
+	if region == null:
+		print("[ClickManager] Error: Region container is not a Region: ", region_container.name)
+		return
 	
+	var region_id = region.get_region_id()
 	if region_id <= 0:
-		print("[ClickManager] Error: Invalid region ID from name: ", region_name)
+		print("[ClickManager] Error: Invalid region ID: ", region_id)
 		return
 	
 	# Set castle starting position (this will also claim neighboring regions)

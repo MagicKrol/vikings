@@ -139,11 +139,15 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	if not _validate_movement_prerequisites(target_region_container):
 		return false
 	
-	# Get region IDs
-	var source_region_name = selected_region_container.name
-	var target_region_name = target_region_container.name
-	var source_region_id = int(source_region_name.replace("Region", ""))
-	var target_region_id = int(target_region_name.replace("Region", ""))
+	# Get region IDs from Region scripts
+	var source_region = selected_region_container
+	var target_region_node = target_region_container
+	if not source_region.has_method("get_region_id") or not target_region_node.has_method("get_region_id"):
+		print("[ArmyManager] Error: Region containers don't have get_region_id method")
+		return false
+	
+	var source_region_id = source_region.get_region_id()
+	var target_region_id = target_region_node.get_region_id()
 	
 	# Check if target region is a neighbor of source region
 	var neighbors = region_manager.get_neighbor_regions(source_region_id)
@@ -233,13 +237,15 @@ func _show_move_arrows(region_container: Node) -> void:
 	if selected_army != null and is_instance_valid(selected_army):
 		_current_points = selected_army.get_movement_points()
 	
-	# Get region ID from container name
-	var region_name = region_container.name
-	var region_id_str = region_name.replace("Region", "")
-	var region_id = int(region_id_str)
+	# Get region ID from the Region script
+	var region = region_container
+	if not region.has_method("get_region_id"):
+		print("[ArmyManager] Error: Region container doesn't have get_region_id method: ", region_container.name)
+		return
 	
+	var region_id = region.get_region_id()
 	if region_id <= 0:
-
+		print("[ArmyManager] Error: Invalid region ID: ", region_id)
 		return
 	
 	# Get neighboring regions
@@ -284,7 +290,7 @@ func _show_move_arrows(region_container: Node) -> void:
 		if regions_node == null:
 			continue
 		
-		var neighbor_container = regions_node.get_node_or_null("Region" + str(neighbor_id))
+		var neighbor_container = map_generator.get_region_container_by_id(neighbor_id)
 		if neighbor_container == null:
 			continue
 		

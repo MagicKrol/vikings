@@ -148,8 +148,8 @@ func _show_region_point_for_ownership(region_id: int, player_id: int) -> void:
 	if regions_node == null:
 		return
 	
-	# Find the region container
-	var region_container = regions_node.get_node_or_null("Region" + str(region_id))
+	# Find the region container using the map generator's helper
+	var region_container = map_generator.get_region_container_by_id(region_id)
 	if region_container == null:
 		return
 	

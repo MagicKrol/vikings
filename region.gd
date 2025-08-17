@@ -36,9 +36,8 @@ func setup_region(region_data: Dictionary) -> void:
 func set_region_name(new_name: String) -> void:
 	"""Set the region name (called by RegionManager)"""
 	region_name = new_name
-	# Keep the node name simple for click manager compatibility
-	# The click manager expects names like "Region123" to extract the ID
-	name = "Region" + str(region_id)
+	# Use the actual region name as the node name
+	name = new_name
 
 func get_region_name() -> String:
 	"""Get the region name"""

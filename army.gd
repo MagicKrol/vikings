@@ -12,7 +12,7 @@ var composition: ArmyComposition
 func _init():
 	# Set up the army sprite
 	texture = load("res://images/warrior.png")
-	scale = Vector2(0.07, 0.07)
+	scale = Vector2(0.04, 0.04)
 	z_index = 125
 
 func setup_army(new_player_id: int, roman_number: String) -> void:

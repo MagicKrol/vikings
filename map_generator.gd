@@ -253,15 +253,15 @@ func _render_from_json() -> void:
 			_region_count += 1
 			# Create region container structure with Region script
 			var region_container := Node2D.new()
-			region_container.name = "Region" + str(region_id)
 			# Explicitly attach the Region script
 			region_container.set_script(load("res://region.gd"))
 			region_container.setup_region(region_data)
-			map_node_regions.add_child(region_container)
-			region_container_by_id[region_id] = region_container
 			
 			# Assign name through RegionManager if available
 			_assign_region_name_if_available(region_container)
+			
+			map_node_regions.add_child(region_container)
+			region_container_by_id[region_id] = region_container
 			
 			# Add polygon under region container
 			var _polygon_node := _add_region_polygon_node(region_data, null, "Polygon", region_container)
@@ -771,6 +771,10 @@ func _create_region_points_for_all_regions() -> void:
 
 	add_child(region_points_container)
 
+
+func get_region_container_by_id(region_id: int) -> Node:
+	"""Get region container by region ID (helper for other systems)"""
+	return region_container_by_id.get(region_id, null)
 
 func _assign_region_name_if_available(region: Region) -> void:
 	"""Assign a name to the region using RegionManager if available"""
