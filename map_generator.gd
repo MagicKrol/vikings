@@ -587,65 +587,46 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 		seg.append(mp)
 	seg.append(b)
 	
-	# Simple condition: skip ownership coloring if USE_COLORED_BORDERS is false
-	if not _should_use_colored_borders():
-		# Check if this is an ocean border to preserve thick brown borders
-		var is_external_border = _is_external_border_for_region(region_id, other_region_id)
+	# Check ownership and apply colored border logic
+	var region_owner = _get_region_owner(region_id)
+	var other_owner = _get_region_owner(other_region_id)
+	var is_external_border = _is_external_border_for_region(region_id, other_region_id)
+	
+	# Determine border type and styling based on ownership
+	if is_external_border:
+		# Ocean border: Double border system
+		if region_owner != -1:
+			# Owned region vs ocean: Create offset colored border for land side
+			_create_land_ocean_offset_border_line(seg, region_owner, region_id, borders_container)
+			# Create offset black border for ocean side (simulated)
+			_create_ocean_offset_border_line(seg, region_id, borders_container)
+		else:
+			# Unowned region vs ocean: Standard brown border
+			var line := Line2D.new()
+			line.points = seg
+			line.closed = false
+			line.width = 3.0 * polygon_scale
+			line.default_color = Color8(0x41, 0x2c, 0x16, 255)  # Brown for external (ocean)
+			borders_container.add_child(line)
+	elif region_owner != -1 and other_owner != -1 and region_owner != other_owner:
+		# Different owners (enemy border): Create offset colored border
+		_create_offset_border_line(seg, region_owner, other_region_id, region_id, borders_container)
+	elif region_owner != -1 and other_owner == -1:
+		# My region vs neutral: Single colored border (thick like ocean borders)
 		var line := Line2D.new()
 		line.points = seg
 		line.closed = false
-		
-		if is_external_border:
-			# Ocean borders: thick brown like before
-			line.width = 3.0 * polygon_scale
-			line.default_color = Color8(0x41, 0x2c, 0x16, 255)  # Brown for external (ocean)
-		else:
-			# Internal borders: thin black
-			line.width = 1.5 * polygon_scale
-			line.default_color = Color8(0x00, 0x00, 0x00, 50)   # Thin black for internal
-		
+		line.width = 3.0 * polygon_scale
+		line.default_color = _get_player_color(region_owner)
 		borders_container.add_child(line)
 	else:
-		# Check ownership and apply colored border logic
-		var region_owner = _get_region_owner(region_id)
-		var other_owner = _get_region_owner(other_region_id)
-		var is_external_border = _is_external_border_for_region(region_id, other_region_id)
-		
-		# Determine border type and styling based on ownership
-		if is_external_border:
-			# Ocean border: Double border system
-			if region_owner != -1:
-				# Owned region vs ocean: Create offset colored border for land side
-				_create_land_ocean_offset_border_line(seg, region_owner, region_id, borders_container)
-				# Create offset black border for ocean side (simulated)
-				_create_ocean_offset_border_line(seg, region_id, borders_container)
-			else:
-				# Unowned region vs ocean: Standard brown border
-				var line := Line2D.new()
-				line.points = seg
-				line.closed = false
-				line.width = 3.0 * polygon_scale
-				line.default_color = Color8(0x41, 0x2c, 0x16, 255)  # Brown for external (ocean)
-				borders_container.add_child(line)
-		elif region_owner != -1 and other_owner != -1 and region_owner != other_owner:
-			# Different owners (enemy border): Create offset colored border
-			_create_offset_border_line(seg, region_owner, other_region_id, region_id, borders_container)
-		elif region_owner != -1 and other_owner == -1:
-			# My region vs neutral: Single colored border (thick like ocean borders)
-			var line := Line2D.new()
-			line.points = seg
-			line.closed = false
-			line.width = 3.0 * polygon_scale
-			line.default_color = _get_player_color(region_owner)
-			borders_container.add_child(line)
-		else:
-			# Same owner or unowned: Default style
-			var line := Line2D.new()
-			line.points = seg
-			line.closed = false
-			line.width = 1.5 * polygon_scale
-			line.default_color = Color8(0x00, 0x00, 0x00, 50)   # Thin black for internal
-			borders_container.add_child(line)
+		# Same owner or unowned: Default style
+		var line := Line2D.new()
+		line.points = seg
+		line.closed = false
+		line.width = 1.5 * polygon_scale
+		line.default_color = Color8(0x00, 0x00, 0x00, 50)   # Thin black for internal
+		borders_container.add_child(line)
 	
 	return true
 
@@ -686,6 +667,26 @@ func _generate_edge_seed(edge: Dictionary) -> int:
 	var hash_value = int(x1 * 1000 + y1 * 1000000 + x2 * 1000000000 + y2 * 1000000000000)
 	return noisy_edge_seed + hash_value
 
+func _generate_edge_seed_from_points(point_a: Vector2, point_b: Vector2) -> int:
+	"""Generate consistent seed for edge between two Vector2 points"""
+	var x1 = point_a.x
+	var y1 = point_a.y
+	var x2 = point_b.x
+	var y2 = point_b.y
+	
+	# Ensure consistent ordering regardless of which region processes the edge first
+	if x1 > x2 or (x1 == x2 and y1 > y2):
+		var temp_x = x1
+		var temp_y = y1
+		x1 = x2
+		y1 = y2
+		x2 = temp_x
+		y2 = temp_y
+	
+	# Create a unique hash for this edge
+	var hash_value = int(x1 * 1000 + y1 * 1000000 + x2 * 1000000000 + y2 * 1000000000000)
+	return noisy_edge_seed + hash_value
+
 func _get_region_owner(region_id: int) -> int:
 	"""Get the owner of a region, returns -1 if unowned"""
 	# Try to find RegionManager in the click manager
@@ -697,15 +698,6 @@ func _get_region_owner(region_id: int) -> int:
 	
 	return -1  # Unowned if RegionManager not found
 
-func _should_use_colored_borders() -> bool:
-	"""Check if we should use colored borders based on GameManager setting"""
-	var game_manager = get_node_or_null("../GameManager")
-	if game_manager and game_manager.has_meta("USE_COLORED_BORDERS"):
-		return game_manager.get_meta("USE_COLORED_BORDERS")
-	elif game_manager and "USE_COLORED_BORDERS" in game_manager:
-		return game_manager.USE_COLORED_BORDERS
-	# Default to true if GameManager not found
-	return true
 
 func _get_player_color(player_id: int) -> Color:
 	"""Get the color for a specific player"""
@@ -718,6 +710,149 @@ func _get_player_color(player_id: int) -> Color:
 	var color = player_colors.get(player_id, Color.WHITE)
 	color.a = 0.5  # 50% transparency
 	return color
+
+func create_ownership_overlay(region_id: int, player_id: int) -> void:
+	"""Create a semi-transparent colored polygon overlay for owned regions"""
+	var region_container = get_region_container_by_id(region_id)
+	if region_container == null:
+		print("[MapGenerator] Error: Could not find region container for ID: ", region_id)
+		return
+	
+	# Get the original polygon for positioning reference
+	var original_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
+	if original_polygon == null:
+		print("[MapGenerator] Error: Could not find original polygon for region: ", region_id)
+		return
+	
+	# Remove existing ownership overlay if it exists
+	var existing_overlay = region_container.get_node_or_null("OwnershipOverlay")
+	if existing_overlay != null:
+		existing_overlay.queue_free()
+	
+	# Create noisy polygon points that match the border noise
+	var noisy_polygon_points = _create_noisy_polygon_for_region(region_id)
+	if noisy_polygon_points.is_empty():
+		print("[MapGenerator] Warning: Could not create noisy polygon for region ", region_id)
+		return
+	
+	# Create new ownership overlay polygon
+	var overlay_polygon = Polygon2D.new()
+	overlay_polygon.name = "OwnershipOverlay"
+	
+	# Use the noisy polygon points
+	overlay_polygon.polygon = noisy_polygon_points
+	overlay_polygon.position = original_polygon.position
+	overlay_polygon.rotation = original_polygon.rotation
+	overlay_polygon.scale = original_polygon.scale
+	
+	# Set player color with high transparency
+	var player_color = _get_player_color(player_id)
+	player_color.a = 0.15  # High transparency (15%)
+	overlay_polygon.color = player_color
+	
+	# Set z-index to appear above the original polygon but below other elements
+	overlay_polygon.z_index = original_polygon.z_index + 1
+	
+	# Add to region container
+	region_container.add_child(overlay_polygon)
+	
+	print("[MapGenerator] Created ownership overlay for region ", region_id, " with color ", player_color)
+
+func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
+	"""Extract polygon points directly from the existing Line2D borders"""
+	var region_container = get_region_container_by_id(region_id)
+	if region_container == null:
+		return PackedVector2Array()
+	
+	# Get the borders container which has all the Line2D objects
+	var borders_container = region_container.get_node_or_null("Borders")
+	if borders_container == null:
+		print("[MapGenerator] No borders found for region ", region_id)
+		# Fallback to original polygon
+		var original_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
+		if original_polygon:
+			return original_polygon.polygon
+		return PackedVector2Array()
+	
+	# Collect all Line2D objects
+	var line2d_objects: Array[Line2D] = []
+	for child in borders_container.get_children():
+		if child is Line2D:
+			line2d_objects.append(child as Line2D)
+	
+	if line2d_objects.is_empty():
+		print("[MapGenerator] No Line2D borders found for region ", region_id)
+		return PackedVector2Array()
+	
+	# Extract all points from all Line2D objects
+	var all_border_points := PackedVector2Array()
+	for line2d in line2d_objects:
+		for point in line2d.points:
+			all_border_points.append(point)
+	
+	if all_border_points.size() < 3:
+		return PackedVector2Array()
+	
+	# Create a polygon from these points using convex hull or similar
+	# For now, use a simple approach: get the boundary points
+	var polygon_points = _create_polygon_from_border_points(all_border_points)
+	
+	print("[MapGenerator] Created noisy polygon with ", polygon_points.size(), " points from ", all_border_points.size(), " border points")
+	return polygon_points
+
+func _create_polygon_from_border_points(border_points: PackedVector2Array) -> PackedVector2Array:
+	"""Create a polygon from scattered border points"""
+	if border_points.size() < 3:
+		return PackedVector2Array()
+	
+	# Find the center point
+	var center = Vector2.ZERO
+	for point in border_points:
+		center += point
+	center /= border_points.size()
+	
+	# Sort points by angle from center (this creates a rough polygon)
+	var points_with_angles: Array = []
+	for point in border_points:
+		var angle = (point - center).angle()
+		points_with_angles.append({"point": point, "angle": angle})
+	
+	# Sort by angle
+	points_with_angles.sort_custom(func(a, b): return a.angle < b.angle)
+	
+	# Extract the sorted points
+	var sorted_points := PackedVector2Array()
+	for item in points_with_angles:
+		sorted_points.append(item.point)
+	
+	# Simplify the polygon by removing points that are too close to each other
+	var simplified_points := PackedVector2Array()
+	var min_distance = 2.0 * polygon_scale  # Minimum distance between points
+	
+	for i in range(sorted_points.size()):
+		var point = sorted_points[i]
+		var add_point = true
+		
+		# Check if this point is too close to the last added point
+		if not simplified_points.is_empty():
+			var last_point = simplified_points[-1]
+			if point.distance_to(last_point) < min_distance:
+				add_point = false
+		
+		if add_point:
+			simplified_points.append(point)
+	
+	return simplified_points
+
+func remove_ownership_overlay(region_id: int) -> void:
+	"""Remove the ownership overlay for a region"""
+	var region_container = get_region_container_by_id(region_id)
+	if region_container == null:
+		return
+	
+	var overlay = region_container.get_node_or_null("OwnershipOverlay")
+	if overlay != null:
+		overlay.queue_free()
 
 func _create_offset_border_line(original_points: PackedVector2Array, player_id: int, other_region_id: int, current_region_id: int, borders_container: Node2D) -> void:
 	"""Create an offset border line for ownership-based borders"""
@@ -1145,10 +1280,6 @@ func _assign_region_name_if_available(region: Region) -> void:
 
 func regenerate_borders() -> void:
 	"""Regenerate all region borders when ownership changes"""
-	# Only regenerate if colored borders are enabled
-	if not _should_use_colored_borders():
-		return
-		
 	# Clear existing borders
 	var regions_node = get_node_or_null("Regions")
 	if regions_node == null:
@@ -1165,10 +1296,6 @@ func regenerate_borders() -> void:
 
 func regenerate_borders_for_region(region_id: int) -> void:
 	"""Regenerate borders for a specific region and its neighbors (more efficient)"""
-	# Only regenerate if colored borders are enabled
-	if not _should_use_colored_borders():
-		return
-		
 	var click_manager = get_node_or_null("../ClickManager")
 	if not click_manager or not click_manager.has_method("get_region_manager"):
 		# Fallback to full regeneration

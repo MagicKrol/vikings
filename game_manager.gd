@@ -1,9 +1,6 @@
 extends Node
 class_name GameManager
 
-# Ownership visualization setting
-const USE_COLORED_BORDERS: bool = false  # true = colored borders, false = region points
-
 # Game state
 var current_turn: int = 1
 var current_player: int = 1

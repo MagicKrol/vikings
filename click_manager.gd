@@ -24,16 +24,12 @@ func _unhandled_input(event: InputEvent) -> void:
 @onready var _army_select_modal: ArmySelectModal = get_node_or_null("../UI/ArmySelectModal") as ArmySelectModal
 @onready var _ui_manager: UIManager = get_node_or_null("../UI/UIManager") as UIManager
 @onready var _sound_manager: SoundManager = get_node_or_null("../SoundManager") as SoundManager
-@onready var _game_manager: GameManager = get_node_or_null("../GameManager") as GameManager
 
 func _ready():
 	# Initialize managers early so they're available during map generation
 	if _map_script:
 		if _region_manager == null:
 			_region_manager = RegionManager.new(_map_script)
-			# Set GameManager reference for settings access
-			if _game_manager != null:
-				_region_manager.set_game_manager(_game_manager)
 		
 		if _army_manager == null and _region_manager != null:
 			_army_manager = ArmyManager.new(_map_script, _region_manager)
@@ -152,8 +148,6 @@ func _handle_castle_placement(region_container: Node) -> void:
 	# Place army in the same region
 	_place_army_visual(region_container, current_player_id)
 	
-	# Hide region point in castle region (since castle is present)
-	_region_manager.hide_region_point_for_army(region_container)
 	
 	# End castle placing mode after placing one castle
 	castle_placing_mode = false

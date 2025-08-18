@@ -181,8 +181,6 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		# For now, we still allow the movement after showing the battle modal
 		# Later this could be modified to handle battle outcomes
 	
-	# Hide region point in source region (army leaving)
-	region_manager.show_region_point_for_army_exit(selected_region_container)
 	
 	# Move the army
 	selected_army.get_parent().remove_child(selected_army)
@@ -202,8 +200,6 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
 	
-	# Hide region point in target region (army entering)
-	region_manager.hide_region_point_for_army(target_region_container)
 	
 	# Update selected region container to the new region
 	selected_region_container = target_region_container
