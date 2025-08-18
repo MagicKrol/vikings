@@ -7,7 +7,7 @@ var current_player: int = 1
 var total_players: int = 4
 
 # Battle animation timing
-const BATTLE_ROUND_TIME: float = 0.8  # Seconds between battle rounds
+# Battle timing now managed in GameParameters.gd
 
 # Player management
 var player_manager: PlayerManager
@@ -16,13 +16,33 @@ var player_manager: PlayerManager
 var click_manager: Node = null
 
 func _ready():
-	# Initialize player management system
-	player_manager = PlayerManager.new(total_players)
-	
-	# Find the click manager
+	# Find the click manager first (needed for RegionManager)
 	click_manager = get_node_or_null("../ClickManager")
 	if click_manager == null:
-		print("[GameManager] Warning: ClickManager not found")
+		push_error("[GameManager] CRITICAL: ClickManager not found - game cannot function")
+		return
+	
+	# Wait for ClickManager to initialize RegionManager
+	await get_tree().process_frame
+	
+	# Get RegionManager and MapGenerator - these are required components
+	var region_manager: RegionManager = null
+	var map_generator: MapGenerator = null
+	
+	if click_manager.has_method("get_region_manager"):
+		region_manager = click_manager.get_region_manager()
+	
+	if region_manager == null:
+		push_error("[GameManager] CRITICAL: RegionManager not available - resource system cannot function")
+		return
+	
+	map_generator = get_node_or_null("../Map") as MapGenerator
+	if map_generator == null:
+		push_error("[GameManager] CRITICAL: MapGenerator not found - resource system cannot function")  
+		return
+	
+	# Initialize player management system with required components
+	player_manager = PlayerManager.new(total_players, region_manager, map_generator)
 	
 	# Run battle system test on startup (remove this after testing)
 	BattleSimulator.run_test_battle()
@@ -42,7 +62,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func next_turn():
 	"""Advance to the next turn and perform turn-based actions"""
 	
+	print("[GameManager] === Starting turn ", current_turn + 1, " ===")
+	
 	# Process resource income for all players
+	print("[GameManager] Processing resource income...")
 	player_manager.process_resource_income()
 	
 	# Reset movement points for all armies
@@ -51,9 +74,13 @@ func next_turn():
 	# Advance turn counter
 	current_turn += 1
 	
-	# Advance to next player (cycle through players)
-	current_player = (current_player % total_players) + 1
+	# Stay on Player 1 (human player) - no AI players for now
+	current_player = 1
 	player_manager.set_current_player(current_player)
+	
+	# Update player status display
+	print("[GameManager] Turn ", current_turn, " - Player 1 continues")
+	_update_player_status_display()
 	
 
 
@@ -69,6 +96,23 @@ func reset_movement_points():
 			print("[GameManager] Warning: Cannot reset army moves - ArmyManager not found")
 	else:
 		print("[GameManager] Warning: Cannot reset army moves - ClickManager not found")
+
+func _update_player_status_display() -> void:
+	"""Update the player status display when resources or player changes"""
+	print("[GameManager] Updating player status display...")
+	
+	var ui_node = get_node_or_null("../UI")
+	if ui_node == null:
+		print("[GameManager] ERROR: UI node not found")
+		return
+	
+	var player_status_modal = ui_node.get_node_or_null("PlayerStatusModal") as PlayerStatusModal
+	if player_status_modal == null:
+		print("[GameManager] ERROR: PlayerStatusModal not found")
+		return
+	
+	print("[GameManager] Calling PlayerStatusModal.refresh_from_game_state()")
+	player_status_modal.refresh_from_game_state()
 
 func get_current_turn() -> int:
 	"""Get the current turn number"""

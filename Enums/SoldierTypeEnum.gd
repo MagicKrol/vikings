@@ -17,27 +17,7 @@ const SOLDIER_NAMES = {
 }
 
 # Combat stats for each soldier type
-# Attack and defense values match BattleSimulator percentages
-const SOLDIER_STATS = {
-	Type.PEASANTS: {
-		"attack": 5,      # 5% hit chance per unit
-		"defense": 10,    # 10% chance to deflect hits
-		"cost": 1,
-		"recruitment_time": 1
-	},
-	Type.ARCHERS: {
-		"attack": 25,     # 25% hit chance per unit
-		"defense": 15,    # 15% chance to deflect hits
-		"cost": 2,
-		"recruitment_time": 2
-	},
-	Type.KNIGHTS: {
-		"attack": 60,     # 60% hit chance per unit
-		"defense": 60,    # 60% chance to deflect hits
-		"cost": 5,
-		"recruitment_time": 3
-	}
-}
+# Unit stats now managed in GameParameters.gd
 
 # Convert enum type to string name
 static func type_to_string(soldier_type: Type) -> String:
@@ -56,20 +36,20 @@ static func get_all_types() -> Array[Type]:
 
 # Get soldier stats for a specific type
 static func get_soldier_stats(soldier_type: Type) -> Dictionary:
-	return SOLDIER_STATS.get(soldier_type, {})
+	return GameParameters.UNIT_STATS.get(soldier_type, {})
 
 # Get attack value for a soldier type
 static func get_attack(soldier_type: Type) -> int:
-	return SOLDIER_STATS.get(soldier_type, {}).get("attack", 1)
+	return GameParameters.get_unit_stat(soldier_type, "attack")
 
 # Get defense value for a soldier type
 static func get_defense(soldier_type: Type) -> int:
-	return SOLDIER_STATS.get(soldier_type, {}).get("defense", 1)
+	return GameParameters.get_unit_stat(soldier_type, "defense")
 
 # Get recruitment cost for a soldier type
 static func get_cost(soldier_type: Type) -> int:
-	return SOLDIER_STATS.get(soldier_type, {}).get("cost", 1)
+	return GameParameters.get_unit_stat(soldier_type, "cost")
 
 # Get recruitment time for a soldier type
 static func get_recruitment_time(soldier_type: Type) -> int:
-	return SOLDIER_STATS.get(soldier_type, {}).get("recruitment_time", 1)
+	return GameParameters.get_unit_stat(soldier_type, "recruitment_time")

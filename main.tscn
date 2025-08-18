@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=21 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://army_select_modal.gd" id="20_army_select"]
 [ext_resource type="Script" path="res://info_modal.gd" id="21_info_modal"]
 [ext_resource type="Script" path="res://region_select_modal.gd" id="22_region_select"]
+[ext_resource type="Script" path="res://player_status_modal.gd" id="23_player_status"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -514,6 +515,95 @@ anchor_bottom = 0.95
 grow_horizontal = 2
 grow_vertical = 2
 text = "OK"
+
+[node name="PlayerStatusModal" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -700.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 60.0
+grow_horizontal = 0
+script = ExtResource("23_player_status")
+
+[node name="OuterFrame" type="ColorRect" parent="UI/PlayerStatusModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ResourceContainer" type="HBoxContainer" parent="UI/PlayerStatusModal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoldLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_font_sizes/font_size = 18
+text = "Gold: 1 (+10)"
+vertical_alignment = 1
+
+[node name="Separator1" type="Control" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="FoodLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(85, 0)
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_font_sizes/font_size = 18
+text = "Food: 1 (+5)"
+vertical_alignment = 1
+
+[node name="Separator2" type="Control" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="WoodLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(85, 0)
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_font_sizes/font_size = 18
+text = "Wood: 1 (+3)"
+vertical_alignment = 1
+
+[node name="Separator3" type="Control" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="StoneLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_font_sizes/font_size = 18
+text = "Stone: 1 (+2)"
+vertical_alignment = 1
+
+[node name="Separator4" type="Control" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="IronLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_font_sizes/font_size = 18
+text = "Iron: 1 (+2)"
+vertical_alignment = 1
 
 [node name="Players" type="Node2D" parent="."]
 

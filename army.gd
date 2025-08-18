@@ -3,7 +3,7 @@ class_name Army
 
 # Army properties - all data here
 var player_id: int = 1
-var movement_points: int = 5  # Default movement points per turn
+var movement_points: int = GameParameters.MOVEMENT_POINTS_PER_TURN
 var number: String = ""
 
 # Army composition - soldiers in this army
@@ -18,7 +18,7 @@ func _init():
 func setup_army(new_player_id: int, roman_number: String) -> void:
 	"""Setup the army with player ID and default composition"""
 	player_id = new_player_id
-	movement_points = 5
+	movement_points = GameParameters.MOVEMENT_POINTS_PER_TURN
 	composition = ArmyComposition.new()
 	number = roman_number
 	
@@ -44,7 +44,7 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 
 func reset_movement_points() -> void:
 	"""Reset movement points for a new turn"""
-	movement_points = 5
+	movement_points = GameParameters.MOVEMENT_POINTS_PER_TURN
 
 func spend_movement_points(cost: int) -> void:
 	"""Spend movement points for a move"""

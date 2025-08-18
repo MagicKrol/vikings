@@ -10,14 +10,7 @@ enum Type {
 	MOUNTAINS      # Impassable terrain - no resources, blocks movement
 }
 
-# Movement costs for each terrain type
-const MOVEMENT_COSTS = {
-	Type.GRASSLAND: 1,     # Low cost - easy to traverse
-	Type.HILLS: 3,         # High cost - difficult terrain
-	Type.FOREST_HILLS: 3,  # High cost - difficult terrain
-	Type.FOREST: 3,        # High cost - dense vegetation
-	Type.MOUNTAINS: -1     # Impassable - blocks movement completely
-}
+# Movement costs now managed in GameParameters.gd
 
 # Convert string biome name to final region type
 static func string_to_type(biome_string: String) -> Type:
@@ -60,7 +53,7 @@ static func type_to_string(region_type: Type) -> String:
 
 # Get movement cost for a terrain type
 static func get_movement_cost(region_type: Type) -> int:
-	return MOVEMENT_COSTS.get(region_type, 1)  # Default to low cost
+	return GameParameters.get_movement_cost(region_type)
 
 # Check if terrain is passable (movement cost != -1)
 static func is_passable(region_type: Type) -> bool:

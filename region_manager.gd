@@ -163,47 +163,11 @@ func generate_region_resources(region: Region) -> void:
 	# Clear existing resources
 	region.resources = ResourceComposition.new()
 	
-	# Generate resources based on final region type
-	match biome_type:
-		RegionTypeEnum.Type.GRASSLAND:
-			# grassland: food random(10,20)
-			var food_amount = randi_range(10, 20)
-			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
-		
-		RegionTypeEnum.Type.FOREST:
-			# forest: food random(5,10), wood random(10,20)
-			var food_amount = randi_range(5, 10)
-			var wood_amount = randi_range(10, 20)
-			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
-			region.resources.set_resource_amount(ResourcesEnum.Type.WOOD, wood_amount)
-		
-		RegionTypeEnum.Type.HILLS:
-			# hills: food(2,5), stone random(5,10), iron random(5,20), gold random(5,20)
-			var food_amount = randi_range(2, 5)
-			var stone_amount = randi_range(5, 10)
-			var iron_amount = randi_range(5, 20)
-			var gold_amount = randi_range(5, 20)
-			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
-			region.resources.set_resource_amount(ResourcesEnum.Type.STONE, stone_amount)
-			region.resources.set_resource_amount(ResourcesEnum.Type.IRON, iron_amount)
-			region.resources.set_resource_amount(ResourcesEnum.Type.GOLD, gold_amount)
-		
-		RegionTypeEnum.Type.FOREST_HILLS:
-			# forest hills: food(2,5), wood(5,20), stone(5,20)
-			var food_amount = randi_range(2, 5)
-			var wood_amount = randi_range(5, 20)
-			var stone_amount = randi_range(5, 20)
-			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
-			region.resources.set_resource_amount(ResourcesEnum.Type.WOOD, wood_amount)
-			region.resources.set_resource_amount(ResourcesEnum.Type.STONE, stone_amount)
-		
-		RegionTypeEnum.Type.MOUNTAINS:
-			# mountains: no resources (impassable terrain)
-			pass
-		
-		_:
-			# Unknown type gets no resources
-			pass
+	# Generate resources based on region type using GameParameters
+	for resource_type in ResourcesEnum.get_all_types():
+		var amount = GameParameters.generate_resource_amount(biome_type, resource_type)
+		if amount > 0:
+			region.resources.set_resource_amount(resource_type, amount)
 
 func _generate_all_region_resources() -> void:
 	"""Generate resources for all regions when the RegionManager is initialized"""

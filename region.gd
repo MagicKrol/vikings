@@ -29,7 +29,7 @@ func setup_region(region_data: Dictionary) -> void:
 	
 	# Set basic garrison composition for non-ocean regions
 	if not is_ocean:
-		var peasant_count = randi_range(10, 30)
+		var peasant_count = GameParameters.generate_garrison_size(region_level)
 		garrison.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, peasant_count)
 	
 	# Set center position
