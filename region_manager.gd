@@ -14,6 +14,9 @@ var region_graph: Dictionary = {}
 # Reference to the map generator for region data
 var map_generator: MapGenerator
 
+# Reference to the game manager for settings
+var game_manager: GameManager = null
+
 # Region name management
 var available_names: Array[String] = []
 var used_names: Dictionary = {}
@@ -22,6 +25,10 @@ func _init(map_gen: MapGenerator):
 	map_generator = map_gen
 	_load_region_names()
 	_build_region_graph()
+
+func set_game_manager(gm: GameManager) -> void:
+	"""Set the GameManager reference for accessing settings"""
+	game_manager = gm
 
 func _load_region_names() -> void:
 	"""Load region names from regions.json file"""
@@ -88,10 +95,17 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 	"""Set ownership of a region to a specific player"""
 	region_ownership[region_id] = player_id
 	
-	
-	# Show the region point to indicate ownership
-	
-	_show_region_point_for_ownership(region_id, player_id)
+	# Show region point or borders based on GameManager setting
+	if _should_use_region_points():
+		# Show the region point to indicate ownership
+		_show_region_point_for_ownership(region_id, player_id)
+	else:
+		# Use colored borders instead - trigger border recalculation
+		if map_generator and map_generator.has_method("regenerate_borders_for_region"):
+			map_generator.regenerate_borders_for_region(region_id)
+		elif map_generator and map_generator.has_method("regenerate_borders"):
+			# Fallback to full regeneration
+			map_generator.regenerate_borders()
 
 func get_region_owner(region_id: int) -> int:
 	"""Get the player ID that owns a region, or -1 if unowned"""
@@ -224,6 +238,13 @@ func show_region_point_for_army_exit(region_container: Node) -> void:
 	
 	# No castle present, show the region point
 	region_point.visible = true
+
+func _should_use_region_points() -> bool:
+	"""Check if we should use region points based on GameManager setting"""
+	if game_manager != null:
+		return not game_manager.USE_COLORED_BORDERS
+	# Default to region points if GameManager not found
+	return true
 
 func _get_player_color(player_id: int) -> Color:
 	"""Get the color for a specific player"""
