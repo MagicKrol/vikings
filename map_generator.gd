@@ -547,10 +547,15 @@ func _create_borders_for_region(region_id: int, region_data: Dictionary, borders
 		if other_region_data.is_empty():
 			continue
 			
-		# Check if we should draw this border (skip ocean-ocean)
+		# Check if we should draw this border (skip ocean-ocean and mountain-mountain)
 		var this_is_ocean = bool(region_data.get("ocean", false))
 		var other_is_ocean = bool(other_region_data.get("ocean", false))
+		var this_is_mountain = _is_mountain_region(region_data)
+		var other_is_mountain = _is_mountain_region(other_region_data)
+		
 		if this_is_ocean and other_is_ocean:
+			continue
+		if this_is_mountain and other_is_mountain:
 			continue
 			
 		# Create the border line for THIS region
@@ -591,9 +596,18 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 	var region_owner = _get_region_owner(region_id)
 	var other_owner = _get_region_owner(other_region_id)
 	var is_external_border = _is_external_border_for_region(region_id, other_region_id)
+	var is_mountain_border = _is_mountain_border_for_region(region_id, other_region_id)
 	
 	# Determine border type and styling based on ownership
-	if is_external_border:
+	if is_mountain_border:
+		# Mountain border: Solid black border
+		var line := Line2D.new()
+		line.points = seg
+		line.closed = false
+		line.width = 3.0 * polygon_scale
+		line.default_color = Color.BLACK  # Solid black for mountain borders
+		borders_container.add_child(line)
+	elif is_external_border:
 		# Ocean border: Double border system
 		if region_owner != -1:
 			# Owned region vs ocean: Create offset colored border for land side
@@ -638,6 +652,14 @@ func _is_external_border_for_region(region_id: int, other_region_id: int) -> boo
 		
 	var other_is_ocean = bool(other_region_data.get("ocean", false))
 	return other_is_ocean  # External if touching ocean
+
+func _is_mountain_border_for_region(region_id: int, other_region_id: int) -> bool:
+	"""Determine if a border touches a mountain region"""
+	var other_region_data = region_by_id.get(other_region_id, {})
+	if other_region_data.is_empty():
+		return false  # Unknown region = not mountain
+		
+	return _is_mountain_region(other_region_data)  # Mountain if other region is mountain
 
 func _generate_edge_seed(edge: Dictionary) -> int:
 	"""Generate a consistent seed for an edge based on its coordinates"""
@@ -1175,6 +1197,11 @@ func _create_ocean_frame() -> void:
 
 
 
+
+func _is_mountain_region(region_data: Dictionary) -> bool:
+	"""Check if a region is a mountain region (non-interactive terrain like ocean)"""
+	var biome_name := String(region_data.get("biome", "")).to_lower()
+	return biome_name == "mountains"
 
 func _is_ocean_region_coastal(ocean_region_id: int) -> bool:
 	# Check if this ocean region has any land neighbors by examining edges

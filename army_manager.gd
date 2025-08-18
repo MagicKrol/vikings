@@ -529,3 +529,16 @@ func remove_destroyed_armies() -> void:
 				continue
 			
 			i += 1
+
+func remove_army_from_tracking(army: Army) -> void:
+	"""Remove a specific army from tracking (used when army is defeated)"""
+	if army == null:
+		return
+	
+	var player_id = army.get_player_id()
+	if armies_by_player.has(player_id):
+		var armies = armies_by_player[player_id]
+		var index = armies.find(army)
+		if index != -1:
+			armies.remove_at(index)
+			print("[ArmyManager] Removed army ", army.name, " from player ", player_id, " tracking")

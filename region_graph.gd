@@ -8,6 +8,11 @@ var adjacency: Dictionary = {}
 # region_id -> Vector2 center
 var centers: Dictionary = {}
 
+static func _is_mountain_region(region_data: Dictionary) -> bool:
+	"""Check if a region is a mountain region (non-interactive terrain like ocean)"""
+	var biome_name := String(region_data.get("biome", "")).to_lower()
+	return biome_name == "mountains"
+
 static func build_non_ocean_adjacency(regions: Array, edges: Array) -> Dictionary:
 	var region_by_id: Dictionary = {}
 	for r in regions:
@@ -16,14 +21,16 @@ static func build_non_ocean_adjacency(regions: Array, edges: Array) -> Dictionar
 			region_by_id[rid] = r
 
 	var graph: Dictionary = {}
-	# Initialize nodes for non-ocean regions
+	# Initialize nodes for non-ocean, non-mountain regions
 	for r in regions:
-		if not bool(r.get("ocean", false)):
+		var is_ocean = bool(r.get("ocean", false))
+		var is_mountain = _is_mountain_region(r)
+		if not is_ocean and not is_mountain:
 			var rid := int(r.get("id", -1))
 			if rid >= 0:
 				graph[rid] = []
 
-	# Add edges between neighboring non-ocean regions
+	# Add edges between neighboring non-ocean, non-mountain regions
 	for e in edges:
 		var r0 := int(e.get("region1", -1))
 		var r1 := int(e.get("region2", -1))
@@ -35,7 +42,9 @@ static func build_non_ocean_adjacency(regions: Array, edges: Array) -> Dictionar
 			continue
 		var ocean0 := bool(reg0.get("ocean", false))
 		var ocean1 := bool(reg1.get("ocean", false))
-		if ocean0 or ocean1:
+		var mountain0 := _is_mountain_region(reg0)
+		var mountain1 := _is_mountain_region(reg1)
+		if ocean0 or ocean1 or mountain0 or mountain1:
 			continue
 
 		if not graph.has(r0):
@@ -52,7 +61,9 @@ static func build_non_ocean_adjacency(regions: Array, edges: Array) -> Dictionar
 static func compute_region_centers(regions: Array) -> Dictionary:
 	var centers: Dictionary = {}
 	for r in regions:
-		if not bool(r.get("ocean", false)):
+		var is_ocean = bool(r.get("ocean", false))
+		var is_mountain = _is_mountain_region(r)
+		if not is_ocean and not is_mountain:
 			var rid := int(r.get("id", -1))
 			var cdata: Array = r.get("center", [])
 			if rid >= 0 and cdata.size() == 2:

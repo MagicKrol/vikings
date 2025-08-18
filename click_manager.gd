@@ -123,10 +123,24 @@ func _point_in_polygon(p: Vector2, polygon: Polygon2D) -> bool:
 	return Geometry2D.is_point_in_polygon(local, polygon.polygon)
 
 func _handle_region_click(region_container: Node) -> void:
+	# Get region script to check if it's a mountain
+	var region = region_container as Region
+	if region != null:
+		# Check if this is a mountain region - if so, ignore clicks
+		if _is_mountain_region(region):
+			return
+	
 	if castle_placing_mode:
 		_handle_castle_placement(region_container)
 	else:
 		_handle_army_selection_and_movement(region_container)
+
+func _is_mountain_region(region: Region) -> bool:
+	"""Check if a region is a mountain region (unclickable)"""
+	if region == null:
+		return false
+	var biome_name = region.get_biome().to_lower()
+	return biome_name == "mountains"
 
 func _handle_castle_placement(region_container: Node) -> void:
 	# Get region ID from the Region script
@@ -310,9 +324,13 @@ func on_battle_modal_closed() -> void:
 		# Apply battle losses from the battle modal
 		_apply_battle_losses()
 		
-		# Complete the conquest (only if attackers won)
+		# Handle battle outcome
 		if _should_complete_conquest():
+			# Attackers won - complete the conquest
 			complete_conquest(pending_conquest_army, pending_conquest_region)
+		else:
+			# Attackers lost - remove the army from the map
+			_handle_battle_defeat(pending_conquest_army)
 		
 		# Clear pending conquest
 		pending_conquest_army = null
@@ -356,6 +374,29 @@ func _should_complete_conquest() -> bool:
 	
 	var battle_report = _battle_modal.battle_report
 	return battle_report.winner == "Attackers"
+
+func _handle_battle_defeat(defeated_army: Army) -> void:
+	"""Handle when an army is defeated in battle"""
+	if defeated_army == null or not is_instance_valid(defeated_army):
+		return
+	
+	print("[ClickManager] Army ", defeated_army.name, " was defeated and will be removed from the map")
+	
+	# Get the army's parent (region container)
+	var parent_region = defeated_army.get_parent()
+	
+	# Remove the army from the scene
+	if parent_region != null:
+		parent_region.remove_child(defeated_army)
+	
+	# Remove the army from army manager tracking
+	if _army_manager != null:
+		_army_manager.remove_army_from_tracking(defeated_army)
+	
+	# Free the army node
+	defeated_army.queue_free()
+	
+	print("[ClickManager] Defeated army removed from map")
 
 func _close_active_modals() -> void:
 	"""Close any active modals"""

@@ -22,6 +22,7 @@ func _init(map_gen: MapGenerator):
 	map_generator = map_gen
 	_load_region_names()
 	_build_region_graph()
+	_generate_all_region_resources()
 
 func _load_region_names() -> void:
 	"""Load region names from regions.json file"""
@@ -151,3 +152,75 @@ func _get_player_color(player_id: int) -> Color:
 		4: Color.YELLOW
 	}
 	return player_colors.get(player_id, Color.WHITE)
+
+func generate_region_resources(region: Region) -> void:
+	"""Generate random resources for a region based on its biome type"""
+	if region == null or region.resources == null:
+		return
+	
+	var biome_type = region.get_region_type()
+	
+	# Clear existing resources
+	region.resources = ResourceComposition.new()
+	
+	# Generate resources based on final region type
+	match biome_type:
+		RegionTypeEnum.Type.GRASSLAND:
+			# grassland: food random(10,20)
+			var food_amount = randi_range(10, 20)
+			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
+		
+		RegionTypeEnum.Type.FOREST:
+			# forest: food random(5,10), wood random(10,20)
+			var food_amount = randi_range(5, 10)
+			var wood_amount = randi_range(10, 20)
+			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
+			region.resources.set_resource_amount(ResourcesEnum.Type.WOOD, wood_amount)
+		
+		RegionTypeEnum.Type.HILLS:
+			# hills: food(2,5), stone random(5,10), iron random(5,20), gold random(5,20)
+			var food_amount = randi_range(2, 5)
+			var stone_amount = randi_range(5, 10)
+			var iron_amount = randi_range(5, 20)
+			var gold_amount = randi_range(5, 20)
+			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
+			region.resources.set_resource_amount(ResourcesEnum.Type.STONE, stone_amount)
+			region.resources.set_resource_amount(ResourcesEnum.Type.IRON, iron_amount)
+			region.resources.set_resource_amount(ResourcesEnum.Type.GOLD, gold_amount)
+		
+		RegionTypeEnum.Type.FOREST_HILLS:
+			# forest hills: food(2,5), wood(5,20), stone(5,20)
+			var food_amount = randi_range(2, 5)
+			var wood_amount = randi_range(5, 20)
+			var stone_amount = randi_range(5, 20)
+			region.resources.set_resource_amount(ResourcesEnum.Type.FOOD, food_amount)
+			region.resources.set_resource_amount(ResourcesEnum.Type.WOOD, wood_amount)
+			region.resources.set_resource_amount(ResourcesEnum.Type.STONE, stone_amount)
+		
+		RegionTypeEnum.Type.MOUNTAINS:
+			# mountains: no resources (impassable terrain)
+			pass
+		
+		_:
+			# Unknown type gets no resources
+			pass
+
+func _generate_all_region_resources() -> void:
+	"""Generate resources for all regions when the RegionManager is initialized"""
+	if map_generator == null:
+		return
+	
+	# Get all region containers from the map generator
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		print("[RegionManager] Warning: No Regions node found in map generator")
+		return
+	
+	# Generate resources for each region
+	var regions_generated = 0
+	for child in regions_node.get_children():
+		if child is Region:
+			generate_region_resources(child)
+			regions_generated += 1
+	
+	print("[RegionManager] Generated resources for ", regions_generated, " regions")

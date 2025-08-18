@@ -157,6 +157,75 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.717647, 0.592157, 0.368627, 1)
 
+[node name="HeaderLabel" type="Label" parent="UI/RegionModal"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 20.0
+offset_right = 150.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme = ExtResource("19_header_theme")
+text = "Region Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TypeLabel" type="Label" parent="UI/RegionModal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -120.0
+offset_right = 150.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("18_standard_theme")
+text = "Region Type: Grassland"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="UI/RegionModal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -85.0
+offset_right = 150.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("18_standard_theme")
+text = "Level: March"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResourcesLabel" type="Label" parent="UI/RegionModal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("18_standard_theme")
+text = "Resources:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="CloseButton" type="Button" parent="UI/RegionModal"]
 layout_mode = 1
 anchors_preset = 7

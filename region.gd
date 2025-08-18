@@ -13,6 +13,9 @@ var center: Vector2 = Vector2.ZERO
 # Army composition stationed in this region
 var garrison: ArmyComposition
 
+# Resource composition available in this region
+var resources: ResourceComposition
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -20,8 +23,9 @@ func setup_region(region_data: Dictionary) -> void:
 	region_type = RegionTypeEnum.string_to_type(biome)
 	is_ocean = bool(region_data.get("ocean", false))
 	
-	# Initialize garrison
+	# Initialize garrison and resources
 	garrison = ArmyComposition.new()
+	resources = ResourceComposition.new()
 	
 	# Set basic garrison composition for non-ocean regions
 	if not is_ocean:
@@ -79,6 +83,10 @@ func get_region_level_string() -> String:
 	"""Get the region level as a string"""
 	return RegionLevelEnum.level_to_string(region_level)
 
+func get_region_type_display_string() -> String:
+	"""Get the simplified region type as a display string (grassland, forest, hills, forest hills, mountains)"""
+	return RegionTypeEnum.type_to_display_string(region_type)
+
 # Garrison management methods
 func get_garrison() -> ArmyComposition:
 	"""Get the army composition stationed in this region"""
@@ -103,3 +111,20 @@ func has_garrison() -> bool:
 func get_garrison_composition_string() -> String:
 	"""Get garrison composition as a readable string"""
 	return garrison.get_composition_string()
+
+# Resource management methods
+func get_resources() -> ResourceComposition:
+	"""Get the resource composition in this region"""
+	return resources
+
+func get_resource_amount(resource_type: ResourcesEnum.Type) -> int:
+	"""Get amount of specific resource type"""
+	return resources.get_resource_amount(resource_type)
+
+func has_resources() -> bool:
+	"""Check if region has any resources"""
+	return resources.has_resources()
+
+func get_resource_composition_string() -> String:
+	"""Get resource composition as a readable string"""
+	return resources.get_composition_string()
