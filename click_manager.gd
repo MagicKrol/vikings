@@ -58,6 +58,10 @@ func get_army_manager() -> ArmyManager:
 var castle_placing_mode: bool = true
 var current_player_id: int = 1
 
+# Conquest tracking
+var pending_conquest_army: Army = null
+var pending_conquest_region: Region = null
+
 
 func _on_left_click(screen_pos: Vector2) -> void:
 	# Check if any modal is active and close them first
@@ -163,14 +167,36 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		if child is Army:
 			armies_in_region.append(child as Army)
 	
-	# If there are armies in this region, show SelectModal
+	# If there are armies in this region, check for conquest first
 	if not armies_in_region.is_empty():
 		var region = region_container as Region
-		if region != null and _select_modal != null:
-			_select_modal.show_selection(region, armies_in_region)
-			# Play click sound for opening modal
-			if _sound_manager:
-				_sound_manager.click_sound()
+		if region != null:
+			var region_id = region.get_region_id()
+			var region_owner = _region_manager.get_region_owner(region_id)
+			
+			# Check if this is a conquest scenario (player army in unowned region)
+			var player_army_in_region = _army_manager.get_army_in_region(region_container, current_player_id)
+			if player_army_in_region != null and region_owner != current_player_id:
+				# Player has army in unowned region - show battle modal for conquest
+				if _battle_modal != null:
+					# Store conquest context for when battle modal closes
+					pending_conquest_army = player_army_in_region
+					pending_conquest_region = region
+					
+					print("[ClickManager] Storing conquest context: Army ", player_army_in_region.name, " vs Region ", region.get_region_name())
+					
+					_battle_modal.show_battle(player_army_in_region, region)
+					# Play click sound for opening modal
+					if _sound_manager:
+						_sound_manager.click_sound()
+				return
+			
+			# Not a conquest scenario - show SelectModal normally
+			if _select_modal != null:
+				_select_modal.show_selection(region, armies_in_region)
+				# Play click sound for opening modal
+				if _sound_manager:
+					_sound_manager.click_sound()
 		return
 	
 	# If we have a selected army, try to move it to this region
@@ -185,9 +211,12 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		var move_success = _army_manager.move_army_to_region(region_container)
 		if not move_success:
 			_army_manager.deselect_army()
+			return  # Only return if movement failed
+		
+		# If movement succeeded, always return to prevent conquest detection in same click
 		return
 	
-	# If no armies in region and no selected army, check ownership
+	# If no armies in region and no selected army, show region info
 	var region = region_container as Region
 	if region != null:
 		var region_id = region.get_region_id()
@@ -254,6 +283,80 @@ func reset_army_moves() -> void:
 	else:
 		print("[ClickManager] Error: ArmyManager not available")
 
+func complete_conquest(army: Army, region: Region) -> void:
+	"""Complete the conquest of a region after battle"""
+	if army == null or region == null:
+		return
+	
+	var region_id = region.get_region_id()
+	var army_player_id = army.get_player_id()
+	
+	# Change ownership to the conquering player
+	_region_manager.set_region_ownership(region_id, army_player_id)
+	
+	print("[ClickManager] Conquest completed: Region ", region.get_region_name(), " now owned by player ", army_player_id)
+	
+	# Play conquest sound
+	if _sound_manager:
+		_sound_manager.click_sound()
+
+func on_battle_modal_closed() -> void:
+	"""Handle battle modal closure and complete conquest if needed"""
+	print("[ClickManager] Battle modal closed, checking for pending conquest...")
+	
+	if pending_conquest_army != null and pending_conquest_region != null:
+		print("[ClickManager] Found pending conquest, applying battle losses and completing...")
+		
+		# Apply battle losses from the battle modal
+		_apply_battle_losses()
+		
+		# Complete the conquest (only if attackers won)
+		if _should_complete_conquest():
+			complete_conquest(pending_conquest_army, pending_conquest_region)
+		
+		# Clear pending conquest
+		pending_conquest_army = null
+		pending_conquest_region = null
+	else:
+		print("[ClickManager] No pending conquest found")
+
+func _apply_battle_losses() -> void:
+	"""Apply battle losses from the battle modal to armies and region"""
+	if _battle_modal == null or _battle_modal.battle_report == null:
+		print("[ClickManager] No battle report available")
+		return
+	
+	var battle_report = _battle_modal.battle_report
+	var simulator = BattleSimulator.new()
+	
+	# Apply losses to attacking armies
+	var attacking_armies = [pending_conquest_army]
+	var defending_armies = []  # No defending armies for now, just region garrison
+	
+	simulator.apply_battle_losses_to_armies(attacking_armies, defending_armies, battle_report)
+	
+	# Apply losses to region garrison
+	if pending_conquest_region != null:
+		var garrison = pending_conquest_region.get_garrison()
+		if garrison != null and not battle_report.defender_losses.is_empty():
+			for unit_type in battle_report.defender_losses:
+				var losses = battle_report.defender_losses[unit_type]
+				garrison.remove_soldiers(unit_type, losses)
+	
+	print("[ClickManager] Applied battle losses - Attacker losses: ", battle_report.attacker_losses, ", Defender losses: ", battle_report.defender_losses)
+	
+	# Remove any armies that were completely destroyed
+	if _army_manager != null:
+		_army_manager.remove_destroyed_armies()
+
+func _should_complete_conquest() -> bool:
+	"""Check if conquest should be completed based on battle results"""
+	if _battle_modal == null or _battle_modal.battle_report == null:
+		return false
+	
+	var battle_report = _battle_modal.battle_report
+	return battle_report.winner == "Attackers"
+
 func _close_active_modals() -> void:
 	"""Close any active modals"""
 	if _select_modal and _select_modal.visible:
@@ -264,3 +367,5 @@ func _close_active_modals() -> void:
 		_region_select_modal.hide_modal()
 	if _region_modal and _region_modal.visible:
 		_region_modal.hide_modal()
+	if _battle_modal and _battle_modal.visible:
+		_battle_modal.hide_modal()

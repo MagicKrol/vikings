@@ -6,6 +6,9 @@ var current_turn: int = 1
 var current_player: int = 1
 var total_players: int = 4
 
+# Battle animation timing
+const BATTLE_ROUND_TIME: float = 0.8  # Seconds between battle rounds
+
 # References to other managers
 var click_manager: Node = null
 
@@ -14,6 +17,9 @@ func _ready():
 	click_manager = get_node_or_null("../ClickManager")
 	if click_manager == null:
 		print("[GameManager] Warning: ClickManager not found")
+	
+	# Run battle system test on startup (remove this after testing)
+	BattleSimulator.run_test_battle()
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle Enter key to end turn

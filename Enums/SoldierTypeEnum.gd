@@ -17,22 +17,23 @@ const SOLDIER_NAMES = {
 }
 
 # Combat stats for each soldier type
+# Attack and defense values match BattleSimulator percentages
 const SOLDIER_STATS = {
 	Type.PEASANTS: {
-		"attack": 1,
-		"defense": 1,
+		"attack": 5,      # 5% hit chance per unit
+		"defense": 10,    # 10% chance to deflect hits
 		"cost": 1,
 		"recruitment_time": 1
 	},
 	Type.ARCHERS: {
-		"attack": 2,
-		"defense": 1,
+		"attack": 25,     # 25% hit chance per unit
+		"defense": 15,    # 15% chance to deflect hits
 		"cost": 2,
 		"recruitment_time": 2
 	},
 	Type.KNIGHTS: {
-		"attack": 4,
-		"defense": 3,
+		"attack": 60,     # 60% hit chance per unit
+		"defense": 60,    # 60% chance to deflect hits
 		"cost": 5,
 		"recruitment_time": 3
 	}

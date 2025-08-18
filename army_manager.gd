@@ -174,13 +174,8 @@ func move_army_to_region(target_region_container: Node) -> bool:
 			print("[ArmyManager] Movement blocked - not enough movement points (need ", terrain_cost, ", have ", current_points, ")")
 		return false
 	
-	# Check for battle conditions before moving
+	# Battle conditions will be handled after movement by click_manager
 	var target_region = target_region_container as Region
-	if target_region != null and _should_trigger_battle(selected_army, target_region):
-		_show_battle_modal(selected_army, target_region)
-		# For now, we still allow the movement after showing the battle modal
-		# Later this could be modified to handle battle outcomes
-	
 	
 	# Move the army
 	selected_army.get_parent().remove_child(selected_army)
@@ -194,26 +189,43 @@ func move_army_to_region(target_region_container: Node) -> bool:
 			var center = center_meta as Vector2
 			selected_army.position = center + _get_army_position_offset(target_region_container)
 	
-	# Set ownership of the new region
-	region_manager.set_region_ownership(target_region_id, selected_army.player_id)
+	# Check if we should change ownership (only for already owned regions or friendly moves)
+	var target_region_owner = region_manager.get_region_owner(target_region_id)
+	var army_player_id = selected_army.player_id
+	
+	# Only set ownership if moving to own territory or neutral territory without garrison
+	if target_region_owner == army_player_id or (target_region_owner == -1 and not target_region.has_garrison()):
+		region_manager.set_region_ownership(target_region_id, army_player_id)
 	
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
 	
-	
-	# Update selected region container to the new region
-	selected_region_container = target_region_container
-	
 	# Store remaining movement points for logging
 	var remaining_points = selected_army.get_movement_points()
 	
-	# Clear old arrows and show new ones for the new position
-	_clear_move_arrows()
-	_show_move_arrows(target_region_container)
-	
-	# Update army modal with new movement points
-	if army_modal != null and selected_army != null:
-		army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - allow continued movement
+	# Check if we moved to an unowned region - deselect army for conquest mechanics
+	if target_region_owner != army_player_id and target_region_owner != -1:
+		# Moved to enemy territory - deselect army
+		deselect_army()
+		print("[ArmyManager] Army moved to enemy territory (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - deselected for conquest")
+	elif target_region_owner == -1 and target_region.has_garrison():
+		# Moved to neutral territory with garrison - deselect army
+		deselect_army()
+		print("[ArmyManager] Army moved to neutral territory with garrison (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - deselected for conquest")
+	else:
+		# Moved to friendly territory - keep army selected
+		# Update selected region container to the new region
+		selected_region_container = target_region_container
+		
+		# Clear old arrows and show new ones for the new position
+		_clear_move_arrows()
+		_show_move_arrows(target_region_container)
+		
+		# Update army modal with new movement points
+		if army_modal != null and selected_army != null:
+			army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - allow continued movement
+		
+		print("[ArmyManager] Army moved to friendly territory (cost: ", terrain_cost, ", remaining points: ", remaining_points, ")")
 	
 	print("[ArmyManager] Army moved (cost: ", terrain_cost, ", remaining points: ", remaining_points, ")")
 	
@@ -493,3 +505,27 @@ func _int_to_roman(num: int) -> String:
 			num -= values[i]
 	
 	return result
+
+func remove_destroyed_armies() -> void:
+	"""Remove armies that have no soldiers left after battle"""
+	for player_id in armies_by_player:
+		var armies = armies_by_player[player_id]
+		var i = 0
+		while i < armies.size():
+			var army = armies[i]
+			if army == null or not is_instance_valid(army):
+				armies.remove_at(i)
+				continue
+			
+			# Check if army has no soldiers left
+			if army.get_total_soldiers() <= 0:
+				print("[ArmyManager] Removing destroyed army: ", army.name)
+				# Remove from scene
+				if army.get_parent() != null:
+					army.get_parent().remove_child(army)
+				army.queue_free()
+				# Remove from tracking
+				armies.remove_at(i)
+				continue
+			
+			i += 1
