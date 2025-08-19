@@ -157,6 +157,9 @@ func _handle_castle_placement(region_container: Node) -> void:
 	# Set castle starting position (this will also claim neighboring regions)
 	_region_manager.set_castle_starting_position(region_id, current_player_id)
 	
+	# Upgrade castle region and neighboring regions
+	_upgrade_castle_regions(region)
+	
 	# Update region visuals to show ownership
 	_region_manager.update_region_visuals()
 	
@@ -397,6 +400,23 @@ func _handle_battle_defeat(defeated_army: Army) -> void:
 	defeated_army.queue_free()
 	
 	print("[ClickManager] Defeated army removed from map")
+
+func _upgrade_castle_regions(castle_region: Region) -> void:
+	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
+	# Upgrade castle region to L3
+	castle_region.set_region_level(RegionLevelEnum.Level.L3)
+	castle_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L3))
+	
+	# Get neighboring regions and upgrade them to L2
+	var neighbor_ids = _region_manager.get_neighbor_regions(castle_region.get_region_id())
+	var regions_node = _map_script.get_node("Regions")
+	for neighbor_id in neighbor_ids:
+		for child in regions_node.get_children():
+			if child is Region and child.get_region_id() == neighbor_id:
+				var neighbor_region = child as Region
+				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
+				neighbor_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L2))
+				break
 
 func _close_active_modals() -> void:
 	"""Close any active modals"""

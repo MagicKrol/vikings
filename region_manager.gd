@@ -174,17 +174,10 @@ func _generate_all_region_resources() -> void:
 	if map_generator == null:
 		return
 	
-	# Get all region containers from the map generator
-	var regions_node = map_generator.get_node_or_null("Regions")
-	if regions_node == null:
-		print("[RegionManager] Warning: No Regions node found in map generator")
-		return
-	
 	# Generate resources for each region
 	var regions_generated = 0
 	for child in regions_node.get_children():
 		if child is Region:
 			generate_region_resources(child)
 			regions_generated += 1
-	
-	print("[RegionManager] Generated resources for ", regions_generated, " regions")
+

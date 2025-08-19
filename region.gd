@@ -6,7 +6,7 @@ var region_id: int = -1
 var region_name: String = ""
 var biome: String = ""
 var region_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND
-var region_level: RegionLevelEnum.Level = RegionLevelEnum.Level.MARCH
+var region_level: RegionLevelEnum.Level = RegionLevelEnum.Level.L1
 var is_ocean: bool = false
 var center: Vector2 = Vector2.ZERO
 
@@ -15,6 +15,9 @@ var garrison: ArmyComposition
 
 # Resource composition available in this region
 var resources: ResourceComposition
+
+# Population in this region
+var population: int = 0
 
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
@@ -27,10 +30,12 @@ func setup_region(region_data: Dictionary) -> void:
 	garrison = ArmyComposition.new()
 	resources = ResourceComposition.new()
 	
-	# Set basic garrison composition for non-ocean regions
+	# Set basic garrison composition and population for non-ocean regions
 	if not is_ocean:
 		var peasant_count = GameParameters.generate_garrison_size(region_level)
 		garrison.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, peasant_count)
+		# Generate population based on region level
+		population = GameParameters.generate_population_size(region_level)
 	
 	# Set center position
 	var center_data = region_data.get("center", [])
@@ -128,3 +133,12 @@ func has_resources() -> bool:
 func get_resource_composition_string() -> String:
 	"""Get resource composition as a readable string"""
 	return resources.get_composition_string()
+
+# Population management methods
+func get_population() -> int:
+	"""Get current population in this region"""
+	return population
+
+func set_population(new_population: int) -> void:
+	"""Set population for this region"""
+	population = max(0, new_population)
