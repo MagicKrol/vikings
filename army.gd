@@ -1,6 +1,33 @@
 extends Sprite2D
 class_name Army
 
+# ============================================================================
+# ARMY
+# ============================================================================
+# 
+# Purpose: Individual army entity with movement and composition management
+# 
+# Core Responsibilities:
+# - Army properties storage (player ID, movement points, composition)
+# - Movement point tracking for turn-based systems
+# - Army composition integration and soldier management
+# - Visual representation as map sprite
+# - Player ownership and identification
+# 
+# Required Functions:
+# - setup_army(): Initialize army with player and composition
+# - move_to_region(): Movement with cost validation
+# - get/set_movement_points(): Turn-based movement management
+# - get_composition(): Access to army unit composition
+# - is_army_destroyed(): Check for army elimination
+# 
+# Integration Points:
+# - ArmyManager: Army lifecycle and movement coordination
+# - ArmyComposition: Unit composition and combat calculations
+# - GameParameters: Movement points and army defaults
+# - Region containers: Positioning and visual display
+# ============================================================================
+
 # Army properties - all data here
 var player_id: int = 1
 var movement_points: int = GameParameters.MOVEMENT_POINTS_PER_TURN

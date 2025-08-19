@@ -1,48 +1,113 @@
 extends Node
 class_name GameManager
 
+# ============================================================================
+# GAME MANAGER
+# ============================================================================
+# 
+# Purpose: Central game state coordination and high-level game flow management
+# 
+# Core Responsibilities:
+# - Game state management (turns, players, game modes)
+# - Manager initialization and dependency injection
+# - High-level game flow coordination (castle placement, conquest)
+# - Turn management and resource processing
+# 
+# Required Functions:
+# - next_turn(): Process turn advancement and updates
+# - initialize_managers(): Set up all game systems
+# - handle_castle_placement(): Coordinate castle placement flow
+# - get/set game state: Access to current turn, player, mode
+# 
+# Integration Points:
+# - PlayerManager: Resource and player state management
+# - All other managers: Initialization and coordination
+# - UI systems: Game state updates and notifications
+# ============================================================================
+
 # Game state
 var current_turn: int = 1
 var current_player: int = 1
 var total_players: int = 4
 
-# Battle animation timing
-# Battle timing now managed in GameParameters.gd
+# Game mode state
+var castle_placing_mode: bool = true
 
 # Player management
 var player_manager: PlayerManager
+
+# Manager references
+var _region_manager: RegionManager
+var _army_manager: ArmyManager
+var _battle_manager: BattleManager
+var _visual_manager: VisualManager
+var _ui_manager: UIManager
+
+# Modal references  
+var _battle_modal: BattleModal
+var _sound_manager: SoundManager
 
 # References to other managers
 var click_manager: Node = null
 
 func _ready():
-	# Find the click manager first (needed for RegionManager)
-	click_manager = get_node_or_null("../ClickManager")
-	if click_manager == null:
-		push_error("[GameManager] CRITICAL: ClickManager not found - game cannot function")
-		return
-	
-	# Wait for ClickManager to initialize RegionManager
-	await get_tree().process_frame
-	
-	# Get RegionManager and MapGenerator - these are required components
-	var region_manager: RegionManager = null
-	var map_generator: MapGenerator = null
-	
-	if click_manager.has_method("get_region_manager"):
-		region_manager = click_manager.get_region_manager()
-	
-	if region_manager == null:
-		push_error("[GameManager] CRITICAL: RegionManager not available - resource system cannot function")
-		return
-	
-	map_generator = get_node_or_null("../Map") as MapGenerator
+	# Initialize all game systems
+	initialize_managers()
+
+func initialize_managers():
+	"""Initialize all game managers and establish dependencies"""
+	# Get core components - these are required
+	var map_generator: MapGenerator = get_node_or_null("../Map") as MapGenerator
 	if map_generator == null:
 		push_error("[GameManager] CRITICAL: MapGenerator not found - resource system cannot function")  
 		return
 	
+	# Initialize core managers directly
+	_region_manager = RegionManager.new(map_generator)
+	if _region_manager == null:
+		push_error("[GameManager] CRITICAL: Failed to create RegionManager")
+		return
+		
+	_army_manager = ArmyManager.new(map_generator, _region_manager)
+	if _army_manager == null:
+		push_error("[GameManager] CRITICAL: Failed to create ArmyManager")
+		return
+	
+	# Find the click manager and provide it with manager references
+	click_manager = get_node_or_null("../ClickManager")
+	if click_manager != null:
+		# Provide managers to ClickManager for backward compatibility
+		if click_manager.has_method("set_managers"):
+			click_manager.set_managers(_region_manager, _army_manager)
+	
+	# Get UI components
+	var ui_node = get_node_or_null("../UI")
+	if ui_node != null:
+		_battle_modal = ui_node.get_node_or_null("BattleModal") as BattleModal
+		_ui_manager = ui_node.get_node_or_null("UIManager") as UIManager
+		
+		# Connect UI components to ArmyManager
+		var army_modal = ui_node.get_node_or_null("InfoModal") as InfoModal
+		if army_modal and _army_manager:
+			_army_manager.set_army_modal(army_modal)
+		if _battle_modal and _army_manager:
+			_army_manager.set_battle_modal(_battle_modal)
+	
+	_sound_manager = get_node_or_null("../SoundManager") as SoundManager
+	
+	# Connect sound manager to ArmyManager
+	if _sound_manager and _army_manager:
+		_army_manager.set_sound_manager(_sound_manager)
+	
+	# Initialize specialized managers
+	if _battle_modal != null:
+		_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
+	
+	if _army_manager != null:
+		_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
+	
 	# Initialize player management system with required components
-	player_manager = PlayerManager.new(total_players, region_manager, map_generator)
+	player_manager = PlayerManager.new(total_players, _region_manager, map_generator)
 	
 	# Run battle system test on startup (remove this after testing)
 	BattleSimulator.run_test_battle()
@@ -163,3 +228,76 @@ func charge_player(player_id: int, cost: Dictionary) -> bool:
 	if player_manager == null:
 		return false
 	return player_manager.charge_player(player_id, cost)
+
+# Game state accessors
+func is_castle_placing_mode() -> bool:
+	"""Check if the game is in castle placing mode"""
+	return castle_placing_mode
+
+func set_castle_placing_mode(enabled: bool) -> void:
+	"""Set castle placing mode"""
+	castle_placing_mode = enabled
+
+func get_current_player_id() -> int:
+	"""Get the current active player ID"""
+	return current_player
+
+# Game flow coordination
+func handle_castle_placement(region: Region) -> void:
+	"""Coordinate the complete castle placement flow"""
+	if not castle_placing_mode:
+		return
+		
+	var region_id = region.get_region_id()
+	
+	# Set castle starting position (this will also claim neighboring regions)
+	if _region_manager:
+		_region_manager.set_castle_starting_position(region_id, current_player)
+	
+	# Upgrade castle region and neighboring regions
+	if _region_manager:
+		_region_manager.upgrade_castle_regions(region)
+	
+	# Update region visuals to show ownership
+	if _visual_manager:
+		_visual_manager.update_region_visuals()
+	
+	# Place castle visual
+	if _visual_manager:
+		var regions_node = get_node("../Map/Regions")
+		for child in regions_node.get_children():
+			if child is Region and child.get_region_id() == region_id:
+				_visual_manager.place_castle_visual(child)
+				break
+	
+	# Place army in the same region
+	if _visual_manager:
+		var regions_node = get_node("../Map/Regions")
+		for child in regions_node.get_children():
+			if child is Region and child.get_region_id() == region_id:
+				_visual_manager.place_army_visual(child, current_player)
+				break
+	
+	# End castle placing mode after placing one castle
+	castle_placing_mode = false
+	
+	# Play sound
+	if _sound_manager:
+		_sound_manager.click_sound()
+
+# Manager accessors for external systems
+func get_battle_manager() -> BattleManager:
+	"""Get the BattleManager instance"""
+	return _battle_manager
+
+func get_visual_manager() -> VisualManager:
+	"""Get the VisualManager instance"""
+	return _visual_manager
+
+func get_region_manager() -> RegionManager:
+	"""Get the RegionManager instance"""
+	return _region_manager
+
+func get_army_manager() -> ArmyManager:
+	"""Get the ArmyManager instance"""
+	return _army_manager

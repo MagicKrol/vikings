@@ -1,6 +1,33 @@
 extends RefCounted
 class_name ArmyManager
 
+# ============================================================================
+# ARMY MANAGER
+# ============================================================================
+# 
+# Purpose: Army creation, movement, selection, and lifecycle management
+# 
+# Core Responsibilities:
+# - Army creation and visual placement on regions
+# - Army selection, movement, and pathfinding
+# - Turn-based movement point management and reset
+# - Army lifecycle management (creation, tracking, destruction)
+# - Battle initiation and army coordination
+# 
+# Required Functions:
+# - create_army(): Create and place armies on regions
+# - move_army_to_region(): Handle army movement with validation
+# - reset_all_army_movement_points(): Turn-based movement reset
+# - remove_destroyed_armies(): Clean up defeated armies
+# - select/deselect_army(): Army selection state management
+# 
+# Integration Points:
+# - MapGenerator: Region positioning and scale data
+# - RegionManager: Ownership validation and movement rules
+# - BattleModal: Combat initiation and UI updates
+# - Army: Individual army state management
+# ============================================================================
+
 # Reference to the map generator for region data
 var map_generator: MapGenerator
 

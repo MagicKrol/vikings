@@ -1,6 +1,32 @@
 extends RefCounted
-
 class_name RegionManager
+
+# ============================================================================
+# REGION MANAGER
+# ============================================================================
+# 
+# Purpose: Territory ownership management and region-based operations
+# 
+# Core Responsibilities:
+# - Region ownership tracking and territory claims
+# - Castle starting position management
+# - Region resource generation and management
+# - Region adjacency and graph operations
+# - Region level upgrades and population management
+# 
+# Required Functions:
+# - set_region_ownership(): Manage territory ownership changes
+# - set_castle_starting_position(): Handle castle placement and claims
+# - upgrade_castle_regions(): Level up castle and neighbor regions
+# - generate_region_resources(): Create region-specific resources
+# - get_neighbor_regions(): Region adjacency lookups
+# 
+# Integration Points:
+# - MapGenerator: Region data and adjacency information
+# - GameParameters: Resource generation and population rules
+# - Region: Individual region data management
+# - Player systems: Ownership and resource calculations
+# ============================================================================
 
 # Region ownership: region_id -> player_id
 var region_ownership: Dictionary = {}
@@ -169,9 +195,32 @@ func generate_region_resources(region: Region) -> void:
 		if amount > 0:
 			region.resources.set_resource_amount(resource_type, amount)
 
+func upgrade_castle_regions(castle_region: Region) -> void:
+	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
+	# Upgrade castle region to L3
+	castle_region.set_region_level(RegionLevelEnum.Level.L3)
+	castle_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L3))
+	
+	# Get neighboring regions and upgrade them to L2
+	var neighbor_ids = get_neighbor_regions(castle_region.get_region_id())
+	var regions_node = map_generator.get_node("Regions")
+	for neighbor_id in neighbor_ids:
+		for child in regions_node.get_children():
+			if child is Region and child.get_region_id() == neighbor_id:
+				var neighbor_region = child as Region
+				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
+				neighbor_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L2))
+				break
+
 func _generate_all_region_resources() -> void:
 	"""Generate resources for all regions when the RegionManager is initialized"""
 	if map_generator == null:
+		return
+	
+	# Get all region containers from the map generator
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		print("[RegionManager] Warning: No Regions node found in map generator")
 		return
 	
 	# Generate resources for each region
@@ -180,4 +229,5 @@ func _generate_all_region_resources() -> void:
 		if child is Region:
 			generate_region_resources(child)
 			regions_generated += 1
-
+	
+	print("[RegionManager] Generated resources for ", regions_generated, " regions")

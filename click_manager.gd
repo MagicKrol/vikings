@@ -1,7 +1,30 @@
 extends Node
+class_name ClickManager
 
-# Handles mouse clicks on non-ocean regions.
-# On left-click: detect which land region polygon was clicked, and place castle if in castle placing mode.
+# ============================================================================
+# CLICK MANAGER
+# ============================================================================
+# 
+# Purpose: Focused input handling and click event coordination
+# 
+# Core Responsibilities:
+# - Mouse input event processing and coordinate conversion
+# - Region hit detection and polygon intersection testing
+# - Click event delegation to appropriate game systems
+# - Basic input validation and region accessibility checks
+# 
+# Required Functions:
+# - _unhandled_input(): Process mouse and keyboard input events
+# - _on_left_click(): Coordinate conversion and region detection
+# - _handle_region_click(): Delegate clicks to GameManager or other systems
+# - _point_in_polygon(): Geometric intersection testing
+# 
+# Integration Points:
+# - GameManager: High-level game flow coordination and state management
+# - UIManager: Modal state checking and UI interaction coordination  
+# - Region: Basic region data access and mountain checking
+# - Input system: Godot input event processing
+# ============================================================================
 
 
 
@@ -13,38 +36,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			if _army_manager != null:
 				_army_manager.deselect_army()
 
+# Core system references
 @onready var _map_script: MapGenerator = get_node_or_null("../Map") as MapGenerator
+@onready var _ui_manager: UIManager = get_node_or_null("../UI/UIManager") as UIManager
+@onready var _game_manager: GameManager = get_node_or_null("../GameManager") as GameManager
+
+# Legacy manager references for backward compatibility during transition
 @onready var _region_manager: RegionManager
 @onready var _army_manager: ArmyManager
-@onready var _army_modal: InfoModal = get_node_or_null("../UI/InfoModal") as InfoModal
-@onready var _battle_modal: BattleModal = get_node_or_null("../UI/BattleModal") as BattleModal
-@onready var _select_modal: SelectModal = get_node_or_null("../UI/SelectModal") as SelectModal
-@onready var _region_modal: RegionModal = get_node_or_null("../UI/RegionModal") as RegionModal
-@onready var _region_select_modal: RegionSelectModal = get_node_or_null("../UI/RegionSelectModal") as RegionSelectModal
-@onready var _army_select_modal: ArmySelectModal = get_node_or_null("../UI/ArmySelectModal") as ArmySelectModal
-@onready var _ui_manager: UIManager = get_node_or_null("../UI/UIManager") as UIManager
-@onready var _sound_manager: SoundManager = get_node_or_null("../SoundManager") as SoundManager
 
 func _ready():
-	# Initialize managers early so they're available during map generation
-	if _map_script:
-		if _region_manager == null:
-			_region_manager = RegionManager.new(_map_script)
-		
-		if _army_manager == null and _region_manager != null:
-			_army_manager = ArmyManager.new(_map_script, _region_manager)
-			
-		# Connect army modal to army manager
-		if _army_manager != null and _army_modal != null:
-			_army_manager.set_army_modal(_army_modal)
-		
-		# Connect battle modal to army manager
-		if _army_manager != null and _battle_modal != null:
-			_army_manager.set_battle_modal(_battle_modal)
-		
-		# Connect sound manager to army manager
-		if _army_manager != null and _sound_manager != null:
-			_army_manager.set_sound_manager(_sound_manager)
+	# Managers will be provided by GameManager via set_managers()
+	pass
+
+func set_managers(region_manager: RegionManager, army_manager: ArmyManager) -> void:
+	"""Set manager references from GameManager"""
+	_region_manager = region_manager
+	_army_manager = army_manager
 
 func get_region_manager() -> RegionManager:
 	"""Get the RegionManager instance"""
@@ -54,19 +62,13 @@ func get_army_manager() -> ArmyManager:
 	"""Get the ArmyManager instance"""
 	return _army_manager
 
-# Castle placing mode
-var castle_placing_mode: bool = true
-var current_player_id: int = 1
-
-# Conquest tracking
-var pending_conquest_army: Army = null
-var pending_conquest_region: Region = null
+# Minimal state for input handling (game state now managed by GameManager)
 
 
 func _on_left_click(screen_pos: Vector2) -> void:
 	# Check if any modal is active and close them first
 	if _ui_manager and _ui_manager.is_modal_active:
-		_close_active_modals()
+		_ui_manager.close_all_active_modals()
 		return
 	
 	# Get the camera and convert screen to world coordinates properly
@@ -130,10 +132,14 @@ func _handle_region_click(region_container: Node) -> void:
 		if _is_mountain_region(region):
 			return
 	
-	if castle_placing_mode:
-		_handle_castle_placement(region_container)
-	else:
-		_handle_army_selection_and_movement(region_container)
+	# Delegate to GameManager based on game state
+	if _game_manager:
+		if _game_manager.is_castle_placing_mode():
+			_game_manager.handle_castle_placement(region)
+		else:
+			# For now, delegate army handling back to legacy system
+			# TODO: Move to ArmyManager in future refactor
+			_handle_army_selection_and_movement(region_container)
 
 func _is_mountain_region(region: Region) -> bool:
 	"""Check if a region is a mountain region (unclickable)"""
@@ -142,40 +148,6 @@ func _is_mountain_region(region: Region) -> bool:
 	var biome_name = region.get_biome().to_lower()
 	return biome_name == "mountains"
 
-func _handle_castle_placement(region_container: Node) -> void:
-	# Get region ID from the Region script
-	var region = region_container as Region
-	if region == null:
-		print("[ClickManager] Error: Region container is not a Region: ", region_container.name)
-		return
-	
-	var region_id = region.get_region_id()
-	if region_id <= 0:
-		print("[ClickManager] Error: Invalid region ID: ", region_id)
-		return
-	
-	# Set castle starting position (this will also claim neighboring regions)
-	_region_manager.set_castle_starting_position(region_id, current_player_id)
-	
-	# Upgrade castle region and neighboring regions
-	_upgrade_castle_regions(region)
-	
-	# Update region visuals to show ownership
-	_region_manager.update_region_visuals()
-	
-	# Place castle visual
-	_place_castle_visual(region_container)
-	
-	# Place army in the same region
-	_place_army_visual(region_container, current_player_id)
-	
-	
-	# End castle placing mode after placing one castle
-	castle_placing_mode = false
-	
-	# Play click sound for castle placement
-	if _sound_manager:
-		_sound_manager.click_sound()
 
 func _handle_army_selection_and_movement(region_container: Node) -> void:
 	# Get all armies in this region
@@ -192,28 +164,24 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			var region_owner = _region_manager.get_region_owner(region_id)
 			
 			# Check if this is a conquest scenario (player army in unowned region)
+			var current_player_id = _game_manager.get_current_player_id() if _game_manager else 1
 			var player_army_in_region = _army_manager.get_army_in_region(region_container, current_player_id)
 			if player_army_in_region != null and region_owner != current_player_id:
-				# Player has army in unowned region - show battle modal for conquest
-				if _battle_modal != null:
-					# Store conquest context for when battle modal closes
-					pending_conquest_army = player_army_in_region
-					pending_conquest_region = region
+				# Player has army in unowned region - delegate to BattleManager
+				var battle_manager = _game_manager.get_battle_manager()
+				if battle_manager:
+					battle_manager.set_pending_conquest(player_army_in_region, region)
 					
-					print("[ClickManager] Storing conquest context: Army ", player_army_in_region.name, " vs Region ", region.get_region_name())
-					
-					_battle_modal.show_battle(player_army_in_region, region)
-					# Play click sound for opening modal
-					if _sound_manager:
-						_sound_manager.click_sound()
+					# Show battle modal
+					var battle_modal = get_node_or_null("../UI/BattleModal") as BattleModal
+					if battle_modal:
+						battle_modal.show_battle(player_army_in_region, region)
 				return
 			
 			# Not a conquest scenario - show SelectModal normally
-			if _select_modal != null:
-				_select_modal.show_selection(region, armies_in_region)
-				# Play click sound for opening modal
-				if _sound_manager:
-					_sound_manager.click_sound()
+			var select_modal = get_node_or_null("../UI/SelectModal") as SelectModal
+			if select_modal:
+				select_modal.show_selection(region, armies_in_region)
 		return
 	
 	# If we have a selected army, try to move it to this region
@@ -238,195 +206,30 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 	if region != null:
 		var region_id = region.get_region_id()
 		var region_owner = _region_manager.get_region_owner(region_id)
+		var current_player_id = _game_manager.get_current_player_id() if _game_manager else 1
 		
 		# If region is owned by current player, open RegionSelectModal
-		if region_owner == current_player_id and _region_select_modal != null:
-			_region_select_modal.show_region_actions(region)
-			# Play click sound for opening modal
-			if _sound_manager:
-				_sound_manager.click_sound()
+		if region_owner == current_player_id:
+			var region_select_modal = get_node_or_null("../UI/RegionSelectModal") as RegionSelectModal
+			if region_select_modal:
+				region_select_modal.show_region_actions(region)
 		# Otherwise, open RegionModal for unowned/enemy regions
-		elif _region_modal != null:
-			_region_modal.show_region_info(region)
-			# Play click sound for opening modal
-			if _sound_manager:
-				_sound_manager.click_sound()
+		else:
+			var region_modal = get_node_or_null("../UI/RegionModal") as RegionModal
+			if region_modal:
+				region_modal.show_region_info(region)
 
-func _place_castle_visual(region_container: Node) -> void:
-	# Remove any existing castle
-	var existing_castle = region_container.get_node_or_null("Castle")
-	if existing_castle != null:
-		existing_castle.queue_free()
-	
-	# Create castle sprite
-	var castle := Sprite2D.new()
-	castle.name = "Castle"
-	castle.texture = load("res://images/icons/castle.png")
-	if castle.texture == null:
-		print("[ClickManager] Error: Could not load castle texture")
-		return
-	
-	# Position castle at region center (moved left and up by 5px)
-	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
-	if polygon != null:
-		var center_meta = polygon.get_meta("center")
-		if center_meta != null:
-			var center := center_meta as Vector2
-			castle.position = center + Vector2(-5, -5)  # Move left and up by 5px
-	
-	# Scale castle appropriately - 20% smaller than biome icons
-	var castle_scale := 0.12  # 0.15 * 0.8 = 0.12 (20% smaller)
-	if _map_script != null:
-		castle_scale = castle_scale * _map_script.polygon_scale
-	castle.scale = Vector2(castle_scale, castle_scale)
-	
-	# Set z-index to appear above other elements
-	castle.z_index = 100
-	
-	# Add castle to region container
-	region_container.add_child(castle)
-
-func _place_army_visual(region_container: Node, player_id: int) -> void:
-	"""Place an army in the specified region using ArmyManager"""
-	if _army_manager != null:
-		_army_manager.create_army(region_container, player_id)
-	else:
-		print("[ClickManager] Error: ArmyManager not available")
-
+# Legacy functions kept for compatibility - these now delegate to appropriate managers
 func reset_army_moves() -> void:
-	"""Reset all army movement points for a new turn"""
+	"""Reset all army movement points for a new turn - delegates to ArmyManager"""
 	if _army_manager != null:
 		_army_manager.reset_all_army_movement_points()
 	else:
 		print("[ClickManager] Error: ArmyManager not available")
 
-func complete_conquest(army: Army, region: Region) -> void:
-	"""Complete the conquest of a region after battle"""
-	if army == null or region == null:
-		return
-	
-	var region_id = region.get_region_id()
-	var army_player_id = army.get_player_id()
-	
-	# Change ownership to the conquering player
-	_region_manager.set_region_ownership(region_id, army_player_id)
-	
-	print("[ClickManager] Conquest completed: Region ", region.get_region_name(), " now owned by player ", army_player_id)
-	
-	# Play conquest sound
-	if _sound_manager:
-		_sound_manager.click_sound()
-
+# Legacy functions now handled by BattleManager - kept for compatibility during transition
 func on_battle_modal_closed() -> void:
-	"""Handle battle modal closure and complete conquest if needed"""
-	print("[ClickManager] Battle modal closed, checking for pending conquest...")
-	
-	if pending_conquest_army != null and pending_conquest_region != null:
-		print("[ClickManager] Found pending conquest, applying battle losses and completing...")
-		
-		# Apply battle losses from the battle modal
-		_apply_battle_losses()
-		
-		# Handle battle outcome
-		if _should_complete_conquest():
-			# Attackers won - complete the conquest
-			complete_conquest(pending_conquest_army, pending_conquest_region)
-		else:
-			# Attackers lost - remove the army from the map
-			_handle_battle_defeat(pending_conquest_army)
-		
-		# Clear pending conquest
-		pending_conquest_army = null
-		pending_conquest_region = null
-	else:
-		print("[ClickManager] No pending conquest found")
-
-func _apply_battle_losses() -> void:
-	"""Apply battle losses from the battle modal to armies and region"""
-	if _battle_modal == null or _battle_modal.battle_report == null:
-		print("[ClickManager] No battle report available")
-		return
-	
-	var battle_report = _battle_modal.battle_report
-	var simulator = BattleSimulator.new()
-	
-	# Apply losses to attacking armies
-	var attacking_armies = [pending_conquest_army]
-	var defending_armies = []  # No defending armies for now, just region garrison
-	
-	simulator.apply_battle_losses_to_armies(attacking_armies, defending_armies, battle_report)
-	
-	# Apply losses to region garrison
-	if pending_conquest_region != null:
-		var garrison = pending_conquest_region.get_garrison()
-		if garrison != null and not battle_report.defender_losses.is_empty():
-			for unit_type in battle_report.defender_losses:
-				var losses = battle_report.defender_losses[unit_type]
-				garrison.remove_soldiers(unit_type, losses)
-	
-	print("[ClickManager] Applied battle losses - Attacker losses: ", battle_report.attacker_losses, ", Defender losses: ", battle_report.defender_losses)
-	
-	# Remove any armies that were completely destroyed
-	if _army_manager != null:
-		_army_manager.remove_destroyed_armies()
-
-func _should_complete_conquest() -> bool:
-	"""Check if conquest should be completed based on battle results"""
-	if _battle_modal == null or _battle_modal.battle_report == null:
-		return false
-	
-	var battle_report = _battle_modal.battle_report
-	return battle_report.winner == "Attackers"
-
-func _handle_battle_defeat(defeated_army: Army) -> void:
-	"""Handle when an army is defeated in battle"""
-	if defeated_army == null or not is_instance_valid(defeated_army):
-		return
-	
-	print("[ClickManager] Army ", defeated_army.name, " was defeated and will be removed from the map")
-	
-	# Get the army's parent (region container)
-	var parent_region = defeated_army.get_parent()
-	
-	# Remove the army from the scene
-	if parent_region != null:
-		parent_region.remove_child(defeated_army)
-	
-	# Remove the army from army manager tracking
-	if _army_manager != null:
-		_army_manager.remove_army_from_tracking(defeated_army)
-	
-	# Free the army node
-	defeated_army.queue_free()
-	
-	print("[ClickManager] Defeated army removed from map")
-
-func _upgrade_castle_regions(castle_region: Region) -> void:
-	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
-	# Upgrade castle region to L3
-	castle_region.set_region_level(RegionLevelEnum.Level.L3)
-	castle_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L3))
-	
-	# Get neighboring regions and upgrade them to L2
-	var neighbor_ids = _region_manager.get_neighbor_regions(castle_region.get_region_id())
-	var regions_node = _map_script.get_node("Regions")
-	for neighbor_id in neighbor_ids:
-		for child in regions_node.get_children():
-			if child is Region and child.get_region_id() == neighbor_id:
-				var neighbor_region = child as Region
-				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
-				neighbor_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L2))
-				break
-
-func _close_active_modals() -> void:
-	"""Close any active modals"""
-	if _select_modal and _select_modal.visible:
-		_select_modal.hide_modal()
-	if _army_select_modal and _army_select_modal.visible:
-		_army_select_modal.hide_modal()
-	if _region_select_modal and _region_select_modal.visible:
-		_region_select_modal.hide_modal()
-	if _region_modal and _region_modal.visible:
-		_region_modal.hide_modal()
-	if _battle_modal and _battle_modal.visible:
-		_battle_modal.hide_modal()
+	"""Delegate battle modal closure to BattleManager"""
+	var battle_manager = _game_manager.get_battle_manager() if _game_manager else null
+	if battle_manager:
+		battle_manager.handle_battle_modal_closed()

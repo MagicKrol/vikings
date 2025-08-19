@@ -1,6 +1,33 @@
 extends Node2D
 class_name Region
 
+# ============================================================================
+# REGION
+# ============================================================================
+# 
+# Purpose: Individual region data container and territory management
+# 
+# Core Responsibilities:
+# - Region properties storage (ID, name, biome, type, level, population)
+# - Garrison and resource composition management
+# - Movement cost and passability determination based on terrain
+# - Population tracking and level-based management
+# - Integration with regional systems and map display
+# 
+# Required Functions:
+# - setup_region(): Initialize region from map generator data
+# - get/set_region_level(): Administrative level management
+# - garrison management: add/remove/get garrison composition
+# - resource management: access to region resource composition
+# - population management: get/set population values
+# 
+# Integration Points:
+# - RegionManager: Territory ownership and resource generation
+# - MapGenerator: Region initialization and positioning data
+# - GameParameters: Population and garrison generation rules
+# - Enums: Region type, level, and resource type definitions
+# ============================================================================
+
 # Region properties - all data here
 var region_id: int = -1
 var region_name: String = ""

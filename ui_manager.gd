@@ -1,6 +1,31 @@
 extends Control
 class_name UIManager
 
+# ============================================================================
+# UI MANAGER
+# ============================================================================
+# 
+# Purpose: Centralized UI state management and modal coordination
+# 
+# Core Responsibilities:
+# - Modal state management and active modal tracking
+# - Tooltip display coordination for region hover events
+# - UI input handling and mouse interaction coordination
+# - Modal visibility coordination and conflict resolution
+# 
+# Required Functions:
+# - set_modal_active(): Control modal state and tooltip interactions
+# - close_all_active_modals(): Centralized modal closure
+# - handle_mouse_motion(): Region tooltip display management
+# - coordinate_modal_display(): Manage modal conflicts and priorities
+# 
+# Integration Points:
+# - All modal components: State coordination and conflict resolution
+# - RegionTooltip: Hover state and display management
+# - MapGenerator: Region interaction and coordinate conversion
+# - Input system: Mouse event handling and processing
+# ============================================================================
+
 var region_tooltip: RegionTooltip
 var battle_modal: BattleModal
 var map_generator: MapGenerator
@@ -8,6 +33,12 @@ var last_hovered_region: Region = null
 
 # Modal mode system
 var is_modal_active: bool = false
+
+# Modal references for centralized management
+var _select_modal: SelectModal
+var _army_select_modal: ArmySelectModal
+var _region_select_modal: RegionSelectModal
+var _region_modal: RegionModal
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -20,6 +51,12 @@ func _ready():
 	
 	# BattleModal is sibling under UI
 	battle_modal = get_parent().get_node_or_null("BattleModal") as BattleModal
+	
+	# Get modal references
+	_select_modal = get_parent().get_node_or_null("SelectModal") as SelectModal
+	_army_select_modal = get_parent().get_node_or_null("ArmySelectModal") as ArmySelectModal
+	_region_select_modal = get_parent().get_node_or_null("RegionSelectModal") as RegionSelectModal
+	_region_modal = get_parent().get_node_or_null("RegionModal") as RegionModal
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node_or_null("Map") as MapGenerator
@@ -128,3 +165,24 @@ func _is_point_in_region(point: Vector2, region: Region) -> bool:
 
 	
 	return is_inside
+
+func close_all_active_modals() -> void:
+	"""Close any active modals"""
+	if _select_modal and _select_modal.visible:
+		_select_modal.hide_modal()
+	if _army_select_modal and _army_select_modal.visible:
+		_army_select_modal.hide_modal()
+	if _region_select_modal and _region_select_modal.visible:
+		_region_select_modal.hide_modal()
+	if _region_modal and _region_modal.visible:
+		_region_modal.hide_modal()
+	if battle_modal and battle_modal.visible:
+		battle_modal.hide_modal()
+
+func is_any_modal_visible() -> bool:
+	"""Check if any modal is currently visible"""
+	var modals = [_select_modal, _army_select_modal, _region_select_modal, _region_modal, battle_modal]
+	for modal in modals:
+		if modal and modal.visible:
+			return true
+	return false
