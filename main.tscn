@@ -521,10 +521,10 @@ layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -700.0
+offset_left = -1302.0
 offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 60.0
+offset_right = 48.0
+offset_bottom = 90.0
 grow_horizontal = 0
 script = ExtResource("23_player_status")
 
@@ -550,10 +550,10 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GoldLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("18_standard_theme")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 30
 text = "Gold: 1 (+10)"
 vertical_alignment = 1
 
@@ -562,10 +562,10 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="FoodLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
-custom_minimum_size = Vector2(85, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("18_standard_theme")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 30
 text = "Food: 1 (+5)"
 vertical_alignment = 1
 
@@ -574,10 +574,10 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="WoodLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
-custom_minimum_size = Vector2(85, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("18_standard_theme")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 30
 text = "Wood: 1 (+3)"
 vertical_alignment = 1
 
@@ -586,10 +586,10 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="StoneLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("18_standard_theme")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 30
 text = "Stone: 1 (+2)"
 vertical_alignment = 1
 
@@ -598,10 +598,10 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="IronLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("18_standard_theme")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 30
 text = "Iron: 1 (+2)"
 vertical_alignment = 1
 
