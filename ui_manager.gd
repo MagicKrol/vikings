@@ -39,6 +39,7 @@ var _select_modal: SelectModal
 var _army_select_modal: ArmySelectModal
 var _region_select_modal: RegionSelectModal
 var _region_modal: RegionModal
+var _player_status_modal: PlayerStatusModal
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -47,26 +48,21 @@ func _ready():
 	
 	# Get references with correct paths
 	# RegionTooltip is sibling under UI
-	region_tooltip = get_parent().get_node_or_null("RegionTooltip") as RegionTooltip
+	region_tooltip = get_parent().get_node("RegionTooltip") as RegionTooltip
 	
 	# BattleModal is sibling under UI
-	battle_modal = get_parent().get_node_or_null("BattleModal") as BattleModal
+	battle_modal = get_parent().get_node("BattleModal") as BattleModal
 	
 	# Get modal references
-	_select_modal = get_parent().get_node_or_null("SelectModal") as SelectModal
-	_army_select_modal = get_parent().get_node_or_null("ArmySelectModal") as ArmySelectModal
-	_region_select_modal = get_parent().get_node_or_null("RegionSelectModal") as RegionSelectModal
-	_region_modal = get_parent().get_node_or_null("RegionModal") as RegionModal
+	_select_modal = get_parent().get_node("SelectModal") as SelectModal
+	_army_select_modal = get_parent().get_node("ArmySelectModal") as ArmySelectModal
+	_region_select_modal = get_parent().get_node("RegionSelectModal") as RegionSelectModal
+	_region_modal = get_parent().get_node("RegionModal") as RegionModal
+	_player_status_modal = get_parent().get_node("PlayerStatusModal") as PlayerStatusModal
 	
 	# Map is under root (UI parent's parent)
-	map_generator = get_parent().get_parent().get_node_or_null("Map") as MapGenerator
+	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
 	
-	if region_tooltip == null:
-		print("[UIManager] Error: RegionTooltip not found")
-	if battle_modal == null:
-		print("[UIManager] Error: BattleModal not found")
-	if map_generator == null:
-		print("[UIManager] Error: MapGenerator not found")
 
 func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
@@ -112,14 +108,9 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 func _convert_screen_to_world_pos(screen_pos: Vector2) -> Vector2:
 	"""Convert screen coordinates to world coordinates using same method as click manager"""
 	# Get the camera and convert screen to world coordinates properly
-	var camera := get_parent().get_parent().get_node_or_null("Camera2D") as Camera2D
-	var world_pos: Vector2
-	if camera != null:
-		# Use camera's get_global_mouse_position for proper coordinate conversion
-		world_pos = camera.get_global_mouse_position()
-	else:
-		# Fallback to manual conversion if no camera found
-		world_pos = get_viewport().canvas_transform.affine_inverse() * screen_pos
+	var camera := get_parent().get_parent().get_node("Camera2D") as Camera2D
+	# Use camera's get_global_mouse_position for proper coordinate conversion
+	var world_pos = camera.get_global_mouse_position()
 	
 	return world_pos
 
@@ -129,10 +120,7 @@ func _get_region_under_mouse(mouse_pos: Vector2) -> Region:
 		return null
 	
 	# Get the regions container
-	var regions_node = map_generator.get_node_or_null("Regions")
-	if not regions_node:
-
-		return null
+	var regions_node = map_generator.get_node("Regions")
 	
 	# Check each region container
 	for child in regions_node.get_children():
@@ -186,3 +174,7 @@ func is_any_modal_visible() -> bool:
 		if modal and modal.visible:
 			return true
 	return false
+
+func get_player_status_modal() -> PlayerStatusModal:
+	"""Get the PlayerStatusModal instance"""
+	return _player_status_modal

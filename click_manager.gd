@@ -37,9 +37,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				_army_manager.deselect_army()
 
 # Core system references
-@onready var _map_script: MapGenerator = get_node_or_null("../Map") as MapGenerator
-@onready var _ui_manager: UIManager = get_node_or_null("../UI/UIManager") as UIManager
-@onready var _game_manager: GameManager = get_node_or_null("../GameManager") as GameManager
+@onready var _map_script: MapGenerator = get_node("../Map") as MapGenerator
+@onready var _ui_manager: UIManager = get_node("../UI/UIManager") as UIManager
+@onready var _game_manager: GameManager = get_node("../GameManager") as GameManager
 
 # Legacy manager references for backward compatibility during transition
 @onready var _region_manager: RegionManager
@@ -72,33 +72,19 @@ func _on_left_click(screen_pos: Vector2) -> void:
 		return
 	
 	# Get the camera and convert screen to world coordinates properly
-	var camera := get_node_or_null("../Camera2D") as Camera2D
-	var world_pos: Vector2
-	if camera != null:
-		# Use camera's get_global_mouse_position for proper coordinate conversion
-		world_pos = camera.get_global_mouse_position()
-	else:
-		# Fallback to manual conversion if no camera found
-		world_pos = get_viewport().canvas_transform.affine_inverse() * screen_pos
+	var camera := get_node("../Camera2D") as Camera2D
+	# Use camera's get_global_mouse_position for proper coordinate conversion
+	var world_pos = camera.get_global_mouse_position()
 		
 	# Search within Map/regions for Region containers
-	var map_root := get_node_or_null("../Map") as Node
-	if map_root == null:
-		map_root = get_node_or_null("Map")
-	if map_root == null:
-		print("[ClickManager] Error: Map node not found")
-		return
+	var map_root := get_node("../Map") as Node
 	
 	
 	var map_children = []
 	for child in map_root.get_children():
 		map_children.append(child.name)
 	
-	var regions_node := map_root.get_node_or_null("Regions") as Node
-	if regions_node == null:
-		print("[ClickManager] Error: Regions node not found under Map")
-
-		return
+	var regions_node := map_root.get_node("Regions") as Node
 	
 	var region_clicked = false
 	
@@ -173,15 +159,13 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 					battle_manager.set_pending_conquest(player_army_in_region, region)
 					
 					# Show battle modal
-					var battle_modal = get_node_or_null("../UI/BattleModal") as BattleModal
-					if battle_modal:
-						battle_modal.show_battle(player_army_in_region, region)
+					var battle_modal = get_node("../UI/BattleModal") as BattleModal
+					battle_modal.show_battle(player_army_in_region, region)
 				return
 			
 			# Not a conquest scenario - show SelectModal normally
-			var select_modal = get_node_or_null("../UI/SelectModal") as SelectModal
-			if select_modal:
-				select_modal.show_selection(region, armies_in_region)
+			var select_modal = get_node("../UI/SelectModal") as SelectModal
+			select_modal.show_selection(region, armies_in_region)
 		return
 	
 	# If we have a selected army, try to move it to this region
@@ -210,14 +194,12 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		
 		# If region is owned by current player, open RegionSelectModal
 		if region_owner == current_player_id:
-			var region_select_modal = get_node_or_null("../UI/RegionSelectModal") as RegionSelectModal
-			if region_select_modal:
-				region_select_modal.show_region_actions(region)
+			var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
+			region_select_modal.show_region_actions(region)
 		# Otherwise, open RegionModal for unowned/enemy regions
 		else:
-			var region_modal = get_node_or_null("../UI/RegionModal") as RegionModal
-			if region_modal:
-				region_modal.show_region_info(region)
+			var region_modal = get_node("../UI/RegionModal") as RegionModal
+			region_modal.show_region_info(region)
 
 # Legacy functions kept for compatibility - these now delegate to appropriate managers
 func reset_army_moves() -> void:

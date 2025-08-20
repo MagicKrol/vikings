@@ -68,31 +68,18 @@ func generate_map() -> void:
 
 # -------------------- Map container helpers --------------------
 func _ensure_map_nodes() -> void:
-	# Create/ensure the map structure: this node is already the Map root
-	# Create children: Regions, Ocean, Frame
+	# Get references to static map container nodes defined in main.tscn
 	if map_root == null:
 		map_root = self  # This node is the Map root
 	
 	if map_node_regions == null:
-		map_node_regions = get_node_or_null("Regions") as Node2D
-		if map_node_regions == null:
-			map_node_regions = Node2D.new()
-			map_node_regions.name = "Regions"
-			add_child(map_node_regions)
+		map_node_regions = get_node("Regions") as Node2D
 	
 	if map_node_ocean == null:
-		map_node_ocean = get_node_or_null("Ocean") as Node2D
-		if map_node_ocean == null:
-			map_node_ocean = Node2D.new()
-			map_node_ocean.name = "Ocean"
-			add_child(map_node_ocean)
+		map_node_ocean = get_node("Ocean") as Node2D
 	
 	if map_node_frame == null:
-		map_node_frame = get_node_or_null("Frame") as Node2D
-		if map_node_frame == null:
-			map_node_frame = Node2D.new()
-			map_node_frame.name = "Frame"
-			add_child(map_node_frame)
+		map_node_frame = get_node("Frame") as Node2D
 
 func _clear_children(node: Node) -> void:
 	if node == null:
@@ -1308,9 +1295,7 @@ func _assign_region_name_if_available(region: Region) -> void:
 func regenerate_borders() -> void:
 	"""Regenerate all region borders when ownership changes"""
 	# Clear existing borders
-	var regions_node = get_node_or_null("Regions")
-	if regions_node == null:
-		return
+	var regions_node = get_node("Regions")
 		
 	for region_container in regions_node.get_children():
 		var borders_node = region_container.get_node_or_null("Borders")
@@ -1342,9 +1327,7 @@ func regenerate_borders_for_region(region_id: int) -> void:
 		regions_to_update.append(neighbor_id)
 	
 	# Clear borders for affected regions
-	var regions_node = get_node_or_null("Regions")
-	if regions_node == null:
-		return
+	var regions_node = get_node("Regions")
 	
 	for region_container in regions_node.get_children():
 		if region_container.has_method("get_region_id"):

@@ -4,16 +4,28 @@ class_name SoldierTypeEnum
 # Soldier types for army composition
 enum Type {
 	PEASANTS,
+	SPEARMEN,
+	SWORDSMEN,
 	ARCHERS,
+	CROSSBOWMEN,
+	HORSEMEN,
 	KNIGHTS,
+	MOUNTED_KNIGHTS,
+	ROYAL_GUARD,
 	# Easy to add more types here in the future
 }
 
 # Human-readable names for each soldier type
 const SOLDIER_NAMES = {
 	Type.PEASANTS: "Peasants",
+	Type.SPEARMEN: "Spearmen",
+	Type.SWORDSMEN: "Swordsmen",
 	Type.ARCHERS: "Archers",
+	Type.CROSSBOWMEN: "Crossbowmen",
+	Type.HORSEMEN: "Horsemen",
 	Type.KNIGHTS: "Knights",
+	Type.MOUNTED_KNIGHTS: "Mounted Knights",
+	Type.ROYAL_GUARD: "Royal Guard",
 }
 
 # Combat stats for each soldier type
@@ -32,7 +44,17 @@ static func string_to_type(soldier_name: String) -> Type:
 
 # Get all soldier types as an array
 static func get_all_types() -> Array[Type]:
-	return [Type.PEASANTS, Type.ARCHERS, Type.KNIGHTS]
+	return [
+		Type.PEASANTS,
+		Type.SPEARMEN,
+		Type.SWORDSMEN,
+		Type.ARCHERS,
+		Type.CROSSBOWMEN,
+		Type.HORSEMEN,
+		Type.KNIGHTS,
+		Type.MOUNTED_KNIGHTS,
+		Type.ROYAL_GUARD
+	]
 
 # Get soldier stats for a specific type
 static func get_soldier_stats(soldier_type: Type) -> Dictionary:

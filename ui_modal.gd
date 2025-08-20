@@ -37,15 +37,15 @@ func _ready():
 	offset_bottom = 150
 	
 	# Get references
-	ui_manager = get_node_or_null("../UIManager") as UIManager
-	sound_manager = get_node_or_null("../../SoundManager") as SoundManager
-	close_button = get_node_or_null("CloseButton") as Button
+	ui_manager = get_node("../UIManager") as UIManager
+	sound_manager = get_node("../../SoundManager") as SoundManager
+	close_button = get_node("CloseButton") as Button
 	
 	# Get UI element references
-	army_header = get_node_or_null("ContentContainer/ArmyHeader") as Label
-	movement_label = get_node_or_null("ContentContainer/MovementLabel") as Label
-	morale_label = get_node_or_null("ContentContainer/MoraleLabel") as Label
-	composition_container = get_node_or_null("ContentContainer/CompositionContainer") as VBoxContainer
+	army_header = get_node("ContentContainer/ArmyHeader") as Label
+	movement_label = get_node("ContentContainer/MovementLabel") as Label
+	morale_label = get_node("ContentContainer/MoraleLabel") as Label
+	composition_container = get_node("ContentContainer/CompositionContainer") as VBoxContainer
 	
 	# Set styling for existing labels
 	if army_header:

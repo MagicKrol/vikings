@@ -182,8 +182,8 @@ func move_army_to_region(target_region_container: Node) -> bool:
 
 		return false
 	
-	# Get terrain cost once for the entire function
-	var terrain_cost = get_terrain_cost(target_region_container)
+	# Get terrain cost once for the entire function (with ownership bonus)
+	var terrain_cost = get_terrain_cost(target_region_container, selected_army.get_player_id())
 	
 	# Check if target region already has an army from the same player
 	var existing_army = get_army_in_region(target_region_container, selected_army.get_player_id())
@@ -446,13 +446,13 @@ func can_army_move_to_region(army: Army, region_container: Node) -> bool:
 	if not region.is_passable():
 		return false
 	
-	# Check if army has enough movement points
-	var terrain_cost = region.get_movement_cost()
+	# Check if army has enough movement points (with ownership bonus)
+	var terrain_cost = get_terrain_cost(region_container, army.get_player_id())
 	var current_movement_points = army.get_movement_points()
 	return current_movement_points >= terrain_cost
 
-func get_terrain_cost(region_container: Node) -> int:
-	"""Get the movement cost for a region based on its terrain type"""
+func get_terrain_cost(region_container: Node, player_id: int = -1) -> int:
+	"""Get the movement cost for a region based on its terrain type and ownership"""
 	if region_container == null:
 		return -1  # Return impassable for safety
 	
@@ -461,7 +461,21 @@ func get_terrain_cost(region_container: Node) -> int:
 	if region == null:
 		return -1  # Return impassable for safety
 	
-	return region.get_movement_cost()
+	var base_cost = region.get_movement_cost()
+	
+	# If base cost is -1 (impassable), don't modify it
+	if base_cost == -1:
+		return -1
+	
+	# Apply ownership bonus: reduce cost by 1 for owned territories (minimum cost of 1)
+	if player_id != -1 and region_manager != null:
+		var region_id = region.get_region_id()
+		var region_owner = region_manager.get_region_owner(region_id)
+		if region_owner == player_id:
+			# Reduce movement cost by 1 for owned territory, minimum cost of 1
+			return max(1, base_cost - 1)
+	
+	return base_cost
 
 func _validate_movement_prerequisites(target_region_container: Node) -> bool:
 	"""Validate that movement prerequisites are met. Returns true if valid."""

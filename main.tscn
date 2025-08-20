@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=22 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -17,6 +17,7 @@
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="18_standard_theme"]
 [ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="19_header_theme"]
 [ext_resource type="Script" path="res://army_select_modal.gd" id="20_army_select"]
+[ext_resource type="Theme" path="res://themes/subheader_text_theme.tres" id="20_subheader_theme"]
 [ext_resource type="Script" path="res://info_modal.gd" id="21_info_modal"]
 [ext_resource type="Script" path="res://region_select_modal.gd" id="22_region_select"]
 [ext_resource type="Script" path="res://player_status_modal.gd" id="23_player_status"]
@@ -26,6 +27,12 @@ script = ExtResource("5_place")
 
 [node name="Map" type="Node2D" parent="."]
 script = ExtResource("1_m7t5v")
+
+[node name="Regions" type="Node2D" parent="Map"]
+
+[node name="Ocean" type="Node2D" parent="Map"]
+
+[node name="Frame" type="Node2D" parent="Map"]
 
 [node name="Background" type="Sprite2D" parent="."]
 visible = false
@@ -427,17 +434,16 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="BattleModal" type="Control" parent="UI"]
-visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -250.0
+offset_left = -400.0
 offset_top = -200.0
-offset_right = 250.0
-offset_bottom = 200.0
+offset_right = 400.0
+offset_bottom = 400.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("13_battle_modal")
@@ -451,77 +457,147 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.717647, 0.592157, 0.368627, 1)
 
-[node name="LeftSide" type="VBoxContainer" parent="UI/BattleModal"]
+[node name="BorderMargin" type="MarginContainer" parent="UI/BattleModal"]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.5
-anchor_bottom = 0.85
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ArmyLabel" type="Label" parent="UI/BattleModal/LeftSide"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "Army"
-horizontal_alignment = 1
-
-[node name="ArmyCompositionLabel" type="Label" parent="UI/BattleModal/LeftSide"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "Peasants: 20
-Archers: 0
-Knights: 1"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="RightSide" type="VBoxContainer" parent="UI/BattleModal"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.85
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="RegionLabel" type="Label" parent="UI/BattleModal/RightSide"]
+[node name="MainContainer" type="VBoxContainer" parent="UI/BattleModal/BorderMargin"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "Region 123
-(Region Name)"
-horizontal_alignment = 1
+theme_override_constants/separation = 0
 
-[node name="RegionCompositionLabel" type="Label" parent="UI/BattleModal/RightSide"]
+[node name="TitleContainer" type="Control" parent="UI/BattleModal/BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+
+[node name="BattleTitleLabel" type="Label" parent="UI/BattleModal/BorderMargin/MainContainer/TitleContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("19_header_theme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "Peasants: 15
-Archers: 0
-Knights: 0"
+text = "Battle for Region"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
 
-[node name="OkButton" type="Button" parent="UI/BattleModal"]
+[node name="MainContent" type="HBoxContainer" parent="UI/BattleModal/BorderMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="AttackerColumnMargin" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="AttackerColumn" type="VBoxContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/AttackerColumnMargin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="AttackerHeader" type="Label" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme = ExtResource("20_subheader_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Attacker"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="AttackerEffectiveness" type="Label" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Effectiveness: 80%"
+
+[node name="MarginContainer2" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="AttackerUnitsContainer" type="VBoxContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+
+[node name="DefenderColumnMargin" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="DefenderColumn" type="VBoxContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/DefenderColumnMargin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DefenderHeader" type="Label" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme = ExtResource("20_subheader_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Defender"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="DefenderEffectiveness" type="Label" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Effectiveness: 75%"
+
+[node name="MarginContainer2" type="MarginContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="DefenderUnitsContainer" type="VBoxContainer" parent="UI/BattleModal/BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ButtonContainer" type="Control" parent="UI/BattleModal/BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="UI/BattleModal/BorderMargin/MainContainer/ButtonContainer"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.35
-anchor_top = 0.85
-anchor_right = 0.65
-anchor_bottom = 0.95
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -20.0
+offset_right = 60.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "OK"
+text = "Continue"
 
 [node name="PlayerStatusModal" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -1302.0
+offset_left = -1572.0
 offset_top = 10.0
 offset_right = 48.0
 offset_bottom = 90.0
@@ -548,6 +624,18 @@ offset_right = -10.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="PopulationLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("18_standard_theme")
+theme_override_font_sizes/font_size = 30
+text = "Population: 3433 (+12)"
+vertical_alignment = 1
+
+[node name="PopSeparator" type="Control" parent="UI/PlayerStatusModal/ResourceContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
 
 [node name="GoldLabel" type="Label" parent="UI/PlayerStatusModal/ResourceContainer"]
 custom_minimum_size = Vector2(250, 0)
@@ -609,4 +697,8 @@ vertical_alignment = 1
 
 [node name="Player1" type="Node2D" parent="Players"]
 
-[node name="Armies" type="Node2D" parent="Players/Player1"]
+[node name="Player2" type="Node2D" parent="Players"]
+
+[node name="Player3" type="Node2D" parent="Players"]
+
+[node name="Player4" type="Node2D" parent="Players"]

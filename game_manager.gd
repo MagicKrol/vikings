@@ -57,10 +57,7 @@ func _ready():
 func initialize_managers():
 	"""Initialize all game managers and establish dependencies"""
 	# Get core components - these are required
-	var map_generator: MapGenerator = get_node_or_null("../Map") as MapGenerator
-	if map_generator == null:
-		push_error("[GameManager] CRITICAL: MapGenerator not found - resource system cannot function")  
-		return
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 	
 	# Initialize core managers directly
 	_region_manager = RegionManager.new(map_generator)
@@ -74,37 +71,31 @@ func initialize_managers():
 		return
 	
 	# Find the click manager and provide it with manager references
-	click_manager = get_node_or_null("../ClickManager")
-	if click_manager != null:
-		# Provide managers to ClickManager for backward compatibility
-		if click_manager.has_method("set_managers"):
-			click_manager.set_managers(_region_manager, _army_manager)
+	click_manager = get_node("../ClickManager")
+	# Provide managers to ClickManager for backward compatibility
+	if click_manager.has_method("set_managers"):
+		click_manager.set_managers(_region_manager, _army_manager)
 	
 	# Get UI components
-	var ui_node = get_node_or_null("../UI")
-	if ui_node != null:
-		_battle_modal = ui_node.get_node_or_null("BattleModal") as BattleModal
-		_ui_manager = ui_node.get_node_or_null("UIManager") as UIManager
-		
-		# Connect UI components to ArmyManager
-		var army_modal = ui_node.get_node_or_null("InfoModal") as InfoModal
-		if army_modal and _army_manager:
-			_army_manager.set_army_modal(army_modal)
-		if _battle_modal and _army_manager:
-			_army_manager.set_battle_modal(_battle_modal)
+	var ui_node = get_node("../UI")
+	_battle_modal = ui_node.get_node("BattleModal") as BattleModal
+	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	
-	_sound_manager = get_node_or_null("../SoundManager") as SoundManager
+	# Connect UI components to ArmyManager
+	var army_modal = ui_node.get_node("InfoModal") as InfoModal
+	if _army_manager:
+		_army_manager.set_army_modal(army_modal)
+		_army_manager.set_battle_modal(_battle_modal)
+	
+	_sound_manager = get_node("../SoundManager") as SoundManager
 	
 	# Connect sound manager to ArmyManager
-	if _sound_manager and _army_manager:
+	if _army_manager:
 		_army_manager.set_sound_manager(_sound_manager)
 	
 	# Initialize specialized managers
-	if _battle_modal != null:
-		_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
-	
-	if _army_manager != null:
-		_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
+	_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
+	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
 	# Initialize player management system with required components
 	player_manager = PlayerManager.new(total_players, _region_manager, map_generator)
@@ -166,15 +157,8 @@ func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
 	print("[GameManager] Updating player status display...")
 	
-	var ui_node = get_node_or_null("../UI")
-	if ui_node == null:
-		print("[GameManager] ERROR: UI node not found")
-		return
-	
-	var player_status_modal = ui_node.get_node_or_null("PlayerStatusModal") as PlayerStatusModal
-	if player_status_modal == null:
-		print("[GameManager] ERROR: PlayerStatusModal not found")
-		return
+	var ui_node = get_node("../UI")
+	var player_status_modal = ui_node.get_node("PlayerStatusModal") as PlayerStatusModal
 	
 	print("[GameManager] Calling PlayerStatusModal.refresh_from_game_state()")
 	player_status_modal.refresh_from_game_state()
@@ -280,6 +264,12 @@ func handle_castle_placement(region: Region) -> void:
 	
 	# End castle placing mode after placing one castle
 	castle_placing_mode = false
+	
+	# Show player status modal with current state
+	if _ui_manager:
+		var player_status_modal = _ui_manager.get_player_status_modal()
+		if player_status_modal:
+			player_status_modal.show_and_update()
 	
 	# Play sound
 	if _sound_manager:

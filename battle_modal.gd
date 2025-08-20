@@ -8,18 +8,15 @@ const SHADOW_OFFSET = Vector2(4, 4)
 const SHADOW_COLOR = Color(0, 0, 0, 0.3)
 const BORDER_WIDTH = 4.0
 
-# UI elements - new layout
-var main_container: VBoxContainer
+# UI elements - references to static nodes from main.tscn
 var battle_title_label: Label
-var attacker_column: VBoxContainer  
-var defender_column: VBoxContainer
 var attacker_header: Label
 var defender_header: Label
 var attacker_effectiveness: Label
 var defender_effectiveness: Label
 var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
-var close_button: Button
+var continue_button: Button
 
 # Battle data
 var attacking_army: Army = null
@@ -44,15 +41,25 @@ var ui_manager: UIManager = null
 var click_manager: Node = null
 
 func _ready():
+	# Get references to static UI elements from main.tscn
+	battle_title_label = get_node("BorderMargin/MainContainer/TitleContainer/BattleTitleLabel")
+	attacker_header = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerHeader")
+	defender_header = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderHeader")
+	attacker_effectiveness = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerEffectiveness")
+	defender_effectiveness = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderEffectiveness")
+	attacker_units_container = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerUnitsContainer")
+	defender_units_container = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderUnitsContainer")
+	continue_button = get_node("BorderMargin/MainContainer/ButtonContainer/ContinueButton")
+	
+	# Connect button signal
+	continue_button.pressed.connect(_on_ok_pressed)
+	
 	# Get manager references
-	sound_manager = get_node_or_null("../../SoundManager") as SoundManager
-	ui_manager = get_node_or_null("../UIManager") as UIManager
-	click_manager = get_node_or_null("../../ClickManager")
+	sound_manager = get_node("../../SoundManager") as SoundManager
+	ui_manager = get_node("../UIManager") as UIManager
+	click_manager = get_node("../../ClickManager")
 	
-	# Create UI programmatically first
-	_create_ui()
-	
-	# Then create animated battle simulator
+	# Create animated battle simulator
 	animated_simulator = AnimatedBattleSimulator.new()
 	animated_simulator.round_completed.connect(_on_battle_round_completed)
 	animated_simulator.battle_finished.connect(_on_battle_finished)
@@ -60,140 +67,6 @@ func _ready():
 	
 	# Initially hidden
 	visible = false
-
-func _create_ui():
-	"""Create the UI layout programmatically"""
-	# Clear any existing children from the scene
-	for child in get_children():
-		remove_child(child)
-		child.queue_free()
-	
-	# Main container - 3 rows: title, main content, button
-	# Add margin container to leave space for border and shadow
-	var border_margin = MarginContainer.new()
-	border_margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	border_margin.add_theme_constant_override("margin_left", int(BORDER_WIDTH))
-	border_margin.add_theme_constant_override("margin_right", int(BORDER_WIDTH + SHADOW_OFFSET.x))
-	border_margin.add_theme_constant_override("margin_top", int(BORDER_WIDTH))
-	border_margin.add_theme_constant_override("margin_bottom", int(BORDER_WIDTH + SHADOW_OFFSET.y))
-	add_child(border_margin)
-	
-	main_container = VBoxContainer.new()
-	main_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	main_container.add_theme_constant_override("separation", 0)
-	border_margin.add_child(main_container)
-	
-	# Top row (10% height) - Battle title
-	var title_container = Control.new()
-	title_container.custom_minimum_size = Vector2(0, 60)  # Fixed height for title
-	main_container.add_child(title_container)
-	
-	battle_title_label = Label.new()
-	battle_title_label.text = "Battle for Region"
-	battle_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	battle_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	battle_title_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_apply_header_theme(battle_title_label, 40)  # 32 * 1.25 = 40
-	title_container.add_child(battle_title_label)
-	
-	# Main row (80% height) - Two columns
-	var main_content = HBoxContainer.new()
-	main_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	main_content.add_theme_constant_override("separation", 20)  # Gap between columns
-	main_container.add_child(main_content)
-	
-	# Attacker column (left)
-	_create_attacker_column(main_content)
-	
-	# Defender column (right)  
-	_create_defender_column(main_content)
-	
-	# Bottom row (10% height) - Close button
-	var button_container = Control.new()
-	button_container.custom_minimum_size = Vector2(0, 60)  # Fixed height for button
-	main_container.add_child(button_container)
-	
-	close_button = Button.new()
-	close_button.text = "Continue"
-	close_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	close_button.custom_minimum_size = Vector2(120, 40)
-	close_button.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	close_button.pressed.connect(_on_ok_pressed)
-	button_container.add_child(close_button)
-
-func _create_attacker_column(parent: Control):
-	"""Create the attacker (left) column"""
-	# Column container with margins
-	var column_margin = MarginContainer.new()
-	column_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column_margin.add_theme_constant_override("margin_left", 20)
-	column_margin.add_theme_constant_override("margin_right", 10)
-	column_margin.add_theme_constant_override("margin_top", 10)
-	column_margin.add_theme_constant_override("margin_bottom", 10)
-	parent.add_child(column_margin)
-	
-	attacker_column = VBoxContainer.new()
-	attacker_column.add_theme_constant_override("separation", 5)
-	column_margin.add_child(attacker_column)
-	
-	# Header
-	attacker_header = Label.new()
-	attacker_header.text = "Attacker"
-	attacker_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	attacker_header.add_theme_constant_override("margin_top", 10)
-	attacker_header.add_theme_constant_override("margin_bottom", 10)
-	_apply_header_theme(attacker_header, 30)  # 24 * 1.25 = 30
-	attacker_column.add_child(attacker_header)
-	
-	# Effectiveness
-	attacker_effectiveness = Label.new()
-	attacker_effectiveness.text = "Effectiveness: 80%"
-	attacker_effectiveness.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	attacker_effectiveness.add_theme_constant_override("margin_bottom", 15)
-	_apply_standard_theme(attacker_effectiveness, 22)  # 18 * 1.25 = 22.5, rounded to 22
-	attacker_column.add_child(attacker_effectiveness)
-	
-	# Units container
-	attacker_units_container = VBoxContainer.new()
-	attacker_units_container.add_theme_constant_override("separation", 3)
-	attacker_column.add_child(attacker_units_container)
-
-func _create_defender_column(parent: Control):
-	"""Create the defender (right) column"""
-	# Column container with margins
-	var column_margin = MarginContainer.new()
-	column_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column_margin.add_theme_constant_override("margin_left", 10)
-	column_margin.add_theme_constant_override("margin_right", 20)
-	column_margin.add_theme_constant_override("margin_top", 10)
-	column_margin.add_theme_constant_override("margin_bottom", 10)
-	parent.add_child(column_margin)
-	
-	defender_column = VBoxContainer.new()
-	defender_column.add_theme_constant_override("separation", 5)
-	column_margin.add_child(defender_column)
-	
-	# Header
-	defender_header = Label.new()
-	defender_header.text = "Defender"
-	defender_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	defender_header.add_theme_constant_override("margin_top", 10)
-	defender_header.add_theme_constant_override("margin_bottom", 10)
-	_apply_header_theme(defender_header, 30)  # 24 * 1.25 = 30
-	defender_column.add_child(defender_header)
-	
-	# Effectiveness
-	defender_effectiveness = Label.new()
-	defender_effectiveness.text = "Effectiveness: 75%"
-	defender_effectiveness.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	defender_effectiveness.add_theme_constant_override("margin_bottom", 15)
-	_apply_standard_theme(defender_effectiveness, 22)  # 18 * 1.25 = 22.5, rounded to 22
-	defender_column.add_child(defender_effectiveness)
-	
-	# Units container
-	defender_units_container = VBoxContainer.new()
-	defender_units_container.add_theme_constant_override("separation", 3)
-	defender_column.add_child(defender_units_container)
 
 func show_battle(army: Army, region: Region) -> void:
 	"""Show the battle modal with army vs region information"""
@@ -204,15 +77,16 @@ func show_battle(army: Army, region: Region) -> void:
 	attacking_army = army
 	defending_region = region
 	
-	# Run battle simulation
-	_run_battle_simulation()
-	
+	# Show initial display BEFORE starting battle
 	_update_display()
 	visible = true
 	
 	# Set modal mode active
 	if ui_manager:
 		ui_manager.set_modal_active(true)
+	
+	# Run battle simulation AFTER showing initial state
+	_run_battle_simulation()
 
 func hide_modal() -> void:
 	"""Hide the battle modal"""
@@ -237,9 +111,9 @@ func hide_modal() -> void:
 	current_defender_composition.clear()
 	
 	# Reset button
-	if close_button:
-		close_button.disabled = false
-		close_button.text = "Continue"
+	if continue_button:
+		continue_button.disabled = false
+		continue_button.text = "Continue"
 	
 	visible = false
 	
@@ -298,8 +172,8 @@ func _display_battle_report() -> void:
 		_display_army_losses()
 	
 	# Update button text for final screen
-	if close_button:
-		close_button.text = "Continue"
+	if continue_button:
+		continue_button.text = "Continue"
 
 func _display_army_losses() -> void:
 	"""Display losses for both armies in the report format"""
@@ -323,6 +197,12 @@ func _display_army_losses() -> void:
 
 func _create_attacker_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> void:
 	"""Create a loss row for attacker: 'Unit: <count>' with right-aligned count"""
+	# Add margin before this row (except for the first row)
+	if attacker_units_container.get_child_count() > 0:
+		var margin = MarginContainer.new()
+		margin.custom_minimum_size = Vector2(0, 5)
+		attacker_units_container.add_child(margin)
+	
 	var row_container = HBoxContainer.new()
 	row_container.add_theme_constant_override("separation", 0)
 	attacker_units_container.add_child(row_container)
@@ -332,7 +212,7 @@ func _create_attacker_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	unit_label.text = SoldierTypeEnum.type_to_string(unit_type) + ":"
 	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label, 20)
+	_apply_standard_theme(unit_label)
 	row_container.add_child(unit_label)
 	
 	# Count (right-aligned, fixed width)
@@ -340,11 +220,17 @@ func _create_attacker_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	count_label.text = str(count)
 	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	count_label.custom_minimum_size = Vector2(60, 0)
-	_apply_standard_theme(count_label, 20)
+	_apply_standard_theme(count_label)
 	row_container.add_child(count_label)
 
 func _create_defender_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> void:
 	"""Create a loss row for defender: '<count> :Unit' with left-aligned count"""
+	# Add margin before this row (except for the first row)
+	if defender_units_container.get_child_count() > 0:
+		var margin = MarginContainer.new()
+		margin.custom_minimum_size = Vector2(0, 5)
+		defender_units_container.add_child(margin)
+	
 	var row_container = HBoxContainer.new()
 	row_container.add_theme_constant_override("separation", 0)
 	defender_units_container.add_child(row_container)
@@ -354,7 +240,7 @@ func _create_defender_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	count_label.text = str(count)
 	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	count_label.custom_minimum_size = Vector2(60, 0)
-	_apply_standard_theme(count_label, 20)
+	_apply_standard_theme(count_label)
 	row_container.add_child(count_label)
 	
 	# Unit name (right-aligned)
@@ -362,7 +248,7 @@ func _create_defender_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	unit_label.text = " :" + SoldierTypeEnum.type_to_string(unit_type)
 	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label, 20)
+	_apply_standard_theme(unit_label)
 	row_container.add_child(unit_label)
 
 func _create_no_losses_label(container: VBoxContainer, text: String) -> void:
@@ -370,7 +256,7 @@ func _create_no_losses_label(container: VBoxContainer, text: String) -> void:
 	var no_loss_label = Label.new()
 	no_loss_label.text = text
 	no_loss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_standard_theme(no_loss_label, 20)
+	_apply_standard_theme(no_loss_label)
 	container.add_child(no_loss_label)
 
 func _update_attacker_units() -> void:
@@ -381,23 +267,26 @@ func _update_attacker_units() -> void:
 	
 	# Get current composition to display
 	var composition_to_show: Dictionary
+	var initial_composition: Dictionary = {}
+	
+	# Always get initial composition for color comparison
+	var army_comp = attacking_army.get_composition()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count = army_comp.get_soldier_count(unit_type)
+		initial_composition[unit_type] = count
+	
 	if battle_in_progress:
 		composition_to_show = current_attacker_composition
 	elif battle_report != null:
 		composition_to_show = battle_report.final_attacker
 	else:
-		# Initial composition
-		composition_to_show = {}
-		var army_comp = attacking_army.get_composition()
-		for unit_type in SoldierTypeEnum.get_all_types():
-			var count = army_comp.get_soldier_count(unit_type)
-			if count > 0:
-				composition_to_show[unit_type] = count
+		composition_to_show = initial_composition
 	
-	# Create unit display rows
+	# Create unit display rows for all unit types that were initially present
 	for unit_type in SoldierTypeEnum.get_all_types():
-		if composition_to_show.has(unit_type) and composition_to_show[unit_type] > 0:
-			_create_attacker_unit_row(unit_type, composition_to_show[unit_type])
+		if initial_composition.get(unit_type, 0) > 0:
+			var current_count = composition_to_show.get(unit_type, 0)
+			_create_attacker_unit_row(unit_type, current_count, initial_composition[unit_type])
 
 func _update_defender_units() -> void:
 	"""Update defender unit display"""
@@ -407,26 +296,35 @@ func _update_defender_units() -> void:
 	
 	# Get current composition to display
 	var composition_to_show: Dictionary
+	var initial_composition: Dictionary = {}
+	
+	# Always get initial composition for color comparison
+	var garrison_comp = defending_region.get_garrison()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count = garrison_comp.get_soldier_count(unit_type)
+		initial_composition[unit_type] = count
+	
 	if battle_in_progress:
 		composition_to_show = current_defender_composition
 	elif battle_report != null:
 		composition_to_show = battle_report.final_defender
 	else:
-		# Initial composition
-		composition_to_show = {}
-		var garrison_comp = defending_region.get_garrison()
-		for unit_type in SoldierTypeEnum.get_all_types():
-			var count = garrison_comp.get_soldier_count(unit_type)
-			if count > 0:
-				composition_to_show[unit_type] = count
+		composition_to_show = initial_composition
 	
-	# Create unit display rows
+	# Create unit display rows for all unit types that were initially present
 	for unit_type in SoldierTypeEnum.get_all_types():
-		if composition_to_show.has(unit_type) and composition_to_show[unit_type] > 0:
-			_create_defender_unit_row(unit_type, composition_to_show[unit_type])
+		if initial_composition.get(unit_type, 0) > 0:
+			var current_count = composition_to_show.get(unit_type, 0)
+			_create_defender_unit_row(unit_type, current_count, initial_composition[unit_type])
 
-func _create_attacker_unit_row(unit_type: SoldierTypeEnum.Type, count: int) -> void:
+func _create_attacker_unit_row(unit_type: SoldierTypeEnum.Type, count: int, initial_count: int = 0) -> void:
 	"""Create a unit row for attacker: 'Unit: <count>' with right-aligned count"""
+	# Add margin before this row (except for the first row)
+	if attacker_units_container.get_child_count() > 0:
+		var margin = MarginContainer.new()
+		margin.custom_minimum_size = Vector2(0, 5)
+		attacker_units_container.add_child(margin)
+	
 	var row_container = HBoxContainer.new()
 	row_container.add_theme_constant_override("separation", 0)
 	attacker_units_container.add_child(row_container)
@@ -436,19 +334,32 @@ func _create_attacker_unit_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	unit_label.text = SoldierTypeEnum.type_to_string(unit_type) + ":"
 	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label, 20)  # 16 * 1.25 = 20
+	_apply_standard_theme(unit_label)
 	row_container.add_child(unit_label)
 	
 	# Count (right-aligned, fixed width)
 	var count_label = Label.new()
 	count_label.text = str(count)
 	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	count_label.custom_minimum_size = Vector2(60, 0)  # Fixed width for counts
-	_apply_standard_theme(count_label, 20)  # 16 * 1.25 = 20
+	count_label.custom_minimum_size = Vector2(60, 0)
+	_apply_standard_theme(count_label)
+	
+	# Apply color coding based on remaining units
+	if count == 0:
+		count_label.add_theme_color_override("font_color", Color.RED)
+	elif count < initial_count:
+		count_label.add_theme_color_override("font_color", Color.YELLOW)
+	
 	row_container.add_child(count_label)
 
-func _create_defender_unit_row(unit_type: SoldierTypeEnum.Type, count: int) -> void:
+func _create_defender_unit_row(unit_type: SoldierTypeEnum.Type, count: int, initial_count: int = 0) -> void:
 	"""Create a unit row for defender: '<count> :Unit' with left-aligned count"""
+	# Add margin before this row (except for the first row)
+	if defender_units_container.get_child_count() > 0:
+		var margin = MarginContainer.new()
+		margin.custom_minimum_size = Vector2(0, 5)
+		defender_units_container.add_child(margin)
+	
 	var row_container = HBoxContainer.new()
 	row_container.add_theme_constant_override("separation", 0)
 	defender_units_container.add_child(row_container)
@@ -457,8 +368,15 @@ func _create_defender_unit_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	var count_label = Label.new()
 	count_label.text = str(count)
 	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	count_label.custom_minimum_size = Vector2(60, 0)  # Fixed width for counts
-	_apply_standard_theme(count_label, 20)  # 16 * 1.25 = 20
+	count_label.custom_minimum_size = Vector2(100, 0)
+	_apply_standard_theme(count_label)
+	
+	# Apply color coding based on remaining units
+	if count == 0:
+		count_label.add_theme_color_override("font_color", Color.RED)
+	elif count < initial_count:
+		count_label.add_theme_color_override("font_color", Color.YELLOW)
+	
 	row_container.add_child(count_label)
 	
 	# Unit name (right-aligned)
@@ -466,7 +384,7 @@ func _create_defender_unit_row(unit_type: SoldierTypeEnum.Type, count: int) -> v
 	unit_label.text = " :" + SoldierTypeEnum.type_to_string(unit_type)
 	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label, 20)  # 16 * 1.25 = 20
+	_apply_standard_theme(unit_label)
 	row_container.add_child(unit_label)
 
 func _run_battle_simulation() -> void:
@@ -495,9 +413,9 @@ func _run_battle_simulation() -> void:
 			current_defender_composition[unit_type] = count
 	
 	# Disable close button during battle
-	if close_button:
-		close_button.disabled = true
-		close_button.text = "Battle in Progress..."
+	if continue_button:
+		continue_button.disabled = true
+		continue_button.text = "Battle in Progress..."
 	
 	# Get attacking armies (just one for now)
 	var attacking_compositions = [attacking_army.get_composition()]
@@ -528,9 +446,9 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	battle_report = report
 	
 	# Re-enable close button
-	if close_button:
-		close_button.disabled = false
-		close_button.text = "Continue"
+	if continue_button:
+		continue_button.disabled = false
+		continue_button.text = "Continue"
 	
 	# Final display update
 	_update_display()
@@ -559,17 +477,10 @@ func _show_battle_report() -> void:
 	showing_battle_report = true
 	_update_display()
 
-func _apply_header_theme(label: Label, font_size: int = 30) -> void:
-	"""Apply header theme to a label (default size increased by 25%)"""
-	label.theme = preload("res://themes/header_text_theme.tres")
-	label.add_theme_color_override("font_color", Color.WHITE)
-	label.add_theme_font_size_override("font_size", font_size)
-
-func _apply_standard_theme(label: Label, font_size: int = 22) -> void:
-	"""Apply standard theme to a label (default size increased by 25%)"""
+func _apply_standard_theme(label: Label) -> void:
+	"""Apply standard theme to a label"""
 	label.theme = preload("res://themes/standard_text_theme.tres")
 	label.add_theme_color_override("font_color", Color.WHITE)
-	label.add_theme_font_size_override("font_size", font_size)
 
 func _draw():
 	# Draw shadow first (behind everything)
