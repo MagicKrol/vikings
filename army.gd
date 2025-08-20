@@ -32,6 +32,7 @@ class_name Army
 var player_id: int = 1
 var movement_points: int = GameParameters.MOVEMENT_POINTS_PER_TURN
 var number: String = ""
+var efficiency: int = 100  # Efficiency percentage (10-100), affects hit chances in battle
 
 # Army composition - soldiers in this army
 var composition: ArmyComposition
@@ -46,6 +47,7 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 	"""Setup the army with player ID and default composition"""
 	player_id = new_player_id
 	movement_points = GameParameters.MOVEMENT_POINTS_PER_TURN
+	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	number = roman_number
 	
@@ -60,6 +62,7 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	print("[Army] setup_raised_army called for player ", new_player_id)
 	player_id = new_player_id
 	movement_points = 0
+	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	number = roman_number
 	
@@ -78,15 +81,15 @@ func spend_movement_points(cost: int) -> void:
 	movement_points -= cost
 
 func make_camp() -> void:
-	"""Make camp - reduces movement points and potentially other effects"""
+	"""Make camp - reduces movement points and restores efficiency"""
 	# Spend 1 movement point for making camp
 	if movement_points > 0:
 		movement_points -= 1
 	
-	# TODO: Add other camp effects like:
-	# - Heal wounded soldiers
-	# - Restore morale
-	# - Gather resources, etc.
+	# Restore 10 efficiency (capped at 100%)
+	restore_efficiency(10)
+	
+	print("[Army] ", name, " made camp - efficiency restored to ", efficiency, "%")
 
 func get_player_id() -> int:
 	"""Get the player ID"""
@@ -95,6 +98,22 @@ func get_player_id() -> int:
 func get_movement_points() -> int:
 	"""Get current movement points"""
 	return movement_points
+
+func get_efficiency() -> int:
+	"""Get current efficiency percentage"""
+	return efficiency
+
+func set_efficiency(value: int) -> void:
+	"""Set efficiency, clamped to 10-100 range"""
+	efficiency = clamp(value, 10, 100)
+
+func reduce_efficiency(amount: int) -> void:
+	"""Reduce efficiency by amount, minimum 10%"""
+	efficiency = max(10, efficiency - amount)
+
+func restore_efficiency(amount: int) -> void:
+	"""Restore efficiency by amount, maximum 100%"""
+	efficiency = min(100, efficiency + amount)
 
 # Army composition methods
 func get_composition() -> ArmyComposition:

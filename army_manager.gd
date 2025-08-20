@@ -220,12 +220,15 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	var target_region_owner = region_manager.get_region_owner(target_region_id)
 	var army_player_id = selected_army.player_id
 	
-	# Only set ownership if moving to own territory or neutral territory without garrison
-	if target_region_owner == army_player_id or (target_region_owner == -1 and not target_region.has_garrison()):
+	# Only set ownership if ownership is actually changing (neutral territory without garrison)
+	if target_region_owner == -1 and not target_region.has_garrison():
 		region_manager.set_region_ownership(target_region_id, army_player_id)
 	
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
+	
+	# Reduce efficiency by 5 for movement
+	selected_army.reduce_efficiency(5)
 	
 	# Store remaining movement points for logging
 	var remaining_points = selected_army.get_movement_points()

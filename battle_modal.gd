@@ -424,8 +424,9 @@ func _run_battle_simulation() -> void:
 	var defending_compositions = []
 	var region_garrison = defending_region.get_garrison()
 	
-	# Start the animated battle
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison)
+	# Start the animated battle with attacker efficiency
+	var attacker_efficiency = attacking_army.get_efficiency()
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency)
 	
 	print("[BattleModal] Starting animated battle simulation...")
 
