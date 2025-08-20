@@ -46,6 +46,9 @@ var resources: ResourceComposition
 # Population in this region
 var population: int = 0
 
+# Available recruits in this region
+var available_recruits: int = 0
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -63,6 +66,8 @@ func setup_region(region_data: Dictionary) -> void:
 		garrison.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, peasant_count)
 		# Generate population based on region level
 		population = GameParameters.generate_population_size(region_level)
+		# Initialize available recruits based on population
+		available_recruits = GameParameters.calculate_max_recruits(population)
 	
 	# Set center position
 	var center_data = region_data.get("center", [])
@@ -169,3 +174,35 @@ func get_population() -> int:
 func set_population(new_population: int) -> void:
 	"""Set population for this region"""
 	population = max(0, new_population)
+	# Recalculate max recruits when population changes
+	var max_recruits = GameParameters.calculate_max_recruits(population)
+	# Ensure available recruits don't exceed new maximum
+	available_recruits = min(available_recruits, max_recruits)
+
+# Recruit management methods
+func get_available_recruits() -> int:
+	"""Get current available recruits in this region"""
+	return available_recruits
+
+func get_max_recruits() -> int:
+	"""Get maximum recruits based on current population"""
+	return GameParameters.calculate_max_recruits(population)
+
+func hire_recruits(count: int) -> int:
+	"""Hire recruits from this region, returns actual hired count"""
+	var actual_hired = min(count, available_recruits)
+	if actual_hired > 0:
+		available_recruits -= actual_hired
+		# Reduce population by hired recruits
+		population -= actual_hired
+		# Recalculate max recruits after population reduction
+		var max_recruits = GameParameters.calculate_max_recruits(population)
+		# Ensure available recruits don't exceed new maximum
+		available_recruits = min(available_recruits, max_recruits)
+	return actual_hired
+
+func replenish_recruits() -> void:
+	"""Replenish recruits based on current population (called each turn)"""
+	var replenishment = GameParameters.calculate_recruit_replenishment(population)
+	var max_recruits = GameParameters.calculate_max_recruits(population)
+	available_recruits = min(available_recruits + replenishment, max_recruits)

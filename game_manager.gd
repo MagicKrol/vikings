@@ -124,6 +124,11 @@ func next_turn():
 	print("[GameManager] Processing resource income...")
 	player_manager.process_resource_income()
 	
+	# Replenish recruits for all regions
+	print("[GameManager] Replenishing recruits...")
+	if _region_manager:
+		_region_manager.replenish_all_recruits()
+	
 	# Reset movement points for all armies
 	reset_movement_points()
 	

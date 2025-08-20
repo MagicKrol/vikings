@@ -199,7 +199,10 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
 	# Upgrade castle region to L3
 	castle_region.set_region_level(RegionLevelEnum.Level.L3)
-	castle_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L3))
+	var castle_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L3)
+	castle_region.set_population(castle_population)
+	# Initialize recruits for castle region
+	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population)
 	
 	# Get neighboring regions and upgrade them to L2
 	var neighbor_ids = get_neighbor_regions(castle_region.get_region_id())
@@ -209,7 +212,10 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 			if child is Region and child.get_region_id() == neighbor_id:
 				var neighbor_region = child as Region
 				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
-				neighbor_region.set_population(GameParameters.generate_population_size(RegionLevelEnum.Level.L2))
+				var neighbor_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
+				neighbor_region.set_population(neighbor_population)
+				# Initialize recruits for neighbor region
+				neighbor_region.available_recruits = GameParameters.calculate_max_recruits(neighbor_population)
 				break
 
 func _generate_all_region_resources() -> void:
@@ -231,3 +237,23 @@ func _generate_all_region_resources() -> void:
 			regions_generated += 1
 	
 	print("[RegionManager] Generated resources for ", regions_generated, " regions")
+
+func replenish_all_recruits() -> void:
+	"""Replenish recruits for all regions (called each turn)"""
+	if map_generator == null:
+		return
+	
+	# Get all region containers from the map generator
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		print("[RegionManager] Warning: No Regions node found in map generator")
+		return
+	
+	# Replenish recruits for each region
+	var regions_replenished = 0
+	for child in regions_node.get_children():
+		if child is Region:
+			child.replenish_recruits()
+			regions_replenished += 1
+	
+	print("[RegionManager] Replenished recruits for ", regions_replenished, " regions")
