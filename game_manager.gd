@@ -34,7 +34,7 @@ var total_players: int = 4
 var castle_placing_mode: bool = true
 
 # Player management
-var player_manager: PlayerManager
+var player_manager: PlayerManagerNode
 
 # Manager references
 var _region_manager: RegionManager
@@ -97,8 +97,11 @@ func initialize_managers():
 	_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
-	# Initialize player management system with required components
-	player_manager = PlayerManager.new(total_players, _region_manager, map_generator)
+	# Get the PlayerManager node and initialize it with required components
+	player_manager = get_node("../PlayerManager") as PlayerManagerNode
+	if player_manager:
+		player_manager.initialize_with_managers(_region_manager, map_generator)
+		player_manager.set_army_manager(_army_manager)
 	
 	# Run battle system test on startup (remove this after testing)
 	BattleSimulator.run_test_battle()
@@ -124,7 +127,16 @@ func next_turn():
 	print("[GameManager] Processing resource income...")
 	player_manager.process_resource_income()
 	
-	# Replenish recruits for all regions
+	# Deduct food costs for armies and garrisons
+	print("[GameManager] Deducting army food costs...")
+	_process_army_food_costs()
+	
+	# Grow population for all regions (before recruit replenishment)
+	print("[GameManager] Growing regional populations...")
+	if _region_manager:
+		_region_manager.grow_all_populations()
+	
+	# Replenish recruits for all regions (after population growth)
 	print("[GameManager] Replenishing recruits...")
 	if _region_manager:
 		_region_manager.replenish_all_recruits()
@@ -158,6 +170,40 @@ func reset_movement_points():
 	else:
 		print("[GameManager] Warning: Cannot reset army moves - ClickManager not found")
 
+func _process_army_food_costs() -> void:
+	"""Process food costs for all armies and garrisons"""
+	# Currently only processing for Player 1 (human player)
+	var player_id = 1
+	var player = player_manager.get_player(player_id)
+	if player == null:
+		print("[GameManager] Warning: Player 1 not found for food cost processing")
+		return
+	
+	# Calculate total food cost for all armies and garrisons
+	var total_food_cost = player_manager.calculate_total_army_food_cost(player_id)
+	
+	if total_food_cost > 0:
+		# Convert float cost to integer (round up)
+		var food_cost_int = int(ceil(total_food_cost))
+		
+		print("[GameManager] Total army food cost for Player 1: ", total_food_cost, " (rounded: ", food_cost_int, ")")
+		
+		# Check if player has enough food
+		var current_food = player.get_resource_amount(ResourcesEnum.Type.FOOD)
+		if current_food >= food_cost_int:
+			# Deduct the food cost
+			player.remove_resources(ResourcesEnum.Type.FOOD, food_cost_int)
+			print("[GameManager] Deducted ", food_cost_int, " food from Player 1 (", current_food - food_cost_int, " remaining)")
+		else:
+			# Player doesn't have enough food - this could lead to penalties
+			print("[GameManager] WARNING: Player 1 doesn't have enough food! Required: ", food_cost_int, ", Available: ", current_food)
+			# For now, just deduct all available food
+			if current_food > 0:
+				player.remove_resources(ResourcesEnum.Type.FOOD, current_food)
+				print("[GameManager] Deducted all available food (", current_food, ") from Player 1")
+	else:
+		print("[GameManager] No army food costs for Player 1")
+
 func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
 	print("[GameManager] Updating player status display...")
@@ -181,7 +227,7 @@ func get_total_players() -> int:
 	return total_players
 
 # Player resource management
-func get_player_manager() -> PlayerManager:
+func get_player_manager() -> PlayerManagerNode:
 	"""Get the player manager instance"""
 	return player_manager
 

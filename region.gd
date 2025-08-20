@@ -49,6 +49,9 @@ var population: int = 0
 # Available recruits in this region
 var available_recruits: int = 0
 
+# Last turn's population growth (for UI display)
+var last_population_growth: int = 0
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -206,3 +209,34 @@ func replenish_recruits() -> void:
 	var replenishment = GameParameters.calculate_recruit_replenishment(population)
 	var max_recruits = GameParameters.calculate_max_recruits(population)
 	available_recruits = min(available_recruits + replenishment, max_recruits)
+
+func grow_population() -> void:
+	"""Grow population per turn based on recruitment impact (called each turn)"""
+	if is_ocean:
+		return  # Ocean regions don't have population
+	
+	# Base growth rate from GameParameters
+	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
+	
+	# Calculate current recruit ratio (available / max) but cap at 1.0 to prevent Call to Arms from boosting growth above 3%
+	var max_recruits = GameParameters.calculate_max_recruits(population)
+	var recruit_ratio = 0.0
+	if max_recruits > 0:
+		recruit_ratio = min(1.0, float(available_recruits) / float(max_recruits))
+	
+	# Growth rate is modified by recruit availability: base_rate * (available_recruits / max_recruits), capped at base_rate
+	var actual_growth_rate = base_growth_rate * recruit_ratio
+	
+	# Calculate population growth (rounded down)
+	var population_growth = int(population * actual_growth_rate)
+	
+	# Track the growth for UI display
+	last_population_growth = population_growth
+	
+	if population_growth > 0:
+		var old_population = population
+		population += population_growth
+		
+		# Recalculate max recruits based on new population, but don't change available recruits
+		# (the available recruits will be updated in the next recruit replenishment phase)
+		print("[Region] ", region_name, " population grew from ", old_population, " to ", population, " (+" , population_growth, ", rate: ", actual_growth_rate * 100, "%)")

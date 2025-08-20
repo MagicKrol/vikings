@@ -115,3 +115,13 @@ func merge_with(other: ArmyComposition) -> void:
 # Check if army composition is empty
 func is_empty() -> bool:
 	return get_total_soldiers() == 0
+
+# Calculate total food cost per turn for this army composition
+func get_total_food_cost() -> float:
+	var total_food_cost = 0.0
+	for soldier_type in soldiers:
+		var count = soldiers[soldier_type]
+		if count > 0:
+			var unit_food_cost = GameParameters.get_unit_food_cost(soldier_type)
+			total_food_cost += count * unit_food_cost
+	return total_food_cost

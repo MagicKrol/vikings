@@ -257,3 +257,23 @@ func replenish_all_recruits() -> void:
 			regions_replenished += 1
 	
 	print("[RegionManager] Replenished recruits for ", regions_replenished, " regions")
+
+func grow_all_populations() -> void:
+	"""Grow population for all regions (called each turn)"""
+	if map_generator == null:
+		return
+	
+	# Get all region containers from the map generator
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		print("[RegionManager] Warning: No Regions node found in map generator")
+		return
+	
+	# Grow population for each region
+	var regions_grown = 0
+	for child in regions_node.get_children():
+		if child is Region:
+			child.grow_population()
+			regions_grown += 1
+	
+	print("[RegionManager] Processed population growth for ", regions_grown, " regions")
