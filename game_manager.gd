@@ -53,6 +53,14 @@ var click_manager: Node = null
 func _ready():
 	# Initialize all game systems
 	initialize_managers()
+	
+	# Start the game audio sequence after a brief delay to ensure sound manager is ready
+	await get_tree().process_frame
+	if _sound_manager:
+		print("[GameManager] Starting game audio sequence...")
+		_sound_manager.play_game_start_sequence()
+	else:
+		print("[GameManager] Error: Sound manager not found!")
 
 func initialize_managers():
 	"""Initialize all game managers and establish dependencies"""
