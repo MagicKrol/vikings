@@ -46,6 +46,9 @@ var sound_manager: SoundManager = null
 # All armies in the game: player_id -> Array[Army]
 var armies_by_player: Dictionary = {}
 
+# Track previous region for each army (for withdrawal retreat)
+var army_previous_regions: Dictionary = {}  # Army -> Node (region_container)
+
 # Currently selected army for movement
 var selected_army: Army = null
 var selected_region_container: Node = null
@@ -203,6 +206,9 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	
 	# Battle conditions will be handled after movement by click_manager
 	var target_region = target_region_container as Region
+	
+	# Store previous region for potential retreat
+	army_previous_regions[selected_army] = selected_region_container
 	
 	# Move the army
 	selected_army.get_parent().remove_child(selected_army)
@@ -567,6 +573,9 @@ func remove_destroyed_armies() -> void:
 				# Remove from scene
 				if army.get_parent() != null:
 					army.get_parent().remove_child(army)
+				# Remove from previous regions tracking
+				if army_previous_regions.has(army):
+					army_previous_regions.erase(army)
 				army.queue_free()
 				# Remove from tracking
 				armies.remove_at(i)
@@ -586,3 +595,46 @@ func remove_army_from_tracking(army: Army) -> void:
 		if index != -1:
 			armies.remove_at(index)
 			print("[ArmyManager] Removed army ", army.name, " from player ", player_id, " tracking")
+	
+	# Also remove from previous regions tracking
+	if army_previous_regions.has(army):
+		army_previous_regions.erase(army)
+
+func retreat_army_to_previous_region(army: Army) -> void:
+	"""Move army back to its previous region after withdrawal"""
+	if army == null or not is_instance_valid(army):
+		print("[ArmyManager] Cannot retreat: invalid army")
+		return
+	
+	# Check if we have a previous region stored
+	if not army_previous_regions.has(army):
+		print("[ArmyManager] Warning: No previous region stored for army ", army.name)
+		return
+	
+	var previous_region = army_previous_regions[army]
+	if previous_region == null or not is_instance_valid(previous_region):
+		print("[ArmyManager] Warning: Previous region is invalid for army ", army.name)
+		army_previous_regions.erase(army)
+		return
+	
+	print("[ArmyManager] Retreating army ", army.name, " to previous region")
+	
+	# Move army back to previous region
+	var current_parent = army.get_parent()
+	if current_parent != null:
+		current_parent.remove_child(army)
+	
+	previous_region.add_child(army)
+	
+	# Update army position to previous region center
+	var polygon = previous_region.get_node_or_null("Polygon") as Polygon2D
+	if polygon != null:
+		var center_meta = polygon.get_meta("center")
+		if center_meta != null:
+			var center = center_meta as Vector2
+			army.position = center + _get_army_position_offset(previous_region)
+	
+	print("[ArmyManager] Army ", army.name, " retreated to ", previous_region.name)
+	
+	# Clear the previous region tracking since army is back there
+	army_previous_regions.erase(army)

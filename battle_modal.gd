@@ -17,6 +17,7 @@ var defender_effectiveness: Label
 var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
+var withdraw_button: Button
 
 # Battle data
 var attacking_army: Army = null
@@ -32,6 +33,9 @@ var current_defender_composition: Dictionary = {}
 
 # Battle report state
 var showing_battle_report: bool = false
+
+# Withdrawal state
+var withdrawal_in_progress: bool = false
 
 # Sound manager reference
 var sound_manager: SoundManager = null
@@ -49,10 +53,12 @@ func _ready():
 	defender_effectiveness = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderEffectiveness")
 	attacker_units_container = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerUnitsContainer")
 	defender_units_container = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderUnitsContainer")
-	continue_button = get_node("BorderMargin/MainContainer/ButtonContainer/ContinueButton")
+	continue_button = get_node("BorderMargin/MainContainer/ButtonContainer/ButtonsContainer/ContinueButton")
+	withdraw_button = get_node("BorderMargin/MainContainer/ButtonContainer/ButtonsContainer/WithdrawButton")
 	
-	# Connect button signal
+	# Connect button signals
 	continue_button.pressed.connect(_on_ok_pressed)
+	withdraw_button.pressed.connect(_on_withdraw_pressed)
 	
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -110,10 +116,18 @@ func hide_modal() -> void:
 	current_attacker_composition.clear()
 	current_defender_composition.clear()
 	
-	# Reset button
+	# Reset buttons
 	if continue_button:
 		continue_button.disabled = false
 		continue_button.text = "Continue"
+	
+	if withdraw_button:
+		withdraw_button.disabled = false
+		withdraw_button.text = "Withdraw"
+		withdraw_button.visible = true
+	
+	# Reset withdrawal state
+	withdrawal_in_progress = false
 	
 	visible = false
 	
@@ -142,11 +156,27 @@ func _update_display() -> void:
 		attacker_effectiveness.visible = true
 		defender_effectiveness.visible = true
 		
+		# Update effectiveness displays
+		_update_effectiveness_displays()
+		
 		# Update attacker units
 		_update_attacker_units()
 		
 		# Update defender units  
 		_update_defender_units()
+
+func _update_effectiveness_displays() -> void:
+	"""Update the effectiveness labels with current efficiency values"""
+	if attacking_army == null or defending_region == null:
+		return
+	
+	# Get attacking army efficiency
+	var attacker_efficiency = attacking_army.get_efficiency()
+	attacker_effectiveness.text = "Efficiency: " + str(attacker_efficiency) + "%"
+	
+	# Defender efficiency: garrison always 100%, armies use their efficiency
+	# For now, we're always fighting against garrison, so it's 100%
+	defender_effectiveness.text = "Efficiency: 100%"
 
 func _display_battle_report() -> void:
 	"""Display the battle report screen"""
@@ -412,10 +442,15 @@ func _run_battle_simulation() -> void:
 		if count > 0:
 			current_defender_composition[unit_type] = count
 	
-	# Disable close button during battle
+	# During battle, show withdraw button and disable continue
 	if continue_button:
 		continue_button.disabled = true
-		continue_button.text = "Battle in Progress..."
+		continue_button.text = "Continue"
+	
+	# Show withdraw button during battle
+	if withdraw_button:
+		withdraw_button.disabled = false
+		withdraw_button.visible = true
 	
 	# Get attacking armies (just one for now)
 	var attacking_compositions = [attacking_army.get_composition()]
@@ -446,10 +481,16 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	battle_in_progress = false
 	battle_report = report
 	
-	# Re-enable close button
+	# Re-enable continue button and hide withdraw button
 	if continue_button:
 		continue_button.disabled = false
 		continue_button.text = "Continue"
+	
+	if withdraw_button:
+		withdraw_button.visible = false
+	
+	# Reset withdrawal state
+	withdrawal_in_progress = false
 	
 	# Final display update
 	_update_display()
@@ -477,6 +518,39 @@ func _show_battle_report() -> void:
 	"""Switch to showing the battle report screen"""
 	showing_battle_report = true
 	_update_display()
+
+func _on_withdraw_pressed() -> void:
+	"""Handle Withdraw button press"""
+	# Don't allow withdrawal if battle is not in progress
+	if not battle_in_progress:
+		return
+	
+	# Don't allow withdrawal if already withdrawing
+	if withdrawal_in_progress:
+		return
+	
+	# Play click sound for button press
+	if sound_manager:
+		sound_manager.click_sound()
+	
+	# Start withdrawal process
+	withdrawal_in_progress = true
+	
+	# Update button state
+	if withdraw_button:
+		withdraw_button.disabled = true
+		withdraw_button.text = "Withdrawing..."
+	
+	# Also disable continue button during withdrawal
+	if continue_button:
+		continue_button.disabled = true
+		continue_button.text = "Withdrawing..."
+	
+	# Tell the animated simulator to start withdrawal round
+	if animated_simulator:
+		animated_simulator.start_withdrawal_round()
+	
+	print("[BattleModal] Starting withdrawal...")
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""
