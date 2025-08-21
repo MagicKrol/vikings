@@ -149,6 +149,11 @@ func next_turn():
 	if _region_manager:
 		_region_manager.replenish_all_recruits()
 	
+	# Process castle construction for all regions
+	print("[GameManager] Processing castle construction...")
+	if _region_manager:
+		_region_manager.process_all_castle_construction()
+	
 	# Reset movement points for all armies
 	reset_movement_points()
 	
@@ -305,12 +310,16 @@ func handle_castle_placement(region: Region) -> void:
 	if _visual_manager:
 		_visual_manager.update_region_visuals()
 	
-	# Place castle visual
-	if _visual_manager:
+	# Build initial castle (Outpost) using new castle system
+	if _region_manager:
 		var regions_node = get_node("../Map/Regions")
 		for child in regions_node.get_children():
 			if child is Region and child.get_region_id() == region_id:
-				_visual_manager.place_castle_visual(child)
+				# Set castle type directly for initial placement
+				child.set_castle_type(CastleTypeEnum.Type.OUTPOST)
+				# Place visual using new system
+				if _visual_manager:
+					_visual_manager.place_castle_visual(child)
 				break
 	
 	# Place army in the same region

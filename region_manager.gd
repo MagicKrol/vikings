@@ -277,3 +277,27 @@ func grow_all_populations() -> void:
 			regions_grown += 1
 	
 	print("[RegionManager] Processed population growth for ", regions_grown, " regions")
+
+func process_all_castle_construction() -> void:
+	"""Process castle construction for all regions (called each turn)"""
+	if map_generator == null:
+		return
+	
+	# Get all region containers from the map generator
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		print("[RegionManager] Warning: No Regions node found in map generator")
+		return
+	
+	# Process castle construction for each region
+	var regions_processed = 0
+	var completed_constructions = 0
+	for child in regions_node.get_children():
+		if child is Region:
+			if child.process_castle_construction():
+				completed_constructions += 1
+			regions_processed += 1
+	
+	if completed_constructions > 0:
+		print("[RegionManager] Completed ", completed_constructions, " castle constructions this turn")
+	print("[RegionManager] Processed castle construction for ", regions_processed, " regions")

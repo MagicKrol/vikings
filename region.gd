@@ -52,6 +52,11 @@ var available_recruits: int = 0
 # Last turn's population growth (for UI display)
 var last_population_growth: int = 0
 
+# Castle information
+var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
+var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
+var castle_build_turns_remaining: int = 0
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -240,3 +245,99 @@ func grow_population() -> void:
 		# Recalculate max recruits based on new population, but don't change available recruits
 		# (the available recruits will be updated in the next recruit replenishment phase)
 		print("[Region] ", region_name, " population grew from ", old_population, " to ", population, " (+" , population_growth, ", rate: ", actual_growth_rate * 100, "%)")
+
+# Castle management methods
+func get_castle_type() -> CastleTypeEnum.Type:
+	"""Get the current castle type"""
+	return castle_type
+
+func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
+	"""Set the castle type (used when construction completes)"""
+	castle_type = new_castle_type
+
+func has_castle() -> bool:
+	"""Check if region has any castle"""
+	return castle_type != CastleTypeEnum.Type.NONE
+
+func get_castle_type_string() -> String:
+	"""Get the castle type as a string"""
+	return CastleTypeEnum.type_to_string(castle_type)
+
+func is_castle_under_construction() -> bool:
+	"""Check if a castle is currently being built"""
+	return castle_under_construction != CastleTypeEnum.Type.NONE
+
+func get_castle_under_construction() -> CastleTypeEnum.Type:
+	"""Get the castle type being constructed"""
+	return castle_under_construction
+
+func get_castle_build_turns_remaining() -> int:
+	"""Get remaining turns for castle construction"""
+	return castle_build_turns_remaining
+
+func start_castle_construction(castle_type_to_build: CastleTypeEnum.Type) -> void:
+	"""Start construction of a castle type"""
+	castle_under_construction = castle_type_to_build
+	castle_build_turns_remaining = GameParameters.get_castle_build_time(castle_type_to_build)
+	print("[Region] Started construction of ", CastleTypeEnum.type_to_string(castle_type_to_build), " in ", region_name, " (", castle_build_turns_remaining, " turns remaining)")
+
+func process_castle_construction() -> bool:
+	"""Process castle construction for one turn. Returns true if construction completed."""
+	if not is_castle_under_construction():
+		return false
+	
+	castle_build_turns_remaining -= 1
+	print("[Region] Castle construction in ", region_name, ": ", castle_build_turns_remaining, " turns remaining")
+	
+	if castle_build_turns_remaining <= 0:
+		# Construction completed
+		var completed_castle_type = castle_under_construction
+		castle_type = castle_under_construction
+		castle_under_construction = CastleTypeEnum.Type.NONE
+		castle_build_turns_remaining = 0
+		print("[Region] Castle construction completed in ", region_name, "! Built: ", CastleTypeEnum.type_to_string(completed_castle_type))
+		
+		# Trigger visual update by finding and calling the visual manager
+		_update_castle_visual()
+		
+		return true
+	
+	return false
+
+func _update_castle_visual() -> void:
+	"""Update the castle visual when construction completes"""
+	# Find the GameManager and get the VisualManager
+	var game_manager = get_node("/root/Main/GameManager") as GameManager
+	if game_manager == null:
+		print("[Region] Warning: Could not find GameManager for visual update")
+		return
+	
+	var visual_manager = game_manager.get_visual_manager()
+	if visual_manager == null:
+		print("[Region] Warning: Could not find VisualManager for visual update")
+		return
+	
+	# Update the castle visual (this will place the correct icon)
+	visual_manager.update_castle_visual(self)
+	print("[Region] Updated castle visual for ", region_name)
+
+func can_build_castle() -> bool:
+	"""Check if a castle can be built in this region"""
+	# Cannot build if already has castle or construction in progress
+	if has_castle() or is_castle_under_construction():
+		return false
+	
+	# Cannot build in ocean regions
+	if is_ocean:
+		return false
+	
+	return true
+
+func can_upgrade_castle() -> bool:
+	"""Check if the current castle can be upgraded"""
+	# Must have a castle and not be under construction
+	if not has_castle() or is_castle_under_construction():
+		return false
+	
+	# Check if castle can be upgraded to next level
+	return CastleTypeEnum.can_upgrade(castle_type)

@@ -11,6 +11,9 @@ var main_menu_music: AudioStream
 var game_music: AudioStream
 var starting_horn: AudioStream
 
+# Music state
+var music_enabled: bool = true
+
 func _ready():
 	# Add the audio players to the scene tree
 	add_child(click_player)
@@ -39,6 +42,12 @@ func _ready():
 	if not starting_horn:
 		print("[SoundManager] Error: Could not load Starting_horn.mp3")
 
+func _unhandled_input(event: InputEvent) -> void:
+	"""Handle keyboard input for music toggle"""
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_M:
+			toggle_music()
+
 func click_sound() -> void:
 	"""Play click sound effect"""
 	if click_player and click_player.stream:
@@ -46,7 +55,7 @@ func click_sound() -> void:
 
 func play_main_menu_music() -> void:
 	"""Play main menu music"""
-	if music_player and main_menu_music:
+	if music_player and main_menu_music and music_enabled:
 		music_player.stream = main_menu_music
 		music_player.play()
 
@@ -80,7 +89,7 @@ func play_game_music() -> void:
 	print("[SoundManager] music_player: ", music_player)
 	print("[SoundManager] game_music: ", game_music)
 	
-	if music_player and game_music:
+	if music_player and game_music and music_enabled:
 		print("[SoundManager] Playing game music...")
 		music_player.stream = game_music
 		music_player.play()
@@ -93,3 +102,30 @@ func stop_all_music() -> void:
 		music_player.stop()
 	if horn_player:
 		horn_player.stop()
+
+func toggle_music() -> void:
+	"""Toggle music on/off"""
+	music_enabled = !music_enabled
+	print("[SoundManager] Music ", "enabled" if music_enabled else "disabled")
+	
+	if not music_enabled:
+		# Stop all music when disabled
+		stop_all_music()
+	else:
+		# Resume appropriate music when enabled
+		# Check if we're in main menu or game and restart appropriate music
+		var main_scene = get_tree().current_scene
+		if main_scene and main_scene.name == "MainMenu":
+			play_main_menu_music()
+		else:
+			# Assume we're in game
+			play_game_music()
+
+func is_music_enabled() -> bool:
+	"""Check if music is currently enabled"""
+	return music_enabled
+
+func set_music_enabled(enabled: bool) -> void:
+	"""Set music enabled state programmatically"""
+	if music_enabled != enabled:
+		toggle_music()
