@@ -68,6 +68,11 @@ func get_army_manager() -> ArmyManager:
 func _on_left_click(screen_pos: Vector2) -> void:
 	# Check if any modal is active and close them first
 	if _ui_manager and _ui_manager.is_modal_active:
+		# Don't close modals if BattleModal is in battle mode (battle_in_progress)
+		var battle_modal = get_node("../UI/BattleModal") as BattleModal
+		if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
+			# Battle is active - don't allow closing the modal
+			return
 		_ui_manager.close_all_active_modals()
 		return
 	
