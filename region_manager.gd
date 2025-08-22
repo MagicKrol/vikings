@@ -301,3 +301,65 @@ func process_all_castle_construction() -> void:
 	if completed_constructions > 0:
 		print("[RegionManager] Completed ", completed_constructions, " castle constructions this turn")
 	print("[RegionManager] Processed castle construction for ", regions_processed, " regions")
+
+func reset_all_ore_search_turn_usage() -> void:
+	"""Reset ore search turn usage for all regions (called each turn)"""
+	if map_generator == null:
+		return
+	
+	# Get all region containers from the map generator
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		print("[RegionManager] Warning: No Regions node found in map generator")
+		return
+	
+	# Reset ore search usage for each region
+	var regions_reset = 0
+	for child in regions_node.get_children():
+		if child is Region:
+			child.reset_ore_search_turn_usage()
+			regions_reset += 1
+	
+	print("[RegionManager] Reset ore search turn usage for ", regions_reset, " regions")
+
+func perform_ore_search(region: Region, player_id: int, player_manager: PlayerManagerNode) -> Dictionary:
+	"""Perform ore search in a region for a player. Returns search result."""
+	if region == null:
+		return {"success": false, "message": "Invalid region"}
+	
+	if player_manager == null:
+		return {"success": false, "message": "Invalid player manager"}
+	
+	# Check if region can be searched
+	if not region.can_search_for_ore():
+		return {"success": false, "message": "Cannot search for ore in this region"}
+	
+	# Check if player can afford the search cost
+	var search_cost = GameParameters.get_ore_search_cost()
+	var current_player = player_manager.get_player(player_id)
+	if current_player == null:
+		return {"success": false, "message": "Player not found"}
+	
+	if current_player.get_resource_amount(ResourcesEnum.Type.GOLD) < search_cost:
+		return {"success": false, "message": "Not enough gold (requires " + str(search_cost) + " gold)"}
+	
+	# Deduct the search cost
+	current_player.remove_resources(ResourcesEnum.Type.GOLD, search_cost)
+	print("[RegionManager] Player ", player_id, " spent ", search_cost, " gold for ore search in ", region.get_region_name())
+	
+	# Perform the search
+	var search_result = region.search_for_ore()
+	
+	# If ore was discovered, make it available in the region's resources
+	if search_result.success:
+		var ore_type = search_result.ore_type
+		# Check if this ore type already has a resource amount, if not, add it based on the region's potential
+		var current_amount = region.get_resource_amount(ore_type)
+		if current_amount == 0:
+			# Generate initial ore amount based on region type
+			var generated_amount = GameParameters.generate_resource_amount(region.get_region_type(), ore_type)
+			if generated_amount > 0:
+				region.resources.set_resource_amount(ore_type, generated_amount)
+				print("[RegionManager] Made ", generated_amount, " ", ResourcesEnum.type_to_string(ore_type), " available for collection in ", region.get_region_name())
+	
+	return search_result

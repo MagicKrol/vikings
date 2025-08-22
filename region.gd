@@ -57,6 +57,11 @@ var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_build_turns_remaining: int = 0
 
+# Mining system information
+var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
+var discovered_ores: Array[ResourcesEnum.Type] = []  # Which ores have been discovered
+var ore_search_used_this_turn: bool = false  # Track if ore search was used this turn
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -76,6 +81,9 @@ func setup_region(region_data: Dictionary) -> void:
 		population = GameParameters.generate_population_size(region_level)
 		# Initialize available recruits based on population
 		available_recruits = GameParameters.calculate_max_recruits(population)
+		# Initialize ore search attempts if region can have ores
+		if GameParameters.can_search_for_ore_in_region(region_type):
+			ore_search_attempts_remaining = GameParameters.ORE_SEARCH_CHANCES_PER_REGION
 	
 	# Set center position
 	var center_data = region_data.get("center", [])
@@ -341,3 +349,96 @@ func can_upgrade_castle() -> bool:
 	
 	# Check if castle can be upgraded to next level
 	return CastleTypeEnum.can_upgrade(castle_type)
+
+# Mining system methods
+func can_search_for_ore() -> bool:
+	"""Check if ore search is possible in this region"""
+	# Must be a region that can have ores
+	if not GameParameters.can_search_for_ore_in_region(region_type):
+		return false
+	
+	# Must have search attempts remaining
+	if ore_search_attempts_remaining <= 0:
+		return false
+	
+	# Cannot search if already used this turn
+	if ore_search_used_this_turn:
+		return false
+	
+	# Cannot search in ocean regions
+	if is_ocean:
+		return false
+	
+	return true
+
+func get_ore_search_attempts_remaining() -> int:
+	"""Get the number of ore search attempts remaining"""
+	return ore_search_attempts_remaining
+
+func search_for_ore() -> Dictionary:
+	"""Perform ore search. Returns {success: bool, ore_type: ResourcesEnum.Type, message: String}"""
+	if not can_search_for_ore():
+		return {"success": false, "ore_type": ResourcesEnum.Type.GOLD, "message": "Cannot search for ore in this region"}
+	
+	# Use up one attempt
+	ore_search_attempts_remaining -= 1
+	ore_search_used_this_turn = true
+	
+	# Roll for discovery
+	var discovery_successful = GameParameters.roll_ore_discovery()
+	
+	if discovery_successful:
+		# Roll for ore type
+		var ore_type = GameParameters.roll_ore_type()
+		
+		# Add to discovered ores if not already found
+		if ore_type not in discovered_ores:
+			discovered_ores.append(ore_type)
+		
+		print("[Region] Ore discovered in ", region_name, "! Found: ", ResourcesEnum.type_to_string(ore_type))
+		return {"success": true, "ore_type": ore_type, "message": "Discovered " + ResourcesEnum.type_to_string(ore_type) + " ore!"}
+	else:
+		print("[Region] No ore found in ", region_name, " (", ore_search_attempts_remaining, " attempts remaining)")
+		return {"success": false, "ore_type": ResourcesEnum.Type.GOLD, "message": "No ore found this time"}
+
+func has_discovered_ore(ore_type: ResourcesEnum.Type) -> bool:
+	"""Check if a specific ore type has been discovered in this region"""
+	return ore_type in discovered_ores
+
+func get_discovered_ores() -> Array[ResourcesEnum.Type]:
+	"""Get all discovered ore types"""
+	return discovered_ores.duplicate()
+
+func can_collect_resource(resource_type: ResourcesEnum.Type) -> bool:
+	"""Check if a resource can be collected (for Gold/Iron, must be discovered first)"""
+	# For Gold and Iron, must be discovered first
+	if resource_type == ResourcesEnum.Type.GOLD or resource_type == ResourcesEnum.Type.IRON:
+		return has_discovered_ore(resource_type)
+	
+	# Other resources can be collected normally
+	return get_resource_amount(resource_type) > 0
+
+func reset_ore_search_turn_usage() -> void:
+	"""Reset the ore search usage flag for the new turn"""
+	ore_search_used_this_turn = false
+
+func get_ore_search_status_string() -> String:
+	"""Get a human-readable string describing ore search status"""
+	if not GameParameters.can_search_for_ore_in_region(region_type):
+		return "No ores in this region type"
+	
+	if ore_search_attempts_remaining <= 0:
+		return "All ore search attempts exhausted"
+	
+	var status = str(ore_search_attempts_remaining) + " search attempts remaining"
+	if ore_search_used_this_turn:
+		status += " (used this turn)"
+	
+	if not discovered_ores.is_empty():
+		status += "\nDiscovered ores: "
+		var ore_names: Array[String] = []
+		for ore in discovered_ores:
+			ore_names.append(ResourcesEnum.type_to_string(ore))
+		status += ", ".join(ore_names)
+	
+	return status

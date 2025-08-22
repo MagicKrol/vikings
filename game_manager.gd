@@ -154,6 +154,11 @@ func next_turn():
 	if _region_manager:
 		_region_manager.process_all_castle_construction()
 	
+	# Reset ore search turn usage for all regions
+	print("[GameManager] Resetting ore search turn usage...")
+	if _region_manager:
+		_region_manager.reset_all_ore_search_turn_usage()
+	
 	# Reset movement points for all armies
 	reset_movement_points()
 	

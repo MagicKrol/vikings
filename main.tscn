@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=25 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -22,7 +22,8 @@
 [ext_resource type="PackedScene" path="res://scenes/transfer_soldiers_modal.tscn" id="20_transfer"]
 [ext_resource type="PackedScene" path="res://scenes/transfer_select_modal.tscn" id="21_transferselect"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="22_selecttooltip"]
-[ext_resource type="Script" path="res://PlayerManagerNode.gd" id="23_player"]
+[ext_resource type="PackedScene" path="res://scenes/message_modal.tscn" id="23_messagemmodal"]
+[ext_resource type="Script" path="res://PlayerManagerNode.gd" id="24_player"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -62,7 +63,7 @@ script = ExtResource("7_game")
 script = ExtResource("14_sound")
 
 [node name="PlayerManager" type="Node" parent="."]
-script = ExtResource("23_player")
+script = ExtResource("24_player")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -102,6 +103,8 @@ script = ExtResource("8_ui")
 [node name="TransferSelectModal" parent="UI" instance=ExtResource("21_transferselect")]
 
 [node name="SelectTooltipModal" parent="UI" instance=ExtResource("22_selecttooltip")]
+
+[node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
 
 [node name="Players" type="Node2D" parent="."]
 
