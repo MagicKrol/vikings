@@ -75,3 +75,21 @@ static func get_cost(soldier_type: Type) -> int:
 # Get recruitment time for a soldier type
 static func get_recruitment_time(soldier_type: Type) -> int:
 	return GameParameters.get_unit_stat(soldier_type, "recruitment_time")
+
+# Get all traits for a soldier type
+static func get_traits(soldier_type: Type) -> Array:
+	return GameParameters.get_unit_traits(soldier_type)
+
+# Check if a soldier type has a specific trait
+static func has_trait(soldier_type: Type, trait_type) -> bool:
+	return GameParameters.unit_has_trait(soldier_type, trait_type)
+
+# Get trait names as strings for display
+static func get_trait_names(soldier_type: Type) -> Array[String]:
+	var trait_names: Array[String] = []
+	var traits = get_traits(soldier_type)
+	
+	for unit_trait in traits:
+		trait_names.append(UnitTraitEnum.type_to_display_name(unit_trait))
+	
+	return trait_names

@@ -161,33 +161,3 @@ vikings/
 ├── images/ - Textures and icons
 └── project.md - This documentation
 ```
-
-## Development Guidelines
-
-### Code Style
-- Use descriptive variable and function names
-- Add comments for complex logic
-- Follow GDScript naming conventions
-- Use type hints where appropriate
-
-### Performance Considerations
-- Minimize polygon complexity for large maps
-- Use object pooling for frequently created/destroyed objects
-- Optimize texture loading and caching
-- Consider LOD (Level of Detail) for distant regions
-
-### Extensibility
-- Modular design allows easy addition of new building types
-- Region management system supports multiple players
-- Icon system can be extended for new biomes
-- Camera system supports various input methods
-
-## Future Enhancements
-- Multiplayer support
-- Advanced AI for computer players
-- Resource management system
-- Combat mechanics
-- Dynamic weather effects
-- Save/load game state
-- Mini-map functionality
-- Unit pathfinding

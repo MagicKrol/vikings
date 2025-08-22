@@ -14,6 +14,8 @@ var attacker_header: Label
 var defender_header: Label
 var attacker_effectiveness: Label
 var defender_effectiveness: Label
+var attacker_defense: Label
+var defender_defense: Label
 var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
@@ -156,8 +158,18 @@ func _update_display() -> void:
 		attacker_effectiveness.visible = true
 		defender_effectiveness.visible = true
 		
-		# Update effectiveness displays
+		# Create or update defense labels
+		_create_defense_labels()
+		
+		# Show defense labels
+		if attacker_defense:
+			attacker_defense.visible = true
+		if defender_defense:
+			defender_defense.visible = true
+		
+		# Update effectiveness and defense displays
 		_update_effectiveness_displays()
+		_update_defense_displays()
 		
 		# Update attacker units
 		_update_attacker_units()
@@ -165,18 +177,72 @@ func _update_display() -> void:
 		# Update defender units  
 		_update_defender_units()
 
+func _create_defense_labels() -> void:
+	"""Create defense labels if they don't exist"""
+	if attacker_defense == null:
+		# Get the attacker column container
+		var attacker_column = attacker_effectiveness.get_parent()
+		
+		# Create attacker defense label (empty to maintain spacing)
+		attacker_defense = Label.new()
+		attacker_defense.text = ""
+		_apply_standard_theme(attacker_defense)
+		
+		# Insert after effectiveness label
+		var effectiveness_index = attacker_column.get_children().find(attacker_effectiveness)
+		attacker_column.add_child(attacker_defense)
+		attacker_column.move_child(attacker_defense, effectiveness_index + 1)
+		
+		# Convert to split format
+		_convert_single_label_to_split(attacker_defense)
+	
+	if defender_defense == null:
+		# Get the defender column container
+		var defender_column = defender_effectiveness.get_parent()
+		
+		# Create defender defense label
+		defender_defense = Label.new()
+		defender_defense.text = ""
+		_apply_standard_theme(defender_defense)
+		
+		# Insert after effectiveness label
+		var effectiveness_index = defender_column.get_children().find(defender_effectiveness)
+		defender_column.add_child(defender_defense)
+		defender_column.move_child(defender_defense, effectiveness_index + 1)
+		
+		# Convert to split format
+		_convert_single_label_to_split(defender_defense)
+
 func _update_effectiveness_displays() -> void:
 	"""Update the effectiveness labels with current efficiency values"""
 	if attacking_army == null or defending_region == null:
 		return
 	
+	# Check if we need to convert single labels to split text/value format
+	_convert_to_split_labels()
+	
 	# Get attacking army efficiency
 	var attacker_efficiency = attacking_army.get_efficiency()
-	attacker_effectiveness.text = "Efficiency: " + str(attacker_efficiency) + "%"
+	_update_split_label(attacker_effectiveness, "Efficiency:", str(attacker_efficiency) + "%")
 	
 	# Defender efficiency: garrison always 100%, armies use their efficiency
 	# For now, we're always fighting against garrison, so it's 100%
-	defender_effectiveness.text = "Efficiency: 100%"
+	_update_split_label(defender_effectiveness, "Efficiency:", "100%")
+
+func _update_defense_displays() -> void:
+	"""Update the defense labels with castle defense bonus"""
+	if attacking_army == null or defending_region == null:
+		return
+	
+	# Attacker gets no defense bonus (empty label for spacing)
+	if attacker_defense:
+		_update_split_label(attacker_defense, "", "")
+	
+	# Defender gets castle defense bonus
+	if defender_defense:
+		var castle_type = defending_region.get_castle_type()
+		var defense_bonus = GameParameters.get_castle_defense_bonus(castle_type)
+		_update_split_label(defender_defense, "Defense:", str(defense_bonus) + "%")
 
 func _display_battle_report() -> void:
 	"""Display the battle report screen"""
@@ -189,9 +255,13 @@ func _display_battle_report() -> void:
 	for child in defender_units_container.get_children():
 		child.queue_free()
 	
-	# Hide effectiveness labels (not needed for report)
+	# Hide effectiveness and defense labels (not needed for report)
 	attacker_effectiveness.visible = false
 	defender_effectiveness.visible = false
+	if attacker_defense:
+		attacker_defense.visible = false
+	if defender_defense:
+		defender_defense.visible = false
 	
 	# Change column headers
 	attacker_header.text = "Your Losses"
@@ -461,7 +531,9 @@ func _run_battle_simulation() -> void:
 	
 	# Start the animated battle with attacker efficiency
 	var attacker_efficiency = attacking_army.get_efficiency()
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency)
+	var terrain_type = defending_region.get_region_type()
+	var castle_type = defending_region.get_castle_type()
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type)
 	
 	print("[BattleModal] Starting animated battle simulation...")
 
@@ -551,6 +623,57 @@ func _on_withdraw_pressed() -> void:
 		animated_simulator.start_withdrawal_round()
 	
 	print("[BattleModal] Starting withdrawal...")
+
+func _convert_to_split_labels() -> void:
+	"""Convert single effectiveness labels to split text/value format"""
+	_convert_single_label_to_split(attacker_effectiveness)
+	_convert_single_label_to_split(defender_effectiveness)
+
+func _convert_single_label_to_split(label: Label) -> void:
+	"""Convert a single label to split text/value format with HBoxContainer"""
+	# Check if already converted (has HBoxContainer as child)
+	if label.get_child_count() > 0 and label.get_child(0) is HBoxContainer:
+		return
+	
+	# Clear existing text
+	label.text = ""
+	
+	# Create HBoxContainer for text and value
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 0)
+	label.add_child(hbox)
+	
+	# Create text label (left-aligned)
+	var text_label = Label.new()
+	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	text_label.custom_minimum_size = Vector2(120, 0)
+	text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_apply_standard_theme(text_label)
+	hbox.add_child(text_label)
+	
+	# Create value label (right-aligned, fixed width)
+	var value_label = Label.new()
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	value_label.custom_minimum_size = Vector2(60, 0)
+	_apply_standard_theme(value_label)
+	hbox.add_child(value_label)
+
+func _update_split_label(parent_label: Label, text: String, value: String) -> void:
+	"""Update a split label with text and value"""
+	if parent_label.get_child_count() == 0:
+		return
+	
+	var hbox = parent_label.get_child(0) as HBoxContainer
+	if hbox == null or hbox.get_child_count() < 2:
+		return
+	
+	var text_label = hbox.get_child(0) as Label
+	var value_label = hbox.get_child(1) as Label
+	
+	if text_label:
+		text_label.text = text
+	if value_label:
+		value_label.text = value
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""
