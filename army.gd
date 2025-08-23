@@ -38,8 +38,8 @@ var efficiency: int = 100  # Efficiency percentage (10-100), affects hit chances
 var composition: ArmyComposition
 
 func _init():
-	# Set up the army sprite
-	texture = load("res://images/warrior.png")
+	# Set up the army sprite with default warrior image (will be updated in setup)
+	texture = load("res://images/warrior_1.png")  # Default to player 1 warrior
 	scale = Vector2(0.06, 0.06)
 	z_index = 125
 
@@ -50,6 +50,9 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	number = roman_number
+	
+	# Set player-specific warrior texture
+	_set_warrior_texture(player_id)
 	
 	# Start with a basic army composition
 	composition.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, 20)
@@ -65,6 +68,9 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	number = roman_number
+	
+	# Set player-specific warrior texture
+	_set_warrior_texture(player_id)
 	
 	# Raised armies start empty - no soldiers
 	# Players need to recruit soldiers separately
@@ -143,3 +149,16 @@ func get_army_strength() -> int:
 func get_army_composition_string() -> String:
 	"""Get army composition as a readable string"""
 	return composition.get_composition_string()
+
+func _set_warrior_texture(player_number: int) -> void:
+	"""Set the warrior texture based on player number"""
+	var texture_path = "res://images/warrior_" + str(player_number) + ".png"
+	var new_texture = load(texture_path)
+	
+	if new_texture != null:
+		texture = new_texture
+		print("[Army] Set warrior texture for Player ", player_number, " to: ", texture_path)
+	else:
+		print("[Army] Warning: Could not load warrior texture for Player ", player_number, " at: ", texture_path)
+		# Fallback to default warrior image
+		texture = load("res://images/warrior_1.png")

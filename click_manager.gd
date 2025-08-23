@@ -168,9 +168,16 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 					battle_modal.show_battle(player_army_in_region, region)
 				return
 			
-			# Not a conquest scenario - show SelectModal normally
-			var select_modal = get_node("../UI/SelectModal") as SelectModal
-			select_modal.show_selection(region, armies_in_region)
+			# Not a conquest scenario - filter armies by current player ownership
+			var current_player_armies: Array[Army] = []
+			for army in armies_in_region:
+				if army.get_player_id() == current_player_id:
+					current_player_armies.append(army)
+			
+			# Only show SelectModal if current player has armies in this region
+			if not current_player_armies.is_empty():
+				var select_modal = get_node("../UI/SelectModal") as SelectModal
+				select_modal.show_selection(region, current_player_armies)
 		return
 	
 	# If we have a selected army, try to move it to this region

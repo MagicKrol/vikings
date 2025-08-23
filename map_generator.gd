@@ -710,13 +710,7 @@ func _get_region_owner(region_id: int) -> int:
 
 func _get_player_color(player_id: int) -> Color:
 	"""Get the color for a specific player"""
-	var player_colors = {
-		1: Color.from_string("#8B0000", Color.RED),  # Dark red
-		2: Color.from_string("#61727a", Color.BLUE),  # Custom blue-gray
-		3: Color.GREEN,
-		4: Color.YELLOW
-	}
-	var color = player_colors.get(player_id, Color.WHITE)
+	var color = GameParameters.get_player_color(player_id)
 	color.a = 0.5  # 50% transparency
 	return color
 
@@ -756,7 +750,7 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	
 	# Set player color with high transparency
 	var player_color = _get_player_color(player_id)
-	player_color.a = 0.15  # High transparency (15%)
+	player_color.a = 0.25  # High transparency (15%)
 	overlay_polygon.color = player_color
 	
 	# Set z-index to appear above the original polygon but below other elements

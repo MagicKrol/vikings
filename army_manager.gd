@@ -133,14 +133,17 @@ func _get_army_position_offset(region_container: Node) -> Vector2:
 	# Default positioning when no castle is present
 	return Vector2(0, -5)  # Army positioned slightly above center
 
-func select_army(army: Army, region_container: Node) -> void:
-	"""Select an army for movement"""
+func select_army(army: Army, region_container: Node, current_player_id: int = -1) -> void:
+	"""Select an army for movement - only allow selecting armies owned by current player"""
 	if army == null or not is_instance_valid(army):
-
 		return
 	
 	if region_container == null:
-
+		return
+	
+	# Check if army belongs to current player (if current_player_id is provided)
+	if current_player_id != -1 and army.get_player_id() != current_player_id:
+		print("[ArmyManager] Cannot select army owned by Player ", army.get_player_id(), " (current player is ", current_player_id, ")")
 		return
 	
 	selected_army = army

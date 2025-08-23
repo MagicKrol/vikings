@@ -28,10 +28,15 @@ class_name GameManager
 # Game state
 var current_turn: int = 1
 var current_player: int = 1
-var total_players: int = 4
+var total_players: int = 6
+
+# Turn management
+var players_per_round: Array[int] = [1, 2, 3, 4, 5, 6]  # Sequence: Player 1, 2, 3, 4, 5, 6
 
 # Game mode state
 var castle_placing_mode: bool = true
+var castle_placement_order: Array[int] = []  # Track castle placement order
+var castles_placed: int = 0
 
 # Player management
 var player_manager: PlayerManagerNode
@@ -45,6 +50,7 @@ var _ui_manager: UIManager
 
 # Modal references  
 var _battle_modal: BattleModal
+var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 
 # References to other managers
@@ -87,6 +93,7 @@ func initialize_managers():
 	# Get UI components
 	var ui_node = get_node("../UI")
 	_battle_modal = ui_node.get_node("BattleModal") as BattleModal
+	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	
 	# Connect UI components to ArmyManager
@@ -127,17 +134,48 @@ func _unhandled_input(event: InputEvent) -> void:
 			next_turn()
 
 func next_turn():
-	"""Advance to the next turn and perform turn-based actions"""
+	"""Advance to the next player's turn and perform turn-based actions"""
 	
-	print("[GameManager] === Starting turn ", current_turn + 1, " ===")
+	# Get next player in sequence
+	var next_player_id = _get_next_player()
+	var is_new_round = (next_player_id == players_per_round[0])
 	
-	# Process resource income for all players
-	print("[GameManager] Processing resource income...")
-	player_manager.process_resource_income()
+	if is_new_round:
+		# Starting a new round - increment turn counter
+		current_turn += 1
+		print("[GameManager] === Starting Round ", current_turn, " ===")
+		
+		# Process global turn-based actions only at start of new round
+		_process_round_start_actions()
 	
-	# Deduct food costs for armies and garrisons
-	print("[GameManager] Deducting army food costs...")
-	_process_army_food_costs()
+	# Set current player
+	current_player = next_player_id
+	player_manager.set_current_player(current_player)
+	
+	# Process player-specific turn start actions
+	_process_player_turn_start(current_player)
+	
+	# Show next player modal
+	if _next_player_modal:
+		_next_player_modal.show_next_player(current_player, false)
+	
+	# Update player status display
+	print("[GameManager] Round ", current_turn, " - Player ", current_player, "'s turn")
+	_update_player_status_display()
+
+func _get_next_player() -> int:
+	"""Get the next player in the turn sequence"""
+	var current_index = players_per_round.find(current_player)
+	if current_index == -1:
+		# Current player not found, start with first player
+		return players_per_round[0]
+	
+	var next_index = (current_index + 1) % players_per_round.size()
+	return players_per_round[next_index]
+
+func _process_round_start_actions():
+	"""Process actions that happen once per round (when Player 1 starts)"""
+	print("[GameManager] Processing round start actions...")
 	
 	# Grow population for all regions (before recruit replenishment)
 	print("[GameManager] Growing regional populations...")
@@ -161,17 +199,18 @@ func next_turn():
 	
 	# Reset movement points for all armies
 	reset_movement_points()
+
+func _process_player_turn_start(player_id: int):
+	"""Process actions that happen at the start of each player's turn"""
+	print("[GameManager] Processing turn start for Player ", player_id, "...")
 	
-	# Advance turn counter
-	current_turn += 1
+	# Process resource income for current player
+	print("[GameManager] Processing resource income for Player ", player_id, "...")
+	player_manager.process_resource_income_for_player(player_id)
 	
-	# Stay on Player 1 (human player) - no AI players for now
-	current_player = 1
-	player_manager.set_current_player(current_player)
-	
-	# Update player status display
-	print("[GameManager] Turn ", current_turn, " - Player 1 continues")
-	_update_player_status_display()
+	# Deduct food costs for current player's armies and garrisons
+	print("[GameManager] Deducting army food costs for Player ", player_id, "...")
+	_process_army_food_costs_for_player(player_id)
 	
 
 
@@ -188,13 +227,11 @@ func reset_movement_points():
 	else:
 		print("[GameManager] Warning: Cannot reset army moves - ClickManager not found")
 
-func _process_army_food_costs() -> void:
-	"""Process food costs for all armies and garrisons"""
-	# Currently only processing for Player 1 (human player)
-	var player_id = 1
+func _process_army_food_costs_for_player(player_id: int) -> void:
+	"""Process food costs for armies and garrisons for a specific player"""
 	var player = player_manager.get_player(player_id)
 	if player == null:
-		print("[GameManager] Warning: Player 1 not found for food cost processing")
+		print("[GameManager] Warning: Player ", player_id, " not found for food cost processing")
 		return
 	
 	# Calculate total food cost for all armies and garrisons
@@ -204,23 +241,23 @@ func _process_army_food_costs() -> void:
 		# Convert float cost to integer (round up)
 		var food_cost_int = int(ceil(total_food_cost))
 		
-		print("[GameManager] Total army food cost for Player 1: ", total_food_cost, " (rounded: ", food_cost_int, ")")
+		print("[GameManager] Total army food cost for Player ", player_id, ": ", total_food_cost, " (rounded: ", food_cost_int, ")")
 		
 		# Check if player has enough food
 		var current_food = player.get_resource_amount(ResourcesEnum.Type.FOOD)
 		if current_food >= food_cost_int:
 			# Deduct the food cost
 			player.remove_resources(ResourcesEnum.Type.FOOD, food_cost_int)
-			print("[GameManager] Deducted ", food_cost_int, " food from Player 1 (", current_food - food_cost_int, " remaining)")
+			print("[GameManager] Deducted ", food_cost_int, " food from Player ", player_id, " (", current_food - food_cost_int, " remaining)")
 		else:
 			# Player doesn't have enough food - this could lead to penalties
-			print("[GameManager] WARNING: Player 1 doesn't have enough food! Required: ", food_cost_int, ", Available: ", current_food)
+			print("[GameManager] WARNING: Player ", player_id, " doesn't have enough food! Required: ", food_cost_int, ", Available: ", current_food)
 			# For now, just deduct all available food
 			if current_food > 0:
 				player.remove_resources(ResourcesEnum.Type.FOOD, current_food)
-				print("[GameManager] Deducted all available food (", current_food, ") from Player 1")
+				print("[GameManager] Deducted all available food (", current_food, ") from Player ", player_id)
 	else:
-		print("[GameManager] No army food costs for Player 1")
+		print("[GameManager] No army food costs for Player ", player_id)
 
 func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
@@ -335,8 +372,28 @@ func handle_castle_placement(region: Region) -> void:
 				_visual_manager.place_army_visual(child, current_player)
 				break
 	
-	# End castle placing mode after placing one castle
-	castle_placing_mode = false
+	# Track castle placement order and advance to next player
+	castle_placement_order.append(current_player)
+	castles_placed += 1
+	print("[GameManager] Player ", current_player, " placed castle (", castles_placed, "/", total_players, ")")
+	
+	# Check if all players have placed castles
+	if castles_placed >= total_players:
+		# All castles placed - end castle placing mode and start normal gameplay
+		castle_placing_mode = false
+		print("[GameManager] All players have placed castles. Game begins!")
+		# Set current player to Player 1 to start normal gameplay
+		current_player = 1
+		player_manager.set_current_player(current_player)
+	else:
+		# Move to next player for castle placement
+		current_player = _get_next_player()
+		player_manager.set_current_player(current_player)
+		print("[GameManager] Next player to place castle: Player ", current_player)
+		
+		# Show next player modal for castle placement
+		if _next_player_modal:
+			_next_player_modal.show_next_player(current_player, true)
 	
 	# Show player status modal with current state
 	if _ui_manager:

@@ -171,13 +171,7 @@ func update_region_visuals() -> void:
 
 func _get_player_color(player_id: int) -> Color:
 	"""Get the color for a specific player"""
-	var player_colors = {
-		1: Color.RED,
-		2: Color.from_string("#61727a", Color.BLUE),  # Custom blue-gray
-		3: Color.GREEN,
-		4: Color.YELLOW
-	}
-	return player_colors.get(player_id, Color.WHITE)
+	return GameParameters.get_player_color(player_id)
 
 func generate_region_resources(region: Region) -> void:
 	"""Generate random resources for a region based on its biome type"""
