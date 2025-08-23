@@ -115,6 +115,35 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 	"""Set ownership of a region to a specific player"""
 	region_ownership[region_id] = player_id
 	
+	# Update the region's ownership tracking
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container != null:
+		var region = region_container as Region
+		if region != null:
+			region.set_region_owner(player_id)
+	
+	# Create colored overlay for owned region
+	if map_generator and map_generator.has_method("create_ownership_overlay"):
+		map_generator.create_ownership_overlay(region_id, player_id)
+	
+	# Trigger border recalculation for colored borders
+	if map_generator and map_generator.has_method("regenerate_borders_for_region"):
+		map_generator.regenerate_borders_for_region(region_id)
+	elif map_generator and map_generator.has_method("regenerate_borders"):
+		# Fallback to full regeneration
+		map_generator.regenerate_borders()
+
+func set_initial_region_ownership(region_id: int, player_id: int) -> void:
+	"""Set initial ownership of a region for castle placement with full recruitment"""
+	region_ownership[region_id] = player_id
+	
+	# Update the region's ownership tracking with full recruitment counter
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container != null:
+		var region = region_container as Region
+		if region != null:
+			region.set_initial_region_owner(player_id)
+	
 	# Create colored overlay for owned region
 	if map_generator and map_generator.has_method("create_ownership_overlay"):
 		map_generator.create_ownership_overlay(region_id, player_id)
@@ -130,23 +159,27 @@ func get_region_owner(region_id: int) -> int:
 	"""Get the player ID that owns a region, or -1 if unowned"""
 	return region_ownership.get(region_id, -1)
 
-func set_castle_starting_position(region_id: int, player_id: int) -> void:
-	"""Set a castle starting position for a player and claim the region"""
-	# Check if region is already owned
-	if get_region_owner(region_id) != -1:
-		return
+func set_castle_starting_position(region_id: int, player_id: int) -> bool:
+	"""Set a castle starting position for a player and claim the region. Returns true if successful."""
+	# Check if region is already owned by another player
+	var current_owner = get_region_owner(region_id)
+	if current_owner != -1 and current_owner != player_id:
+		print("[RegionManager] Cannot place castle - region ", region_id, " is already owned by Player ", current_owner)
+		return false
 	
 	# Set the castle starting position
 	castle_starting_positions[player_id] = region_id
 	
-	# Claim the starting region
-	set_region_ownership(region_id, player_id)
+	# Claim the starting region with full recruitment counter
+	set_initial_region_ownership(region_id, player_id)
 	
-	# Claim neighboring regions (expansion)
+	# Claim neighboring regions (expansion) with full recruitment counter
 	var neighbors = get_neighbor_regions(region_id)
 	for neighbor_id in neighbors:
 		if get_region_owner(neighbor_id) == -1:  # Only claim unowned regions
-			set_region_ownership(neighbor_id, player_id)
+			set_initial_region_ownership(neighbor_id, player_id)
+	
+	return true
 
 func get_castle_starting_position(player_id: int) -> int:
 	"""Get the region ID where a player's castle is located, or -1 if not set"""
@@ -164,6 +197,15 @@ func get_player_regions(player_id: int) -> Array[int]:
 			player_regions.append(region_id)
 	return player_regions
 
+func increment_all_ownership_counters() -> void:
+	"""Increment ownership counters for all owned regions (called each turn)"""
+	for region_id in region_ownership:
+		var region_container = map_generator.get_region_container_by_id(region_id)
+		if region_container != null:
+			var region = region_container as Region
+			if region != null:
+				region.increment_ownership_counter()
+
 func update_region_visuals() -> void:
 	"""Update the visual appearance of regions based on ownership"""
 	# This function is intentionally empty - no polygon tinting
@@ -174,20 +216,41 @@ func _get_player_color(player_id: int) -> Color:
 	return GameParameters.get_player_color(player_id)
 
 func generate_region_resources(region: Region) -> void:
-	"""Generate random resources for a region based on its biome type"""
+	"""Generate random resources for a region based on its biome type and level bonuses"""
 	if region == null or region.resources == null:
 		return
 	
 	var biome_type = region.get_region_type()
+	var region_level = region.get_region_level()
 	
 	# Clear existing resources
 	region.resources = ResourceComposition.new()
 	
-	# Generate resources based on region type using GameParameters
+	# Generate base resources based on region type using GameParameters
 	for resource_type in ResourcesEnum.get_all_types():
-		var amount = GameParameters.generate_resource_amount(biome_type, resource_type)
-		if amount > 0:
-			region.resources.set_resource_amount(resource_type, amount)
+		var base_amount = GameParameters.generate_resource_amount(biome_type, resource_type)
+		if base_amount > 0:
+			# Apply region level bonus: base_amount * (1 + (region_level - 1) * REGION_RESOURCE_LEVEL_MULTIPLIER)
+			var level_int = _region_level_to_int(region_level)
+			var level_multiplier = 1.0 + (level_int - 1) * GameParameters.REGION_RESOURCE_LEVEL_MULTIPLIER
+			var final_amount = round(base_amount * level_multiplier)
+			region.resources.set_resource_amount(resource_type, int(final_amount))
+
+func _region_level_to_int(region_level: RegionLevelEnum.Level) -> int:
+	"""Convert region level enum to integer"""
+	match region_level:
+		RegionLevelEnum.Level.L1:
+			return 1
+		RegionLevelEnum.Level.L2:
+			return 2
+		RegionLevelEnum.Level.L3:
+			return 3
+		RegionLevelEnum.Level.L4:
+			return 4
+		RegionLevelEnum.Level.L5:
+			return 5
+		_:
+			return 1  # Default to level 1
 
 func upgrade_castle_regions(castle_region: Region) -> void:
 	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
@@ -195,8 +258,8 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 	castle_region.set_region_level(RegionLevelEnum.Level.L3)
 	var castle_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L3)
 	castle_region.set_population(castle_population)
-	# Initialize recruits for castle region
-	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population)
+	# Initialize recruits for castle region (will have outpost castle type)
+	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population, CastleTypeEnum.Type.OUTPOST)
 	
 	# Get neighboring regions and upgrade them to L2
 	var neighbor_ids = get_neighbor_regions(castle_region.get_region_id())
@@ -208,8 +271,8 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
 				var neighbor_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
 				neighbor_region.set_population(neighbor_population)
-				# Initialize recruits for neighbor region
-				neighbor_region.available_recruits = GameParameters.calculate_max_recruits(neighbor_population)
+				# Initialize recruits for neighbor region (no castle)
+				neighbor_region.available_recruits = GameParameters.calculate_max_recruits(neighbor_population, CastleTypeEnum.Type.NONE)
 				break
 
 func _generate_all_region_resources() -> void:

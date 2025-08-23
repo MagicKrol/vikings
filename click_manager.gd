@@ -126,7 +126,14 @@ func _handle_region_click(region_container: Node) -> void:
 	# Delegate to GameManager based on game state
 	if _game_manager:
 		if _game_manager.is_castle_placing_mode():
-			_game_manager.handle_castle_placement(region)
+			# Check if castle placement is valid first
+			if _game_manager.can_place_castle_in_region(region):
+				_game_manager.handle_castle_placement(region)
+			else:
+				# Show info modal for invalid placement
+				var region_modal = get_node("../UI/RegionModal") as RegionModal
+				region_modal.show_region_info(region)
+				print("[ClickManager] Cannot place castle - region already owned by another player")
 		else:
 			# For now, delegate army handling back to legacy system
 			# TODO: Move to ArmyManager in future refactor

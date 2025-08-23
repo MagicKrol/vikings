@@ -176,7 +176,7 @@ func _render_from_json() -> void:
 
 	# Add background image
 	var background := Sprite2D.new()
-	background.texture = load("res://images/background3.png")
+	background.texture = load("res://images/background2.png")
 	var map_center = 500.0 * polygon_scale
 	background.position = Vector2(map_center, map_center)  # Center it
 	background.scale = Vector2(2 * polygon_scale, 2 * polygon_scale)  # Scale with polygons
@@ -477,7 +477,7 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 		if biome_name.to_lower() == "mountains":
 			Utils.create_mountain_icon_with_size_modifier(pg, region_data, icon_path, BIOME_ICON_SCALE, polygon_scale)
 		else:
-			_add_icon_at_region_center(pg, region_data, icon_path)
+			_add_icon_at_region_center(pg, region_data, icon_path, biome_name)
 
 	return pg
 
@@ -586,15 +586,16 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 	var is_mountain_border = _is_mountain_border_for_region(region_id, other_region_id)
 	
 	# Determine border type and styling based on ownership
-	if is_mountain_border:
-		# Mountain border: Solid black border
-		var line := Line2D.new()
-		line.points = seg
-		line.closed = false
-		line.width = 3.0 * polygon_scale
-		line.default_color = Color.BLACK  # Solid black for mountain borders
-		borders_container.add_child(line)
-	elif is_external_border:
+	# COMMENTED OUT: Mountain border special handling - using standard borders instead
+	#if is_mountain_border:
+		## Mountain border: Solid black border
+		#var line := Line2D.new()
+		#line.points = seg
+		#line.closed = false
+		#line.width = 3.0 * polygon_scale
+		#line.default_color = Color.BLACK  # Solid black for mountain borders
+		#borders_container.add_child(line)
+	if is_external_border:
 		# Ocean border: Double border system
 		if region_owner != -1:
 			# Owned region vs ocean: Create offset colored border for land side
@@ -618,7 +619,7 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 		line.points = seg
 		line.closed = false
 		line.width = 3.0 * polygon_scale
-		line.default_color = _get_player_color(region_owner)
+		line.default_color = _get_player_border_color(region_owner)
 		borders_container.add_child(line)
 	else:
 		# Same owner or unowned: Default style
@@ -713,6 +714,32 @@ func _get_player_color(player_id: int) -> Color:
 	var color = GameParameters.get_player_color(player_id)
 	color.a = 0.5  # 50% transparency
 	return color
+
+func _get_player_border_color(player_id: int) -> Color:
+	"""Get enhanced color for player borders - more saturated and darker"""
+	var base_color = GameParameters.get_player_color(player_id)
+	
+	# Special handling for white color (Player 5) to avoid pink/violet tints
+	if player_id == 5:  # Player 5 is white
+		# For white, simply darken without changing saturation to create grey
+		var grey_value = max(GameParameters.BORDER_MIN_VALUE, base_color.v - GameParameters.BORDER_VALUE_REDUCTION)
+		var border_color = Color(grey_value, grey_value, grey_value, GameParameters.BORDER_OPACITY)
+		return border_color
+	
+	# For colored players, enhance saturation and darken
+	var hue = base_color.h
+	var saturation = base_color.s
+	var value = base_color.v
+	
+	# Apply enhancement parameters from GameParameters
+	var enhanced_saturation = min(1.0, saturation + GameParameters.BORDER_SATURATION_BOOST)
+	var enhanced_value = max(GameParameters.BORDER_MIN_VALUE, value - GameParameters.BORDER_VALUE_REDUCTION)
+	
+	# Create the enhanced border color
+	var border_color = Color.from_hsv(hue, enhanced_saturation, enhanced_value)
+	border_color.a = GameParameters.BORDER_OPACITY
+	
+	return border_color
 
 func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	"""Create a semi-transparent colored polygon overlay for owned regions"""
@@ -901,7 +928,7 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 	line.points = offset_points
 	line.closed = false
 	line.width = 2.0 * polygon_scale
-	line.default_color = _get_player_color(player_id)
+	line.default_color = _get_player_border_color(player_id)
 	
 	borders_container.add_child(line)
 
@@ -948,7 +975,7 @@ func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, 
 	line.points = offset_points
 	line.closed = false
 	line.width = 2.0 * polygon_scale
-	line.default_color = _get_player_color(player_id)
+	line.default_color = _get_player_border_color(player_id)
 	
 	borders_container.add_child(line)
 
@@ -1206,7 +1233,7 @@ func _is_ocean_region_coastal(ocean_region_id: int) -> bool:
 	
 	return false  # No land neighbors found
 
-func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String) -> void:
+func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, biome_name: String = "") -> void:
 	if icon_path == "":
 		return
 	var center_data = region_data.get("center", [500, 500])
@@ -1218,8 +1245,17 @@ func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, i
 	if icon.texture == null:
 		return
 	icon.position = center + Vector2(0, -30)
-	icon.scale = Vector2(BIOME_ICON_SCALE * polygon_scale, BIOME_ICON_SCALE * polygon_scale)
+	
+	# Use forest-specific scale for forest biomes, otherwise use general biome scale
+	var icon_scale: float
+	if biome_name.to_lower() == "forest":
+		icon_scale = GameParameters.FOREST_ICON_SCALE
+	else:
+		icon_scale = GameParameters.BIOME_ICON_SCALE
+	
+	icon.scale = Vector2(icon_scale * polygon_scale, icon_scale * polygon_scale)
 	icon.z_index = parent_pg.z_index + 10
+	icon.modulate.a = 0.85  # High transparency (15%)
 	parent_pg.add_child(icon)
 
 func _create_region_points_for_all_regions() -> void:

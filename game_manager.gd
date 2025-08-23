@@ -177,6 +177,11 @@ func _process_round_start_actions():
 	"""Process actions that happen once per round (when Player 1 starts)"""
 	print("[GameManager] Processing round start actions...")
 	
+	# Increment ownership counters for all owned regions
+	print("[GameManager] Incrementing ownership counters...")
+	if _region_manager:
+		_region_manager.increment_all_ownership_counters()
+	
 	# Grow population for all regions (before recruit replenishment)
 	print("[GameManager] Growing regional populations...")
 	if _region_manager:
@@ -333,16 +338,44 @@ func get_current_player_id() -> int:
 	return current_player
 
 # Game flow coordination
+func can_place_castle_in_region(region: Region) -> bool:
+	"""Check if a castle can be placed in the given region"""
+	if not castle_placing_mode:
+		return false
+	
+	if region == null:
+		return false
+	
+	var region_id = region.get_region_id()
+	
+	# Check if region is already owned by another player
+	if _region_manager:
+		var current_owner = _region_manager.get_region_owner(region_id)
+		if current_owner != -1 and current_owner != current_player:
+			return false
+	
+	return true
+
 func handle_castle_placement(region: Region) -> void:
 	"""Coordinate the complete castle placement flow"""
 	if not castle_placing_mode:
+		return
+	
+	# Validate placement first
+	if not can_place_castle_in_region(region):
+		print("[GameManager] Castle placement failed - region already owned by another player")
 		return
 		
 	var region_id = region.get_region_id()
 	
 	# Set castle starting position (this will also claim neighboring regions)
+	var placement_successful = false
 	if _region_manager:
-		_region_manager.set_castle_starting_position(region_id, current_player)
+		placement_successful = _region_manager.set_castle_starting_position(region_id, current_player)
+	
+	if not placement_successful:
+		print("[GameManager] Castle placement failed - unexpected error")
+		return
 	
 	# Upgrade castle region and neighboring regions
 	if _region_manager:
@@ -396,10 +429,10 @@ func handle_castle_placement(region: Region) -> void:
 			_next_player_modal.show_next_player(current_player, true)
 	
 	# Show player status modal with current state
-	if _ui_manager:
-		var player_status_modal = _ui_manager.get_player_status_modal()
-		if player_status_modal:
-			player_status_modal.show_and_update()
+	var ui_node = get_node("../UI")
+	var player_status_modal = ui_node.get_node("PlayerStatusModal") as PlayerStatusModal
+	if player_status_modal:
+		player_status_modal.show_and_update()
 	
 	# Play sound
 	if _sound_manager:

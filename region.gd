@@ -52,6 +52,9 @@ var available_recruits: int = 0
 # Last turn's population growth (for UI display)
 var last_population_growth: int = 0
 
+# Promotion growth bonus tracking
+var promotion_growth_bonus_turns_remaining: int = 0
+
 # Castle information
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
@@ -61,6 +64,10 @@ var castle_build_turns_remaining: int = 0
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
 var discovered_ores: Array[ResourcesEnum.Type] = []  # Which ores have been discovered
 var ore_search_used_this_turn: bool = false  # Track if ore search was used this turn
+
+# Ownership tracking information
+var current_owner_id: int = 0  # Current owner player ID (0 = neutral)
+var ownership_turns_counter: int = 0  # How many turns region has been owned by current owner
 
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
@@ -80,7 +87,7 @@ func setup_region(region_data: Dictionary) -> void:
 		# Generate population based on region level
 		population = GameParameters.generate_population_size(region_level)
 		# Initialize available recruits based on population
-		available_recruits = GameParameters.calculate_max_recruits(population)
+		available_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 		# Initialize ore search attempts if region can have ores
 		if GameParameters.can_search_for_ore_in_region(region_type):
 			ore_search_attempts_remaining = GameParameters.ORE_SEARCH_CHANCES_PER_REGION
@@ -130,7 +137,18 @@ func get_region_level() -> RegionLevelEnum.Level:
 
 func set_region_level(level: RegionLevelEnum.Level) -> void:
 	"""Set the region level"""
+	var old_level = region_level
 	region_level = level
+	
+	# If promoted (not initial setup), activate promotion growth bonus
+	if old_level != RegionLevelEnum.Level.L1 or level != RegionLevelEnum.Level.L1:
+		if level > old_level:
+			start_promotion_growth_bonus()
+
+func start_promotion_growth_bonus() -> void:
+	"""Start the promotion growth bonus for this region"""
+	promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
+	print("[Region] ", region_name, " promoted! Growth bonus activated for ", promotion_growth_bonus_turns_remaining, " turns")
 
 func get_region_level_string() -> String:
 	"""Get the region level as a string"""
@@ -191,28 +209,35 @@ func set_population(new_population: int) -> void:
 	"""Set population for this region"""
 	population = max(0, new_population)
 	# Recalculate max recruits when population changes
-	var max_recruits = GameParameters.calculate_max_recruits(population)
+	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 	# Ensure available recruits don't exceed new maximum
 	available_recruits = min(available_recruits, max_recruits)
 
 # Recruit management methods
 func get_available_recruits() -> int:
-	"""Get current available recruits in this region"""
+	"""Get current available recruits in this region with ownership modifier"""
+	var base_recruits = available_recruits
+	var ownership_modifier = get_ownership_recruitment_modifier()
+	return int(base_recruits * ownership_modifier)
+
+func get_base_available_recruits() -> int:
+	"""Get base available recruits without ownership modifier (for internal calculations)"""
 	return available_recruits
 
 func get_max_recruits() -> int:
-	"""Get maximum recruits based on current population"""
-	return GameParameters.calculate_max_recruits(population)
+	"""Get maximum recruits based on current population and castle type"""
+	return GameParameters.calculate_max_recruits(population, castle_type)
 
 func hire_recruits(count: int) -> int:
 	"""Hire recruits from this region, returns actual hired count"""
-	var actual_hired = min(count, available_recruits)
+	var modified_available = get_available_recruits()  # Get ownership-modified available recruits
+	var actual_hired = min(count, modified_available)
 	if actual_hired > 0:
 		available_recruits -= actual_hired
 		# Reduce population by hired recruits
 		population -= actual_hired
 		# Recalculate max recruits after population reduction
-		var max_recruits = GameParameters.calculate_max_recruits(population)
+		var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 		# Ensure available recruits don't exceed new maximum
 		available_recruits = min(available_recruits, max_recruits)
 	return actual_hired
@@ -220,25 +245,35 @@ func hire_recruits(count: int) -> int:
 func replenish_recruits() -> void:
 	"""Replenish recruits based on current population (called each turn)"""
 	var replenishment = GameParameters.calculate_recruit_replenishment(population)
-	var max_recruits = GameParameters.calculate_max_recruits(population)
+	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 	available_recruits = min(available_recruits + replenishment, max_recruits)
 
 func grow_population() -> void:
-	"""Grow population per turn based on recruitment impact (called each turn)"""
+	"""Grow population per turn based on recruitment impact and promotion bonuses (called each turn)"""
 	if is_ocean:
 		return  # Ocean regions don't have population
 	
 	# Base growth rate from GameParameters
 	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
 	
-	# Calculate current recruit ratio (available / max) but cap at 1.0 to prevent Call to Arms from boosting growth above 3%
-	var max_recruits = GameParameters.calculate_max_recruits(population)
+	# Add promotion growth bonus if active
+	var promotion_bonus = 0.0
+	if promotion_growth_bonus_turns_remaining > 0:
+		var bonus_turn = GameParameters.PROMOTION_GROWTH_BONUS_TURNS - promotion_growth_bonus_turns_remaining + 1
+		promotion_bonus = GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
+		promotion_growth_bonus_turns_remaining -= 1
+	
+	# Total growth rate with promotion bonus
+	var total_base_growth_rate = base_growth_rate + promotion_bonus
+	
+	# Calculate current recruit ratio (available / max) but cap at 1.0 to prevent Call to Arms from boosting growth above base rate
+	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 	var recruit_ratio = 0.0
 	if max_recruits > 0:
 		recruit_ratio = min(1.0, float(available_recruits) / float(max_recruits))
 	
-	# Growth rate is modified by recruit availability: base_rate * (available_recruits / max_recruits), capped at base_rate
-	var actual_growth_rate = base_growth_rate * recruit_ratio
+	# Growth rate is modified by recruit availability: total_base_rate * (available_recruits / max_recruits), capped at total_base_rate
+	var actual_growth_rate = total_base_growth_rate * recruit_ratio
 	
 	# Calculate population growth (rounded down)
 	var population_growth = int(population * actual_growth_rate)
@@ -252,7 +287,12 @@ func grow_population() -> void:
 		
 		# Recalculate max recruits based on new population, but don't change available recruits
 		# (the available recruits will be updated in the next recruit replenishment phase)
-		print("[Region] ", region_name, " population grew from ", old_population, " to ", population, " (+" , population_growth, ", rate: ", actual_growth_rate * 100, "%)")
+		var growth_info = " (+" + str(population_growth) + ", rate: " + str(snappedf(actual_growth_rate * 100, 0.1)) + "%"
+		if promotion_bonus > 0.0:
+			growth_info += ", promotion bonus: +" + str(snappedf(promotion_bonus * 100, 0.1)) + "%"
+			growth_info += ", " + str(promotion_growth_bonus_turns_remaining) + " turns remaining"
+		growth_info += ")"
+		print("[Region] ", region_name, " population grew from ", old_population, " to ", population, growth_info)
 
 # Castle management methods
 func get_castle_type() -> CastleTypeEnum.Type:
@@ -260,8 +300,13 @@ func get_castle_type() -> CastleTypeEnum.Type:
 	return castle_type
 
 func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
-	"""Set the castle type (used when construction completes)"""
+	"""Set the castle type (used when construction completes or upgrades)"""
+	var old_castle_type = castle_type
 	castle_type = new_castle_type
+	
+	# Recalculate recruitment limits when castle type changes
+	if old_castle_type != new_castle_type:
+		_recalculate_recruitment_limits()
 
 func has_castle() -> bool:
 	"""Check if region has any castle"""
@@ -305,12 +350,30 @@ func process_castle_construction() -> bool:
 		castle_build_turns_remaining = 0
 		print("[Region] Castle construction completed in ", region_name, "! Built: ", CastleTypeEnum.type_to_string(completed_castle_type))
 		
+		# Recalculate recruitment limits based on new castle type
+		_recalculate_recruitment_limits()
+		
 		# Trigger visual update by finding and calling the visual manager
 		_update_castle_visual()
 		
 		return true
 	
 	return false
+
+func _recalculate_recruitment_limits() -> void:
+	"""Recalculate recruitment limits when castle type changes"""
+	var new_max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	
+	# If the new max is higher, we don't change available recruits (they can recruit more)
+	# If the new max is lower, we cap available recruits to the new maximum
+	available_recruits = min(available_recruits, new_max_recruits)
+	
+	var old_percentage = GameParameters.get_castle_recruitment_percentage(CastleTypeEnum.Type.NONE)
+	var new_percentage = GameParameters.get_castle_recruitment_percentage(castle_type)
+	
+	print("[Region] Recruitment limits updated in ", region_name, ": ", 
+		  int(old_percentage * 100), "% -> ", int(new_percentage * 100), 
+		  "% (", available_recruits, "/", new_max_recruits, " recruits)")
 
 func _update_castle_visual() -> void:
 	"""Update the castle visual when construction completes"""
@@ -442,3 +505,42 @@ func get_ore_search_status_string() -> String:
 		status += ", ".join(ore_names)
 	
 	return status
+
+# Ownership tracking methods
+func set_region_owner(owner_id: int) -> void:
+	"""Set region owner and reset ownership counter (called when ownership changes)"""
+	if current_owner_id != owner_id:
+		var old_owner = current_owner_id
+		current_owner_id = owner_id
+		ownership_turns_counter = 0  # Reset counter on ownership change
+		print("[Region] ", region_name, " ownership changed from Player ", old_owner, " to Player ", owner_id, " (recruitment counter reset)")
+
+func set_initial_region_owner(owner_id: int) -> void:
+	"""Set region owner for initial castle placement with full recruitment counter"""
+	current_owner_id = owner_id
+	ownership_turns_counter = 5  # Full recruitment immediately available
+	print("[Region] ", region_name, " initially claimed by Player ", owner_id, " (full recruitment available)")
+
+func get_region_owner() -> int:
+	"""Get current region owner player ID"""
+	return current_owner_id
+
+func get_ownership_turns() -> int:
+	"""Get how many turns region has been owned by current owner"""
+	return ownership_turns_counter
+
+func increment_ownership_counter() -> void:
+	"""Increment ownership counter (called each turn for owned regions)"""
+	if current_owner_id > 0:  # Only increment if region is owned
+		ownership_turns_counter += 1
+
+func get_ownership_recruitment_modifier() -> float:
+	"""Get the recruitment modifier based on ownership duration"""
+	if current_owner_id == 0:  # Neutral regions have no recruitment modifier
+		return 1.0
+	
+	if ownership_turns_counter >= 5:  # Full recruitment after 5 turns
+		return 1.0
+	
+	# 0 turns = 0%, 1 turn = 20%, 2 turns = 40%, etc.
+	return ownership_turns_counter * 0.2
