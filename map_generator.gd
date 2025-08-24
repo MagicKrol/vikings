@@ -3,7 +3,7 @@ extends Node2D
 class_name MapGenerator
 
 # Configuration
-@export var data_file_path: String = "data9.json"
+@export var data_file_path: String = "data8.json"
 @export var noisy_edges_enabled: bool = true
 @export var debug_draw_overlay: bool = false
 @export var show_region_colors: bool = false
@@ -785,8 +785,6 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	
 	# Add to region container
 	region_container.add_child(overlay_polygon)
-	
-	print("[MapGenerator] Created ownership overlay for region ", region_id, " with color ", player_color)
 
 func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 	"""Extract polygon points directly from the existing Line2D borders"""
@@ -827,7 +825,6 @@ func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 	# For now, use a simple approach: get the boundary points
 	var polygon_points = _create_polygon_from_border_points(all_border_points)
 	
-	print("[MapGenerator] Created noisy polygon with ", polygon_points.size(), " points from ", all_border_points.size(), " border points")
 	return polygon_points
 
 func _create_polygon_from_border_points(border_points: PackedVector2Array) -> PackedVector2Array:

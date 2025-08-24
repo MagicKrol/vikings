@@ -69,6 +69,13 @@ var ore_search_used_this_turn: bool = false  # Track if ore search was used this
 var current_owner_id: int = 0  # Current owner player ID (0 = neutral)
 var ownership_turns_counter: int = 0  # How many turns region has been owned by current owner
 
+# AI Scoring data - calculated once, stored permanently until recalculation needed
+var ai_cluster_score: float = 0.0              # Final cluster score (0-100)
+var ai_individual_score: float = 0.0           # Individual region score (0-100)
+var ai_scoring_factors: Dictionary = {}        # Detailed factors (pop_score, resource_score, etc.)
+var ai_cluster_data: Dictionary = {}           # Cluster metrics (total_population, resources, etc.)
+var ai_scoring_valid: bool = false             # Whether stored scores are still valid
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -148,7 +155,6 @@ func set_region_level(level: RegionLevelEnum.Level) -> void:
 func start_promotion_growth_bonus() -> void:
 	"""Start the promotion growth bonus for this region"""
 	promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
-	print("[Region] ", region_name, " promoted! Growth bonus activated for ", promotion_growth_bonus_turns_remaining, " turns")
 
 func get_region_level_string() -> String:
 	"""Get the region level as a string"""
@@ -519,7 +525,6 @@ func set_initial_region_owner(owner_id: int) -> void:
 	"""Set region owner for initial castle placement with full recruitment counter"""
 	current_owner_id = owner_id
 	ownership_turns_counter = 5  # Full recruitment immediately available
-	print("[Region] ", region_name, " initially claimed by Player ", owner_id, " (full recruitment available)")
 
 func get_region_owner() -> int:
 	"""Get current region owner player ID"""
@@ -544,3 +549,37 @@ func get_ownership_recruitment_modifier() -> float:
 	
 	# 0 turns = 0%, 1 turn = 20%, 2 turns = 40%, etc.
 	return ownership_turns_counter * 0.2
+
+# AI Scoring management methods
+func set_ai_scores(cluster_score: float, individual_score: float, factors: Dictionary, cluster_data: Dictionary) -> void:
+	"""Set AI scoring data for this region"""
+	ai_cluster_score = cluster_score
+	ai_individual_score = individual_score
+	ai_scoring_factors = factors
+	ai_cluster_data = cluster_data
+	ai_scoring_valid = true
+
+func get_ai_cluster_score() -> float:
+	"""Get stored cluster score (0-100), returns 0 if invalid"""
+	return ai_cluster_score if ai_scoring_valid else 0.0
+
+func get_ai_individual_score() -> float:
+	"""Get stored individual score (0-100), returns 0 if invalid"""
+	return ai_individual_score if ai_scoring_valid else 0.0
+
+func get_ai_scoring_factors() -> Dictionary:
+	"""Get detailed scoring factors, returns empty if invalid"""
+	return ai_scoring_factors if ai_scoring_valid else {}
+
+func get_ai_cluster_data() -> Dictionary:
+	"""Get cluster metrics data, returns empty if invalid"""
+	return ai_cluster_data if ai_scoring_valid else {}
+
+func is_ai_scoring_valid() -> bool:
+	"""Check if stored AI scores are still valid"""
+	return ai_scoring_valid
+
+func invalidate_ai_scores() -> void:
+	"""Mark AI scores as invalid (called when game state changes)"""
+	ai_scoring_valid = false
+	# Keep the data but mark it invalid - will be recalculated when needed

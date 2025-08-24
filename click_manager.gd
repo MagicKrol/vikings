@@ -126,6 +126,12 @@ func _handle_region_click(region_container: Node) -> void:
 	# Delegate to GameManager based on game state
 	if _game_manager:
 		if _game_manager.is_castle_placing_mode():
+			# Only allow human players to place castles by clicking
+			var current_player_id = _game_manager.get_current_player_id()
+			if not _game_manager.is_player_human(current_player_id):
+				print("[ClickManager] Click ignored - current player (", current_player_id, ") is not human controlled")
+				return
+			
 			# Check if castle placement is valid first
 			if _game_manager.can_place_castle_in_region(region):
 				_game_manager.handle_castle_placement(region)

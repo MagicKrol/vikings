@@ -30,6 +30,17 @@ var current_turn: int = 1
 var current_player: int = 1
 var total_players: int = 6
 
+# Player type management (up to 6 players)
+var player_types: Array[PlayerTypeEnum.Type] = [
+	PlayerTypeEnum.Type.HUMAN,      # Player 1 - Human
+	PlayerTypeEnum.Type.COMPUTER,   # Player 2 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 3 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 4 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 5 - Computer
+	PlayerTypeEnum.Type.COMPUTER    # Player 6 - Computer
+]
+
+
 # Turn management
 var players_per_round: Array[int] = [1, 2, 3, 4, 5, 6]  # Sequence: Player 1, 2, 3, 4, 5, 6
 
@@ -47,6 +58,11 @@ var _army_manager: ArmyManager
 var _battle_manager: BattleManager
 var _visual_manager: VisualManager
 var _ui_manager: UIManager
+
+# AI system references
+var _ai_region_scorer: RegionScorer
+var _ai_castle_placement_scorer: CastlePlacementScorer
+var _ai_debug_visualizer: AIDebugVisualizer
 
 # Modal references  
 var _battle_modal: BattleModal
@@ -112,26 +128,43 @@ func initialize_managers():
 	_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
+	# Initialize AI system
+	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
+	_ai_castle_placement_scorer = CastlePlacementScorer.new(_region_manager, map_generator)
+	_ai_debug_visualizer = AIDebugVisualizer.new()
+	_ai_debug_visualizer.initialize(_ai_region_scorer, _ai_castle_placement_scorer, map_generator)
+	
+	# Add AI debug visualizer to the scene tree
+	var map_node = get_node("../Map")
+	map_node.add_child(_ai_debug_visualizer)
+	print("[GameManager] AI system initialized")
+	
 	# Get the PlayerManager node and initialize it with required components
 	player_manager = get_node("../PlayerManager") as PlayerManagerNode
 	if player_manager:
 		player_manager.initialize_with_managers(_region_manager, map_generator)
 		player_manager.set_army_manager(_army_manager)
 	
-	# Run battle system test on startup (remove this after testing)
-	BattleSimulator.run_test_battle()
-	
-	# Print initial player resources
+	# Print initial player resources and types
 	print("[GameManager] Game initialized with ", total_players, " players")
+	print("[GameManager] Player types:")
+	for i in range(1, total_players + 1):
+		print("  Player ", i, ": ", PlayerTypeEnum.type_to_string(get_player_type(i)))
 	player_manager.print_all_resources()
+	
+	# Initialize castle placement with proper player type handling
+	_initialize_castle_placement_sequence()
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Handle Enter key to end turn
+	# Handle keyboard shortcuts
 	if event is InputEventKey and event.pressed:
-
 		if event.keycode == KEY_ENTER:
-
 			next_turn()
+		elif event.keycode == KEY_0:
+			# Toggle AI debug visualization
+			if _ai_debug_visualizer:
+				_ai_debug_visualizer.toggle_debug_display(current_player)
+				print("[GameManager] AI debug toggle for Player ", current_player)
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
@@ -172,6 +205,42 @@ func _get_next_player() -> int:
 	
 	var next_index = (current_index + 1) % players_per_round.size()
 	return players_per_round[next_index]
+
+func _get_next_active_player() -> int:
+	"""Get the next active player (skipping OFF players)"""
+	var starting_player = current_player
+	var next_player = _get_next_player()
+	
+	# Keep searching until we find an active player or loop back
+	while not is_player_active(next_player) and next_player != starting_player:
+		var temp_current = current_player
+		current_player = next_player  # Temporarily set to get the next player
+		next_player = _get_next_player()
+		current_player = temp_current  # Restore current player
+		
+		# If we've checked all players and none are active, return starting player
+		if next_player == starting_player:
+			break
+	
+	return next_player if is_player_active(next_player) else starting_player
+
+
+func _initialize_castle_placement_sequence() -> void:
+	"""Initialize castle placement sequence, starting with first active player"""
+	# Find the first active player to start castle placement
+	current_player = 1
+	if not is_player_active(current_player):
+		current_player = _get_next_active_player()
+	
+	player_manager.set_current_player(current_player)
+	print("[GameManager] Castle placement starting with Player ", current_player, " (", PlayerTypeEnum.type_to_string(get_player_type(current_player)), ")")
+	
+	# If the first player is AI, trigger AI placement immediately
+	if is_player_computer(current_player):
+		print("[GameManager] First player is AI - starting automatic placement...")
+		# Use a small delay to ensure all systems are ready
+		await get_tree().create_timer(1.0).timeout
+		_handle_ai_castle_placement(current_player)
 
 func _process_round_start_actions():
 	"""Process actions that happen once per round (when Player 1 starts)"""
@@ -285,6 +354,78 @@ func get_current_player() -> int:
 func get_total_players() -> int:
 	"""Get the total number of players"""
 	return total_players
+
+# Player type management
+func get_player_type(player_id: int) -> PlayerTypeEnum.Type:
+	"""Get the type of a specific player"""
+	if player_id >= 1 and player_id <= player_types.size():
+		return player_types[player_id - 1]  # Convert 1-based to 0-based index
+	return PlayerTypeEnum.Type.OFF
+
+func set_player_type(player_id: int, type: PlayerTypeEnum.Type) -> void:
+	"""Set the type of a specific player"""
+	if player_id >= 1 and player_id <= player_types.size():
+		player_types[player_id - 1] = type  # Convert 1-based to 0-based index
+		print("[GameManager] Player ", player_id, " set to ", PlayerTypeEnum.type_to_string(type))
+
+func is_player_active(player_id: int) -> bool:
+	"""Check if a player is active (not OFF)"""
+	return get_player_type(player_id) != PlayerTypeEnum.Type.OFF
+
+func is_player_human(player_id: int) -> bool:
+	"""Check if a player is human controlled"""
+	return get_player_type(player_id) == PlayerTypeEnum.Type.HUMAN
+
+func is_player_computer(player_id: int) -> bool:
+	"""Check if a player is AI controlled"""
+	return get_player_type(player_id) == PlayerTypeEnum.Type.COMPUTER
+
+
+func _handle_ai_castle_placement(player_id: int) -> void:
+	"""Handle AI castle placement by selecting highest scored region with randomness"""
+	if not _ai_castle_placement_scorer:
+		print("[GameManager] Error: AI castle placement scorer not available")
+		return
+	
+	# Get all owned regions to calculate enemy distances
+	var owned_regions: Array[int] = []
+	var regions_node = get_node("../Map/Regions")
+	if regions_node:
+		for child in regions_node.get_children():
+			if child is Region:
+				var region = child as Region
+				var owner = region.get_region_owner()
+				if owner > 0:  # Any owned region
+					owned_regions.append(region.get_region_id())
+	
+	# Score all castle placement candidates
+	var scored_candidates = _ai_castle_placement_scorer.score_castle_placement_candidates(owned_regions)
+	
+	if scored_candidates.is_empty():
+		print("[GameManager] No valid castle placement candidates for AI Player ", player_id)
+		return
+	
+	# Apply random modifier to each region's score (fresh random value for each region)
+	for candidate in scored_candidates:
+		var random_modifier = randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
+		candidate.OverallScore += random_modifier / 100.0  # Convert to 0-1 scale to match OverallScore
+	
+	# Sort again after applying random modifiers
+	scored_candidates.sort_custom(func(a, b): return a.OverallScore > b.OverallScore)
+	
+	# Select the highest scored region (now with randomness applied)
+	var best_candidate = scored_candidates[0]
+	var best_region_id = best_candidate.regionId
+	var best_score = best_candidate.OverallScore
+	
+	print("[GameManager] AI Player ", player_id, " selecting region ", best_region_id, " with final score ", snappedf(best_score * 100, 0.1), " (includes random modifier)")
+	
+	# Find the region and place castle
+	if regions_node:
+		for child in regions_node.get_children():
+			if child is Region and child.get_region_id() == best_region_id:
+				handle_castle_placement(child)
+				break
 
 # Player resource management
 func get_player_manager() -> PlayerManagerNode:
@@ -410,29 +551,54 @@ func handle_castle_placement(region: Region) -> void:
 	castles_placed += 1
 	print("[GameManager] Player ", current_player, " placed castle (", castles_placed, "/", total_players, ")")
 	
-	# Check if all players have placed castles
-	if castles_placed >= total_players:
-		# All castles placed - end castle placing mode and start normal gameplay
+	# Check if all active players have placed castles
+	var active_players_count = 0
+	for i in range(1, total_players + 1):
+		if is_player_active(i):
+			active_players_count += 1
+	
+	if castles_placed >= active_players_count:
+		# All active players placed castles - end castle placing mode and start normal gameplay
 		castle_placing_mode = false
-		print("[GameManager] All players have placed castles. Game begins!")
+		print("[GameManager] All active players have placed castles. Game begins!")
 		# Set current player to Player 1 to start normal gameplay
 		current_player = 1
 		player_manager.set_current_player(current_player)
 	else:
-		# Move to next player for castle placement
-		current_player = _get_next_player()
+		# Move to next active player for castle placement
+		current_player = _get_next_active_player()
 		player_manager.set_current_player(current_player)
-		print("[GameManager] Next player to place castle: Player ", current_player)
+		print("[GameManager] Next player to place castle: Player ", current_player, " (", PlayerTypeEnum.type_to_string(get_player_type(current_player)), ")")
 		
-		# Show next player modal for castle placement
-		if _next_player_modal:
-			_next_player_modal.show_next_player(current_player, true)
+		# Handle different player types
+		if is_player_human(current_player):
+			# Show next player modal for human player
+			if _next_player_modal:
+				_next_player_modal.show_next_player(current_player, true)
+		elif is_player_computer(current_player):
+			# AI player - automatically place castle using AI system
+			print("[GameManager] AI Player ", current_player, " placing castle automatically...")
+			# Use a short delay to allow visuals to update
+			await get_tree().create_timer(0.5).timeout
+			_handle_ai_castle_placement(current_player)
+		# OFF players are skipped by _get_next_active_player()
 	
 	# Show player status modal with current state
 	var ui_node = get_node("../UI")
 	var player_status_modal = ui_node.get_node("PlayerStatusModal") as PlayerStatusModal
 	if player_status_modal:
 		player_status_modal.show_and_update()
+	
+	# Update AI debug scores if debug mode is active (for next player's perspective)
+	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
+		# Get the next player who will be placing a castle
+		var next_player_for_scoring = current_player
+		if castles_placed < total_players:
+			next_player_for_scoring = _get_next_player()
+		
+		print("[GameManager] Recalculating AI debug scores for Player ", next_player_for_scoring, " after castle placement")
+		_ai_debug_visualizer._update_scores_for_player(next_player_for_scoring)
+		_ai_debug_visualizer.queue_redraw()
 	
 	# Play sound
 	if _sound_manager:
@@ -454,3 +620,12 @@ func get_region_manager() -> RegionManager:
 func get_army_manager() -> ArmyManager:
 	"""Get the ArmyManager instance"""
 	return _army_manager
+
+func refresh_ai_debug_scores():
+	"""Refresh AI debug scores for the current player (callable from external systems)"""
+	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
+		print("[GameManager] Manually refreshing AI debug scores for Player ", current_player)
+		_ai_debug_visualizer._update_scores_for_player(current_player)
+		# Apply fresh random values to the display
+		_ai_debug_visualizer._update_display_cache_from_regions()
+		_ai_debug_visualizer.queue_redraw()

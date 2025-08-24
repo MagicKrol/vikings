@@ -292,8 +292,6 @@ func _generate_all_region_resources() -> void:
 		if child is Region:
 			generate_region_resources(child)
 			regions_generated += 1
-	
-	print("[RegionManager] Generated resources for ", regions_generated, " regions")
 
 func replenish_all_recruits() -> void:
 	"""Replenish recruits for all regions (called each turn)"""

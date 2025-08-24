@@ -12,7 +12,7 @@ var game_music: AudioStream
 var starting_horn: AudioStream
 
 # Music state
-var music_enabled: bool = true
+var music_enabled: bool = false
 
 func _ready():
 	# Add the audio players to the scene tree
@@ -70,7 +70,7 @@ func play_game_start_sequence() -> void:
 	print("[SoundManager] horn_player: ", horn_player)
 	print("[SoundManager] starting_horn: ", starting_horn)
 	
-	if horn_player and starting_horn:
+	if music_enabled and horn_player and starting_horn:
 		print("[SoundManager] Playing starting horn...")
 		horn_player.stream = starting_horn
 		horn_player.play()
