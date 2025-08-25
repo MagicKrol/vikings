@@ -63,6 +63,7 @@ var _ui_manager: UIManager
 var _ai_region_scorer: RegionScorer
 var _ai_castle_placement_scorer: CastlePlacementScorer
 var _ai_debug_visualizer: AIDebugVisualizer
+var _ai_turn_manager: AITurnManager
 
 # Modal references  
 var _battle_modal: BattleModal
@@ -133,6 +134,7 @@ func initialize_managers():
 	_ai_castle_placement_scorer = CastlePlacementScorer.new(_region_manager, map_generator)
 	_ai_debug_visualizer = AIDebugVisualizer.new()
 	_ai_debug_visualizer.initialize(_ai_region_scorer, _ai_castle_placement_scorer, map_generator)
+	_ai_turn_manager = AITurnManager.new(_region_manager, _army_manager, player_manager, map_generator)
 	
 	# Add AI debug visualizer to the scene tree
 	var map_node = get_node("../Map")
@@ -187,6 +189,14 @@ func next_turn():
 	
 	# Process player-specific turn start actions
 	_process_player_turn_start(current_player)
+	
+	# Check if current player is AI and handle AI turn processing
+	print("[GameManager] Checking AI turn: castle_placing_mode=", castle_placing_mode, ", current_player=", current_player, ", is_computer=", is_player_computer(current_player))
+	if not castle_placing_mode and is_player_computer(current_player):
+		print("[GameManager] AI Player ", current_player, " starting turn processing...")
+		_process_ai_turn(current_player)
+	else:
+		print("[GameManager] Skipping AI turn processing")
 	
 	# Show next player modal
 	if _next_player_modal:
@@ -564,6 +574,11 @@ func handle_castle_placement(region: Region) -> void:
 		# Set current player to Player 1 to start normal gameplay
 		current_player = 1
 		player_manager.set_current_player(current_player)
+		
+		# Start the first turn of normal gameplay
+		print("[GameManager] Starting first turn of normal gameplay...")
+		await get_tree().create_timer(0.5).timeout  # Brief delay for UI updates
+		_start_first_turn()
 	else:
 		# Move to next active player for castle placement
 		current_player = _get_next_active_player()
@@ -629,3 +644,59 @@ func refresh_ai_debug_scores():
 		# Apply fresh random values to the display
 		_ai_debug_visualizer._update_display_cache_from_regions()
 		_ai_debug_visualizer.queue_redraw()
+
+func _process_ai_turn(player_id: int) -> void:
+	"""Process all AI actions for this player's turn (non-async version for regular turns)"""
+	print("[GameManager] _process_ai_turn called for Player ", player_id)
+	if _ai_turn_manager == null:
+		print("[GameManager] Error: AI turn manager not available")
+		return
+	
+	print("[GameManager] Delegating to AITurnManager...")
+	# Process all AI actions for this turn
+	_ai_turn_manager.process_turn(player_id)
+	
+	# After AI processing is complete, automatically end the turn
+	print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
+	await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
+	next_turn()
+
+func _process_ai_turn_async(player_id: int) -> void:
+	"""Process all AI actions for this player's turn (async version for first turn)"""
+	print("[GameManager] _process_ai_turn_async called for Player ", player_id)
+	if _ai_turn_manager == null:
+		print("[GameManager] Error: AI turn manager not available")
+		return
+	
+	print("[GameManager] Delegating to AITurnManager...")
+	# Process all AI actions for this turn
+	_ai_turn_manager.process_turn(player_id)
+	
+	# After AI processing is complete, automatically end the turn
+	print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
+	await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
+	next_turn()
+
+func _start_first_turn() -> void:
+	"""Start the first turn after castle placement completes"""
+	print("[GameManager] _start_first_turn called for Player ", current_player)
+	
+	# Process player-specific turn start actions
+	_process_player_turn_start(current_player)
+	
+	# Check if current player is AI and handle AI turn processing
+	print("[GameManager] Checking AI turn: castle_placing_mode=", castle_placing_mode, ", current_player=", current_player, ", is_computer=", is_player_computer(current_player))
+	if not castle_placing_mode and is_player_computer(current_player):
+		print("[GameManager] AI Player ", current_player, " starting turn processing...")
+		await _process_ai_turn_async(current_player)  # Use async version for first turn
+		return  # Exit early since AI turn handling includes next_turn() call
+	else:
+		print("[GameManager] Skipping AI turn processing")
+	
+	# Show next player modal
+	if _next_player_modal:
+		_next_player_modal.show_next_player(current_player, false)
+	
+	# Update player status display
+	print("[GameManager] Round ", current_turn, " - Player ", current_player, "'s turn")
+	_update_player_status_display()

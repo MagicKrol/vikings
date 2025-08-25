@@ -439,6 +439,15 @@ func get_all_armies() -> Array[Army]:
 				all_armies.append(army)
 	return all_armies
 
+func get_player_armies(player_id: int) -> Array[Army]:
+	"""Get all armies for a specific player"""
+	var player_armies: Array[Army] = []
+	if armies_by_player.has(player_id):
+		for army in armies_by_player[player_id]:
+			if is_instance_valid(army):
+				player_armies.append(army)
+	return player_armies
+
 # Legacy constants - now using RegionTypeEnum for movement costs
 
 func can_army_move_to_region(army: Army, region_container: Node) -> bool:
