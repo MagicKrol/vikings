@@ -65,6 +65,10 @@ var _ai_castle_placement_scorer: CastlePlacementScorer
 var _ai_debug_visualizer: AIDebugVisualizer
 var _ai_turn_manager: AITurnManager
 
+# Step-by-step AI debugging state
+var _ai_step_pending: bool = false
+var _ai_step_callback: Callable
+
 # Modal references  
 var _battle_modal: BattleModal
 var _next_player_modal: NextPlayerModal
@@ -127,14 +131,16 @@ func initialize_managers():
 	
 	# Initialize specialized managers
 	_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
+	_battle_manager.set_game_manager(self)
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
 	# Initialize AI system
 	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
 	_ai_castle_placement_scorer = CastlePlacementScorer.new(_region_manager, map_generator)
 	_ai_debug_visualizer = AIDebugVisualizer.new()
-	_ai_debug_visualizer.initialize(_ai_region_scorer, _ai_castle_placement_scorer, map_generator)
+	_ai_debug_visualizer.initialize(_ai_region_scorer, _ai_castle_placement_scorer, map_generator, _region_manager)
 	_ai_turn_manager = AITurnManager.new(_region_manager, _army_manager, player_manager, map_generator)
+	
 	
 	# Add AI debug visualizer to the scene tree
 	var map_node = get_node("../Map")
@@ -167,6 +173,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			if _ai_debug_visualizer:
 				_ai_debug_visualizer.toggle_debug_display(current_player)
 				print("[GameManager] AI debug toggle for Player ", current_player)
+		elif event.keycode == KEY_9:
+			# Toggle step-by-step AI debug mode
+			if _ai_debug_visualizer:
+				var current_mode = _ai_debug_visualizer.is_step_by_step_mode()
+				_ai_debug_visualizer.enable_step_by_step_mode(not current_mode)
+				print("[GameManager] Step-by-step AI debug mode: ", "enabled" if not current_mode else "disabled")
+		elif event.keycode == KEY_SPACE:
+			# Continue AI action in step-by-step mode
+			if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
+				_continue_ai_step()
+				print("[GameManager] AI step continued")
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
@@ -390,6 +407,12 @@ func is_player_computer(player_id: int) -> bool:
 	"""Check if a player is AI controlled"""
 	return get_player_type(player_id) == PlayerTypeEnum.Type.COMPUTER
 
+func is_player_ai(player_id: int) -> bool:
+	"""Check if a player is AI controlled (alias for is_player_computer)"""
+	return is_player_computer(player_id)
+
+# Battle resolution is now handled directly within AI army movement - these functions are no longer needed
+
 
 func _handle_ai_castle_placement(player_id: int) -> void:
 	"""Handle AI castle placement by selecting highest scored region with randomness"""
@@ -571,6 +594,12 @@ func handle_castle_placement(region: Region) -> void:
 		# All active players placed castles - end castle placing mode and start normal gameplay
 		castle_placing_mode = false
 		print("[GameManager] All active players have placed castles. Game begins!")
+		
+		# Switch AI debug visualizer to army target mode
+		if _ai_debug_visualizer:
+			_ai_debug_visualizer.switch_to_army_target_mode()
+			print("[GameManager] Switched AI debug visualizer to army target scoring mode")
+		
 		# Set current player to Player 1 to start normal gameplay
 		current_player = 1
 		player_manager.set_current_player(current_player)
@@ -653,13 +682,24 @@ func _process_ai_turn(player_id: int) -> void:
 		return
 	
 	print("[GameManager] Delegating to AITurnManager...")
-	# Process all AI actions for this turn
-	_ai_turn_manager.process_turn(player_id)
 	
-	# After AI processing is complete, automatically end the turn
-	print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-	await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
-	next_turn()
+	# If step-by-step debug mode is enabled, wait for spacebar before processing
+	if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
+		print("[GameManager] Step-by-step mode enabled - waiting for SPACE to process AI turn...")
+		_ai_step_pending = true
+		_ai_step_callback = func():
+			await _ai_turn_manager.process_turn(player_id)
+			# After AI processing, auto-end turn
+			print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
+			await get_tree().create_timer(1.0).timeout
+			next_turn()
+	else:
+		# Process all AI actions for this turn immediately
+		await _ai_turn_manager.process_turn(player_id)
+		# After AI processing is complete, automatically end the turn
+		print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
+		await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
+		next_turn()
 
 func _process_ai_turn_async(player_id: int) -> void:
 	"""Process all AI actions for this player's turn (async version for first turn)"""
@@ -670,12 +710,30 @@ func _process_ai_turn_async(player_id: int) -> void:
 	
 	print("[GameManager] Delegating to AITurnManager...")
 	# Process all AI actions for this turn
-	_ai_turn_manager.process_turn(player_id)
+	await _ai_turn_manager.process_turn(player_id)
 	
 	# After AI processing is complete, automatically end the turn
 	print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
 	await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
 	next_turn()
+
+func _continue_ai_step():
+	"""Continue to next AI step in step-by-step debug mode"""
+	if _ai_step_pending and _ai_step_callback.is_valid():
+		print("[GameManager] Continuing AI step...")
+		_ai_step_pending = false
+		_ai_step_callback.call()
+		_ai_step_callback = Callable()
+
+func _wait_for_debug_step(callback: Callable):
+	"""Wait for spacebar press in debug mode, or continue immediately if not debugging"""
+	if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
+		print("[GameManager] Waiting for spacebar to continue AI action...")
+		_ai_step_pending = true
+		_ai_step_callback = callback
+	else:
+		# Not in debug mode, continue immediately
+		callback.call()
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""

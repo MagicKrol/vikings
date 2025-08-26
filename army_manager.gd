@@ -242,15 +242,15 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Store remaining movement points for logging
 	var remaining_points = selected_army.get_movement_points()
 	
-	# Check if we moved to an unowned region - deselect army for conquest mechanics
+	# Check if we moved to an unowned region - handle combat scenarios
 	if target_region_owner != army_player_id and target_region_owner != -1:
-		# Moved to enemy territory - deselect army
-		deselect_army()
-		print("[ArmyManager] Army moved to enemy territory (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - deselected for conquest")
+		# Moved to enemy territory - trigger combat
+		_trigger_combat_if_needed(selected_army, target_region)
+		print("[ArmyManager] Army moved to enemy territory (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - combat triggered")
 	elif target_region_owner == -1 and target_region.has_garrison():
-		# Moved to neutral territory with garrison - deselect army
-		deselect_army()
-		print("[ArmyManager] Army moved to neutral territory with garrison (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - deselected for conquest")
+		# Moved to neutral territory with garrison - trigger combat
+		_trigger_combat_if_needed(selected_army, target_region)
+		print("[ArmyManager] Army moved to neutral territory with garrison (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - combat triggered")
 	else:
 		# Moved to friendly territory - keep army selected
 		# Update selected region container to the new region
@@ -533,6 +533,46 @@ func _should_trigger_battle(attacking_army: Army, target_region: Region) -> bool
 		return true
 	
 	return false
+
+func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -> void:
+	"""Trigger combat when army moves into hostile territory"""
+	if attacking_army == null or defending_region == null:
+		return
+	
+	# Check if this should trigger battle
+	if _should_trigger_battle(attacking_army, defending_region):
+		# Find GameManager and BattleManager
+		var game_manager = _get_game_manager()
+		if game_manager:
+			var battle_manager = game_manager.get_battle_manager()
+			if battle_manager:
+				# Set up battle through BattleManager
+				battle_manager.set_pending_conquest(attacking_army, defending_region)
+				print("[ArmyManager] Combat triggered: Army %s vs Region %s" % [attacking_army.name, defending_region.get_region_name()])
+				
+				# Show battle modal for AI combat (non-interactive)
+				if battle_modal:
+					battle_modal.show_battle(attacking_army, defending_region)
+				
+				# Deselect army since combat is now handling it
+				deselect_army()
+				return
+		
+		print("[ArmyManager] Warning: Could not trigger combat - BattleManager not available")
+
+func _get_game_manager() -> GameManager:
+	"""Get GameManager reference"""
+	# Since ArmyManager is RefCounted, we need to get GameManager through the map_generator reference
+	if map_generator == null:
+		return null
+	
+	# GameManager is a sibling of Map in the Main scene
+	var main_node = map_generator.get_parent()  # Should be Main
+	if main_node == null:
+		return null
+	
+	var game_manager = main_node.get_node_or_null("GameManager") as GameManager
+	return game_manager
 
 func _show_battle_modal(attacking_army: Army, defending_region: Region) -> void:
 	"""Show the battle modal with army vs region information"""

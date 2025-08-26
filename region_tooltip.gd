@@ -173,6 +173,71 @@ func _get_comprehensive_debug_info(region: Region) -> String:
 	if ai_debug_visualizer == null:
 		return "AI Debug Visualizer not found"
 	
+	# Check which debug mode we're in
+	var debug_mode = ai_debug_visualizer.get("debug_mode")
+	
+	if debug_mode == "army_target":
+		return _get_army_target_debug_info(region, ai_debug_visualizer)
+	else:
+		return _get_castle_placement_debug_info(region, ai_debug_visualizer)
+
+func _get_army_target_debug_info(region: Region, ai_debug_visualizer) -> String:
+	"""Get army target scoring debug information"""
+	var debug_lines = []
+	
+	# SECTION 1: Basic region information
+	debug_lines.append("=== REGION " + str(region.get_region_id()) + " ARMY TARGET ===")
+	var region_resources = []
+	region_resources.append("P:" + str(region.get_population()))
+	if region.get_resource_amount(ResourcesEnum.Type.WOOD) > 0:
+		region_resources.append("W:" + str(region.get_resource_amount(ResourcesEnum.Type.WOOD)))
+	if region.get_resource_amount(ResourcesEnum.Type.FOOD) > 0:
+		region_resources.append("F:" + str(region.get_resource_amount(ResourcesEnum.Type.FOOD)))
+	if region.get_resource_amount(ResourcesEnum.Type.STONE) > 0:
+		region_resources.append("S:" + str(region.get_resource_amount(ResourcesEnum.Type.STONE)))
+	if region.get_resource_amount(ResourcesEnum.Type.IRON) > 0:
+		region_resources.append("I:" + str(region.get_resource_amount(ResourcesEnum.Type.IRON)))
+	if region.get_resource_amount(ResourcesEnum.Type.GOLD) > 0:
+		region_resources.append("G:" + str(region.get_resource_amount(ResourcesEnum.Type.GOLD)))
+	region_resources.append("RL:" + str(region.get_region_level()))
+	
+	# Add ownership info
+	var owner = region.get_region_owner()
+	if owner == -1:
+		region_resources.append("Owner: Neutral")
+	elif owner == 0:
+		region_resources.append("Owner: Unowned")
+	else:
+		region_resources.append("Owner: Player " + str(owner))
+	
+	debug_lines.append(", ".join(region_resources))
+	
+	# Get the target score from cache
+	var target_score = ai_debug_visualizer.get_region_score(region.get_region_id())
+	debug_lines.append("TARGET SCORE: " + str(int(target_score)))
+	
+	# SECTION 2: Get detailed scoring factors for army targeting
+	debug_lines.append("")
+	debug_lines.append("=== ARMY TARGET FACTORS ===")
+	var detailed_scores = ai_debug_visualizer.get_detailed_scores(region.get_region_id())
+	if not detailed_scores.is_empty():
+		debug_lines.append("Population Score: " + str(int(detailed_scores.get("population_score", 0.0) * 100)) + "% (Weight: 30%)")
+		debug_lines.append("Resource Score: " + str(int(detailed_scores.get("resource_score", 0.0) * 100)) + "% (Weight: 40%)")
+		debug_lines.append("Level Score: " + str(int(detailed_scores.get("level_score", 0.0) * 100)) + "% (Weight: 20%)")
+		debug_lines.append("Ownership Score: " + str(int(detailed_scores.get("ownership_score", 0.0) * 100)) + "% (Weight: 10%)")
+		
+		if detailed_scores.has("base_score") and detailed_scores.has("random_modifier"):
+			debug_lines.append("Base Score: " + str(int(detailed_scores.base_score)))
+			debug_lines.append("Random Modifier: +" + str(int(detailed_scores.random_modifier)))
+	else:
+		debug_lines.append("No army target scoring data available")
+	
+	return "\n".join(debug_lines)
+
+func _get_castle_placement_debug_info(region: Region, ai_debug_visualizer) -> String:
+	"""Get castle placement scoring debug information"""
+	var debug_lines = []
+	
 	# Get cluster data
 	var cluster_data = _get_cluster_data(region)
 	
@@ -274,8 +339,6 @@ func _set_debug_font():
 func _reset_font():
 	"""Reset font to default theme font"""
 	if label != null:
-		# Only remove overrides if they exist to avoid null parameter errors
-		if label.has_theme_font_override("font"):
-			label.remove_theme_font_override("font")
-		if label.has_theme_font_size_override("font_size"):
-			label.remove_theme_font_size_override("font_size")
+		# Clear all theme overrides at once to avoid null parameter errors
+		label.remove_theme_font_override("font")
+		label.remove_theme_font_size_override("font_size")
