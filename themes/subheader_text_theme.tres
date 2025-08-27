@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c8m4n5k6l7p2q"]
+
+[ext_resource type="FontFile" uid="uid://detl52k6squsi" path="res://fonts/MorrisRomanBlack.ttf" id="2_o3k2t"]
+
+[resource]
+default_font = ExtResource("2_o3k2t")
+default_font_size = 35
+Label/font_sizes/font_size = 35
+Label/fonts/font = ExtResource("2_o3k2t")

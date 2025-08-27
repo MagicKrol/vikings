@@ -17,3 +17,9 @@ If there is no easy way to fullfil the request, or it would require a lot of com
 After every code change, do a test run of the game in godot, to see if there are any linting errors. 
 For static game elements like UI always create a Node and it to the main scene file. 
 For static game element do not modify attributes in _ready function. Instead directly apply them to the node definition in the scene file.
+
+If you need to test a solution with existing tests you can run tests:
+./Users/magic/vikings/run_tests.sh                   # Run all tests
+./Users/magic/vikingsrun_tests.sh TestDummy          # Run specific test class
+All available test classes can be found in /tests folder
+Do not create, do not modify tests unless explicitly asked, or approved. 

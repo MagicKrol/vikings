@@ -1,0 +1,192 @@
+[gd_scene load_steps=5 format=3 uid="uid://cptn3kw8h3p7w"]
+
+[ext_resource type="Script" path="res://transfer_soldiers_modal.gd" id="1_42aob"]
+[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_4fnsp"]
+[ext_resource type="Theme" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="4_5tvus"]
+
+[node name="TransferSoldiersModal" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -200.0
+offset_right = 400.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_42aob")
+
+[node name="OuterFrame" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="BorderMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainContainer" type="VBoxContainer" parent="BorderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleContainer" type="Control" parent="BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="TransferTitleLabel" type="Label" parent="BorderMargin/MainContainer/TitleContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_4fnsp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Transfer Soldiers"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HeaderContainer" type="Control" parent="BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="HeaderRow" type="HBoxContainer" parent="BorderMargin/MainContainer/HeaderContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderMargin" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 0)
+
+[node name="ArmyHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+layout_mode = 2
+theme = ExtResource("3_fd5av")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Army I"
+custom_minimum_size = Vector2(140, 0)
+horizontal_alignment = 1
+
+[node name="Margin1" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(25, 0)
+
+[node name="TransferHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+layout_mode = 2
+theme = ExtResource("3_fd5av")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Transfer"
+custom_minimum_size = Vector2(200, 0)
+horizontal_alignment = 1
+
+[node name="Margin2" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+
+[node name="RegionHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+layout_mode = 2
+theme = ExtResource("3_fd5av")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Region Name"
+custom_minimum_size = Vector2(140, 0)
+horizontal_alignment = 1
+
+[node name="MainContent" type="MarginContainer" parent="BorderMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="ArmyUnitsContainer" type="VBoxContainer" parent="BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="TotalRow" type="Control" parent="BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+
+[node name="TotalRowContainer" type="HBoxContainer" parent="BorderMargin/MainContainer/TotalRow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TotalMargin" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 0)
+
+[node name="TotalLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+layout_mode = 2
+theme = ExtResource("4_5tvus")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Total:"
+custom_minimum_size = Vector2(140, 0)
+horizontal_alignment = 0
+
+[node name="Margin1a" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+
+[node name="TotalArmyLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+layout_mode = 2
+theme = ExtResource("4_5tvus")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0"
+custom_minimum_size = Vector2(140, 0)
+horizontal_alignment = 1
+
+[node name="Margin1" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(40, 0)
+
+[node name="TotalRegionLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+layout_mode = 2
+theme = ExtResource("4_5tvus")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0"
+custom_minimum_size = Vector2(140, 0)
+horizontal_alignment = 2
+
+[node name="ButtonContainer" type="Control" parent="BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="BorderMargin/MainContainer/ButtonContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -20.0
+offset_right = 60.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Continue"

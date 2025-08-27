@@ -1,0 +1,23 @@
+Long-spears: spearmen
+
+Ranged: archers, crossbowmen
+
+Mobility: Horsemen
+
+Flanker: Horsemen, Mounted Knights
+
+Charge: Horsemen, Mounted Knights
+
+Multi attack: Royal Guard
+
+​​Armor Piercing: Crossbowmen
+
+No armor: Peasants
+
+Light armor: Spearmen, Archers, Crossbowmen
+
+Medium armor: Swordsmen, Horsemen
+
+Heavy armor: Knights, Mounted Knights, Royal Guard
+
+

@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8n7d4e2gvxpxh"]
+
+[ext_resource type="Script" path="res://next_player_modal.gd" id="1_nextplayerscript"]
+[ext_resource type="Theme" uid="uid://c7o6yhcjomh2l" path="res://themes/header_text_theme.tres" id="2_headertheme"]
+[ext_resource type="Theme" uid="uid://by7qgvqcnwbyx" path="res://themes/standard_text_theme.tres" id="3_standardtheme"]
+
+[node name="NextPlayerModal" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -100.0
+offset_right = 250.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+z_index = 150
+script = ExtResource("1_nextplayerscript")
+
+[node name="ContentContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeaderLabel" type="Label" parent="ContentContainer"]
+layout_mode = 2
+theme = ExtResource("2_headertheme")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Next Turn"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="ContentContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 20)
+
+[node name="PlayerLabel" type="RichTextLabel" parent="ContentContainer"]
+layout_mode = 2
+theme = ExtResource("3_standardtheme")
+theme_override_font_sizes/normal_font_size = 36
+bbcode_enabled = true
+text = "[center]Player 1's Turn[/center]"
+fit_content = true

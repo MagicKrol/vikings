@@ -1,0 +1,115 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1h1pqfv6okk1"]
+
+[ext_resource type="Script" path="res://player_status_modal.gd" id="1_j2kj2"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="2_lf6f4"]
+
+[node name="PlayerStatusModal" type="Control"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 10.0
+offset_right = 0.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_j2kj2")
+
+[node name="OuterFrame" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ResourceContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = -20.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="PopulationLabel" type="Label" parent="ResourceContainer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 30
+text = "Population: 3433 (+12)"
+vertical_alignment = 1
+
+[node name="GoldLabel" type="Label" parent="ResourceContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 30
+text = "Gold: 1 (+10)"
+vertical_alignment = 1
+
+[node name="FoodLabel" type="Label" parent="ResourceContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 30
+text = "Food: 1 (+5)"
+vertical_alignment = 1
+
+[node name="WoodLabel" type="Label" parent="ResourceContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 30
+text = "Wood: 1 (+3)"
+vertical_alignment = 1
+
+[node name="StoneLabel" type="Label" parent="ResourceContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 30
+text = "Stone: 1 (+2)"
+vertical_alignment = 1
+
+[node name="IronLabel" type="Label" parent="ResourceContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 30
+text = "Iron: 1 (+2)"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="ResourceContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerTurnLabel" type="RichTextLabel" parent="ResourceContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/normal_font_size = 28
+bbcode_enabled = true
+text = "[center]Player 1 Turn[/center]"
+fit_content = true
+
+[node name="EndTurnButton" type="Button" parent="ResourceContainer"]
+custom_minimum_size = Vector2(140, 60)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("2_lf6f4")
+theme_override_font_sizes/font_size = 22
+text = "End Turn"

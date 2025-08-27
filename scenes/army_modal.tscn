@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3uvud6lbs6h4"]
+
+[ext_resource type="Script" path="res://ui_modal.gd" id="1_6xq3r"]
+[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_uyttq"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_ekp32"]
+
+[node name="ArmyModal" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 460.0
+offset_bottom = 370.0
+script = ExtResource("1_6xq3r")
+
+[node name="OuterFrame" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="ContentContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 15.0
+offset_right = -40.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ArmyHeader" type="Label" parent="ContentContainer"]
+layout_mode = 2
+theme = ExtResource("2_uyttq")
+text = "ARMY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer1" type="Control" parent="ContentContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="MovementLabel" type="Label" parent="ContentContainer"]
+layout_mode = 2
+theme = ExtResource("3_ekp32")
+text = "Movement: 5 / 5"
+vertical_alignment = 1
+
+[node name="MoraleLabel" type="Label" parent="ContentContainer"]
+layout_mode = 2
+theme = ExtResource("3_ekp32")
+text = "Morale: 100%"
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="ContentContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="CompositionContainer" type="VBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"

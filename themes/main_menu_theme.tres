@@ -1,0 +1,20 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cdrs8n52og4kp"]
+
+[ext_resource type="FontFile" uid="uid://cavdsubauup7v" path="res://fonts/Viking.TTF" id="1_viking"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1"]
+
+[resource]
+Button/colors/font_color = Color(0.933333, 0.913725, 0.858824, 1)
+Button/colors/font_hover_color = Color(0.113725, 0.0901961, 0.0235294, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(0.113725, 0.0901961, 0.0235294, 1)
+Button/colors/font_shadow_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 10
+Button/constants/shadow_offset_x = 2
+Button/constants/shadow_offset_y = 2
+Button/font_sizes/font_size = 50
+Button/fonts/font = ExtResource("1_viking")
+Button/styles/hover = SubResource("StyleBoxEmpty_1")
+Button/styles/normal = SubResource("StyleBoxEmpty_1")
+Button/styles/pressed = SubResource("StyleBoxEmpty_1")

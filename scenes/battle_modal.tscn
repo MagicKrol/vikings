@@ -1,0 +1,175 @@
+[gd_scene load_steps=5 format=3 uid="uid://ro1oniwb0py8"]
+
+[ext_resource type="Script" path="res://battle_modal.gd" id="1_42aob"]
+[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_4fnsp"]
+[ext_resource type="Theme" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="4_5tvus"]
+
+[node name="BattleModal" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -200.0
+offset_right = 400.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_42aob")
+
+[node name="OuterFrame" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="BorderMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainContainer" type="VBoxContainer" parent="BorderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleContainer" type="Control" parent="BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="BattleTitleLabel" type="Label" parent="BorderMargin/MainContainer/TitleContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_4fnsp")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Battle for Region"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MainContent" type="HBoxContainer" parent="BorderMargin/MainContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="AttackerColumnMargin" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="AttackerColumn" type="VBoxContainer" parent="BorderMargin/MainContainer/MainContent/AttackerColumnMargin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="AttackerHeader" type="Label" parent="BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme = ExtResource("3_fd5av")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Attacker"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="AttackerEffectiveness" type="Label" parent="BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme = ExtResource("4_5tvus")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Effectiveness: 80%"
+
+[node name="MarginContainer2" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="AttackerUnitsContainer" type="VBoxContainer" parent="BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+
+[node name="DefenderColumnMargin" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="DefenderColumn" type="VBoxContainer" parent="BorderMargin/MainContainer/MainContent/DefenderColumnMargin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="DefenderHeader" type="Label" parent="BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme = ExtResource("3_fd5av")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Defender"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="DefenderEffectiveness" type="Label" parent="BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme = ExtResource("4_5tvus")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Effectiveness: 75%"
+
+[node name="MarginContainer2" type="MarginContainer" parent="BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="DefenderUnitsContainer" type="VBoxContainer" parent="BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ButtonContainer" type="Control" parent="BorderMargin/MainContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="BorderMargin/MainContainer/ButtonContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -20.0
+offset_right = 120.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="WithdrawButton" type="Button" parent="BorderMargin/MainContainer/ButtonContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Withdraw"
+
+[node name="ContinueButton" type="Button" parent="BorderMargin/MainContainer/ButtonContainer/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Continue"

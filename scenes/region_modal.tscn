@@ -1,0 +1,108 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5x0rd34s8wqj"]
+
+[ext_resource type="Script" path="res://region_modal.gd" id="1_vxbjv"]
+[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_xyt1y"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_nguif"]
+
+[node name="RegionModal" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 460.0
+offset_bottom = 370.0
+script = ExtResource("1_vxbjv")
+
+[node name="OuterFrame" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[node name="HeaderLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 20.0
+offset_right = 150.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme = ExtResource("2_xyt1y")
+text = "Region Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TypeLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -120.0
+offset_right = 150.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_nguif")
+text = "Region Type: Grassland"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -85.0
+offset_right = 150.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_nguif")
+text = "Level: March"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResourcesLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_nguif")
+text = "Resources:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"

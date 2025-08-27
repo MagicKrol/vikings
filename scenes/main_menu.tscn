@@ -1,0 +1,78 @@
+[gd_scene load_steps=4 format=3 uid="uid://bk0iw4gbrbc0h"]
+
+[ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
+[ext_resource type="Theme" uid="uid://cdrs8n52og4kp" path="res://themes/main_menu_theme.tres" id="3_theme"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_background")
+
+[node name="MenuContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ContinueButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Continue"
+
+[node name="Spacer1" type="Control" parent="MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="NewGameButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "New Game"
+
+[node name="Spacer2" type="Control" parent="MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="LoadGameButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Load Game"
+
+[node name="Spacer3" type="Control" parent="MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="OptionsButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Options"
+
+[node name="Spacer4" type="Control" parent="MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="ExitButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Exit"
