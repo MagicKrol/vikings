@@ -477,24 +477,19 @@ func get_terrain_cost(region_container: Node, player_id: int = -1) -> int:
 	if region_container == null:
 		return -1  # Return impassable for safety
 	
-	# Get region script to access proper terrain type
+	# Get region script to access region ID
 	var region = region_container as Region
 	if region == null:
 		return -1  # Return impassable for safety
 	
-	var base_cost = region.get_movement_cost()
+	# Use centralized terrain cost calculation from RegionManager
+	if region_manager != null:
+		return region_manager.calculate_terrain_cost(region.get_region_id(), player_id)
 	
-	# If base cost is -1 (impassable), don't modify it
+	# Fallback if region_manager is not available
+	var base_cost = region.get_movement_cost()
 	if base_cost == -1:
 		return -1
-	
-	# Apply ownership bonus: reduce cost by 1 for owned territories (minimum cost of 1)
-	if player_id != -1 and region_manager != null:
-		var region_id = region.get_region_id()
-		var region_owner = region_manager.get_region_owner(region_id)
-		if region_owner == player_id:
-			# Reduce movement cost by 1 for owned territory, minimum cost of 1
-			return max(1, base_cost - 1)
 	
 	return base_cost
 
@@ -607,6 +602,29 @@ func _int_to_roman(num: int) -> String:
 			num -= values[i]
 	
 	return result
+
+func calc_reinforcement_threshold(turn_number: int) -> float:
+	"""Calculate the power threshold below which an army needs reinforcement"""
+	# L1 max = 20; +3% per turn (linear scaling)
+	# threshold = 20 * (1 + 0.03 * turn_number)
+	# then * PEASANTS.power * 2
+	var base_max := 20.0
+	var scaled := base_max * (1.0 + 0.03 * float(turn_number))
+	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
+	return scaled * float(peasant_power) * 2.0
+
+func needs_reinforcement(army: Army, turn_number: int) -> bool:
+	"""Check if an army needs reinforcement based on power threshold"""
+	return float(army.get_army_power()) < calc_reinforcement_threshold(turn_number)
+
+func reinforce_army_basic(army: Army) -> void:
+	"""Apply basic reinforcement to an army"""
+	# as requested: +20 peasants, +2 knights, +5 archers
+	army.add_soldiers(SoldierTypeEnum.Type.PEASANTS, 20)
+	army.add_soldiers(SoldierTypeEnum.Type.KNIGHTS, 2)
+	army.add_soldiers(SoldierTypeEnum.Type.ARCHERS, 5)
+	army.spend_movement_points(1)  # MP -1 for reinforcing
+	print("[ArmyManager] Reinforced army ", army.name, " (new power: ", army.get_army_power(), ")")
 
 func remove_destroyed_armies() -> void:
 	"""Remove armies that have no soldiers left after battle"""

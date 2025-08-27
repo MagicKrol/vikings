@@ -377,6 +377,116 @@ func reset_all_ore_search_turn_usage() -> void:
 	
 	print("[RegionManager] Reset ore search turn usage for ", regions_reset, " regions")
 
+func calculate_terrain_cost(region_id: int, player_id: int) -> int:
+	"""
+	Calculate the movement cost for a region based on its terrain type and ownership.
+	This is the single source of truth for terrain cost calculations.
+	Returns -1 for impassable terrain.
+	"""
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return -1  # Region not found
+	
+	var region = region_container as Region
+	if region == null:
+		return -1  # Invalid region
+	
+	# Check if region is passable
+	if not region.is_passable():
+		return -1
+	
+	var base_cost = region.get_movement_cost()
+	
+	# If base cost is -1 (impassable), don't modify it
+	if base_cost == -1:
+		return -1
+	
+	# Apply ownership bonus: reduce cost by 1 for owned territories (minimum cost of 1)
+	if player_id != -1:
+		var region_owner = get_region_owner(region_id)
+		if region_owner == player_id:
+			# Reduce movement cost by 1 for owned territory, minimum cost of 1
+			return max(1, base_cost - 1)
+	
+	return base_cost
+
+func get_frontier_regions(player_id: int) -> Array[int]:
+	"""Get all frontier regions (non-owned neighbors of owned regions)"""
+	var owned_regions = get_player_regions(player_id)
+	var frontier: Array[int] = []
+	var seen_regions: Dictionary = {}
+	
+	# Find all neighbors of owned regions that are not owned by this player
+	for owned_id in owned_regions:
+		var neighbors = get_neighbor_regions(owned_id)
+		for neighbor_id in neighbors:
+			# Skip if already processed
+			if seen_regions.has(neighbor_id):
+				continue
+			seen_regions[neighbor_id] = true
+			
+			# Only include if not owned by this player
+			var neighbor_owner = get_region_owner(neighbor_id)
+			if neighbor_owner != player_id:
+				frontier.append(neighbor_id)
+	
+	return frontier
+
+func get_castle_level(region_id: int) -> int:
+	"""Get the castle level for a region (0 if no castle)"""
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if not region_container:
+		return 0
+	
+	var region = region_container as Region
+	if not region:
+		return 0
+		
+	# Get castle type and convert to level
+	var castle_type = region.get_castle_type()
+	match castle_type:
+		CastleTypeEnum.Type.NONE:
+			return 0
+		CastleTypeEnum.Type.OUTPOST:
+			return 1
+		CastleTypeEnum.Type.KEEP:
+			return 2
+		CastleTypeEnum.Type.CASTLE:
+			return 3
+		CastleTypeEnum.Type.STRONGHOLD:
+			return 4
+		_:
+			return 0
+
+func find_nearest_owned_castle_region_id(from_region_id: int, owner_id: int) -> int:
+	"""Find the nearest owned castle region using BFS on region graph"""
+	# BFS to find shortest path to closest castle with level >= 1 owned by owner_id
+	var visited: Dictionary = {}
+	var queue: Array = [[from_region_id, 0]]  # [region_id, distance]
+	visited[from_region_id] = true
+	
+	while not queue.is_empty():
+		var current = queue.pop_front()
+		var current_id: int = current[0]
+		var distance: int = current[1]
+		
+		# Check if this region has a castle level >= 1 and is owned by owner_id
+		if current_id != from_region_id:  # Don't return starting region
+			var region_owner = get_region_owner(current_id)
+			if region_owner == owner_id:
+				var castle_level = get_castle_level(current_id)
+				if castle_level >= 1:  # Found a castle that can reinforce
+					return current_id
+		
+		# Add unvisited neighbors to queue
+		var neighbors = get_neighbor_regions(current_id)
+		for neighbor_id in neighbors:
+			if not visited.has(neighbor_id):
+				visited[neighbor_id] = true
+				queue.append([neighbor_id, distance + 1])
+	
+	return -1  # No castle found
+
 func perform_ore_search(region: Region, player_id: int, player_manager: PlayerManagerNode) -> Dictionary:
 	"""Perform ore search in a region for a player. Returns search result."""
 	if region == null:

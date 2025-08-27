@@ -185,7 +185,16 @@ func _get_army_target_debug_info(region: Region, ai_debug_visualizer) -> String:
 	"""Get army target scoring debug information"""
 	var debug_lines = []
 	
-	# SECTION 1: Basic region information
+	# SECTION 1: Army Perspective Header
+	var current_army_perspective = ai_debug_visualizer.get("current_army_perspective")
+	if current_army_perspective != null and current_army_perspective != "":
+		debug_lines.append("=== ARMY PERSPECTIVE: " + str(current_army_perspective) + " ===")
+	else:
+		debug_lines.append("=== ARMY TARGET PERSPECTIVE ===")
+	
+	debug_lines.append("")
+	
+	# SECTION 2: Basic region information
 	debug_lines.append("=== REGION " + str(region.get_region_id()) + " ARMY TARGET ===")
 	var region_resources = []
 	region_resources.append("P:" + str(region.get_population()))
@@ -216,7 +225,7 @@ func _get_army_target_debug_info(region: Region, ai_debug_visualizer) -> String:
 	var target_score = ai_debug_visualizer.get_region_score(region.get_region_id())
 	debug_lines.append("TARGET SCORE: " + str(int(target_score)))
 	
-	# SECTION 2: Get detailed scoring factors for army targeting
+	# SECTION 3: Get detailed scoring factors for army targeting
 	debug_lines.append("")
 	debug_lines.append("=== ARMY TARGET FACTORS ===")
 	var detailed_scores = ai_debug_visualizer.get_detailed_scores(region.get_region_id())
@@ -226,9 +235,24 @@ func _get_army_target_debug_info(region: Region, ai_debug_visualizer) -> String:
 		debug_lines.append("Level Score: " + str(int(detailed_scores.get("level_score", 0.0) * 100)) + "% (Weight: 20%)")
 		debug_lines.append("Ownership Score: " + str(int(detailed_scores.get("ownership_score", 0.0) * 100)) + "% (Weight: 10%)")
 		
-		if detailed_scores.has("base_score") and detailed_scores.has("random_modifier"):
+		debug_lines.append("")
+		debug_lines.append("=== SCORING BREAKDOWN ===")
+		if detailed_scores.has("base_score"):
 			debug_lines.append("Base Score: " + str(int(detailed_scores.base_score)))
+		if detailed_scores.has("random_modifier"):
 			debug_lines.append("Random Modifier: +" + str(int(detailed_scores.random_modifier)))
+		if detailed_scores.has("movement_cost"):
+			debug_lines.append("Movement Cost: -" + str(int(detailed_scores.movement_cost)))
+		if detailed_scores.has("final_score"):
+			debug_lines.append("Final Score: " + str(int(detailed_scores.final_score)))
+		
+		# Show army-specific information if available
+		if detailed_scores.has("army_name"):
+			debug_lines.append("")
+			debug_lines.append("=== ARMY DETAILS ===")
+			debug_lines.append("Army: " + str(detailed_scores.army_name))
+			if detailed_scores.has("reference_region"):
+				debug_lines.append("From Region: " + str(detailed_scores.reference_region))
 	else:
 		debug_lines.append("No army target scoring data available")
 	

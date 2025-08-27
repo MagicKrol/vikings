@@ -146,6 +146,19 @@ func get_army_strength() -> int:
 	"""Get total combat strength of the army"""
 	return composition.get_total_attack()
 
+func get_army_power() -> int:
+	"""Calculate and return total power of the army (sum of unit power * quantity)"""
+	var total_power := 0
+	
+	# Iterate through all soldier types and sum their power * quantity
+	for soldier_type in SoldierTypeEnum.get_all_types():
+		var quantity := composition.get_soldier_count(soldier_type)
+		if quantity > 0:
+			var unit_power: int = GameParameters.get_unit_stat(soldier_type, "power")
+			total_power += unit_power * quantity
+	
+	return total_power
+
 func get_army_composition_string() -> String:
 	"""Get army composition as a readable string"""
 	return composition.get_composition_string()
