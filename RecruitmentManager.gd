@@ -11,13 +11,20 @@ const QUALITY_BIAS_WEAK := 0.15
 const SCARCE_RECRUITS_THRESHOLD := 5  # if ≤ this, lean into quality
 
 # Public entry point
-# - army: Army node to recruit into
+# - army: Army node to recruit into (budget taken from army.assigned_budget)
 # - need_key: e.g., "game_start" (looked up in GameParameters ideal composition)
-# - budget: BudgetComposition slice for this army (pre-allocated resources)
+# - debug: if true, print detailed debug information
 #
 # Returns a small report dictionary for debugging/telemetry.
-# Only spends from the provided BudgetComposition and respects region recruit caps + wood/iron constraints.
-func hire_soldiers(army: Army, need_key: String, budget: BudgetComposition) -> Dictionary:
+# Uses army.assigned_budget and clears it after successful recruitment.
+# Also clears army.recruitment_requested flag.
+func hire_soldiers(army: Army, need_key: String, debug: bool = false) -> Dictionary:
+	# Check if army has assigned budget
+	if not army.assigned_budget:
+		print("[RecruitmentManager] Army ", army.name, " has no assigned budget")
+		return {"hired": {}, "error": "no_budget"}
+	
+	var budget: BudgetComposition = army.assigned_budget
 	var region: Region = army.get_parent()
 	var recruits_avail: int = region.get_available_recruits()  # must exist in Region
 	
@@ -48,14 +55,15 @@ func hire_soldiers(army: Army, need_key: String, budget: BudgetComposition) -> D
 	var spent_iron := 0
 	var recruited_so_far := 0
 	
-	# Debug output
-	print("=== RECRUITMENT DEBUG ===")
-	print("Budget: gold=%d, wood=%d, iron=%d" % [budget.gold, budget.wood, budget.iron])
-	print("Recruits available: %d" % recruits_avail)
-	print("Ideal composition: %s" % ideal)
-	print("Unit costs: %s" % unit_costs)
-	print("Unit power: %s" % unit_power)
-	print("Normalized power: %s" % norm_power)
+	# Debug output (only if requested)  
+	if false:  # debug disabled for clean output
+		print("=== RECRUITMENT DEBUG ===")
+		print("Budget: gold=%d, wood=%d, iron=%d" % [budget.gold, budget.wood, budget.iron])
+		print("Recruits available: %d" % recruits_avail)
+		print("Ideal composition: %s" % ideal)
+		print("Unit costs: %s" % unit_costs)
+		print("Unit power: %s" % unit_power)
+		print("Normalized power: %s" % norm_power)
 	
 	# Main greedy loop (one unit at a time → simple, robust, Pareto)
 	while recruits_avail > 0:
@@ -66,7 +74,7 @@ func hire_soldiers(army: Army, need_key: String, budget: BudgetComposition) -> D
 			if budget.can_afford(c):
 				affordable.append(t)
 		if affordable.is_empty():
-			if recruited_so_far == 0:
+			if false and recruited_so_far == 0:  # debug disabled
 				print("  -> No affordable units found (budget exhausted or zero)")
 			break  # nothing more we can buy
 		
@@ -97,8 +105,8 @@ func hire_soldiers(army: Army, need_key: String, budget: BudgetComposition) -> D
 				# This ensures we avoid over-recruiting high-power units
 				score = -abs(gap) * 2.0 + bias * qual_term * 0.1
 			
-			# Debug output for first few iterations
-			if recruited_so_far < 5:
+			# Debug output for first few iterations (only if requested)
+			if false and recruited_so_far < 5:  # debug disabled
 				print("  Type %s: gap=%.3f, qual_term=%.3f, score=%.3f" % [t, gap, qual_term, score])
 			
 			if score > best_score:
@@ -128,7 +136,7 @@ func hire_soldiers(army: Army, need_key: String, budget: BudgetComposition) -> D
 		recruits_avail -= 1
 		recruited_so_far += 1
 		
-		if recruited_so_far <= 5:
+		if false and recruited_so_far <= 5:  # debug disabled
 			print("  -> Selected %s (score=%.3f)" % [best_type, best_score])
 		
 		hired[best_type] = hired.get(best_type, 0) + 1
@@ -156,6 +164,9 @@ func hire_soldiers(army: Army, need_key: String, budget: BudgetComposition) -> D
 			spent_gold += pc["gold"]
 			spent_wood += pc["wood"]
 			spent_iron += pc["iron"]
+	
+	# Clear army recruitment state after successful recruitment
+	army.clear_recruitment_request()  # This clears both recruitment_requested flag and assigned_budget
 	
 	return {
 		"hired": hired,

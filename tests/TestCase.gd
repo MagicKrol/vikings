@@ -34,6 +34,7 @@ class_name TestCase
 # ============================================================================
 
 var _test_runner: TestRunner
+var _current_test_failed: bool = false
 
 func get_test_runner() -> TestRunner:
 	"""Required method to identify this as a test case"""
@@ -42,6 +43,18 @@ func get_test_runner() -> TestRunner:
 func set_test_runner(runner: TestRunner) -> void:
 	"""Set the test runner instance"""
 	_test_runner = runner
+
+func _mark_test_failed() -> void:
+	"""Mark current test as failed for debug output purposes"""
+	_current_test_failed = true
+
+func _reset_test_state() -> void:
+	"""Reset test state for next test"""
+	_current_test_failed = false
+
+func should_debug() -> bool:
+	"""Return true if current test has failed and we should show debug output"""
+	return _current_test_failed
 
 ## Test Lifecycle Methods (Override in subclasses)
 

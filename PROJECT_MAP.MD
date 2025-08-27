@@ -296,7 +296,7 @@ Main (Node2D) [place_armies.gd]
 
 ### army_manager.gd
 **Class**: ArmyManager
-**Purpose**: Army creation, movement, selection, and lifecycle management
+**Purpose**: Army creation, movement, selection, and lifecycle management with integrated budget-based recruitment system
 **Key Functions**:
 - `create_army()`: Create and place armies on regions
 - `move_army_to_region()`: Handle army movement with validation
@@ -309,6 +309,74 @@ Main (Node2D) [place_armies.gd]
 - 5 movement points per turn with terrain-based costs
 - **Ownership Bonus**: Movement cost reduced by 1 for owned territories (minimum cost of 1)
 - Strategic advantage for moving through controlled territory
+**Budget-Based Recruitment System**:
+- `collect_recruitment_requests()`: Gather armies flagged for recruitment
+- `assign_recruitment_budgets()`: Split player resources equally among requesting armies using BudgetManager
+- `execute_recruitment_for_player()`: Process recruitment using RecruitmentManager for armies with budgets
+- `flag_armies_needing_recruitment()`: Auto-flag armies below power threshold
+- `process_recruitment_cycle()`: Complete workflow: flag → budget → recruit
+- **Equal Resource Splitting**: Total budget divided equally among all armies requesting recruitment
+- **Power-Based Flagging**: Armies flagged when power falls below threshold (scaled by turn number)
+
+## Budget Management System
+
+### BudgetManager.gd
+**Class**: BudgetManager
+**Purpose**: Resource allocation and splitting system for army recruitment with direct assignment capability
+**Key Functions**:
+- `allocate_recruitment_budgets()`: Check armies at castles for recruitment needs and assign budgets directly
+- `split_by_weights()`: Proportional resource division using largest remainder method (legacy)
+- **Castle-Only Budget Allocation**: Only armies positioned at castles (level 1+) can receive budgets since they can immediately recruit
+- **Internal Army Assessment**: Automatically evaluates which armies need reinforcement using Army.needs_recruitment()
+- **Direct Budget Assignment**: Assigns BudgetComposition directly to Army.assigned_budget field instead of returning dictionary
+- **Equal Resource Distribution**: Splits player resources equally among armies at castles needing reinforcement
+- **Largest Remainder Algorithm**: Ensures exact resource allocation without loss
+- **Multi-Resource**: Splits gold, wood, and iron independently
+
+### BudgetComposition.gd  
+**Class**: BudgetComposition
+**Purpose**: Resource container for individual army budgets
+**Key Functions**:
+- Resource storage (gold, wood, iron) with transaction methods
+- `can_afford()` / `spend()`: Budget validation and consumption
+- `clone()` / `to_dict()`: Serialization and copying utilities
+- **Integration**: Used by RecruitmentManager for hiring soldiers within budget constraints
+
+### Integration Workflow
+**Complete Recruitment Cycle**:
+1. **Turn Start Budget Allocation**: TurnController uses BudgetManager to allocate budgets at start of each player turn
+2. **Castle-Only Assessment**: BudgetManager checks armies that both need recruitment AND are positioned at castles (level 1+)
+3. **Direct Assignment**: BudgetManager assigns BudgetComposition directly to `army.assigned_budget` for qualifying armies
+4. **Movement to Castles**: Armies needing reinforcement but not at castles will move toward nearest owned castle
+5. **Castle Reinforcement**: During turn processing, armies at castles use RecruitmentManager with assigned budgets
+6. **Recruitment Execution**: RecruitmentManager processes `hire_soldiers()` within assigned budget constraints
+7. **Budget Cleanup**: Assigned budgets cleared after recruitment use to prevent re-use
+8. **Fallback System**: Basic reinforcement used if no budget assigned (backward compatibility)
+**Benefits**: Resource allocation only to armies that can immediately recruit, strategic movement to castles, efficient resource usage
+
+## Testing System
+
+### TestBudgetManager.gd  
+**Class**: TestBudgetManager (extends TestCase)
+**Purpose**: Comprehensive unit tests for BudgetManager resource allocation system
+**Test Coverage**:
+- **Equal Splits**: 2-way, 3-way, and n-way equal resource distribution
+- **Weighted Allocation**: Proportional distribution based on weights (3:1 ratios, mixed types)
+- **Edge Cases**: Zero weights, negative weights, zero resources, single recipient
+- **Algorithm Accuracy**: Largest remainder method correctness and resource conservation
+- **Mathematical Validation**: Resource totals preserved, no loss or creation of resources
+**Key Tests**:
+- `test_remainder_distribution()`: Validates largest remainder algorithm for indivisible amounts
+- `test_resource_conservation()`: Ensures no resources lost or created during splits
+- `test_weighted_distribution()`: Validates proportional allocation with 3:1 weight ratios
+- `test_zero_weights_fallback()`: Tests fallback to equal distribution when all weights are zero
+- `test_large_remainder_distribution()`: Stress testing with larger numbers and 3-way splits
+**Integration**: Works with BudgetManager and BudgetComposition classes
+
+### TestRecruitmentManager.gd
+**Class**: TestRecruitmentManager (extends TestCase)  
+**Purpose**: Comprehensive testing of army recruitment system with budget constraints and composition matching
+**Test Coverage**: Unlimited resources, limited resources (wood/gold/recruits), zero budget scenarios, algorithm validation
 
 ### click_manager.gd
 **Class**: ClickManager
@@ -426,13 +494,16 @@ Main (Node2D) [place_armies.gd]
 
 ### Army.gd
 **Class**: Army
-**Purpose**: Individual army management with efficiency tracking
+**Purpose**: Individual army management with efficiency tracking and recruitment flagging system
 **Key Functions**:
 - Movement point tracking (5 per turn)
 - Army composition integration
 - Player ownership and positioning
 - **Efficiency Management**: `get_efficiency()`, `set_efficiency()`, `reduce_efficiency()`, `restore_efficiency()`
 - **Make Camp**: Restores 10 efficiency points (costs 1 movement point)
+- **Recruitment System**: `request_recruitment()`, `clear_recruitment_request()`, `is_recruitment_requested()`
+- **Budget Management**: `assign_recruitment_budget()`, `get_assigned_budget()`
+- **Power Assessment**: `needs_recruitment()` - automatic power threshold evaluation
 **Efficiency System**:
 - Starting efficiency: 100% for all armies
 - Movement reduces efficiency by 5% per move
@@ -444,6 +515,11 @@ Main (Node2D) [place_armies.gd]
 - **Army vs Army**: Both sides use their actual efficiency values
 - **Army vs Garrison**: Attacking army uses efficiency, garrison always 100%
 - **Army vs Mixed**: Garrison units 100%, defending armies use their efficiency
+**Recruitment Flagging System**:
+- `recruitment_requested: bool` - Flag for requesting budget allocation
+- `assigned_budget: BudgetComposition` - Individual army's allocated resources
+- **Power Threshold**: Based on turn-scaled formula (base 20 * (1 + 3% per turn) * peasant power * 2)
+- **Integration**: Works with ArmyManager budget allocation system
 **Types**: Regular armies and raised armies (from regions)
 
 ### ResourceComposition.gd

@@ -110,7 +110,10 @@ run_tests() {
     echo
     
     # Run the tests
-    "$GODOT_EXEC" --headless --script /Users/magic/vikings/tests/cli_test_runner.gd -- "${args[@]}"
+    "$GODOT_EXEC" --headless \
+    --path /Users/magic/vikings \
+    --script /Users/magic/vikings/tests/cli_test_runner.gd \
+    -- "${args[@]}"
     local exit_code=$?
     
     echo

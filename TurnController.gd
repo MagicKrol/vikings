@@ -46,7 +46,6 @@ var debug_step_gate: DebugStepGate
 # Turn state
 var current_player_id: int = -1
 var moved_armies: Dictionary = {}  # Army -> bool
-var _needs_reinf: Dictionary = {}  # Army -> bool
 
 func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: PlayerManagerNode, battle_mgr: BattleManager) -> void:
 	"""Initialize with manager references"""
@@ -84,14 +83,21 @@ func start_turn(player_id: int) -> void:
 	"""Start a player's turn using the unified pipeline"""
 	current_player_id = player_id
 	moved_armies.clear()
-	_needs_reinf.clear()
 	
-	# Calculate reinforcement needs for all armies at turn start
 	var turn_number := _get_current_turn()
-	for army in army_manager.get_player_armies(player_id):
-		_needs_reinf[army] = army_manager.needs_reinforcement(army, turn_number)
-		if _needs_reinf[army]:
-			print("[TurnController] Army ", army.name, " needs reinforcement (power: ", army.get_army_power(), ") at turn ", turn_number)
+	
+	# Step 1: Use BudgetManager to allocate recruitment budgets at turn start (only to armies at castles)
+	var player_armies := army_manager.get_player_armies(player_id)
+	if not player_armies.is_empty() and player_manager != null:
+		var player := player_manager.get_player(player_id)
+		if player:
+			var budget_manager := BudgetManager.new()
+			var assigned_count := budget_manager.allocate_recruitment_budgets(player_armies, player, region_manager, turn_number)
+			print("[TurnController] BudgetManager assigned budgets to ", assigned_count, " armies at castles at turn start")
+		else:
+			print("[TurnController] Warning: Could not get player ", player_id, " from PlayerManagerNode")
+	elif player_manager == null:
+		print("[TurnController] Warning: PlayerManagerNode is null - skipping budget allocation")
 	
 	emit_signal("turn_started", player_id)
 	print("[TurnController] Starting turn for Player ", player_id)
@@ -128,14 +134,17 @@ func _process_turn(player_id: int) -> void:
 				continue
 			var region_id: int = on_region.get_region_id()
 			var on_castle := region_manager.get_castle_level(region_id) >= 1
-			var needs: bool = _needs_reinf.get(army, false)
 			
-			if needs:
+			if army.is_recruitment_requested():
 				if on_castle and army.get_movement_points() >= 1:
-					# Reinforce now; do not mark as moved — we still want to consider a move
-					army_manager.reinforce_army_basic(army)
-					# Update the flag so we don't loop forever
-					_needs_reinf[army] = army_manager.needs_reinforcement(army, turn_number)
+					# Use RecruitmentManager if army has assigned budget, otherwise fallback to basic reinforcement
+					if army.assigned_budget != null:
+						var recruitment_manager := RecruitmentManager.new()
+						var result := recruitment_manager.hire_soldiers(army, "castle_reinforcement")
+						print("[TurnController] RecruitmentManager hired soldiers: ", result.get("hired", {}))
+					else:
+						# Fallback to basic reinforcement if no budget assigned
+						army_manager.reinforce_army_basic(army)
 					# Continue to build normal move candidate (it still has MP left)
 				else:
 					# Not on castle → override target: go to nearest owned castle
@@ -293,11 +302,15 @@ func _execute_move(move: Dictionary) -> bool:
 		var army_owner := army.get_player_id()
 		if target_owner == army_owner:
 			var castle_level := region_manager.get_castle_level(target_id)
-			if castle_level >= 1 and army.get_movement_points() >= 1 and _needs_reinf.get(army, false):
-				# Reinforce at castle
-				army_manager.reinforce_army_basic(army)
-				var turn_number := _get_current_turn()
-				_needs_reinf[army] = army_manager.needs_reinforcement(army, turn_number)
+			if castle_level >= 1 and army.get_movement_points() >= 1 and army.is_recruitment_requested():
+				# Use RecruitmentManager if army has assigned budget, otherwise fallback to basic reinforcement
+				if army.assigned_budget != null:
+					var recruitment_manager := RecruitmentManager.new()
+					var result := recruitment_manager.hire_soldiers(army, "castle_reinforcement")
+					print("[TurnController] RecruitmentManager hired soldiers after movement: ", result.get("hired", {}))
+				else:
+					# Fallback to basic reinforcement if no budget assigned
+					army_manager.reinforce_army_basic(army)
 				print("[TurnController] Army reinforced at castle after movement")
 
 	return false

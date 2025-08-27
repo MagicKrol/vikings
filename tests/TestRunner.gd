@@ -28,6 +28,7 @@ class_name TestRunner
 var test_results: Array[Dictionary] = []
 var current_test_class: String = ""
 var current_test_method: String = ""
+var current_test_instance = null
 
 ## Test Statistics
 var tests_run: int = 0
@@ -118,6 +119,7 @@ func _run_test_file(test_file_path: String) -> void:
 	# Set up the test instance
 	test_instance.set_test_runner(self)
 	current_test_class = test_file_path.get_file().get_basename()
+	current_test_instance = test_instance
 	
 	print(COLOR_BLUE + "\n--- Running " + current_test_class + " ---" + COLOR_RESET)
 	
@@ -149,7 +151,9 @@ func _run_single_test(test_instance, method_name: String) -> void:
 	current_test_method = method_name
 	tests_run += 1
 	
-	print("  • " + method_name + "... ", false)
+	# Reset test state for clean debug tracking
+	if test_instance.has_method("_reset_test_state"):
+		test_instance._reset_test_state()
 	
 	var start_time = Time.get_time_dict_from_system()
 	var success = true
@@ -166,10 +170,11 @@ func _run_single_test(test_instance, method_name: String) -> void:
 	
 	# Check if test failed during execution
 	if tests_failed > initial_failed_count:
+		print(COLOR_RED + "FAIL " + method_name + COLOR_RESET)
 		success = false
 		# The error message and failure handling was done in _fail_current_test
 	else:
-		print(COLOR_GREEN + "PASS" + COLOR_RESET)
+		print(COLOR_GREEN + "PASS " + method_name + COLOR_RESET)
 		tests_passed += 1
 	
 	var end_time = Time.get_time_dict_from_system()
@@ -276,6 +281,10 @@ func assert_type(value, expected_type: int, message: String = "") -> void:
 
 func _fail_current_test(error_message: String) -> void:
 	"""Fail the current test with an error message"""
+	# Mark test instance as failed for debug output
+	if current_test_instance and current_test_instance.has_method("_mark_test_failed"):
+		current_test_instance._mark_test_failed()
+	
 	print(COLOR_RED + "FAIL" + COLOR_RESET)
 	print(COLOR_RED + "    " + error_message + COLOR_RESET)
 	tests_failed += 1

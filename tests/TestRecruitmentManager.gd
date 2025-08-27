@@ -93,6 +93,7 @@ func _get_army_composition_counts() -> Dictionary:
 	composition["archers"] = test_army.get_soldier_count(SoldierTypeEnum.Type.ARCHERS)
 	return composition
 
+
 ## Core Functionality Tests
 
 func test_recruitment_manager_exists() -> void:
@@ -167,11 +168,12 @@ func test_game_start_composition_with_unlimited_resources() -> void:
 	var spearmen_diff = abs(actual_percentages.spearmen - ideal_percentages.spearmen)
 	var archers_diff = abs(actual_percentages.archers - ideal_percentages.archers)
 	
-	print("Expected vs Actual Composition:")
-	print("  Peasants: %.1f%% vs %.1f%% (diff: %.1f%%)" % [ideal_percentages.peasants, actual_percentages.peasants, peasant_diff])
-	print("  Spearmen: %.1f%% vs %.1f%% (diff: %.1f%%)" % [ideal_percentages.spearmen, actual_percentages.spearmen, spearmen_diff])
-	print("  Archers: %.1f%% vs %.1f%% (diff: %.1f%%)" % [ideal_percentages.archers, actual_percentages.archers, archers_diff])
-	print("  Total recruited: %d soldiers" % total_recruited)
+	# Debug output (disabled for clean test results)
+	# print("Expected vs Actual Composition:")
+	# print("  Peasants: %.1f%% vs %.1f%% (diff: %.1f%%)" % [ideal_percentages.peasants, actual_percentages.peasants, peasant_diff])
+	# print("  Spearmen: %.1f%% vs %.1f%% (diff: %.1f%%)" % [ideal_percentages.spearmen, actual_percentages.spearmen, spearmen_diff])
+	# print("  Archers: %.1f%% vs %.1f%% (diff: %.1f%%)" % [ideal_percentages.archers, actual_percentages.archers, archers_diff])
+	# print("  Total recruited: %d soldiers" % total_recruited)
 	
 	assert_true(peasant_diff <= tolerance, "Peasant percentage should match ideal within " + str(tolerance) + "% (diff: " + str(peasant_diff) + "%)")
 	assert_true(spearmen_diff <= tolerance, "Spearmen percentage should match ideal within " + str(tolerance) + "% (diff: " + str(spearmen_diff) + "%)")
@@ -212,6 +214,116 @@ func test_budget_remaining_tracking() -> void:
 	assert_equals(result.budget_left.gold, unlimited_budget.gold, "Remaining gold should match budget")
 	assert_equals(result.budget_left.wood, unlimited_budget.wood, "Remaining wood should match budget")
 	assert_equals(result.budget_left.iron, unlimited_budget.iron, "Remaining iron should match budget")
+
+## Resource Constraint Tests
+
+func test_recruitment_with_limited_wood() -> void:
+	"""Test recruitment behavior with limited wood - should get max archers, then peasants/spearmen in ratio"""
+	# 10 wood = max 10 archers (archers cost 1 wood each)
+	var limited_wood_budget = BudgetComposition.new(9999, 10, 9999)  # unlimited gold/iron, limited wood
+	
+	var result = recruitment_manager.hire_soldiers(test_army, "game_start", limited_wood_budget)
+	
+	var total_recruited = test_army.get_total_soldiers()
+	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	var spearmen_count = test_army.get_soldier_count(SoldierTypeEnum.Type.SPEARMEN)
+	var archer_count = test_army.get_soldier_count(SoldierTypeEnum.Type.ARCHERS)
+	
+	# Should recruit exactly 10 archers (limited by wood)
+	assert_equals(archer_count, 10, "Should recruit exactly 10 archers (limited by wood)")
+	
+	# Remaining 90 soldiers should be peasants and spearmen maintaining their ratio
+	var remaining_soldiers = total_recruited - archer_count
+	var expected_peasant_ratio = 47.0 / (47.0 + 33.0)  # peasants/(peasants+spearmen) from ideal
+	var expected_spearmen_ratio = 33.0 / (47.0 + 33.0)  # spearmen/(peasants+spearmen) from ideal
+	
+	var actual_peasant_ratio = float(peasant_count) / float(remaining_soldiers)
+	var actual_spearmen_ratio = float(spearmen_count) / float(remaining_soldiers)
+	
+	var peasant_ratio_diff = abs(actual_peasant_ratio - expected_peasant_ratio)
+	var spearmen_ratio_diff = abs(actual_spearmen_ratio - expected_spearmen_ratio)
+	
+	# Debug output (disabled for clean test results)
+	# print("Limited Wood Test Results:")
+	# print("  Total: %d, Peasants: %d, Spearmen: %d, Archers: %d" % [total_recruited, peasant_count, spearmen_count, archer_count])
+	# print("  Expected peasant/spearmen ratio: %.1f%% / %.1f%%" % [expected_peasant_ratio * 100, expected_spearmen_ratio * 100])
+	# print("  Actual peasant/spearmen ratio: %.1f%% / %.1f%%" % [actual_peasant_ratio * 100, actual_spearmen_ratio * 100])
+	
+	assert_true(peasant_ratio_diff <= 0.1, "Peasant ratio should match expected within 10%")
+	assert_true(spearmen_ratio_diff <= 0.1, "Spearmen ratio should match expected within 10%")
+	assert_equals(result.spent_wood, 10, "Should spend exactly 10 wood")
+
+func test_recruitment_with_limited_gold() -> void:
+	"""Test recruitment behavior with limited gold - should get spearmen/archers maintaining ratio"""
+	# 40 gold = can buy mix of spearmen (1 gold) and archers (3 gold)
+	var limited_gold_budget = BudgetComposition.new(40, 9999, 9999)  # limited gold, unlimited wood/iron
+	
+	var result = recruitment_manager.hire_soldiers(test_army, "game_start", limited_gold_budget)
+	
+	var total_recruited = test_army.get_total_soldiers()
+	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	var spearmen_count = test_army.get_soldier_count(SoldierTypeEnum.Type.SPEARMEN)
+	var archer_count = test_army.get_soldier_count(SoldierTypeEnum.Type.ARCHERS)
+	
+	# Should recruit 0 peasants (peasants are free but algorithm should prioritize paid units when gold available)
+	# Should maintain ratio between spearmen and archers from ideal composition
+	var expected_spearmen_ratio = 33.0 / (33.0 + 20.0)  # spearmen/(spearmen+archers) from ideal
+	var expected_archer_ratio = 20.0 / (33.0 + 20.0)    # archers/(spearmen+archers) from ideal
+	
+	var paid_units = spearmen_count + archer_count
+	assert_true(paid_units > 0, "Should recruit some paid units with available gold")
+	
+	var actual_spearmen_ratio = float(spearmen_count) / float(paid_units)
+	var actual_archer_ratio = float(archer_count) / float(paid_units)
+	
+	var spearmen_ratio_diff = abs(actual_spearmen_ratio - expected_spearmen_ratio)
+	var archer_ratio_diff = abs(actual_archer_ratio - expected_archer_ratio)
+	
+	# Debug output (disabled for clean test results)
+	# print("Limited Gold Test Results:")
+	# print("  Total: %d, Peasants: %d, Spearmen: %d, Archers: %d" % [total_recruited, peasant_count, spearmen_count, archer_count])
+	# print("  Expected spearmen/archer ratio: %.1f%% / %.1f%%" % [expected_spearmen_ratio * 100, expected_archer_ratio * 100])
+	# print("  Actual spearmen/archer ratio: %.1f%% / %.1f%%" % [actual_spearmen_ratio * 100, actual_archer_ratio * 100])
+	
+	assert_true(spearmen_ratio_diff <= 0.1, "Spearmen ratio should match expected within 10%")
+	assert_true(archer_ratio_diff <= 0.1, "Archer ratio should match expected within 10%")
+	assert_equals(result.spent_gold, 40, "Should spend exactly 40 gold")
+
+func test_recruitment_with_limited_recruits_maintaining_ratio() -> void:
+	"""Test recruitment with unlimited resources but limited recruits - should maintain ideal ratio"""
+	# Set limited recruits to 50
+	test_region.available_recruits = 50
+	
+	var result = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	
+	var total_recruited = test_army.get_total_soldiers()
+	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	var spearmen_count = test_army.get_soldier_count(SoldierTypeEnum.Type.SPEARMEN)
+	var archer_count = test_army.get_soldier_count(SoldierTypeEnum.Type.ARCHERS)
+	
+	# Should recruit exactly 50 soldiers
+	assert_equals(total_recruited, 50, "Should recruit exactly 50 soldiers (limited by recruits)")
+	
+	# Should maintain ideal composition ratios
+	var ideal_percentages = _get_ideal_composition_percentages()
+	var actual_percentages = _normalize_composition_to_percentages(_get_army_composition_counts(), total_recruited)
+	
+	var tolerance = 8.0  # Allow 8% tolerance for small army sizes
+	var peasant_diff = abs(actual_percentages.peasants - ideal_percentages.peasants)
+	var spearmen_diff = abs(actual_percentages.spearmen - ideal_percentages.spearmen)
+	var archers_diff = abs(actual_percentages.archers - ideal_percentages.archers)
+	
+	# Debug output (disabled for clean test results)
+	# print("Limited Recruits Test Results:")
+	# print("  Total: %d soldiers" % total_recruited)
+	# print("  Expected: Peasants %.1f%%, Spearmen %.1f%%, Archers %.1f%%" % [ideal_percentages.peasants, ideal_percentages.spearmen, ideal_percentages.archers])
+	# print("  Actual: Peasants %.1f%%, Spearmen %.1f%%, Archers %.1f%%" % [actual_percentages.peasants, actual_percentages.spearmen, actual_percentages.archers])
+	# print("  Differences: Peasants %.1f%%, Spearmen %.1f%%, Archers %.1f%%" % [peasant_diff, spearmen_diff, archers_diff])
+	
+	assert_true(peasant_diff <= tolerance, "Peasant percentage should match ideal within " + str(tolerance) + "%")
+	assert_true(spearmen_diff <= tolerance, "Spearmen percentage should match ideal within " + str(tolerance) + "%")
+	assert_true(archers_diff <= tolerance, "Archers percentage should match ideal within " + str(tolerance) + "%")
+	assert_equals(result.recruits_left, 0, "Should have no recruits left")
 
 ## Edge Case Tests
 

@@ -34,6 +34,10 @@ var movement_points: int = GameParameters.MOVEMENT_POINTS_PER_TURN
 var number: String = ""
 var efficiency: int = 100  # Efficiency percentage (10-100), affects hit chances in battle
 
+# Recruitment system
+var recruitment_requested: bool = false  # Flag for requesting recruitment budget
+var assigned_budget: BudgetComposition = null  # Budget allocated for this army's recruitment
+
 # Army composition - soldiers in this army
 var composition: ArmyComposition
 
@@ -175,3 +179,34 @@ func _set_warrior_texture(player_number: int) -> void:
 		print("[Army] Warning: Could not load warrior texture for Player ", player_number, " at: ", texture_path)
 		# Fallback to default warrior image
 		texture = load("res://images/warrior_1.png")
+
+# Recruitment system methods
+func request_recruitment() -> void:
+	"""Flag this army as needing recruitment"""
+	recruitment_requested = true
+
+func clear_recruitment_request() -> void:
+	"""Clear the recruitment request flag"""
+	recruitment_requested = false
+	assigned_budget = null
+
+func is_recruitment_requested() -> bool:
+	"""Check if army has requested recruitment"""
+	return recruitment_requested
+
+func assign_recruitment_budget(budget: BudgetComposition) -> void:
+	"""Assign a budget for this army's recruitment"""
+	assigned_budget = budget
+
+func get_assigned_budget() -> BudgetComposition:
+	"""Get the budget assigned to this army"""
+	return assigned_budget
+
+func needs_recruitment(turn_number: int = 1) -> bool:
+	"""Check if this army needs recruitment based on power threshold"""
+	# Use the same logic as ArmyManager.needs_reinforcement
+	var base_max := 20.0
+	var scaled := base_max * (1.0 + 0.03 * float(turn_number))
+	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
+	var threshold := scaled * float(peasant_power) * 2.0
+	return float(get_army_power()) < threshold
