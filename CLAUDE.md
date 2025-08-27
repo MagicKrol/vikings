@@ -14,6 +14,8 @@ For static game elements like UI you MUST always create a Node and add it to the
 For static game element do not modify attributes in _ready function. Instead directly apply them to the node definition in the scene file.
 NEVER make up game logic by adding own mechanics, or fallbacks if not explicitly asked. 
 
+ALWAYS check the file you are changing for any syntax errors, old unused code, logic errors. 
+PROACTIVELY propose changes, fixes on the code that is not part of the request, but could improve the codebase.
 
 If you need to test a solution with existing tests you can run tests:
 ./Users/magic/vikings/run_tests.sh                   # Run all tests

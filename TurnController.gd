@@ -294,10 +294,10 @@ func _execute_move(move: Dictionary) -> bool:
 	var target_region: Region = region_manager.map_generator.get_region_container_by_id(target_id)
 	if _should_trigger_battle(army, target_region):
 		emit_signal("battle_started", army, target_id)
-		battle_manager.start_battle(army, target_id)
-		var result: String = await battle_manager.battle_finished
+		
+		# Use GameManager's unified battle system
+		var result: String = await game_manager.handle_army_battle(army, target_id)
 		if result == "victory":
-			region_manager.set_region_ownership(target_id, army.get_player_id())
 			emit_signal("region_conquered", target_id, army.get_player_id())
 			return true
 

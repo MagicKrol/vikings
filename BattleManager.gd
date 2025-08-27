@@ -111,8 +111,18 @@ func handle_battle_modal_closed() -> void:
 		var battle_result = _get_battle_result()
 		
 		if battle_result == "victory":
-			# Attackers won - only reduce efficiency, TurnController handles conquest
-			if pending_conquest_army != null and is_instance_valid(pending_conquest_army):
+			# Attackers won - handle conquest using GameManager's unified logic
+			if pending_conquest_army != null and is_instance_valid(pending_conquest_army) and pending_conquest_region != null:
+				var region_id = pending_conquest_region.get_region_id()
+				var player_id = pending_conquest_army.get_player_id()
+				
+				# Use GameManager's unified conquest logic
+				if _game_manager:
+					_game_manager.get_region_manager().set_region_ownership(region_id, player_id)
+					_game_manager.refresh_ai_debug_scores()
+					print("[BattleManager] Player ", player_id, " conquered region ", region_id, " via unified system")
+				
+				# Reduce efficiency
 				pending_conquest_army.reduce_efficiency(5)
 				print("[BattleManager] Reduced ", pending_conquest_army.name, " efficiency to ", pending_conquest_army.get_efficiency(), "% after battle")
 		elif battle_result == "withdrawal":
@@ -129,7 +139,7 @@ func handle_battle_modal_closed() -> void:
 	else:
 		print("[BattleManager] No pending conquest found")
 	
-	# Emit battle finished signal for TurnController
+	# Emit battle finished signal
 	var result = _get_battle_result()
 	emit_signal("battle_finished", result)
 	print("[BattleManager] Battle finished with result: ", result)

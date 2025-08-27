@@ -32,12 +32,12 @@ var total_players: int = 6
 
 # Player type management (up to 6 players)
 var player_types: Array[PlayerTypeEnum.Type] = [
-	PlayerTypeEnum.Type.COMPUTER,   # Player 1 - Computer (temporarily for testing)
-	PlayerTypeEnum.Type.COMPUTER,   # Player 2 - Computer
-	PlayerTypeEnum.Type.COMPUTER,   # Player 3 - Computer
-	PlayerTypeEnum.Type.COMPUTER,   # Player 4 - Computer
-	PlayerTypeEnum.Type.COMPUTER,   # Player 5 - Computer
-	PlayerTypeEnum.Type.COMPUTER    # Player 6 - Computer
+	PlayerTypeEnum.Type.HUMAN,   # Player 1 - Computer (temporarily for testing)
+	PlayerTypeEnum.Type.HUMAN,   # Player 2 - Computer
+	PlayerTypeEnum.Type.OFF,   # Player 3 - Computer
+	PlayerTypeEnum.Type.OFF,   # Player 4 - Computer
+	PlayerTypeEnum.Type.OFF,   # Player 5 - Computer
+	PlayerTypeEnum.Type.OFF    # Player 6 - Computer
 ]
 
 
@@ -678,6 +678,34 @@ func handle_castle_placement(region: Region) -> void:
 	# Play sound
 	if _sound_manager:
 		_sound_manager.click_sound()
+
+# Battle coordination - unified system for both Human and AI players
+func handle_army_battle(army: Army, target_region_id: int) -> String:
+	"""
+	Unified battle handling for both Human and AI players
+	Returns: 'victory', 'defeat', or 'withdrawal'
+	"""
+	print("[GameManager] Starting unified battle for ", army.name, " vs region ", target_region_id)
+	
+	# Start the battle using BattleManager
+	_battle_manager.start_battle(army, target_region_id)
+	
+	# Wait for battle to complete
+	var result: String = await _battle_manager.battle_finished
+	print("[GameManager] Battle completed with result: ", result)
+	
+	# Handle conquest for victory (only for AI immediate battles)
+	# Human battles use pending conquest and are handled in BattleManager
+	if result == "victory":
+		var player_id = army.get_player_id()
+		# Check if this is an AI player (immediate battle) vs Human player (pending battle)
+		if is_player_computer(player_id):
+			_region_manager.set_region_ownership(target_region_id, player_id)
+			print("[GameManager] AI Player ", player_id, " conquered region ", target_region_id)
+			refresh_ai_debug_scores()
+		# Human conquest is handled by BattleManager.handle_battle_modal_closed()
+	
+	return result
 
 # Manager accessors for external systems
 func get_battle_manager() -> BattleManager:

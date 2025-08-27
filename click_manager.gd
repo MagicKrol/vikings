@@ -171,12 +171,13 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			var current_player_id = _game_manager.get_current_player_id() if _game_manager else 1
 			var player_army_in_region = _army_manager.get_army_in_region(region_container, current_player_id)
 			if player_army_in_region != null and region_owner != current_player_id:
-				# Player has army in unowned region - delegate to BattleManager
+				# Player has army in unowned region - use PENDING conquest for humans
+				# This shows the battle modal and waits for human to click battle button
 				var battle_manager = _game_manager.get_battle_manager()
 				if battle_manager:
 					battle_manager.set_pending_conquest(player_army_in_region, region)
 					
-					# Show battle modal
+					# Show battle modal for human interaction
 					var battle_modal = get_node("../UI/BattleModal") as BattleModal
 					battle_modal.show_battle(player_army_in_region, region)
 				return
@@ -234,9 +235,9 @@ func reset_army_moves() -> void:
 	else:
 		print("[ClickManager] Error: ArmyManager not available")
 
-# Legacy functions now handled by BattleManager - kept for compatibility during transition
+# Handle human battle completion - delegate to BattleManager which now calls GameManager
 func on_battle_modal_closed() -> void:
-	"""Delegate battle modal closure to BattleManager"""
+	"""Handle human battle modal closure - BattleManager will handle conquest via GameManager"""
 	var battle_manager = _game_manager.get_battle_manager() if _game_manager else null
 	if battle_manager:
 		battle_manager.handle_battle_modal_closed()
