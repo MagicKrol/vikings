@@ -54,6 +54,11 @@ func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: Pl
 	player_manager = player_mgr
 	battle_manager = battle_mgr
 	
+	if player_manager == null:
+		push_error("[TurnController] CRITICAL: PlayerManagerNode is null during initialization!")
+	else:
+		print("[TurnController] PlayerManagerNode initialized successfully")
+	
 	# Create supporting systems
 	pathfinder = ArmyPathfinder.new(region_manager, army_manager)
 	target_scorer = ArmyTargetScorer.new(region_manager, region_manager.map_generator)
@@ -136,16 +141,15 @@ func _process_turn(player_id: int) -> void:
 			var on_castle := region_manager.get_castle_level(region_id) >= 1
 			
 			if army.is_recruitment_requested():
-				if on_castle and army.get_movement_points() >= 1:
-					# Use RecruitmentManager if army has assigned budget, otherwise fallback to basic reinforcement
-					if army.assigned_budget != null:
+				if on_castle and army.assigned_budget != null:
+					if army.get_movement_points() >= 1:
 						var recruitment_manager := RecruitmentManager.new()
-						var result := recruitment_manager.hire_soldiers(army, "castle_reinforcement")
-						print("[TurnController] RecruitmentManager hired soldiers: ", result.get("hired", {}))
+						var result := recruitment_manager.hire_soldiers(army, true)  # Enable debug temporarily
+						if result.has("error"):
+							print("[TurnController] RecruitmentManager error: ", result.get("error", "unknown"))
 					else:
-						# Fallback to basic reinforcement if no budget assigned
-						army_manager.reinforce_army_basic(army)
-					# Continue to build normal move candidate (it still has MP left)
+						print("[TurnController] Army ", army.name, " has no movement points to recruit. We skip turn")
+
 				else:
 					# Not on castle → override target: go to nearest owned castle
 					var castle_id := region_manager.find_nearest_owned_castle_region_id(region_id, army.get_player_id())
@@ -296,22 +300,6 @@ func _execute_move(move: Dictionary) -> bool:
 			region_manager.set_region_ownership(target_id, army.get_player_id())
 			emit_signal("region_conquered", target_id, army.get_player_id())
 			return true
-	else:
-		# No battle - check if we arrived at a castle and need reinforcement
-		var target_owner := region_manager.get_region_owner(target_id)
-		var army_owner := army.get_player_id()
-		if target_owner == army_owner:
-			var castle_level := region_manager.get_castle_level(target_id)
-			if castle_level >= 1 and army.get_movement_points() >= 1 and army.is_recruitment_requested():
-				# Use RecruitmentManager if army has assigned budget, otherwise fallback to basic reinforcement
-				if army.assigned_budget != null:
-					var recruitment_manager := RecruitmentManager.new()
-					var result := recruitment_manager.hire_soldiers(army, "castle_reinforcement")
-					print("[TurnController] RecruitmentManager hired soldiers after movement: ", result.get("hired", {}))
-				else:
-					# Fallback to basic reinforcement if no budget assigned
-					army_manager.reinforce_army_basic(army)
-				print("[TurnController] Army reinforced at castle after movement")
 
 	return false
 

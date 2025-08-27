@@ -115,9 +115,9 @@ func test_game_parameters_accessible() -> void:
 	assert_equals(starting_gold, 100, "Starting gold should be 100")
 	
 	# Test ideal composition access
-	var game_start_composition = GameParameters.get_ideal_composition("game_start")
-	assert_not_null(game_start_composition, "Game start composition should exist")
-	assert_true(game_start_composition.has("peasants"), "Composition should have peasants")
+	var outpost_composition = GameParameters.get_ideal_composition("Outpost")
+	assert_not_null(outpost_composition, "Outpost composition should exist")
+	assert_true(outpost_composition.has("peasants"), "Composition should have peasants")
 
 ## Edge Case Tests
 

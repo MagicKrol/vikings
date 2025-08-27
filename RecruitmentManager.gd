@@ -12,24 +12,35 @@ const SCARCE_RECRUITS_THRESHOLD := 5  # if ≤ this, lean into quality
 
 # Public entry point
 # - army: Army node to recruit into (budget taken from army.assigned_budget)
-# - need_key: e.g., "game_start" (looked up in GameParameters ideal composition)
 # - debug: if true, print detailed debug information
 #
 # Returns a small report dictionary for debugging/telemetry.
 # Uses army.assigned_budget and clears it after successful recruitment.
 # Also clears army.recruitment_requested flag.
-func hire_soldiers(army: Army, need_key: String, debug: bool = false) -> Dictionary:
+func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	# Check if army has assigned budget
 	if not army.assigned_budget:
 		print("[RecruitmentManager] Army ", army.name, " has no assigned budget")
 		return {"hired": {}, "error": "no_budget"}
 	
 	var budget: BudgetComposition = army.assigned_budget
-	var region: Region = army.get_parent()
-	var recruits_avail: int = region.get_available_recruits()  # must exist in Region
+	print("[RecruitmentManager] Army ", army.name, " has budget: ", budget.to_dict())
 	
+	var region: Region = army.get_parent()
+	if not region:
+		print("[RecruitmentManager] Army ", army.name, " has no parent region")
+		return {"hired": {}, "error": "no_region"}
+	
+	var recruits_avail: int = region.get_available_recruits()  # must exist in Region
+	print("[RecruitmentManager] Region has ", recruits_avail, " available recruits")
+	
+	var need_key: String = CastleTypeEnum.type_to_string(region.get_castle_type())
+
 	# Pull the ideal composition (percentages sum to 100 or 1.0)
 	var ideal_raw: Dictionary = GameParameters.get_ideal_composition(need_key)  # e.g., {"peasants":47,"spearmen":33,"archers":20}
+	if ideal_raw.is_empty():
+		push_error("[RecruitmentManager] Invalid need_key '" + need_key + "' - no ideal composition found in GameParameters")
+		return {"hired": {}, "error": "invalid_need_key"}
 	var ideal := _normalize_ideal(_map_ideal_keys_to_types(ideal_raw))  # { SoldierTypeEnum.Type : 0..1 }
 	
 	# Enforce minimal peasants share, renormalize
@@ -56,7 +67,7 @@ func hire_soldiers(army: Army, need_key: String, debug: bool = false) -> Diction
 	var recruited_so_far := 0
 	
 	# Debug output (only if requested)  
-	if false:  # debug disabled for clean output
+	if debug:  # back to normal debug control
 		print("=== RECRUITMENT DEBUG ===")
 		print("Budget: gold=%d, wood=%d, iron=%d" % [budget.gold, budget.wood, budget.iron])
 		print("Recruits available: %d" % recruits_avail)
@@ -74,7 +85,7 @@ func hire_soldiers(army: Army, need_key: String, debug: bool = false) -> Diction
 			if budget.can_afford(c):
 				affordable.append(t)
 		if affordable.is_empty():
-			if false and recruited_so_far == 0:  # debug disabled
+			if debug and recruited_so_far == 0:
 				print("  -> No affordable units found (budget exhausted or zero)")
 			break  # nothing more we can buy
 		

@@ -66,15 +66,11 @@ var _ui_manager: UIManager
 var _ai_region_scorer: RegionScorer
 var _ai_castle_placement_scorer: CastlePlacementScorer
 var _ai_debug_visualizer: AIDebugVisualizer
-var _ai_turn_manager: AITurnManager
-var _simplified_ai_turn_manager: SimplifiedAITurnManager  # New frontier-based AI
 
 # New unified turn system
 var _turn_controller: TurnController
 
-# Step-by-step AI debugging state
-var _ai_step_pending: bool = false
-var _ai_step_callback: Callable
+# AI debugging state is now handled by TurnController
 
 # Modal references  
 var _battle_modal: BattleModal
@@ -141,15 +137,25 @@ func initialize_managers():
 	_battle_manager.set_game_manager(self)
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
-	# Initialize AI system
+	# Get the PlayerManager node FIRST before initializing other systems that depend on it
+	print("[GameManager] Looking for PlayerManager node at path: ../PlayerManager")
+	var player_manager_node = get_node("../PlayerManager")
+	print("[GameManager] Found node: ", player_manager_node, " (", type_string(typeof(player_manager_node)), ")")
+	
+	player_manager = player_manager_node as PlayerManagerNode
+	if player_manager:
+		print("[GameManager] Successfully cast to PlayerManagerNode: ", player_manager)
+		player_manager.initialize_with_managers(_region_manager, map_generator)
+		player_manager.set_army_manager(_army_manager)
+	else:
+		push_error("[GameManager] CRITICAL: Failed to cast PlayerManager node to PlayerManagerNode! Node type: " + str(type_string(typeof(player_manager_node))))
+		return
+	
+	# Initialize AI system (now with proper PlayerManagerNode reference)
 	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
 	_ai_castle_placement_scorer = CastlePlacementScorer.new(_region_manager, map_generator)
 	_ai_debug_visualizer = AIDebugVisualizer.new()
 	_ai_debug_visualizer.initialize(_ai_region_scorer, _ai_castle_placement_scorer, map_generator, _region_manager)
-	_ai_turn_manager = AITurnManager.new(_region_manager, _army_manager, player_manager, map_generator)
-	
-	# Initialize simplified AI (frontier-based)
-	_simplified_ai_turn_manager = SimplifiedAITurnManager.new(_region_manager, _army_manager, player_manager, map_generator)
 	
 	# Initialize new unified turn controller (DebugStepGate should be in scene)
 	_turn_controller = TurnController.new()
@@ -165,12 +171,6 @@ func initialize_managers():
 	# Enable debug mode and step-by-step mode by default
 	_ai_debug_visualizer.enable_step_by_step_mode(true)
 	print("[GameManager] AI system initialized with debug and step-by-step mode enabled")
-	
-	# Get the PlayerManager node and initialize it with required components
-	player_manager = get_node("../PlayerManager") as PlayerManagerNode
-	if player_manager:
-		player_manager.initialize_with_managers(_region_manager, map_generator)
-		player_manager.set_army_manager(_army_manager)
 	
 	# Print initial player resources and types
 	print("[GameManager] Game initialized with ", total_players, " players")
@@ -200,11 +200,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				print("[GameManager] Step-by-step AI debug mode: ", "enabled" if not current_mode else "disabled")
 			elif castle_placing_mode:
 				print("[GameManager] Step-by-step mode not available during castle placement")
-		elif event.keycode == KEY_SPACE:
-			# Continue AI action in step-by-step mode
-			if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
-				_continue_ai_step()
-				print("[GameManager] AI step continued")
+		# SPACE key handling is now managed by TurnController's DebugStepGate
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
@@ -713,175 +709,8 @@ func refresh_ai_debug_scores():
 			_ai_debug_visualizer._update_display_cache_from_regions()
 			_ai_debug_visualizer.queue_redraw()
 
-func _process_ai_turn_deferred(player_id: int) -> void:
-	"""Deferred wrapper for AI turn processing to handle async properly"""
-	await _process_ai_turn(player_id)
-
-func _process_ai_turn(player_id: int) -> void:
-	"""Process all AI actions for this player's turn (async version for regular turns)"""
-	print("[GameManager] _process_ai_turn called for Player ", player_id)
-	
-	# Use simplified AI if available, otherwise fall back to old AI
-	var use_simplified_ai = true  # Toggle this to switch between AI systems
-	
-	if use_simplified_ai and _simplified_ai_turn_manager != null:
-		print("[GameManager] Using SimplifiedAITurnManager (frontier-based)...")
-		
-		# Enable debug display for AI turns
-		if _ai_debug_visualizer and not _ai_debug_visualizer.is_debug_visible():
-			_ai_debug_visualizer.toggle_debug_display(player_id)
-			print("[GameManager] Enabled AI debug display for Player ", player_id)
-		
-		# Start AI processing immediately - this will calculate and show debug info
-		# In step-by-step mode, it will pause before each move execution
-		if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
-			print("[GameManager] Step-by-step mode enabled - calculating AI moves...")
-			# Process AI turn with step-by-step control
-			await _process_ai_with_steps(player_id)
-		else:
-			# Process all AI actions for this turn immediately
-			await _simplified_ai_turn_manager.process_turn(player_id)
-			# After AI processing is complete, automatically end the turn
-			print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-			await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
-			next_turn()
-	elif _ai_turn_manager != null:
-		print("[GameManager] Using original AITurnManager...")
-		
-		# If step-by-step debug mode is enabled, wait for spacebar before processing
-		if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
-			print("[GameManager] Step-by-step mode enabled - processing with old AI system...")
-			await _process_old_ai_with_steps(player_id)
-		else:
-			# Process all AI actions for this turn immediately
-			await _ai_turn_manager.process_turn(player_id)
-			# After AI processing is complete, automatically end the turn
-			print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-			await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
-			next_turn()
-	else:
-		print("[GameManager] Error: No AI turn manager available")
-		return
-
-func _process_ai_turn_async(player_id: int) -> void:
-	"""Process all AI actions for this player's turn (async version for first turn)"""
-	print("[GameManager] _process_ai_turn_async called for Player ", player_id)
-	
-	# Use simplified AI if available, otherwise fall back to old AI
-	var use_simplified_ai = true  # Toggle this to switch between AI systems
-	
-	if use_simplified_ai and _simplified_ai_turn_manager != null:
-		print("[GameManager] Using SimplifiedAITurnManager (frontier-based)...")
-		
-		# Enable debug display for AI turns
-		if _ai_debug_visualizer and not _ai_debug_visualizer.is_debug_visible():
-			_ai_debug_visualizer.toggle_debug_display(player_id)
-			print("[GameManager] Enabled AI debug display for Player ", player_id)
-		
-		# Start AI processing immediately - this will calculate and show debug info
-		# In step-by-step mode, it will pause before each move execution
-		if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
-			print("[GameManager] Step-by-step mode enabled - calculating AI moves...")
-			# Process AI turn with step-by-step control
-			await _process_ai_with_steps(player_id)
-		else:
-			# Process all AI actions for this turn immediately
-			await _simplified_ai_turn_manager.process_turn(player_id)
-			# After AI processing is complete, automatically end the turn
-			print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-			await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
-			next_turn()
-	elif _ai_turn_manager != null:
-		print("[GameManager] Using original AITurnManager...")
-		await _ai_turn_manager.process_turn(player_id)
-	else:
-		print("[GameManager] Error: No AI turn manager available")
-		return
-	
-	# After AI processing is complete, automatically end the turn
-	print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-	await get_tree().create_timer(1.0).timeout  # Brief delay to see AI actions
-	next_turn()
-
-func _continue_ai_step():
-	"""Continue to next AI step in step-by-step debug mode"""
-	if _ai_step_pending and _ai_step_callback.is_valid():
-		print("[GameManager] Continuing AI step...")
-		_ai_step_pending = false
-		_ai_step_callback.call()
-		_ai_step_callback = Callable()
-
-func _wait_for_debug_step(callback: Callable):
-	"""Wait for spacebar press in debug mode, or continue immediately if not debugging"""
-	if _ai_debug_visualizer and _ai_debug_visualizer.is_step_by_step_mode():
-		print("[GameManager] Waiting for spacebar to continue AI action...")
-		_ai_step_pending = true
-		_ai_step_callback = callback
-	else:
-		# Not in debug mode, continue immediately
-		callback.call()
-
-func _process_ai_with_steps(player_id: int) -> void:
-	"""Process AI turn with step-by-step execution - one move at a time with spacebar pauses"""
-	print("[GameManager] Starting step-by-step AI processing for Player ", player_id)
-	
-	# Reset SimplifiedAI turn state
-	_simplified_ai_turn_manager.conquered_this_turn.clear()
-	_simplified_ai_turn_manager.armies_moved.clear()
-	
-	# Process moves one at a time with spacebar waits
-	while true:
-		# Calculate the next best move (this shows debug info)
-		var best_move = await _simplified_ai_turn_manager.calculate_next_move(player_id)
-		
-		if best_move.is_empty():
-			print("[GameManager] No more moves available for Player ", player_id)
-			break
-		
-		# Wait for spacebar before executing this move
-		print("[GameManager] Press SPACE to execute: Army %s -> Region %d (score: %.1f)" % 
-			[best_move.army.name, best_move.target_id, best_move.final_score])
-		
-		_ai_step_pending = true
-		_ai_step_callback = func():
-			await _execute_single_ai_move(player_id, best_move)
-		
-		# Wait for spacebar press
-		while _ai_step_pending:
-			await get_tree().process_frame
-	
-	# All moves completed
-	print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-	await get_tree().create_timer(1.0).timeout
-	next_turn()
-
-func _execute_single_ai_move(player_id: int, best_move: Dictionary) -> void:
-	"""Execute a single AI move and check if we should continue"""
-	_ai_step_pending = false
-	
-	# Execute the move using SimplifiedAITurnManager's logic
-	var ownership_changed = await _simplified_ai_turn_manager._execute_army_move(best_move, player_id)
-	_simplified_ai_turn_manager.armies_moved[best_move.army] = true
-	
-	if ownership_changed:
-		print("[GameManager] Ownership changed - frontier will be recalculated on next move")
-	
-	print("[GameManager] Move completed. Ready for next move calculation...")
-
-func _process_old_ai_with_steps(player_id: int) -> void:
-	"""Process AI turn with step-by-step execution using the old AI system"""
-	print("[GameManager] Step-by-step mode enabled - waiting for SPACE to process AI turn...")
-	_ai_step_pending = true
-	_ai_step_callback = func():
-		await _ai_turn_manager.process_turn(player_id)
-		# After AI processing, auto-end turn
-		print("[GameManager] AI Player ", player_id, " completed all actions, auto-ending turn...")
-		await get_tree().create_timer(1.0).timeout
-		next_turn()
-	
-	# Wait for spacebar press
-	while _ai_step_pending:
-		await get_tree().process_frame
+# All AI turn processing is now handled by TurnController
+# Legacy AI processing methods removed since TurnController handles all turn logic
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""

@@ -63,14 +63,17 @@ func _setup_test_region() -> void:
 	test_region.setup_region(region_data)
 	test_region.set_region_name("Test Region")
 	
+	# Set castle type so RecruitmentManager can get proper composition
+	test_region.set_castle_type(CastleTypeEnum.Type.OUTPOST)  # Use OUTPOST for consistent testing
+	
 	# Set unlimited recruits (9999 should be more than enough)
 	test_region.available_recruits = 100
 	test_region.population = 10000  # Large population to support recruitment
 
 func _get_ideal_composition_percentages() -> Dictionary:
-	"""Get the ideal composition percentages for game_start"""
-	var ideal_raw = GameParameters.get_ideal_composition("game_start")
-	assert_not_null(ideal_raw, "Game start composition should exist")
+	"""Get the ideal composition percentages for Outpost castle type"""
+	var ideal_raw = GameParameters.get_ideal_composition("Outpost")
+	assert_not_null(ideal_raw, "Outpost composition should exist")
 	return ideal_raw
 
 func _normalize_composition_to_percentages(composition: Dictionary, total: int) -> Dictionary:
@@ -128,9 +131,9 @@ func test_region_has_unlimited_recruits() -> void:
 
 ## Main Test: Ideal Composition Matching
 
-func test_game_start_composition_with_unlimited_resources() -> void:
+func test_outpost_composition_with_unlimited_resources() -> void:
 	"""
-	MAIN TEST: Verify RecruitmentManager produces ideal army composition for game_start
+	MAIN TEST: Verify RecruitmentManager produces ideal army composition for Outpost
 	with unlimited resources and recruits
 	"""
 	# Get expected ideal composition percentages
@@ -141,12 +144,15 @@ func test_game_start_composition_with_unlimited_resources() -> void:
 	assert_true(ideal_percentages.has("spearmen"), "Ideal composition should include spearmen")  
 	assert_true(ideal_percentages.has("archers"), "Ideal composition should include archers")
 	
-	# Verify percentages are reasonable (should sum to 100)
-	var total_percentage = ideal_percentages.peasants + ideal_percentages.spearmen + ideal_percentages.archers
-	assert_true(abs(total_percentage - 100.0) < 1.0, "Ideal percentages should sum to ~100: " + str(total_percentage))
+	# Verify percentages are reasonable (Outpost has peasants: 40, spearmen: 30, archers: 20, swordsmen: 10)
+	var basic_units_percentage = ideal_percentages.peasants + ideal_percentages.spearmen + ideal_percentages.archers
+	assert_true(abs(basic_units_percentage - 90.0) < 1.0, "Basic unit percentages should sum to ~90 for Outpost: " + str(basic_units_percentage))
+	
+	# Assign budget to army (new system)
+	test_army.assigned_budget = unlimited_budget
 	
 	# Run recruitment with unlimited resources
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	# Verify recruitment was successful
 	assert_not_null(result, "Recruitment should return a result")
@@ -188,7 +194,8 @@ func test_budget_spending_tracking() -> void:
 	var initial_iron = unlimited_budget.iron
 	
 	# Run recruitment
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	# Verify resources were spent
 	var gold_spent = initial_gold - unlimited_budget.gold
@@ -202,7 +209,8 @@ func test_budget_spending_tracking() -> void:
 
 func test_budget_remaining_tracking() -> void:
 	"""Test that remaining budget is properly tracked"""
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	# Verify budget_left is returned
 	assert_true(result.has("budget_left"), "Result should include budget_left")
@@ -222,7 +230,8 @@ func test_recruitment_with_limited_wood() -> void:
 	# 10 wood = max 10 archers (archers cost 1 wood each)
 	var limited_wood_budget = BudgetComposition.new(9999, 10, 9999)  # unlimited gold/iron, limited wood
 	
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", limited_wood_budget)
+	test_army.assigned_budget = limited_wood_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	var total_recruited = test_army.get_total_soldiers()
 	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
@@ -232,10 +241,10 @@ func test_recruitment_with_limited_wood() -> void:
 	# Should recruit exactly 10 archers (limited by wood)
 	assert_equals(archer_count, 10, "Should recruit exactly 10 archers (limited by wood)")
 	
-	# Remaining 90 soldiers should be peasants and spearmen maintaining their ratio
+	# Remaining soldiers should be peasants and spearmen maintaining their ratio
 	var remaining_soldiers = total_recruited - archer_count
-	var expected_peasant_ratio = 47.0 / (47.0 + 33.0)  # peasants/(peasants+spearmen) from ideal
-	var expected_spearmen_ratio = 33.0 / (47.0 + 33.0)  # spearmen/(peasants+spearmen) from ideal
+	var expected_peasant_ratio = 40.0 / (40.0 + 30.0)  # peasants/(peasants+spearmen) from Outpost ideal
+	var expected_spearmen_ratio = 30.0 / (40.0 + 30.0)  # spearmen/(peasants+spearmen) from Outpost ideal
 	
 	var actual_peasant_ratio = float(peasant_count) / float(remaining_soldiers)
 	var actual_spearmen_ratio = float(spearmen_count) / float(remaining_soldiers)
@@ -258,7 +267,8 @@ func test_recruitment_with_limited_gold() -> void:
 	# 40 gold = can buy mix of spearmen (1 gold) and archers (3 gold)
 	var limited_gold_budget = BudgetComposition.new(40, 9999, 9999)  # limited gold, unlimited wood/iron
 	
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", limited_gold_budget)
+	test_army.assigned_budget = limited_gold_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	var total_recruited = test_army.get_total_soldiers()
 	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
@@ -267,8 +277,8 @@ func test_recruitment_with_limited_gold() -> void:
 	
 	# Should recruit 0 peasants (peasants are free but algorithm should prioritize paid units when gold available)
 	# Should maintain ratio between spearmen and archers from ideal composition
-	var expected_spearmen_ratio = 33.0 / (33.0 + 20.0)  # spearmen/(spearmen+archers) from ideal
-	var expected_archer_ratio = 20.0 / (33.0 + 20.0)    # archers/(spearmen+archers) from ideal
+	var expected_spearmen_ratio = 30.0 / (30.0 + 20.0)  # spearmen/(spearmen+archers) from Outpost ideal
+	var expected_archer_ratio = 20.0 / (30.0 + 20.0)    # archers/(spearmen+archers) from Outpost ideal
 	
 	var paid_units = spearmen_count + archer_count
 	assert_true(paid_units > 0, "Should recruit some paid units with available gold")
@@ -294,7 +304,8 @@ func test_recruitment_with_limited_recruits_maintaining_ratio() -> void:
 	# Set limited recruits to 50
 	test_region.available_recruits = 50
 	
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	var total_recruited = test_army.get_total_soldiers()
 	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
@@ -332,7 +343,8 @@ func test_recruitment_with_limited_recruits() -> void:
 	# Set limited recruits
 	test_region.available_recruits = 10
 	
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	# Should recruit exactly 10 soldiers
 	var total_recruited = test_army.get_total_soldiers()
@@ -343,7 +355,8 @@ func test_recruitment_with_zero_budget() -> void:
 	"""Test recruitment behavior with no resources"""
 	var zero_budget = BudgetComposition.new(0, 0, 0)
 	
-	var result = recruitment_manager.hire_soldiers(test_army, "game_start", zero_budget)
+	test_army.assigned_budget = zero_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
 	
 	# Should recruit only peasants (they are free)
 	var total_recruited = test_army.get_total_soldiers()
@@ -362,7 +375,8 @@ func test_recruitment_with_zero_budget() -> void:
 func test_army_composition_integration() -> void:
 	"""Test that army composition is properly updated"""
 	# Recruit soldiers
-	recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	recruitment_manager.hire_soldiers(test_army)
 	
 	# Verify composition object reflects changes
 	var composition = test_army.get_composition()
@@ -376,11 +390,13 @@ func test_army_composition_integration() -> void:
 func test_multiple_recruitment_calls() -> void:
 	"""Test that multiple recruitment calls work correctly"""
 	# First recruitment
-	var result1 = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	var result1 = recruitment_manager.hire_soldiers(test_army)
 	var soldiers_after_first = test_army.get_total_soldiers()
 	
 	# Second recruitment (should add to existing army)
-	var result2 = recruitment_manager.hire_soldiers(test_army, "game_start", unlimited_budget)
+	test_army.assigned_budget = unlimited_budget
+	var result2 = recruitment_manager.hire_soldiers(test_army)
 	var soldiers_after_second = test_army.get_total_soldiers()
 	
 	assert_true(soldiers_after_second > soldiers_after_first, "Second recruitment should add more soldiers")
@@ -391,8 +407,8 @@ func test_multiple_recruitment_calls() -> void:
 func test_game_parameters_integration() -> void:
 	"""Test that GameParameters integration works correctly"""
 	# Verify we can get ideal composition
-	var ideal_comp = GameParameters.get_ideal_composition("game_start")
-	assert_not_null(ideal_comp, "Should be able to get game_start composition from GameParameters")
+	var ideal_comp = GameParameters.get_ideal_composition("Outpost")
+	assert_not_null(ideal_comp, "Should be able to get Outpost composition from GameParameters")
 	
 	# Verify we can get unit costs
 	var peasant_gold_cost = GameParameters.get_unit_recruit_cost(SoldierTypeEnum.Type.PEASANTS)
@@ -402,3 +418,31 @@ func test_game_parameters_integration() -> void:
 	assert_type(peasant_gold_cost, TYPE_INT, "Unit gold cost should be integer")
 	assert_type(peasant_wood_cost, TYPE_INT, "Unit wood cost should be integer")  
 	assert_type(peasant_iron_cost, TYPE_INT, "Unit iron cost should be integer")
+
+func test_none_castle_recruits_peasants_only() -> void:
+	"""Test that RecruitmentManager recruits 100% peasants for NONE castle type with limited resources"""
+	# Set castle type to NONE (no castle)
+	test_region.set_castle_type(CastleTypeEnum.Type.NONE)
+	
+	# Test recruitment with no castle and no resources - should recruit only peasants (they're free)
+	var zero_budget = BudgetComposition.new(0, 0, 0)
+	test_army.assigned_budget = zero_budget
+	var result = recruitment_manager.hire_soldiers(test_army)
+	
+	# Should succeed and recruit soldiers (100% peasants)
+	assert_not_null(result, "Should return result dictionary")
+	assert_false(result.has("error"), "Should not have error field")
+	assert_not_null(result.hired, "Should have hired soldiers")
+	
+	# Verify army now has soldiers (all peasants)
+	var total_recruited = test_army.get_total_soldiers()
+	assert_true(total_recruited > 0, "Army should have recruited soldiers: " + str(total_recruited))
+	
+	# Verify composition is 100% peasants
+	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	var spearmen_count = test_army.get_soldier_count(SoldierTypeEnum.Type.SPEARMEN)
+	var archer_count = test_army.get_soldier_count(SoldierTypeEnum.Type.ARCHERS)
+	
+	assert_equals(peasant_count, total_recruited, "Should recruit only peasants for NONE castle type")
+	assert_equals(spearmen_count, 0, "Should recruit no spearmen for NONE castle type")
+	assert_equals(archer_count, 0, "Should recruit no archers for NONE castle type")

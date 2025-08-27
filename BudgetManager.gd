@@ -22,6 +22,7 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	var armies_needing_recruitment: Array[Army] = []
 	for army in all_armies:
 		if army.needs_recruitment(turn_number):
+			army.request_recruitment()
 			# Check if army is positioned at a castle
 			var army_region = army.get_parent() as Region
 			if army_region:
@@ -29,12 +30,10 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 				var castle_level := region_manager.get_castle_level(region_id)
 				if castle_level >= 1:
 					# Request recruitment and add to list for budget allocation
-					army.request_recruitment()
 					armies_needing_recruitment.append(army)
 					print("[BudgetManager] Army ", army.name, " at castle (level ", castle_level, ") flagged for recruitment")
 				else:
 					# Army needs recruitment but not at castle - still flag for movement toward castle
-					army.request_recruitment()
 					print("[BudgetManager] Army ", army.name, " needs recruitment but not at castle - flagged but no budget allocated")
 	
 	if armies_needing_recruitment.is_empty():
@@ -104,9 +103,12 @@ func split_by_weights(total: BudgetComposition, weights: Dictionary) -> Dictiona
 		norm[k] = w
 		sumw += w
 	if sumw <= 0.0:
+		# Handle zero weights case
+		var keys := weights.keys()
+		if keys.is_empty():
+			return {}  # No keys to distribute to
 		# Even split if all weights are zero
 		var even := {}
-		var keys := weights.keys()
 		for k in keys:
 			even[k] = 1.0
 		return split_by_weights(total, even)

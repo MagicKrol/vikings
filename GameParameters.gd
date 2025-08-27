@@ -311,27 +311,60 @@ const REGION_RESOURCES = {
 
 ## Ideal Army Compositions for Different Scenarios
 const IDEAL_ARMY_COMPOSITIONS = {
-	"game_start": {
-		"peasants": 47,
-		"spearmen": 33,
-		"archers": 20
+	"None": {
+		"peasants": 100,
+		"spearmen": 0,
+		"archers": 0,
+		"swordsmen": 0,
+		"crossbowmen": 0,
+		"horsemen": 0,
+		"knights": 0,
+		"mounted_knights": 0,
+		"royal_guard": 0
 	},
-	"early_game": {
-		"peasants": 30,
-		"spearmen": 40,
-		"archers": 30
-	},
-	"mid_game": {
-		"peasants": 20,
+	"Outpost": {
+		"peasants": 40,
 		"spearmen": 30,
-		"swordsmen": 25,
-		"archers": 25
+		"archers": 20,
+		"swordsmen": 10,
+		"crossbowmen": 0,
+		"horsemen": 0,
+		"knights": 0,
+		"mounted_knights": 0,
+		"royal_guard": 0
 	},
-	"late_game": {
-		"peasants": 15,
-		"knights": 25,
-		"archers": 30,
-		"horsemen": 30
+	"Keep": {
+		"peasants": 30,
+		"spearmen": 25,
+		"archers": 20,
+		"swordsmen": 15,
+		"crossbowmen": 5,
+		"horsemen": 5,
+		"knights": 0,
+		"mounted_knights": 0,
+		"royal_guard": 0
+	},
+	"Castle": {
+		"peasants": 20,
+		"spearmen": 22,
+		"archers": 15,
+		"swordsmen": 16,
+		"crossbowmen": 10,
+		"horsemen": 8,
+		"knights": 6,
+		"mounted_knights": 3,
+		"royal_guard": 0
+	},
+	"Stronghold": {
+		"peasants": 18,
+		"spearmen": 22,
+		"archers": 13,
+		"swordsmen": 16,
+		"crossbowmen": 12,
+		"horsemen": 7,
+		"knights": 7,
+		"mounted_knights": 4,
+		"royal_guard": 1
 	}
 }
 
@@ -656,6 +689,9 @@ static func get_player_color(player_id: int) -> Color:
 
 static func get_ideal_composition(need_key: String) -> Dictionary:
 	"""Get ideal army composition for a specific scenario"""
+	if not IDEAL_ARMY_COMPOSITIONS.has(need_key):
+		# Return empty dictionary for invalid keys - caller should handle this
+		return {}
 	return IDEAL_ARMY_COMPOSITIONS.get(need_key, {})
 
 static func get_unit_power(unit_type: SoldierTypeEnum.Type) -> int:
