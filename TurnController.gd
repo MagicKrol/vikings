@@ -185,10 +185,8 @@ func _process_turn(player_id: int) -> void:
 		# Emit signal for move preparation
 		emit_signal("move_prepared", best_move["army"], best_move["target_id"], best_move["final_score"])
 		
-		# Step 6: Debug gate before execution
-		await debug_step_gate.step()
-		
-		# Step 7: Execute the move
+		# Step 6: Execute the move (ai_travel_to handles debug stepping internally)
+		# Note: Removed redundant debug gate here since ai_travel_to has its own step-by-step gating
 		moved_armies[best_move["army"]] = true
 		var ownership_changed := await _execute_move(best_move)
 		

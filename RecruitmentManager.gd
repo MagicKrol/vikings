@@ -176,6 +176,13 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 			spent_wood += pc["wood"]
 			spent_iron += pc["iron"]
 	
+	# Deduct the recruited soldiers from the region's available recruits
+	var total_recruited = recruited_so_far
+	if total_recruited > 0:
+		var actual_hired = region.hire_recruits(total_recruited)
+		if actual_hired < total_recruited:
+			print("[RecruitmentManager] Warning: Only hired ", actual_hired, " recruits from region (requested ", total_recruited, ")")
+	
 	# Clear army recruitment state after successful recruitment
 	army.clear_recruitment_request()  # This clears both recruitment_requested flag and assigned_budget
 	
@@ -185,7 +192,7 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 		"spent_wood": spent_wood,
 		"spent_iron": spent_iron,
 		"budget_left": budget.to_dict(),
-		"recruits_left": recruits_avail
+		"recruits_left": region.get_available_recruits()  # Get actual recruits left from region
 	}
 
 # --- Helpers ---------------------------------------------------------------

@@ -147,6 +147,9 @@ func initialize_managers():
 		print("[GameManager] Successfully cast to PlayerManagerNode: ", player_manager)
 		player_manager.initialize_with_managers(_region_manager, map_generator)
 		player_manager.set_army_manager(_army_manager)
+		
+		# Connect to player change signal to refresh UI
+		player_manager.current_player_changed.connect(_on_current_player_changed)
 	else:
 		push_error("[GameManager] CRITICAL: Failed to cast PlayerManager node to PlayerManagerNode! Node type: " + str(type_string(typeof(player_manager_node))))
 		return
@@ -230,17 +233,11 @@ func next_turn():
 		print("[GameManager] AI Player ", current_player, " starting turn processing with TurnController...")
 		await _turn_controller.start_turn(current_player)
 		next_turn()  # Advance to next player after turn completes
-		return  # Don't continue to next_player_modal since AI handles its own turn completion
+		return  # Exit early since AI turn handling includes next_turn() call
 	else:
 		print("[GameManager] Skipping AI turn processing")
 	
-	# Show next player modal
-	if _next_player_modal:
-		_next_player_modal.show_next_player(current_player, false)
-	
-	# Update player status display
-	print("[GameManager] Round ", current_turn, " - Player ", current_player, "'s turn")
-	_update_player_status_display()
+	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler
 
 func _get_next_player() -> int:
 	"""Get the next player in the turn sequence"""
@@ -388,6 +385,19 @@ func _update_player_status_display() -> void:
 	
 	print("[GameManager] Calling PlayerStatusModal.refresh_from_game_state()")
 	player_status_modal.refresh_from_game_state()
+
+func _on_current_player_changed(player_id: int) -> void:
+	"""Handle player change signal by refreshing UI and showing next player modal"""
+	print("[GameManager] Player changed to ", player_id, " - refreshing UI and showing next player modal")
+	
+	# Update player status display
+	_update_player_status_display()
+	
+	# Show next player modal for all players (not just human players)
+	if _next_player_modal:
+		_next_player_modal.show_next_player(player_id, castle_placing_mode)
+	
+	print("[GameManager] Round ", current_turn, " - Player ", player_id, "'s turn")
 
 func get_current_turn() -> int:
 	"""Get the current turn number"""
@@ -1000,10 +1010,4 @@ func _start_first_turn() -> void:
 	else:
 		print("[GameManager] Skipping AI turn processing")
 	
-	# Show next player modal
-	if _next_player_modal:
-		_next_player_modal.show_next_player(current_player, false)
-	
-	# Update player status display
-	print("[GameManager] Round ", current_turn, " - Player ", current_player, "'s turn")
-	_update_player_status_display()
+	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler

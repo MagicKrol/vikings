@@ -1,6 +1,9 @@
 extends Node
 class_name PlayerManagerNode
 
+# Signals
+signal current_player_changed(player_id: int)
+
 # ============================================================================
 # PLAYER MANAGER NODE
 # ============================================================================
@@ -79,6 +82,7 @@ func set_current_player(player_id: int) -> void:
 	if players.has(player_id):
 		current_player_id = player_id
 		print("[PlayerManagerNode] Current player changed to ", get_current_player().get_player_name())
+		current_player_changed.emit(player_id)
 
 func next_player() -> Player:
 	"""Advance to the next player and return them"""
