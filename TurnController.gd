@@ -282,78 +282,49 @@ func _execute_move(move: Dictionary) -> bool:
 	var initial_mp := army.get_movement_points()
 	var can_reach_target_now := int(move["mp_cost"]) <= initial_mp
 
-	var moved_ok := await _execute_army_movement(army, path)
-	if not moved_ok:
-		return false
-
-	if not can_reach_target_now:
-		print("[TurnController] Target out of MP this turn — moved toward it, no battle.")
-		return false
-
-	# We reached the target this turn — now check ownership and possibly start battle
-	var target_region: Region = region_manager.map_generator.get_region_container_by_id(target_id)
-	if _should_trigger_battle(army, target_region):
-		emit_signal("battle_started", army, target_id)
-		
-		# Use GameManager's unified battle system
-		var result: String = await game_manager.handle_army_battle(army, target_id)
-		if result == "victory":
+	if can_reach_target_now:
+		# Army can reach target this turn - use ai_travel_to for step-by-step debug
+		var result = await game_manager.ai_travel_to(army, target_id)
+		if result == "blocked":
+			return false
+		elif result == "battle_victory":
 			emit_signal("region_conquered", target_id, army.get_player_id())
 			return true
+		elif result == "battle_defeat":
+			return false
+		elif result == "arrived":
+			# Peaceful arrival - no ownership change
+			return false
+		else:
+			print("[TurnController] Unexpected ai_travel_to result: ", result)
+			return false
+	else:
+		# Army cannot reach target this turn - use ai_travel_to for partial movement
+		var result = await game_manager.ai_travel_to(army, target_id)
+		if result == "battle_victory":
+			emit_signal("region_conquered", target_id, army.get_player_id())
+			return true
+		else:
+			# No ownership change for partial movement or other results
+			return false
 
-	return false
-
-func _execute_army_movement(army: Army, path: Array[int]) -> bool:
-	"""Execute army movement along the path"""
-	var player_id = army.get_player_id()
-	var current_mp = army.get_movement_points()
-	
-	# Trim path to current MP limit
-	var trimmed_path = pathfinder.trim_path_to_mp_limit(path, player_id, current_mp)
-	if trimmed_path.size() <= 1:
-		print("[TurnController] Cannot move - no valid path within MP limit")
-		return false
-	
-	# Move army step by step
-	var current_parent = army.get_parent()
-	var final_region_id = trimmed_path[trimmed_path.size() - 1]
-	var final_region = region_manager.map_generator.get_region_container_by_id(final_region_id)
-	
-	if final_region == null:
-		print("[TurnController] Error: Final region not found")
-		return false
-	
-	# Calculate total movement cost
-	var total_cost = pathfinder.calculate_path_cost(trimmed_path, player_id)
-	
-	# Move army to final position
-	if current_parent:
-		current_parent.remove_child(army)
-	final_region.add_child(army)
-	
-	# Update army position
-	var polygon: Polygon2D = final_region.get_node("Polygon")
-	army.position = polygon.get_meta("center") as Vector2
-	
-	# Deduct movement points
-	army.spend_movement_points(total_cost)
-	
-	print("[TurnController] Army moved successfully (cost: %d, remaining MP: %d)" % [total_cost, army.get_movement_points()])
-	return true
+# _execute_army_movement_toward_target removed - ai_travel_to handles both full and partial movement
 
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
-	"""Check if moving to this region should trigger a battle"""
+	"""Check if moving to this region should trigger a battle - delegates to GameManager"""
+	if game_manager and game_manager.has_method("_should_trigger_battle"):
+		return game_manager._should_trigger_battle(army, target_region)
+	
+	# Fallback to original logic if GameManager not available
 	if not army or not target_region:
 		return false
 	
 	var region_owner = region_manager.get_region_owner(target_region.get_region_id())
 	var army_player = army.get_player_id()
 	
-	# Battle if region is owned by different player
 	if region_owner != -1 and region_owner != army_player:
 		return true
 	
-	# Battle if neutral region has a garrison
 	if region_owner == -1 and target_region.has_garrison():
 		return true
 	

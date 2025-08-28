@@ -96,42 +96,26 @@ func handle_battle_modal_closed() -> void:
 	"""Handle battle modal closure and complete conquest if needed"""
 	print("[BattleManager] Battle modal closed, checking for pending conquest...")
 	
-	# Store the army player ID to check if AI needs to resume
-	var army_player_id = -1
-	if pending_conquest_army != null and is_instance_valid(pending_conquest_army):
-		army_player_id = pending_conquest_army.get_player_id()
-	
 	if pending_conquest_army != null and pending_conquest_region != null:
-		print("[BattleManager] Found pending conquest, applying battle losses and completing...")
+		print("[BattleManager] Found pending conquest, delegating to GameManager finalization...")
 		
-		# Apply battle losses from the battle modal
-		_apply_battle_losses()
-		
-		# Handle battle outcome
+		# Get battle result
 		var battle_result = _get_battle_result()
 		
-		if battle_result == "victory":
-			# Attackers won - handle conquest using GameManager's unified logic
-			if pending_conquest_army != null and is_instance_valid(pending_conquest_army) and pending_conquest_region != null:
-				var region_id = pending_conquest_region.get_region_id()
-				var player_id = pending_conquest_army.get_player_id()
-				
-				# Use GameManager's unified conquest logic
-				if _game_manager:
-					_game_manager.get_region_manager().set_region_ownership(region_id, player_id)
-					_game_manager.refresh_ai_debug_scores()
-					print("[BattleManager] Player ", player_id, " conquered region ", region_id, " via unified system")
-				
-				# Reduce efficiency
-				pending_conquest_army.reduce_efficiency(5)
-				print("[BattleManager] Reduced ", pending_conquest_army.name, " efficiency to ", pending_conquest_army.get_efficiency(), "% after battle")
-		elif battle_result == "withdrawal":
-			# Army withdrew - move back to previous region and reduce efficiency
-			_handle_army_withdrawal(pending_conquest_army)
-		else:
-			# Attackers lost - remove the army from the map
-			_handle_battle_defeat(pending_conquest_army)
-			# No efficiency reduction needed for defeated armies (they're removed)
+		# Prepare result data for GameManager finalization
+		var result_data = {
+			"result": battle_result,
+			"army": pending_conquest_army,
+			"target_region_id": pending_conquest_region.get_region_id(),
+			"battle_report": _battle_modal.battle_report if _battle_modal else null,
+			"attacking_armies": _pending_attackers,
+			"defending_armies": _pending_defenders,
+			"defending_garrison": _pending_garrison
+		}
+		
+		# Use GameManager's unified finalization
+		if _game_manager:
+			_game_manager.finalize_battle_result(result_data)
 		
 		# Clear pending conquest
 		pending_conquest_army = null

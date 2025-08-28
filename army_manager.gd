@@ -153,7 +153,9 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 	if army_modal != null:
 		army_modal.show_army_info(army)
 
-	_show_move_arrows(region_container)
+	# Only show move arrows for human players
+	if _should_show_human_arrows():
+		_show_move_arrows(region_container)
 
 func deselect_army() -> void:
 	"""Deselect the currently selected army"""
@@ -165,6 +167,33 @@ func deselect_army() -> void:
 		army_modal.hide_modal()
 
 	_clear_move_arrows()
+
+func move_army(army: Army, target_region: Region) -> bool:
+	"""Move a specific army to target region. Returns true if successful."""
+	if army == null or not is_instance_valid(army):
+		return false
+	if target_region == null:
+		return false
+	
+	var source_region_container = army.get_parent()
+	if source_region_container == null:
+		return false
+	
+	# Temporarily set selection to use existing logic
+	var previous_selection = selected_army
+	var previous_region = selected_region_container
+	
+	selected_army = army
+	selected_region_container = source_region_container
+	
+	# Use existing movement logic
+	var result = move_army_to_region(target_region)
+	
+	# Restore previous selection
+	selected_army = previous_selection
+	selected_region_container = previous_region
+	
+	return result
 
 func move_army_to_region(target_region_container: Node) -> bool:
 	"""Move the selected army to the target region. Returns true if successful."""
@@ -231,7 +260,11 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	
 	# Only set ownership if ownership is actually changing (neutral territory without garrison)
 	if target_region_owner == -1 and not target_region.has_garrison():
-		region_manager.set_region_ownership(target_region_id, army_player_id)
+		var game_manager = _get_game_manager()
+		if game_manager:
+			game_manager.claim_peaceful_region(target_region_id, army_player_id)
+		else:
+			print("[ArmyManager] Warning: Could not get GameManager for peaceful region claiming")
 	
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
@@ -256,9 +289,10 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		# Update selected region container to the new region
 		selected_region_container = target_region_container
 		
-		# Clear old arrows and show new ones for the new position
+		# Clear old arrows and show new ones for the new position (only for human players)
 		_clear_move_arrows()
-		_show_move_arrows(target_region_container)
+		if _should_show_human_arrows():
+			_show_move_arrows(target_region_container)
 		
 		# Update army modal with new movement points
 		if army_modal != null and selected_army != null:
@@ -511,19 +545,21 @@ func _validate_movement_prerequisites(target_region_container: Node) -> bool:
 	return true
 
 func _should_trigger_battle(attacking_army: Army, target_region: Region) -> bool:
-	"""Check if moving to this region should trigger a battle"""
+	"""Check if moving to this region should trigger a battle - delegates to GameManager"""
+	var game_manager = _get_game_manager()
+	if game_manager and game_manager.has_method("_should_trigger_battle"):
+		return game_manager._should_trigger_battle(attacking_army, target_region)
+	
+	# Fallback to original logic if GameManager not available
 	if attacking_army == null or target_region == null:
 		return false
 	
-	# Check if region is owned by a different player
 	var region_owner = region_manager.get_region_owner(target_region.get_region_id())
 	var army_player = attacking_army.get_player_id()
 	
-	# Battle if region is owned by different player
 	if region_owner != -1 and region_owner != army_player:
 		return true
 	
-	# Battle if region has a garrison AND is not owned by the attacking player
 	if target_region.has_garrison() and (region_owner == -1 or region_owner != army_player):
 		return true
 	
@@ -699,3 +735,12 @@ func retreat_army_to_previous_region(army: Army) -> void:
 	
 	# Clear the previous region tracking since army is back there
 	army_previous_regions.erase(army)
+
+func _should_show_human_arrows() -> bool:
+	"""Check if human path arrows should be shown (only for human players)"""
+	var game_manager = _get_game_manager()
+	if game_manager == null:
+		return true  # Default to showing arrows if GameManager not available
+	
+	var current_player_id = game_manager.get_current_player_id()
+	return game_manager.is_player_human(current_player_id)

@@ -299,7 +299,8 @@ Main (Node2D) [place_armies.gd]
 **Purpose**: Army creation, movement, selection, and lifecycle management with integrated budget-based recruitment system
 **Key Functions**:
 - `create_army()`: Create and place armies on regions
-- `move_army_to_region()`: Handle army movement with validation
+- `move_army()`: Unified movement function for any army to any region (M1 single source of truth)
+- `move_army_to_region()`: Handle selected army movement with validation (legacy)
 - `reset_all_army_movement_points()`: Turn-based movement reset
 - `remove_destroyed_armies()`: Clean up defeated armies
 - `select/deselect_army()`: Army selection state management

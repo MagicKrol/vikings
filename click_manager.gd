@@ -143,7 +143,7 @@ func _handle_region_click(region_container: Node) -> void:
 		else:
 			# For now, delegate army handling back to legacy system
 			# TODO: Move to ArmyManager in future refactor
-			_handle_army_selection_and_movement(region_container)
+			_handle_army_selection_and_movement.call_deferred(region_container)
 
 func _is_mountain_region(region: Region) -> bool:
 	"""Check if a region is a mountain region (unclickable)"""
@@ -202,13 +202,16 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			_army_manager.deselect_army()
 			return
 		
-		# Try to move army - if it fails (unreachable), deselect army
-		var move_success = _army_manager.move_army_to_region(region_container)
-		if not move_success:
-			_army_manager.deselect_army()
-			return  # Only return if movement failed
+		# Use GameManager orchestration for region entry
+		var target_region = region_container as Region
+		var target_region_id = target_region.get_region_id()
+		var result = await _game_manager.perform_region_entry(_army_manager.selected_army, target_region_id, "human")
 		
-		# If movement succeeded, always return to prevent conquest detection in same click
+		if result == "blocked":
+			_army_manager.deselect_army()
+			return  # Only return if movement was blocked
+		
+		# If movement succeeded or battle started, always return to prevent conquest detection in same click
 		return
 	
 	# If no armies in region and no selected army, show region info

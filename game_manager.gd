@@ -33,11 +33,11 @@ var total_players: int = 6
 # Player type management (up to 6 players)
 var player_types: Array[PlayerTypeEnum.Type] = [
 	PlayerTypeEnum.Type.HUMAN,   # Player 1 - Computer (temporarily for testing)
-	PlayerTypeEnum.Type.HUMAN,   # Player 2 - Computer
-	PlayerTypeEnum.Type.OFF,   # Player 3 - Computer
-	PlayerTypeEnum.Type.OFF,   # Player 4 - Computer
-	PlayerTypeEnum.Type.OFF,   # Player 5 - Computer
-	PlayerTypeEnum.Type.OFF    # Player 6 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 2 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 3 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 4 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 5 - Computer
+	PlayerTypeEnum.Type.COMPUTER    # Player 6 - Computer
 ]
 
 
@@ -679,6 +679,73 @@ func handle_castle_placement(region: Region) -> void:
 	if _sound_manager:
 		_sound_manager.click_sound()
 
+func _should_trigger_battle(army: Army, target_region: Region) -> bool:
+	"""
+	Centralized pure helper to determine if a battle is required.
+	Returns true if entering the region should trigger a battle.
+	No side effects - pure logic only.
+	"""
+	if army == null or target_region == null:
+		return false
+	
+	var region_owner = _region_manager.get_region_owner(target_region.get_region_id())
+	var army_player_id = army.get_player_id()
+	
+	# Battle if region is owned by different player
+	if region_owner != -1 and region_owner != army_player_id:
+		return true
+	
+	# Battle if neutral region has a garrison
+	if region_owner == -1 and target_region.has_garrison():
+		return true
+	
+	return false
+
+func perform_region_entry(army: Army, target_region_id: int, source: String) -> String:
+	"""
+	Shared orchestration function for Human and AI region entry flow.
+	Returns: "blocked" | "moved" | "battle_started"
+	"""
+	print("[GameManager] perform_region_entry: ", army.name, " -> region ", target_region_id, " (source: ", source, ")")
+	
+	# Resolve target region Node using RegionManager lookup
+	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+	if target_region == null:
+		print("[GameManager] Error: Target region not found")
+		return "blocked"
+	
+	# Call ArmyManager.move_army
+	var move_success = _army_manager.move_army(army, target_region)
+	if not move_success:
+		return "blocked"
+	
+	# Use centralized helper to decide if battle is required
+	var battle_needed = _should_trigger_battle(army, target_region)
+	
+	if battle_needed:
+		if source == "human":
+			# For Human: call existing battle UI path (pending conquest + modal)
+			var battle_manager = get_battle_manager()
+			if battle_manager:
+				battle_manager.set_pending_conquest(army, target_region)
+				
+				# Show battle modal for human interaction
+				var ui_node = get_node("../UI")
+				var battle_modal = ui_node.get_node("BattleModal") as BattleModal
+				battle_modal.show_battle(army, target_region)
+				return "battle_started"
+		elif source == "ai":
+			# For AI: use non-UI resolution (direct battle handling)
+			var result: String = await handle_army_battle(army, target_region.get_region_id())
+			if result == "victory":
+				return "battle_victory"
+			elif result == "withdrawal":
+				return "battle_defeat" 
+			else:
+				return "battle_defeat"
+	
+	return "moved"
+
 # Battle coordination - unified system for both Human and AI players
 func handle_army_battle(army: Army, target_region_id: int) -> String:
 	"""
@@ -694,18 +761,68 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	var result: String = await _battle_manager.battle_finished
 	print("[GameManager] Battle completed with result: ", result)
 	
-	# Handle conquest for victory (only for AI immediate battles)
-	# Human battles use pending conquest and are handled in BattleManager
-	if result == "victory":
-		var player_id = army.get_player_id()
-		# Check if this is an AI player (immediate battle) vs Human player (pending battle)
-		if is_player_computer(player_id):
-			_region_manager.set_region_ownership(target_region_id, player_id)
-			print("[GameManager] AI Player ", player_id, " conquered region ", target_region_id)
-			refresh_ai_debug_scores()
-		# Human conquest is handled by BattleManager.handle_battle_modal_closed()
+	# For AI battles, finalize immediately since there's no modal interaction
+	if is_player_computer(army.get_player_id()):
+		var result_data = {
+			"result": result,
+			"army": army,
+			"target_region_id": target_region_id,
+			"battle_report": _battle_manager._battle_modal.battle_report if _battle_manager._battle_modal else null,
+			"attacking_armies": _battle_manager._pending_attackers if _battle_manager else [],
+			"defending_armies": _battle_manager._pending_defenders if _battle_manager else [],
+			"defending_garrison": _battle_manager._pending_garrison if _battle_manager else null
+		}
+		finalize_battle_result(result_data)
 	
 	return result
+
+func finalize_battle_result(result_data: Dictionary) -> void:
+	"""
+	Single finalization function for all battle outcomes (Human and AI)
+	Handles losses, retreat, conquest, and cleanup consistently
+	"""
+	var result: String = result_data.get("result", "defeat")
+	var army: Army = result_data.get("army")
+	var target_region_id: int = result_data.get("target_region_id", -1)
+	var battle_report = result_data.get("battle_report")
+	var attacking_armies: Array = result_data.get("attacking_armies", [])
+	var defending_armies: Array = result_data.get("defending_armies", [])
+	var defending_garrison = result_data.get("defending_garrison")
+	
+	var army_name = "unknown army"
+	if army != null:
+		army_name = army.name
+	print("[GameManager] Finalizing battle result: ", result, " for ", army_name)
+	
+	# Apply battle losses using existing BattleManager logic
+	if battle_report and _battle_manager:
+		_battle_manager._apply_losses_proportionally(battle_report.attacker_losses, attacking_armies, null)
+		_battle_manager._apply_losses_proportionally(battle_report.defender_losses, defending_armies, defending_garrison)
+		
+		# Cleanup destroyed armies
+		if _army_manager:
+			_army_manager.remove_destroyed_armies()
+	
+	# Handle battle outcome
+	if result == "victory":
+		# Attackers won - handle conquest
+		if army and is_instance_valid(army) and target_region_id != -1:
+			var player_id = army.get_player_id()
+			_region_manager.set_region_ownership(target_region_id, player_id)
+			refresh_ai_debug_scores()
+			print("[GameManager] Player ", player_id, " conquered region ", target_region_id, " via unified finalization")
+			
+			# Reduce efficiency for conquest
+			army.reduce_efficiency(5)
+			print("[GameManager] Reduced ", army.name, " efficiency to ", army.get_efficiency(), "% after conquest")
+	elif result == "withdrawal":
+		# Army withdrew - handle retreat and efficiency reduction
+		if army and is_instance_valid(army) and _battle_manager:
+			_battle_manager._handle_army_withdrawal(army)
+	else:
+		# Attackers lost - remove the army
+		if army and is_instance_valid(army) and _battle_manager:
+			_battle_manager._handle_battle_defeat(army)
 
 # Manager accessors for external systems
 func get_battle_manager() -> BattleManager:
@@ -724,6 +841,13 @@ func get_army_manager() -> ArmyManager:
 	"""Get the ArmyManager instance"""
 	return _army_manager
 
+func claim_peaceful_region(region_id: int, player_id: int) -> void:
+	"""
+	Claim a neutral region without battle (single authority for ownership changes).
+	This is the proper way to claim regions through RegionManager.
+	"""
+	_region_manager.set_region_ownership(region_id, player_id)
+
 func refresh_ai_debug_scores():
 	"""Refresh AI debug scores for the current player (callable from external systems)"""
 	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
@@ -739,6 +863,119 @@ func refresh_ai_debug_scores():
 
 # All AI turn processing is now handled by TurnController
 # Legacy AI processing methods removed since TurnController handles all turn logic
+
+func ai_travel_to(army: Army, final_region_id: int) -> String:
+	"""
+	AI travel wrapper for step-by-step movement with debug pausing.
+	Gets the path using existing pathfinder, then iterates adjacent steps.
+	For contested steps: use perform_region_entry(army, next_id, "ai")
+	For friendly steps: use ArmyManager.move_army(army, next_region)
+	Returns: "arrived", "blocked", "battle_victory", "battle_defeat"
+	"""
+	if army == null or not is_instance_valid(army):
+		print("[GameManager] ai_travel_to: Invalid army")
+		return "blocked"
+	
+	var current_region = army.get_parent() as Region
+	if current_region == null:
+		print("[GameManager] ai_travel_to: Army not in valid region")
+		return "blocked"
+	
+	var current_region_id = current_region.get_region_id()
+	var player_id = army.get_player_id()
+	
+	print("[GameManager] ai_travel_to: Army %s traveling from region %d to region %d" % [army.name, current_region_id, final_region_id])
+	
+	# Get pathfinder from TurnController (reuse existing scorer pathfinder)
+	if _turn_controller == null:
+		print("[GameManager] ai_travel_to: TurnController not available")
+		return "blocked"
+	
+	var pathfinder = _turn_controller.pathfinder
+	if pathfinder == null:
+		print("[GameManager] ai_travel_to: Pathfinder not available") 
+		return "blocked"
+	
+	# Get path using existing pathfinder with same filters (friendly-only, passable)
+	var path_result = pathfinder.find_path_to_target(current_region_id, final_region_id, player_id)
+	if not path_result["success"]:
+		print("[GameManager] ai_travel_to: No valid path found")
+		return "blocked"
+	
+	var full_path = path_result["path"] as Array[int]
+	if full_path.size() <= 1:
+		print("[GameManager] ai_travel_to: Already at destination or invalid path")
+		return "arrived"
+	
+	print("[GameManager] ai_travel_to: Path found with %d steps" % full_path.size())
+	
+	# Iterate adjacent steps starting from index 1 (skip current position)
+	for i in range(1, full_path.size()):
+		var next_region_id = full_path[i]
+		
+		# Check if army still has movement points
+		if army.get_movement_points() <= 0:
+			print("[GameManager] ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.name, army.get_parent().get_region_id()])
+			return "blocked"
+		
+		# Get next region for battle check
+		var next_region_container = _region_manager.map_generator.get_region_container_by_id(next_region_id)
+		if next_region_container == null:
+			print("[GameManager] ai_travel_to: Invalid region %d in path" % next_region_id)
+			return "blocked"
+		
+		var next_region = next_region_container as Region
+		if next_region == null:
+			print("[GameManager] ai_travel_to: Region %d is not valid" % next_region_id)
+			return "blocked"
+		
+		# Debug step pausing using DebugStepGate
+		if _turn_controller.debug_step_gate:
+			print("[GameManager] ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
+			await _turn_controller.debug_step_gate.step()
+		
+		# Check if this step should trigger battle
+		if _should_trigger_battle(army, next_region):
+			print("[GameManager] ai_travel_to: Contested step - using perform_region_entry")
+			var battle_result = await perform_region_entry(army, next_region_id, "ai")
+			
+			# Log step result
+			print("[GameManager] ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
+			
+			match battle_result:
+				"battle_victory":
+					# Continue to next step after victory
+					continue
+				"battle_defeat":
+					print("[GameManager] ai_travel_to: Army defeated in battle")
+					return "battle_defeat"
+				"blocked":
+					print("[GameManager] ai_travel_to: Movement blocked")
+					return "blocked"
+				_:
+					print("[GameManager] ai_travel_to: Unexpected battle result: %s" % battle_result)
+					return "blocked"
+		else:
+			# Friendly step - use ArmyManager.move_army()
+			print("[GameManager] ai_travel_to: Friendly step - using ArmyManager.move_army")
+			var move_success = _army_manager.move_army(army, next_region)
+			
+			# Log step result  
+			if move_success:
+				print("[GameManager] ai_travel_to: Friendly move successful for step %d" % i)
+			else:
+				print("[GameManager] ai_travel_to: Friendly move failed for step %d" % i)
+				return "blocked"
+	
+	# Check if we reached the final destination
+	var final_position = army.get_parent() as Region
+	if final_position and final_position.get_region_id() == final_region_id:
+		print("[GameManager] ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
+		return "arrived"
+	else:
+		var current_pos = final_position.get_region_id() if final_position else -1
+		print("[GameManager] ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
+		return "blocked"
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""
