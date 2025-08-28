@@ -398,11 +398,11 @@ const GARRISON_BY_LEVEL = {
 
 ## Population Generation by Region Level
 const POPULATION_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 200, "max": 400},
-	RegionLevelEnum.Level.L2: {"min": 200, "max": 400},
-	RegionLevelEnum.Level.L3: {"min": 200, "max": 400},
-	RegionLevelEnum.Level.L4: {"min": 200, "max": 400},
-	RegionLevelEnum.Level.L5: {"min": 200, "max": 400}
+	RegionLevelEnum.Level.L1: {"min": 150, "max": 300},
+	RegionLevelEnum.Level.L2: {"min": 250, "max": 450},
+	RegionLevelEnum.Level.L3: {"min": 400, "max": 600},
+	RegionLevelEnum.Level.L4: {"min": 550, "max": 750},
+	RegionLevelEnum.Level.L5: {"min": 700, "max": 900}
 }
 
 ## Region Promotion Costs by Target Level
