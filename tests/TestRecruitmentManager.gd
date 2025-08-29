@@ -278,11 +278,11 @@ func test_recruitment_with_limited_gold() -> void:
 	var spearmen_count = test_army.get_soldier_count(SoldierTypeEnum.Type.SPEARMEN)
 	var archer_count = test_army.get_soldier_count(SoldierTypeEnum.Type.ARCHERS)
 	
-	# With limited gold, composition may deviate; verify peasants capped and some paid units recruited
+	# With limited gold, verify units.py algorithm: peasants = floor(unit0_share * total_units) 
 	var ideal = _get_ideal_composition_percentages()
-	var pea_max = float(ideal["peasants"]) / 100.0
-	var pea_prop = float(peasant_count) / float(max(1, total_recruited))
-	assert_true(pea_prop <= pea_max + 0.02, "Peasants should not exceed ideal cap under gold limit")
+	var pea_share = float(ideal["peasants"]) / 100.0
+	var expected_peas = int(floor(pea_share * 100.0))  # floor(0.40 * 100) = 40
+	assert_equals(peasant_count, expected_peas, "Peasants should be exactly floor(unit0_share * total_units)")
 	assert_true((spearmen_count + archer_count) > 0, "Should recruit some paid units with available gold")
 
 func test_recruitment_with_limited_recruits_maintaining_ratio() -> void:
@@ -347,13 +347,10 @@ func test_recruitment_with_zero_budget() -> void:
 	var total_recruited = test_army.get_total_soldiers()
 	var peasant_count = test_army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
 	var ideal_percentages = _get_ideal_composition_percentages()
-	var pea_max_prop = float(ideal_percentages["peasants"]) / 100.0
-	var pea_prop = 0.0
-	if total_recruited > 0:
-		pea_prop = float(peasant_count) / float(total_recruited)
+	var pea_share = float(ideal_percentages["peasants"]) / 100.0
+	var expected_peas = int(floor(pea_share * 100.0))  # floor(0.40 * 100) = 40
 	
-	assert_true(total_recruited >= 0, "Zero budget may limit total recruits to peasants only up to cap")
-	assert_true(pea_prop <= pea_max_prop + 0.02, "Peasants should not exceed ideal cap with zero budget")
+	assert_equals(peasant_count, expected_peas, "With zero budget, should still recruit floor(unit0_share * total_units) peasants")
 	assert_equals(result["spent_gold"], 0, "Should spend no gold")
 
 ## Integration Tests
@@ -386,9 +383,9 @@ func test_multiple_recruitment_calls() -> void:
 	var soldiers_after_second = test_army.get_total_soldiers()
 	
 	assert_true(soldiers_after_second >= soldiers_after_first, "Second recruitment should not reduce soldiers")
-	# It's acceptable for second pass to hire none
-	if soldiers_after_second == soldiers_after_first:
-		assert_equals(result2["hired"].size(), 0, "Second recruitment hired none as expected")
+	# New units.py algorithm: if no recruits available, should hire 0
+	var expected_hired_count = 1 if result2["hired"].has(SoldierTypeEnum.Type.PEASANTS) and result2["hired"][SoldierTypeEnum.Type.PEASANTS] > 0 else 0
+	assert_true(result2["hired"].size() <= 1, "Second recruitment should hire at most peasants when no recruits left")
 
 ## Validation Tests
 

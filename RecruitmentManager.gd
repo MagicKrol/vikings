@@ -16,6 +16,7 @@ func _init(region_mgr: RegionManager = null, game_mgr: GameManager = null) -> vo
 
 # Public API ---------------------------------------------------------------
 func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
+	# Use new units.py-based allocation algorithm
 	var budget: BudgetComposition = army.assigned_budget
 	print("[RecruitmentManager] Army ", army.name, " has budget: ", budget.to_dict())
 
@@ -23,233 +24,45 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var player_id = army.get_player_id()
 
 	var recruit_sources = _gather_recruit_sources(region, player_id)
-	var recruits_avail = _sum_sources(recruit_sources)
+	var total_units = _sum_sources(recruit_sources)
 
 	var need_key: String = CastleTypeEnum.type_to_string(region.get_castle_type())
-	print("Need key: ", need_key)
 	var ideal_raw: Dictionary = GameParameters.get_ideal_composition(need_key)
 	var ideal = _normalize_ideal(_map_ideal_keys_to_types(ideal_raw))
+	var unit0_share = ideal.get(SoldierTypeEnum.Type.PEASANTS, 0.0)
 
-	var pea_min_prop = MIN_PEA_SHARE
-	var pea_max_prop = ideal.get(SoldierTypeEnum.Type.PEASANTS, 0.0)
-	if pea_max_prop < pea_min_prop:
-		pea_max_prop = pea_min_prop
+	var result = _allocate_with_unit0_gd(
+		army, budget, total_units, ideal, unit0_share, {}, debug
+	)
 
-	var curr_counts = _get_current_counts(army)
-	var unit_types = _types_from_ideal(ideal)
-	var unit_power = _get_unit_power_map(unit_types)
-	var unit_costs = _get_unit_costs_map(unit_types)
-	var norm_power = _normalize_power(unit_power)
-
-	var hired: Dictionary = {}
-	var spent_gold = 0
-	var spent_wood = 0
-	var spent_iron = 0
-
-	if debug:
-		print("=== RECRUITMENT DEBUG ===")
-		print("Budget: gold=%d, wood=%d, iron=%d" % [budget.gold, budget.wood, budget.iron])
-		print("Recruits available: %d" % recruits_avail)
-		print("Ideal composition: ", ideal)
-		print("Unit types: ", unit_types)
-
-	# Quota planning
-	var pea_share = float(ideal.get(SoldierTypeEnum.Type.PEASANTS, 0.0))
-	var non_pea_share_den = max(0.0, 1.0 - pea_share)
-	var non_pea_types: Array = []
-	for t in unit_types:
-		if t != SoldierTypeEnum.Type.PEASANTS and ideal.get(t, 0.0) > 0.0:
-			non_pea_types.append(t)
-
-	var target_non_pea_total = int(round(non_pea_share_den * float(recruits_avail)))
-	var planned_non_pea: Dictionary = {}
-	var rema: Array = []
-	var sum_floor = 0
-	for t in non_pea_types:
-		var exact = float(ideal[t]) * float(recruits_avail)
-		var fl = int(floor(exact))
-		planned_non_pea[t] = fl
-		sum_floor += fl
-		rema.append({"t": t, "r": exact - float(fl)})
-	var to_distribute = max(0, target_non_pea_total - sum_floor)
-	var _cmp_rema = func(a, b):
-		var ar = float(a["r"])
-		var br = float(b["r"])
-		if abs(ar - br) < 0.000001:
-			return float(ideal.get(a["t"], 0.0)) > float(ideal.get(b["t"], 0.0))
-		return ar > br
-	rema.sort_custom(_cmp_rema)
-	for i in range(min(to_distribute, rema.size())):
-		var t = rema[i]["t"]
-		planned_non_pea[t] = planned_non_pea.get(t, 0) + 1
-
-	var planned_peasants = recruits_avail - target_non_pea_total
-
-	if debug:
-		print("Non-peasant types: ", non_pea_types)
-		print("Target non-peasant total: ", target_non_pea_total)
-		print("Planned non-peasant: ", planned_non_pea)
-		print("Planned peasants: ", planned_peasants)
-
-	# Purchase non-peasants by quota with resource-aware redistribution (interleaved, 1-unit picks)
-	var blocked: Dictionary = {}
-	var loop_safety = 0
-	while loop_safety < 1000:
-		loop_safety += 1
-		var progress = false
-		# Mark blocked types (unaffordable now)
-		for t in non_pea_types:
-			if int(planned_non_pea.get(t, 0)) > 0:
-				var cost = unit_costs[t]
-				if not budget.can_afford(cost):
-					blocked[t] = true
-		# Pick one unit to buy interleaved by remaining quota fraction and small power bias
-		var best_t = null
-		var best_score = -1e9
-		var denom_total = 0
-		for t in non_pea_types:
-			denom_total += int(planned_non_pea.get(t, 0))
-		for t in non_pea_types:
-			var q = int(planned_non_pea.get(t, 0))
-			if q <= 0 or blocked.has(t):
-				continue
-			var cost = unit_costs[t]
-			if not budget.can_afford(cost):
-				blocked[t] = true
-				continue
-			var frac = (float(q) / float(max(1, denom_total)))
-			var score = frac + 0.05 * float(unit_power.get(t, 0))
-			if score > best_score:
-				best_score = score
-				best_t = t
-		if best_t != null and recruits_avail > 0:
-			var cst = unit_costs[best_t]
-			if budget.spend(cst):
-				army.add_soldiers(best_t, 1)
-				curr_counts[best_t] = curr_counts.get(best_t, 0) + 1
-				recruits_avail -= 1
-				planned_non_pea[best_t] = int(planned_non_pea.get(best_t, 0)) - 1
-				hired[best_t] = hired.get(best_t, 0) + 1
-				spent_gold += cst["gold"]
-				spent_wood += cst["wood"]
-				spent_iron += cst["iron"]
-				progress = true
-		# If nothing moved, consider redistribution or break
-		var missing = 0
-		for t in non_pea_types:
-			missing += max(0, int(planned_non_pea.get(t, 0)))
-		if debug:
-			print("Loop iteration ", loop_safety, ": progress=", progress, ", missing=", missing, ", blocked=", blocked)
-		if progress == false and missing == 0:
-			break
-		if not progress:
-			# No progress made - check if we need to redistribute from blocked types
-			var has_blocked = false
-			for t in non_pea_types:
-				if blocked.has(t) and planned_non_pea.get(t, 0) > 0:
-					has_blocked = true
-					break
-			if not has_blocked:
-				# Nothing blocked with quota, can't make progress
-				break
-			# Redistribute remaining quotas from blocked types
-			var remaining_sum = 0.0
-			for t in non_pea_types:
-				if not blocked.has(t):
-					remaining_sum += float(ideal.get(t, 0.0))
-			if remaining_sum <= 0.0:
-				break
-			# Clear quotas for blocked types, pool their counts
-			var pool = 0
-			for t in non_pea_types:
-				if blocked.has(t):
-					pool += int(planned_non_pea.get(t, 0))
-					planned_non_pea[t] = 0
-			if pool <= 0:
-				break
-			# Distribute pool by remaining weights
-			var fracs: Array = []
-			for t in non_pea_types:
-				if not blocked.has(t):
-					var share = float(ideal.get(t, 0.0)) / remaining_sum
-					var exact = share * float(pool)
-					planned_non_pea[t] = int(floor(float(planned_non_pea.get(t,0)) + exact))
-					fracs.append({"t": t, "r": exact - floor(exact)})
-			# Fix rounding to sum to pool
-			var sum_now = 0
-			for t in non_pea_types:
-				if not blocked.has(t):
-					sum_now += int(planned_non_pea.get(t,0))
-			var need = pool - sum_now
-			var _cmp_fracs = func(a, b):
-				var ar = float(a["r"])
-				var br = float(b["r"])
-				if abs(ar - br) < 0.000001:
-					return float(ideal.get(a["t"], 0.0)) > float(ideal.get(b["t"], 0.0))
-				return ar > br
-			fracs.sort_custom(_cmp_fracs)
-			for i in range(max(0, need)):
-				var tk2 = fracs[i]["t"]
-				planned_non_pea[tk2] = int(planned_non_pea.get(tk2,0)) + 1
-			# Reset blocked to re-attempt purchase with new quotas
-			blocked.clear()
-
-	# Purchase peasants up to planned count (respect max cap)
-	var pea_type = SoldierTypeEnum.Type.PEASANTS
-	while recruits_avail > 0 and planned_peasants > 0:
-		# Cap check against final proportion
-		if _would_exceed_peasant_cap(curr_counts, pea_type, pea_max_prop):
-			break
-		army.add_soldiers(pea_type, 1)
-		curr_counts[pea_type] = curr_counts.get(pea_type, 0) + 1
-		recruits_avail -= 1
-		planned_peasants -= 1
-		hired[pea_type] = hired.get(pea_type, 0) + 1
-
-	# Ensure minimum peasants share (if possible and under cap)
-	while recruits_avail > 0:
-		var total2 = _sum_counts(curr_counts)
-		var pea_prop2 = (float(curr_counts.get(pea_type, 0)) / float(total2)) if total2 > 0 else 0.0
-		if pea_prop2 >= pea_min_prop:
-			break
-		if _would_exceed_peasant_cap(curr_counts, pea_type, pea_max_prop):
-			break
-		army.add_soldiers(pea_type, 1)
-		curr_counts[pea_type] = curr_counts.get(pea_type, 0) + 1
-		recruits_avail -= 1
-		hired[pea_type] = hired.get(pea_type, 0) + 1
-
-	var total_recruited = _sum_counts(hired)
-	if total_recruited > 0:
-		_deduct_recruits_proportionally(total_recruited, recruit_sources)
+	if result.get("total_recruited", 0) > 0:
+		_deduct_recruits_proportionally(result["total_recruited"], recruit_sources)
 
 	army.clear_recruitment_request()
-
 	var recruits_remaining = _count_recruits_remaining(recruit_sources)
-	print("Hired: %s" % hired)
+
+	print("Hired: %s" % result["hired"])
 	print("Recruits remaining: %d" % recruits_remaining)
 
 	return {
-		"hired": hired,
-		"spent_gold": spent_gold,
-		"spent_wood": spent_wood,
-		"spent_iron": spent_iron,
+		"hired": result["hired"],
+		"spent_gold": result["spent_gold"],
+		"spent_wood": result["spent_wood"],
+		"spent_iron": result["spent_iron"],
 		"budget_left": budget.to_dict(),
 		"recruits_left": recruits_remaining
 	}
 
+
 # Helpers ------------------------------------------------------------------
 func _gather_recruit_sources(region: Region, player_id: int) -> Array:
-	if game_manager.is_player_computer(player_id):
-		var sources = region_manager.get_available_recruits_from_region_and_neighbors(region.get_region_id(), player_id)
-		var total = 0
-		for s in sources:
-			total += s.amount
-		print("[RecruitmentManager] Computer player - total recruits from ", sources.size(), " regions: ", total)
-		return sources
-	var avail = region.get_available_recruits()
-	print("[RecruitmentManager] Human player - region has ", avail, " available recruits")
-	return [{"region_id": region.get_region_id(), "amount": avail}]
+	# Always gather from region and neighbors (AI-only usage via TurnController)
+	var sources = region_manager.get_available_recruits_from_region_and_neighbors(region.get_region_id(), player_id)
+	var total = 0
+	for s in sources:
+		total += s.amount
+	print("[RecruitmentManager] Total recruits from ", sources.size(), " regions: ", total)
+	return sources
 
 func _sum_sources(recruit_sources: Array) -> int:
 	var s = 0
@@ -422,6 +235,230 @@ func _get_unit_costs_map(types: Array) -> Dictionary:
 		var iron: int = GameParameters.get_unit_iron_cost(t)    # 0 for units with no iron
 		out[t] = { "gold": gold, "wood": wood, "iron": iron }
 	return out
+
+# Core units.py allocation algorithm -----------------------------------------
+func _allocate_with_unit0_gd(
+	army: Army,
+	budget: BudgetComposition, 
+	total_units: int, 
+	ideal: Dictionary, 
+	unit0_share: float, 
+	special_caps: Dictionary = {},
+	debug: bool = false
+) -> Dictionary:
+	"""Mirror units.py allocation algorithm using game data"""
+	
+	# 1) Unit 0 (peasants - free)
+	var unit0 = int(floor(unit0_share * float(total_units)))
+	var paid_units_cap = max(0, total_units - unit0)
+	
+	# 2) Build non-peasant props (integer ratios)
+	var non_peasant_types: Array = []
+	var props_raw: Dictionary = {}
+	for t in ideal.keys():
+		if t != SoldierTypeEnum.Type.PEASANTS and ideal.get(t, 0.0) > 0.0:
+			non_peasant_types.append(t)
+			props_raw[t] = max(1, int(round(ideal[t] * 100.0)))
+	
+	# Sort for stable ordering
+	non_peasant_types.sort_custom(func(a, b): return int(a) < int(b))
+	
+	if non_peasant_types.is_empty():
+		# No paid units - just add peasants
+		army.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
+		return {
+			"hired": {SoldierTypeEnum.Type.PEASANTS: unit0},
+			"spent_gold": 0, "spent_wood": 0, "spent_iron": 0,
+			"total_recruited": unit0
+		}
+	
+	# Build unit costs only for non-peasant types (micro-optimization)
+	var unit_costs = _get_unit_costs_map(non_peasant_types)
+	
+	# Reduce props by GCD to keep numbers small
+	var gcd_val = _gcd_all(props_raw.values())
+	var props: Dictionary = {}
+	for t in non_peasant_types:
+		props[t] = props_raw[t] / gcd_val
+	
+	var P = _sum_dict_values(props)
+	
+	# 3) Pack costs (vector sum)
+	var pack_costs = _compute_pack_costs(props, unit_costs)
+	
+	# 4) Full packages (min over all constraints)
+	var full_packages = _max_full_packages(budget, pack_costs, P, paid_units_cap, special_caps, props)
+	
+	if debug:
+		print("=== UNITS.PY DEBUG ===")
+		print("Total units: ", total_units, ", Unit0: ", unit0, ", Paid cap: ", paid_units_cap)
+		print("Props: ", props, ", P: ", P)
+		print("Pack costs: ", pack_costs)
+		print("Full packages: ", full_packages)
+	
+	# 5) Apply full packages
+	var x_paid: Dictionary = {}
+	for t in non_peasant_types:
+		x_paid[t] = full_packages * props[t]
+	
+	# Spend budget for full packages
+	for res in ["gold", "wood", "iron"]:
+		var cost = full_packages * pack_costs.get(res, 0)
+		match res:
+			"gold": budget.gold -= cost
+			"wood": budget.wood -= cost
+			"iron": budget.iron -= cost
+	
+	var units_left = paid_units_cap - full_packages * P
+	
+	# 6) Partial sequence fill
+	var seq = _build_sequence(props, non_peasant_types)
+	
+	var changed = true
+	var loop_count = 0
+	while changed and units_left > 0 and _can_afford_any(budget, unit_costs, non_peasant_types):
+		loop_count += 1
+		if loop_count > 1000: break  # safety
+		
+		changed = false
+		for i in seq:
+			# Check special caps
+			if special_caps.has(i) and x_paid.get(i, 0) >= special_caps[i]:
+				continue
+			
+			var cost = unit_costs[i]
+			if units_left > 0 and budget.can_afford(cost):
+				x_paid[i] = x_paid.get(i, 0) + 1
+				units_left -= 1
+				budget.spend(cost)
+				changed = true
+			
+			if units_left == 0 or not _can_afford_any(budget, unit_costs, non_peasant_types):
+				break
+	
+	if debug:
+		print("Partial fill: ", x_paid, ", units left: ", units_left)
+	
+	# 7) Apply to army
+	if unit0 > 0:
+		army.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
+	for t in non_peasant_types:
+		var count = x_paid.get(t, 0)
+		if count > 0:
+			army.add_soldiers(t, count)
+	
+	# 8) Calculate spending
+	var hired: Dictionary = {}
+	if unit0 > 0:
+		hired[SoldierTypeEnum.Type.PEASANTS] = unit0
+	for t in non_peasant_types:
+		var count = x_paid.get(t, 0)
+		if count > 0:
+			hired[t] = count
+	
+	var spent_gold = 0
+	var spent_wood = 0
+	var spent_iron = 0
+	for t in non_peasant_types:
+		var count = x_paid.get(t, 0)
+		var cost = unit_costs[t]
+		spent_gold += count * cost["gold"]
+		spent_wood += count * cost["wood"]
+		spent_iron += count * cost["iron"]
+	
+	var total_recruited = unit0 + _sum_dict_values(x_paid)
+	
+	return {
+		"hired": hired,
+		"spent_gold": spent_gold,
+		"spent_wood": spent_wood, 
+		"spent_iron": spent_iron,
+		"total_recruited": total_recruited
+	}
+
+# Vector pack helpers ------------------------------------------------------
+func _compute_pack_costs(props: Dictionary, unit_costs: Dictionary) -> Dictionary:
+	"""Sum costs per resource weighted by props"""
+	var pack: Dictionary = {"gold": 0, "wood": 0, "iron": 0}
+	for t in props.keys():
+		var p = props[t]
+		var cost = unit_costs[t]
+		pack["gold"] += p * cost["gold"]
+		pack["wood"] += p * cost["wood"]
+		pack["iron"] += p * cost["iron"]
+	return pack
+
+func _max_full_packages(budget: BudgetComposition, pack_costs: Dictionary, P: int, paid_units_cap: int, special_caps: Dictionary, props: Dictionary) -> int:
+	"""Min over all resource floors, units cap, and per-type caps"""
+	var candidates: Array = []
+	
+	# Budget constraints
+	for res in ["gold", "wood", "iron"]:
+		var pack_cost = pack_costs.get(res, 0)
+		if pack_cost > 0:
+			var budget_val = 0
+			match res:
+				"gold": budget_val = budget.gold
+				"wood": budget_val = budget.wood  
+				"iron": budget_val = budget.iron
+			candidates.append(int(floor(float(budget_val) / float(pack_cost))))
+	
+	# Units cap
+	if P > 0:
+		candidates.append(int(floor(float(paid_units_cap) / float(P))))
+	
+	# Special caps per type
+	for t in special_caps.keys():
+		if props.has(t) and props[t] > 0:
+			candidates.append(int(floor(float(special_caps[t]) / float(props[t]))))
+	
+	if candidates.is_empty():
+		return 0
+	
+	var min_val = candidates[0]
+	for c in candidates:
+		min_val = min(min_val, c)
+	return max(0, min_val)
+
+func _build_sequence(props: Dictionary, unit_types: Array) -> Array:
+	"""Repeat each type according to props (e.g., {A:3,B:2,C:1} -> [A,A,A,B,B,C])"""
+	var seq: Array = []
+	for t in unit_types:
+		var count = props.get(t, 0)
+		for i in range(count):
+			seq.append(t)
+	return seq
+
+func _can_afford_any(budget: BudgetComposition, unit_costs: Dictionary, candidates: Array) -> bool:
+	"""True if any unit type can be afforded"""
+	for t in candidates:
+		if budget.can_afford(unit_costs[t]):
+			return true
+	return false
+
+
+func _sum_dict_values(dict: Dictionary) -> int:
+	"""Sum all values in dictionary"""
+	var sum = 0
+	for key in dict.keys():
+		sum += int(dict[key])
+	return sum
+
+func _gcd_all(values: Array) -> int:
+	"""Calculate GCD of all values in array"""
+	if values.is_empty(): return 1
+	var result = int(values[0])
+	for i in range(1, values.size()):
+		result = _gcd(result, int(values[i]))
+	return max(1, result)
+
+func _gcd(a: int, b: int) -> int:
+	"""Calculate greatest common divisor"""
+	while b != 0:
+		var temp = b
+		b = a % b
+		a = temp
+	return abs(a)
 
 func _normalize_power(powers: Dictionary) -> Dictionary:
 	var minp: float = 1e9

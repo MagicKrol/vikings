@@ -327,6 +327,25 @@ Main (Node2D) [place_armies.gd]
 **Key Functions**:
 - `allocate_recruitment_budgets()`: Check armies at castles for recruitment needs and assign budgets directly
 - `split_by_weights()`: Proportional resource division using largest remainder method (legacy)
+
+### RecruitmentManager.gd
+**Class**: RecruitmentManager
+**Purpose**: AI-only recruitment system using units.py pack-based allocation algorithm
+**Key Functions**:
+- `hire_soldiers()`: Process recruitment using units.py-based allocation algorithm
+- `_allocate_with_unit0_gd()`: Core allocation function mirroring units.py algorithm
+- `_gather_recruit_sources()`: Always gathers recruits from region and neighbors (no player-type branching)
+- `_deduct_recruits_proportionally()`: Deduct hired recruits from source regions
+**Algorithm**: 
+- **Unit0 Allocation**: Peasants = floor(unit0_share * total_units) first, regardless of budget
+- **Pack-Based Logic**: Non-peasants allocated via proportional "packs" then partial sequence fill
+- **Multi-Resource Constraints**: Handles gold/wood/iron budget vectors with min() over resource floors
+- **Sequence Determinism**: Partial fill follows deterministic sequence built from props ratios
+- **No Peasant Caps**: Removes old min/max peasant share logic; peasants determined solely by unit0_share
+**Notes**: 
+- Called exclusively by TurnController during AI turn processing
+- Always uses region+neighbors recruit gathering (suitable for AI strategic recruitment)
+- Maintains ideal army composition based on castle type while respecting budget limits
 - **Castle-Only Budget Allocation**: Only armies positioned at castles (level 1+) can receive budgets since they can immediately recruit
 - **Internal Army Assessment**: Automatically evaluates which armies need reinforcement using Army.needs_recruitment()
 - **Direct Budget Assignment**: Assigns BudgetComposition directly to Army.assigned_budget field instead of returning dictionary
