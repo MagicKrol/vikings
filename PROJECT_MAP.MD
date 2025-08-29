@@ -374,6 +374,22 @@ Main (Node2D) [place_armies.gd]
 8. **Fallback System**: Basic reinforcement used if no budget assigned (backward compatibility)
 **Benefits**: Resource allocation only to armies that can immediately recruit, strategic movement to castles, efficient resource usage
 
+## AI Economy Strategy
+
+**Goal**: Simple, deterministic AI for allocating resources across recruitment, army raising, region upgrades, and castle upgrades while respecting a per‑turn action limit and savings.
+
+- **Controller**: EconomyAIManager (logic only). Computes signals, allocates budgets to categories, selects actions, executes via existing managers (BudgetManager, RecruitmentManager, RegionManager, ArmyManager).
+- **Signals**: frontier_pressure, army_power_ratio, resource_scarcity (per resource), recruit_abundance (region+neighbors), castle_spacing (avg distance), turn_index (for pacing).
+- **Buckets**: Split player resources into categories: recruit, raise_army, region_upgrade, castle_upgrade, savings. Use largest remainder method; weights derive from signals. Deterministic ordering.
+- **Selection**: For each bucket, build candidates and score per gold‑equivalent benefit; pick greedily until bucket exhausted. One action per type per turn (configurable caps) to keep pacing stable.
+- **Execution**: 
+  - recruit → RecruitmentManager with assigned BudgetComposition (as implemented)
+  - raise_army → ArmyManager: spawn at best castle by recruit density/coverage
+  - region_upgrade → RegionManager: top ROI = income_gain / cost with scarcity multipliers
+  - castle_upgrade/build → RegionManager: score by coverage gain, recruit cap increase, spacing
+- **Guards**: minimum reserve gold, cooldowns on repeated upgrades, deterministic tie‑breakers (region_id/instance_id), action caps per turn.
+- **Data**: Keep weights and thresholds in GameParameters for tuning; do not change scene defaults in scripts.
+
 ## Testing System
 
 ### TestBudgetManager.gd  

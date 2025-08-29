@@ -259,3 +259,133 @@ func test_large_remainder_distribution():
 	assert_true(abs(army1_budget.gold - 333) <= 1, "Army1 gold within 1 of expected")
 	assert_true(abs(army2_budget.gold - 333) <= 1, "Army2 gold within 1 of expected")
 	assert_true(abs(army3_budget.gold - 333) <= 1, "Army3 gold within 1 of expected")
+
+# ---------------------------------------------------------------------------
+# Allocation to armies at castles (new BudgetManager.allocate_recruitment_budgets)
+# ---------------------------------------------------------------------------
+
+func _make_region_with_castle(map_gen: MapGenerator, region_mgr: RegionManager, region_id: int, recruits: int, owner_id: int) -> Region:
+	var region := Region.new()
+	var data = {"id": region_id, "biome": "grassland", "ocean": false, "center": [0.0, 0.0]}
+	region.setup_region(data)
+	region.set_castle_type(CastleTypeEnum.Type.OUTPOST)
+	region.available_recruits = recruits
+	map_gen.region_container_by_id[region_id] = region
+	region_mgr.set_initial_region_ownership(region_id, owner_id)
+	return region
+
+func _new_player_with_resources(id: int, gold: int, wood: int, iron: int) -> Player:
+	var p := Player.new(id, "P" + str(id))
+	p.set_resource_amount(ResourcesEnum.Type.GOLD, gold)
+	p.set_resource_amount(ResourcesEnum.Type.WOOD, wood)
+	p.set_resource_amount(ResourcesEnum.Type.IRON, iron)
+	return p
+
+func _new_army_at(region: Region, player_id: int, name: String) -> Army:
+	var a := Army.new()
+	a.setup_raised_army(player_id, name)
+	region.add_child(a)
+	return a
+
+func _sorted_int_array(arr: Array[int]) -> Array[int]:
+	arr.sort()
+	return arr
+
+func _assert_array_equals_int(actual: Array[int], expected: Array[int], msg: String) -> void:
+	assert_equals(actual.size(), expected.size(), msg + " (size)")
+	for i in range(actual.size()):
+		assert_equals(actual[i], expected[i], msg + " [" + str(i) + "]")
+
+func test_allocate_budgets_splits_recruits_equally_per_castle_group() -> void:
+	# Setup simple world: one castle region with 3 armies
+	var map_gen := MapGenerator.new()
+	var region_mgr := RegionManager.new(map_gen)
+	var castle := _make_region_with_castle(map_gen, region_mgr, 1001, 30, 1)
+	var a1 := _new_army_at(castle, 1, "A1")
+	var a2 := _new_army_at(castle, 1, "A2")
+	var a3 := _new_army_at(castle, 1, "A3")
+	var armies: Array[Army] = [a1, a2, a3]
+	var player := _new_player_with_resources(1, 90, 60, 30)
+	
+	# Allocate budgets
+	var assigned := budget_manager.allocate_recruitment_budgets(armies, player, region_mgr, 1)
+	assert_equals(assigned, 3, "All 3 armies at castle should get budgets")
+	
+	# Collect recruit caps and verify multiset = [10,10,10]
+	var caps: Array[int] = []
+	for a in armies:
+		assert_not_null(a.assigned_budget, "Army should have assigned budget")
+		caps.append(a.assigned_budget.available_recruits)
+	var expected_caps := [10, 10, 10]
+	_assert_array_equals_int(_sorted_int_array(caps), _sorted_int_array(expected_caps), "Recruits split equally among castle armies")
+
+func test_allocate_budgets_resources_split_conserved_globally() -> void:
+	# Two castles, 4 armies total; resources split globally, recruits per-castle
+	var map_gen := MapGenerator.new()
+	var region_mgr := RegionManager.new(map_gen)
+	var c1 := _make_region_with_castle(map_gen, region_mgr, 2001, 21, 2)
+	var c2 := _make_region_with_castle(map_gen, region_mgr, 2002, 11, 2)
+	var a1 := _new_army_at(c1, 2, "A1")
+	var a2 := _new_army_at(c1, 2, "A2")
+	var a3 := _new_army_at(c2, 2, "A3")
+	var a4 := _new_army_at(c2, 2, "A4")
+	var armies: Array[Army] = [a1, a2, a3, a4]
+	var player := _new_player_with_resources(2, 101, 41, 9)
+	
+	var assigned := budget_manager.allocate_recruitment_budgets(armies, player, region_mgr, 1)
+	assert_equals(assigned, 4, "All 4 armies at castles should get budgets")
+	
+	# Verify resource conservation and equal global split pattern (largest remainder)
+	var golds: Array[int] = []
+	var woods: Array[int] = []
+	var irons: Array[int] = []
+	var caps_c1: Array[int] = []
+	var caps_c2: Array[int] = []
+	for a in armies:
+		golds.append(a.assigned_budget.gold)
+		woods.append(a.assigned_budget.wood)
+		irons.append(a.assigned_budget.iron)
+		if a.get_parent() == c1:
+			caps_c1.append(a.assigned_budget.available_recruits)
+		else:
+			caps_c2.append(a.assigned_budget.available_recruits)
+	
+	assert_equals(golds[0] + golds[1] + golds[2] + golds[3], 101, "Gold conserved across armies")
+	assert_equals(woods[0] + woods[1] + woods[2] + woods[3], 41, "Wood conserved across armies")
+	assert_equals(irons[0] + irons[1] + irons[2] + irons[3], 9, "Iron conserved across armies")
+	
+	# Recruits split per castle group: 21 -> [6,5,5,5] pattern -> for 2 armies it's [11,10]; 11 -> [6,5] or [6,5]
+	_assert_array_equals_int(_sorted_int_array(caps_c1), _sorted_int_array([10, 11]), "Castle 1 recruits split among its 2 armies")
+	_assert_array_equals_int(_sorted_int_array(caps_c2), _sorted_int_array([5, 6]), "Castle 2 recruits split among its 2 armies")
+
+func test_no_budget_for_army_not_at_castle() -> void:
+	# One army at non-castle region should not get budget
+	var map_gen := MapGenerator.new()
+	var region_mgr := RegionManager.new(map_gen)
+	var region := Region.new()
+	var data = {"id": 3001, "biome": "grassland", "ocean": false, "center": [0.0, 0.0]}
+	region.setup_region(data)
+	region.set_castle_type(CastleTypeEnum.Type.NONE)
+	region.available_recruits = 25
+	map_gen.region_container_by_id[3001] = region
+	var a := _new_army_at(region, 3, "A")
+	var armies: Array[Army] = [a]
+	var player := _new_player_with_resources(3, 30, 20, 10)
+	
+	var assigned := budget_manager.allocate_recruitment_budgets(armies, player, region_mgr, 1)
+	assert_equals(assigned, 0, "No budgets assigned when not at castle")
+	assert_null(a.assigned_budget, "Army not at castle should have no budget")
+
+func test_zero_recruits_results_in_zero_caps() -> void:
+	# Castle with zero recruits -> caps are zero
+	var map_gen := MapGenerator.new()
+	var region_mgr := RegionManager.new(map_gen)
+	var castle := _make_region_with_castle(map_gen, region_mgr, 4001, 0, 4)
+	var a1 := _new_army_at(castle, 4, "A1")
+	var a2 := _new_army_at(castle, 4, "A2")
+	var armies: Array[Army] = [a1, a2]
+	var player := _new_player_with_resources(4, 10, 10, 10)
+	
+	var assigned := budget_manager.allocate_recruitment_budgets(armies, player, region_mgr, 1)
+	assert_equals(assigned, 2, "Budgets assigned even if no recruits")
+	assert_equals(a1.assigned_budget.available_recruits + a2.assigned_budget.available_recruits, 0, "Zero recruits produce zero caps")
