@@ -18,8 +18,9 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 		print("[BudgetManager] Error: No region manager provided")
 		return 0
 	
-	# Check which armies need reinforcement AND are at castles
-	var armies_needing_recruitment: Array[Army] = []
+	# Group armies by castle region for recruit quota distribution
+	var armies_by_castle: Dictionary = {}  # region_id -> Array[Army]
+	
 	for army in all_armies:
 		if army.needs_recruitment(turn_number):
 			army.request_recruitment()
@@ -29,14 +30,29 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 				var region_id := army_region.get_region_id()
 				var castle_level := region_manager.get_castle_level(region_id)
 				if castle_level >= 1:
-					# Request recruitment and add to list for budget allocation
-					armies_needing_recruitment.append(army)
+					# Group armies by castle region
+					if not armies_by_castle.has(region_id):
+						armies_by_castle[region_id] = []
+					armies_by_castle[region_id].append(army)
 					print("[BudgetManager] Army ", army.name, " at castle (level ", castle_level, ") flagged for recruitment")
 				else:
 					# Army needs recruitment but not at castle - still flag for movement toward castle
 					print("[BudgetManager] Army ", army.name, " needs recruitment but not at castle - flagged but no budget allocated")
 	
-	if armies_needing_recruitment.is_empty():
+	# Create a stable global order for resource distribution
+	var ordered_region_ids: Array = armies_by_castle.keys()
+	ordered_region_ids.sort()
+	var ordered_armies: Array[Army] = []
+	var army_to_index: Dictionary = {}
+	
+	for region_id in ordered_region_ids:
+		var group = armies_by_castle[region_id]
+		group.sort_custom(func(a, b): return a.get_instance_id() < b.get_instance_id())
+		for army in group:
+			army_to_index[army] = ordered_armies.size()
+			ordered_armies.append(army)
+	
+	if ordered_armies.is_empty():
 		print("[BudgetManager] No armies at castles need recruitment")
 		return 0
 	
@@ -46,26 +62,41 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	var total_iron := player.get_resource_amount(ResourcesEnum.Type.IRON)
 	
 	print("[BudgetManager] Player ", player.get_player_id(), " has: ", total_gold, " gold, ", total_wood, " wood, ", total_iron, " iron")
-	print("[BudgetManager] Allocating resources to ", armies_needing_recruitment.size(), " armies that need reinforcement")
+	print("[BudgetManager] Allocating resources to ", ordered_armies.size(), " armies that need reinforcement")
 	
-	# Split equally among all armies needing recruitment
-	var num_armies := armies_needing_recruitment.size()
+	# Split resources once using the exact global order
+	var num_armies := ordered_armies.size()
 	var gold_per_army := _distribute_equally(total_gold, num_armies)
 	var wood_per_army := _distribute_equally(total_wood, num_armies)  
 	var iron_per_army := _distribute_equally(total_iron, num_armies)
 	
-	# Assign budgets directly to each army
-	for i in range(armies_needing_recruitment.size()):
-		var army = armies_needing_recruitment[i]
-		var budget = BudgetComposition.new(
-			gold_per_army[i],
-			wood_per_army[i], 
-			iron_per_army[i]
-		)
-		army.assigned_budget = budget
-		print("[BudgetManager] Assigned budget to army ", army.name, ": ", budget.to_dict())
+	# Assign budgets per castle with deterministic recruits split
+	for region_id in ordered_region_ids:
+		var castle_armies = armies_by_castle[region_id]
+		castle_armies.sort_custom(func(a, b): return a.get_instance_id() < b.get_instance_id())
+		
+		# Get total available recruits for this castle region and neighbors
+		var sources := region_manager.get_available_recruits_from_region_and_neighbors(region_id, player.get_player_id())
+		var total_recruits := 0
+		for s in sources: total_recruits += int(s.amount)
+		
+		# Distribute recruits equally among armies at this castle
+		var recruits_per_army := _distribute_equally(total_recruits, castle_armies.size())
+		
+		# Assign budgets to armies at this castle
+		for local_idx in range(castle_armies.size()):
+			var army = castle_armies[local_idx]
+			var idx = int(army_to_index[army])
+			var budget = BudgetComposition.new(
+				gold_per_army[idx],
+				wood_per_army[idx], 
+				iron_per_army[idx],
+				recruits_per_army[local_idx]
+			)
+			army.assigned_budget = budget
+			print("[BudgetManager] Assigned budget to army ", army.name, ": ", budget.to_dict())
 	
-	return armies_needing_recruitment.size()
+	return ordered_armies.size()
 
 # Distribute an amount equally among recipients using largest remainder method
 func _distribute_equally(total_amount: int, num_recipients: int) -> Array[int]:

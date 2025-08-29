@@ -4,17 +4,19 @@ class_name BudgetComposition
 var gold: int
 var wood: int
 var iron: int
+var available_recruits: int
 
-func _init(_gold: int = 0, _wood: int = 0, _iron: int = 0) -> void:
+func _init(_gold: int = 0, _wood: int = 0, _iron: int = 0, _available_recruits: int = 0) -> void:
 	gold = _gold
 	wood = _wood
 	iron = _iron
+	available_recruits = _available_recruits
 
 func clone() -> BudgetComposition:
-	return BudgetComposition.new(gold, wood, iron)
+	return BudgetComposition.new(gold, wood, iron, available_recruits)
 
 func to_dict() -> Dictionary:
-	return {"gold": gold, "wood": wood, "iron": iron}
+	return {"gold": gold, "wood": wood, "iron": iron, "available_recruits": available_recruits}
 
 func add(other: BudgetComposition) -> void:
 	gold += other.gold

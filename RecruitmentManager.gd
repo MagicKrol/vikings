@@ -24,7 +24,10 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var player_id = army.get_player_id()
 
 	var recruit_sources = _gather_recruit_sources(region, player_id)
-	var total_units = _sum_sources(recruit_sources)
+	var available_from_sources = _sum_sources(recruit_sources)
+	
+	# Cap by army's recruit quota from BudgetManager
+	var total_units = min(available_from_sources, budget.available_recruits) if budget.available_recruits > 0 else available_from_sources
 
 	var need_key: String = CastleTypeEnum.type_to_string(region.get_castle_type())
 	var ideal_raw: Dictionary = GameParameters.get_ideal_composition(need_key)
