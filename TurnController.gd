@@ -143,7 +143,7 @@ func _process_turn(player_id: int) -> void:
 			if army.is_recruitment_requested():
 				if on_castle and army.assigned_budget != null:
 					if army.get_movement_points() >= 1:
-						var recruitment_manager := RecruitmentManager.new()
+						var recruitment_manager := RecruitmentManager.new(region_manager, game_manager)
 						var result := recruitment_manager.hire_soldiers(army, true)  # Enable debug temporarily
 						if result.has("error"):
 							print("[TurnController] RecruitmentManager error: ", result.get("error", "unknown"))

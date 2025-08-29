@@ -487,6 +487,28 @@ func find_nearest_owned_castle_region_id(from_region_id: int, owner_id: int) -> 
 	
 	return -1  # No castle found
 
+func get_available_recruits_from_region_and_neighbors(region_id: int, player_id: int) -> Array:
+	"""Get available recruits from a region and all owned neighboring regions. Returns array of {region_id: int, amount: int}"""
+	var recruit_sources: Array = []
+	
+	# Get the main region
+	var main_region = map_generator.get_region_container_by_id(region_id)
+	var main_recruits = main_region.get_available_recruits()
+	if main_recruits > 0:
+		recruit_sources.append({"region_id": region_id, "amount": main_recruits})
+	
+	# Get neighboring regions owned by the same player
+	var neighbors = get_neighbor_regions(region_id)
+	for neighbor_id in neighbors:
+		var neighbor_owner = get_region_owner(neighbor_id)
+		if neighbor_owner == player_id:
+			var neighbor_region = map_generator.get_region_container_by_id(neighbor_id)
+			var neighbor_recruits = neighbor_region.get_available_recruits()
+			if neighbor_recruits > 0:
+				recruit_sources.append({"region_id": neighbor_id, "amount": neighbor_recruits})
+	
+	return recruit_sources
+
 func perform_ore_search(region: Region, player_id: int, player_manager: PlayerManagerNode) -> Dictionary:
 	"""Perform ore search in a region for a player. Returns search result."""
 	if region == null:

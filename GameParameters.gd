@@ -148,16 +148,6 @@ const UNIT_TIERS = {
 	SoldierTypeEnum.Type.ROYAL_GUARD: 5    # Tier 5 - Available at L5+
 }
 
-## Region Level to Tier Mapping
-# Maps region levels to maximum recruitment tier
-const REGION_RECRUITMENT_TIERS = {
-	RegionLevelEnum.Level.L1: 1,  # MARCH - Basic units only
-	RegionLevelEnum.Level.L2: 2,  # PROVINCE - Basic + advanced units
-	RegionLevelEnum.Level.L3: 3,  # SHIRE - Basic + advanced + mounted units
-	RegionLevelEnum.Level.L4: 4,  # COUNTY - Basic + advanced + mounted + elite units
-	RegionLevelEnum.Level.L5: 5   # DUCHY - All units available
-}
-
 ## Castle Type to Tier Mapping
 # Maps castle types to maximum recruitment tier
 const CASTLE_RECRUITMENT_TIERS = {
@@ -553,37 +543,15 @@ static func get_unit_tier(unit_type: SoldierTypeEnum.Type) -> int:
 	"""Get the tier level for a unit type"""
 	return UNIT_TIERS.get(unit_type, 1)
 
-static func get_region_max_tier(region_level: RegionLevelEnum.Level) -> int:
-	"""Get the maximum recruitment tier for a region level"""
-	return REGION_RECRUITMENT_TIERS.get(region_level, 1)
-
 static func get_castle_max_tier(castle_type: CastleTypeEnum.Type) -> int:
 	"""Get the maximum recruitment tier for a castle type"""
 	return CASTLE_RECRUITMENT_TIERS.get(castle_type, 1)
-
-static func can_recruit_unit_in_region(unit_type: SoldierTypeEnum.Type, region_level: RegionLevelEnum.Level) -> bool:
-	"""Check if a unit type can be recruited in a region of the given level"""
-	var unit_tier = get_unit_tier(unit_type)
-	var region_max_tier = get_region_max_tier(region_level)
-	return unit_tier <= region_max_tier
 
 static func can_recruit_unit_with_castle(unit_type: SoldierTypeEnum.Type, castle_type: CastleTypeEnum.Type) -> bool:
 	"""Check if a unit type can be recruited with the given castle type"""
 	var unit_tier = get_unit_tier(unit_type)
 	var castle_max_tier = get_castle_max_tier(castle_type)
 	return unit_tier <= castle_max_tier
-
-static func get_available_units_for_region(region_level: RegionLevelEnum.Level) -> Array[SoldierTypeEnum.Type]:
-	"""Get all unit types that can be recruited in a region of the given level"""
-	var available_units: Array[SoldierTypeEnum.Type] = []
-	var region_max_tier = get_region_max_tier(region_level)
-	
-	for unit_type in SoldierTypeEnum.get_all_types():
-		var unit_tier = get_unit_tier(unit_type)
-		if unit_tier <= region_max_tier:
-			available_units.append(unit_type)
-	
-	return available_units
 
 static func get_promotion_cost(target_level: RegionLevelEnum.Level) -> Dictionary:
 	"""Get the resource cost to promote a region to the target level"""

@@ -378,6 +378,17 @@ Main (Node2D) [place_armies.gd]
 **Class**: TestRecruitmentManager (extends TestCase)  
 **Purpose**: Comprehensive testing of army recruitment system with budget constraints and composition matching
 **Test Coverage**: Unlimited resources, limited resources (wood/gold/recruits), zero budget scenarios, algorithm validation
+**Notes**: Tests now inject minimal `MapGenerator`, `RegionManager`, and `GameManager` instances into `RecruitmentManager` to match its current dependencies. Dictionary fields from results are accessed via bracket syntax (e.g., result["spent_gold"]).
+
+### TestRecruitmentProportions.gd
+**Class**: TestRecruitmentProportions (extends TestCase)
+**Purpose**: Validates peasant share constraints and proportional hiring
+**Key Checks**:
+- Peasants never exceed ideal composition cap for castle type
+- Peasants at least 5% when possible
+- When other units present (e.g., 10 swords, 20 archers, 30 spearmen), peasants added do not exceed cap (e.g., ≤40 for Outpost)
+- Outpost 100 recruits, 10 wood → 40 peasants, 10 archers, 38 spears, 12 swords (shortfall redistributed 3:1)
+- AI-like budget case (gold 53, wood 11, iron 4, recruits 154): archers=11; spears/swords both present; spears ≥ swords; peasants within cap
 
 ### click_manager.gd
 **Class**: ClickManager
