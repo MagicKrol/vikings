@@ -91,18 +91,11 @@ func start_turn(player_id: int) -> void:
 	
 	var turn_number := _get_current_turn()
 	
-	# Step 1: Use BudgetManager to allocate recruitment budgets at turn start (only to armies at castles)
-	var player_armies := army_manager.get_player_armies(player_id)
-	if not player_armies.is_empty() and player_manager != null:
-		var player := player_manager.get_player(player_id)
-		if player:
-			var budget_manager := BudgetManager.new()
-			var assigned_count := budget_manager.allocate_recruitment_budgets(player_armies, player, region_manager, turn_number)
-			print("[TurnController] BudgetManager assigned budgets to ", assigned_count, " armies at castles at turn start")
-		else:
-			print("[TurnController] Warning: Could not get player ", player_id, " from PlayerManagerNode")
-	elif player_manager == null:
-		print("[TurnController] Warning: PlayerManagerNode is null - skipping budget allocation")
+	# Step 1: Use EconomyAIManager to plan economy and allocate budgets (recruitment wired-in)
+	var econ := EconomyAIManager.new(region_manager, army_manager, player_manager)
+	var econ_result := econ.plan_turn(player_id, turn_number)
+	var assigned_count := int(econ_result.get("recruit_assigned", 0))
+	print("[TurnController] EconomyAIManager assigned recruitment budgets to ", assigned_count, " armies at castles")
 	
 	emit_signal("turn_started", player_id)
 	print("[TurnController] Starting turn for Player ", player_id)

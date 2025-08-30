@@ -87,6 +87,13 @@ Notes
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
 - RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally.
 
+### EconomyAIManager.gd (new)
+- Purpose: Central, deterministic planner for AI economy decisions each turn.
+- Current Scope: Recruitment budgeting only (compatible with existing flow).
+- Future Hooks: raise_army, region_upgrade, castle_upgrade (stubs in place).
+- Key: `plan_turn(player_id, turn_number)` computes simple signals, scores categories, picks active ones (recruit), and delegates to `BudgetManager.allocate_recruitment_budgets`.
+- Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and calls `plan_turn()` at turn start.
+
 ## AI & Scoring
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance).
 - ai/castle_placement_scorer.gd: Candidate scoring for initial castles with random perturbation.
@@ -121,4 +128,3 @@ Notes
 - Extracted UI modals into separate `.tscn` scenes and instanced in `main.tscn` (previously described as inline).
 - New/now-central: `TurnController.gd`, `BattleManager.gd`, `VisualManager.gd`, `BudgetManager.gd`, `BudgetComposition.gd`, `RecruitmentManager.gd`, `PlayerManagerNode.gd`.
 - Legacy/auxiliary present but not on the main turn path: `AITurnManager.gd`, `ai/SimplifiedAITurnManager.gd`.
-

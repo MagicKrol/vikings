@@ -34,10 +34,10 @@ var total_players: int = 6
 var player_types: Array[PlayerTypeEnum.Type] = [
 	PlayerTypeEnum.Type.HUMAN,   # Player 1 - Computer (temporarily for testing)
 	PlayerTypeEnum.Type.COMPUTER,   # Player 2 - Computer
-	PlayerTypeEnum.Type.COMPUTER,   # Player 3 - Computer
-	PlayerTypeEnum.Type.COMPUTER,   # Player 4 - Computer
-	PlayerTypeEnum.Type.COMPUTER,   # Player 5 - Computer
-	PlayerTypeEnum.Type.COMPUTER    # Player 6 - Computer
+	PlayerTypeEnum.Type.OFF,   # Player 3 - Computer
+	PlayerTypeEnum.Type.OFF,   # Player 4 - Computer
+	PlayerTypeEnum.Type.OFF,   # Player 5 - Computer
+	PlayerTypeEnum.Type.OFF    # Player 6 - Computer
 ]
 
 
@@ -208,8 +208,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
 	
-	# Get next player in sequence
-	var next_player_id = _get_next_player()
+	# Get next active player in sequence (skips OFF players)
+	var next_player_id = _get_next_active_player()
 	var is_new_round = (next_player_id == players_per_round[0])
 	
 	if is_new_round:
@@ -224,8 +224,9 @@ func next_turn():
 	current_player = next_player_id
 	player_manager.set_current_player(current_player)
 	
-	# Process player-specific turn start actions
-	_process_player_turn_start(current_player)
+	# Process player-specific turn start actions (only for active players)
+	if is_player_active(current_player):
+		_process_player_turn_start(current_player)
 	
 	# Check if current player is AI and handle AI turn processing
 	print("[GameManager] Checking AI turn: castle_placing_mode=", castle_placing_mode, ", current_player=", current_player, ", is_computer=", is_player_computer(current_player))
@@ -393,8 +394,8 @@ func _on_current_player_changed(player_id: int) -> void:
 	# Update player status display
 	_update_player_status_display()
 	
-	# Show next player modal for all players (not just human players)
-	if _next_player_modal:
+	# Show next player modal only for active players
+	if _next_player_modal and is_player_active(player_id):
 		_next_player_modal.show_next_player(player_id, castle_placing_mode)
 	
 	print("[GameManager] Round ", current_turn, " - Player ", player_id, "'s turn")
