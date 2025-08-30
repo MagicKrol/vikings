@@ -167,7 +167,7 @@ func _reconstruct_path(parents: Dictionary, start_id: int, target_id: int) -> Ar
 		
 		# Safety check to prevent infinite loops
 		if path.size() > 100:
-			print("[ArmyPathfinder] Warning: Path reconstruction exceeded safety limit")
+			DebugLogger.log("AIPathfinding", "Warning: Path reconstruction exceeded safety limit")
 			break
 	
 	# Reverse to get path from start to target

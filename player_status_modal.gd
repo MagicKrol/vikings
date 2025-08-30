@@ -283,4 +283,4 @@ func _on_end_turn_button_pressed():
 	if game_manager:
 		game_manager.next_turn()
 	else:
-		print("[PlayerStatusModal] Error: Game manager not available")
+		DebugLogger.log("UISystem", "Error: Game manager not available")

@@ -205,7 +205,7 @@ func _calculate_distance_to_nearest_enemy(start_region_id: int, enemy_region_ids
 			visited[neighbor_id] = current_distance + 1
 			queue.append({"region_id": neighbor_id, "distance": current_distance + 1})
 	
-	print("[CastlePlacementScorer] No path found from region ", start_region_id, " to any enemy")
+	DebugLogger.log("CastlePlacement", "No path found from region " + str(start_region_id) + " to any enemy")
 	return 999  # No path found
 
 # REMOVED: _calculate_normalization_parameters function

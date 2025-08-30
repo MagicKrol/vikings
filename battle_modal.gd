@@ -98,7 +98,7 @@ func show_battle(army: Army, region: Region) -> void:
 
 func hide_modal() -> void:
 	"""Hide the battle modal"""
-	print("[BattleModal] Hiding modal and notifying click manager...")
+	DebugLogger.log("UISystem", "Hiding modal and notifying click manager...")
 	
 	# Stop any ongoing battle animation
 	if animated_simulator and animated_simulator.is_running():
@@ -535,7 +535,7 @@ func _run_battle_simulation() -> void:
 	var castle_type = defending_region.get_castle_type()
 	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type)
 	
-	print("[BattleModal] Starting animated battle simulation...")
+	DebugLogger.log("UISystem", "Starting animated battle simulation...")
 
 func _on_battle_round_completed(round_data: Dictionary) -> void:
 	"""Handle completion of a battle round"""
@@ -546,7 +546,7 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	# Update display with current round data
 	_update_display()
 	
-	print("[BattleModal] Round ", current_round, " completed - Attackers: ", round_data["attacker_size"], ", Defenders: ", round_data["defender_size"])
+	DebugLogger.log("UISystem", "Round " + str(current_round) + " completed - Attackers: " + str(round_data["attacker_size"]) + ", Defenders: " + str(round_data["defender_size"]))
 
 func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	"""Handle battle completion"""
@@ -567,7 +567,7 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	# Final display update
 	_update_display()
 	
-	print("[BattleModal] Battle finished! Winner: ", report.winner)
+	DebugLogger.log("UISystem", "Battle finished! Winner: " + str(report.winner))
 
 func _on_ok_pressed() -> void:
 	"""Handle Continue button press"""
@@ -622,7 +622,7 @@ func _on_withdraw_pressed() -> void:
 	if animated_simulator:
 		animated_simulator.start_withdrawal_round()
 	
-	print("[BattleModal] Starting withdrawal...")
+	DebugLogger.log("UISystem", "Starting withdrawal...")
 
 func _convert_to_split_labels() -> void:
 	"""Convert single effectiveness labels to split text/value format"""

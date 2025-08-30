@@ -57,7 +57,7 @@ func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: Pl
 	if player_manager == null:
 		push_error("[TurnController] CRITICAL: PlayerManagerNode is null during initialization!")
 	else:
-		print("[TurnController] PlayerManagerNode initialized successfully")
+		DebugLogger.log("AITurnManager", "[TurnController] PlayerManagerNode initialized successfully")
 	
 	# Create supporting systems
 	pathfinder = ArmyPathfinder.new(region_manager, army_manager)
@@ -76,7 +76,7 @@ func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: Pl
 	if parent and parent.has_method("get_current_turn"):
 		game_manager = parent
 	
-	print("[TurnController] Initialized with all managers")
+	DebugLogger.log("AITurnManager", "[TurnController] Initialized with all managers")
 
 func _get_current_turn() -> int:
 	"""Get the current turn number from GameManager or default to 1"""
@@ -96,17 +96,17 @@ func start_turn(player_id: int) -> void:
 	var econ_result = econ.plan_turn(player_id, turn_number)
 	var assigned_count = int(econ_result.get("recruit_assigned", 0))
 	var raise_result = econ_result.get("raise_army_result", {"raised": false})
-	print("[TurnController] EconomyAIManager assigned recruitment budgets to ", assigned_count, " armies at castles")
+	DebugLogger.log("AITurnManager", "[TurnController] EconomyAIManager assigned recruitment budgets to " + str(assigned_count) + " armies at castles")
 	if raise_result.get("raised", false):
-		print("[TurnController] EconomyAIManager raised new army at region ", raise_result.get("region_id", -1))
+		DebugLogger.log("AITurnManager", "[TurnController] EconomyAIManager raised new army at region " + str(raise_result.get("region_id", -1)))
 	
 	emit_signal("turn_started", player_id)
-	print("[TurnController] Starting turn for Player ", player_id)
+	DebugLogger.log("AITurnManager", "[TurnController] Starting turn for Player " + str(player_id))
 	
 	await _process_turn(player_id)
 	
 	emit_signal("turn_finished", player_id)
-	print("[TurnController] Completed turn for Player ", player_id)
+	DebugLogger.log("AITurnManager", "[TurnController] Completed turn for Player " + str(player_id))
 
 func _process_turn(player_id: int) -> void:
 	"""Main turn processing loop - shared between Human and AI"""
@@ -116,7 +116,7 @@ func _process_turn(player_id: int) -> void:
 		# Step 1: Find frontier targets
 		var frontier := region_manager.get_frontier_regions(player_id)
 		if frontier.is_empty():
-			print("[TurnController] No frontier regions available")
+			DebugLogger.log("AITurnManager", "[TurnController] No frontier regions available")
 			break
 		
 		# Step 2-4: Build move candidates from all armies
@@ -124,9 +124,16 @@ func _process_turn(player_id: int) -> void:
 		var turn_number := _get_current_turn()
 		
 		for army in armies:
+			DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " Power: " + str(army.get_army_power()))
 			if moved_armies.has(army):
 				continue
 			if army.get_movement_points() <= 0:
+				continue
+			# Rest rule 3: if efficiency < 75% at beginning, spend all MPs making camp
+			if army.get_efficiency() < 75:
+				while army.get_movement_points() > 0:
+					army.make_camp()
+				moved_armies[army] = true
 				continue
 			
 			# Check reinforcement logic
@@ -142,9 +149,9 @@ func _process_turn(player_id: int) -> void:
 						var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
 						var result = recruitment_manager.hire_soldiers(army, true)  # Enable debug temporarily
 						if result.has("error"):
-							print("[TurnController] RecruitmentManager error: ", result.get("error", "unknown"))
+							DebugLogger.log("AITurnManager", "[TurnController] RecruitmentManager error: " + str(result.get("error", "unknown")))
 					else:
-						print("[TurnController] Army ", army.name, " has no movement points to recruit. We skip turn")
+						DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " has no movement points to recruit. We skip turn")
 
 				else:
 					# Not on castle → override target: go to nearest owned castle
@@ -171,7 +178,7 @@ func _process_turn(player_id: int) -> void:
 				candidates.append(best_move)
 		
 		if candidates.is_empty():
-			print("[TurnController] No valid moves available")
+			DebugLogger.log("AITurnManager", "[TurnController] No valid moves available")
 			break
 		
 		# Step 5: Order by final score (highest first)
@@ -188,16 +195,22 @@ func _process_turn(player_id: int) -> void:
 		
 		# Step 8: Recalculate if ownership changed, otherwise continue
 		if ownership_changed:
-			print("[TurnController] Ownership changed - recalculating frontier")
+			DebugLogger.log("AITurnManager", "[TurnController] Ownership changed - recalculating frontier")
 			# Loop continues with fresh frontier calculation
 		else:
-			print("[TurnController] No ownership change - continuing with remaining armies")
+			DebugLogger.log("AITurnManager", "[TurnController] No ownership change - continuing with remaining armies")
 
 	# After all moves, run a post-movement economy pass to spend leftovers on region economy
 	var econ_post := EconomyAIManager.new(region_manager, army_manager, player_manager)
 	var turn_idx := _get_current_turn()
 	var econ_post_result := econ_post.plan_post_movement(player_id, turn_idx)
-	print("[TurnController] Post-movement economy result: ", econ_post_result)
+	DebugLogger.log("AITurnManager", "[TurnController] Post-movement economy result: " + str(econ_post_result))
+
+	# Rest rule 1: any remaining MPs at end of turn are spent making camp
+	var all_armies := army_manager.get_player_armies(player_id)
+	for a in all_armies:
+		while a.get_movement_points() > 0:
+			a.make_camp()
 
 func _get_available_armies(player_id: int) -> Array[Army]:
 	"""Get armies that can still move this turn"""
@@ -275,7 +288,7 @@ func _execute_move(move: Dictionary) -> bool:
 	var path: Array[int] = move["path"]
 
 	emit_signal("move_started", army, target_id)
-	print("[TurnController] Executing move: %s -> Region %d (score: %.1f)"
+	DebugLogger.log("AITurnManager", "[TurnController] Executing move: %s -> Region %d (score: %.1f)"
 		% [army.name, target_id, move["final_score"]])
 
 	# Only allow a battle if the army could afford the full cost now.
@@ -283,8 +296,16 @@ func _execute_move(move: Dictionary) -> bool:
 	var can_reach_target_now := int(move["mp_cost"]) <= initial_mp
 
 	if can_reach_target_now:
+		DebugLogger.log("AITurnManager", "[TurnController] Army can reach target this turn")
+		# Rest rule 2: if about to attack and efficiency < 90%, try to make camp twice (limited by MPs)
+		var target_region: Region = region_manager.map_generator.get_region_container_by_id(target_id)
+		if _should_trigger_battle(army, target_region) and army.get_efficiency() < 90:
+			var times = min(2, army.get_movement_points())
+			for i in range(times):
+				army.make_camp()
 		# Army can reach target this turn - use ai_travel_to for step-by-step debug
 		var result = await game_manager.ai_travel_to(army, target_id)
+		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
 		if result == "blocked":
 			return false
 		elif result == "battle_victory":
@@ -296,11 +317,13 @@ func _execute_move(move: Dictionary) -> bool:
 			# Peaceful arrival - no ownership change
 			return false
 		else:
-			print("[TurnController] Unexpected ai_travel_to result: ", result)
+			DebugLogger.log("AITurnManager", "[TurnController] Unexpected ai_travel_to result: " + str(result))
 			return false
 	else:
+		DebugLogger.log("AITurnManager", "[TurnController] Army cannot reach target this turn")
 		# Army cannot reach target this turn - use ai_travel_to for partial movement
 		var result = await game_manager.ai_travel_to(army, target_id)
+		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
 		if result == "battle_victory":
 			emit_signal("region_conquered", target_id, army.get_player_id())
 			return true

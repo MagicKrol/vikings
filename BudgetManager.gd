@@ -7,15 +7,15 @@ class_name BudgetManager
 # Returns number of armies that received budgets
 func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, region_manager: RegionManager, turn_number: int = 1) -> int:
 	if all_armies.is_empty():
-		print("[BudgetManager] No armies provided")
+		DebugLogger.log("AIRecruitment", "No armies provided")
 		return 0
 	
 	if not player:
-		print("[BudgetManager] Error: No player provided")
+		DebugLogger.log("AIRecruitment", "Error: No player provided")
 		return 0
 		
 	if not region_manager:
-		print("[BudgetManager] Error: No region manager provided")
+		DebugLogger.log("AIRecruitment", "Error: No region manager provided")
 		return 0
 	
 	# Group armies by castle region for recruit quota distribution
@@ -34,10 +34,10 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 					if not armies_by_castle.has(region_id):
 						armies_by_castle[region_id] = []
 					armies_by_castle[region_id].append(army)
-					print("[BudgetManager] Army ", army.name, " at castle (level ", castle_level, ") flagged for recruitment")
+					DebugLogger.log("AIRecruitment", "Army " + army.name + " at castle (level " + str(castle_level) + ") flagged for recruitment")
 				else:
 					# Army needs recruitment but not at castle - still flag for movement toward castle
-					print("[BudgetManager] Army ", army.name, " needs recruitment but not at castle - flagged but no budget allocated")
+					DebugLogger.log("AIRecruitment", "Army " + army.name + " needs recruitment but not at castle - flagged but no budget allocated")
 	
 	# Create a stable global order for resource distribution
 	var ordered_region_ids: Array = armies_by_castle.keys()
@@ -53,7 +53,7 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 			ordered_armies.append(army)
 	
 	if ordered_armies.is_empty():
-		print("[BudgetManager] No armies at castles need recruitment")
+		DebugLogger.log("AIRecruitment", "No armies at castles need recruitment")
 		return 0
 	
 	# Get available resources from player (gold, wood, iron only - used for recruitment)
@@ -61,8 +61,8 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	var total_wood := player.get_resource_amount(ResourcesEnum.Type.WOOD) 
 	var total_iron := player.get_resource_amount(ResourcesEnum.Type.IRON)
 	
-	print("[BudgetManager] Player ", player.get_player_id(), " has: ", total_gold, " gold, ", total_wood, " wood, ", total_iron, " iron")
-	print("[BudgetManager] Allocating resources to ", ordered_armies.size(), " armies that need reinforcement")
+	DebugLogger.log("AIRecruitment", "Player " + str(player.get_player_id()) + " has: " + str(total_gold) + " gold, " + str(total_wood) + " wood, " + str(total_iron) + " iron")
+	DebugLogger.log("AIRecruitment", "Allocating resources to " + str(ordered_armies.size()) + " armies that need reinforcement")
 	
 	# Split resources once using the exact global order
 	var num_armies := ordered_armies.size()
@@ -94,7 +94,7 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 				recruits_per_army[local_idx]
 			)
 			army.assigned_budget = budget
-			print("[BudgetManager] Assigned budget to army ", army.name, ": ", budget.to_dict())
+			DebugLogger.log("AIRecruitment", "Assigned budget to army " + army.name + ": " + str(budget.to_dict()))
 	
 	return ordered_armies.size()
 

@@ -26,7 +26,7 @@ signal step_completed()
 
 func _ready() -> void:
 	"""Initialize debug step gate"""
-	print("[DebugStepGate] Initialized with debug mode: ", "enabled" if debug_enabled else "disabled")
+	DebugLogger.log("AIPlanning", "Initialized with debug mode: " + ("enabled" if debug_enabled else "disabled"))
 
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle spacebar input for step continuation"""
@@ -35,7 +35,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_SPACE and step_pending:
-			print("[DebugStepGate] Spacebar pressed - continuing step")
+			DebugLogger.log("AIPlanning", "Spacebar pressed - continuing step")
 			_continue_step()
 
 func step() -> void:
@@ -44,7 +44,7 @@ func step() -> void:
 		# Debug mode off - continue immediately
 		return
 	
-	print("[DebugStepGate] Waiting for SPACE to continue...")
+	DebugLogger.log("AIPlanning", "Waiting for SPACE to continue...")
 	step_pending = true
 	
 	# Wait for spacebar press
@@ -61,7 +61,7 @@ func _continue_step() -> void:
 func set_debug_enabled(enabled: bool) -> void:
 	"""Enable or disable debug mode"""
 	debug_enabled = enabled
-	print("[DebugStepGate] Debug mode ", "enabled" if enabled else "disabled")
+	DebugLogger.log("AIPlanning", "Debug mode " + ("enabled" if enabled else "disabled"))
 	
 	# If disabled while waiting, continue immediately
 	if not enabled and step_pending:

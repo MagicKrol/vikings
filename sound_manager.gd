@@ -25,22 +25,22 @@ func _ready():
 	if click_sound:
 		click_player.stream = click_sound
 	else:
-		print("[SoundManager] Error: Could not load click.wav")
+		DebugLogger.log("GameInit", "Error: Could not load click.wav")
 	
 	# Load the main menu music
 	main_menu_music = load("res://music/main_menu.mp3") as AudioStream
 	if not main_menu_music:
-		print("[SoundManager] Error: Could not load main_menu.mp3")
+		DebugLogger.log("GameInit", "Error: Could not load main_menu.mp3")
 	
 	# Load the game music
 	game_music = load("res://music/track1.mp3") as AudioStream
 	if not game_music:
-		print("[SoundManager] Error: Could not load track1.mp3")
+		DebugLogger.log("GameInit", "Error: Could not load track1.mp3")
 	
 	# Load the starting horn
 	starting_horn = load("res://sounds/Starting_horn.mp3") as AudioStream
 	if not starting_horn:
-		print("[SoundManager] Error: Could not load Starting_horn.mp3")
+		DebugLogger.log("GameInit", "Error: Could not load Starting_horn.mp3")
 
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle keyboard input for music toggle"""
@@ -66,35 +66,35 @@ func stop_main_menu_music() -> void:
 
 func play_game_start_sequence() -> void:
 	"""Play starting horn, wait 3 seconds, then play game music"""
-	print("[SoundManager] play_game_start_sequence called")
-	print("[SoundManager] horn_player: ", horn_player)
-	print("[SoundManager] starting_horn: ", starting_horn)
+	DebugLogger.log("GameInit", "play_game_start_sequence called")
+	DebugLogger.log("GameInit", "horn_player: " + str(horn_player))
+	DebugLogger.log("GameInit", "starting_horn: " + str(starting_horn))
 	
 	if music_enabled and horn_player and starting_horn:
-		print("[SoundManager] Playing starting horn...")
+		DebugLogger.log("GameInit", "Playing starting horn...")
 		horn_player.stream = starting_horn
 		horn_player.play()
 		
 		# Wait 3 seconds then start game music
-		print("[SoundManager] Waiting 3 seconds...")
+		DebugLogger.log("GameInit", "Waiting 3 seconds...")
 		await get_tree().create_timer(3.0).timeout
-		print("[SoundManager] Starting game music...")
+		DebugLogger.log("GameInit", "Starting game music...")
 		play_game_music()
 	else:
-		print("[SoundManager] Error: Missing horn_player or starting_horn audio")
+		DebugLogger.log("GameInit", "Error: Missing horn_player or starting_horn audio")
 
 func play_game_music() -> void:
 	"""Play main game music"""
-	print("[SoundManager] play_game_music called")
-	print("[SoundManager] music_player: ", music_player)
-	print("[SoundManager] game_music: ", game_music)
+	DebugLogger.log("GameInit", "play_game_music called")
+	DebugLogger.log("GameInit", "music_player: " + str(music_player))
+	DebugLogger.log("GameInit", "game_music: " + str(game_music))
 	
 	if music_player and game_music and music_enabled:
-		print("[SoundManager] Playing game music...")
+		DebugLogger.log("GameInit", "Playing game music...")
 		music_player.stream = game_music
 		music_player.play()
 	else:
-		print("[SoundManager] Error: Missing music_player or game_music audio")
+		DebugLogger.log("GameInit", "Error: Missing music_player or game_music audio")
 
 func stop_all_music() -> void:
 	"""Stop all music and horn sounds"""
@@ -106,7 +106,7 @@ func stop_all_music() -> void:
 func toggle_music() -> void:
 	"""Toggle music on/off"""
 	music_enabled = !music_enabled
-	print("[SoundManager] Music ", "enabled" if music_enabled else "disabled")
+	DebugLogger.log("GameInit", "Music " + ("enabled" if music_enabled else "disabled"))
 	
 	if not music_enabled:
 		# Stop all music when disabled

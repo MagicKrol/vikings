@@ -87,10 +87,10 @@ func _ready():
 	# Start the game audio sequence after a brief delay to ensure sound manager is ready
 	await get_tree().process_frame
 	if _sound_manager:
-		print("[GameManager] Starting game audio sequence...")
+		DebugLogger.log("GameInit", "Starting game audio sequence...")
 		_sound_manager.play_game_start_sequence()
 	else:
-		print("[GameManager] Error: Sound manager not found!")
+		DebugLogger.log("GameInit", "Error: Sound manager not found!")
 
 func initialize_managers():
 	"""Initialize all game managers and establish dependencies"""
@@ -138,13 +138,13 @@ func initialize_managers():
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
 	# Get the PlayerManager node FIRST before initializing other systems that depend on it
-	print("[GameManager] Looking for PlayerManager node at path: ../PlayerManager")
+	DebugLogger.log("GameInit", "Looking for PlayerManager node at path: ../PlayerManager")
 	var player_manager_node = get_node("../PlayerManager")
-	print("[GameManager] Found node: ", player_manager_node, " (", type_string(typeof(player_manager_node)), ")")
+	DebugLogger.log("GameInit", "Found node: " + str(player_manager_node) + " (" + type_string(typeof(player_manager_node)) + ")")
 	
 	player_manager = player_manager_node as PlayerManagerNode
 	if player_manager:
-		print("[GameManager] Successfully cast to PlayerManagerNode: ", player_manager)
+		DebugLogger.log("GameInit", "Successfully cast to PlayerManagerNode: " + str(player_manager))
 		player_manager.initialize_with_managers(_region_manager, map_generator)
 		player_manager.set_army_manager(_army_manager)
 		
@@ -173,13 +173,13 @@ func initialize_managers():
 	
 	# Enable debug mode and step-by-step mode by default
 	_ai_debug_visualizer.enable_step_by_step_mode(true)
-	print("[GameManager] AI system initialized with debug and step-by-step mode enabled")
+	DebugLogger.log("GameInit", "AI system initialized with debug and step-by-step mode enabled")
 	
 	# Print initial player resources and types
-	print("[GameManager] Game initialized with ", total_players, " players")
-	print("[GameManager] Player types:")
+	DebugLogger.log("GameInit", "Game initialized with " + str(total_players) + " players")
+	DebugLogger.log("GameInit", "Player types:")
 	for i in range(1, total_players + 1):
-		print("  Player ", i, ": ", PlayerTypeEnum.type_to_string(get_player_type(i)))
+		DebugLogger.log("GameInit", "  Player " + str(i) + ": " + PlayerTypeEnum.type_to_string(get_player_type(i)))
 	player_manager.print_all_resources()
 	
 	# Initialize castle placement with proper player type handling
@@ -194,15 +194,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			# Toggle AI debug visualization
 			if _ai_debug_visualizer:
 				_ai_debug_visualizer.toggle_debug_display(current_player)
-				print("[GameManager] AI debug toggle for Player ", current_player)
+				DebugLogger.log("TurnProcessing", "AI debug toggle for Player " + str(current_player))
 		elif event.keycode == KEY_9:
 			# Toggle step-by-step AI debug mode (only during actual turns, not castle placement)
 			if _ai_debug_visualizer and not castle_placing_mode:
 				var current_mode = _ai_debug_visualizer.is_step_by_step_mode()
 				_ai_debug_visualizer.enable_step_by_step_mode(not current_mode)
-				print("[GameManager] Step-by-step AI debug mode: ", "enabled" if not current_mode else "disabled")
+				DebugLogger.log("TurnProcessing", "Step-by-step AI debug mode: " + ("enabled" if not current_mode else "disabled"))
 			elif castle_placing_mode:
-				print("[GameManager] Step-by-step mode not available during castle placement")
+				DebugLogger.log("TurnProcessing", "Step-by-step mode not available during castle placement")
 		# SPACE key handling is now managed by TurnController's DebugStepGate
 
 func next_turn():
@@ -215,7 +215,7 @@ func next_turn():
 	if is_new_round:
 		# Starting a new round - increment turn counter
 		current_turn += 1
-		print("[GameManager] === Starting Round ", current_turn, " ===")
+		DebugLogger.log("TurnProcessing", "=== Starting Round " + str(current_turn) + " ===")
 		
 		# Process global turn-based actions only at start of new round
 		_process_round_start_actions()
@@ -229,14 +229,14 @@ func next_turn():
 		_process_player_turn_start(current_player)
 	
 	# Check if current player is AI and handle AI turn processing
-	print("[GameManager] Checking AI turn: castle_placing_mode=", castle_placing_mode, ", current_player=", current_player, ", is_computer=", is_player_computer(current_player))
+	DebugLogger.log("TurnProcessing", "Checking AI turn: castle_placing_mode=" + str(castle_placing_mode) + ", current_player=" + str(current_player) + ", is_computer=" + str(is_player_computer(current_player)))
 	if not castle_placing_mode and is_player_computer(current_player):
-		print("[GameManager] AI Player ", current_player, " starting turn processing with TurnController...")
+		DebugLogger.log("TurnProcessing", "AI Player " + str(current_player) + " starting turn processing with TurnController...")
 		await _turn_controller.start_turn(current_player)
 		next_turn()  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
 	else:
-		print("[GameManager] Skipping AI turn processing")
+		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")
 	
 	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler
 
@@ -277,41 +277,41 @@ func _initialize_castle_placement_sequence() -> void:
 		current_player = _get_next_active_player()
 	
 	player_manager.set_current_player(current_player)
-	print("[GameManager] Castle placement starting with Player ", current_player, " (", PlayerTypeEnum.type_to_string(get_player_type(current_player)), ")")
+	DebugLogger.log("GameInit", "Castle placement starting with Player " + str(current_player) + " (" + PlayerTypeEnum.type_to_string(get_player_type(current_player)) + ")")
 	
 	# If the first player is AI, trigger AI placement immediately
 	if is_player_computer(current_player):
-		print("[GameManager] First player is AI - starting automatic placement...")
+		DebugLogger.log("GameInit", "First player is AI - starting automatic placement...")
 		# Use a small delay to ensure all systems are ready
 		await get_tree().create_timer(1.0).timeout
 		_handle_ai_castle_placement(current_player)
 
 func _process_round_start_actions():
 	"""Process actions that happen once per round (when Player 1 starts)"""
-	print("[GameManager] Processing round start actions...")
+	DebugLogger.log("TurnProcessing", "Processing round start actions...")
 	
 	# Increment ownership counters for all owned regions
-	print("[GameManager] Incrementing ownership counters...")
+	DebugLogger.log("TurnProcessing", "Incrementing ownership counters...")
 	if _region_manager:
 		_region_manager.increment_all_ownership_counters()
 	
 	# Grow population for all regions (before recruit replenishment)
-	print("[GameManager] Growing regional populations...")
+	DebugLogger.log("TurnProcessing", "Growing regional populations...")
 	if _region_manager:
 		_region_manager.grow_all_populations()
 	
 	# Replenish recruits for all regions (after population growth)
-	print("[GameManager] Replenishing recruits...")
+	DebugLogger.log("TurnProcessing", "Replenishing recruits...")
 	if _region_manager:
 		_region_manager.replenish_all_recruits()
 	
 	# Process castle construction for all regions
-	print("[GameManager] Processing castle construction...")
+	DebugLogger.log("TurnProcessing", "Processing castle construction...")
 	if _region_manager:
 		_region_manager.process_all_castle_construction()
 	
 	# Reset ore search turn usage for all regions
-	print("[GameManager] Resetting ore search turn usage...")
+	DebugLogger.log("TurnProcessing", "Resetting ore search turn usage...")
 	if _region_manager:
 		_region_manager.reset_all_ore_search_turn_usage()
 	
@@ -320,14 +320,14 @@ func _process_round_start_actions():
 
 func _process_player_turn_start(player_id: int):
 	"""Process actions that happen at the start of each player's turn"""
-	print("[GameManager] Processing turn start for Player ", player_id, "...")
+	DebugLogger.log("TurnProcessing", "Processing turn start for Player " + str(player_id) + "...")
 	
 	# Process resource income for current player
-	print("[GameManager] Processing resource income for Player ", player_id, "...")
+	DebugLogger.log("TurnProcessing", "Processing resource income for Player " + str(player_id) + "...")
 	player_manager.process_resource_income_for_player(player_id)
 	
 	# Deduct food costs for current player's armies and garrisons
-	print("[GameManager] Deducting army food costs for Player ", player_id, "...")
+	DebugLogger.log("TurnProcessing", "Deducting army food costs for Player " + str(player_id) + "...")
 	_process_army_food_costs_for_player(player_id)
 	
 
@@ -341,15 +341,15 @@ func reset_movement_points():
 
 			army_manager.reset_all_army_movement_points()
 		else:
-			print("[GameManager] Warning: Cannot reset army moves - ArmyManager not found")
+			DebugLogger.log("TurnProcessing", "Warning: Cannot reset army moves - ArmyManager not found")
 	else:
-		print("[GameManager] Warning: Cannot reset army moves - ClickManager not found")
+		DebugLogger.log("TurnProcessing", "Warning: Cannot reset army moves - ClickManager not found")
 
 func _process_army_food_costs_for_player(player_id: int) -> void:
 	"""Process food costs for armies and garrisons for a specific player"""
 	var player = player_manager.get_player(player_id)
 	if player == null:
-		print("[GameManager] Warning: Player ", player_id, " not found for food cost processing")
+		DebugLogger.log("TurnProcessing", "Warning: Player " + str(player_id) + " not found for food cost processing")
 		return
 	
 	# Calculate total food cost for all armies and garrisons
@@ -359,37 +359,37 @@ func _process_army_food_costs_for_player(player_id: int) -> void:
 		# Convert float cost to integer (round up)
 		var food_cost_int = int(ceil(total_food_cost))
 		
-		print("[GameManager] Total army food cost for Player ", player_id, ": ", total_food_cost, " (rounded: ", food_cost_int, ")")
+		DebugLogger.log("TurnProcessing", "Total army food cost for Player " + str(player_id) + ": " + str(total_food_cost) + " (rounded: " + str(food_cost_int) + ")")
 		
 		# Check if player has enough food
 		var current_food = player.get_resource_amount(ResourcesEnum.Type.FOOD)
 		if current_food >= food_cost_int:
 			# Deduct the food cost
 			player.remove_resources(ResourcesEnum.Type.FOOD, food_cost_int)
-			print("[GameManager] Deducted ", food_cost_int, " food from Player ", player_id, " (", current_food - food_cost_int, " remaining)")
+			DebugLogger.log("TurnProcessing", "Deducted " + str(food_cost_int) + " food from Player " + str(player_id) + " (" + str(current_food - food_cost_int) + " remaining)")
 		else:
 			# Player doesn't have enough food - this could lead to penalties
-			print("[GameManager] WARNING: Player ", player_id, " doesn't have enough food! Required: ", food_cost_int, ", Available: ", current_food)
+			DebugLogger.log("TurnProcessing", "WARNING: Player " + str(player_id) + " doesn't have enough food! Required: " + str(food_cost_int) + ", Available: " + str(current_food))
 			# For now, just deduct all available food
 			if current_food > 0:
 				player.remove_resources(ResourcesEnum.Type.FOOD, current_food)
-				print("[GameManager] Deducted all available food (", current_food, ") from Player ", player_id)
+				DebugLogger.log("TurnProcessing", "Deducted all available food (" + str(current_food) + ") from Player " + str(player_id))
 	else:
-		print("[GameManager] No army food costs for Player ", player_id)
+		DebugLogger.log("TurnProcessing", "No army food costs for Player " + str(player_id))
 
 func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
-	print("[GameManager] Updating player status display...")
+	DebugLogger.log("TurnProcessing", "Updating player status display...")
 	
 	var ui_node = get_node("../UI")
 	var player_status_modal = ui_node.get_node("PlayerStatusModal") as PlayerStatusModal
 	
-	print("[GameManager] Calling PlayerStatusModal.refresh_from_game_state()")
+	DebugLogger.log("TurnProcessing", "Calling PlayerStatusModal.refresh_from_game_state()")
 	player_status_modal.refresh_from_game_state()
 
 func _on_current_player_changed(player_id: int) -> void:
 	"""Handle player change signal by refreshing UI and showing next player modal"""
-	print("[GameManager] Player changed to ", player_id, " - refreshing UI and showing next player modal")
+	DebugLogger.log("TurnProcessing", "Player changed to " + str(player_id) + " - refreshing UI and showing next player modal")
 	
 	# Update player status display
 	_update_player_status_display()
@@ -398,7 +398,7 @@ func _on_current_player_changed(player_id: int) -> void:
 	if _next_player_modal and is_player_active(player_id):
 		_next_player_modal.show_next_player(player_id, castle_placing_mode)
 	
-	print("[GameManager] Round ", current_turn, " - Player ", player_id, "'s turn")
+	DebugLogger.log("TurnProcessing", "Round " + str(current_turn) + " - Player " + str(player_id) + "'s turn")
 
 func get_current_turn() -> int:
 	"""Get the current turn number"""
@@ -423,7 +423,7 @@ func set_player_type(player_id: int, type: PlayerTypeEnum.Type) -> void:
 	"""Set the type of a specific player"""
 	if player_id >= 1 and player_id <= player_types.size():
 		player_types[player_id - 1] = type  # Convert 1-based to 0-based index
-		print("[GameManager] Player ", player_id, " set to ", PlayerTypeEnum.type_to_string(type))
+		DebugLogger.log("GameInit", "Player " + str(player_id) + " set to " + PlayerTypeEnum.type_to_string(type))
 
 func is_player_active(player_id: int) -> bool:
 	"""Check if a player is active (not OFF)"""
@@ -447,7 +447,7 @@ func is_player_ai(player_id: int) -> bool:
 func _handle_ai_castle_placement(player_id: int) -> void:
 	"""Handle AI castle placement by selecting highest scored region with randomness"""
 	if not _ai_castle_placement_scorer:
-		print("[GameManager] Error: AI castle placement scorer not available")
+		DebugLogger.log("GameInit", "Error: AI castle placement scorer not available")
 		return
 	
 	# Get all owned regions to calculate enemy distances
@@ -465,7 +465,7 @@ func _handle_ai_castle_placement(player_id: int) -> void:
 	var scored_candidates = _ai_castle_placement_scorer.score_castle_placement_candidates(owned_regions)
 	
 	if scored_candidates.is_empty():
-		print("[GameManager] No valid castle placement candidates for AI Player ", player_id)
+		DebugLogger.log("GameInit", "No valid castle placement candidates for AI Player " + str(player_id))
 		return
 	
 	# Apply random modifier to each region's score (fresh random value for each region)
@@ -481,7 +481,7 @@ func _handle_ai_castle_placement(player_id: int) -> void:
 	var best_region_id = best_candidate.regionId
 	var best_score = best_candidate.OverallScore
 	
-	print("[GameManager] AI Player ", player_id, " selecting region ", best_region_id, " with final score ", snappedf(best_score * 100, 0.1), " (includes random modifier)")
+	DebugLogger.log("GameInit", "AI Player " + str(player_id) + " selecting region " + str(best_region_id) + " with final score " + str(snappedf(best_score * 100, 0.1)) + " (includes random modifier)")
 	
 	# Find the region and place castle
 	if regions_node:
@@ -544,7 +544,7 @@ func get_current_player_id() -> int:
 func set_armies_per_castle(count: int):
 	"""Set the number of armies to create per castle (for scenario/difficulty configuration)"""
 	armies_per_castle = max(1, count)  # Ensure at least 1 army
-	print("[GameManager] Set armies per castle to ", armies_per_castle)
+	DebugLogger.log("GameInit", "Set armies per castle to " + str(armies_per_castle))
 
 func get_armies_per_castle() -> int:
 	"""Get the number of armies created per castle"""
@@ -576,7 +576,7 @@ func handle_castle_placement(region: Region) -> void:
 	
 	# Validate placement first
 	if not can_place_castle_in_region(region):
-		print("[GameManager] Castle placement failed - region already owned by another player")
+		DebugLogger.log("GameInit", "Castle placement failed - region already owned by another player")
 		return
 		
 	var region_id = region.get_region_id()
@@ -587,7 +587,7 @@ func handle_castle_placement(region: Region) -> void:
 		placement_successful = _region_manager.set_castle_starting_position(region_id, current_player)
 	
 	if not placement_successful:
-		print("[GameManager] Castle placement failed - unexpected error")
+		DebugLogger.log("GameInit", "Castle placement failed - unexpected error")
 		return
 	
 	# Upgrade castle region and neighboring regions
@@ -618,13 +618,13 @@ func handle_castle_placement(region: Region) -> void:
 				# Place the configured number of armies
 				for i in range(armies_per_castle):
 					_visual_manager.place_army_visual(child, current_player)
-				print("[GameManager] Placed ", armies_per_castle, " armies for Player ", current_player, " in region ", region_id)
+				DebugLogger.log("GameInit", "Placed " + str(armies_per_castle) + " armies for Player " + str(current_player) + " in region " + str(region_id))
 				break
 	
 	# Track castle placement order and advance to next player
 	castle_placement_order.append(current_player)
 	castles_placed += 1
-	print("[GameManager] Player ", current_player, " placed castle (", castles_placed, "/", total_players, ")")
+	DebugLogger.log("GameInit", "Player " + str(current_player) + " placed castle (" + str(castles_placed) + "/" + str(total_players) + ")")
 	
 	# Check if all active players have placed castles
 	var active_players_count = 0
@@ -635,26 +635,26 @@ func handle_castle_placement(region: Region) -> void:
 	if castles_placed >= active_players_count:
 		# All active players placed castles - end castle placing mode and start normal gameplay
 		castle_placing_mode = false
-		print("[GameManager] All active players have placed castles. Game begins!")
+		DebugLogger.log("GameInit", "All active players have placed castles. Game begins!")
 		
 		# Switch AI debug visualizer to army target mode
 		if _ai_debug_visualizer:
 			_ai_debug_visualizer.switch_to_army_target_mode()
-			print("[GameManager] Switched AI debug visualizer to army target scoring mode")
+		DebugLogger.log("GameInit", "Switched AI debug visualizer to army target scoring mode")
 		
 		# Set current player to Player 1 to start normal gameplay
 		current_player = 1
 		player_manager.set_current_player(current_player)
 		
 		# Start the first turn of normal gameplay
-		print("[GameManager] Starting first turn of normal gameplay...")
+		DebugLogger.log("GameInit", "Starting first turn of normal gameplay...")
 		await get_tree().create_timer(0.5).timeout  # Brief delay for UI updates
 		_start_first_turn()
 	else:
 		# Move to next active player for castle placement
 		current_player = _get_next_active_player()
 		player_manager.set_current_player(current_player)
-		print("[GameManager] Next player to place castle: Player ", current_player, " (", PlayerTypeEnum.type_to_string(get_player_type(current_player)), ")")
+		DebugLogger.log("GameInit", "Next player to place castle: Player " + str(current_player) + " (" + PlayerTypeEnum.type_to_string(get_player_type(current_player)) + ")")
 		
 		# Handle different player types
 		if is_player_human(current_player):
@@ -663,7 +663,7 @@ func handle_castle_placement(region: Region) -> void:
 				_next_player_modal.show_next_player(current_player, true)
 		elif is_player_computer(current_player):
 			# AI player - automatically place castle using AI system
-			print("[GameManager] AI Player ", current_player, " placing castle automatically...")
+			DebugLogger.log("GameInit", "AI Player " + str(current_player) + " placing castle automatically...")
 			# Use a short delay to allow visuals to update
 			await get_tree().create_timer(0.5).timeout
 			_handle_ai_castle_placement(current_player)
@@ -682,7 +682,7 @@ func handle_castle_placement(region: Region) -> void:
 		if castles_placed < total_players:
 			next_player_for_scoring = _get_next_player()
 		
-		print("[GameManager] Recalculating AI debug scores for Player ", next_player_for_scoring, " after castle placement")
+		DebugLogger.log("GameInit", "Recalculating AI debug scores for Player " + str(next_player_for_scoring) + " after castle placement")
 		_ai_debug_visualizer._update_scores_for_player(next_player_for_scoring)
 		_ai_debug_visualizer.queue_redraw()
 	
@@ -717,12 +717,12 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 	Shared orchestration function for Human and AI region entry flow.
 	Returns: "blocked" | "moved" | "battle_started"
 	"""
-	print("[GameManager] perform_region_entry: ", army.name, " -> region ", target_region_id, " (source: ", source, ")")
+	DebugLogger.log("TurnProcessing", "perform_region_entry: " + army.name + " -> region " + str(target_region_id) + " (source: " + source + ")")
 	
 	# Resolve target region Node using RegionManager lookup
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	if target_region == null:
-		print("[GameManager] Error: Target region not found")
+		DebugLogger.log("TurnProcessing", "Error: Target region not found")
 		return "blocked"
 	
 	# Call ArmyManager.move_army
@@ -763,14 +763,14 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	Unified battle handling for both Human and AI players
 	Returns: 'victory', 'defeat', or 'withdrawal'
 	"""
-	print("[GameManager] Starting unified battle for ", army.name, " vs region ", target_region_id)
+	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.name + " vs region " + str(target_region_id))
 	
 	# Start the battle using BattleManager
 	_battle_manager.start_battle(army, target_region_id)
 	
 	# Wait for battle to complete
 	var result: String = await _battle_manager.battle_finished
-	print("[GameManager] Battle completed with result: ", result)
+	DebugLogger.log("TurnProcessing", "Battle completed with result: " + result)
 	
 	# For AI battles, finalize immediately since there's no modal interaction
 	if is_player_computer(army.get_player_id()):
@@ -803,7 +803,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var army_name = "unknown army"
 	if army != null:
 		army_name = army.name
-	print("[GameManager] Finalizing battle result: ", result, " for ", army_name)
+	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + result + " for " + army_name)
 	
 	# Apply battle losses using existing BattleManager logic
 	if battle_report and _battle_manager:
@@ -821,11 +821,11 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			var player_id = army.get_player_id()
 			_region_manager.set_region_ownership(target_region_id, player_id)
 			refresh_ai_debug_scores()
-			print("[GameManager] Player ", player_id, " conquered region ", target_region_id, " via unified finalization")
+			DebugLogger.log("TurnProcessing", "Player " + str(player_id) + " conquered region " + str(target_region_id) + " via unified finalization")
 			
 			# Reduce efficiency for conquest
 			army.reduce_efficiency(5)
-			print("[GameManager] Reduced ", army.name, " efficiency to ", army.get_efficiency(), "% after conquest")
+			DebugLogger.log("TurnProcessing", "Reduced " + army.name + " efficiency to " + str(army.get_efficiency()) + "% after conquest")
 	elif result == "withdrawal":
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
@@ -862,7 +862,7 @@ func claim_peaceful_region(region_id: int, player_id: int) -> void:
 func refresh_ai_debug_scores():
 	"""Refresh AI debug scores for the current player (callable from external systems)"""
 	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
-		print("[GameManager] Manually refreshing AI debug scores for Player ", current_player)
+		DebugLogger.log("TurnProcessing", "Manually refreshing AI debug scores for Player " + str(current_player))
 		# Use the new recalculation method that handles ownership changes
 		if _ai_debug_visualizer.has_method("recalculate_scores_on_ownership_change"):
 			_ai_debug_visualizer.recalculate_scores_on_ownership_change(current_player)
@@ -884,41 +884,41 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	Returns: "arrived", "blocked", "battle_victory", "battle_defeat"
 	"""
 	if army == null or not is_instance_valid(army):
-		print("[GameManager] ai_travel_to: Invalid army")
+		DebugLogger.log("TurnProcessing", "ai_travel_to: Invalid army")
 		return "blocked"
 	
 	var current_region = army.get_parent() as Region
 	if current_region == null:
-		print("[GameManager] ai_travel_to: Army not in valid region")
+		DebugLogger.log("TurnProcessing", "ai_travel_to: Army not in valid region")
 		return "blocked"
 	
 	var current_region_id = current_region.get_region_id()
 	var player_id = army.get_player_id()
 	
-	print("[GameManager] ai_travel_to: Army %s traveling from region %d to region %d" % [army.name, current_region_id, final_region_id])
+	DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s traveling from region %d to region %d" % [army.name, current_region_id, final_region_id])
 	
 	# Get pathfinder from TurnController (reuse existing scorer pathfinder)
 	if _turn_controller == null:
-		print("[GameManager] ai_travel_to: TurnController not available")
+		DebugLogger.log("TurnProcessing", "ai_travel_to: TurnController not available")
 		return "blocked"
 	
 	var pathfinder = _turn_controller.pathfinder
 	if pathfinder == null:
-		print("[GameManager] ai_travel_to: Pathfinder not available") 
+		DebugLogger.log("TurnProcessing", "ai_travel_to: Pathfinder not available") 
 		return "blocked"
 	
 	# Get path using existing pathfinder with same filters (friendly-only, passable)
 	var path_result = pathfinder.find_path_to_target(current_region_id, final_region_id, player_id)
 	if not path_result["success"]:
-		print("[GameManager] ai_travel_to: No valid path found")
+		DebugLogger.log("TurnProcessing", "ai_travel_to: No valid path found")
 		return "blocked"
 	
 	var full_path = path_result["path"] as Array[int]
 	if full_path.size() <= 1:
-		print("[GameManager] ai_travel_to: Already at destination or invalid path")
+		DebugLogger.log("TurnProcessing", "ai_travel_to: Already at destination or invalid path")
 		return "arrived"
 	
-	print("[GameManager] ai_travel_to: Path found with %d steps" % full_path.size())
+	DebugLogger.log("TurnProcessing", "ai_travel_to: Path found with %d steps" % full_path.size())
 	
 	# Iterate adjacent steps starting from index 1 (skip current position)
 	for i in range(1, full_path.size()):
@@ -926,89 +926,89 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		
 		# Check if army still has movement points
 		if army.get_movement_points() <= 0:
-			print("[GameManager] ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.name, army.get_parent().get_region_id()])
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.name, army.get_parent().get_region_id()])
 			return "blocked"
 		
 		# Get next region for battle check
 		var next_region_container = _region_manager.map_generator.get_region_container_by_id(next_region_id)
 		if next_region_container == null:
-			print("[GameManager] ai_travel_to: Invalid region %d in path" % next_region_id)
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Invalid region %d in path" % next_region_id)
 			return "blocked"
 		
 		var next_region = next_region_container as Region
 		if next_region == null:
-			print("[GameManager] ai_travel_to: Region %d is not valid" % next_region_id)
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Region %d is not valid" % next_region_id)
 			return "blocked"
 		
 		# Debug step pausing using DebugStepGate
 		if _turn_controller.debug_step_gate:
-			print("[GameManager] ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
 			await _turn_controller.debug_step_gate.step()
 		
 		# Check if this step should trigger battle
 		if _should_trigger_battle(army, next_region):
-			print("[GameManager] ai_travel_to: Contested step - using perform_region_entry")
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Contested step - using perform_region_entry")
 			var battle_result = await perform_region_entry(army, next_region_id, "ai")
 			
 			# Log step result
-			print("[GameManager] ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
 			
 			match battle_result:
 				"battle_victory":
 					# Continue to next step after victory
 					continue
 				"battle_defeat":
-					print("[GameManager] ai_travel_to: Army defeated in battle")
+					DebugLogger.log("TurnProcessing", "ai_travel_to: Army defeated in battle")
 					return "battle_defeat"
 				"blocked":
-					print("[GameManager] ai_travel_to: Movement blocked")
+					DebugLogger.log("TurnProcessing", "ai_travel_to: Movement blocked")
 					return "blocked"
 				_:
-					print("[GameManager] ai_travel_to: Unexpected battle result: %s" % battle_result)
+					DebugLogger.log("TurnProcessing", "ai_travel_to: Unexpected battle result: %s" % battle_result)
 					return "blocked"
 		else:
 			# Friendly step - use ArmyManager.move_army()
-			print("[GameManager] ai_travel_to: Friendly step - using ArmyManager.move_army")
+			DebugLogger.log("TurnProcessing", "ai_travel_to: Friendly step - using ArmyManager.move_army")
 			var move_success = _army_manager.move_army(army, next_region)
 			
 			# Log step result  
 			if move_success:
-				print("[GameManager] ai_travel_to: Friendly move successful for step %d" % i)
+				DebugLogger.log("TurnProcessing", "ai_travel_to: Friendly move successful for step %d" % i)
 			else:
-				print("[GameManager] ai_travel_to: Friendly move failed for step %d" % i)
+				DebugLogger.log("TurnProcessing", "ai_travel_to: Friendly move failed for step %d" % i)
 				return "blocked"
 	
 	# Check if we reached the final destination
 	var final_position = army.get_parent() as Region
 	if final_position and final_position.get_region_id() == final_region_id:
-		print("[GameManager] ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
+		DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
 		return "arrived"
 	else:
 		var current_pos = final_position.get_region_id() if final_position else -1
-		print("[GameManager] ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
+		DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
 		return "blocked"
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""
-	print("[GameManager] _start_first_turn called for Player ", current_player)
+	DebugLogger.log("TurnProcessing", "_start_first_turn called for Player " + str(current_player))
 	
 	# Process player-specific turn start actions
 	_process_player_turn_start(current_player)
 	
 	# Check if current player is AI and handle AI turn processing
-	print("[GameManager] Checking AI turn: castle_placing_mode=", castle_placing_mode, ", current_player=", current_player, ", is_computer=", is_player_computer(current_player))
+	DebugLogger.log("TurnProcessing", "Checking AI turn: castle_placing_mode=" + str(castle_placing_mode) + ", current_player=" + str(current_player) + ", is_computer=" + str(is_player_computer(current_player)))
 	if not castle_placing_mode and is_player_computer(current_player):
-		print("[GameManager] AI Player ", current_player, " starting first turn with TurnController...")
+		DebugLogger.log("TurnProcessing", "AI Player " + str(current_player) + " starting first turn with TurnController...")
 		
 		# Enable debug display for AI turns
 		if _ai_debug_visualizer:
 			_ai_debug_visualizer.toggle_debug_display(current_player)
-			print("[GameManager] Enabled AI debug display for Player ", current_player)
+			DebugLogger.log("TurnProcessing", "Enabled AI debug display for Player " + str(current_player))
 		
 		await _turn_controller.start_turn(current_player)
 		next_turn()  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
 	else:
-		print("[GameManager] Skipping AI turn processing")
+		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")
 	
 	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler

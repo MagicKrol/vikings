@@ -33,17 +33,17 @@ func _initialize():
 		quit(0)
 		return
 	
-	print("[CLI Test Runner] Starting test execution...")
+	DebugLogger.log("Testing", "[CLI Test Runner] Starting test execution...")
 	
 	# Load and create test runner directly
 	var TestRunnerScript = load("res://tests/TestRunner.gd")
 	var runner = TestRunnerScript.new()
 	var results: Dictionary
 	if target_class != "":
-		print("[CLI Test Runner] Running specific test class: " + target_class)
+		DebugLogger.log("Testing", "[CLI Test Runner] Running specific test class: " + target_class)
 		results = runner.run_test_class(target_class)
 	else:
-		print("[CLI Test Runner] Running all tests")
+		DebugLogger.log("Testing", "[CLI Test Runner] Running all tests")
 		results = runner.run_all_tests()
 	
 	if xml_output:
@@ -54,7 +54,7 @@ func _initialize():
 	
 	# Exit with appropriate code
 	var exit_code = 0 if results.tests_failed == 0 else 1
-	print("\n[CLI Test Runner] Exiting with code: " + str(exit_code))
+	DebugLogger.log("Testing", "\n[CLI Test Runner] Exiting with code: " + str(exit_code))
 	quit(exit_code)
 
 func _parse_arguments(args: PackedStringArray) -> void:
@@ -115,19 +115,19 @@ EXAMPLES:
 
 func _print_detailed_results(results: Dictionary) -> void:
 	"""Print detailed test results"""
-	print("\n=== DETAILED RESULTS ===")
-	print("Total Tests: " + str(results.tests_run))
-	print("Passed: " + str(results.tests_passed))
-	print("Failed: " + str(results.tests_failed))
-	print("Success Rate: " + str(int(results.success_rate * 100)) + "%")
+	DebugLogger.log("Testing", "\n=== DETAILED RESULTS ===")
+	DebugLogger.log("Testing", "Total Tests: " + str(results.tests_run))
+	DebugLogger.log("Testing", "Passed: " + str(results.tests_passed))
+	DebugLogger.log("Testing", "Failed: " + str(results.tests_failed))
+	DebugLogger.log("Testing", "Success Rate: " + str(int(results.success_rate * 100)) + "%")
 	
 	if results.results.size() > 0:
-		print("\nTEST DETAILS:")
+		DebugLogger.log("Testing", "\nTEST DETAILS:")
 		for result in results.results:
 			var status = "PASS" if result.success else "FAIL"
-			print("  [" + status + "] " + result.class + "::" + result.method)
+			DebugLogger.log("Testing", "  [" + status + "] " + result.class + "::" + result.method)
 			if not result.success and result.error != "":
-				print("    Error: " + result.error)
+				DebugLogger.log("Testing", "    Error: " + result.error)
 
 func _output_junit_xml(results: Dictionary) -> void:
 	"""Output results in JUnit XML format for CI systems"""
@@ -160,6 +160,6 @@ func _output_junit_xml(results: Dictionary) -> void:
 	if file:
 		file.store_string(xml_content)
 		file.close()
-		print("[CLI Test Runner] JUnit XML results written to: test_results.xml")
+		DebugLogger.log("Testing", "[CLI Test Runner] JUnit XML results written to: test_results.xml")
 	else:
-		print("[CLI Test Runner] ERROR: Could not write XML results file")
+		DebugLogger.log("Testing", "[CLI Test Runner] ERROR: Could not write XML results file")

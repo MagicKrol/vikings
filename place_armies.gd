@@ -49,27 +49,27 @@ func _create_initial_army() -> void:
 					break
 	
 	if target_region_container == null:
-		print("[PlaceArmies] No suitable region found for initial army")
+		DebugLogger.log("GameInit", "No suitable region found for initial army")
 		return
 	
 	# Get army manager from ClickManager
 	var click_manager = get_node_or_null("ClickManager")
 	if click_manager == null or not click_manager.has_method("get_army_manager"):
-		print("[PlaceArmies] Cannot find army manager")
+		DebugLogger.log("GameInit", "Cannot find army manager")
 		return
 	
 	var army_manager = click_manager.get_army_manager()
 	if army_manager == null:
-		print("[PlaceArmies] Army manager is null")
+		DebugLogger.log("GameInit", "Army manager is null")
 		return
 	
-	print("[PlaceArmies] Army manager found, armies_by_player: ", army_manager.armies_by_player)
+	DebugLogger.log("GameInit", "Army manager found, armies_by_player: " + str(army_manager.armies_by_player))
 	
 	# Create the initial army using proper Roman numeral naming
-	print("[PlaceArmies] Creating initial army in region: ", target_region_container.name)
+	DebugLogger.log("GameInit", "Creating initial army in region: " + target_region_container.name)
 	var new_army = army_manager.create_army(target_region_container, 1)
 	
 	if new_army != null:
-		print("[PlaceArmies] Successfully created initial army: ", new_army.name)
+		DebugLogger.log("GameInit", "Successfully created initial army: " + new_army.name)
 	else:
-		print("[PlaceArmies] Failed to create initial army")
+		DebugLogger.log("GameInit", "Failed to create initial army")

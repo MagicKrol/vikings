@@ -39,7 +39,7 @@ func _ready():
 func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> void:
 	"""Start an animated battle with round-by-round updates"""
 	if is_battle_running:
-		print("[AnimatedBattleSimulator] Battle already running!")
+		DebugLogger.log("BattleAnimation", "Battle already running!")
 		return
 	
 	is_battle_running = true
@@ -65,9 +65,9 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	original_attackers = battle_simulator._copy_composition_dict(current_attackers)
 	original_defenders = battle_simulator._copy_composition_dict(current_defenders)
 	
-	print("[AnimatedBattleSimulator] Starting animated battle...")
-	print("Attackers: ", current_attackers)
-	print("Defenders: ", current_defenders)
+	DebugLogger.log("BattleAnimation", "Starting animated battle...")
+	DebugLogger.log("BattleAnimation", "Attackers: " + str(current_attackers))
+	DebugLogger.log("BattleAnimation", "Defenders: " + str(current_defenders))
 	
 	# Process ranged opening volley before standard rounds
 	_process_ranged_opening_volley()
@@ -164,7 +164,7 @@ func _process_next_round() -> void:
 	# Emit round completion signal
 	round_completed.emit(round_data)
 	
-	print("[AnimatedBattleSimulator] Round ", current_round, " - Attacker hits: ", attacker_hits, ", Defender hits: ", defender_hits)
+	DebugLogger.log("BattleAnimation", "Round " + str(current_round) + " - Attacker hits: " + str(attacker_hits) + ", Defender hits: " + str(defender_hits))
 	
 	# Schedule next round
 	battle_timer.start()
@@ -198,7 +198,7 @@ func _finish_battle() -> void:
 	report.final_attacker = current_attackers
 	report.final_defender = current_defenders
 	
-	print("[AnimatedBattleSimulator] Battle finished! Winner: ", winner, " in ", current_round, " rounds")
+	DebugLogger.log("BattleAnimation", "Battle finished! Winner: " + winner + " in " + str(current_round) + " rounds")
 	
 	# Emit final results
 	battle_finished.emit(report)
@@ -414,7 +414,7 @@ func _process_ranged_opening_volley() -> void:
 		}
 		
 		round_completed.emit(volley_data)
-		print("[AnimatedBattleSimulator] Ranged volley completed - Attacker ranged hits: ", attacker_hits, ", Defender ranged hits: ", defender_hits)
+		DebugLogger.log("BattleAnimation", "Ranged volley completed - Attacker ranged hits: " + str(attacker_hits) + ", Defender ranged hits: " + str(defender_hits))
 
 func stop_battle() -> void:
 	"""Force stop the current battle"""
@@ -424,7 +424,7 @@ func stop_battle() -> void:
 		withdrawal_rounds_remaining = 0
 		mobility_withdrawal_rounds_remaining = 0
 		battle_timer.stop()
-		print("[AnimatedBattleSimulator] Battle stopped")
+		DebugLogger.log("BattleAnimation", "Battle stopped")
 
 func is_running() -> bool:
 	"""Check if a battle is currently running"""
@@ -438,13 +438,13 @@ func start_withdrawal_round() -> void:
 	is_withdrawing = true
 	withdrawal_rounds_remaining = GameParameters.WITHDRAWAL_FREE_HIT_ROUNDS
 	mobility_withdrawal_rounds_remaining = GameParameters.MOBILITY_EXTRA_WITHDRAWAL_ROUNDS
-	print("[AnimatedBattleSimulator] Starting withdrawal with ", withdrawal_rounds_remaining, " free hit rounds and ", mobility_withdrawal_rounds_remaining, " mobility rounds...")
+	DebugLogger.log("BattleAnimation", "Starting withdrawal with " + str(withdrawal_rounds_remaining) + " free hit rounds and " + str(mobility_withdrawal_rounds_remaining) + " mobility rounds...")
 
 func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	"""Process a withdrawal round where only defenders attack"""
 	var is_mobility_round = withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining > 0
 	var round_type = "mobility" if is_mobility_round else "standard"
-	print("[AnimatedBattleSimulator] Processing ", round_type, " withdrawal round ", current_round, " (", withdrawal_rounds_remaining, " standard, ", mobility_withdrawal_rounds_remaining, " mobility remaining)")
+	DebugLogger.log("BattleAnimation", "Processing " + round_type + " withdrawal round " + str(current_round) + " (" + str(withdrawal_rounds_remaining) + " standard, " + str(mobility_withdrawal_rounds_remaining) + " mobility remaining)")
 	
 	# During withdrawal, attackers cannot attack (they get 0 hits)
 	var attacker_hits = 0
@@ -521,7 +521,7 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	# Emit round completion signal
 	round_completed.emit(round_data)
 	
-	print("[AnimatedBattleSimulator] Withdrawal round completed - Defenders get free hits: ", defender_hits)
+	DebugLogger.log("BattleAnimation", "Withdrawal round completed - Defenders get free hits: " + str(defender_hits))
 	
 	# Check if withdrawal is complete
 	if (withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining <= 0) or battle_simulator._army_size(current_attackers) <= 0:
@@ -549,7 +549,7 @@ func _finish_withdrawal() -> void:
 	report.final_attacker = current_attackers
 	report.final_defender = current_defenders
 	
-	print("[AnimatedBattleSimulator] Withdrawal completed! Attackers withdrawn after ", current_round, " rounds")
+	DebugLogger.log("BattleAnimation", "Withdrawal completed! Attackers withdrawn after " + str(current_round) + " rounds")
 	
 	# Emit final results
 	battle_finished.emit(report)

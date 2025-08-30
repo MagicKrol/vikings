@@ -25,11 +25,13 @@ static var _instance: DebugLogger = null
 # Debug categories and their enabled state
 var debug_categories: Dictionary = {
 	# AI Systems
-	"AIMovement": true,           # Army movement and pathfinding
-	"AIPathfinding": true,        # Detailed pathfinding calculations
-	"AIScoring": true,            # Target scoring and evaluation
-	"AIPlanning": true,           # Strategic planning decisions
+	"AIMovement": false,           # Army movement and pathfinding
+	"AIPathfinding": false,        # Detailed pathfinding calculations
+	"AIScoring": false,            # Target scoring and evaluation
+	"AIPlanning": false,           # Strategic planning decisions
 	"AITurnManager": true,        # High-level AI turn processing
+	"AIEconomy": false,            # AI economy decisions and raise army
+	"AIRecruitment": true,        # AI recruitment and budget allocation
 	
 	# Resource Systems
 	"ResourceManagement": false,   # Resource income and spending
@@ -38,20 +40,29 @@ var debug_categories: Dictionary = {
 	# Battle Systems
 	"BattleSystem": false,         # Combat and battle resolution
 	"BattleCalculation": false,    # Detailed battle calculations
+	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management
 	"RegionScoring": false,        # Region evaluation and scoring
+	"MapGeneration": false,        # Map generation and setup
 	
 	# Castle Systems
 	"CastlePlacement": false,      # Castle placement decisions
 	"CastleConstruction": false,   # Castle building and upgrades
 	
+	# Army Systems
+	"ArmyManagement": false,       # Army creation and management
+	"ArmyComposition": false,      # Army composition and units
+	
 	# General Systems
 	"TurnProcessing": false,       # Turn advancement and processing
 	"PlayerManagement": false,     # Player state and management
 	"UISystem": false,             # UI interactions and modals
-	"InputSystem": false           # Input handling and processing
+	"InputSystem": false,          # Input handling and processing
+	"GameInit": false,             # Game initialization and setup
+	"SaveLoad": false,             # Save and load operations
+	"Testing": true                # Test framework output
 }
 
 # Color coding for different log levels
@@ -218,7 +229,7 @@ static func disable_all() -> void:
 static func enable_ai_debugging() -> void:
 	"""Enable all AI-related debug categories"""
 	var instance = _get_instance()
-	var ai_categories = ["AIMovement", "AIPathfinding", "AIScoring", "AIPlanning", "AITurnManager"]
+	var ai_categories = ["AIMovement", "AIPathfinding", "AIScoring", "AIPlanning", "AITurnManager", "AIEconomy", "AIRecruitment"]
 	for category in ai_categories:
 		instance.debug_categories[category] = true
 	print("[DebugLogger] Enabled AI debugging categories")
@@ -226,7 +237,7 @@ static func enable_ai_debugging() -> void:
 static func disable_ai_debugging() -> void:
 	"""Disable all AI-related debug categories"""
 	var instance = _get_instance()
-	var ai_categories = ["AIMovement", "AIPathfinding", "AIScoring", "AIPlanning", "AITurnManager"]
+	var ai_categories = ["AIMovement", "AIPathfinding", "AIScoring", "AIPlanning", "AITurnManager", "AIEconomy", "AIRecruitment"]
 	for category in ai_categories:
 		instance.debug_categories[category] = false
 	print("[DebugLogger] Disabled AI debugging categories")

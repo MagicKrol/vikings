@@ -104,5 +104,5 @@ func fail(message: String) -> void:
 
 func skip(message: String) -> void:
 	"""Skip a test (print message and return early)"""
-	print("    SKIPPED: " + message)
+	DebugLogger.log("Testing", "    SKIPPED: " + message)
 	return

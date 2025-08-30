@@ -92,7 +92,7 @@ func _clear_children(node: Node) -> void:
 func _load_json_data() -> void:
 	var file = FileAccess.open(data_file_path, FileAccess.READ)
 	if file == null:
-		print("[MapGenerator] ERROR: Could not open file: ", data_file_path)
+		DebugLogger.log("MapGeneration", "ERROR: Could not open file: " + data_file_path)
 		return
 		
 	var json_string = file.get_as_text()
@@ -101,7 +101,7 @@ func _load_json_data() -> void:
 	var json = JSON.new()
 	var parse_result = json.parse(json_string)
 	if parse_result != OK:
-		print("[MapGenerator] ERROR: Could not parse JSON: ", json.error_string)
+		DebugLogger.log("MapGeneration", "ERROR: Could not parse JSON: " + json.error_string)
 		return
 
 	map_data = json.data
@@ -224,7 +224,7 @@ func _render_from_json() -> void:
 				
 				ocean_pg.z_index = 0  # Ocean on same level as land
 				map_node_ocean.add_child(ocean_pg)
-				# print("[Debug] Created ocean region ID: ", region_id, " biome: ", region_data.get("biome", "unknown"), " coastal: ", is_coastal)
+				# DebugLogger.log("MapGeneration", "Created ocean region ID: " + str(region_id) + " biome: " + str(region_data.get("biome", "unknown")) + " coastal: " + str(is_coastal))
 	
 
 
@@ -268,17 +268,17 @@ func _render_from_json() -> void:
 			borders_node.name = "Borders"
 			region_container.add_child(borders_node)
 	
-	# print("[MapGenerator] Total regions in JSON: ", total_regions)
-	# print("[MapGenerator] Ocean regions: ", ocean_count, ", Land regions: ", region_count)
-	# print("[MapGenerator] Coverage check: ", ocean_count + region_count, " should equal ", total_regions)
+	# DebugLogger.log("MapGeneration", "Total regions in JSON: " + str(total_regions))
+	# DebugLogger.log("MapGeneration", "Ocean regions: " + str(ocean_count) + ", Land regions: " + str(region_count))
+	# DebugLogger.log("MapGeneration", "Coverage check: " + str(ocean_count + region_count) + " should equal " + str(total_regions))
 	
 	# Check for overlapping IDs (this should never happen!)
 	for ocean_id in ocean_region_ids:
 		if ocean_id in land_region_ids:
-			print("[ERROR] Region ID ", ocean_id, " appears in BOTH ocean and land lists!")
+			DebugLogger.log("MapGeneration", "ERROR: Region ID " + str(ocean_id) + " appears in BOTH ocean and land lists!")
 	
-	# print("[Debug] Ocean IDs: ", ocean_region_ids)
-	# print("[Debug] Land IDs: ", land_region_ids)
+	# DebugLogger.log("MapGeneration", "Ocean IDs: " + str(ocean_region_ids))
+	# DebugLogger.log("MapGeneration", "Land IDs: " + str(land_region_ids))
 
 	# Draw noisy borders from edge data with correct quadrilateral constraints
 	_draw_region_borders()
@@ -287,7 +287,7 @@ func _render_from_json() -> void:
 	_build_and_draw_region_graph_overlay()
 
 
-	# print("[MapGenerator] Rendered edges: ", edges.size())
+	# DebugLogger.log("MapGeneration", "Rendered edges: " + str(edges.size()))
 
 func _create_region_from_data(region_data: Dictionary) -> void:
 	var polygon_data = region_data.get("polygon", [])
@@ -382,7 +382,7 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 	var region_id := int(region_data.get("id", -1))
 	
 	if edge_ids.is_empty():
-		print("[WARNING] Region ", region_id, " has no edges!")
+		DebugLogger.log("MapGeneration", "WARNING: Region " + str(region_id) + " has no edges!")
 		return PackedVector2Array()
 		
 	var pts: Array[Vector2] = []
@@ -396,7 +396,7 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 			continue
 			
 		if edge_id >= edges.size():
-			print("[ERROR] Region ", region_id, " references invalid edge ID: ", eid)
+			DebugLogger.log("MapGeneration", "ERROR: Region " + str(region_id) + " references invalid edge ID: " + str(eid))
 			continue
 			
 		var e = edges[edge_id]
@@ -410,7 +410,7 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 				pts.append(point_a)
 			else:
 				invalid_points += 1
-				print("[WARNING] Region ", region_id, " edge ", edge_id, " has invalid start point: ", point_a)
+				DebugLogger.log("MapGeneration", "WARNING: Region " + str(region_id) + " edge " + str(edge_id) + " has invalid start point: " + str(point_a))
 				
 		if b_arr.size() == 2:
 			var point_b := Vector2(b_arr[0], b_arr[1])
@@ -418,13 +418,13 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 				pts.append(point_b)
 			else:
 				invalid_points += 1
-				print("[WARNING] Region ", region_id, " edge ", edge_id, " has invalid end point: ", point_b)
+				DebugLogger.log("MapGeneration", "WARNING: Region " + str(region_id) + " edge " + str(edge_id) + " has invalid end point: " + str(point_b))
 	
 	if invalid_points > 0:
-		print("[WARNING] Region ", region_id, " had ", invalid_points, " invalid coordinates filtered out")
+		DebugLogger.log("MapGeneration", "WARNING: Region " + str(region_id) + " had " + str(invalid_points) + " invalid coordinates filtered out")
 	
 	if pts.size() < 3:
-		# print("[ERROR] Region ", region_id, " has insufficient valid points: ", pts.size())
+		# DebugLogger.log("MapGeneration", "ERROR: Region " + str(region_id) + " has insufficient valid points: " + str(pts.size()))
 		return PackedVector2Array()
 		
 	return Utils.dedup_and_sort_polygon(pts, center)
@@ -467,7 +467,7 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 		parent_container.add_child(pg)
 	else:
 		add_child(pg)
-	# print("[Debug] Created land region ID: ", region_data.get("id", "unknown"), " name: ", node_name, " at z_index: ", pg.z_index)
+	# DebugLogger.log("MapGeneration", "Created land region ID: " + str(region_data.get("id", "unknown")) + " name: " + str(node_name) + " at z_index: " + str(pg.z_index))
 
 	# Add biome icons based on mapping rules
 	var biome_name := String(region_data.get("biome", ""))
@@ -508,7 +508,7 @@ func _draw_region_borders() -> void:
 		var region_borders_created = _create_borders_for_region(region_id, region_data, borders_node, rng)
 		borders_created += region_borders_created
 	
-	print("[MapGenerator] Created ", borders_created, " border lines total (region-centric)")
+	DebugLogger.log("MapGeneration", "Created " + str(borders_created) + " border lines total (region-centric)")
 
 
 func _create_borders_for_region(region_id: int, region_data: Dictionary, borders_container: Node2D, rng: RandomNumberGenerator) -> int:
@@ -745,13 +745,13 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	"""Create a semi-transparent colored polygon overlay for owned regions"""
 	var region_container = get_region_container_by_id(region_id)
 	if region_container == null:
-		print("[MapGenerator] Error: Could not find region container for ID: ", region_id)
+		DebugLogger.log("MapGeneration", "Error: Could not find region container for ID: " + str(region_id))
 		return
 	
 	# Get the original polygon for positioning reference
 	var original_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
 	if original_polygon == null:
-		print("[MapGenerator] Error: Could not find original polygon for region: ", region_id)
+		DebugLogger.log("MapGeneration", "Error: Could not find original polygon for region: " + str(region_id))
 		return
 	
 	# Remove existing ownership overlay if it exists
@@ -762,7 +762,7 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	# Create noisy polygon points that match the border noise
 	var noisy_polygon_points = _create_noisy_polygon_for_region(region_id)
 	if noisy_polygon_points.is_empty():
-		print("[MapGenerator] Warning: Could not create noisy polygon for region ", region_id)
+		DebugLogger.log("MapGeneration", "Warning: Could not create noisy polygon for region " + str(region_id))
 		return
 	
 	# Create new ownership overlay polygon
@@ -795,7 +795,7 @@ func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 	# Get the borders container which has all the Line2D objects
 	var borders_container = region_container.get_node_or_null("Borders")
 	if borders_container == null:
-		print("[MapGenerator] No borders found for region ", region_id)
+		DebugLogger.log("MapGeneration", "No borders found for region " + str(region_id))
 		# Fallback to original polygon
 		var original_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
 		if original_polygon:
@@ -809,7 +809,7 @@ func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 			line2d_objects.append(child as Line2D)
 	
 	if line2d_objects.is_empty():
-		print("[MapGenerator] No Line2D borders found for region ", region_id)
+		DebugLogger.log("MapGeneration", "No Line2D borders found for region " + str(region_id))
 		return PackedVector2Array()
 	
 	# Extract all points from all Line2D objects

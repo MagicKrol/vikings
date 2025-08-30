@@ -13,34 +13,34 @@ func example_usage():
 	army_comp.set_soldier_count(SoldierTypeEnum.Type.KNIGHTS, 2)
 	
 	# Get information about the army
-	print("Army composition: ", army_comp.get_composition_string())
+	DebugLogger.log("Testing", "Army composition: " + str(army_comp.get_composition_string()))
 	# Output: "12 Peasants, 34 Archers, 2 Knights"
 	
-	print("Total soldiers: ", army_comp.get_total_soldiers())
+	DebugLogger.log("Testing", "Total soldiers: " + str(army_comp.get_total_soldiers()))
 	# Output: 48
 	
-	print("Total attack power: ", army_comp.get_total_attack())
+	DebugLogger.log("Testing", "Total attack power: " + str(army_comp.get_total_attack()))
 	# Output: 54 (12*1 + 34*2 + 2*4)
 	
-	print("Total defense: ", army_comp.get_total_defense())
+	DebugLogger.log("Testing", "Total defense: " + str(army_comp.get_total_defense()))
 	# Output: 52 (12*1 + 34*1 + 2*3)
 	
 	# Modify army composition
 	army_comp.add_soldiers(SoldierTypeEnum.Type.KNIGHTS, 3)
 	army_comp.remove_soldiers(SoldierTypeEnum.Type.PEASANTS, 5)
 	
-	print("Updated composition: ", army_comp.get_composition_string())
+	DebugLogger.log("Testing", "Updated composition: " + str(army_comp.get_composition_string()))
 	# Output: "7 Peasants, 34 Archers, 5 Knights"
 	
 	# Convert to dictionary for saving/loading
 	var save_data = army_comp.to_dictionary()
-	print("Save data: ", save_data)
+	DebugLogger.log("Testing", "Save data: " + str(save_data))
 	# Output: {"Peasants": 7, "Archers": 34, "Knights": 5}
 	
 	# Load from dictionary
 	var new_army = ArmyComposition.new()
 	new_army.from_dictionary(save_data)
-	print("Loaded army: ", new_army.get_composition_string())
+	DebugLogger.log("Testing", "Loaded army: " + str(new_army.get_composition_string()))
 	
 func example_army_usage():
 	# Get an army (from army manager or click manager)

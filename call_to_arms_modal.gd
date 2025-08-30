@@ -296,7 +296,7 @@ func _apply_call_to_arms() -> void:
 	if target_region == null:
 		return
 	
-	print("[CallToArmsModal] Applying call to arms to ", target_region.get_region_name())
+	DebugLogger.log("UISystem", "Applying call to arms to " + target_region.get_region_name())
 	
 	# Move recruits from each region to the target region
 	for region_id in called_recruits:
@@ -316,8 +316,8 @@ func _apply_call_to_arms() -> void:
 				# Add recruits directly to target region (exceeding max if needed)
 				target_region.available_recruits += actual_moved
 				
-				print("[CallToArmsModal] Moved ", actual_moved, " recruits from ", source_region.get_region_name(), " to ", target_region.get_region_name())
-				print("[CallToArmsModal] ", target_region.get_region_name(), " now has ", target_region.get_available_recruits(), "/", target_region.get_max_recruits(), " recruits")
+				DebugLogger.log("UISystem", "Moved " + str(actual_moved) + " recruits from " + source_region.get_region_name() + " to " + target_region.get_region_name())
+				DebugLogger.log("UISystem", target_region.get_region_name() + " now has " + str(target_region.get_available_recruits()) + "/" + str(target_region.get_max_recruits()) + " recruits")
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""

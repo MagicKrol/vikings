@@ -68,7 +68,7 @@ func _load_region_names() -> void:
 						available_names.append(name)
 	
 		else:
-			print("[RegionManager] Error parsing regions.json")
+			DebugLogger.log("RegionManagement", "Error parsing regions.json")
 
 func assign_region_name(region: Region) -> String:
 	"""Assign a random name to a region"""
@@ -164,7 +164,7 @@ func set_castle_starting_position(region_id: int, player_id: int) -> bool:
 	# Check if region is already owned by another player
 	var current_owner = get_region_owner(region_id)
 	if current_owner != -1 and current_owner != player_id:
-		print("[RegionManager] Cannot place castle - region ", region_id, " is already owned by Player ", current_owner)
+		DebugLogger.log("RegionManagement", "Cannot place castle - region " + str(region_id) + " is already owned by Player " + str(current_owner))
 		return false
 	
 	# Set the castle starting position
@@ -283,7 +283,7 @@ func _generate_all_region_resources() -> void:
 	# Get all region containers from the map generator
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
-		print("[RegionManager] Warning: No Regions node found in map generator")
+		DebugLogger.log("RegionManagement", "Warning: No Regions node found in map generator")
 		return
 	
 	# Generate resources for each region
@@ -301,7 +301,7 @@ func replenish_all_recruits() -> void:
 	# Get all region containers from the map generator
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
-		print("[RegionManager] Warning: No Regions node found in map generator")
+		DebugLogger.log("RegionManagement", "Warning: No Regions node found in map generator")
 		return
 	
 	# Replenish recruits for each region
@@ -311,7 +311,7 @@ func replenish_all_recruits() -> void:
 			child.replenish_recruits()
 			regions_replenished += 1
 	
-	print("[RegionManager] Replenished recruits for ", regions_replenished, " regions")
+	DebugLogger.log("RegionManagement", "Replenished recruits for " + str(regions_replenished) + " regions")
 
 func grow_all_populations() -> void:
 	"""Grow population for all regions (called each turn)"""
@@ -321,7 +321,7 @@ func grow_all_populations() -> void:
 	# Get all region containers from the map generator
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
-		print("[RegionManager] Warning: No Regions node found in map generator")
+		DebugLogger.log("RegionManagement", "Warning: No Regions node found in map generator")
 		return
 	
 	# Grow population for each region
@@ -331,7 +331,7 @@ func grow_all_populations() -> void:
 			child.grow_population()
 			regions_grown += 1
 	
-	print("[RegionManager] Processed population growth for ", regions_grown, " regions")
+	DebugLogger.log("RegionManagement", "Processed population growth for " + str(regions_grown) + " regions")
 
 func process_all_castle_construction() -> void:
 	"""Process castle construction for all regions (called each turn)"""
@@ -341,7 +341,7 @@ func process_all_castle_construction() -> void:
 	# Get all region containers from the map generator
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
-		print("[RegionManager] Warning: No Regions node found in map generator")
+		DebugLogger.log("RegionManagement", "Warning: No Regions node found in map generator")
 		return
 	
 	# Process castle construction for each region
@@ -354,8 +354,8 @@ func process_all_castle_construction() -> void:
 			regions_processed += 1
 	
 	if completed_constructions > 0:
-		print("[RegionManager] Completed ", completed_constructions, " castle constructions this turn")
-	print("[RegionManager] Processed castle construction for ", regions_processed, " regions")
+		DebugLogger.log("RegionManagement", "Completed " + str(completed_constructions) + " castle constructions this turn")
+	DebugLogger.log("RegionManagement", "Processed castle construction for " + str(regions_processed) + " regions")
 
 func reset_all_ore_search_turn_usage() -> void:
 	"""Reset ore search turn usage for all regions (called each turn)"""
@@ -365,7 +365,7 @@ func reset_all_ore_search_turn_usage() -> void:
 	# Get all region containers from the map generator
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
-		print("[RegionManager] Warning: No Regions node found in map generator")
+		DebugLogger.log("RegionManagement", "Warning: No Regions node found in map generator")
 		return
 	
 	# Reset ore search usage for each region
@@ -375,7 +375,7 @@ func reset_all_ore_search_turn_usage() -> void:
 			child.reset_ore_search_turn_usage()
 			regions_reset += 1
 	
-	print("[RegionManager] Reset ore search turn usage for ", regions_reset, " regions")
+	DebugLogger.log("RegionManagement", "Reset ore search turn usage for " + str(regions_reset) + " regions")
 
 func calculate_terrain_cost(region_id: int, player_id: int) -> int:
 	"""
@@ -532,7 +532,7 @@ func perform_ore_search(region: Region, player_id: int, player_manager: PlayerMa
 	
 	# Deduct the search cost
 	current_player.remove_resources(ResourcesEnum.Type.GOLD, search_cost)
-	print("[RegionManager] Player ", player_id, " spent ", search_cost, " gold for ore search in ", region.get_region_name())
+	DebugLogger.log("RegionManagement", "Player " + str(player_id) + " spent " + str(search_cost) + " gold for ore search in " + region.get_region_name())
 	
 	# Perform the search
 	var search_result = region.search_for_ore()
@@ -547,6 +547,6 @@ func perform_ore_search(region: Region, player_id: int, player_manager: PlayerMa
 			var generated_amount = GameParameters.generate_resource_amount(region.get_region_type(), ore_type)
 			if generated_amount > 0:
 				region.resources.set_resource_amount(ore_type, generated_amount)
-				print("[RegionManager] Made ", generated_amount, " ", ResourcesEnum.type_to_string(ore_type), " available for collection in ", region.get_region_name())
+				DebugLogger.log("RegionManagement", "Made " + str(generated_amount) + " " + ResourcesEnum.type_to_string(ore_type) + " available for collection in " + region.get_region_name())
 	
 	return search_result

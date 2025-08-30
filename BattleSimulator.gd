@@ -573,7 +573,7 @@ func _apply_proportional_losses(composition: ArmyComposition, total_losses: Dict
 # Test function for verifying the battle system
 static func run_test_battle() -> void:
 	"""Run a test battle to verify the system works"""
-	print("=== Battle System Test ===")
+	DebugLogger.log("BattleCalculation", "=== Battle System Test ===")
 	
 	var simulator = BattleSimulator.new()
 	
@@ -586,8 +586,8 @@ static func run_test_battle() -> void:
 	defender_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, 15)
 	defender_comp.set_soldier_count(SoldierTypeEnum.Type.ARCHERS, 5)
 	
-	print("Attacker: ", attacker_comp.get_composition_string())
-	print("Defender: ", defender_comp.get_composition_string())
+	DebugLogger.log("BattleCalculation", "Attacker: " + attacker_comp.get_composition_string())
+	DebugLogger.log("BattleCalculation", "Defender: " + defender_comp.get_composition_string())
 	
 	# Run battle
 	var attacking_armies = [attacker_comp]
@@ -595,12 +595,12 @@ static func run_test_battle() -> void:
 	
 	var report = simulator.simulate_battle(attacking_armies, defending_armies, defender_comp)
 	
-	print("Battle Result: ", report.winner)
-	print("Rounds: ", report.rounds)
-	print("Attacker Losses: ", report.attacker_losses)
-	print("Defender Losses: ", report.defender_losses)
-	print("Final Attacker: ", report.final_attacker)
-	print("Final Defender: ", report.final_defender)
-	print("=== End Test ===")
+	DebugLogger.log("BattleCalculation", "Battle Result: " + report.winner)
+	DebugLogger.log("BattleCalculation", "Rounds: " + str(report.rounds))
+	DebugLogger.log("BattleCalculation", "Attacker Losses: " + str(report.attacker_losses))
+	DebugLogger.log("BattleCalculation", "Defender Losses: " + str(report.defender_losses))
+	DebugLogger.log("BattleCalculation", "Final Attacker: " + str(report.final_attacker))
+	DebugLogger.log("BattleCalculation", "Final Defender: " + str(report.final_defender))
+	DebugLogger.log("BattleCalculation", "=== End Test ===")
 	
 	return

@@ -18,7 +18,7 @@ func _init(_region_manager: RegionManager, _army_manager: ArmyManager, _player_m
 # Public entry: plan and allocate budgets for this player's turn.
 # Currently only recruitment is executed; other categories are stubs.
 func plan_turn(player_id: int, turn_number: int) -> Dictionary:
-	print("\n=== AI ECONOMY TURN PLANNING (Player %d, Turn %d) ===" % [player_id, turn_number])
+	DebugLogger.log("AIEconomy", "\n=== AI ECONOMY TURN PLANNING (Player %d, Turn %d) ===" % [player_id, turn_number])
 	
 	# Snapshot signals once
 	signals = _compute_signals(player_id, turn_number)
@@ -26,26 +26,26 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	# 1) If any armies at castles need recruitment → allocate budgets and stop (skip raise/builds)
 	var armies_need = _find_recruitment_armies_at_castles(player_id, turn_number)
 	if armies_need.size() > 0:
-		print(">> PRIORITY: RECRUITMENT — ", armies_need.size(), " army(ies) at castles need units")
+		DebugLogger.log("AIEconomy", ">> PRIORITY: RECRUITMENT — " + str(armies_need.size()) + " army(ies) at castles need units")
 		var assigned1 = _allocate_recruitment(player_id, turn_number)
-		print(">> RECRUITMENT: Assigned budgets to ", assigned1, " armies; skipping raise/builds this turn")
-		print("=== END AI ECONOMY TURN PLANNING ===\n")
+		DebugLogger.log("AIEconomy", ">> RECRUITMENT: Assigned budgets to " + str(assigned1) + " armies; skipping raise/builds this turn")
+		DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
 		return {"decision": "recruit_only", "recruit_assigned": assigned1, "signals": signals}
 
 	# 2) Otherwise try to raise an army; if raised → allocate recruitment for it and stop
-	print(">> PRIORITY: RAISE ARMY — no armies need recruitment")
+	DebugLogger.log("AIEconomy", ">> PRIORITY: RAISE ARMY — no armies need recruitment")
 	var raise_res = decide_and_raise_army(player_id, turn_number)
 	if raise_res.get("raised", false):
 		var assigned2 = _allocate_recruitment(player_id, turn_number)
-		print(">> RAISE ARMY: Raised at region ", raise_res.get("region_id", -1), "; post-raise recruitment assigned to ", assigned2, " armies")
-		print("=== END AI ECONOMY TURN PLANNING ===\n")
+		DebugLogger.log("AIEconomy", ">> RAISE ARMY: Raised at region " + str(raise_res.get("region_id", -1)) + "; post-raise recruitment assigned to " + str(assigned2) + " armies")
+		DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
 		return {"decision": "raised_then_recruit", "raise": raise_res, "recruit_assigned": assigned2, "signals": signals}
 	else:
-		print(">> RAISE ARMY: Skipped — ", raise_res.get("reason", "unknown"))
+		DebugLogger.log("AIEconomy", ">> RAISE ARMY: Skipped — " + str(raise_res.get("reason", "unknown")))
 
 # 3) No recruitment needs and no raise → defer region economy to post-movement phase
-	print(">> PRIORITY: NONE — deferring region economy to post-movement phase")
-	print("=== END AI ECONOMY TURN PLANNING ===\n")
+	DebugLogger.log("AIEconomy", ">> PRIORITY: NONE — deferring region economy to post-movement phase")
+	DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
 	return {"decision": "defer_region_economy", "signals": signals}
 
 # Signals summarize state. Extended for raise army decisions.
@@ -94,7 +94,7 @@ func _compute_signals(player_id: int, turn_number: int) -> Dictionary:
 		avg_power = avg_power / armies.size()
 		power_gap_norm = max(0.0, (target_power - avg_power) / target_power)
 	
-	print("Signals: ", {
+	DebugLogger.log("AIEconomy", "Signals: " + str({
 		"frontier_pressure": frontier_pressure,
 		"underpowered_ratio": underpowered_ratio,
 		"castle_spacing": castle_spacing,
@@ -104,7 +104,7 @@ func _compute_signals(player_id: int, turn_number: int) -> Dictionary:
 		"resource_scarcity": {},
 		"recruit_abundance": 0.0,
 		"turn_index": float(turn_number)
-	})	
+	}))	
 
 	return {
 		"frontier_pressure": frontier_pressure,
@@ -134,11 +134,12 @@ func _allocate_recruitment(player_id: int, turn_number: int) -> int:
 	var armies: Array[Army] = army_manager.get_player_armies(player_id)
 	return budget_manager.allocate_recruitment_budgets(armies, player, region_manager, turn_number)
 
+# Find armies at castles that need recruitment
 func _find_recruitment_armies_at_castles(player_id: int, turn_number: int) -> Array[Army]:
 	var out: Array[Army] = []
 	var armies = army_manager.get_player_armies(player_id)
 	for a in armies:
-		if a.needs_recruitment(turn_number):
+		if a.recruitment_requested:
 			var r: Region = a.get_parent()
 			var rid = r.get_region_id()
 			if region_manager.get_castle_level(rid) >= 1:
@@ -147,32 +148,32 @@ func _find_recruitment_armies_at_castles(player_id: int, turn_number: int) -> Ar
 
 # Main orchestrator for raise army decision
 func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
-	print("   Evaluating raise army decision...")
+	DebugLogger.log("AIEconomy", "   Evaluating raise army decision...")
 	var candidate = pick_best_raise_region(player_id)
 	var player = player_manager.get_player(player_id)
 	
 	if candidate.is_empty():
-		print("   Decision: NO - No valid castle regions with sufficient recruits")
+		DebugLogger.log("AIEconomy", "   Decision: NO - No valid castle regions with sufficient recruits")
 		return {"raised": false, "reason": "no_candidate"}
 	
-	print("   Best candidate: Region %d (recruits: %d, score: %.1f)" % [candidate["region_id"], candidate["recruits_total"], candidate["score"]])
+	DebugLogger.log("AIEconomy", "   Best candidate: Region %d (recruits: %d, score: %.1f)" % [candidate["region_id"], candidate["recruits_total"], candidate["score"]])
 	
 	var should_raise = should_raise_army(candidate, player)
 	if should_raise:
-		print("   Decision: YES - All constraints satisfied")
+		DebugLogger.log("AIEconomy", "   Decision: YES - All constraints satisfied")
 		var success = execute_raise_army(player_id, candidate["region_id"])
 		if success:
-			print("   Execution: SUCCESS - Army raised at region %d" % candidate["region_id"])
+			DebugLogger.log("AIEconomy", "   Execution: SUCCESS - Army raised at region %d" % candidate["region_id"])
 			return {"raised": true, "region_id": candidate["region_id"]}
 		else:
-			print("   Execution: FAILED - Could not deduct gold cost")
+			DebugLogger.log("AIEconomy", "   Execution: FAILED - Could not deduct gold cost")
 			return {"raised": false, "reason": "execution_failed"}
 	else:
 		return {"raised": false, "reason": "guards_failed"}
 
 # Pick the best castle region to raise an army at
 func pick_best_raise_region(player_id: int) -> Dictionary:
-	print("   Searching for castle regions with sufficient recruits...")
+	DebugLogger.log("AIEconomy", "   Searching for castle regions with sufficient recruits...")
 	var owned_regions = region_manager.get_player_regions(player_id)
 	var candidates = []
 	var max_recruits_seen = 1
@@ -190,7 +191,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		for source in recruit_sources:
 			recruits_total += int(source.amount)
 		
-		print("   Castle %d: %d recruits (min: %d)" % [region_id, recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
+		DebugLogger.log("AIEconomy", "   Castle %d: %d recruits (min: %d)" % [region_id, recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
 		
 		if recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
 			continue
@@ -222,7 +223,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 			"travel_hint": travel_hint
 		})
 	
-	print("   Checked %d castles, found %d valid candidates" % [castles_checked, candidates.size()])
+	DebugLogger.log("AIEconomy", "   Checked %d castles, found %d valid candidates" % [castles_checked, candidates.size()])
 	
 	if candidates.is_empty():
 		return {}
@@ -234,7 +235,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		score += GameParameters.AI_CAND_W_FRONTIER_NEAR * candidate["frontier_near"]
 		score += GameParameters.AI_CAND_W_TRAVEL * candidate["travel_hint"]
 		candidate["score"] = score
-		print("   Candidate %d: score %.1f (recruits: %.2f*%.1f, frontier: %d*%.1f, travel: %d*%.1f)" % [
+		DebugLogger.log("AIEconomy", "   Candidate %d: score %.1f (recruits: %.2f*%.1f, frontier: %d*%.1f, travel: %d*%.1f)" % [
 			candidate["region_id"], score,
 			recruits_norm, GameParameters.AI_CAND_W_RECRUITS,
 			candidate["frontier_near"], GameParameters.AI_CAND_W_FRONTIER_NEAR,
@@ -248,7 +249,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		return a["score"] > b["score"]
 	)
 
-	print("   Winner: Region %d (score: %.1f)" % [candidates[0]["region_id"], candidates[0]["score"]])
+	DebugLogger.log("AIEconomy", "   Winner: Region %d (score: %.1f)" % [candidates[0]["region_id"], candidates[0]["score"]])
 	
 	return candidates[0]
 
@@ -256,24 +257,24 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 func should_raise_army(candidate: Dictionary, player: Player) -> bool:
 	# Check if we have a valid candidate
 	if candidate.is_empty():
-		print("   Constraint: NO_CANDIDATE")
+		DebugLogger.log("AIEconomy", "   Constraint: NO_CANDIDATE")
 		return false
 	
 	# Check gold reserve constraint
 	var current_gold = player.get_resource_amount(ResourcesEnum.Type.GOLD)
 	var gold_after = current_gold - GameParameters.RAISE_ARMY_COST
 	if gold_after < GameParameters.AI_RESERVE_GOLD_MIN:
-		print("   Constraint: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [current_gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
+		DebugLogger.log("AIEconomy", "   Constraint: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [current_gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
 		return false
 	
 	# Check underpowered ratio constraint
 	if signals["underpowered_ratio"] > GameParameters.AI_MAX_UNDERPOWERED_RATIO:
-		print("   Constraint: UNDERPOWERED_RATIO (%.2f > %.2f)" % [signals["underpowered_ratio"], GameParameters.AI_MAX_UNDERPOWERED_RATIO])
+		DebugLogger.log("AIEconomy", "   Constraint: UNDERPOWERED_RATIO (%.2f > %.2f)" % [signals["underpowered_ratio"], GameParameters.AI_MAX_UNDERPOWERED_RATIO])
 		return false
 	
 	# Check if there's any frontier pressure
 	if signals["frontier_pressure"] <= 0:
-		print("   Constraint: NO_FRONTIER_PRESSURE (%.2f)" % signals["frontier_pressure"])
+		DebugLogger.log("AIEconomy", "   Constraint: NO_FRONTIER_PRESSURE (%.2f)" % signals["frontier_pressure"])
 		return false
 	
 	# Estimate support load after raising
@@ -287,7 +288,7 @@ func should_raise_army(candidate: Dictionary, player: Player) -> bool:
 	
 	var recruits_per_army_after = float(candidate["recruits_total"]) / float(armies_at_castle + 1)
 	if recruits_per_army_after < GameParameters.AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE:
-		print("   Constraint: SUPPORT_LOAD (%.1f recruits/army < %d min)" % [recruits_per_army_after, GameParameters.AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE])
+		DebugLogger.log("AIEconomy", "   Constraint: SUPPORT_LOAD (%.1f recruits/army < %d min)" % [recruits_per_army_after, GameParameters.AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE])
 		return false
 	
 	# Calculate global score
@@ -296,17 +297,17 @@ func should_raise_army(candidate: Dictionary, player: Player) -> bool:
 	g_score += GameParameters.AI_RAISE_W_BANK * signals["bank_ratio"]
 	g_score -= GameParameters.AI_RAISE_W_POWER_GAP * signals["power_gap_norm"]
 	
-	print("   Global score: %.1f (frontier: %.1f, spacing: %.1f, bank: %.1f, power_gap: -%.1f)" % [
+	DebugLogger.log("AIEconomy", "   Global score: %.1f (frontier: %.1f, spacing: %.1f, bank: %.1f, power_gap: -%.1f)" % [
 		g_score, 
 		GameParameters.AI_RAISE_W_FRONTIER * signals["frontier_pressure"],
 		GameParameters.AI_RAISE_W_SPACING * signals["castle_spacing"],
 		GameParameters.AI_RAISE_W_BANK * signals["bank_ratio"],
 		GameParameters.AI_RAISE_W_POWER_GAP * signals["power_gap_norm"]
 	])
-	print("   Threshold: %.1f" % GameParameters.AI_RAISE_THRESHOLD)
+	DebugLogger.log("AIEconomy", "   Threshold: %.1f" % GameParameters.AI_RAISE_THRESHOLD)
 	
 	var decision = g_score >= GameParameters.AI_RAISE_THRESHOLD
-	print("   Decision: %s" % ("RAISE" if decision else "DECLINE"))
+	DebugLogger.log("AIEconomy", "   Decision: %s" % ("RAISE" if decision else "DECLINE"))
 	return decision
 
 # Execute the army raising at the specified region
@@ -326,12 +327,12 @@ func execute_raise_army(player_id: int, region_id: int) -> bool:
 
 # Post-movement economy pass: spend leftovers on region economy only
 func plan_post_movement(player_id: int, turn_number: int) -> Dictionary:
-	print("\n=== AI ECONOMY POST-MOVEMENT (Player %d, Turn %d) ===" % [player_id, turn_number])
+	DebugLogger.log("AIEconomy", "\n=== AI ECONOMY POST-MOVEMENT (Player %d, Turn %d) ===" % [player_id, turn_number])
 	# Recompute snapshot (cheap) to base any simple heuristics on fresh state
 	signals = _compute_signals(player_id, turn_number)
 	var reg_actions = _process_region_economy(player_id, turn_number)
-	print(">> REGION ECONOMY (post-move): ", reg_actions)
-	print("=== END AI ECONOMY POST-MOVEMENT ===\n")
+	DebugLogger.log("AIEconomy", ">> REGION ECONOMY (post-move): " + str(reg_actions))
+	DebugLogger.log("AIEconomy", "=== END AI ECONOMY POST-MOVEMENT ===\n")
 	return {"decision": "region_economy_post", "region_actions": reg_actions, "signals": signals}
 
 func _process_region_economy(player_id: int, turn_number: int) -> Dictionary:

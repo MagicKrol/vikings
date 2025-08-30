@@ -68,18 +68,18 @@ func initialize(scorer: RegionScorer, castle_scorer: CastlePlacementScorer, map_
 	if map_gen != null and region_mgr != null:
 		army_target_scorer = ArmyTargetScorer.new(region_mgr, map_gen)
 		frontier_target_scorer = FrontierTargetScorer.new(region_mgr, map_gen)
-		print("[AIDebugVisualizer] Initialized with all scorers including ArmyTargetScorer and FrontierTargetScorer")
+		DebugLogger.log("AIPlanning", "Initialized with all scorers including ArmyTargetScorer and FrontierTargetScorer")
 	elif map_gen != null:
-		print("[AIDebugVisualizer] Warning: Could not initialize target scorers - RegionManager not provided")
+		DebugLogger.log("AIPlanning", "Warning: Could not initialize target scorers - RegionManager not provided")
 	
-	print("[AIDebugVisualizer] Initialized with region scorer, castle placement scorer, and map generator")
+	DebugLogger.log("AIPlanning", "Initialized with region scorer, castle placement scorer, and map generator")
 
 func toggle_debug_display(player_id: int):
 	"""Toggle debug visualization and update scores with fresh random values"""
 	debug_visible = !debug_visible
 	
 	if debug_visible:
-		print("[AIDebugVisualizer] Showing AI debug scores for Player ", player_id, " (mode: ", debug_mode, ")")
+		DebugLogger.log("AIPlanning", "Showing AI debug scores for Player " + str(player_id) + " (mode: " + debug_mode + ")")
 		
 		# Check if castle placement is over to determine correct mode
 		var game_manager = get_node_or_null("/root/Main/GameManager")
@@ -87,11 +87,11 @@ func toggle_debug_display(player_id: int):
 			# Castle placement is done, ensure we're in army target mode
 			if debug_mode != "army_target":
 				debug_mode = "army_target"
-				print("[AIDebugVisualizer] Auto-switched to army target mode since castle placement is complete")
+				DebugLogger.log("AIPlanning", "Auto-switched to army target mode since castle placement is complete")
 		
 		_update_scores_for_player(player_id)
 	else:
-		print("[AIDebugVisualizer] Hiding AI debug scores")
+		DebugLogger.log("AIPlanning", "Hiding AI debug scores")
 		current_player_scores.clear()
 	
 	queue_redraw()  # Trigger _draw() call
@@ -99,7 +99,7 @@ func toggle_debug_display(player_id: int):
 func switch_to_army_target_mode():
 	"""Switch to army target scoring mode after castle placement"""
 	debug_mode = "army_target"
-	print("[AIDebugVisualizer] Switched to army target scoring mode")
+	DebugLogger.log("AIPlanning", "Switched to army target scoring mode")
 	
 	# Always clear old scores when switching modes
 	current_player_scores.clear()
@@ -110,14 +110,14 @@ func switch_to_army_target_mode():
 		var game_manager = get_node_or_null("/root/Main/GameManager")
 		if game_manager != null:
 			var current_player_id = game_manager.get_current_player_id()
-			print("[AIDebugVisualizer] Recalculating army target scores for Player ", current_player_id)
+			DebugLogger.log("AIPlanning", "Recalculating army target scores for Player " + str(current_player_id))
 			_update_scores_for_player(current_player_id)
 		queue_redraw()
 
 func enable_step_by_step_mode(enabled: bool):
 	"""Enable/disable step-by-step AI debugging"""
 	step_by_step_mode = enabled
-	print("[AIDebugVisualizer] Step-by-step mode: ", "enabled" if enabled else "disabled")
+	DebugLogger.log("AIPlanning", "Step-by-step mode: " + ("enabled" if enabled else "disabled"))
 
 func is_step_by_step_mode() -> bool:
 	"""Check if step-by-step mode is active"""
@@ -133,7 +133,7 @@ func _update_scores_for_player(player_id: int):
 func _update_castle_placement_scores(player_id: int):
 	"""Calculate and store castle placement scores"""
 	if castle_placement_scorer == null:
-		print("[AIDebugVisualizer] Error: CastlePlacementScorer not initialized")
+		DebugLogger.log("AIPlanning", "Error: CastlePlacementScorer not initialized")
 		return
 	
 	# Check if we need to recalculate - only if any region has invalid scores
@@ -148,11 +148,11 @@ func _update_castle_placement_scores(player_id: int):
 					break
 	
 	if not need_calculation:
-		print("[AIDebugVisualizer] Using existing stored castle placement scores")
+		DebugLogger.log("AIPlanning", "Using existing stored castle placement scores")
 		_update_display_cache_from_regions()
 		return
 	
-	print("[AIDebugVisualizer] Recalculating castle placement scores for Player ", player_id, "...")
+	DebugLogger.log("AIPlanning", "Recalculating castle placement scores for Player " + str(player_id) + "...")
 	
 	# Get ALL owned regions for distance calculation
 	var owned_region_ids = _get_all_owned_regions()
@@ -184,7 +184,7 @@ func _update_castle_placement_scores(player_id: int):
 	# Update display cache from stored region data
 	_update_display_cache_from_regions()
 	
-	print("[AIDebugVisualizer] Stored castle placement scores in ", castle_scores.size(), " regions")
+	DebugLogger.log("AIPlanning", "Stored castle placement scores in " + str(castle_scores.size()) + " regions")
 
 func _update_army_target_scores(player_id: int):
 	"""Calculate and store frontier-based scores for army targets"""
@@ -194,16 +194,16 @@ func _update_army_target_scores(player_id: int):
 		return
 		
 	if army_target_scorer == null:
-		print("[AIDebugVisualizer] Error: No target scorer available")
+		DebugLogger.log("AIPlanning", "Error: No target scorer available")
 		return
 	
-	print("[AIDebugVisualizer] Calculating army target scores with distance for Player ", player_id, "...")
+	DebugLogger.log("AIPlanning", "Calculating army target scores with distance for Player " + str(player_id) + "...")
 	
 	# Get all passable regions as potential targets
 	var all_region_ids = _get_all_passable_regions()
 	
 	if all_region_ids.is_empty():
-		print("[AIDebugVisualizer] No passable regions found")
+		DebugLogger.log("AIPlanning", "No passable regions found")
 		return
 	
 	# Score all regions using army target scorer
@@ -212,7 +212,7 @@ func _update_army_target_scores(player_id: int):
 	# Find the player's castle position (or any owned region) as reference point
 	var reference_region_id = _find_player_reference_position(player_id)
 	if reference_region_id == -1:
-		print("[AIDebugVisualizer] Warning: No reference position found for distance calculation")
+		DebugLogger.log("AIPlanning", "Warning: No reference position found for distance calculation")
 		# Fall back to raw scores without distance
 		_store_raw_army_scores(scored_regions)
 		return
@@ -261,7 +261,7 @@ func _update_army_target_scores(player_id: int):
 		}
 		detailed_score_cache[region_id] = factors
 	
-	print("[AIDebugVisualizer] Stored distance-adjusted army target scores for ", scored_regions.size(), " regions")
+	DebugLogger.log("AIPlanning", "Stored distance-adjusted army target scores for " + str(scored_regions.size()) + " regions")
 
 func _update_display_cache_from_regions():
 	"""Update display cache from stored region data with random modifiers"""
@@ -385,7 +385,7 @@ func get_detailed_scores(region_id: int) -> Dictionary:
 func print_top_regions(count: int = 10):
 	"""Print top scoring regions to console for debugging"""
 	if current_player_scores.is_empty():
-		print("[AIDebugVisualizer] No scores available")
+		DebugLogger.log("AIPlanning", "No scores available")
 		return
 	
 	var sorted_scores = []
@@ -397,10 +397,10 @@ func print_top_regions(count: int = 10):
 	
 	sorted_scores.sort_custom(func(a, b): return a.score > b.score)
 	
-	print("[AIDebugVisualizer] Top ", count, " scoring regions:")
+	DebugLogger.log("AIPlanning", "Top " + str(count) + " scoring regions:")
 	for i in range(min(count, sorted_scores.size())):
 		var entry = sorted_scores[i]
-		print("  Region ", entry.region_id, ": ", entry.score, " points")
+		DebugLogger.log("AIPlanning", "  Region " + str(entry.region_id) + ": " + str(entry.score) + " points")
 
 ## Utility Methods for External Access
 
@@ -428,7 +428,7 @@ func refresh_scores_for_current_player():
 func recalculate_scores_on_ownership_change(player_id: int):
 	"""Recalculate scores when region ownership changes (affects frontier)"""
 	if debug_visible and debug_mode == "army_target":
-		print("[AIDebugVisualizer] Recalculating scores due to ownership change for Player ", player_id)
+		DebugLogger.log("AIPlanning", "Recalculating scores due to ownership change for Player " + str(player_id))
 		# Clear existing scores to force full recalculation
 		current_player_scores.clear()
 		detailed_score_cache.clear()
@@ -445,7 +445,7 @@ func _invalidate_all_region_scores():
 			if child is Region:
 				var region = child as Region
 				region.invalidate_ai_scores()
-	print("[AIDebugVisualizer] Invalidated all region AI scores")
+	DebugLogger.log("AIPlanning", "Invalidated all region AI scores")
 
 func _get_all_owned_regions() -> Array[int]:
 	"""Get ALL owned regions on the map (regardless of which player owns them)"""
@@ -534,38 +534,38 @@ func _calculate_distances_from_region(start_region_id: int) -> Dictionary:
 
 func _update_frontier_scores(player_id: int):
 	"""Calculate and store frontier-based scores with movement costs from best army perspective"""
-	print("[AIDebugVisualizer] Calculating frontier scores with movement costs for Player ", player_id, "...")
+	DebugLogger.log("AIPlanning", "Calculating frontier scores with movement costs for Player " + str(player_id) + "...")
 	
 	# Get all armies for this player
 	var game_manager = get_node_or_null("/root/Main/GameManager")
 	if game_manager == null:
-		print("[AIDebugVisualizer] Error: GameManager not found")
+		DebugLogger.log("AIPlanning", "Error: GameManager not found")
 		return
 		
 	var army_manager = game_manager.get_army_manager()
 	if army_manager == null:
-		print("[AIDebugVisualizer] Error: ArmyManager not found") 
+		DebugLogger.log("AIPlanning", "Error: ArmyManager not found") 
 		return
 		
 	var player_armies = army_manager.get_player_armies(player_id)
 	if player_armies.is_empty():
-		print("[AIDebugVisualizer] No armies found for Player ", player_id)
+		DebugLogger.log("AIPlanning", "No armies found for Player " + str(player_id))
 		return
 	
 	# Get frontier targets with pure scoring
 	var frontier_targets = frontier_target_scorer.score_frontier_targets(player_id)
 	if frontier_targets.is_empty():
-		print("[AIDebugVisualizer] No frontier targets found for Player ", player_id)
+		DebugLogger.log("AIPlanning", "No frontier targets found for Player " + str(player_id))
 		return
 	
 	# Calculate scores for each army and find the one with highest scoring target
 	var best_army_data = _find_best_army_perspective(player_armies, frontier_targets, player_id)
 	if best_army_data.is_empty():
-		print("[AIDebugVisualizer] No valid army perspective found")
+		DebugLogger.log("AIPlanning", "No valid army perspective found")
 		return
 	
 	current_army_perspective = best_army_data.army_name
-	print("[AIDebugVisualizer] Showing scores from perspective of Army: ", current_army_perspective)
+	DebugLogger.log("AIPlanning", "Showing scores from perspective of Army: " + current_army_perspective)
 	
 	# Clear existing scores and show from best army's perspective
 	current_player_scores.clear()
@@ -577,7 +577,7 @@ func _update_frontier_scores(player_id: int):
 		current_player_scores[region_id] = target_data.final_score
 		detailed_score_cache[region_id] = target_data.factors
 	
-	print("[AIDebugVisualizer] Stored frontier scores for ", best_army_data.target_scores.size(), " regions from ", current_army_perspective, "'s perspective")
+	DebugLogger.log("AIPlanning", "Stored frontier scores for " + str(best_army_data.target_scores.size()) + " regions from " + current_army_perspective + "'s perspective")
 
 func _find_best_army_perspective(armies: Array, frontier_targets: Array, player_id: int) -> Dictionary:
 	"""Find the army with the highest scoring target and return its perspective data"""

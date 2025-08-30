@@ -59,6 +59,10 @@ Notes
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested), `DebugStepGate`.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
+- Resting Logic (AI):
+  - Start-of-evaluation: if an army’s efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
+  - Pre-attack: if an army can reach a target now and a battle is expected, and efficiency < 90%, it calls `make_camp()` up to 2 times (bounded by MPs) before moving.
+  - End-of-turn: after post-movement economy, any army with leftover MPs spends all on `make_camp()`.
 
 ### BattleManager.gd (BattleManager)
 - Purpose: Battle UI coordination and post-battle processing via signals.
@@ -98,13 +102,12 @@ Notes
   - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring
   - `execute_raise_army(player_id, region_id)`: Creates army and deducts cost
 - Signals computed: frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm
-- Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and calls `plan_turn()` at turn start.
- - Integration: `TurnController.start_turn()` calls `plan_turn()` at turn start for recruitment/raising; after movement, it calls `plan_post_movement()` to spend any leftover budget on region economy.
+- Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and calls `plan_turn()` at turn start. After movement, `TurnController` calls `plan_post_movement()` to spend any leftover budget on region economy.
 
 - Priority Flow:
   - If any armies at castles need recruitment this turn → allocate recruitment budgets and skip raising/building.
   - Else try to raise an army; if raised → allocate recruitment for the new army and skip region spending.
-  - Else process region economy in order: build castle → upgrade castle → upgrade region (currently stubbed).
+  - Else defer region economy to post-movement phase.
 
 #### Raise Army AI (implemented)
 - Goal: Prefer fewer, stronger armies over many weak ones; raise only when it helps frontier coverage and can be supported.

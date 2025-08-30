@@ -498,7 +498,7 @@ func _on_continue_pressed() -> void:
 		# Spend 1 movement point from army for recruitment operation (only if recruiting to specific army)
 		if target_army != null:
 			target_army.spend_movement_points(1)
-			print("[RecruitmentModal] Army ", target_army.number, " spent 1 movement point for recruitment (remaining: ", target_army.get_movement_points(), ")")
+			DebugLogger.log("UISystem", "Army " + str(target_army.number) + " spent 1 movement point for recruitment (remaining: " + str(target_army.get_movement_points()) + ")")
 	
 	# Update player status modal after recruitment
 	_update_player_status_modal()

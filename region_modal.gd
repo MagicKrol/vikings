@@ -104,4 +104,4 @@ func _update_display() -> void:
 	
 	resources_label.text = resources_text.strip_edges()
 	
-	print("[RegionModal] Showing info for region: ", current_region.get_region_name())
+	DebugLogger.log("UISystem", "Showing info for region: " + current_region.get_region_name())

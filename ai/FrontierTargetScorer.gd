@@ -28,7 +28,7 @@ var map_generator: MapGenerator
 func _init(region_mgr: RegionManager, map_gen: MapGenerator):
 	region_manager = region_mgr
 	map_generator = map_gen
-	print("[FrontierTargetScorer] Initialized with region and map manager references")
+	DebugLogger.log("AIScoring", "Initialized with region and map manager references")
 
 func get_frontier_targets(player_id: int) -> Array[int]:
 	"""Get all enemy/neutral regions adjacent to player's owned regions"""
@@ -64,10 +64,10 @@ func score_frontier_targets(player_id: int) -> Array:
 	var frontier_ids = get_frontier_targets(player_id)
 	
 	if frontier_ids.is_empty():
-		print("[FrontierTargetScorer] No frontier targets found for Player ", player_id)
+		DebugLogger.log("AIScoring", "No frontier targets found for Player " + str(player_id))
 		return []
 	
-	print("[FrontierTargetScorer] Scoring ", frontier_ids.size(), " frontier targets for Player ", player_id)
+	DebugLogger.log("AIScoring", "Scoring " + str(frontier_ids.size()) + " frontier targets for Player " + str(player_id))
 	
 	var scored_targets = []
 	

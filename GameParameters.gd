@@ -225,7 +225,7 @@ const UNIT_STATS = {
 		"wood_cost": 1,
 		"iron_cost": 0,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, light_armor,
-		"power": 4
+		"power": 3
 	},
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
 		"attack": 8,     # 20% hit chance per unit
@@ -335,10 +335,10 @@ const IDEAL_ARMY_COMPOSITIONS = {
 		"royal_guard": 0
 	},
 	"Outpost": {
-		"peasants": 40,
+		"peasants": 45,
 		"spearmen": 30,
-		"archers": 20,
-		"swordsmen": 10,
+		"archers": 10,
+		"swordsmen": 15,
 		"crossbowmen": 0,
 		"horsemen": 0,
 		"knights": 0,
@@ -346,9 +346,9 @@ const IDEAL_ARMY_COMPOSITIONS = {
 		"royal_guard": 0
 	},
 	"Keep": {
-		"peasants": 30,
+		"peasants": 35,
 		"spearmen": 25,
-		"archers": 20,
+		"archers": 15,
 		"swordsmen": 15,
 		"crossbowmen": 5,
 		"horsemen": 5,
@@ -357,19 +357,19 @@ const IDEAL_ARMY_COMPOSITIONS = {
 		"royal_guard": 0
 	},
 	"Castle": {
-		"peasants": 20,
+		"peasants": 24,
 		"spearmen": 22,
 		"archers": 15,
 		"swordsmen": 16,
-		"crossbowmen": 10,
-		"horsemen": 8,
-		"knights": 6,
+		"crossbowmen": 8,
+		"horsemen": 7,
+		"knights": 5,
 		"mounted_knights": 3,
 		"royal_guard": 0
 	},
 	"Stronghold": {
-		"peasants": 18,
-		"spearmen": 22,
+		"peasants": 20,
+		"spearmen": 20,
 		"archers": 13,
 		"swordsmen": 16,
 		"crossbowmen": 12,

@@ -43,18 +43,18 @@ const COLOR_BLUE = "\u001b[34m"
 const COLOR_RESET = "\u001b[0m"
 
 func _init():
-	print("[TestRunner] Initialized")
+	DebugLogger.log("Testing", "[TestRunner] Initialized")
 
 ## Main test execution
 func run_all_tests() -> Dictionary:
 	"""Discover and run all test classes in the tests directory"""
-	print("\n" + COLOR_BLUE + "=== RUNNING UNIT TESTS ===" + COLOR_RESET)
+	DebugLogger.log("Testing", "\n" + COLOR_BLUE + "=== RUNNING UNIT TESTS ===" + COLOR_RESET)
 	
 	_reset_stats()
 	var test_files = _discover_test_files()
 	
 	if test_files.is_empty():
-		print(COLOR_YELLOW + "No test files found in tests directory" + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_YELLOW + "No test files found in tests directory" + COLOR_RESET)
 		return _get_summary()
 	
 	# Run each test file
@@ -67,7 +67,7 @@ func run_all_tests() -> Dictionary:
 
 func run_test_class(test_class_name: String) -> Dictionary:
 	"""Run a specific test class by name"""
-	print("\n" + COLOR_BLUE + "=== RUNNING TEST CLASS: " + test_class_name + " ===" + COLOR_RESET)
+	DebugLogger.log("Testing", "\n" + COLOR_BLUE + "=== RUNNING TEST CLASS: " + test_class_name + " ===" + COLOR_RESET)
 	
 	_reset_stats()
 	var test_file = "tests/" + test_class_name + ".gd"
@@ -90,7 +90,7 @@ func _discover_test_files() -> Array[String]:
 	var dir = DirAccess.open("res://tests")
 	
 	if dir == null:
-		print(COLOR_RED + "Could not open tests directory" + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_RED + "Could not open tests directory" + COLOR_RESET)
 		return test_files
 	
 	dir.list_dir_begin()
@@ -108,12 +108,12 @@ func _run_test_file(test_file_path: String) -> void:
 	"""Run all tests in a specific test file"""
 	var script = load("res://" + test_file_path)
 	if script == null:
-		print(COLOR_RED + "Could not load test file: " + test_file_path + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_RED + "Could not load test file: " + test_file_path + COLOR_RESET)
 		return
 	
 	var test_instance = script.new()
 	if not test_instance.has_method("get_test_runner"):
-		print(COLOR_RED + "Test class must extend TestCase: " + test_file_path + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_RED + "Test class must extend TestCase: " + test_file_path + COLOR_RESET)
 		return
 	
 	# Set up the test instance
@@ -121,13 +121,13 @@ func _run_test_file(test_file_path: String) -> void:
 	current_test_class = test_file_path.get_file().get_basename()
 	current_test_instance = test_instance
 	
-	print(COLOR_BLUE + "\n--- Running " + current_test_class + " ---" + COLOR_RESET)
+	DebugLogger.log("Testing", COLOR_BLUE + "\n--- Running " + current_test_class + " ---" + COLOR_RESET)
 	
 	# Get all methods that start with "test_"
 	var test_methods = _get_test_methods(test_instance)
 	
 	if test_methods.is_empty():
-		print(COLOR_YELLOW + "No test methods found (methods should start with 'test_')" + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_YELLOW + "No test methods found (methods should start with 'test_')" + COLOR_RESET)
 		return
 	
 	# Run each test method
@@ -170,11 +170,11 @@ func _run_single_test(test_instance, method_name: String) -> void:
 	
 	# Check if test failed during execution
 	if tests_failed > initial_failed_count:
-		print(COLOR_RED + "FAIL " + method_name + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_RED + "FAIL " + method_name + COLOR_RESET)
 		success = false
 		# The error message and failure handling was done in _fail_current_test
 	else:
-		print(COLOR_GREEN + "PASS " + method_name + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_GREEN + "PASS " + method_name + COLOR_RESET)
 		tests_passed += 1
 	
 	var end_time = Time.get_time_dict_from_system()
@@ -196,20 +196,20 @@ func _run_single_test(test_instance, method_name: String) -> void:
 
 func _print_summary() -> void:
 	"""Print test execution summary"""
-	print("\n" + COLOR_BLUE + "=== TEST SUMMARY ===" + COLOR_RESET)
-	print("Tests run: " + str(tests_run))
-	print(COLOR_GREEN + "Passed: " + str(tests_passed) + COLOR_RESET)
+	DebugLogger.log("Testing", "\n" + COLOR_BLUE + "=== TEST SUMMARY ===" + COLOR_RESET)
+	DebugLogger.log("Testing", "Tests run: " + str(tests_run))
+	DebugLogger.log("Testing", COLOR_GREEN + "Passed: " + str(tests_passed) + COLOR_RESET)
 	
 	if tests_failed > 0:
-		print(COLOR_RED + "Failed: " + str(tests_failed) + COLOR_RESET)
-		print("\n" + COLOR_RED + "FAILED TESTS:" + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_RED + "Failed: " + str(tests_failed) + COLOR_RESET)
+		DebugLogger.log("Testing", "\n" + COLOR_RED + "FAILED TESTS:" + COLOR_RESET)
 		for result in test_results:
 			if not result.success:
-				print("  • " + result.class + "::" + result.method)
+				DebugLogger.log("Testing", "  • " + result.class + "::" + result.method)
 				if result.error != "":
-					print("    " + result.error)
+					DebugLogger.log("Testing", "    " + result.error)
 	else:
-		print(COLOR_GREEN + "All tests passed!" + COLOR_RESET)
+		DebugLogger.log("Testing", COLOR_GREEN + "All tests passed!" + COLOR_RESET)
 
 func _get_summary() -> Dictionary:
 	"""Get test summary as dictionary"""
@@ -285,8 +285,8 @@ func _fail_current_test(error_message: String) -> void:
 	if current_test_instance and current_test_instance.has_method("_mark_test_failed"):
 		current_test_instance._mark_test_failed()
 	
-	print(COLOR_RED + "FAIL" + COLOR_RESET)
-	print(COLOR_RED + "    " + error_message + COLOR_RESET)
+	DebugLogger.log("Testing", COLOR_RED + "FAIL" + COLOR_RESET)
+	DebugLogger.log("Testing", COLOR_RED + "    " + error_message + COLOR_RESET)
 	tests_failed += 1
 	
 	# Add to results immediately

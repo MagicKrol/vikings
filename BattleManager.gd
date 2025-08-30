@@ -60,7 +60,7 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	if not target_region:
-		print("[BattleManager] Error: Target region not found")
+		DebugLogger.log("BattleSystem", "[BattleManager] Error: Target region not found")
 		return
 	
 	# Set up battle context
@@ -83,21 +83,21 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	if _battle_modal:
 		_battle_modal.show_battle(attacker, target_region)
 	
-	print("[BattleManager] Battle started: ", attacker.name, " vs ", target_region.get_region_name())
+	DebugLogger.log("BattleSystem", "[BattleManager] Battle started: " + str(attacker.name) + " vs " + str(target_region.get_region_name()))
 
 func set_pending_conquest(army: Army, region: Region) -> void:
 	"""Set the pending conquest context for battle resolution"""
 	pending_conquest_army = army
 	pending_conquest_region = region
-	print("[BattleManager] Set pending conquest: Army ", army.name, " vs Region ", region.get_region_name())
+	DebugLogger.log("BattleSystem", "[BattleManager] Set pending conquest: Army " + str(army.name) + " vs Region " + str(region.get_region_name()))
 
 
 func handle_battle_modal_closed() -> void:
 	"""Handle battle modal closure and complete conquest if needed"""
-	print("[BattleManager] Battle modal closed, checking for pending conquest...")
+	DebugLogger.log("BattleSystem", "[BattleManager] Battle modal closed, checking for pending conquest...")
 	
 	if pending_conquest_army != null and pending_conquest_region != null:
-		print("[BattleManager] Found pending conquest, delegating to GameManager finalization...")
+		DebugLogger.log("BattleSystem", "[BattleManager] Found pending conquest, delegating to GameManager finalization...")
 		
 		# Get battle result
 		var battle_result = _get_battle_result()
@@ -121,17 +121,17 @@ func handle_battle_modal_closed() -> void:
 		pending_conquest_army = null
 		pending_conquest_region = null
 	else:
-		print("[BattleManager] No pending conquest found")
+		DebugLogger.log("BattleSystem", "[BattleManager] No pending conquest found")
 	
 	# Emit battle finished signal
 	var result = _get_battle_result()
 	emit_signal("battle_finished", result)
-	print("[BattleManager] Battle finished with result: ", result)
+	DebugLogger.log("BattleSystem", "[BattleManager] Battle finished with result: " + str(result))
 
 func _apply_battle_losses() -> void:
 	"""Apply battle losses from the battle modal to armies and region"""
 	if _battle_modal == null or _battle_modal.battle_report == null:
-		print("[BattleManager] No battle report available")
+		DebugLogger.log("BattleSystem", "[BattleManager] No battle report available")
 		return
 	var report := _battle_modal.battle_report
 	
@@ -163,24 +163,24 @@ func _handle_army_withdrawal(withdrawing_army: Army) -> void:
 	if withdrawing_army == null or not is_instance_valid(withdrawing_army):
 		return
 	
-	print("[BattleManager] Army ", withdrawing_army.name, " withdrew from battle")
+	DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(withdrawing_army.name) + " withdrew from battle")
 	
 	# Reduce efficiency by 5 for withdrawal (in addition to movement penalty already applied)
 	withdrawing_army.reduce_efficiency(5)
-	print("[BattleManager] Reduced ", withdrawing_army.name, " efficiency to ", withdrawing_army.get_efficiency(), "% after withdrawal")
+	DebugLogger.log("BattleSystem", "[BattleManager] Reduced " + str(withdrawing_army.name) + " efficiency to " + str(withdrawing_army.get_efficiency()) + "% after withdrawal")
 	
 	# Move army back to previous region using ArmyManager
 	if _army_manager != null:
 		_army_manager.retreat_army_to_previous_region(withdrawing_army)
 	else:
-		print("[BattleManager] Warning: ArmyManager not available for army retreat")
+		DebugLogger.log("BattleSystem", "[BattleManager] Warning: ArmyManager not available for army retreat")
 
 func _handle_battle_defeat(defeated_army: Army) -> void:
 	"""Handle when an army is defeated in battle"""
 	if defeated_army == null or not is_instance_valid(defeated_army):
 		return
 	
-	print("[BattleManager] Army ", defeated_army.name, " was defeated and will be removed from the map")
+	DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " was defeated and will be removed from the map")
 	
 	# Get the army's parent (region container)
 	var parent_region = defeated_army.get_parent()
@@ -196,14 +196,14 @@ func _handle_battle_defeat(defeated_army: Army) -> void:
 	# Free the army node
 	defeated_army.queue_free()
 	
-	print("[BattleManager] Defeated army removed from map")
+	DebugLogger.log("BattleSystem", "[BattleManager] Defeated army removed from map")
 
 func _check_ai_turn_resumption(army_player_id: int) -> void:
 	"""Check if an AI player needs to resume their turn after battle completion"""
 	# NOTE: This function is no longer needed since AI turns now properly wait for battles
 	# to complete using async/await in _execute_army_move(). The battle completion is 
 	# handled automatically within the AI turn processing flow.
-	print("[BattleManager] Battle completed for Player %d - AI turn will continue automatically" % army_player_id)
+	DebugLogger.log("BattleSystem", "[BattleManager] Battle completed for Player %d - AI turn will continue automatically" % army_player_id)
 
 # --- Collect all defending armies owned by the region owner in the region (excluding the attacker if already reparented) ---
 func _collect_defender_armies(region: Region, owner_id: int, attacker: Army) -> Array[Army]:

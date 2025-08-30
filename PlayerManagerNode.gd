@@ -81,14 +81,14 @@ func set_current_player(player_id: int) -> void:
 	"""Set the active player"""
 	if players.has(player_id):
 		current_player_id = player_id
-		print("[PlayerManagerNode] Current player changed to ", get_current_player().get_player_name())
+		DebugLogger.log("PlayerManagement", "Current player changed to " + get_current_player().get_player_name())
 		current_player_changed.emit(player_id)
 
 func next_player() -> Player:
 	"""Advance to the next player and return them"""
 	current_player_id = (current_player_id % total_players) + 1
 	var next_player = get_current_player()
-	print("[PlayerManagerNode] Advanced to ", next_player.get_player_name())
+	DebugLogger.log("PlayerManagement", "Advanced to " + next_player.get_player_name())
 	return next_player
 
 func get_total_players() -> int:
@@ -147,7 +147,7 @@ func process_resource_income() -> void:
 	# Process income for all players
 	for player_id in players:
 		var player = players[player_id]
-		print("[PlayerManagerNode] Processing income for ", player.get_player_name())
+		DebugLogger.log("PlayerManagement", "Processing income for " + player.get_player_name())
 		_calculate_player_income(player)
 
 func process_resource_income_for_player(player_id: int) -> void:
@@ -155,7 +155,7 @@ func process_resource_income_for_player(player_id: int) -> void:
 	
 	var player = players.get(player_id, null)
 	if player != null:
-		print("[PlayerManagerNode] Processing income for ", player.get_player_name())
+		DebugLogger.log("PlayerManagement", "Processing income for " + player.get_player_name())
 		_calculate_player_income(player)
 	else:
 		push_error("[PlayerManagerNode] Player ", player_id, " not found!")
@@ -177,7 +177,7 @@ func _calculate_player_income(player: Player) -> void:
 	var owned_regions = region_manager.get_player_regions(player_id)
 
 	if owned_regions.is_empty():
-		print("[PlayerManagerNode] No regions owned by ", player.get_player_name(), " - no resource income")
+		DebugLogger.log("PlayerManagement", "No regions owned by " + player.get_player_name() + " - no resource income")
 		return
 	
 	# Calculate total resources from all owned regions
@@ -364,7 +364,7 @@ func load_from_dictionary(data: Dictionary) -> void:
 # Debug and testing functions
 func print_all_resources() -> void:
 	"""Print all players' resources to console"""
-	print(get_player_resource_summary())
+	DebugLogger.log("PlayerManagement", get_player_resource_summary())
 
 func give_test_resources(player_id: int) -> void:
 	"""Give test resources to a player for debugging"""
@@ -378,7 +378,7 @@ func give_test_resources(player_id: int) -> void:
 	player.add_resources(ResourcesEnum.Type.IRON, 200)
 	player.add_resources(ResourcesEnum.Type.STONE, 250)
 	
-	print("[PlayerManagerNode] Gave test resources to ", player.get_player_name())
+	DebugLogger.log("PlayerManagement", "Gave test resources to " + player.get_player_name())
 
 func calculate_total_army_food_cost(player_id: int) -> float:
 	"""Calculate total food cost for all armies and garrisons owned by a player"""

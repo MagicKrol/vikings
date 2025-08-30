@@ -49,7 +49,7 @@ func _apply_font_outlines():
 		#button.add_theme_constant_override("shadow_offset_y", 2)
 		#button.add_theme_constant_override("shadow_outline_size", 1)
 		
-		print("[MainMenu] Testing - programmatic overrides commented out for ", button.text)
+		DebugLogger.log("UISystem", "Testing - programmatic overrides commented out for " + button.text)
 
 func _on_button_hover():
 	"""Play hover sound when mouse enters button"""
@@ -57,31 +57,31 @@ func _on_button_hover():
 		sound_manager.click_sound()
 
 func _on_continue_pressed():
-	print("[MainMenu] Continue button pressed")
+	DebugLogger.log("UISystem", "Continue button pressed")
 	if sound_manager:
 		sound_manager.click_sound()
 		sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_new_game_pressed():
-	print("[MainMenu] New Game button pressed")
+	DebugLogger.log("UISystem", "New Game button pressed")
 	if sound_manager:
 		sound_manager.click_sound()
 		sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_load_game_pressed():
-	print("[MainMenu] Load Game button pressed")
+	DebugLogger.log("UISystem", "Load Game button pressed")
 	if sound_manager:
 		sound_manager.click_sound()
 
 func _on_options_pressed():
-	print("[MainMenu] Options button pressed")
+	DebugLogger.log("UISystem", "Options button pressed")
 	if sound_manager:
 		sound_manager.click_sound()
 
 func _on_exit_pressed():
-	print("[MainMenu] Exit button pressed")
+	DebugLogger.log("UISystem", "Exit button pressed")
 	if sound_manager:
 		sound_manager.click_sound()
 	get_tree().quit()

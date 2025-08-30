@@ -51,11 +51,11 @@ var map_generator: MapGenerator
 func _init(region_mgr: RegionManager, map_gen: MapGenerator):
 	region_manager = region_mgr
 	map_generator = map_gen
-	print("[ArmyTargetScorer] Initialized with region and map manager references")
+	DebugLogger.log("AIScoring", "Initialized with region and map manager references")
 
 func score_target_regions(target_region_ids: Array[int], player_id: int) -> Array:
 	"""Score an array of target regions for army movement decisions"""
-	print("[ArmyTargetScorer] Scoring ", target_region_ids.size(), " target regions for Player ", player_id)
+	DebugLogger.log("AIScoring", "Scoring " + str(target_region_ids.size()) + " target regions for Player " + str(player_id))
 	
 	var scored_targets = []
 	
@@ -74,8 +74,8 @@ func score_target_regions(target_region_ids: Array[int], player_id: int) -> Arra
 	# Sort by overall score (highest first)
 	scored_targets.sort_custom(func(a, b): return a.overall_score > b.overall_score)
 	
-	print("[ArmyTargetScorer] Completed scoring, best target has score: ", 
-		  scored_targets[0].overall_score if not scored_targets.is_empty() else "N/A")
+	DebugLogger.log("AIScoring", "Completed scoring, best target has score: " + 
+		  (str(scored_targets[0].overall_score) if not scored_targets.is_empty() else "N/A"))
 	
 	return scored_targets
 

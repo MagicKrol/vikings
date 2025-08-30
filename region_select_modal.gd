@@ -299,46 +299,46 @@ func _clear_buttons() -> void:
 
 func _on_raise_army_pressed() -> void:
 	"""Handle Raise Army button - create new army with 0 movement and 0 soldiers"""
-	print("[RegionSelectModal] Raise Army button pressed!")
+	DebugLogger.log("UISystem", "Raise Army button pressed!")
 	
 	# Play click sound
 	if sound_manager:
 		sound_manager.click_sound()
 	
 	# Debug: Check references
-	print("[RegionSelectModal] army_manager: ", army_manager)
-	print("[RegionSelectModal] current_region: ", current_region)
+	DebugLogger.log("UISystem", "army_manager: " + str(army_manager))
+	DebugLogger.log("UISystem", "current_region: " + str(current_region))
 	if current_region:
-		print("[RegionSelectModal] current_region name: ", current_region.get_region_name())
+		DebugLogger.log("UISystem", "current_region name: " + current_region.get_region_name())
 	
 	# Check if player can afford the raise army cost
 	if player_manager == null:
-		print("[RegionSelectModal] Error: Player manager not found")
+		DebugLogger.log("UISystem", "Error: Player manager not found")
 		return
 	
 	var current_player = player_manager.get_player(game_manager.get_current_player())
 	if current_player == null:
-		print("[RegionSelectModal] Error: Current player not found")
+		DebugLogger.log("UISystem", "Error: Current player not found")
 		return
 	
 	var raise_army_cost = GameParameters.get_raise_army_cost()
 	if current_player.get_resource_amount(ResourcesEnum.Type.GOLD) < raise_army_cost:
-		print("[RegionSelectModal] Cannot afford to raise army - insufficient gold")
+		DebugLogger.log("UISystem", "Cannot afford to raise army - insufficient gold")
 		return
 	
 	# Create a new raised army in the current region
 	if army_manager != null and current_region != null:
-		print("[RegionSelectModal] Attempting to create raised army...")
+		DebugLogger.log("UISystem", "Attempting to create raised army...")
 		
 		# Deduct the cost first
 		current_player.remove_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
-		print("[RegionSelectModal] Player spent ", raise_army_cost, " gold to raise army")
+		DebugLogger.log("UISystem", "Player spent " + str(raise_army_cost) + " gold to raise army")
 		
 		# Use current player ID from GameManager
 		var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
 		
 		if new_army != null:
-			print("[RegionSelectModal] Successfully raised new army in region: ", current_region.get_region_name())
+			DebugLogger.log("UISystem", "Successfully raised new army in region: " + current_region.get_region_name())
 			
 			# Show success message modal
 			if message_modal != null:
@@ -356,13 +356,13 @@ func _on_raise_army_pressed() -> void:
 		else:
 			# Failed to create army, refund the gold
 			current_player.add_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
-			print("[RegionSelectModal] Failed to raise army - region may already have an army (refunded gold)")
+			DebugLogger.log("UISystem", "Failed to raise army - region may already have an army (refunded gold)")
 	else:
-		print("[RegionSelectModal] Cannot raise army - missing army_manager or current_region")
+		DebugLogger.log("UISystem", "Cannot raise army - missing army_manager or current_region")
 		if army_manager == null:
-			print("[RegionSelectModal] - army_manager is null")
+			DebugLogger.log("UISystem", "- army_manager is null")
 		if current_region == null:
-			print("[RegionSelectModal] - current_region is null")
+			DebugLogger.log("UISystem", "- current_region is null")
 
 func _on_recruit_soldiers_pressed() -> void:
 	"""Handle Recruit Soldiers button - open recruitment modal for region garrison"""
@@ -387,14 +387,14 @@ func _on_build_castle_pressed() -> void:
 		sound_manager.click_sound()
 	
 	if current_region == null:
-		print("[RegionSelectModal] Error: No current region")
+		DebugLogger.log("UISystem", "Error: No current region")
 		return
 	
-	print("[RegionSelectModal] Build Castle clicked for region: ", current_region.get_region_name())
+	DebugLogger.log("UISystem", "Build Castle clicked for region: " + current_region.get_region_name())
 	
 	# Check if castle can be built
 	if not current_region.can_build_castle():
-		print("[RegionSelectModal] Cannot build castle in this region")
+		DebugLogger.log("UISystem", "Cannot build castle in this region")
 		return
 	
 	# Build the first castle type (Outpost)
@@ -408,14 +408,14 @@ func _on_upgrade_castle_pressed() -> void:
 		sound_manager.click_sound()
 	
 	if current_region == null:
-		print("[RegionSelectModal] Error: No current region")
+		DebugLogger.log("UISystem", "Error: No current region")
 		return
 	
-	print("[RegionSelectModal] Upgrade Castle clicked for region: ", current_region.get_region_name())
+	DebugLogger.log("UISystem", "Upgrade Castle clicked for region: " + current_region.get_region_name())
 	
 	# Check if castle can be upgraded
 	if not current_region.can_upgrade_castle():
-		print("[RegionSelectModal] Cannot upgrade castle in this region")
+		DebugLogger.log("UISystem", "Cannot upgrade castle in this region")
 		return
 	
 	# Get next castle level
@@ -423,7 +423,7 @@ func _on_upgrade_castle_pressed() -> void:
 	var next_castle_type = CastleTypeEnum.get_next_level(current_castle_type)
 	
 	if next_castle_type == CastleTypeEnum.Type.NONE:
-		print("[RegionSelectModal] Castle already at maximum level")
+		DebugLogger.log("UISystem", "Castle already at maximum level")
 		return
 	
 	_start_castle_construction(next_castle_type)
@@ -433,20 +433,20 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	# Get construction cost
 	var construction_cost = GameParameters.get_castle_building_cost(castle_type)
 	if construction_cost.is_empty():
-		print("[RegionSelectModal] Error: No construction cost defined for castle type ", castle_type)
+		DebugLogger.log("UISystem", "Error: No construction cost defined for castle type " + str(castle_type))
 		return
 	
-	print("[RegionSelectModal] Construction cost: ", construction_cost)
+	DebugLogger.log("UISystem", "Construction cost: " + str(construction_cost))
 	
 	# Check if player can afford the construction
 	if player_manager == null:
-		print("[RegionSelectModal] Error: Player manager not found")
+		DebugLogger.log("UISystem", "Error: Player manager not found")
 		return
 	
 	# Get current player (assuming player 1 for now)
 	var current_player = player_manager.get_player(1)
 	if current_player == null:
-		print("[RegionSelectModal] Error: Current player not found")
+		DebugLogger.log("UISystem", "Error: Current player not found")
 		return
 	
 	# Get player resources as dictionary
@@ -460,17 +460,17 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	
 	# Check if player can afford construction
 	if not GameParameters.can_afford_castle(castle_type, player_resources):
-		print("[RegionSelectModal] Cannot afford castle construction - insufficient resources")
+		DebugLogger.log("UISystem", "Cannot afford castle construction - insufficient resources")
 		return
 	
 	# Deduct resources from player
 	if not current_player.pay_cost(construction_cost):
-		print("[RegionSelectModal] Error: Failed to pay construction cost")
+		DebugLogger.log("UISystem", "Error: Failed to pay construction cost")
 		return
 	
 	# Start castle construction
 	current_region.start_castle_construction(castle_type)
-	print("[RegionSelectModal] Successfully started construction of ", CastleTypeEnum.type_to_string(castle_type), " in ", current_region.get_region_name())
+	DebugLogger.log("UISystem", "Successfully started construction of " + CastleTypeEnum.type_to_string(castle_type) + " in " + current_region.get_region_name())
 	
 	# Update InfoModal to reflect the change
 	if info_modal != null and info_modal.visible:
@@ -486,41 +486,41 @@ func _on_promote_region_pressed() -> void:
 		sound_manager.click_sound()
 	
 	if current_region == null:
-		print("[RegionSelectModal] Error: No current region")
+		DebugLogger.log("UISystem", "Error: No current region")
 		return
 	
-	print("[RegionSelectModal] Promote Region clicked for region: ", current_region.get_region_name())
+	DebugLogger.log("UISystem", "Promote Region clicked for region: " + current_region.get_region_name())
 	
 	# Get current region level
 	var current_level = current_region.get_region_level()
-	print("[RegionSelectModal] Current level: ", current_level)
+	DebugLogger.log("UISystem", "Current level: " + str(current_level))
 	
 	# Check if region is already at maximum level
 	if current_level >= RegionLevelEnum.Level.L5:
-		print("[RegionSelectModal] Region is already at maximum level (L5)")
+		DebugLogger.log("UISystem", "Region is already at maximum level (L5)")
 		return
 	
 	# Calculate next level
 	var next_level = current_level + 1
-	print("[RegionSelectModal] Attempting to promote to level: ", next_level)
+	DebugLogger.log("UISystem", "Attempting to promote to level: " + str(next_level))
 	
 	# Get promotion cost
 	var promotion_cost = GameParameters.get_promotion_cost(next_level)
 	if promotion_cost.is_empty():
-		print("[RegionSelectModal] Error: No promotion cost defined for level ", next_level)
+		DebugLogger.log("UISystem", "Error: No promotion cost defined for level " + str(next_level))
 		return
 	
-	print("[RegionSelectModal] Promotion cost: ", promotion_cost)
+	DebugLogger.log("UISystem", "Promotion cost: " + str(promotion_cost))
 	
 	# Check if player can afford the promotion
 	if player_manager == null:
-		print("[RegionSelectModal] Error: Player manager not found")
+		DebugLogger.log("UISystem", "Error: Player manager not found")
 		return
 	
 	# Get current player (assuming player 1 for now - can be made dynamic)
 	var current_player = player_manager.get_player(1)
 	if current_player == null:
-		print("[RegionSelectModal] Error: Current player not found")
+		DebugLogger.log("UISystem", "Error: Current player not found")
 		return
 	
 	# Get player resources as dictionary
@@ -534,12 +534,12 @@ func _on_promote_region_pressed() -> void:
 	
 	# Check if player can afford promotion
 	if not GameParameters.can_afford_promotion(next_level, player_resources):
-		print("[RegionSelectModal] Cannot afford promotion - insufficient resources")
+		DebugLogger.log("UISystem", "Cannot afford promotion - insufficient resources")
 		return
 	
 	# Deduct resources from player using the proper Player method
 	if not current_player.pay_cost(promotion_cost):
-		print("[RegionSelectModal] Error: Failed to pay promotion cost")
+		DebugLogger.log("UISystem", "Error: Failed to pay promotion cost")
 		return
 	
 	# Promote the region
@@ -706,24 +706,24 @@ func _on_ore_search_pressed() -> void:
 		sound_manager.click_sound()
 	
 	if current_region == null:
-		print("[RegionSelectModal] Error: No current region")
+		DebugLogger.log("UISystem", "Error: No current region")
 		return
 	
 	if region_manager == null:
-		print("[RegionSelectModal] Error: No region manager")
+		DebugLogger.log("UISystem", "Error: No region manager")
 		return
 	
 	if player_manager == null:
-		print("[RegionSelectModal] Error: No player manager")
+		DebugLogger.log("UISystem", "Error: No player manager")
 		return
 	
-	print("[RegionSelectModal] Ore Search clicked for region: ", current_region.get_region_name())
+	DebugLogger.log("UISystem", "Ore Search clicked for region: " + current_region.get_region_name())
 	
 	# Perform ore search
 	var search_result = region_manager.perform_ore_search(current_region, 1, player_manager)
 	
 	if search_result.success:
-		print("[RegionSelectModal] Ore search successful: ", search_result.message)
+		DebugLogger.log("UISystem", "Ore search successful: " + search_result.message)
 		
 		# Show success message modal
 		if message_modal != null and search_result.has("ore_type"):
@@ -734,7 +734,7 @@ func _on_ore_search_pressed() -> void:
 			var message = "Ore size was estimated to " + str(ore_amount) + " units."
 			message_modal.display_message(header, message)
 	else:
-		print("[RegionSelectModal] Ore search failed: ", search_result.message)
+		DebugLogger.log("UISystem", "Ore search failed: " + search_result.message)
 		
 		# Show failure message modal
 		if message_modal != null:

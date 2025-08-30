@@ -360,7 +360,7 @@ func _on_continue_pressed() -> void:
 		# Spend 1 movement point from source army for transfer operation
 		if source_army != null:
 			source_army.spend_movement_points(1)
-			print("[TransferSoldiersModal] Army ", source_army.number, " spent 1 movement point for transfer (remaining: ", source_army.get_movement_points(), ")")
+			DebugLogger.log("UISystem", "Army " + str(source_army.number) + " spent 1 movement point for transfer (remaining: " + str(source_army.get_movement_points()) + ")")
 	
 	# Clear state and hide modal
 	source_army = null
@@ -387,22 +387,22 @@ func _apply_transfers() -> void:
 			if target_army != null:
 				# Army to army transfer
 				target_army.add_soldiers(unit_type, transfer_amount)
-				print("[TransferSoldiersModal] Transferred ", transfer_amount, " ", SoldierTypeEnum.type_to_string(unit_type), " from army ", source_army.number, " to army ", target_army.number)
+				DebugLogger.log("UISystem", "Transferred " + str(transfer_amount) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(source_army.number) + " to army " + str(target_army.number))
 			else:
 				# Army to garrison transfer
 				target_region.get_garrison().add_soldiers(unit_type, transfer_amount)
-				print("[TransferSoldiersModal] Transferred ", transfer_amount, " ", SoldierTypeEnum.type_to_string(unit_type), " from army ", source_army.number, " to garrison")
+				DebugLogger.log("UISystem", "Transferred " + str(transfer_amount) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(source_army.number) + " to garrison")
 		else:
 			# Transfer from target to source army
 			var actual_transfer = -transfer_amount
 			if target_army != null:
 				# Army to army transfer
 				target_army.remove_soldiers(unit_type, actual_transfer)
-				print("[TransferSoldiersModal] Transferred ", actual_transfer, " ", SoldierTypeEnum.type_to_string(unit_type), " from army ", target_army.number, " to army ", source_army.number)
+				DebugLogger.log("UISystem", "Transferred " + str(actual_transfer) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(target_army.number) + " to army " + str(source_army.number))
 			else:
 				# Army to garrison transfer
 				target_region.get_garrison().remove_soldiers(unit_type, actual_transfer)
-				print("[TransferSoldiersModal] Transferred ", actual_transfer, " ", SoldierTypeEnum.type_to_string(unit_type), " from garrison to army ", source_army.number)
+				DebugLogger.log("UISystem", "Transferred " + str(actual_transfer) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from garrison to army " + str(source_army.number))
 			source_army.add_soldiers(unit_type, actual_transfer)
 
 func _apply_standard_theme(label: Label) -> void:

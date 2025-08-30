@@ -83,7 +83,7 @@ func _find_army_modal() -> void:
 func create_army(region_container: Node, player_id: int, is_raised: bool = false) -> Army:
 	"""Create a new army in the specified region"""
 	if is_raised:
-		print("[ArmyManager] create_army called for raised army, player ", player_id, " in region ", region_container.name)
+		DebugLogger.log("ArmyManagement", "create_army called for raised army, player " + str(player_id) + " in region " + region_container.name)
 	
 	# Create army instance with Roman numeral naming
 	var army := Sprite2D.new()
@@ -115,7 +115,7 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 	armies_by_player[player_id].append(army)
 	
 	if is_raised:
-		print("[ArmyManager] Raised new army for player ", player_id, " in region ", region_container.name)
+		DebugLogger.log("ArmyManagement", "Raised new army for player " + str(player_id) + " in region " + region_container.name)
 	
 	return army
 
@@ -143,7 +143,7 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 	
 	# Check if army belongs to current player (if current_player_id is provided)
 	if current_player_id != -1 and army.get_player_id() != current_player_id:
-		print("[ArmyManager] Cannot select army owned by Player ", army.get_player_id(), " (current player is ", current_player_id, ")")
+		DebugLogger.log("ArmyManagement", "Cannot select army owned by Player " + str(army.get_player_id()) + " (current player is " + str(current_player_id) + ")")
 		return
 	
 	selected_army = army
@@ -205,7 +205,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	var source_region = selected_region_container
 	var target_region_node = target_region_container
 	if not source_region.has_method("get_region_id") or not target_region_node.has_method("get_region_id"):
-		print("[ArmyManager] Error: Region containers don't have get_region_id method")
+		DebugLogger.log("ArmyManagement", "Error: Region containers don't have get_region_id method")
 		return false
 	
 	var source_region_id = source_region.get_region_id()
@@ -233,7 +233,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 			var _region_type_name = RegionTypeEnum.type_to_string(check_region.get_region_type())
 		else:
 			var current_points = selected_army.get_movement_points()
-			print("[ArmyManager] Movement blocked - not enough movement points (need ", terrain_cost, ", have ", current_points, ")")
+			DebugLogger.log("ArmyManagement", "Movement blocked - not enough movement points (need " + str(terrain_cost) + ", have " + str(current_points) + ")")
 		return false
 	
 	# Battle conditions will be handled after movement by click_manager
@@ -264,7 +264,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		if game_manager:
 			game_manager.claim_peaceful_region(target_region_id, army_player_id)
 		else:
-			print("[ArmyManager] Warning: Could not get GameManager for peaceful region claiming")
+			DebugLogger.log("ArmyManagement", "Warning: Could not get GameManager for peaceful region claiming")
 	
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
@@ -279,11 +279,11 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	if target_region_owner != army_player_id and target_region_owner != -1:
 		# Moved to enemy territory - trigger combat
 		_trigger_combat_if_needed(selected_army, target_region)
-		print("[ArmyManager] Army moved to enemy territory (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - combat triggered")
+		DebugLogger.log("ArmyManagement", "Army moved to enemy territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
 	elif target_region_owner == -1 and target_region.has_garrison():
 		# Moved to neutral territory with garrison - trigger combat
 		_trigger_combat_if_needed(selected_army, target_region)
-		print("[ArmyManager] Army moved to neutral territory with garrison (cost: ", terrain_cost, ", remaining points: ", remaining_points, ") - combat triggered")
+		DebugLogger.log("ArmyManagement", "Army moved to neutral territory with garrison (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
 	else:
 		# Moved to friendly territory - keep army selected
 		# Update selected region container to the new region
@@ -298,9 +298,9 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		if army_modal != null and selected_army != null:
 			army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - allow continued movement
 		
-		print("[ArmyManager] Army moved to friendly territory (cost: ", terrain_cost, ", remaining points: ", remaining_points, ")")
+		DebugLogger.log("ArmyManagement", "Army moved to friendly territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
 	
-	print("[ArmyManager] Army moved (cost: ", terrain_cost, ", remaining points: ", remaining_points, ")")
+	DebugLogger.log("ArmyManagement", "Army moved (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
 	
 	# Play click sound for successful army movement
 	if sound_manager:
@@ -321,12 +321,12 @@ func _show_move_arrows(region_container: Node) -> void:
 	# Get region ID from the Region script
 	var region = region_container
 	if not region.has_method("get_region_id"):
-		print("[ArmyManager] Error: Region container doesn't have get_region_id method: ", region_container.name)
+		DebugLogger.log("ArmyManagement", "Error: Region container doesn't have get_region_id method: " + region_container.name)
 		return
 	
 	var region_id = region.get_region_id()
 	if region_id <= 0:
-		print("[ArmyManager] Error: Invalid region ID: ", region_id)
+		DebugLogger.log("ArmyManagement", "Error: Invalid region ID: " + str(region_id))
 		return
 	
 	# Get neighboring regions
@@ -454,7 +454,7 @@ func reset_all_army_movement_points() -> void:
 	if army_modal != null and selected_army != null:
 		army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - just update info
 	
-	print("[ArmyManager] Reset movement points for ", total_armies, " armies")
+	DebugLogger.log("ArmyManagement", "Reset movement points for " + str(total_armies) + " armies")
 
 func get_army_in_region(region_container: Node, player_id: int) -> Army:
 	"""Get the army for a specific player in a region, or null if not found"""
@@ -579,7 +579,7 @@ func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -
 			if battle_manager:
 				# Set up battle through BattleManager
 				battle_manager.set_pending_conquest(attacking_army, defending_region)
-				print("[ArmyManager] Combat triggered: Army %s vs Region %s" % [attacking_army.name, defending_region.get_region_name()])
+				DebugLogger.log("ArmyManagement", "Combat triggered: Army " + attacking_army.name + " vs Region " + defending_region.get_region_name())
 				
 				# Show battle modal for AI combat (non-interactive)
 				if battle_modal:
@@ -589,7 +589,7 @@ func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -
 				deselect_army()
 				return
 		
-		print("[ArmyManager] Warning: Could not trigger combat - BattleManager not available")
+		DebugLogger.log("ArmyManagement", "Warning: Could not trigger combat - BattleManager not available")
 
 func _get_game_manager() -> GameManager:
 	"""Get GameManager reference"""
@@ -610,7 +610,7 @@ func _show_battle_modal(attacking_army: Army, defending_region: Region) -> void:
 	if battle_modal != null:
 		battle_modal.show_battle(attacking_army, defending_region)
 	else:
-		print("[ArmyManager] Error: BattleModal not available")
+		DebugLogger.log("ArmyManagement", "Error: BattleModal not available")
 
 func _get_next_army_roman_numeral(player_id: int) -> String:
 	"""Get the next Roman numeral for army naming based on existing armies"""
@@ -649,10 +649,6 @@ func calc_reinforcement_threshold(turn_number: int) -> float:
 	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
 	return scaled * float(peasant_power) * 2.0
 
-func needs_reinforcement(army: Army, turn_number: int) -> bool:
-	"""Check if an army needs reinforcement based on power threshold"""
-	return float(army.get_army_power()) < calc_reinforcement_threshold(turn_number)
-
 func remove_destroyed_armies() -> void:
 	"""Remove armies that have no soldiers left after battle"""
 	for player_id in armies_by_player:
@@ -666,7 +662,7 @@ func remove_destroyed_armies() -> void:
 			
 			# Check if army has no soldiers left
 			if army.get_total_soldiers() <= 0:
-				print("[ArmyManager] Removing destroyed army: ", army.name)
+				DebugLogger.log("ArmyManagement", "Removing destroyed army: " + army.name)
 				# Remove from scene
 				if army.get_parent() != null:
 					army.get_parent().remove_child(army)
@@ -691,7 +687,7 @@ func remove_army_from_tracking(army: Army) -> void:
 		var index = armies.find(army)
 		if index != -1:
 			armies.remove_at(index)
-			print("[ArmyManager] Removed army ", army.name, " from player ", player_id, " tracking")
+			DebugLogger.log("ArmyManagement", "Removed army " + army.name + " from player " + str(player_id) + " tracking")
 	
 	# Also remove from previous regions tracking
 	if army_previous_regions.has(army):
@@ -700,21 +696,21 @@ func remove_army_from_tracking(army: Army) -> void:
 func retreat_army_to_previous_region(army: Army) -> void:
 	"""Move army back to its previous region after withdrawal"""
 	if army == null or not is_instance_valid(army):
-		print("[ArmyManager] Cannot retreat: invalid army")
+		DebugLogger.log("ArmyManagement", "Cannot retreat: invalid army")
 		return
 	
 	# Check if we have a previous region stored
 	if not army_previous_regions.has(army):
-		print("[ArmyManager] Warning: No previous region stored for army ", army.name)
+		DebugLogger.log("ArmyManagement", "Warning: No previous region stored for army " + army.name)
 		return
 	
 	var previous_region = army_previous_regions[army]
 	if previous_region == null or not is_instance_valid(previous_region):
-		print("[ArmyManager] Warning: Previous region is invalid for army ", army.name)
+		DebugLogger.log("ArmyManagement", "Warning: Previous region is invalid for army " + army.name)
 		army_previous_regions.erase(army)
 		return
 	
-	print("[ArmyManager] Retreating army ", army.name, " to previous region")
+	DebugLogger.log("ArmyManagement", "Retreating army " + army.name + " to previous region")
 	
 	# Move army back to previous region
 	var current_parent = army.get_parent()
@@ -731,7 +727,7 @@ func retreat_army_to_previous_region(army: Army) -> void:
 			var center = center_meta as Vector2
 			army.position = center + _get_army_position_offset(previous_region)
 	
-	print("[ArmyManager] Army ", army.name, " retreated to ", previous_region.name)
+	DebugLogger.log("ArmyManagement", "Army " + army.name + " retreated to " + previous_region.name)
 	
 	# Clear the previous region tracking since army is back there
 	army_previous_regions.erase(army)

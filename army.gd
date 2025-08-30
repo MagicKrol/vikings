@@ -66,7 +66,7 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 
 func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	"""Setup a newly raised army with 0 movement points and no soldiers"""
-	print("[Army] setup_raised_army called for player ", new_player_id)
+	DebugLogger.log("ArmyManagement", "[Army] setup_raised_army called for player " + str(new_player_id))
 	player_id = new_player_id
 	movement_points = 0
 	efficiency = 100  # Start with full efficiency
@@ -80,7 +80,7 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	# Players need to recruit soldiers separately
 	
 	z_index = 125 + player_id
-	print("[Army] Raised army setup complete - movement_points: ", movement_points, ", soldiers: ", composition.get_total_soldiers())
+	DebugLogger.log("ArmyManagement", "[Army] Raised army setup complete - movement_points: " + str(movement_points) + ", soldiers: " + str(composition.get_total_soldiers()))
 
 func reset_movement_points() -> void:
 	"""Reset movement points for a new turn"""
@@ -99,7 +99,7 @@ func make_camp() -> void:
 	# Restore 10 efficiency (capped at 100%)
 	restore_efficiency(10)
 	
-	print("[Army] ", name, " made camp - efficiency restored to ", efficiency, "%")
+	DebugLogger.log("ArmyManagement", "[Army] " + str(name) + " made camp - efficiency restored to " + str(efficiency) + "%")
 
 func get_player_id() -> int:
 	"""Get the player ID"""
@@ -174,9 +174,9 @@ func _set_warrior_texture(player_number: int) -> void:
 	
 	if new_texture != null:
 		texture = new_texture
-		print("[Army] Set warrior texture for Player ", player_number, " to: ", texture_path)
+		DebugLogger.log("ArmyManagement", "[Army] Set warrior texture for Player " + str(player_number) + " to: " + str(texture_path))
 	else:
-		print("[Army] Warning: Could not load warrior texture for Player ", player_number, " at: ", texture_path)
+		DebugLogger.log("ArmyManagement", "[Army] Warning: Could not load warrior texture for Player " + str(player_number) + " at: " + str(texture_path))
 		# Fallback to default warrior image
 		texture = load("res://images/warrior_1.png")
 
@@ -204,8 +204,7 @@ func get_assigned_budget() -> BudgetComposition:
 
 func needs_recruitment(turn_number: int = 1) -> bool:
 	"""Check if this army needs recruitment based on power threshold"""
-	# Use the same logic as ArmyManager.needs_reinforcement
-	var base_max := 20.0
+	var base_max := 30.0
 	var scaled := base_max * (1.0 + 0.03 * float(turn_number))
 	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
 	var threshold := scaled * float(peasant_power) * 2.0

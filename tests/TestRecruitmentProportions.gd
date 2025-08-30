@@ -94,7 +94,7 @@ func test_outpost_ai_like_budget_balance() -> void:
 	var swords = army.get_soldier_count(SoldierTypeEnum.Type.SWORDSMEN)
 	var peas = army.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
 	var total = army.get_total_soldiers()
-	print("AI test results: arch=", arch, ", spears=", spears, ", swords=", swords, ", peas=", peas, ", total=", total)
+	DebugLogger.log("Testing", "AI test results: arch=" + str(arch) + ", spears=" + str(spears) + ", swords=" + str(swords) + ", peas=" + str(peas) + ", total=" + str(total))
 	var ideal = GameParameters.get_ideal_composition("Outpost")
 	var pea_share = float(ideal["peasants"]) / 100.0
 	# New units.py algorithm: peasants = floor(unit0_share * total_units), paid units fill remaining

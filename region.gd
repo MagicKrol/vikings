@@ -298,7 +298,7 @@ func grow_population() -> void:
 			growth_info += ", promotion bonus: +" + str(snappedf(promotion_bonus * 100, 0.1)) + "%"
 			growth_info += ", " + str(promotion_growth_bonus_turns_remaining) + " turns remaining"
 		growth_info += ")"
-		print("[Region] ", region_name, " population grew from ", old_population, " to ", population, growth_info)
+		DebugLogger.log("RegionManagement", region_name + " population grew from " + str(old_population) + " to " + str(population) + " " + growth_info)
 
 # Castle management methods
 func get_castle_type() -> CastleTypeEnum.Type:
@@ -338,7 +338,7 @@ func start_castle_construction(castle_type_to_build: CastleTypeEnum.Type) -> voi
 	"""Start construction of a castle type"""
 	castle_under_construction = castle_type_to_build
 	castle_build_turns_remaining = GameParameters.get_castle_build_time(castle_type_to_build)
-	print("[Region] Started construction of ", CastleTypeEnum.type_to_string(castle_type_to_build), " in ", region_name, " (", castle_build_turns_remaining, " turns remaining)")
+	DebugLogger.log("RegionManagement", "Started construction of " + CastleTypeEnum.type_to_string(castle_type_to_build) + " in " + region_name + " (" + str(castle_build_turns_remaining) + " turns remaining)")
 
 func process_castle_construction() -> bool:
 	"""Process castle construction for one turn. Returns true if construction completed."""
@@ -346,7 +346,7 @@ func process_castle_construction() -> bool:
 		return false
 	
 	castle_build_turns_remaining -= 1
-	print("[Region] Castle construction in ", region_name, ": ", castle_build_turns_remaining, " turns remaining")
+	DebugLogger.log("RegionManagement", "Castle construction in " + region_name + ": " + str(castle_build_turns_remaining) + " turns remaining")
 	
 	if castle_build_turns_remaining <= 0:
 		# Construction completed
@@ -354,7 +354,7 @@ func process_castle_construction() -> bool:
 		castle_type = castle_under_construction
 		castle_under_construction = CastleTypeEnum.Type.NONE
 		castle_build_turns_remaining = 0
-		print("[Region] Castle construction completed in ", region_name, "! Built: ", CastleTypeEnum.type_to_string(completed_castle_type))
+		DebugLogger.log("RegionManagement", "Castle construction completed in " + region_name + "! Built: " + CastleTypeEnum.type_to_string(completed_castle_type))
 		
 		# Recalculate recruitment limits based on new castle type
 		_recalculate_recruitment_limits()
@@ -377,26 +377,24 @@ func _recalculate_recruitment_limits() -> void:
 	var old_percentage = GameParameters.get_castle_recruitment_percentage(CastleTypeEnum.Type.NONE)
 	var new_percentage = GameParameters.get_castle_recruitment_percentage(castle_type)
 	
-	print("[Region] Recruitment limits updated in ", region_name, ": ", 
-		  int(old_percentage * 100), "% -> ", int(new_percentage * 100), 
-		  "% (", available_recruits, "/", new_max_recruits, " recruits)")
+	DebugLogger.log("RegionManagement", "Recruitment limits updated in " + region_name + ": " + str(int(old_percentage * 100)) + "% -> " + str(int(new_percentage * 100)) + "% (" + str(available_recruits) + "/" + str(new_max_recruits) + " recruits)")
 
 func _update_castle_visual() -> void:
 	"""Update the castle visual when construction completes"""
 	# Find the GameManager and get the VisualManager
 	var game_manager = get_node("/root/Main/GameManager") as GameManager
 	if game_manager == null:
-		print("[Region] Warning: Could not find GameManager for visual update")
+		DebugLogger.log("RegionManagement", "Warning: Could not find GameManager for visual update")
 		return
 	
 	var visual_manager = game_manager.get_visual_manager()
 	if visual_manager == null:
-		print("[Region] Warning: Could not find VisualManager for visual update")
+		DebugLogger.log("RegionManagement", "Warning: Could not find VisualManager for visual update")
 		return
 	
 	# Update the castle visual (this will place the correct icon)
 	visual_manager.update_castle_visual(self)
-	print("[Region] Updated castle visual for ", region_name)
+	DebugLogger.log("RegionManagement", "Updated castle visual for " + region_name)
 
 func can_build_castle() -> bool:
 	"""Check if a castle can be built in this region"""
@@ -464,10 +462,10 @@ func search_for_ore() -> Dictionary:
 		if ore_type not in discovered_ores:
 			discovered_ores.append(ore_type)
 		
-		print("[Region] Ore discovered in ", region_name, "! Found: ", ResourcesEnum.type_to_string(ore_type))
+		DebugLogger.log("RegionManagement", "Ore discovered in " + region_name + "! Found: " + ResourcesEnum.type_to_string(ore_type))
 		return {"success": true, "ore_type": ore_type, "message": "Discovered " + ResourcesEnum.type_to_string(ore_type) + " ore!"}
 	else:
-		print("[Region] No ore found in ", region_name, " (", ore_search_attempts_remaining, " attempts remaining)")
+		DebugLogger.log("RegionManagement", "No ore found in " + region_name + " (" + str(ore_search_attempts_remaining) + " attempts remaining)")
 		return {"success": false, "ore_type": ResourcesEnum.Type.GOLD, "message": "No ore found this time"}
 
 func has_discovered_ore(ore_type: ResourcesEnum.Type) -> bool:
@@ -519,7 +517,7 @@ func set_region_owner(owner_id: int) -> void:
 		var old_owner = current_owner_id
 		current_owner_id = owner_id
 		ownership_turns_counter = 0  # Reset counter on ownership change
-		print("[Region] ", region_name, " ownership changed from Player ", old_owner, " to Player ", owner_id, " (recruitment counter reset)")
+		DebugLogger.log("RegionManagement", region_name + " ownership changed from Player " + str(old_owner) + " to Player " + str(owner_id) + " (recruitment counter reset)")
 
 func set_initial_region_owner(owner_id: int) -> void:
 	"""Set region owner for initial castle placement with full recruitment counter"""

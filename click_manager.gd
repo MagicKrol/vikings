@@ -129,7 +129,7 @@ func _handle_region_click(region_container: Node) -> void:
 			# Only allow human players to place castles by clicking
 			var current_player_id = _game_manager.get_current_player_id()
 			if not _game_manager.is_player_human(current_player_id):
-				print("[ClickManager] Click ignored - current player (", current_player_id, ") is not human controlled")
+				DebugLogger.log("InputSystem", "Click ignored - current player (" + str(current_player_id) + ") is not human controlled")
 				return
 			
 			# Check if castle placement is valid first
@@ -139,7 +139,7 @@ func _handle_region_click(region_container: Node) -> void:
 				# Show info modal for invalid placement
 				var region_modal = get_node("../UI/RegionModal") as RegionModal
 				region_modal.show_region_info(region)
-				print("[ClickManager] Cannot place castle - region already owned by another player")
+				DebugLogger.log("InputSystem", "Cannot place castle - region already owned by another player")
 		else:
 			# For now, delegate army handling back to legacy system
 			# TODO: Move to ArmyManager in future refactor
@@ -236,7 +236,7 @@ func reset_army_moves() -> void:
 	if _army_manager != null:
 		_army_manager.reset_all_army_movement_points()
 	else:
-		print("[ClickManager] Error: ArmyManager not available")
+		DebugLogger.log("InputSystem", "Error: ArmyManager not available")
 
 # Handle human battle completion - delegate to BattleManager which now calls GameManager
 func on_battle_modal_closed() -> void:

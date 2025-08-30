@@ -8,7 +8,7 @@ var test_results = []
 
 func run_battle_finalization_tests():
 	"""Run tests to verify unified battle finalization"""
-	print("=== Testing Milestone 5: Single Battle Finalization ===")
+	DebugLogger.log("Testing", "=== Testing Milestone 5: Single Battle Finalization ===")
 	
 	# Test 1: Verify GameManager has finalize_battle_result method
 	var game_manager = GameManager.new()
@@ -55,15 +55,15 @@ func run_battle_finalization_tests():
 		test_passed = false
 	
 	# Print test results
-	print("\n=== Test Results ===")
+	DebugLogger.log("Testing", "\n=== Test Results ===")
 	for result in test_results:
-		print(result)
+		DebugLogger.log("Testing", result)
 	
-	print("\n=== Overall Result ===")
+	DebugLogger.log("Testing", "\n=== Overall Result ===")
 	if test_passed:
-		print("✓ ALL TESTS PASSED - Milestone 5 implementation verified")
+		DebugLogger.log("Testing", "✓ ALL TESTS PASSED - Milestone 5 implementation verified")
 	else:
-		print("✗ SOME TESTS FAILED - Review implementation")
+		DebugLogger.log("Testing", "✗ SOME TESTS FAILED - Review implementation")
 	
 	return test_passed
 

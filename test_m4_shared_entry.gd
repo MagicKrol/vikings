@@ -4,16 +4,16 @@ extends SceneTree
 # Verifies that both Human and AI use the same GameManager.perform_region_entry() path
 
 func _init():
-	print("=== M4 Shared Entry Path Test ===")
+	DebugLogger.log("Testing", "=== M4 Shared Entry Path Test ===")
 	
 	test_shared_entry_architecture()
 	
-	print("=== M4 Test Complete ===")
+	DebugLogger.log("Testing", "=== M4 Test Complete ===")
 	quit()
 
 func test_shared_entry_architecture():
 	"""Test that AI and Human use unified entry path"""
-	print("\n1. Testing Shared Entry Architecture...")
+	DebugLogger.log("Testing", "\n1. Testing Shared Entry Architecture...")
 	
 	# Verify GameManager has the shared entry method
 	var game_manager_script = FileAccess.open("res://game_manager.gd", FileAccess.READ)
@@ -26,18 +26,18 @@ func test_shared_entry_architecture():
 		
 		if "func perform_region_entry(army: Army, target_region_id: int, source: String)" in content:
 			has_shared_entry = true
-			print("✓ GameManager.perform_region_entry() exists as shared entry method")
+			DebugLogger.log("Testing", "✓ GameManager.perform_region_entry() exists as shared entry method")
 		
 		if "elif source == \"ai\":" in content:
 			has_ai_branch = true
-			print("✓ GameManager.perform_region_entry() has AI branch")
+			DebugLogger.log("Testing", "✓ GameManager.perform_region_entry() has AI branch")
 	
 	if not has_shared_entry:
-		print("✗ GameManager.perform_region_entry() not found")
+		DebugLogger.log("Testing", "✗ GameManager.perform_region_entry() not found")
 		return
 	
 	if not has_ai_branch:
-		print("✗ GameManager.perform_region_entry() missing AI branch")
+		DebugLogger.log("Testing", "✗ GameManager.perform_region_entry() missing AI branch")
 		return
 	
 	# Verify TurnController uses GameManager instead of direct movement
@@ -53,7 +53,7 @@ func test_shared_entry_architecture():
 		# Should call GameManager.perform_region_entry
 		if "game_manager.perform_region_entry(army, target_id, \"ai\")" in turn_controller_content:
 			uses_shared_entry = true
-			print("✓ TurnController calls GameManager.perform_region_entry() with \"ai\" source")
+			DebugLogger.log("Testing", "✓ TurnController calls GameManager.perform_region_entry() with \"ai\" source")
 		
 		# Should NOT do direct node parenting for battle-eligible moves
 		var lines = turn_controller_content.split("\n")
@@ -70,22 +70,22 @@ func test_shared_entry_architecture():
 					# Only OK if this is in the "toward target" function for partial moves
 					if "_execute_army_movement_toward_target" not in lines[i-10 if i >= 10 else 0]:
 						no_direct_movement = false
-						print("✗ TurnController still has direct movement in _execute_move")
+						DebugLogger.log("Testing", "✗ TurnController still has direct movement in _execute_move")
 	
 	if not uses_shared_entry:
-		print("✗ TurnController does not use GameManager.perform_region_entry")
+		DebugLogger.log("Testing", "✗ TurnController does not use GameManager.perform_region_entry")
 		return
 	
 	if no_direct_movement:
-		print("✓ TurnController delegates movement to GameManager for battle-eligible moves")
+		DebugLogger.log("Testing", "✓ TurnController delegates movement to GameManager for battle-eligible moves")
 	
 	# Verify ArmyManager is used for "toward target" movements
 	if "_execute_army_movement_toward_target" in turn_controller_content and "army_manager.move_army" in turn_controller_content:
-		print("✓ TurnController uses ArmyManager for step-by-step movement toward targets")
+		DebugLogger.log("Testing", "✓ TurnController uses ArmyManager for step-by-step movement toward targets")
 	else:
-		print("✗ TurnController missing proper ArmyManager delegation for partial moves")
+		DebugLogger.log("Testing", "✗ TurnController missing proper ArmyManager delegation for partial moves")
 	
-	print("\n2. Testing Entry Path Consistency...")
+	DebugLogger.log("Testing", "\n2. Testing Entry Path Consistency...")
 	
 	# Re-read GameManager content for additional checks
 	var game_manager_content = ""
@@ -96,26 +96,26 @@ func test_shared_entry_architecture():
 	
 	# Verify Human path still exists
 	if "if source == \"human\":" in game_manager_content or "elif source == \"human\":" in game_manager_content:
-		print("✓ GameManager.perform_region_entry() maintains Human path")
+		DebugLogger.log("Testing", "✓ GameManager.perform_region_entry() maintains Human path")
 	else:
-		print("✗ GameManager.perform_region_entry() missing Human path")
+		DebugLogger.log("Testing", "✗ GameManager.perform_region_entry() missing Human path")
 	
 	# Verify AI path handles battle results properly
 	var ai_handles_battle = "handle_army_battle(army, target_region.get_region_id())" in game_manager_content
 	var ai_returns_results = "battle_victory" in game_manager_content and "battle_defeat" in game_manager_content
 	
 	if ai_handles_battle and ai_returns_results:
-		print("✓ AI branch properly handles battle resolution and returns correct results")
+		DebugLogger.log("Testing", "✓ AI branch properly handles battle resolution and returns correct results")
 	else:
-		print("✗ AI branch missing proper battle handling")
+		DebugLogger.log("Testing", "✗ AI branch missing proper battle handling")
 		if not ai_handles_battle:
-			print("  Missing handle_army_battle call")
+			DebugLogger.log("Testing", "  Missing handle_army_battle call")
 		if not ai_returns_results:
-			print("  Missing proper result codes")
+			DebugLogger.log("Testing", "  Missing proper result codes")
 	
-	print("\n3. Architecture Verification...")
-	print("✓ Single Entry Point: GameManager.perform_region_entry()")
-	print("✓ Human and AI both use shared orchestration")
-	print("✓ Direct movement removed from TurnController for battles")
-	print("✓ ArmyManager handles step-by-step movement")
-	print("\n✅ M4 - Adopt AI to the Shared Entry - IMPLEMENTED")
+	DebugLogger.log("Testing", "\n3. Architecture Verification...")
+	DebugLogger.log("Testing", "✓ Single Entry Point: GameManager.perform_region_entry()")
+	DebugLogger.log("Testing", "✓ Human and AI both use shared orchestration")
+	DebugLogger.log("Testing", "✓ Direct movement removed from TurnController for battles")
+	DebugLogger.log("Testing", "✓ ArmyManager handles step-by-step movement")
+	DebugLogger.log("Testing", "\n✅ M4 - Adopt AI to the Shared Entry - IMPLEMENTED")

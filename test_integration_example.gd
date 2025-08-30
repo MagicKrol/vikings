@@ -2,7 +2,7 @@
 extends RefCounted
 
 func test_complete_recruitment_workflow():
-	print("=== Complete Castle-Based Recruitment Workflow Example ===")
+	DebugLogger.log("Testing", "=== Complete Castle-Based Recruitment Workflow Example ===")
 	
 	# Step 1: Create a player with resources
 	var player = Player.new(1, "Test Player")
@@ -10,9 +10,7 @@ func test_complete_recruitment_workflow():
 	player.set_resource_amount(ResourcesEnum.Type.WOOD, 100) 
 	player.set_resource_amount(ResourcesEnum.Type.IRON, 50)
 	
-	print("Player resources: Gold=", player.get_resource_amount(ResourcesEnum.Type.GOLD),
-	      " Wood=", player.get_resource_amount(ResourcesEnum.Type.WOOD),
-	      " Iron=", player.get_resource_amount(ResourcesEnum.Type.IRON))
+	DebugLogger.log("Testing", "Player resources: Gold=" + str(player.get_resource_amount(ResourcesEnum.Type.GOLD)) + " Wood=" + str(player.get_resource_amount(ResourcesEnum.Type.WOOD)) + " Iron=" + str(player.get_resource_amount(ResourcesEnum.Type.IRON)))
 	
 	# Step 2: Create armies - some at castles, some not
 	var army1 = Army.new()  # Will be at castle
@@ -39,7 +37,7 @@ func test_complete_recruitment_workflow():
 	mock_region_manager.castle_levels[1] = 2  # Region 1 has castle level 2
 	mock_region_manager.castle_levels[2] = 0  # Region 2 has no castle
 	
-	print("Created armies: 2 at castle, 1 not at castle")
+	DebugLogger.log("Testing", "Created armies: 2 at castle, 1 not at castle")
 	
 	# Step 3: Use BudgetManager with castle-only allocation 
 	var budget_manager = BudgetManager.new()
@@ -47,18 +45,18 @@ func test_complete_recruitment_workflow():
 	
 	var assigned_count = budget_manager.allocate_recruitment_budgets(all_armies, player, mock_region_manager)
 	
-	print("BudgetManager assigned budgets to ", assigned_count, " armies at castles")
+	DebugLogger.log("Testing", "BudgetManager assigned budgets to " + str(assigned_count) + " armies at castles")
 	
 	# Step 4: Verify only armies at castles got budgets
 	var armies_with_budgets = 0
 	for army in all_armies:
 		if army.assigned_budget != null:
 			armies_with_budgets += 1
-			print("Army ", army.name, " at castle got budget: ", army.assigned_budget.to_dict())
+			DebugLogger.log("Testing", "Army " + str(army.name) + " at castle got budget: " + str(army.assigned_budget.to_dict()))
 		else:
-			print("Army ", army.name, " not at castle - no budget assigned")
+			DebugLogger.log("Testing", "Army " + str(army.name) + " not at castle - no budget assigned")
 	
-	print("Total armies with budgets: ", armies_with_budgets, " (Expected: 2)")
+	DebugLogger.log("Testing", "Total armies with budgets: " + str(armies_with_budgets) + " (Expected: 2)")
 	
 	# Step 5: Verify resource conservation among castle armies
 	if armies_with_budgets > 0:
@@ -72,12 +70,12 @@ func test_complete_recruitment_workflow():
 				total_allocated_wood += army.assigned_budget.wood
 				total_allocated_iron += army.assigned_budget.iron
 		
-		print("Resource conservation check:")
-		print("  Original gold: 200, Allocated: ", total_allocated_gold, " (Match: ", total_allocated_gold == 200, ")")
-		print("  Original wood: 100, Allocated: ", total_allocated_wood, " (Match: ", total_allocated_wood == 100, ")")
-		print("  Original iron: 50, Allocated: ", total_allocated_iron, " (Match: ", total_allocated_iron == 50, ")")
+		DebugLogger.log("Testing", "Resource conservation check:")
+		DebugLogger.log("Testing", "  Original gold: 200, Allocated: " + str(total_allocated_gold) + " (Match: " + str(total_allocated_gold == 200) + ")")
+		DebugLogger.log("Testing", "  Original wood: 100, Allocated: " + str(total_allocated_wood) + " (Match: " + str(total_allocated_wood == 100) + ")")
+		DebugLogger.log("Testing", "  Original iron: 50, Allocated: " + str(total_allocated_iron) + " (Match: " + str(total_allocated_iron == 50) + ")")
 	
-	print("=== Castle-Based Workflow Complete ===")
+	DebugLogger.log("Testing", "=== Castle-Based Workflow Complete ===")
 
 # Mock RegionManager for testing
 class MockRegionManager:

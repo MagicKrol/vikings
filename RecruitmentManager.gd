@@ -18,7 +18,7 @@ func _init(region_mgr: RegionManager = null, game_mgr: GameManager = null) -> vo
 func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	# Use new units.py-based allocation algorithm
 	var budget: BudgetComposition = army.assigned_budget
-	print("[RecruitmentManager] Army ", army.name, " has budget: ", budget.to_dict())
+	DebugLogger.log("AIRecruitment", "[RecruitmentManager] Army " + str(army.name) + " has budget: " + str(budget.to_dict()))
 
 	var region: Region = army.get_parent()
 	var player_id = army.get_player_id()
@@ -44,8 +44,8 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	army.clear_recruitment_request()
 	var recruits_remaining = _count_recruits_remaining(recruit_sources)
 
-	print("Hired: %s" % result["hired"])
-	print("Recruits remaining: %d" % recruits_remaining)
+	DebugLogger.log("AIRecruitment", "Hired: %s" % result["hired"])
+	DebugLogger.log("AIRecruitment", "Recruits remaining: %d" % recruits_remaining)
 
 	return {
 		"hired": result["hired"],
@@ -64,7 +64,7 @@ func _gather_recruit_sources(region: Region, player_id: int) -> Array:
 	var total = 0
 	for s in sources:
 		total += s.amount
-	print("[RecruitmentManager] Total recruits from ", sources.size(), " regions: ", total)
+	DebugLogger.log("AIRecruitment", "[RecruitmentManager] Total recruits from " + str(sources.size()) + " regions: " + str(total))
 	return sources
 
 func _sum_sources(recruit_sources: Array) -> int:
@@ -293,11 +293,11 @@ func _allocate_with_unit0_gd(
 	var full_packages = _max_full_packages(budget, pack_costs, P, paid_units_cap, special_caps, props)
 	
 	if debug:
-		print("=== UNITS.PY DEBUG ===")
-		print("Total units: ", total_units, ", Unit0: ", unit0, ", Paid cap: ", paid_units_cap)
-		print("Props: ", props, ", P: ", P)
-		print("Pack costs: ", pack_costs)
-		print("Full packages: ", full_packages)
+		DebugLogger.log("AIRecruitment", "=== UNITS.PY DEBUG ===")
+		DebugLogger.log("AIRecruitment", "Total units: " + str(total_units) + ", Unit0: " + str(unit0) + ", Paid cap: " + str(paid_units_cap))
+		DebugLogger.log("AIRecruitment", "Props: " + str(props) + ", P: " + str(P))
+		DebugLogger.log("AIRecruitment", "Pack costs: " + str(pack_costs))
+		DebugLogger.log("AIRecruitment", "Full packages: " + str(full_packages))
 	
 	# 5) Apply full packages
 	var x_paid: Dictionary = {}
@@ -340,7 +340,7 @@ func _allocate_with_unit0_gd(
 				break
 	
 	if debug:
-		print("Partial fill: ", x_paid, ", units left: ", units_left)
+		DebugLogger.log("AIRecruitment", "Partial fill: " + str(x_paid) + ", units left: " + str(units_left))
 	
 	# 7) Apply to army
 	if unit0 > 0:

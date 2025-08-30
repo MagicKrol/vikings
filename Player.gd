@@ -78,7 +78,7 @@ func add_resources(resource_type: ResourcesEnum.Type, amount: int) -> void:
 		return
 	
 	resources[resource_type] = resources.get(resource_type, 0) + amount
-	print("[Player ", player_id, "] Added ", amount, " ", ResourcesEnum.type_to_string(resource_type), " (Total: ", resources[resource_type], ")")
+	DebugLogger.log("PlayerManagement", "Player " + str(player_id) + " Added " + str(amount) + " " + ResourcesEnum.type_to_string(resource_type) + " (Total: " + str(resources[resource_type]) + ")")
 
 func remove_resources(resource_type: ResourcesEnum.Type, amount: int) -> bool:
 	"""Remove resources from the player's storage. Returns true if successful."""
@@ -90,7 +90,7 @@ func remove_resources(resource_type: ResourcesEnum.Type, amount: int) -> bool:
 		return false  # Not enough resources
 	
 	resources[resource_type] = current_amount - amount
-	print("[Player ", player_id, "] Spent ", amount, " ", ResourcesEnum.type_to_string(resource_type), " (Remaining: ", resources[resource_type], ")")
+	DebugLogger.log("PlayerManagement", "Player " + str(player_id) + " Spent " + str(amount) + " " + ResourcesEnum.type_to_string(resource_type) + " (Remaining: " + str(resources[resource_type]) + ")")
 	return true
 
 func can_afford(resource_type: ResourcesEnum.Type, amount: int) -> bool:
@@ -123,7 +123,7 @@ func get_all_resources() -> Dictionary:
 func set_resource_amount(resource_type: ResourcesEnum.Type, amount: int) -> void:
 	"""Set a specific resource to an exact amount (for debugging/testing)"""
 	resources[resource_type] = max(0, amount)
-	print("[Player ", player_id, "] Set ", ResourcesEnum.type_to_string(resource_type), " to ", amount)
+	DebugLogger.log("PlayerManagement", "Player " + str(player_id) + " Set " + ResourcesEnum.type_to_string(resource_type) + " to " + str(amount))
 
 # Player information methods
 func get_player_id() -> int:

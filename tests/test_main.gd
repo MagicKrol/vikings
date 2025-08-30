@@ -20,7 +20,7 @@ class_name TestMain
 
 func _ready() -> void:
 	"""Automatically run all tests when this scene is loaded"""
-	print("[TestMain] Starting automated test run...")
+	DebugLogger.log("Testing", "[TestMain] Starting automated test run...")
 	run_tests()
 	
 	# Exit after tests in headless mode

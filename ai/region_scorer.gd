@@ -260,7 +260,7 @@ func score_all_regions_for_player(player_id: int) -> Dictionary:
 	# Get all region containers from map generator
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
-		print("[RegionScorer] Warning: No Regions node found")
+		DebugLogger.log("RegionScoring", "Warning: No Regions node found")
 		return scores
 	
 	# Score each region
