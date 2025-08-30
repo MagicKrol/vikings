@@ -106,6 +106,28 @@ const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for go
 ## Army Management Constants
 const RAISE_ARMY_COST = 20                     # Gold cost to raise a new army
 
+## AI Raise Army Decision Parameters
+# Cost/Reserves
+const AI_RESERVE_GOLD_MIN = 30                 # Minimum gold to keep after raising army
+# Eligibility
+const AI_MIN_RECRUITS_FOR_RAISING = 40         # Minimum recruits at castle+neighbors to consider raising
+# Global Guards
+const AI_MAX_UNDERPOWERED_RATIO = 0.5          # Max fraction of armies below target power
+const AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE = 25  # Support load target after raising
+# Scoring Weights for global decision
+const AI_RAISE_W_FRONTIER = 20.0               # Weight for frontier pressure
+const AI_RAISE_W_SPACING = 10.0                # Weight for castle spacing
+const AI_RAISE_W_BANK = 15.0                   # Weight for bank ratio
+const AI_RAISE_W_POWER_GAP = 25.0              # Weight for power gap (negative contribution)
+# Candidate scoring weights
+const AI_CAND_W_RECRUITS = 40.0                # Weight for recruit availability
+const AI_CAND_W_FRONTIER_NEAR = 30.0           # Weight for frontier proximity
+const AI_CAND_W_TRAVEL = 20.0                  # Weight for travel hint
+# Decision Threshold
+const AI_RAISE_THRESHOLD = 35.0                # Global decision cutoff score
+# Target army power for raise army decisions
+const AI_TARGET_ARMY_POWER = 100               # Target power threshold for underpowered armies
+
 ## Army Pathfinder Algorithm Constants
 const ARMY_PATHFINDER_HORIZON_MP = 15          # Maximum MP horizon for pathfinding (3 turns * 5 MP)
 const ARMY_MOVEMENT_GAMMA_TURN = 0.9           # Discount factor for future turn scoring

@@ -87,18 +87,47 @@ Notes
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
 - RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally.
 
-### EconomyAIManager.gd (new)
+### EconomyAIManager.gd
 - Purpose: Central, deterministic planner for AI economy decisions each turn.
-- Current Scope: Recruitment budgeting only (compatible with existing flow).
-- Future Hooks: raise_army, region_upgrade, castle_upgrade (stubs in place).
-- Key: `plan_turn(player_id, turn_number)` computes simple signals, scores categories, picks active ones (recruit), and delegates to `BudgetManager.allocate_recruitment_budgets`.
+- Current Scope: Recruitment budgeting and raise army decisions (integrated with existing flow).
+- Future Hooks: region_upgrade, castle_upgrade (stubs in place).
+- Key Functions:
+  - `plan_turn(player_id, turn_number)`: Computes signals, allocates recruitment budgets, decides on raising armies
+  - `decide_and_raise_army(player_id, turn_number)`: Orchestrates the raise army decision and execution
+  - `pick_best_raise_region(player_id)`: Selects optimal castle for new army based on recruits and frontier proximity
+  - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring
+  - `execute_raise_army(player_id, region_id)`: Creates army and deducts cost
+- Signals computed: frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm
 - Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and calls `plan_turn()` at turn start.
+ - Integration: `TurnController.start_turn()` calls `plan_turn()` at turn start for recruitment/raising; after movement, it calls `plan_post_movement()` to spend any leftover budget on region economy.
+
+- Priority Flow:
+  - If any armies at castles need recruitment this turn → allocate recruitment budgets and skip raising/building.
+  - Else try to raise an army; if raised → allocate recruitment for the new army and skip region spending.
+  - Else process region economy in order: build castle → upgrade castle → upgrade region (currently stubbed).
+
+#### Raise Army AI (implemented)
+- Goal: Prefer fewer, stronger armies over many weak ones; raise only when it helps frontier coverage and can be supported.
+- Decision flow:
+  1. `pick_best_raise_region()`: Find best castle with enough recruits (≥ AI_MIN_RECRUITS_FOR_RAISING)
+  2. `should_raise_army()`: Check global constraints and score
+  3. `execute_raise_army()`: Create army and deduct cost
+- Guards enforced:
+  - Gold reserve: `player.gold - RAISE_ARMY_COST >= AI_RESERVE_GOLD_MIN`
+  - Army health: `underpowered_ratio <= AI_MAX_UNDERPOWERED_RATIO`
+  - Frontier exists: `frontier_pressure > 0`
+  - Support capacity: `recruits_per_army_after_raise >= AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE`
+- Scoring:
+  - Candidate: weighted by recruits availability, frontier proximity, travel hint
+  - Global: frontier pressure, castle spacing, bank ratio, minus power gap
+  - Threshold: `score >= AI_RAISE_THRESHOLD`
+- Execution: One raise per turn max, deterministic tie-breaking by region_id
+- Tuning: All parameters in GameParameters.gd constants (AI_RAISE_*, AI_CAND_*, etc.)
 
 ## AI & Scoring
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance).
 - ai/castle_placement_scorer.gd: Candidate scoring for initial castles with random perturbation.
 - ai/ai_debug_visualizer.gd: On-map overlays and step-by-step debug toggles.
-- AITurnManager.gd, ai/SimplifiedAITurnManager.gd: Legacy/alternative turn processors; not used in main flow since TurnController manages AI.
 
 ## Battle Simulation
 - BattleSimulator.gd: Statistical resolution with efficiency and proportional loss distribution.
@@ -127,4 +156,3 @@ Notes
 ## Missing/Added Since Last Map
 - Extracted UI modals into separate `.tscn` scenes and instanced in `main.tscn` (previously described as inline).
 - New/now-central: `TurnController.gd`, `BattleManager.gd`, `VisualManager.gd`, `BudgetManager.gd`, `BudgetComposition.gd`, `RecruitmentManager.gd`, `PlayerManagerNode.gd`.
-- Legacy/auxiliary present but not on the main turn path: `AITurnManager.gd`, `ai/SimplifiedAITurnManager.gd`.

@@ -361,7 +361,6 @@ func _find_path_to_single_target(start_region_id: int, target_region_id: int, pl
 func log_frontier_regions_summary(frontier_regions: Array, army_location: int, player_id: int) -> void:
 	"""
 	Log frontier regions with their paths and costs in a clear format.
-	Called from SimplifiedAITurnManager to show what regions are being considered.
 	"""
 	if frontier_regions.is_empty():
 		DebugLogger.log("AIPathfinding", "No frontier regions found")

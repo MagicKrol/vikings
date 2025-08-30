@@ -43,8 +43,6 @@ func _init(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: PlayerM
 	
 	# Initialize pathfinding for distance calculation
 	army_pathfinder = ArmyPathfinder.new(region_mgr, army_mgr)
-	
-	DebugLogger.log("SimplifiedAITurnManager", "Initialized with frontier-based targeting", 1)
 
 func calculate_next_move(player_id: int) -> Dictionary:
 	"""Calculate the next best move for the AI, including all scoring and pathfinding"""

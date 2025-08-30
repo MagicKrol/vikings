@@ -93,9 +93,12 @@ func start_turn(player_id: int) -> void:
 	
 	# Step 1: Use EconomyAIManager to plan economy and allocate budgets (recruitment wired-in)
 	var econ := EconomyAIManager.new(region_manager, army_manager, player_manager)
-	var econ_result := econ.plan_turn(player_id, turn_number)
-	var assigned_count := int(econ_result.get("recruit_assigned", 0))
+	var econ_result = econ.plan_turn(player_id, turn_number)
+	var assigned_count = int(econ_result.get("recruit_assigned", 0))
+	var raise_result = econ_result.get("raise_army_result", {"raised": false})
 	print("[TurnController] EconomyAIManager assigned recruitment budgets to ", assigned_count, " armies at castles")
+	if raise_result.get("raised", false):
+		print("[TurnController] EconomyAIManager raised new army at region ", raise_result.get("region_id", -1))
 	
 	emit_signal("turn_started", player_id)
 	print("[TurnController] Starting turn for Player ", player_id)
@@ -136,8 +139,8 @@ func _process_turn(player_id: int) -> void:
 			if army.is_recruitment_requested():
 				if on_castle and army.assigned_budget != null:
 					if army.get_movement_points() >= 1:
-						var recruitment_manager := RecruitmentManager.new(region_manager, game_manager)
-						var result := recruitment_manager.hire_soldiers(army, true)  # Enable debug temporarily
+						var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
+						var result = recruitment_manager.hire_soldiers(army, true)  # Enable debug temporarily
 						if result.has("error"):
 							print("[TurnController] RecruitmentManager error: ", result.get("error", "unknown"))
 					else:
@@ -189,6 +192,12 @@ func _process_turn(player_id: int) -> void:
 			# Loop continues with fresh frontier calculation
 		else:
 			print("[TurnController] No ownership change - continuing with remaining armies")
+
+	# After all moves, run a post-movement economy pass to spend leftovers on region economy
+	var econ_post := EconomyAIManager.new(region_manager, army_manager, player_manager)
+	var turn_idx := _get_current_turn()
+	var econ_post_result := econ_post.plan_post_movement(player_id, turn_idx)
+	print("[TurnController] Post-movement economy result: ", econ_post_result)
 
 func _get_available_armies(player_id: int) -> Array[Army]:
 	"""Get armies that can still move this turn"""
