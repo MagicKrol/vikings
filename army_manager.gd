@@ -205,7 +205,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	var source_region = selected_region_container
 	var target_region_node = target_region_container
 	if not source_region.has_method("get_region_id") or not target_region_node.has_method("get_region_id"):
-		DebugLogger.log("ArmyManagement", "Error: Region containers don't have get_region_id method")
+		DebugLogger.log("AIMovement", "Error: Region containers don't have get_region_id method")
 		return false
 	
 	var source_region_id = source_region.get_region_id()
@@ -227,7 +227,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 			var _region_type_name = RegionTypeEnum.type_to_string(check_region.get_region_type())
 		else:
 			var current_points = selected_army.get_movement_points()
-			DebugLogger.log("ArmyManagement", "Movement blocked - not enough movement points (need " + str(terrain_cost) + ", have " + str(current_points) + ")")
+			DebugLogger.log("AIMovement", "Movement blocked - not enough movement points (need " + str(terrain_cost) + ", have " + str(current_points) + ")")
 		return false
 	
 	# Battle conditions will be handled after movement by click_manager
@@ -258,7 +258,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		if game_manager:
 			game_manager.claim_peaceful_region(target_region_id, army_player_id)
 		else:
-			DebugLogger.log("ArmyManagement", "Warning: Could not get GameManager for peaceful region claiming")
+			DebugLogger.log("AIMovement", "Warning: Could not get GameManager for peaceful region claiming")
 	
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
@@ -269,17 +269,17 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Store remaining movement points for logging
 	var remaining_points = selected_army.get_movement_points()
 	# Per-move debug: region, cost, MP left this turn
-	DebugLogger.log("ArmyManagement", "Moved to region %d, Cost: %d, MP left: %d/%d" % [target_region_id, terrain_cost, remaining_points, GameParameters.MOVEMENT_POINTS_PER_TURN])
+	DebugLogger.log("AIMovement", "Moved to region %d, Cost: %d, MP left: %d/%d" % [target_region_id, terrain_cost, remaining_points, GameParameters.MOVEMENT_POINTS_PER_TURN])
 	
 	# Check if we moved to an unowned region - handle combat scenarios
 	if target_region_owner != army_player_id and target_region_owner != -1:
 		# Moved to enemy territory - trigger combat
 		_trigger_combat_if_needed(selected_army, target_region)
-		DebugLogger.log("ArmyManagement", "Army moved to enemy territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
+		DebugLogger.log("AIMovement", "Army moved to enemy territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
 	elif target_region_owner == -1 and target_region.has_garrison():
 		# Moved to neutral territory with garrison - trigger combat
 		_trigger_combat_if_needed(selected_army, target_region)
-		DebugLogger.log("ArmyManagement", "Army moved to neutral territory with garrison (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
+		DebugLogger.log("AIMovement", "Army moved to neutral territory with garrison (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
 	else:
 		# Moved to friendly territory - keep army selected
 		# Update selected region container to the new region
@@ -294,9 +294,9 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		if army_modal != null and selected_army != null:
 			army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - allow continued movement
 		
-		DebugLogger.log("ArmyManagement", "Army moved to friendly territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
+		DebugLogger.log("AIMovement", "Army moved to friendly territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
 	
-	DebugLogger.log("ArmyManagement", "Army moved (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
+	DebugLogger.log("AIMovement", "Army moved (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
 	
 	# Play click sound for successful army movement
 	if sound_manager:

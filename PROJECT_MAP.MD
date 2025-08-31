@@ -58,7 +58,7 @@ Notes
 - Purpose: Unified turn pipeline for AI (and fits human pipeline shape).
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
-- Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested), `DebugStepGate`.
+- Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Resting Logic (AI):
   - Start-of-evaluation: if an army's efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
@@ -72,7 +72,7 @@ Notes
 
 ### BattleManager.gd (BattleManager)
 - Purpose: Battle UI coordination and post-battle processing via signals.
-- Key: `start_battle()`, `handle_battle_modal_closed()`, emits `battle_finished`; tracks pending conquest; proportional loss application; army defeat/removal.
+- Key: `start_battle()`, `handle_battle_modal_closed()`, emits `battle_finished`; tracks pending conquest; proportional loss application; removes only battle-participant armies reduced to zero (no global scan).
 - Integrates: BattleModal UI, RegionManager (read), ArmyManager (remove/retreat), GameManager (finalization).
 - Behavior: If `GameManager.debug_disable_battle_modal` is enabled for AI, `start_battle()` simulates instantly via `BattleSimulator` and emits `battle_finished` without showing a modal.
 
@@ -82,7 +82,7 @@ Notes
 
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
-- army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks.
+- army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use).
 - ArmyPathfinder.gd / ArmyTargetScorer.gd / ArmyMovementPlanner.gd: pathfinding within MP horizon, target value scoring, multi-turn planning and deconfliction utilities.
 
 ### VisualManager.gd (VisualManager)

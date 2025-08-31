@@ -145,13 +145,18 @@ func _process_turn(player_id: int) -> void:
 			
 			if army.is_recruitment_requested():
 				if on_castle and army.assigned_budget != null:
-					if army.get_movement_points() >= 1:
+					var allow_recruit := army.get_movement_points() >= 1
+					# Allow instant recruitment for freshly raised AI armies (flagged)
+					if game_manager.is_player_ai(player_id) and army.just_raised:
+						allow_recruit = true
+					if allow_recruit:
 						var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
-						var result = recruitment_manager.hire_soldiers(army, true)  # Enable debug temporarily
+						var result = recruitment_manager.hire_soldiers(army, true)
+						army.just_raised = false
 						if result.has("error"):
 							DebugLogger.log("AITurnManager", "[TurnController] RecruitmentManager error: " + str(result.get("error", "unknown")))
 					else:
-						DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " has no movement points to recruit. We skip turn")
+						DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " cannot recruit now (no MP and not fresh AI). Skipping.")
 
 				else:
 					# Not on castle → override target: go to nearest owned castle

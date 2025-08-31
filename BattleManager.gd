@@ -169,10 +169,14 @@ func _apply_battle_losses() -> void:
 	
 	# Defenders' losses across all defending armies + garrison
 	_apply_losses_proportionally(report.defender_losses, _pending_defenders, _pending_garrison)
-	
-	# Cleanup any destroyed armies
-	if _army_manager != null:
-		_army_manager.remove_destroyed_armies()
+
+	# Cleanup defeated armies ONLY among battle participants
+	for a in _pending_attackers:
+		if a.get_total_soldiers() <= 0:
+			_handle_battle_defeat(a)
+	for d in _pending_defenders:
+		if d.get_total_soldiers() <= 0:
+			_handle_battle_defeat(d)
 
 func _get_battle_result() -> String:
 	"""Get the battle result: 'victory', 'withdrawal', or 'defeat'"""

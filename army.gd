@@ -37,6 +37,7 @@ var efficiency: int = 100  # Efficiency percentage (10-100), affects hit chances
 # Recruitment system
 var recruitment_requested: bool = false  # Flag for requesting recruitment budget
 var assigned_budget: BudgetComposition = null  # Budget allocated for this army's recruitment
+var just_raised: bool = false  # Marks freshly raised AI armies for instant recruitment bypass
 
 # Army composition - soldiers in this army
 var composition: ArmyComposition
@@ -54,6 +55,7 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	number = roman_number
+	just_raised = false
 	
 	# Set player-specific warrior texture
 	_set_warrior_texture(player_id)
@@ -72,6 +74,7 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	number = roman_number
+	just_raised = true
 	
 	# Set player-specific warrior texture
 	_set_warrior_texture(player_id)

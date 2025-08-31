@@ -818,10 +818,13 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	if battle_report and _battle_manager:
 		_battle_manager._apply_losses_proportionally(battle_report.attacker_losses, attacking_armies, null)
 		_battle_manager._apply_losses_proportionally(battle_report.defender_losses, defending_armies, defending_garrison)
-		
-		# Cleanup destroyed armies
-		if _army_manager:
-			_army_manager.remove_destroyed_armies()
+		# Cleanup only battle participants that hit zero soldiers
+		for a in attacking_armies:
+			if a.get_total_soldiers() <= 0:
+				_battle_manager._handle_battle_defeat(a)
+		for d in defending_armies:
+			if d.get_total_soldiers() <= 0:
+				_battle_manager._handle_battle_defeat(d)
 	
 	# Handle battle outcome
 	if result == "victory":

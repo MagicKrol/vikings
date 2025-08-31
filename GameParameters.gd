@@ -361,10 +361,10 @@ const IDEAL_ARMY_COMPOSITIONS = {
 		"royal_guard": 0
 	},
 	"Outpost": {
-		"peasants": 45,
+		"peasants": 40,
 		"spearmen": 30,
-		"archers": 10,
-		"swordsmen": 15,
+		"archers": 20,
+		"swordsmen": 10,
 		"crossbowmen": 0,
 		"horsemen": 0,
 		"knights": 0,
