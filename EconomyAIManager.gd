@@ -258,60 +258,57 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 
 # Decide whether to raise an army this turn
 func should_raise_army(candidate: Dictionary, player: Player) -> bool:
-	# Check if we have a valid candidate
+	# New normalized model: region/army ratio, avg distance (MP), recruits, gold
 	if candidate.is_empty():
 		DebugLogger.log("AIEconomy", "   Constraint: NO_CANDIDATE")
 		return false
 	
-	# Check gold reserve constraint
-	var current_gold = player.get_resource_amount(ResourcesEnum.Type.GOLD)
-	var gold_after = current_gold - GameParameters.RAISE_ARMY_COST
+	var regions := region_manager.get_player_regions(player.get_player_id()).size()
+	var armies_arr := army_manager.get_player_armies(player.get_player_id())
+	var armies_count := armies_arr.size()
+	
+	# Average MP distance from existing armies to the candidate castle
+	var castle_id: int = candidate["region_id"]
+	var avg_dist := _compute_avg_distance_to_castle(armies_arr, castle_id, player.get_player_id())
+	var recruits_total := int(candidate["recruits_total"])
+	var gold := int(player.get_resource_amount(ResourcesEnum.Type.GOLD))
+	
+	# Hard gates
+	var gold_after := gold - GameParameters.RAISE_ARMY_COST
 	if gold_after < GameParameters.AI_RESERVE_GOLD_MIN:
-		DebugLogger.log("AIEconomy", "   Constraint: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [current_gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
+		DebugLogger.log("AIEconomy", "   Gate FAIL: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
+		return false
+	if recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
+		DebugLogger.log("AIEconomy", "   Gate FAIL: RECRUITS_MIN (%d < %d)" % [recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
 		return false
 	
-	# Check underpowered ratio constraint
-	if signals["underpowered_ratio"] > GameParameters.AI_MAX_UNDERPOWERED_RATIO:
-		DebugLogger.log("AIEconomy", "   Constraint: UNDERPOWERED_RATIO (%.2f > %.2f)" % [signals["underpowered_ratio"], GameParameters.AI_MAX_UNDERPOWERED_RATIO])
-		return false
-	
-	# Check if there's any frontier pressure
-	if signals["frontier_pressure"] <= 0:
-		DebugLogger.log("AIEconomy", "   Constraint: NO_FRONTIER_PRESSURE (%.2f)" % signals["frontier_pressure"])
-		return false
-	
-	# Estimate support load after raising
-	var region_id = candidate["region_id"]
-	var armies_at_castle = 0
-	var armies = army_manager.get_player_armies(player.get_player_id())
-	for army in armies:
-		var army_region = army.get_parent()
-		if army_region and army_region.get_region_id() == region_id:
-			armies_at_castle += 1
-	
-	var recruits_per_army_after = float(candidate["recruits_total"]) / float(armies_at_castle + 1)
-	if recruits_per_army_after < GameParameters.AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE:
-		DebugLogger.log("AIEconomy", "   Constraint: SUPPORT_LOAD (%.1f recruits/army < %d min)" % [recruits_per_army_after, GameParameters.AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE])
-		return false
-	
-	# Calculate global score
-	var g_score = GameParameters.AI_RAISE_W_FRONTIER * signals["frontier_pressure"]
-	g_score += GameParameters.AI_RAISE_W_SPACING * signals["castle_spacing"]
-	g_score += GameParameters.AI_RAISE_W_BANK * signals["bank_ratio"]
-	g_score -= GameParameters.AI_RAISE_W_POWER_GAP * signals["power_gap_norm"]
-	
-	DebugLogger.log("AIEconomy", "   Global score: %.1f (frontier: %.1f, spacing: %.1f, bank: %.1f, power_gap: -%.1f)" % [
-		g_score, 
-		GameParameters.AI_RAISE_W_FRONTIER * signals["frontier_pressure"],
-		GameParameters.AI_RAISE_W_SPACING * signals["castle_spacing"],
-		GameParameters.AI_RAISE_W_BANK * signals["bank_ratio"],
-		GameParameters.AI_RAISE_W_POWER_GAP * signals["power_gap_norm"]
-	])
-	DebugLogger.log("AIEconomy", "   Threshold: %.1f" % GameParameters.AI_RAISE_THRESHOLD)
-	
-	var decision = g_score >= GameParameters.AI_RAISE_THRESHOLD
+	var decision := RaiseArmyDecision.should_raise_army_simple(regions, armies_count, avg_dist, recruits_total, gold)
+	var s := RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold)
+	DebugLogger.log("AIEconomy", "   Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f" % [
+		s, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM])
 	DebugLogger.log("AIEconomy", "   Decision: %s" % ("RAISE" if decision else "DECLINE"))
 	return decision
+
+func _compute_avg_distance_to_castle(armies_arr: Array[Army], castle_region_id: int, player_id: int) -> float:
+	if armies_arr.size() == 0:
+		return float(GameParameters.AI_RAISE_DIST_MAX)
+	var pf := ArmyPathfinder.new(region_manager, army_manager)
+	var total := 0.0
+	var count := 0
+	for a in armies_arr:
+		var on_region := a.get_parent() as Region
+		if not on_region:
+			continue
+		var src := on_region.get_region_id()
+		var res := pf.find_path_to_target(src, castle_region_id, player_id)
+		var cost := float(GameParameters.AI_RAISE_DIST_MAX)
+		if res.get("success", false):
+			cost = float(res.get("cost", int(GameParameters.AI_RAISE_DIST_MAX)))
+		total += cost
+		count += 1
+	if count == 0:
+		return float(GameParameters.AI_RAISE_DIST_MAX)
+	return total / float(count)
 
 # Execute the army raising at the specified region
 func execute_raise_army(player_id: int, region_id: int) -> bool:

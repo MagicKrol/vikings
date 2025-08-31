@@ -116,8 +116,7 @@ const AI_MAX_UNDERPOWERED_RATIO = 0.5          # Max fraction of armies below ta
 const AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE = 25  # Support load target after raising
 # Scoring Weights for global decision
 const AI_RAISE_W_FRONTIER = 20.0               # Weight for frontier pressure
-const AI_RAISE_W_SPACING = 10.0                # Weight for castle spacing
-const AI_RAISE_W_BANK = 15.0                   # Weight for bank ratio
+const AI_RAISE_W_SPACING = 10.0                # Weight for castle spacing              # Weight for bank ratio
 const AI_RAISE_W_POWER_GAP = 25.0              # Weight for power gap (negative contribution)
 # Candidate scoring weights
 const AI_CAND_W_RECRUITS = 40.0                # Weight for recruit availability
@@ -127,6 +126,22 @@ const AI_CAND_W_TRAVEL = 20.0                  # Weight for travel hint
 const AI_RAISE_THRESHOLD = 35.0                # Global decision cutoff score
 # Target army power for raise army decisions
 const AI_TARGET_ARMY_POWER = 100               # Target power threshold for underpowered armies
+
+# New raise-army decision tuning (normalized model)
+const AI_RAISE_R2A_BAND_MIN = 3.0
+const AI_RAISE_R2A_BAND_MAX = 5.0
+const AI_RAISE_DIST_MIN = 2.0
+const AI_RAISE_DIST_MAX = 10.0
+const AI_RAISE_RECRUITS_MIN = AI_MIN_RECRUITS_FOR_RAISING
+const AI_RAISE_RECRUITS_MAX = 200
+const AI_RAISE_BANK_RESERVE = AI_RESERVE_GOLD_MIN
+const AI_RAISE_BANK_MAX = AI_RESERVE_GOLD_MIN + 170
+const AI_RAISE_SUPPORT_MIN = 0.25
+const AI_RAISE_W_R2A = 0.50
+const AI_RAISE_W_DIST = 0.20
+const AI_RAISE_W_RECRUITS = 0.20
+const AI_RAISE_W_BANK = 0.10
+const AI_RAISE_THRESHOLD_NORM = 0.50
 
 ## AI Peasants-Only Recruitment Parameters
 # Minimum peasant share threshold

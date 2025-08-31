@@ -117,22 +117,22 @@ Notes
   - Else defer region economy to post-movement phase.
 
 #### Raise Army AI (implemented)
-- Goal: Prefer fewer, stronger armies over many weak ones; raise only when it helps frontier coverage and can be supported.
+- Goal: Prefer fewer, stronger armies over many weak ones; raise only when we have support and coverage gaps.
 - Decision flow:
   1. `pick_best_raise_region()`: Find best castle with enough recruits (≥ AI_MIN_RECRUITS_FOR_RAISING)
-  2. `should_raise_army()`: Check global constraints and score
+  2. `should_raise_army()`: Normalized model over 4 factors via `ai/RaiseArmyDecision.gd`
   3. `execute_raise_army()`: Create army and deduct cost
-- Guards enforced:
+- Gates:
+  - Recruits: `recruits_total >= AI_MIN_RECRUITS_FOR_RAISING`
   - Gold reserve: `player.gold - RAISE_ARMY_COST >= AI_RESERVE_GOLD_MIN`
-  - Army health: `underpowered_ratio <= AI_MAX_UNDERPOWERED_RATIO`
-  - Frontier exists: `frontier_pressure > 0`
-  - Support capacity: `recruits_per_army_after_raise >= AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE`
-- Scoring:
-  - Candidate: weighted by recruits availability, frontier proximity, travel hint
-  - Global: frontier pressure, castle spacing, bank ratio, minus power gap
-  - Threshold: `score >= AI_RAISE_THRESHOLD`
-- Execution: One raise per turn max, deterministic tie-breaking by region_id
-- Tuning: All parameters in GameParameters.gd constants (AI_RAISE_*, AI_CAND_*, etc.)
+- Scoring factors (normalized 0..1):
+  - Region/Army ratio within band `[AI_RAISE_R2A_BAND_MIN..MAX]`
+  - Average MP distance of armies to candidate castle `[AI_RAISE_DIST_MIN..MAX]`
+  - Recruits and Gold (bank) above minimums
+  - Weights:`AI_RAISE_W_R2A`, `AI_RAISE_W_DIST`, `AI_RAISE_W_RECRUITS`, `AI_RAISE_W_BANK`
+  - Threshold: `AI_RAISE_THRESHOLD_NORM`
+- Execution: One raise per turn max, deterministic tie-break by region_id
+- Tuning: GameParameters (`AI_RAISE_*` normalized constants) and `ai/RaiseArmyDecision.gd`
 
 ## AI & Scoring
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance).
