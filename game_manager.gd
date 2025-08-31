@@ -77,6 +77,7 @@ var _battle_modal: BattleModal
 
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
+var debug_heatmap: bool = true
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 
@@ -186,7 +187,16 @@ func initialize_managers():
 	player_manager.print_all_resources()
 	
 	# Initialize castle placement with proper player type handling
-	_initialize_castle_placement_sequence()
+	if debug_heatmap:
+		# Create and show heatmap; block normal game flow (no castle placement/turns)
+		var heat := OceanPathHeatmap.new()
+		heat.name = "OceanPathHeatmap"
+		add_child(heat)
+		heat.initialize(_region_manager, map_generator)
+		heat.compute_and_show()
+		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying path centrality heatmap. Castle placement and turns are disabled.")
+	else:
+		_initialize_castle_placement_sequence()
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
@@ -210,6 +220,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
+	if debug_heatmap:
+		DebugLogger.log("TurnProcessing", "Debug heatmap mode active - next_turn ignored")
+		return
 	
 	# Get next active player in sequence (skips OFF players)
 	var next_player_id = _get_next_active_player()

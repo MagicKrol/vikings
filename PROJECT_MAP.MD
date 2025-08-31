@@ -138,6 +138,7 @@ Notes
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance).
 - ai/castle_placement_scorer.gd: Candidate scoring for initial castles with random perturbation.
 - ai/ai_debug_visualizer.gd: On-map overlays and step-by-step debug toggles.
+- ai/OceanPathHeatmap.gd: Standalone Node2D that computes ocean-border path centrality before castle placement and toggles a heatmap overlay with key `8`. Uses BFS over RegionManager adjacency (unweighted). Initializes with `initialize(region_manager, map_generator)`. Heat overlay colors white→red per visit count; does not modify existing systems.
 
 ## Battle Simulation
 - BattleSimulator.gd: Statistical resolution with efficiency and proportional loss distribution.
