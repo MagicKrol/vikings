@@ -220,12 +220,6 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Get terrain cost once for the entire function (with ownership bonus)
 	var terrain_cost = get_terrain_cost(target_region_container, selected_army.get_player_id())
 	
-	# Check if target region already has an army from the same player
-	var existing_army = get_army_in_region(target_region_container, selected_army.get_player_id())
-	if existing_army != null:
-
-		return false
-	
 	# Check if army can move to this region
 	if not can_army_move_to_region(selected_army, target_region_container):
 		var check_region = target_region_container as Region
@@ -268,12 +262,14 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	
 	# Deduct movement points
 	selected_army.spend_movement_points(terrain_cost)
-	
+
 	# Reduce efficiency by 5 for movement
 	selected_army.reduce_efficiency(5)
-	
+
 	# Store remaining movement points for logging
 	var remaining_points = selected_army.get_movement_points()
+	# Per-move debug: region, cost, MP left this turn
+	DebugLogger.log("ArmyManagement", "Moved to region %d, Cost: %d, MP left: %d/%d" % [target_region_id, terrain_cost, remaining_points, GameParameters.MOVEMENT_POINTS_PER_TURN])
 	
 	# Check if we moved to an unowned region - handle combat scenarios
 	if target_region_owner != army_player_id and target_region_owner != -1:
@@ -567,14 +563,14 @@ func _should_trigger_battle(attacking_army: Army, target_region: Region) -> bool
 
 func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -> void:
 	"""Trigger combat when army moves into hostile territory"""
-	if attacking_army == null or defending_region == null:
-		return
-	
 	# Check if this should trigger battle
 	if _should_trigger_battle(attacking_army, defending_region):
 		# Find GameManager and BattleManager
 		var game_manager = _get_game_manager()
 		if game_manager:
+			# If AI modal disabled, let GameManager.perform_region_entry handle battle; skip showing modal here
+			if game_manager.debug_disable_battle_modal and game_manager.is_player_computer(attacking_army.get_player_id()):
+				return
 			var battle_manager = game_manager.get_battle_manager()
 			if battle_manager:
 				# Set up battle through BattleManager

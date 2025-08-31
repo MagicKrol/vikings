@@ -552,6 +552,14 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	"""Handle battle completion"""
 	battle_in_progress = false
 	battle_report = report
+
+	# If AI modal is disabled for debugging, finalize immediately and emit signal
+	var gm = get_node("../../GameManager") as GameManager
+	if gm.debug_disable_battle_modal and gm.is_player_computer(attacking_army.get_player_id()):
+		gm.get_battle_manager().handle_battle_modal_closed()
+		# Hide modal and stop here to avoid waiting for UI interaction
+		hide_modal()
+		return
 	
 	# Re-enable continue button and hide withdraw button
 	if continue_button:

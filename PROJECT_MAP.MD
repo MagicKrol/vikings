@@ -51,6 +51,7 @@ Notes
 - Purpose: High-level orchestration (castle placement, turns, resource ticks, AI start, battle finalization).
 - Key: `initialize_managers()`, `next_turn()`, `_process_round_start_actions()`, `_process_player_turn_start()`, `handle_castle_placement()`, `finalize_battle_result(...)`.
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
+- Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 
 ### TurnController.gd (TurnController)
@@ -60,14 +61,20 @@ Notes
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested), `DebugStepGate`.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Resting Logic (AI):
-  - Start-of-evaluation: if an army’s efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
+  - Start-of-evaluation: if an army's efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
   - Pre-attack: if an army can reach a target now and a battle is expected, and efficiency < 90%, it calls `make_camp()` up to 2 times (bounded by MPs) before moving.
   - End-of-turn: after post-movement economy, any army with leftover MPs spends all on `make_camp()`.
+- Peasants-Only Recruitment:
+  - Runs only when standard recruitment is not needed and peasant ratio < AI_PEA_MIN_PROP_BASE
+  - Targets peasant share based on army power thresholds (low/mid/high power → 40%/30%/20% peasants)
+  - Moves to best reachable owned region with highest available recruits to hire peasants (free cost)
+  - Uses pathfinding to find optimal region within current movement points
 
 ### BattleManager.gd (BattleManager)
 - Purpose: Battle UI coordination and post-battle processing via signals.
 - Key: `start_battle()`, `handle_battle_modal_closed()`, emits `battle_finished`; tracks pending conquest; proportional loss application; army defeat/removal.
 - Integrates: BattleModal UI, RegionManager (read), ArmyManager (remove/retreat), GameManager (finalization).
+- Behavior: If `GameManager.debug_disable_battle_modal` is enabled for AI, `start_battle()` simulates instantly via `BattleSimulator` and emits `battle_finished` without showing a modal.
 
 ### Region systems
 - region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, nearest owned castle search, recruit source aggregation, castle level lookup.
@@ -144,7 +151,7 @@ Notes
 ## Data & Parameters
 - Player.gd: resources, name/color/id, afford/pay helpers, serialization.
 - ResourceComposition.gd / ArmyComposition.gd: storage and math helpers; food cost, power.
-- GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales.
+- GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*).
 - Enums (Enums/*.gd): Regions, Levels, Soldiers, Players, Resources, Unit traits, Castle types.
 
 ## Static vs Dynamic
@@ -155,6 +162,11 @@ Notes
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.
 - TurnController owns pathfinder/scorer; calls `GameManager.ai_travel_to` for movement and battle stepping; uses `BudgetManager` and `RecruitmentManager` when armies request reinforcement.
 - PlayerManagerNode is the authoritative per-player economy and emits player-change signals used by UI.
+
+### army_manager.gd (ArmyManager)
+- Purpose: Army creation, selection, and adjacent-region movement.
+- Key: `create_army()`, `move_army()`, `move_army_to_region()`, `reset_all_army_movement_points()`.
+- Logging: After each move, logs `Moved to region <id>, Cost: <mp>, MP left: <left>/<per_turn>`.
 
 ## Missing/Added Since Last Map
 - Extracted UI modals into separate `.tscn` scenes and instanced in `main.tscn` (previously described as inline).

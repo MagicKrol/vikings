@@ -25,12 +25,12 @@ static var _instance: DebugLogger = null
 # Debug categories and their enabled state
 var debug_categories: Dictionary = {
 	# AI Systems
-	"AIMovement": false,           # Army movement and pathfinding
-	"AIPathfinding": false,        # Detailed pathfinding calculations
+	"AIMovement": true,           # Army movement and pathfinding
+	"AIPathfinding": true,        # Detailed pathfinding calculations
 	"AIScoring": false,            # Target scoring and evaluation
 	"AIPlanning": false,           # Strategic planning decisions
 	"AITurnManager": true,        # High-level AI turn processing
-	"AIEconomy": false,            # AI economy decisions and raise army
+	"AIEconomy": true,            # AI economy decisions and raise army
 	"AIRecruitment": true,        # AI recruitment and budget allocation
 	
 	# Resource Systems

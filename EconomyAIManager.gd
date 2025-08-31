@@ -139,7 +139,10 @@ func _find_recruitment_armies_at_castles(player_id: int, turn_number: int) -> Ar
 	var out: Array[Army] = []
 	var armies = army_manager.get_player_armies(player_id)
 	for a in armies:
-		if a.recruitment_requested:
+		if a.needs_recruitment(turn_number):
+			# Always flag the army as needing recruitment
+			a.request_recruitment()
+			# But only add to output list if at castle (for budget allocation)
 			var r: Region = a.get_parent()
 			var rid = r.get_region_id()
 			if region_manager.get_castle_level(rid) >= 1:

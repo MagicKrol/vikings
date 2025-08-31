@@ -128,6 +128,17 @@ const AI_RAISE_THRESHOLD = 35.0                # Global decision cutoff score
 # Target army power for raise army decisions
 const AI_TARGET_ARMY_POWER = 100               # Target power threshold for underpowered armies
 
+## AI Peasants-Only Recruitment Parameters
+# Minimum peasant share threshold
+const AI_PEA_MIN_PROP_BASE = 0.20               # Minimum acceptable peasant share trigger (20%)
+# Army power thresholds for target peasant share
+const AI_PEA_POWER_LOW_MAX = 150                # Upper bound for "low power" armies
+const AI_PEA_POWER_HIGH_MIN = 300               # Lower bound for "high power" armies
+# Target peasant shares by army power
+const AI_PEA_TARGET_PROP_LOW = 0.40             # Target share for low power armies (40%)
+const AI_PEA_TARGET_PROP_MID = 0.30             # Target share for mid power armies (30%)
+const AI_PEA_TARGET_PROP_HIGH = 0.20            # Target share for high power armies (20%)
+
 ## Army Pathfinder Algorithm Constants
 const ARMY_PATHFINDER_HORIZON_MP = 15          # Maximum MP horizon for pathfinding (3 turns * 5 MP)
 const ARMY_MOVEMENT_GAMMA_TURN = 0.9           # Discount factor for future turn scoring

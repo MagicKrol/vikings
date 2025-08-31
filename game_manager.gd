@@ -32,8 +32,8 @@ var total_players: int = 6
 
 # Player type management (up to 6 players)
 var player_types: Array[PlayerTypeEnum.Type] = [
-	PlayerTypeEnum.Type.HUMAN,   # Player 1 - Computer (temporarily for testing)
-	PlayerTypeEnum.Type.COMPUTER,   # Player 2 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 1 - Computer (temporarily for testing)
+	PlayerTypeEnum.Type.OFF,   # Player 2 - Computer
 	PlayerTypeEnum.Type.OFF,   # Player 3 - Computer
 	PlayerTypeEnum.Type.OFF,   # Player 4 - Computer
 	PlayerTypeEnum.Type.OFF,   # Player 5 - Computer
@@ -74,6 +74,9 @@ var _turn_controller: TurnController
 
 # Modal references  
 var _battle_modal: BattleModal
+
+# Debug: disable AI battle modal and run instant background battles
+var debug_disable_battle_modal: bool = true
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 
@@ -765,23 +768,29 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	"""
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.name + " vs region " + str(target_region_id))
 	
-	# Start the battle using BattleManager
+	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
 	_battle_manager.start_battle(army, target_region_id)
-	
-	# Wait for battle to complete
+
+	# If background mode is enabled for AI, the result is ready immediately and signal will be emitted deferred
+	if debug_disable_battle_modal and is_player_computer(army.get_player_id()):
+		var report = _battle_manager.get_last_battle_report()
+		var res = "victory" if report and report.winner == "Attackers" else "defeat"
+		return res
+
+	# Otherwise wait for the modal-driven signal
 	var result: String = await _battle_manager.battle_finished
 	DebugLogger.log("TurnProcessing", "Battle completed with result: " + result)
 	
-	# For AI battles, finalize immediately since there's no modal interaction
-	if is_player_computer(army.get_player_id()):
+	# For AI battles (modal path), finalize immediately using last battle report after signal
+	if is_player_computer(army.get_player_id()) and not debug_disable_battle_modal:
 		var result_data = {
 			"result": result,
 			"army": army,
 			"target_region_id": target_region_id,
-			"battle_report": _battle_manager._battle_modal.battle_report if _battle_manager._battle_modal else null,
-			"attacking_armies": _battle_manager._pending_attackers if _battle_manager else [],
-			"defending_armies": _battle_manager._pending_defenders if _battle_manager else [],
-			"defending_garrison": _battle_manager._pending_garrison if _battle_manager else null
+			"battle_report": _battle_manager.get_last_battle_report(),
+			"attacking_armies": _battle_manager._pending_attackers,
+			"defending_armies": _battle_manager._pending_defenders,
+			"defending_garrison": _battle_manager._pending_garrison
 		}
 		finalize_battle_result(result_data)
 	
@@ -884,41 +893,33 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	Returns: "arrived", "blocked", "battle_victory", "battle_defeat"
 	"""
 	if army == null or not is_instance_valid(army):
-		DebugLogger.log("TurnProcessing", "ai_travel_to: Invalid army")
+		DebugLogger.log("AIPathfinding", "ai_travel_to: Invalid army")
 		return "blocked"
 	
 	var current_region = army.get_parent() as Region
 	if current_region == null:
-		DebugLogger.log("TurnProcessing", "ai_travel_to: Army not in valid region")
+		DebugLogger.log("AIPathfinding", "ai_travel_to: Army not in valid region")
 		return "blocked"
 	
 	var current_region_id = current_region.get_region_id()
 	var player_id = army.get_player_id()
 	
-	DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s traveling from region %d to region %d" % [army.name, current_region_id, final_region_id])
-	
-	# Get pathfinder from TurnController (reuse existing scorer pathfinder)
-	if _turn_controller == null:
-		DebugLogger.log("TurnProcessing", "ai_travel_to: TurnController not available")
-		return "blocked"
+	DebugLogger.log("AIPathfinding", "ai_travel_to: Army %s traveling from region %d to region %d" % [army.name, current_region_id, final_region_id])
 	
 	var pathfinder = _turn_controller.pathfinder
-	if pathfinder == null:
-		DebugLogger.log("TurnProcessing", "ai_travel_to: Pathfinder not available") 
-		return "blocked"
 	
 	# Get path using existing pathfinder with same filters (friendly-only, passable)
 	var path_result = pathfinder.find_path_to_target(current_region_id, final_region_id, player_id)
 	if not path_result["success"]:
-		DebugLogger.log("TurnProcessing", "ai_travel_to: No valid path found")
+		DebugLogger.log("AIPathfinding", "ai_travel_to: No valid path found")
 		return "blocked"
 	
 	var full_path = path_result["path"] as Array[int]
 	if full_path.size() <= 1:
-		DebugLogger.log("TurnProcessing", "ai_travel_to: Already at destination or invalid path")
+		DebugLogger.log("AIPathfinding", "ai_travel_to: Already at destination or invalid path")
 		return "arrived"
 	
-	DebugLogger.log("TurnProcessing", "ai_travel_to: Path found with %d steps" % full_path.size())
+	DebugLogger.log("AIPathfinding", "ai_travel_to: Path found with %d steps" % full_path.size())
 	
 	# Iterate adjacent steps starting from index 1 (skip current position)
 	for i in range(1, full_path.size()):
@@ -926,66 +927,66 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		
 		# Check if army still has movement points
 		if army.get_movement_points() <= 0:
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.name, army.get_parent().get_region_id()])
-			return "blocked"
+			DebugLogger.log("AIMovement", "ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.name, army.get_parent().get_region_id()])
+			return "out_of_movement_points"
 		
 		# Get next region for battle check
 		var next_region_container = _region_manager.map_generator.get_region_container_by_id(next_region_id)
 		if next_region_container == null:
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Invalid region %d in path" % next_region_id)
+			DebugLogger.log("AIMovement", "ai_travel_to: Invalid region %d in path" % next_region_id)
 			return "blocked"
 		
 		var next_region = next_region_container as Region
 		if next_region == null:
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Region %d is not valid" % next_region_id)
+			DebugLogger.log("AIMovement", "ai_travel_to: Region %d is not valid" % next_region_id)
 			return "blocked"
 		
 		# Debug step pausing using DebugStepGate
 		if _turn_controller.debug_step_gate:
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
+			DebugLogger.log("AIMovement", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
 			await _turn_controller.debug_step_gate.step()
 		
 		# Check if this step should trigger battle
 		if _should_trigger_battle(army, next_region):
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Contested step - using perform_region_entry")
+			DebugLogger.log("AIMovement", "ai_travel_to: Contested step - using perform_region_entry")
 			var battle_result = await perform_region_entry(army, next_region_id, "ai")
 			
 			# Log step result
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
+			DebugLogger.log("AIMovement", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
 			
 			match battle_result:
 				"battle_victory":
 					# Continue to next step after victory
 					continue
 				"battle_defeat":
-					DebugLogger.log("TurnProcessing", "ai_travel_to: Army defeated in battle")
+					DebugLogger.log("AIMovement", "ai_travel_to: Army defeated in battle")
 					return "battle_defeat"
 				"blocked":
-					DebugLogger.log("TurnProcessing", "ai_travel_to: Movement blocked")
+					DebugLogger.log("AIMovement", "ai_travel_to: Movement blocked")
 					return "blocked"
 				_:
-					DebugLogger.log("TurnProcessing", "ai_travel_to: Unexpected battle result: %s" % battle_result)
+					DebugLogger.log("AIMovement", "ai_travel_to: Unexpected battle result: %s" % battle_result)
 					return "blocked"
 		else:
 			# Friendly step - use ArmyManager.move_army()
-			DebugLogger.log("TurnProcessing", "ai_travel_to: Friendly step - using ArmyManager.move_army")
+			DebugLogger.log("AIMovement", "ai_travel_to: Friendly step - using ArmyManager.move_army")
 			var move_success = _army_manager.move_army(army, next_region)
 			
 			# Log step result  
 			if move_success:
-				DebugLogger.log("TurnProcessing", "ai_travel_to: Friendly move successful for step %d" % i)
+				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move successful for step %d" % i)
 			else:
-				DebugLogger.log("TurnProcessing", "ai_travel_to: Friendly move failed for step %d" % i)
+				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move failed for step %d" % i)
 				return "blocked"
 	
 	# Check if we reached the final destination
 	var final_position = army.get_parent() as Region
 	if final_position and final_position.get_region_id() == final_region_id:
-		DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
+		DebugLogger.log("AIMovement", "ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
 		return "arrived"
 	else:
 		var current_pos = final_position.get_region_id() if final_position else -1
-		DebugLogger.log("TurnProcessing", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
+		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
 		return "blocked"
 
 func _start_first_turn() -> void:

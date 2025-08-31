@@ -204,8 +204,38 @@ func get_assigned_budget() -> BudgetComposition:
 
 func needs_recruitment(turn_number: int = 1) -> bool:
 	"""Check if this army needs recruitment based on power threshold"""
-	var base_max := 30.0
+	var base_max := 20.0
 	var scaled := base_max * (1.0 + 0.03 * float(turn_number))
 	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
 	var threshold := scaled * float(peasant_power) * 2.0
+	DebugLogger.log("AIRecruitment", "[Army] " + str(name) + " needs recruitment: Army " + str(get_army_power()) + " vs threshold " + str(threshold))
 	return float(get_army_power()) < threshold
+
+func get_peasant_ratio() -> float:
+	"""Get the current peasant proportion in the army"""
+	var total_soldiers = get_total_soldiers()
+	if total_soldiers == 0:
+		return 0.0
+	var peasant_count = get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	return float(peasant_count) / float(total_soldiers)
+
+func compute_peasant_need(target_prop: float) -> int:
+	"""Calculate how many peasants are needed to reach target proportion"""
+	var total_soldiers = get_total_soldiers()
+	var current_peasants = get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	var non_peasants = total_soldiers - current_peasants
+	
+	if total_soldiers == 0:
+		# Army has no soldiers - need at least 1 peasant to achieve any proportion
+		return 1
+	
+	# Calculate needed peasants: peasants / (peasants + non_peasants) = target_prop
+	# Solving for peasants: peasants = target_prop * non_peasants / (1 - target_prop)
+	if target_prop >= 1.0:
+		# Can't achieve 100% peasants if we have non-peasants
+		return 0
+	
+	var needed_peasants = int(ceil(target_prop * float(non_peasants) / (1.0 - target_prop)))
+	var additional_needed = max(0, needed_peasants - current_peasants)
+	
+	return additional_needed

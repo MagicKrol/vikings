@@ -46,6 +46,9 @@ var _battle_modal: BattleModal
 var _sound_manager: SoundManager
 var _game_manager: GameManager
 
+# Unified battle report storage (works for modal and background)
+var _last_battle_report: BattleSimulator.BattleReport = null
+
 func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_modal: BattleModal, sound_manager: SoundManager):
 	_region_manager = region_manager
 	_army_manager = army_manager
@@ -59,13 +62,10 @@ func set_game_manager(game_manager: GameManager) -> void:
 func start_battle(attacker: Army, target_region_id: int) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
-	if not target_region:
-		DebugLogger.log("BattleSystem", "[BattleManager] Error: Target region not found")
-		return
-	
+
 	# Set up battle context
 	set_pending_conquest(attacker, target_region)
-	
+
 	# Collect all battle participants
 	var owner_id := _region_manager.get_region_owner(target_region_id)
 	var defender_armies := _collect_defender_armies(target_region, owner_id, attacker)
@@ -79,10 +79,38 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	# Emit battle started signal
 	emit_signal("battle_started", attacker, target_region_id)
 	
-	# Show battle modal
+	# AI background path: no modal, instant simulation when flag is on
+	if _game_manager.debug_disable_battle_modal and _game_manager.is_player_computer(attacker.get_player_id()):
+		var atk_comps = _compositions_from_armies([attacker])
+		var def_comps = _compositions_from_armies(defender_armies)
+		var attacker_eff = attacker.get_efficiency()
+		var defender_eff = 100
+		var terrain_type = target_region.get_region_type()
+		var castle_type = target_region.get_castle_type()
+		var sim = BattleSimulator.new()
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type)
+		_last_battle_report = report
+		var winner = report.winner
+		var result = "victory" if winner == "Attackers" else "defeat"
+		# Finalize through GameManager and signal completion
+		var result_data = {
+			"result": result,
+			"army": attacker,
+			"target_region_id": target_region_id,
+			"battle_report": report,
+			"attacking_armies": _pending_attackers,
+			"defending_armies": _pending_defenders,
+			"defending_garrison": _pending_garrison
+		}
+		_game_manager.finalize_battle_result(result_data)
+		call_deferred("_emit_battle_finished", result)
+		DebugLogger.log("BattleSystem", "[BattleManager] Background battle done: " + result)
+		return
+
+	# Default: show interactive modal
 	if _battle_modal:
 		_battle_modal.show_battle(attacker, target_region)
-	
+
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle started: " + str(attacker.name) + " vs " + str(target_region.get_region_name()))
 
 func set_pending_conquest(army: Army, region: Region) -> void:
@@ -103,11 +131,12 @@ func handle_battle_modal_closed() -> void:
 		var battle_result = _get_battle_result()
 		
 		# Prepare result data for GameManager finalization
+		_last_battle_report = _battle_modal.battle_report
 		var result_data = {
 			"result": battle_result,
 			"army": pending_conquest_army,
 			"target_region_id": pending_conquest_region.get_region_id(),
-			"battle_report": _battle_modal.battle_report if _battle_modal else null,
+			"battle_report": _last_battle_report,
 			"attacking_armies": _pending_attackers,
 			"defending_armies": _pending_defenders,
 			"defending_garrison": _pending_garrison
@@ -229,6 +258,12 @@ func get_pending_defending_compositions() -> Array:
 
 func get_pending_garrison() -> ArmyComposition:
 	return _pending_garrison
+
+func get_last_battle_report() -> BattleSimulator.BattleReport:
+	return _last_battle_report
+
+func _emit_battle_finished(result: String) -> void:
+	emit_signal("battle_finished", result)
 
 # --- Proportional loss distribution across an array of Army nodes (and optional garrison) ---
 func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garrison: ArmyComposition) -> void:

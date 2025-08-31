@@ -172,6 +172,34 @@ func _process_turn(player_id: int) -> void:
 							})
 							continue  # Skip normal frontier evaluation
 			
+			# Check peasants-only recruitment (only if normal recruitment not needed)
+			var peasant_plan = _needs_recruitment_peasants(army, turn_number)
+			if peasant_plan["needed"]:
+				var best_peasant_region = _find_best_owned_region_for_peasants(army)
+				if best_peasant_region != -1:
+					if best_peasant_region == region_id:
+						# Current region is best - hire peasants immediately
+						var hired = _hire_peasants_at_region(army, on_region, peasant_plan["ideal_needed"])
+						if hired > 0:
+							DebugLogger.log("AIRecruitment", "Army " + str(army.name) + " hired " + str(hired) + " peasants at current region")
+						# Continue to normal movement scoring since army can still move/fight
+					else:
+						# Need to move to different region for peasants
+						var pf = pathfinder.find_path_to_target(region_id, best_peasant_region, army.get_player_id())
+						if pf["success"]:
+							candidates.append({
+								"army": army,
+								"target_id": best_peasant_region,
+								"path": pf["path"],
+								"mp_cost": pf["cost"],
+								"final_score": INF - 1,  # High priority, but lower than reinforce
+								"goal": "peasants",
+								"current_region_id": region_id,
+								"can_reach_now": int(pf["cost"]) <= army.get_movement_points(),
+								"peasant_plan": peasant_plan
+							})
+							continue  # Skip normal frontier evaluation
+			
 			# Normal frontier scoring for armies not needing reinforcement
 			var best_move := _find_best_move_for_army(army, frontier)
 			if not best_move.is_empty():
@@ -288,8 +316,19 @@ func _execute_move(move: Dictionary) -> bool:
 	var path: Array[int] = move["path"]
 
 	emit_signal("move_started", army, target_id)
-	DebugLogger.log("AITurnManager", "[TurnController] Executing move: %s -> Region %d (score: %.1f)"
-		% [army.name, target_id, move["final_score"]])
+	DebugLogger.log("AITurnManager", "[TurnController] Executing move: %s -> Region %d (score: %.1f, goal: %s)"
+		% [army.name, target_id, move["final_score"], move.get("goal", "attack")])
+
+	# Handle peasants-only moves specially
+	if move.get("goal", "") == "peasants":
+		var result = await game_manager.ai_travel_to(army, target_id)
+		if result == "arrived":
+			# Hire peasants at destination
+			var target_region = region_manager.map_generator.get_region_container_by_id(target_id)
+			var peasant_plan = move.get("peasant_plan", {})
+			var hired = _hire_peasants_at_region(army, target_region, peasant_plan.get("ideal_needed", 0))
+			DebugLogger.log("AIRecruitment", "Peasants-only move completed: hired " + str(hired) + " peasants")
+		return false  # No ownership change for peasants-only moves
 
 	# Only allow a battle if the army could afford the full cost now.
 	var initial_mp := army.get_movement_points()
@@ -306,6 +345,8 @@ func _execute_move(move: Dictionary) -> bool:
 		# Army can reach target this turn - use ai_travel_to for step-by-step debug
 		var result = await game_manager.ai_travel_to(army, target_id)
 		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
+		if result == "out_of_movement_points":
+			return false
 		if result == "blocked":
 			return false
 		elif result == "battle_victory":
@@ -356,3 +397,91 @@ func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 func _on_battle_finished(result: String) -> void:
 	"""Handle battle completion"""
 	emit_signal("battle_finished", result)
+
+# Peasants-only recruitment helpers
+func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
+	"""Check if army needs peasants-only recruitment"""
+	# Early gate: if normal recruitment is needed, skip peasants-only
+	if army.needs_recruitment(turn_number):
+		return {"needed": false}
+	
+	# Check current peasant ratio
+	var current_ratio = army.get_peasant_ratio()
+	if current_ratio >= GameParameters.AI_PEA_MIN_PROP_BASE:
+		return {"needed": false}
+	
+	# Determine target proportion based on army power
+	var army_power = army.get_army_power()
+	var target_prop = 0.0
+	if army_power < GameParameters.AI_PEA_POWER_LOW_MAX:
+		target_prop = GameParameters.AI_PEA_TARGET_PROP_LOW
+	elif army_power >= GameParameters.AI_PEA_POWER_HIGH_MIN:
+		target_prop = GameParameters.AI_PEA_TARGET_PROP_HIGH
+	else:
+		target_prop = GameParameters.AI_PEA_TARGET_PROP_MID
+	
+	var ideal_needed = army.compute_peasant_need(target_prop)
+	
+	DebugLogger.log("AIRecruitment", "Army " + str(army.name) + " peasant need: current=" + str(current_ratio) + ", target=" + str(target_prop) + ", need=" + str(ideal_needed))
+	
+	return {
+		"needed": true,
+		"target_prop": target_prop,
+		"ideal_needed": ideal_needed
+	}
+
+func _find_best_owned_region_for_peasants(army: Army) -> int:
+	"""Find the best owned region reachable this turn for peasant recruitment"""
+	var player_id = army.get_player_id()
+	var current_region = army.get_parent() as Region
+	if not current_region:
+		return -1
+	
+	var current_region_id = current_region.get_region_id()
+	var owned_regions = region_manager.get_player_regions(player_id)
+	var candidates = []
+	
+	for region_id in owned_regions:
+		var path_result = pathfinder.find_path_to_target(current_region_id, region_id, player_id)
+		if not path_result["success"]:
+			continue
+		
+		var cost = int(path_result["cost"])
+		if cost > army.get_movement_points():
+			continue  # Not reachable this turn
+		
+		var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
+		var available_recruits = region_container.get_available_recruits()
+		
+		candidates.append({
+			"region_id": region_id,
+			"available_recruits": available_recruits,
+			"cost": cost
+		})
+	
+	if candidates.is_empty():
+		return -1
+	
+	# Sort by available recruits (highest first), then by region_id for deterministic tie-break
+	candidates.sort_custom(func(a, b):
+		if a["available_recruits"] == b["available_recruits"]:
+			return a["region_id"] < b["region_id"]
+		return a["available_recruits"] > b["available_recruits"]
+	)
+	
+	DebugLogger.log("AIRecruitment", "Best peasant region: " + str(candidates[0]["region_id"]) + " with " + str(candidates[0]["available_recruits"]) + " recruits")
+	
+	return candidates[0]["region_id"]
+
+func _hire_peasants_at_region(army: Army, region: Region, max_needed: int) -> int:
+	"""Hire peasants at the specified region"""
+	var available = region.get_available_recruits()
+	var to_hire = min(available, max_needed)
+	
+	if to_hire > 0:
+		var actual_hired = region.hire_recruits(to_hire)
+		army.add_soldiers(SoldierTypeEnum.Type.PEASANTS, actual_hired)
+		DebugLogger.log("AIRecruitment", "Hired " + str(actual_hired) + " peasants at region " + str(region.get_region_id()) + " (new ratio: " + str(army.get_peasant_ratio()) + ")")
+		return actual_hired
+	
+	return 0
