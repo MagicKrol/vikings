@@ -53,7 +53,7 @@ func mark_region_occupied(region_id: int) -> void:
 
 func plan_army_movement(army: Army, current_region_id: int) -> Dictionary:
 	"""
-	Plan optimal movement for an army using pathfinding and target scoring.
+	Plan optimal movement for an army using canonical scoring from ArmyTargetScorer.
 	Returns: {success: bool, target_region_id: int, path: Array[int], score: float, reason: String}
 	"""
 	if army == null or not is_instance_valid(army):
@@ -91,8 +91,8 @@ func plan_army_movement(army: Army, current_region_id: int) -> Dictionary:
 	
 	DebugLogger.log("AIPlanning", "Found %d non-owned candidate regions" % candidates.size(), 1)
 	
-	# Score candidates and select best
-	var best_move = _score_and_select_best(candidates, player_id, current_mp)
+	# Score candidates using canonical scoring
+	var best_move = _score_and_select_best_canonical(army, candidates, player_id, current_mp)
 	
 	if best_move.is_empty() or best_move.score < GameParameters.ARMY_MOVEMENT_MIN_WANTED / 100.0:
 		DebugLogger.log("AIPlanning", "No suitable candidate above minWanted threshold (%d%%)" % GameParameters.ARMY_MOVEMENT_MIN_WANTED)
@@ -106,64 +106,54 @@ func plan_army_movement(army: Army, current_region_id: int) -> Dictionary:
 	
 	return best_move
 
-func _score_and_select_best(candidates: Array, player_id: int, current_mp: int) -> Dictionary:
+func _score_and_select_best_canonical(army: Army, candidates: Array, player_id: int, current_mp: int) -> Dictionary:
 	"""
-	Score candidates using Val(t) * gamma^turns - danger formula.
+	Score candidates using canonical final scoring from ArmyTargetScorer.
+	Apply danger penalty as a separate adjustment after the canonical final score.
 	Returns best move or empty dict.
 	"""
 	if candidates.is_empty():
 		return {}
 	
-	# Get Val scores for all candidates
-	var target_ids: Array[int] = []
-	var cost_map = {}  # region_id -> cost
-	var path_map = {}  # region_id -> path
+	if army == null:
+		return {}
 	
-	for candidate in candidates:
-		target_ids.append(candidate.region_id)
-		cost_map[candidate.region_id] = candidate.cost
-		path_map[candidate.region_id] = candidate.path
-	
-	var scored_targets = army_target_scorer.score_target_regions(target_ids, player_id)
-	
-	DebugLogger.log("AIScoring", "Scoring %d non-owned candidate regions" % candidates.size())
+	DebugLogger.log("AIScoring", "Scoring %d non-owned candidate regions using canonical scoring" % candidates.size())
 	
 	var best_region_id = -1
 	var best_score = -999.0
-	var best_cost = 0
 	var best_path = []
 	var best_reason = "normal"
-	var best_val_score = 0.0  # Cache the val score
-	var best_danger_penalty = 0.0  # Cache the danger penalty
+	var best_canonical_final = 0.0
+	var best_danger_penalty = 0.0
 	
-	for target_data in scored_targets:
-		var region_id = target_data.region_id
-		var val_score = target_data.overall_score
-		var cost = cost_map[region_id]
-		var path = path_map[region_id]
+	for candidate in candidates:
+		var region_id = candidate.region_id
+		var path = candidate.path
 		
-		# Calculate turns to reach (proper ceiling)
-		var turns = ceil(float(cost) / 5.0)
+		# Use canonical raw API to get final army score
+		var score_result = army_target_scorer.get_final_army_score_raw(army, region_id)
 		
-		# Apply discount: score = Val * gamma^turns
-		var gamma = GameParameters.ARMY_MOVEMENT_GAMMA_TURN
-		var discount_factor = pow(gamma, turns)
-		var discounted_score = val_score * discount_factor
+		if not score_result.get("reachable", false):
+			continue
 		
-		# Apply danger penalty
+		# Get the canonical raw final score (base_raw + random - mp)
+		var canonical_final_raw = score_result.get("final_raw", 0.0)
+		
+		# Apply danger penalty as a separate adjustment after canonical scoring
 		var danger_penalty = _calculate_danger_penalty(region_id, player_id)
-		var final_score = discounted_score - danger_penalty
+		var decision_score = canonical_final_raw - danger_penalty
 		
-		DebugLogger.log("AIScoring", "Region %d: Val=%.1f%% turns=%d gamma^t=%.3f danger=%.1f%% final=%.1f%%" % 
-			[region_id, val_score * 100, turns, discount_factor, danger_penalty * 100, final_score * 100], 1)
+		DebugLogger.log("AIScoring", "Region %d: base_raw=%.1f random=%.1f mp=%.1f final_raw=%.1f danger=%.1f%% decision=%.1f" % 
+			[region_id, score_result.get("base_raw_total", 0.0), score_result.get("random_modifier", 0.0), 
+			 score_result.get("mp_cost", 0.0), canonical_final_raw, danger_penalty * 100, decision_score], 1)
 		
-		if final_score > best_score:
-			best_score = final_score
+		if decision_score > best_score:
+			best_score = decision_score
 			best_region_id = region_id
-			best_cost = cost
 			best_path = path
-			best_val_score = val_score  # Cache the winning val score
-			best_danger_penalty = danger_penalty  # Cache the winning danger penalty
+			best_canonical_final = canonical_final_raw
+			best_danger_penalty = danger_penalty
 	
 	if best_region_id == -1:
 		return {}
@@ -171,11 +161,9 @@ func _score_and_select_best(candidates: Array, player_id: int, current_mp: int) 
 	# Trim path to current MP
 	var trimmed_path = army_pathfinder.trim_path_to_mp_limit(best_path, player_id, current_mp)
 	
-	# Log chosen destination (using cached values)
-	var turns_to_reach = ceil(float(best_cost) / 5.0)
-	DebugLogger.log("AIMovement", "CHOSEN dest=%d raw=%.1f%% turns=%d gamma=%.1f danger=%.1f%% final=%.1f%% reason=%s" %
-		[best_region_id, best_val_score * 100, turns_to_reach, GameParameters.ARMY_MOVEMENT_GAMMA_TURN, 
-		 best_danger_penalty * 100, best_score * 100, best_reason])
+	# Log chosen destination
+	DebugLogger.log("AIMovement", "CHOSEN dest=%d final_raw=%.1f danger=%.1f%% decision=%.1f reason=%s" %
+		[best_region_id, best_canonical_final, best_danger_penalty * 100, best_score, best_reason])
 	
 	return {
 		"success": true,
@@ -183,10 +171,12 @@ func _score_and_select_best(candidates: Array, player_id: int, current_mp: int) 
 		"end_tile": trimmed_path[-1] if trimmed_path.size() > 0 else best_region_id,
 		"target_region_id": trimmed_path[-1] if trimmed_path.size() > 0 else best_region_id,  # Backward compatibility
 		"path": trimmed_path,
-		"score": best_score,
+		"score": best_score,  # This is the decision score (final_raw - danger)
 		"reason": best_reason,
-		"cached_val_score": best_val_score  # Cache for logging
+		"canonical_final_raw": best_canonical_final,  # Store canonical raw score
+		"decision_score": best_score  # Store decision score (final_raw - danger)
 	}
+
 
 # Removed old unused functions - now using _score_and_select_best and _find_fallback_move
 

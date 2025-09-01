@@ -110,10 +110,15 @@ func _get_debug_info(region: Region) -> String:
 	var ai_debug_visualizer = game_manager.get("_ai_debug_visualizer")
 	if ai_debug_visualizer == null:
 		return ""
+	# Also ensure ArmyTargetScorer exists (to access resource max normalization)
+	if ai_debug_visualizer.army_target_scorer == null:
+		ai_debug_visualizer.army_target_scorer = ArmyTargetScorer.new(game_manager.get_region_manager(), game_manager.get_region_manager().map_generator)
 	
 	# Check if debug mode is active
 	if not ai_debug_visualizer.is_debug_visible():
 		return ""
+
+	# Do not refresh global caches here to avoid changing other regions' scores
 	
 	# Get comprehensive debug information
 	var debug_info = _get_comprehensive_debug_info(region)
@@ -221,42 +226,118 @@ func _get_army_target_debug_info(region: Region, ai_debug_visualizer) -> String:
 	
 	debug_lines.append(", ".join(region_resources))
 	
-	# Get the target score from cache
-	var target_score = ai_debug_visualizer.get_region_score(region.get_region_id())
-	debug_lines.append("TARGET SCORE: " + str(int(target_score)))
+	# Get scores from visualizer cache (matching overlay display)
+	var region_id = region.get_region_id()
+	var final_score = ai_debug_visualizer.get_region_score(region_id)
+	var detailed_factors = ai_debug_visualizer.get_detailed_scores(region_id)
 	
-	# SECTION 3: Get detailed scoring factors for army targeting
-	debug_lines.append("")
-	debug_lines.append("=== ARMY TARGET FACTORS ===")
-	var detailed_scores = ai_debug_visualizer.get_detailed_scores(region.get_region_id())
-	if not detailed_scores.is_empty():
-		debug_lines.append("Population Score: " + str(int(detailed_scores.get("population_score", 0.0) * 100)) + "% (Weight: 30%)")
-		debug_lines.append("Resource Score: " + str(int(detailed_scores.get("resource_score", 0.0) * 100)) + "% (Weight: 40%)")
-		debug_lines.append("Level Score: " + str(int(detailed_scores.get("level_score", 0.0) * 100)) + "% (Weight: 20%)")
-		debug_lines.append("Ownership Score: " + str(int(detailed_scores.get("ownership_score", 0.0) * 100)) + "% (Weight: 10%)")
-		
+	# Display raw final score matching overlay
+	debug_lines.append("FINAL SCORE: " + str(int(final_score)))
+	
+	# SECTION 3: Show breakdown if available from cache
+	if not detailed_factors.is_empty():
 		debug_lines.append("")
 		debug_lines.append("=== SCORING BREAKDOWN ===")
-		if detailed_scores.has("base_score"):
-			debug_lines.append("Base Score: " + str(int(detailed_scores.base_score)))
-		if detailed_scores.has("random_modifier"):
-			debug_lines.append("Random Modifier: +" + str(int(detailed_scores.random_modifier)))
-		if detailed_scores.has("movement_cost"):
-			debug_lines.append("Movement Cost: -" + str(int(detailed_scores.movement_cost)))
-		if detailed_scores.has("final_score"):
-			debug_lines.append("Final Score: " + str(int(detailed_scores.final_score)))
 		
-		# Show army-specific information if available
-		if detailed_scores.has("army_name"):
+		# Show the canonical raw scoring formula: base_raw + random - mp
+		if detailed_factors.has("base_raw_total") and detailed_factors.has("random_modifier") and detailed_factors.has("movement_cost"):
+			var base_raw = int(detailed_factors.base_raw_total)
+			var random = int(detailed_factors.random_modifier)
+			var mp_cost = int(detailed_factors.movement_cost)
+			debug_lines.append("Formula: " + str(base_raw) + " + " + str(random) + " - " + str(mp_cost) + " = " + str(int(final_score)))
 			debug_lines.append("")
-			debug_lines.append("=== ARMY DETAILS ===")
-			debug_lines.append("Army: " + str(detailed_scores.army_name))
-			if detailed_scores.has("reference_region"):
-				debug_lines.append("From Region: " + str(detailed_scores.reference_region))
+		elif detailed_factors.has("base_score") and detailed_factors.has("random_modifier") and detailed_factors.has("movement_cost"):
+			# Legacy format fallback
+			var base = int(detailed_factors.base_score)
+			var random = int(detailed_factors.random_modifier)
+			var mp_cost = int(detailed_factors.movement_cost)
+			debug_lines.append("Formula: " + str(base) + " + " + str(random) + " - " + str(mp_cost) + " = " + str(int(final_score)))
+			debug_lines.append("")
+		
+		# Show base score components if available
+		debug_lines.append("=== BASE SCORE COMPONENTS ===")
+		if detailed_factors.has("strategic_0_10"):
+			debug_lines.append("Strategic: " + str(snappedf(detailed_factors.strategic_0_10, 0.1)))
+		if detailed_factors.has("population_0_10"):
+			debug_lines.append("Population: " + str(snappedf(detailed_factors.population_0_10, 0.1)))
+		if detailed_factors.has("level_0_10"):
+			debug_lines.append("Level: " + str(snappedf(detailed_factors.level_0_10, 0.1)))
+		if detailed_factors.has("resource_0_10"):
+			debug_lines.append("Resources: " + str(snappedf(detailed_factors.resource_0_10, 0.1)))
+			
+			# Show per-resource breakdown if available
+			var resources_breakdown = detailed_factors.get("resources_breakdown", {})
+			if not resources_breakdown.is_empty():
+				debug_lines.append("")
+				debug_lines.append("=== RESOURCE BREAKDOWN ===")
+				if resources_breakdown.has("food") and resources_breakdown.food > 0.0:
+					debug_lines.append("Food: " + str(snappedf(resources_breakdown.food, 0.1)))
+				if resources_breakdown.has("wood") and resources_breakdown.wood > 0.0:
+					debug_lines.append("Wood: " + str(snappedf(resources_breakdown.wood, 0.1)))
+				if resources_breakdown.has("stone") and resources_breakdown.stone > 0.0:
+					debug_lines.append("Stone: " + str(snappedf(resources_breakdown.stone, 0.1)))
+				if resources_breakdown.has("iron") and resources_breakdown.iron > 0.0:
+					debug_lines.append("Iron: " + str(snappedf(resources_breakdown.iron, 0.1)))
+				if resources_breakdown.has("gold") and resources_breakdown.gold > 0.0:
+					debug_lines.append("Gold: " + str(snappedf(resources_breakdown.gold, 0.1)))
+		elif detailed_factors.has("strategic_component_0_10"):
+			# Legacy format fallback
+			debug_lines.append("Strategic: " + str(snappedf(detailed_factors.strategic_component_0_10, 0.1)))
+			debug_lines.append("Population: " + str(snappedf(detailed_factors.get("population_component_0_10", 0.0), 0.1)))
+			debug_lines.append("Level: " + str(snappedf(detailed_factors.get("level_component_0_10", 0.0), 0.1)))
+			debug_lines.append("Resources: " + str(snappedf(detailed_factors.get("resource_component_0_10", 0.0), 0.1)))
 	else:
-		debug_lines.append("No army target scoring data available")
-	
+		# Fallback: compute raw base score locally if cache is empty
+		debug_lines.append("")
+		debug_lines.append("=== BASE SCORE COMPONENTS ===")
+		var gm: GameManager = get_node_or_null("/root/Main/GameManager")
+		if gm != null:
+			var ats: ArmyTargetScorer = ai_debug_visualizer.army_target_scorer
+			if ats != null:
+				var player_id := gm.get_current_player_id()
+				var base_data: Dictionary = ats.get_base_region_score_raw(region, player_id)
+				if not base_data.is_empty():
+					debug_lines.append("Total: " + str(snappedf(base_data.get("base_raw_total", 0.0), 0.1)))
+					debug_lines.append("Strategic: " + str(snappedf(base_data.get("strategic_0_10", 0.0), 0.1)))
+					debug_lines.append("Population: " + str(snappedf(base_data.get("population_0_10", 0.0), 0.1)))
+					debug_lines.append("Level: " + str(snappedf(base_data.get("level_0_10", 0.0), 0.1)))
+					debug_lines.append("Resources: " + str(snappedf(base_data.get("resource_0_10", 0.0), 0.1)))
+					
+					# Show per-resource breakdown
+					var res_breakdown: Dictionary = ats.get_resource_component_breakdown_out_of_10(region, player_id)
+					if not res_breakdown.is_empty():
+						debug_lines.append("")
+						debug_lines.append("=== RESOURCE BREAKDOWN ===")
+						if res_breakdown.has("food") and res_breakdown.food > 0.0:
+							debug_lines.append("Food: " + str(snappedf(res_breakdown.food, 0.1)))
+						if res_breakdown.has("wood") and res_breakdown.wood > 0.0:
+							debug_lines.append("Wood: " + str(snappedf(res_breakdown.wood, 0.1)))
+						if res_breakdown.has("stone") and res_breakdown.stone > 0.0:
+							debug_lines.append("Stone: " + str(snappedf(res_breakdown.stone, 0.1)))
+						if res_breakdown.has("iron") and res_breakdown.iron > 0.0:
+							debug_lines.append("Iron: " + str(snappedf(res_breakdown.iron, 0.1)))
+						if res_breakdown.has("gold") and res_breakdown.gold > 0.0:
+							debug_lines.append("Gold: " + str(snappedf(res_breakdown.gold, 0.1)))
+				else:
+					debug_lines.append("No scoring data available")
+		else:
+			debug_lines.append("No scoring data available")
+
 	return "\n".join(debug_lines)
+
+func _compute_resource_breakdown(region: Region) -> Dictionary:
+	"""Get resource breakdown using canonical raw API (read-only)"""
+	var gm: GameManager = get_node_or_null("/root/Main/GameManager")
+	if gm == null:
+		return {}
+	
+	# Use canonical raw API to get resource breakdown
+	var ats = gm.get("_ai_debug_visualizer").army_target_scorer
+	if ats == null:
+		return {}
+	
+	var player_id = gm.get_current_player_id()
+	return ats.get_resource_component_breakdown_out_of_10(region, player_id)
 
 func _get_castle_placement_debug_info(region: Region, ai_debug_visualizer) -> String:
 	"""Get castle placement scoring debug information"""

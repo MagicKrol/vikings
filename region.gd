@@ -76,6 +76,9 @@ var ai_scoring_factors: Dictionary = {}        # Detailed factors (pop_score, re
 var ai_cluster_data: Dictionary = {}           # Cluster metrics (total_population, resources, etc.)
 var ai_scoring_valid: bool = false             # Whether stored scores are still valid
 
+# Strategic points heatmap score (computed pre-castle placement)
+var strategic_point_score: float = 0.0
+
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
 	region_id = int(region_data.get("id", -1))
@@ -581,3 +584,10 @@ func invalidate_ai_scores() -> void:
 	"""Mark AI scores as invalid (called when game state changes)"""
 	ai_scoring_valid = false
 	# Keep the data but mark it invalid - will be recalculated when needed
+
+# Strategic points heatmap API
+func set_strategic_point_score(value: float) -> void:
+	strategic_point_score = max(0.0, value)
+
+func get_strategic_point_score() -> float:
+	return strategic_point_score

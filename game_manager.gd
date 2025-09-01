@@ -77,7 +77,7 @@ var _battle_modal: BattleModal
 
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
-var debug_heatmap: bool = true
+var debug_heatmap: bool = false
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 
@@ -187,15 +187,21 @@ func initialize_managers():
 	player_manager.print_all_resources()
 	
 	# Initialize castle placement with proper player type handling
+	# Always compute strategic points heatmap scores before castle placement
 	if debug_heatmap:
 		# Create and show heatmap; block normal game flow (no castle placement/turns)
-		var heat := OceanPathHeatmap.new()
-		heat.name = "OceanPathHeatmap"
+		var heat := StrategicPointsHeatmap.new()
+		heat.name = "StrategicPointsHeatmap"
 		add_child(heat)
 		heat.initialize(_region_manager, map_generator)
+		heat.enable_key_toggle = true
 		heat.compute_and_show()
-		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying path centrality heatmap. Castle placement and turns are disabled.")
+		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying strategic points heatmap. Castle placement and turns are disabled.")
 	else:
+		var heat_calc := StrategicPointsHeatmap.new()
+		heat_calc.initialize(_region_manager, map_generator)
+		heat_calc.enable_key_toggle = false
+		heat_calc.compute_and_store()
 		_initialize_castle_placement_sequence()
 
 func _unhandled_input(event: InputEvent) -> void:

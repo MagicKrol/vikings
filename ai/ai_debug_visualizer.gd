@@ -40,6 +40,7 @@ const MID_SCORE_COLOR = Color(0.8, 0.8, 0.2, 0.8)   # Yellow
 const LOW_SCORE_COLOR = Color(0.8, 0.2, 0.2, 0.8)   # Red
 
 # Score thresholds for color coding
+# TODO: Revisit thresholds since raw scale differs from 0..100
 const HIGH_SCORE_THRESHOLD = 70.0
 const MID_SCORE_THRESHOLD = 30.0
 
@@ -187,17 +188,18 @@ func _update_castle_placement_scores(player_id: int):
 	DebugLogger.log("AIPlanning", "Stored castle placement scores in " + str(castle_scores.size()) + " regions")
 
 func _update_army_target_scores(player_id: int):
-	"""Calculate and store frontier-based scores for army targets"""
-	# Use frontier scorer if available, otherwise fall back to old scorer
+	"""Calculate and store army target scores using canonical scoring"""
+	# Always use frontier scorer for consistency
 	if frontier_target_scorer != null:
 		_update_frontier_scores(player_id)
 		return
-		
+
+	# This fallback should rarely be used, but if needed, use canonical scoring
 	if army_target_scorer == null:
 		DebugLogger.log("AIPlanning", "Error: No target scorer available")
 		return
 	
-	DebugLogger.log("AIPlanning", "Calculating army target scores with distance for Player " + str(player_id) + "...")
+	DebugLogger.log("AIPlanning", "Fallback: Calculating army target scores for Player " + str(player_id) + "...")
 	
 	# Get all passable regions as potential targets
 	var all_region_ids = _get_all_passable_regions()
@@ -206,62 +208,59 @@ func _update_army_target_scores(player_id: int):
 		DebugLogger.log("AIPlanning", "No passable regions found")
 		return
 	
-	# Score all regions using army target scorer
-	var scored_regions = army_target_scorer.score_target_regions(all_region_ids, player_id)
-	
-	# Find the player's castle position (or any owned region) as reference point
-	var reference_region_id = _find_player_reference_position(player_id)
-	if reference_region_id == -1:
-		DebugLogger.log("AIPlanning", "Warning: No reference position found for distance calculation")
-		# Fall back to raw scores without distance
-		_store_raw_army_scores(scored_regions)
+	# Find a representative army for scoring
+	var game_manager = get_node_or_null("/root/Main/GameManager")
+	if game_manager == null:
+		return
+		
+	var army_manager = game_manager.get_army_manager()
+	if army_manager == null:
+		return
+		
+	var player_armies = army_manager.get_player_armies(player_id)
+	if player_armies.is_empty():
+		DebugLogger.log("AIPlanning", "No armies found for canonical scoring")
 		return
 	
-	# Calculate distances from reference position to all regions
-	var distances = _calculate_distances_from_region(reference_region_id)
+	# Use first valid army for canonical scoring
+	var army = null
+	for test_army in player_armies:
+		if test_army != null and is_instance_valid(test_army):
+			army = test_army
+			break
 	
-	# Clear existing scores and update with distance-adjusted army target scores
+	if army == null:
+		return
+	
+	# Clear existing scores
 	current_player_scores.clear()
 	detailed_score_cache.clear()
 	
-	for score_data in scored_regions:
-		var region_id = score_data.region_id
-		var val_score = score_data.overall_score  # This is the "Val" in the formula
+	# Score all regions using canonical raw API
+	for region_id in all_region_ids:
+		var score_result = army_target_scorer.get_final_army_score_raw(army, region_id)
 		
-		# Calculate distance discount
-		var distance = distances.get(region_id, 999)  # Default to very far if not found
-		var mp_cost = distance * 3  # Rough approximation: average 3 MP per region
-		var turns = ceil(float(mp_cost) / 5.0)  # 5 MP per turn
-		var gamma = GameParameters.ARMY_MOVEMENT_GAMMA_TURN  # Should be 0.9
-		var discount_factor = pow(gamma, turns)
+		if not score_result.get("reachable", false):
+			continue
 		
-		# Apply discount: score = Val * gamma^turns
-		var discounted_score = val_score * discount_factor * 100.0  # Convert to 0-100 scale
+		var final_raw = score_result.get("final_raw", 0.0)
+		current_player_scores[region_id] = final_raw
 		
-		# Apply random modifier like AI does
-		var random_modifier = randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
-		var final_score = discounted_score + random_modifier
-		
-		# Store for display
-		current_player_scores[region_id] = final_score
-		
-		# Store detailed factors for display
+		# Store detailed factors using canonical raw data
 		var factors = {
-			"population_score": score_data.population_score,
-			"resource_score": score_data.resource_score,
-			"level_score": score_data.level_score,
-			"ownership_score": score_data.ownership_score,
-			"val_score": val_score * 100.0,
-			"distance": distance,
-			"turns": turns,
-			"discount_factor": discount_factor,
-			"discounted_score": discounted_score,
-			"random_modifier": random_modifier,
-			"final_score": final_score
+			"base_raw_total": score_result.get("base_raw_total", 0.0),
+			"random_modifier": score_result.get("random_modifier", 0.0),
+			"movement_cost": score_result.get("mp_cost", 0.0),
+			"final_raw": final_raw,
+			"strategic_0_10": score_result.get("strategic_0_10", 0.0),
+			"population_0_10": score_result.get("population_0_10", 0.0),
+			"level_0_10": score_result.get("level_0_10", 0.0),
+			"resource_0_10": score_result.get("resource_0_10", 0.0),
+			"resources_breakdown": score_result.get("resources_breakdown", {})
 		}
 		detailed_score_cache[region_id] = factors
 	
-	DebugLogger.log("AIPlanning", "Stored distance-adjusted army target scores for " + str(scored_regions.size()) + " regions")
+	DebugLogger.log("AIPlanning", "Stored canonical army target scores for " + str(current_player_scores.size()) + " regions")
 
 func _update_display_cache_from_regions():
 	"""Update display cache from stored region data with random modifiers"""
@@ -329,16 +328,22 @@ func _draw_region_score(region: Region, score: float):
 	# Try to get detailed score info for better formatting
 	if region_id in detailed_score_cache:
 		var components = detailed_score_cache[region_id]
-		if components.has("base_score") and components.has("random_modifier") and components.has("movement_cost"):
+		if components.has("base_raw_total") and components.has("random_modifier") and components.has("movement_cost"):
+			var base_raw = int(components.base_raw_total)
+			var random_mod = int(components.random_modifier)
+			var movement_cost = int(components.movement_cost)
+			score_text = str(base_raw) + "+" + str(random_mod) + "-" + str(movement_cost)
+		elif components.has("base_raw_total") and components.has("random_modifier"):
+			# Fallback for format without movement cost
+			var base_raw = int(components.base_raw_total)
+			var random_mod = int(components.random_modifier)
+			score_text = str(base_raw) + "+" + str(random_mod)
+		elif components.has("base_score") and components.has("random_modifier") and components.has("movement_cost"):
+			# Legacy format fallback
 			var base_score = int(components.base_score)
 			var random_mod = int(components.random_modifier)
 			var movement_cost = int(components.movement_cost)
 			score_text = str(base_score) + "+" + str(random_mod) + "-" + str(movement_cost)
-		elif components.has("base_score") and components.has("random_modifier"):
-			# Fallback for old format without movement cost
-			var base_score = int(components.base_score)
-			var random_mod = int(components.random_modifier)
-			score_text = str(base_score) + "+" + str(random_mod)
 	
 	# Calculate text size for background
 	var font = ThemeDB.fallback_font
@@ -533,7 +538,7 @@ func _calculate_distances_from_region(start_region_id: int) -> Dictionary:
 	return distances
 
 func _update_frontier_scores(player_id: int):
-	"""Calculate and store frontier-based scores with movement costs from best army perspective"""
+	"""Calculate and store frontier-based scores using canonical scoring API"""
 	DebugLogger.log("AIPlanning", "Calculating frontier scores with movement costs for Player " + str(player_id) + "...")
 	
 	# Get all armies for this player
@@ -552,14 +557,14 @@ func _update_frontier_scores(player_id: int):
 		DebugLogger.log("AIPlanning", "No armies found for Player " + str(player_id))
 		return
 	
-	# Get frontier targets with pure scoring
-	var frontier_targets = frontier_target_scorer.score_frontier_targets(player_id)
+	# Get frontier targets
+	var frontier_targets = frontier_target_scorer.get_frontier_targets(player_id)
 	if frontier_targets.is_empty():
 		DebugLogger.log("AIPlanning", "No frontier targets found for Player " + str(player_id))
 		return
 	
-	# Calculate scores for each army and find the one with highest scoring target
-	var best_army_data = _find_best_army_perspective(player_armies, frontier_targets, player_id)
+	# Find the best army perspective using canonical scoring
+	var best_army_data = _find_best_army_perspective_canonical(player_armies, frontier_targets, player_id)
 	if best_army_data.is_empty():
 		DebugLogger.log("AIPlanning", "No valid army perspective found")
 		return
@@ -579,13 +584,10 @@ func _update_frontier_scores(player_id: int):
 	
 	DebugLogger.log("AIPlanning", "Stored frontier scores for " + str(best_army_data.target_scores.size()) + " regions from " + current_army_perspective + "'s perspective")
 
-func _find_best_army_perspective(armies: Array, frontier_targets: Array, player_id: int) -> Dictionary:
-	"""Find the army with the highest scoring target and return its perspective data"""
-	var best_army_data = {}  # Initialize as empty Dictionary instead of null
+func _find_best_army_perspective_canonical(armies: Array, frontier_region_ids: Array[int], player_id: int) -> Dictionary:
+	"""Find the army with the highest scoring target using canonical scoring API"""
+	var best_army_data = {}
 	var highest_score = -999.0
-	
-	# Initialize pathfinder for MP cost calculation
-	var army_pathfinder = ArmyPathfinder.new(region_scorer.region_manager, null)
 	
 	for army in armies:
 		if army == null or not is_instance_valid(army):
@@ -594,59 +596,39 @@ func _find_best_army_perspective(armies: Array, frontier_targets: Array, player_
 		# Skip armies with no movement points
 		if army.get_movement_points() <= 0:
 			continue
-			
-		# Get army's current position
-		var current_region_container = army.get_parent()
-		if current_region_container == null or not current_region_container.has_method("get_region_id"):
-			continue
-			
-		var current_region_id = current_region_container.get_region_id()
-		
-		# Generate unique random seed based on army name for consistent per-army randomness
-		var army_hash = hash(army.name + str(player_id))
-		var rng = RandomNumberGenerator.new()
-		rng.seed = army_hash
 		
 		# Calculate scores for all targets from this army's perspective
 		var army_target_scores = []
 		var army_highest_score = -999.0
 		
-		for target_data in frontier_targets:
-			var region_id = target_data.region_id
-			var base_score = target_data.base_score * 100.0  # Convert to 0-100 scale
+		for region_id in frontier_region_ids:
+			# Use canonical raw API to get final army score
+			var score_result = army_target_scorer.get_final_army_score_raw(army, region_id)
 			
-			# Calculate actual MP cost using pathfinding
-			var path_data = army_pathfinder.find_path_to_target(current_region_id, region_id, player_id)
-			var mp_cost = 0
-			if path_data.has("success") and path_data.success:
-				mp_cost = path_data.cost
-			else:
-				mp_cost = 99  # Very high cost if unreachable
+			if not score_result.get("reachable", false):
+				continue
 			
-			# Apply formula: BaseScore + RandomModifier - MovementCost
-			# Use per-army consistent random modifier
-			var random_modifier = rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
-			var final_score = base_score + random_modifier - mp_cost
+			var final_raw = score_result.get("final_raw", 0.0)
 			
 			# Track this army's highest score
-			if final_score > army_highest_score:
-				army_highest_score = final_score
+			if final_raw > army_highest_score:
+				army_highest_score = final_raw
 			
-			# Store target score data
+			# Store target score data with consistent format for display
 			var target_score_data = {
 				"region_id": region_id,
-				"final_score": final_score,
+				"final_score": final_raw,
 				"factors": {
-					"population_score": target_data.population_score,
-					"resource_score": target_data.resource_score,
-					"level_score": target_data.level_score,
-					"ownership_score": target_data.ownership_score,
-					"base_score": base_score,
-					"random_modifier": random_modifier,
-					"movement_cost": mp_cost,
-					"final_score": final_score,
+					"base_raw_total": score_result.get("base_raw_total", 0.0),
+					"random_modifier": score_result.get("random_modifier", 0.0),
+					"movement_cost": score_result.get("mp_cost", 0.0),
+					"final_raw": final_raw,
 					"is_frontier": true,
-					"reference_region": current_region_id,
+					"strategic_0_10": score_result.get("strategic_0_10", 0.0),
+					"population_0_10": score_result.get("population_0_10", 0.0),
+					"level_0_10": score_result.get("level_0_10", 0.0),
+					"resource_0_10": score_result.get("resource_0_10", 0.0),
+					"resources_breakdown": score_result.get("resources_breakdown", {}),
 					"army_name": army.name
 				}
 			}
@@ -658,63 +640,8 @@ func _find_best_army_perspective(armies: Array, frontier_targets: Array, player_
 			best_army_data = {
 				"army": army,
 				"army_name": army.name,
-				"current_region_id": current_region_id,
 				"highest_score": army_highest_score,
 				"target_scores": army_target_scores
 			}
 	
-	return best_army_data  # Always returns a Dictionary (empty or populated)
-
-func _store_frontier_scores_without_distance(frontier_targets: Array):
-	"""Fallback: store frontier scores without movement cost calculation"""
-	current_player_scores.clear()
-	detailed_score_cache.clear()
-	
-	for target_data in frontier_targets:
-		var region_id = target_data.region_id
-		var base_score = target_data.base_score * 100.0
-		var random_modifier = randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
-		var final_score = base_score + random_modifier
-		
-		current_player_scores[region_id] = final_score
-		
-		var factors = {
-			"population_score": target_data.population_score,
-			"resource_score": target_data.resource_score,
-			"level_score": target_data.level_score,
-			"ownership_score": target_data.ownership_score,
-			"base_score": base_score,
-			"random_modifier": random_modifier,
-			"movement_cost": 0,
-			"final_score": final_score,
-			"is_frontier": true
-		}
-		detailed_score_cache[region_id] = factors
-
-func _store_raw_army_scores(scored_regions: Array):
-	"""Store raw army scores without distance adjustment (fallback)"""
-	current_player_scores.clear()
-	detailed_score_cache.clear()
-	
-	for score_data in scored_regions:
-		var region_id = score_data.region_id
-		var base_score = score_data.overall_score * 100.0  # Convert to 0-100 scale
-		
-		# Apply random modifier like AI does
-		var random_modifier = randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
-		var final_score = base_score + random_modifier
-		
-		# Store for display
-		current_player_scores[region_id] = final_score
-		
-		# Store detailed factors for display
-		var factors = {
-			"population_score": score_data.population_score,
-			"resource_score": score_data.resource_score,
-			"level_score": score_data.level_score,
-			"ownership_score": score_data.ownership_score,
-			"base_score": base_score,
-			"random_modifier": random_modifier,
-			"final_score": final_score
-		}
-		detailed_score_cache[region_id] = factors
+	return best_army_data

@@ -83,7 +83,12 @@ Notes
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
 - army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use).
-- ArmyPathfinder.gd / ArmyTargetScorer.gd / ArmyMovementPlanner.gd: pathfinding within MP horizon, target value scoring, multi-turn planning and deconfliction utilities.
+- ArmyPathfinder.gd: pathfinding within MP horizon, multi-turn pathfinding with MP constraints.
+- **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
+  - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
+  - `get_resource_component_breakdown_out_of_10(region, player_id)`: Per-resource contributions that sum to resource component  
+  - `get_final_army_score_raw(army, region_id)`: Returns final_raw = base_raw + random - mp_cost with full breakdown
+- ArmyMovementPlanner.gd: High-level army movement coordination using canonical raw final scoring from ArmyTargetScorer. Applies danger penalty as separate adjustment after raw final score.
 
 ### VisualManager.gd (VisualManager)
 - Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates.
@@ -135,10 +140,17 @@ Notes
 - Tuning: GameParameters (`AI_RAISE_*` normalized constants) and `ai/RaiseArmyDecision.gd`
 
 ## AI & Scoring
-- ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance).
+- ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance). Used for castle placement scoring.
 - ai/castle_placement_scorer.gd: Candidate scoring for initial castles with random perturbation.
-- ai/ai_debug_visualizer.gd: On-map overlays and step-by-step debug toggles.
-- ai/OceanPathHeatmap.gd: Standalone Node2D that computes ocean-border path centrality before castle placement and toggles a heatmap overlay with key `8`. Uses BFS over RegionManager adjacency (unweighted). Initializes with `initialize(region_manager, map_generator)`. Heat overlay colors white→red per visit count; does not modify existing systems.
+- **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
+  - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
+  - `get_resource_component_breakdown_out_of_10(region, player_id)`: Per-resource contributions using simple weighted sum with modifiers (low income × 3, high stockpile × 0.5 for non-gold)
+  - `get_final_army_score_raw(army, region_id)`: Returns final_raw = base_raw + random - mp_cost with full breakdown
+  - Resource scoring: contrib_r = qty_r × weight_r × modifier_r. FOOD uses net change (income - upkeep), others use income. Both overlay and tooltip use identical breakdown.
+- ai/FrontierTargetScorer.gd: **Finder only**. Identifies frontier regions and uses ArmyTargetScorer raw base API for scoring. No longer maintains separate scoring logic.
+- ai/ai_debug_visualizer.gd: On-map overlays using raw final scores. Army mode displays raw scores from best army perspective. Uses canonical raw APIs and caches resource breakdown. Shows "base_raw+random-movement" format.
+- region_tooltip.gd: Displays same raw final scores and component breakdown as overlay. Shows per-resource breakdown using cached factors or fallback to raw APIs.
+- ai/StrategicPointsHeatmap.gd: Computes strategic point centrality (ocean-border shortest-path centrality) before castle placement and can toggle a heatmap overlay with key `8` in debug mode. Stores normalized `strategic_point_score` on every Region in [0..10], where the highest-traffic region gets 10.0. Initializes with `initialize(region_manager, map_generator)`.
 
 ## Battle Simulation
 - BattleSimulator.gd: Statistical resolution with efficiency and proportional loss distribution.
@@ -147,6 +159,7 @@ Notes
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army.
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; provides PlayerStatusModal.
+- region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `region_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.
 
 ## Data & Parameters

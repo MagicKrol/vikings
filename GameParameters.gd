@@ -76,11 +76,11 @@ const AI_POPULATION_MAX_EXPECTED = 1000        # Expected max population for nor
 const AI_RANDOM_SCORE_MODIFIER = 5             # Random value (0 to this value) added to each player's castle placement scores
 
 # Resource scoring weights
-const AI_GOLD_RESOURCE_WEIGHT = 2.0            # Gold resources are highly valued
-const AI_FOOD_RESOURCE_WEIGHT = 1.5            # Food important for army maintenance  
+const AI_GOLD_RESOURCE_WEIGHT = 0.5            # Gold resources are highly valued
+const AI_FOOD_RESOURCE_WEIGHT = 1.25            # Food important for army maintenance  
 const AI_WOOD_RESOURCE_WEIGHT = 1.0            # Wood for building
 const AI_STONE_RESOURCE_WEIGHT = 1.0           # Stone for building
-const AI_IRON_RESOURCE_WEIGHT = 1.2            # Iron for advanced units
+const AI_IRON_RESOURCE_WEIGHT = 1.25            # Iron for advanced units
 const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount for normalization
 
 # Strategic value weights
@@ -142,6 +142,23 @@ const AI_RAISE_W_DIST = 0.20
 const AI_RAISE_W_RECRUITS = 0.20
 const AI_RAISE_W_BANK = 0.10
 const AI_RAISE_THRESHOLD_NORM = 0.50
+
+## Dynamic Resource Need Scoring (ArmyTargetScorer)
+# Need multipliers
+const AI_NEED_NEG_GROWTH_MULT = 3.0           # Multiplier when net change per turn is negative
+const AI_NEED_COVERAGE_TARGET = 2.0           # Target coverage in turns (stock / net)
+const AI_NEED_COVERAGE_MULT = 2.0             # Multiplier when coverage < target
+const AI_NEED_LOW_STOCK_MULT = 2.0            # Multiplier for very low absolute stock
+# Minimum stock thresholds per resource
+const AI_NEED_MIN_STOCK = {
+	ResourcesEnum.Type.FOOD: 50,
+	ResourcesEnum.Type.WOOD: 30,
+	ResourcesEnum.Type.STONE: 30,
+	ResourcesEnum.Type.IRON: 20,
+	ResourcesEnum.Type.GOLD: 0
+}
+const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per resource
+
 
 ## AI Peasants-Only Recruitment Parameters
 # Minimum peasant share threshold
@@ -327,7 +344,7 @@ const REGION_RESOURCES = {
 		ResourcesEnum.Type.FOOD: {"min": 3, "max": 7}
 	},
 	RegionTypeEnum.Type.FOREST: {
-		ResourcesEnum.Type.FOOD: {"min": 1, "max": 3},
+		ResourcesEnum.Type.FOOD: {"min": 1, "max": 2},
 		ResourcesEnum.Type.WOOD: {"min": 4, "max": 8}
 	},
 	RegionTypeEnum.Type.HILLS: {
@@ -337,8 +354,8 @@ const REGION_RESOURCES = {
 		ResourcesEnum.Type.GOLD: {"min": 5, "max": 15}
 	},
 	RegionTypeEnum.Type.FOREST_HILLS: {
-		ResourcesEnum.Type.FOOD: {"min": 1, "max": 2},
-		ResourcesEnum.Type.WOOD: {"min": 3, "max": 6},
+		ResourcesEnum.Type.FOOD: {"min": 0, "max": 0},
+		ResourcesEnum.Type.WOOD: {"min": 2, "max": 4},
 		ResourcesEnum.Type.STONE: {"min": 0, "max": 3},
 		ResourcesEnum.Type.IRON: {"min": 1, "max": 3},
 	},
