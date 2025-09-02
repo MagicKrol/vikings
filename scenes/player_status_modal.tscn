@@ -4,13 +4,11 @@
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="2_lf6f4"]
 
 [node name="PlayerStatusModal" type="Control"]
+visible = false
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 0.0
-offset_left = 0.0
 offset_top = 10.0
-offset_right = 0.0
 offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 0

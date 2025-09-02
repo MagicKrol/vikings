@@ -1,0 +1,152 @@
+[gd_scene load_steps=5 format=3 uid="uid://bsqu1omiwntnm"]
+
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_t5oev"]
+[ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="1_uovsa"]
+
+[sub_resource type="Theme" id="Theme_fcepg"]
+default_font = ExtResource("1_t5oev")
+default_font_size = 26
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11gwm"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
+
+[node name="PlayerStatusModal" type="Control"]
+modulate = Color(1, 0.99961, 0.928772, 1)
+clip_children = 1
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -10.0
+offset_top = 9.0
+offset_right = -30.0
+offset_bottom = 59.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = SubResource("Theme_fcepg")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 2000.0
+offset_bottom = 50.0
+texture = ExtResource("1_uovsa")
+expand_mode = 2
+stretch_mode = 1
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 2000.0
+offset_bottom = 51.0
+scale = Vector2(0.998918, 1.00196)
+theme_override_styles/panel = SubResource("StyleBoxFlat_11gwm")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_top = 7.0
+offset_right = 1609.0
+offset_bottom = 47.0
+theme_override_constants/separation = 70
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer"]
+layout_mode = 2
+
+[node name="Population" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Population"]
+layout_mode = 2
+text = "Population:"
+
+[node name="Value" type="Label" parent="Panel/HBoxContainer/Population"]
+layout_mode = 2
+text = "7381"
+
+[node name="Change" type="Label" parent="Panel/HBoxContainer/Population"]
+layout_mode = 2
+text = "(+232)"
+
+[node name="Food" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Food"]
+layout_mode = 2
+text = "Food: "
+
+[node name="Value" type="Label" parent="Panel/HBoxContainer/Food"]
+layout_mode = 2
+text = "87"
+
+[node name="Change" type="Label" parent="Panel/HBoxContainer/Food"]
+layout_mode = 2
+text = "(-15)"
+
+[node name="Wood" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Wood"]
+layout_mode = 2
+text = "Wood: "
+
+[node name="Value" type="Label" parent="Panel/HBoxContainer/Wood"]
+layout_mode = 2
+text = "49"
+
+[node name="Change" type="Label" parent="Panel/HBoxContainer/Wood"]
+layout_mode = 2
+text = "(+19)"
+
+[node name="Stone" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Stone"]
+layout_mode = 2
+text = "Stone: "
+
+[node name="Value" type="Label" parent="Panel/HBoxContainer/Stone"]
+layout_mode = 2
+text = "44"
+
+[node name="Change" type="Label" parent="Panel/HBoxContainer/Stone"]
+layout_mode = 2
+text = "(+12)"
+
+[node name="Iron" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Iron"]
+layout_mode = 2
+text = "Iron: "
+
+[node name="Value" type="Label" parent="Panel/HBoxContainer/Iron"]
+layout_mode = 2
+text = "31"
+
+[node name="Change" type="Label" parent="Panel/HBoxContainer/Iron"]
+layout_mode = 2
+text = "(+7)"
+
+[node name="Gold" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/Gold"]
+layout_mode = 2
+text = "Gold: "
+
+[node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
+layout_mode = 2
+text = "204"
+
+[node name="Change" type="Label" parent="Panel/HBoxContainer/Gold"]
+layout_mode = 2
+text = "(+56)"

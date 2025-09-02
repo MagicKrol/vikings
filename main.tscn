@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=28 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -20,11 +20,13 @@
 [ext_resource type="PackedScene" path="res://scenes/recruitment_modal.tscn" id="18_recru"]
 [ext_resource type="PackedScene" path="res://scenes/call_to_arms_modal.tscn" id="19_callarms"]
 [ext_resource type="PackedScene" path="res://scenes/transfer_soldiers_modal.tscn" id="20_transfer"]
-[ext_resource type="PackedScene" path="res://scenes/transfer_select_modal.tscn" id="21_transferselect"]
+[ext_resource type="PackedScene" uid="uid://kpyd6aw48lcr" path="res://scenes/transfer_select_modal.tscn" id="21_transferselect"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="22_selecttooltip"]
 [ext_resource type="PackedScene" path="res://scenes/message_modal.tscn" id="23_messagemmodal"]
 [ext_resource type="PackedScene" path="res://scenes/next_player_modal.tscn" id="24_nextplayermodal"]
+[ext_resource type="PackedScene" uid="uid://bsqu1omiwntnm" path="res://scenes/player_status_modal2.tscn" id="25_8wafx"]
 [ext_resource type="Script" path="res://PlayerManagerNode.gd" id="25_player"]
+[ext_resource type="PackedScene" uid="uid://7iyyajasdhd3" path="res://scenes/turn_modal.tscn" id="27_o7y1n"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -108,6 +110,10 @@ script = ExtResource("8_ui")
 [node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
 
 [node name="NextPlayerModal" parent="UI" instance=ExtResource("24_nextplayermodal")]
+
+[node name="PlayerStatusModal2" parent="UI" instance=ExtResource("25_8wafx")]
+
+[node name="TurnModal" parent="UI" instance=ExtResource("27_o7y1n")]
 
 [node name="Players" type="Node2D" parent="."]
 

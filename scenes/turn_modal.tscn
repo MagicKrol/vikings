@@ -1,0 +1,70 @@
+[gd_scene load_steps=5 format=3 uid="uid://7iyyajasdhd3"]
+
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_1swsd"]
+[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_23kdy"]
+
+[sub_resource type="Theme" id="Theme_fcepg"]
+default_font = ExtResource("1_1swsd")
+default_font_size = 26
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11gwm"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
+
+[node name="TurnModal" type="Control"]
+modulate = Color(1, 0.99961, 0.928772, 1)
+clip_children = 1
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -254.0
+offset_top = -138.0
+offset_right = -9.0
+offset_bottom = -74.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = SubResource("Theme_fcepg")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 135.0
+texture = ExtResource("2_23kdy")
+expand_mode = 2
+stretch_mode = 1
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 135.0
+scale = Vector2(0.998918, 1.00196)
+theme_override_styles/panel = SubResource("StyleBoxFlat_11gwm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TurnNumber" type="Label" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "Turn 12"
+horizontal_alignment = 1
+
+[node name="Player" type="Label" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "Lord Balirn"
+horizontal_alignment = 1
+
+[node name="EndTurnButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "END TURN"

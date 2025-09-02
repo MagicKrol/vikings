@@ -32,7 +32,7 @@ var total_players: int = 6
 
 # Player type management (up to 6 players)
 var player_types: Array[PlayerTypeEnum.Type] = [
-	PlayerTypeEnum.Type.COMPUTER,   # Player 1 - Computer (temporarily for testing)
+	PlayerTypeEnum.Type.HUMAN,   # Player 1 - Computer (temporarily for testing)
 	PlayerTypeEnum.Type.OFF,   # Player 2 - Computer
 	PlayerTypeEnum.Type.OFF,   # Player 3 - Computer
 	PlayerTypeEnum.Type.OFF,   # Player 4 - Computer
