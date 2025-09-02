@@ -13,8 +13,8 @@ const BTN_CORNER       = 10
 const BTN_BORDER_W     = 2
 
 const BTN_HEIGHT = 58
-const BORDER_PADDING = 5
-const OUTER_PADDING = 15
+const BORDER_PADDING = 0
+const OUTER_PADDING = 0
 const SEP_HEIGHT = 3
 const INNER_PADDING = 0
 
@@ -75,7 +75,7 @@ func hide_modal() -> void:
 func _create_buttons() -> void:
 	_clear_buttons()
 
-	var font: Font = load("res://fonts/MorrisRomanBlack.ttf")
+	var font: Font = load("res://fonts/Cinzel.ttf")
 
 	# --- Static first button ("Select target") ---
 	var select_btn := _make_button("Select target", true, false, font)
@@ -143,7 +143,7 @@ func _make_button(text: String, is_first: bool, is_last: bool, font: Font) -> Bu
 	b.add_theme_color_override("font_disabled_color", TEXT_COLOR_DISABLED)
 	if font:
 		b.add_theme_font_override("font", font)
-		b.add_theme_font_size_override("font_size", 28)
+		b.add_theme_font_size_override("font_size", 20)
 
 	var tl = BTN_CORNER if is_first else 0
 	var tr = BTN_CORNER if is_first else 0

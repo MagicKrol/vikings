@@ -39,7 +39,8 @@ var _select_modal: SelectModal
 var _army_select_modal: ArmySelectModal
 var _region_select_modal: RegionSelectModal
 var _region_modal: RegionModal
-var _player_status_modal: PlayerStatusModal
+var _player_status_modal2: PlayerStatusModal2
+var _turn_modal: TurnModal
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -58,7 +59,8 @@ func _ready():
 	_army_select_modal = get_parent().get_node("ArmySelectModal") as ArmySelectModal
 	_region_select_modal = get_parent().get_node("RegionSelectModal") as RegionSelectModal
 	_region_modal = get_parent().get_node("RegionModal") as RegionModal
-	_player_status_modal = get_parent().get_node("PlayerStatusModal") as PlayerStatusModal
+	_player_status_modal2 = get_parent().get_node("PlayerStatusModal2") as PlayerStatusModal2
+	_turn_modal = get_parent().get_node("TurnModal") as TurnModal
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
@@ -175,6 +177,10 @@ func is_any_modal_visible() -> bool:
 			return true
 	return false
 
-func get_player_status_modal() -> PlayerStatusModal:
-	"""Get the PlayerStatusModal instance"""
-	return _player_status_modal
+func get_player_status_modal2() -> PlayerStatusModal2:
+	"""Get the PlayerStatusModal2 instance"""
+	return _player_status_modal2
+
+func get_turn_modal() -> TurnModal:
+	"""Get the TurnModal instance"""
+	return _turn_modal

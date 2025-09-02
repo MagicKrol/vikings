@@ -561,9 +561,9 @@ func _refund_unit_cost(unit_type: SoldierTypeEnum.Type, count: int) -> void:
 func _update_player_status_modal() -> void:
 	"""Update the player status modal to reflect current resource costs"""
 	# Get the player status modal
-	var player_status_modal = get_node("../PlayerStatusModal") as PlayerStatusModal
-	if player_status_modal and player_status_modal.visible:
-		player_status_modal.refresh_from_game_state()
+	var player_status_modal2 = get_node("../PlayerStatusModal2") as PlayerStatusModal2
+	if player_status_modal2 and player_status_modal2.visible:
+		player_status_modal2.refresh_from_game_state()
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""

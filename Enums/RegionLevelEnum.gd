@@ -13,30 +13,30 @@ static func level_to_string(level: Level) -> String:
 	"""Convert region level enum to string"""
 	match level:
 		Level.L1:
-			return "March"
-		Level.L2:
-			return "Province"
-		Level.L3:
 			return "Shire"
-		Level.L4:
+		Level.L2:
 			return "County"
-		Level.L5:
+		Level.L3:
+			return "March"
+		Level.L4:
 			return "Duchy"
+		Level.L5:
+			return "Province"
 		_:
 			return "Unknown"
 
 static func string_to_level(level_string: String) -> Level:
 	"""Convert string to region level enum"""
 	match level_string.to_lower():
-		"march":
-			return Level.L1
-		"province":
-			return Level.L2
 		"shire":
-			return Level.L3
+			return Level.L1
 		"county":
-			return Level.L4
+			return Level.L2
+		"march":
+			return Level.L3
 		"duchy":
+			return Level.L4
+		"province":
 			return Level.L5
 		_:
 			return Level.L1  # Default fallback

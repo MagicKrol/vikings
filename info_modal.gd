@@ -305,9 +305,4 @@ func _clear_content() -> void:
 
 
 func _draw():
-	# Draw black border
-	draw_rect(Rect2(Vector2.ZERO, size), BORDER_COLOR, false, BORDER_WIDTH)
-	
-	# Draw shadow
-	var shadow_rect = Rect2(SHADOW_OFFSET, size)
-	draw_rect(shadow_rect, SHADOW_COLOR)
+	pass

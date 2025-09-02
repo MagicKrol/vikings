@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://bsqu1omiwntnm"]
+[gd_scene load_steps=6 format=3 uid="uid://bsqu1omiwntnm"]
 
+[ext_resource type="Script" path="res://player_status_modal2.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_t5oev"]
 [ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="1_uovsa"]
 
@@ -29,6 +30,7 @@ offset_bottom = 59.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = SubResource("Theme_fcepg")
+script = ExtResource("1_script")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0

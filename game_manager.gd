@@ -404,10 +404,14 @@ func _update_player_status_display() -> void:
 	DebugLogger.log("TurnProcessing", "Updating player status display...")
 	
 	var ui_node = get_node("../UI")
-	var player_status_modal = ui_node.get_node("PlayerStatusModal") as PlayerStatusModal
+	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
 	
-	DebugLogger.log("TurnProcessing", "Calling PlayerStatusModal.refresh_from_game_state()")
-	player_status_modal.refresh_from_game_state()
+	DebugLogger.log("TurnProcessing", "Calling resource and turn modal updates")
+	if player_status_modal2:
+		player_status_modal2.refresh_from_game_state()
+	if turn_modal:
+		turn_modal.refresh_from_game_state()
 
 func _on_current_player_changed(player_id: int) -> void:
 	"""Handle player change signal by refreshing UI and showing next player modal"""
@@ -691,11 +695,14 @@ func handle_castle_placement(region: Region) -> void:
 			_handle_ai_castle_placement(current_player)
 		# OFF players are skipped by _get_next_active_player()
 	
-	# Show player status modal with current state
+	# Show player status modals with current state
 	var ui_node = get_node("../UI")
-	var player_status_modal = ui_node.get_node("PlayerStatusModal") as PlayerStatusModal
-	if player_status_modal:
-		player_status_modal.show_and_update()
+	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
+	if player_status_modal2:
+		player_status_modal2.show_and_update()
+	if turn_modal:
+		turn_modal.show_and_update()
 	
 	# Update AI debug scores if debug mode is active (for next player's perspective)
 	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():

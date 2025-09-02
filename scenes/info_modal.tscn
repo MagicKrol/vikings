@@ -1,33 +1,389 @@
-[gd_scene load_steps=2 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=6 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
+[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_y5p06"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_font"]
+
+[sub_resource type="Theme" id="Theme_tq6kf"]
+default_font = ExtResource("3_font")
+default_font_size = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1v0yp"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
 
 [node name="InfoModal" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 20.0
-offset_top = 20.0
-offset_right = 460.0
-offset_bottom = 520.0
+offset_top = 100.0
+offset_right = 420.0
+offset_bottom = 600.0
+theme = SubResource("Theme_tq6kf")
 script = ExtResource("1_7mumj")
 
-[node name="OuterFrame" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.717647, 0.592157, 0.368627, 1)
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 500.0
+texture = ExtResource("2_y5p06")
+expand_mode = 1
+stretch_mode = 1
 
-[node name="ContentContainer" type="VBoxContainer" parent="."]
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 500.0
+theme = SubResource("Theme_tq6kf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1v0yp")
+
+[node name="Region" type="VBoxContainer" parent="Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = 30.0
-offset_right = -40.0
-offset_bottom = -40.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="HeaderSection" type="VBoxContainer" parent="Panel/Region"]
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="Panel/Region/HeaderSection"]
+layout_mode = 2
+text = "Shire of Bornholm"
+horizontal_alignment = 1
+
+[node name="PopulationSection" type="VBoxContainer" parent="Panel/Region"]
+layout_mode = 2
+
+[node name="Population" type="HBoxContainer" parent="Panel/Region/PopulationSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/PopulationSection/Population"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Population:"
+
+[node name="Value" type="Label" parent="Panel/Region/PopulationSection/Population"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "7381"
+
+[node name="Growth" type="HBoxContainer" parent="Panel/Region/PopulationSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/PopulationSection/Growth"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Growth:"
+
+[node name="Value" type="Label" parent="Panel/Region/PopulationSection/Growth"]
+layout_mode = 2
+text = "+3%"
+
+[node name="Income" type="HBoxContainer" parent="Panel/Region/PopulationSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/PopulationSection/Income"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Income:"
+
+[node name="Value" type="Label" parent="Panel/Region/PopulationSection/Income"]
+layout_mode = 2
+text = "12"
+
+[node name="GarisonSection" type="VBoxContainer" parent="Panel/Region"]
+layout_mode = 2
+
+[node name="Castle" type="HBoxContainer" parent="Panel/Region/GarisonSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/GarisonSection/Castle"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Defenses:"
+
+[node name="Value" type="Label" parent="Panel/Region/GarisonSection/Castle"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "OUTPOST"
+
+[node name="Growth" type="HBoxContainer" parent="Panel/Region/GarisonSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/GarisonSection/Growth"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Defense score:"
+
+[node name="Value" type="Label" parent="Panel/Region/GarisonSection/Growth"]
+layout_mode = 2
+text = "25%"
+
+[node name="Recruits" type="HBoxContainer" parent="Panel/Region/GarisonSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/GarisonSection/Recruits"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Recruits:"
+
+[node name="Value" type="Label" parent="Panel/Region/GarisonSection/Recruits"]
+layout_mode = 2
+text = "15 / 17"
+
+[node name="ResourcesSection" type="VBoxContainer" parent="Panel/Region"]
+layout_mode = 2
+
+[node name="Resource1" type="HBoxContainer" parent="Panel/Region/ResourcesSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/ResourcesSection/Resource1"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Food:"
+
+[node name="Value" type="Label" parent="Panel/Region/ResourcesSection/Resource1"]
+layout_mode = 2
+text = "7381"
+
+[node name="Resource2" type="HBoxContainer" parent="Panel/Region/ResourcesSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/ResourcesSection/Resource2"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Wood:"
+
+[node name="Value" type="Label" parent="Panel/Region/ResourcesSection/Resource2"]
+layout_mode = 2
+text = "5"
+
+[node name="Resource3" type="HBoxContainer" parent="Panel/Region/ResourcesSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Region/ResourcesSection/Resource3"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Stone:"
+
+[node name="Value" type="Label" parent="Panel/Region/ResourcesSection/Resource3"]
+layout_mode = 2
+text = "3"
+
+[node name="OtherSection" type="VBoxContainer" parent="Panel/Region"]
+layout_mode = 2
+
+[node name="Construction" type="Label" parent="Panel/Region/OtherSection"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Constructing Keep - 1 turn"
+
+[node name="Mine" type="Label" parent="Panel/Region/OtherSection"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Iron discovered"
+
+[node name="Army" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 385.0
+offset_bottom = 488.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="ArmyName" type="Label" parent="Panel/Army/HeaderSection"]
+layout_mode = 2
+text = "Army III"
+horizontal_alignment = 1
+
+[node name="PopulationSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="MP" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/PopulationSection/MP"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Move Points:"
+
+[node name="Value" type="Label" parent="Panel/Army/PopulationSection/MP"]
+layout_mode = 2
+text = "5 / 5"
+
+[node name="Vigor" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/PopulationSection/Vigor"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Vigor:"
+
+[node name="Value" type="Label" parent="Panel/Army/PopulationSection/Vigor"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "90%"
+
+[node name="Men" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/PopulationSection/Men"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Men:"
+
+[node name="Value" type="Label" parent="Panel/Army/PopulationSection/Men"]
+layout_mode = 2
+text = "83
+"
+
+[node name="UnitsSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="Peasants" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Peasants:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
+layout_mode = 2
+text = "45"
+
+[node name="Spearmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Spearmen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "15"
+
+[node name="Archers" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Archers:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Archers"]
+layout_mode = 2
+text = "13"
+
+[node name="Swordmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Swordmen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+layout_mode = 2
+text = "5"
+
+[node name="Crossbowmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Crossbowmen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
+layout_mode = 2
+text = "0
+"
+
+[node name="Horsemen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Horsemen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
+layout_mode = 2
+text = "0
+"
+
+[node name="Knights" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Knights:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Knights"]
+layout_mode = 2
+text = "2
+"
+
+[node name="Mounted Knights" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Mounted Knights:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
+layout_mode = 2
+text = "0"
+
+[node name="Royal Guard" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Royal Guard:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+layout_mode = 2
+text = "0
+"
