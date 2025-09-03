@@ -190,7 +190,7 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			
 			# Only show SelectModal if current player has armies in this region
 			if not current_player_armies.is_empty():
-				var select_modal = get_node("../UI/SelectModal") as SelectModal
+				var select_modal = get_node("../UI/GeneralSelectModal") as GeneralSelectModal
 				select_modal.show_selection(region, current_player_armies)
 		return
 	

@@ -1,5 +1,5 @@
 extends ActionModalBase
-class_name SelectModal
+class_name MainSelectModal
 
 # Current region and armies
 var current_region: Region = null

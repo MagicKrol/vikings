@@ -1,10 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bregionselmod"]
+[gd_scene load_steps=8 format=3 uid="uid://bl3nnm77yt7tt"]
 
-[ext_resource type="Script" path="res://region_select_modal.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="3_0sgnf"]
-[ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="3_inner"]
+[ext_resource type="Script" path="res://general_select_modal.gd" id="1_1f07t"]
+[ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="2_1jgsl"]
+[ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="3_gjdoo"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pkw2g"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8gcrg"]
 border_color = Color(0, 0, 0, 1)
 border_blend = true
 corner_radius_top_left = 15
@@ -12,15 +12,15 @@ corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryqcf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_trljc"]
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[sub_resource type="Theme" id="Theme_n4uq5"]
+[sub_resource type="Theme" id="Theme_tn0g7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yiy2e"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qllfe"]
 draw_center = false
 border_width_left = 2
 border_width_top = 2
@@ -34,20 +34,14 @@ corner_radius_bottom_left = 10
 shadow_color = Color(0, 0, 0, 0.847059)
 shadow_size = 5
 
-[node name="RegionSelectModal" type="Control"]
+[node name="GeneralSelectModal" type="Control"]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -200.0
-offset_right = 120.0
-offset_bottom = 200.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_script")
+anchors_preset = 0
+offset_left = 810.0
+offset_top = 340.0
+offset_right = 1080.0
+offset_bottom = 740.0
+script = ExtResource("1_1f07t")
 
 [node name="OuterFrame" type="Panel" parent="."]
 visible = false
@@ -61,14 +55,14 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.00233, 1.00736)
-theme_override_styles/panel = SubResource("StyleBoxFlat_pkw2g")
+theme_override_styles/panel = SubResource("StyleBoxFlat_8gcrg")
 
 [node name="TextureRect" type="TextureRect" parent="OuterFrame"]
 visible = false
 layout_mode = 0
 offset_right = 400.0
 offset_bottom = 400.0
-texture = ExtResource("3_inner")
+texture = ExtResource("2_1jgsl")
 expand_mode = 2
 
 [node name="InnerPanel" type="Panel" parent="."]
@@ -80,13 +74,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.997566, 0.999408)
-theme_override_styles/panel = SubResource("StyleBoxFlat_ryqcf")
+theme_override_styles/panel = SubResource("StyleBoxFlat_trljc")
 
 [node name="TextureRect" type="TextureRect" parent="InnerPanel"]
 layout_mode = 0
 offset_right = 280.0
 offset_bottom = 380.0
-texture = ExtResource("3_0sgnf")
+texture = ExtResource("3_gjdoo")
 expand_mode = 2
 
 [node name="ButtonContainer" type="VBoxContainer" parent="InnerPanel"]
@@ -98,9 +92,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Border" type="Panel" parent="."]
-layout_mode = 0
 offset_right = 270.0
 offset_bottom = 400.0
 mouse_filter = 2
-theme = SubResource("Theme_n4uq5")
-theme_override_styles/panel = SubResource("StyleBoxFlat_yiy2e")
+theme = SubResource("Theme_tn0g7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qllfe")

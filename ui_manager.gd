@@ -35,7 +35,7 @@ var last_hovered_region: Region = null
 var is_modal_active: bool = false
 
 # Modal references for centralized management
-var _select_modal: SelectModal
+var _select_modal: GeneralSelectModal
 var _army_select_modal: ArmySelectModal
 var _region_select_modal: RegionSelectModal
 var _region_modal: RegionModal
@@ -55,7 +55,7 @@ func _ready():
 	battle_modal = get_parent().get_node("BattleModal") as BattleModal
 	
 	# Get modal references
-	_select_modal = get_parent().get_node("SelectModal") as SelectModal
+	_select_modal = get_parent().get_node("GeneralSelectModal") as GeneralSelectModal
 	_army_select_modal = get_parent().get_node("ArmySelectModal") as ArmySelectModal
 	_region_select_modal = get_parent().get_node("RegionSelectModal") as RegionSelectModal
 	_region_modal = get_parent().get_node("RegionModal") as RegionModal

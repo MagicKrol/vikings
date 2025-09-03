@@ -5,7 +5,7 @@ class_name RegionSelectModal
 var current_region: Region = null
 
 # Additional references specific to region actions
-var select_modal: SelectModal = null
+var select_modal: GeneralSelectModal = null
 var recruitment_modal: RecruitmentModal = null
 var call_to_arms_modal: CallToArmsModal = null
 var message_modal: MessageModal = null
@@ -19,7 +19,7 @@ func _ready():
 	_setup_region_references()
 
 func _setup_region_references():
-	select_modal = get_node("../SelectModal") as SelectModal
+	select_modal = get_node("../GeneralSelectModal") as GeneralSelectModal
 	recruitment_modal = get_node("../RecruitmentModal") as RecruitmentModal
 	call_to_arms_modal = get_node("../CallToArmsModal") as CallToArmsModal
 	message_modal = get_node("../MessageModal") as MessageModal

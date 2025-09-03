@@ -1,4 +1,4 @@
-extends ActionModalBase
+extends Control
 class_name RecruitmentModal
 
 # UI elements - references to static nodes from scene
@@ -22,6 +22,18 @@ var player_manager: PlayerManagerNode = null
 
 # Flag to prevent recursive slider updates
 var is_updating_sliders: bool = false
+
+# Common references
+var sound_manager: SoundManager = null
+var ui_manager: UIManager = null
+var info_modal: InfoModal = null
+var select_tooltip_modal: SelectTooltipModal = null
+
+func _setup_references():
+	sound_manager = get_node("../../SoundManager") as SoundManager
+	ui_manager = get_node("../UIManager") as UIManager
+	info_modal = get_node("../InfoModal") as InfoModal
+	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
 
 func _ready():
 	# Setup base references but skip button_container setup
@@ -121,7 +133,13 @@ func hide_modal() -> void:
 	recruitment_counts.clear()
 	total_cost.clear()
 	
-	super.hide_modal()
+	if info_modal != null and info_modal.visible:
+		info_modal.hide_modal(false)
+	
+	visible = false
+	
+	if ui_manager:
+		ui_manager.set_modal_active(false)
 
 func _update_display() -> void:
 	"""Update the display with current recruitment information"""

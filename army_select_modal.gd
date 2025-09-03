@@ -6,7 +6,7 @@ var current_army: Army = null
 var current_region: Region = null
 
 # Additional references specific to army actions
-var select_modal: SelectModal = null
+var select_modal: GeneralSelectModal = null
 var recruitment_modal: RecruitmentModal = null
 var transfer_soldiers_modal: TransferSoldiersModal = null
 var transfer_select_modal: TransferSelectModal = null
@@ -18,7 +18,7 @@ func _ready():
 	_setup_army_references()
 
 func _setup_army_references():
-	select_modal = get_node("../SelectModal") as SelectModal
+	select_modal = get_node("../GeneralSelectModal") as GeneralSelectModal
 	recruitment_modal = get_node("../RecruitmentModal") as RecruitmentModal
 	transfer_soldiers_modal = get_node("../TransferSoldiersModal") as TransferSoldiersModal
 	transfer_select_modal = get_node("../TransferSelectModal") as TransferSelectModal

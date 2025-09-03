@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=26 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -7,24 +7,23 @@
 [ext_resource type="Script" path="res://click_manager.gd" id="6_click"]
 [ext_resource type="Script" path="res://game_manager.gd" id="7_game"]
 [ext_resource type="Script" path="res://ui_manager.gd" id="8_ui"]
+[ext_resource type="PackedScene" uid="uid://darmyselmodal" path="res://scenes/army_select_modal.tscn" id="9_7d6ox"]
 [ext_resource type="PackedScene" uid="uid://d3uvud6lbs6h4" path="res://scenes/army_modal.tscn" id="9_sedvr"]
 [ext_resource type="PackedScene" uid="uid://b5x0rd34s8wqj" path="res://scenes/region_modal.tscn" id="10_lauhs"]
-[ext_resource type="PackedScene" uid="uid://cwr00tkaux1gm" path="res://scenes/select_modal.tscn" id="11_858fy"]
-[ext_resource type="PackedScene" uid="uid://br6g71fb32il1" path="res://scenes/army_select_modal.tscn" id="12_5c346"]
 [ext_resource type="PackedScene" uid="uid://h2augxohyp55" path="res://scenes/info_modal.tscn" id="13_35f3x"]
-[ext_resource type="PackedScene" uid="uid://pcm1vnq66cxk" path="res://scenes/region_select_modal.tscn" id="14_a1lxb"]
 [ext_resource type="Script" path="res://sound_manager.gd" id="14_sound"]
 [ext_resource type="PackedScene" uid="uid://btws5g1cdahse" path="res://scenes/region_tooltip.tscn" id="15_d3ude"]
 [ext_resource type="PackedScene" uid="uid://ro1oniwb0py8" path="res://scenes/battle_modal.tscn" id="16_dtrwa"]
-[ext_resource type="PackedScene" path="res://scenes/recruitment_modal.tscn" id="18_recru"]
+[ext_resource type="PackedScene" uid="uid://bus48vblq4ked" path="res://scenes/recruitment_modal.tscn" id="18_recru"]
 [ext_resource type="PackedScene" path="res://scenes/call_to_arms_modal.tscn" id="19_callarms"]
 [ext_resource type="PackedScene" path="res://scenes/transfer_soldiers_modal.tscn" id="20_transfer"]
-[ext_resource type="PackedScene" uid="uid://kpyd6aw48lcr" path="res://scenes/transfer_select_modal.tscn" id="21_transferselect"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="22_selecttooltip"]
 [ext_resource type="PackedScene" path="res://scenes/message_modal.tscn" id="23_messagemmodal"]
 [ext_resource type="PackedScene" path="res://scenes/next_player_modal.tscn" id="24_nextplayermodal"]
 [ext_resource type="PackedScene" uid="uid://bsqu1omiwntnm" path="res://scenes/player_status_modal2.tscn" id="25_8wafx"]
 [ext_resource type="Script" path="res://PlayerManagerNode.gd" id="25_player"]
+[ext_resource type="PackedScene" uid="uid://bl3nnm77yt7tt" path="res://scenes/general_select_modal.tscn" id="26_shq03"]
+[ext_resource type="PackedScene" uid="uid://bregionselmod" path="res://scenes/region_select_modal.tscn" id="26_yt65y"]
 [ext_resource type="PackedScene" uid="uid://7iyyajasdhd3" path="res://scenes/turn_modal.tscn" id="27_o7y1n"]
 
 [node name="Main" type="Node2D"]
@@ -69,6 +68,8 @@ script = ExtResource("25_player")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
+[node name="ArmySelectModal" parent="UI" instance=ExtResource("9_7d6ox")]
+
 [node name="UIManager" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 15
@@ -82,14 +83,7 @@ script = ExtResource("8_ui")
 
 [node name="RegionModal" parent="UI" instance=ExtResource("10_lauhs")]
 
-[node name="SelectModal" parent="UI" instance=ExtResource("11_858fy")]
-visible = false
-
-[node name="ArmySelectModal" parent="UI" instance=ExtResource("12_5c346")]
-
 [node name="InfoModal" parent="UI" instance=ExtResource("13_35f3x")]
-
-[node name="RegionSelectModal" parent="UI" instance=ExtResource("14_a1lxb")]
 
 [node name="RegionTooltip" parent="UI" instance=ExtResource("15_d3ude")]
 visible = false
@@ -106,8 +100,6 @@ visible = false
 [node name="TransferSoldiersModal" parent="UI" instance=ExtResource("20_transfer")]
 visible = false
 
-[node name="TransferSelectModal" parent="UI" instance=ExtResource("21_transferselect")]
-
 [node name="SelectTooltipModal" parent="UI" instance=ExtResource("22_selecttooltip")]
 visible = false
 
@@ -122,6 +114,13 @@ visible = false
 
 [node name="TurnModal" parent="UI" instance=ExtResource("27_o7y1n")]
 visible = false
+
+[node name="MainSelectModal" parent="UI" instance=ExtResource("26_yt65y")]
+unique_name_in_owner = true
+
+[node name="GeneralSelectModal" parent="UI" instance=ExtResource("26_shq03")]
+
+[node name="RegionSelectModal" parent="UI" instance=ExtResource("26_yt65y")]
 
 [node name="Players" type="Node2D" parent="."]
 

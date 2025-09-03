@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://cwr00tkaux1gm"]
 
-[ext_resource type="Script" path="res://select_modal.gd" id="1_script"]
+[ext_resource type="Script" path="res://main_select_modal.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="3_0sgnf"]
 [ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="3_inner"]
 
@@ -34,7 +34,7 @@ corner_radius_bottom_left = 10
 shadow_color = Color(0, 0, 0, 0.847059)
 shadow_size = 5
 
-[node name="SelectModal" type="Control"]
+[node name="MainSelectModal" type="Control"]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5

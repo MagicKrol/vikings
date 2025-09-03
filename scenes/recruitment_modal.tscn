@@ -33,6 +33,7 @@ grow_vertical = 2
 script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
 offset_right = 800.0
 offset_bottom = 600.0
 texture = ExtResource("2_ykq2s")
@@ -40,6 +41,7 @@ expand_mode = 1
 stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
+layout_mode = 0
 offset_right = 800.0
 offset_bottom = 600.0
 theme = SubResource("Theme_h27cw")

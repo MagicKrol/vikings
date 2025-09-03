@@ -5,7 +5,7 @@ class_name TransferSelectModal
 var current_region: Region = null
 var current_armies: Array[Army] = []
 var source_army: Army = null  # The army that wants to transfer soldiers
-
+var test: Army = null
 # Additional references specific to transfer selection
 var transfer_soldiers_modal: TransferSoldiersModal = null
 
