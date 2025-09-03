@@ -24,7 +24,7 @@ func _ready():
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # Don't block mouse events
 	
 	# Configure the existing background
-	background.color = FRAME_COLOR
+	#background.color = FRAME_COLOR
 	
 	# Configure the existing label
 	label.text = ""

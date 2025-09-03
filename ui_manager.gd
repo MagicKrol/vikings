@@ -26,7 +26,7 @@ class_name UIManager
 # - Input system: Mouse event handling and processing
 # ============================================================================
 
-var region_tooltip: RegionTooltip
+var region_tooltip: Control  # Can be RegionTooltip or RegionTooltip2
 var battle_modal: BattleModal
 var map_generator: MapGenerator
 var last_hovered_region: Region = null
@@ -48,8 +48,22 @@ func _ready():
 	mouse_filter = Control.MOUSE_FILTER_IGNORE  # Allow mouse events to pass through
 	
 	# Get references with correct paths
-	# RegionTooltip is sibling under UI
-	region_tooltip = get_parent().get_node("RegionTooltip") as RegionTooltip
+	# Check if we should use debug tooltip or normal tooltip
+	var game_manager = get_parent().get_parent().get_node("GameManager") as GameManager
+	var use_debug_tooltip = game_manager and game_manager.debug_heatmap
+	
+	if use_debug_tooltip:
+		# Use old tooltip for debug mode (with AI debug info)
+		region_tooltip = get_parent().get_node_or_null("RegionTooltip")
+		if not region_tooltip:
+			# Fallback to new tooltip if old one not found
+			region_tooltip = get_parent().get_node_or_null("RegionTooltip2")
+	else:
+		# Use new tooltip for normal game
+		region_tooltip = get_parent().get_node_or_null("RegionTooltip2")
+		if not region_tooltip:
+			# Fallback to old tooltip if new one not found
+			region_tooltip = get_parent().get_node_or_null("RegionTooltip")
 	
 	# BattleModal is sibling under UI
 	battle_modal = get_parent().get_node("BattleModal") as BattleModal

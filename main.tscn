@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=27 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://game_manager.gd" id="7_game"]
 [ext_resource type="Script" path="res://ui_manager.gd" id="8_ui"]
 [ext_resource type="PackedScene" uid="uid://darmyselmodal" path="res://scenes/army_select_modal.tscn" id="9_7d6ox"]
+[ext_resource type="PackedScene" uid="uid://cml12by6pyhyc" path="res://scenes/region_tooltip2.tscn" id="9_cgk76"]
 [ext_resource type="PackedScene" uid="uid://b5x0rd34s8wqj" path="res://scenes/region_modal.tscn" id="10_lauhs"]
 [ext_resource type="PackedScene" uid="uid://h2augxohyp55" path="res://scenes/info_modal.tscn" id="13_35f3x"]
 [ext_resource type="Script" path="res://sound_manager.gd" id="14_sound"]
@@ -67,6 +68,8 @@ script = ExtResource("14_sound")
 script = ExtResource("25_player")
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="RegionTooltip2" parent="UI" instance=ExtResource("9_cgk76")]
 
 [node name="ArmySelectModal" parent="UI" instance=ExtResource("9_7d6ox")]
 
