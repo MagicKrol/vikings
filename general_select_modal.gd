@@ -6,7 +6,6 @@ var current_region: Region = null
 var current_armies: Array[Army] = []
 
 # Additional references specific to selection
-var army_modal: Control = null
 var region_modal: RegionModal = null
 var army_select_modal: ArmySelectModal = null
 var region_select_modal: RegionSelectModal = null
@@ -16,7 +15,6 @@ func _ready():
 	_setup_select_references()
 
 func _setup_select_references():
-	army_modal = get_node("../ArmyModal") as Control
 	region_modal = get_node("../RegionModal") as RegionModal
 	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
 	region_select_modal = get_node("../RegionSelectModal") as RegionSelectModal
@@ -103,7 +101,6 @@ func _on_army_button_pressed(army: Army) -> void:
 		army_select_modal.show_army_actions(army_to_show, region_to_show)
 
 func _on_region_button_hovered() -> void:
-	print("Region button hovered!")
 	if info_modal and current_region and is_instance_valid(info_modal) and is_instance_valid(current_region):
 		info_modal.show_region_info(current_region, false)
 

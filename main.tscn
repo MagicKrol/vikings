@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://game_manager.gd" id="7_game"]
 [ext_resource type="Script" path="res://ui_manager.gd" id="8_ui"]
 [ext_resource type="PackedScene" uid="uid://darmyselmodal" path="res://scenes/army_select_modal.tscn" id="9_7d6ox"]
-[ext_resource type="PackedScene" uid="uid://d3uvud6lbs6h4" path="res://scenes/army_modal.tscn" id="9_sedvr"]
 [ext_resource type="PackedScene" uid="uid://b5x0rd34s8wqj" path="res://scenes/region_modal.tscn" id="10_lauhs"]
 [ext_resource type="PackedScene" uid="uid://h2augxohyp55" path="res://scenes/info_modal.tscn" id="13_35f3x"]
 [ext_resource type="Script" path="res://sound_manager.gd" id="14_sound"]
@@ -20,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="22_selecttooltip"]
 [ext_resource type="PackedScene" path="res://scenes/message_modal.tscn" id="23_messagemmodal"]
 [ext_resource type="PackedScene" path="res://scenes/next_player_modal.tscn" id="24_nextplayermodal"]
+[ext_resource type="PackedScene" uid="uid://cwr00tkaux1gm" path="res://scenes/transfer_select_modal.tscn" id="24_xybgh"]
 [ext_resource type="PackedScene" uid="uid://bsqu1omiwntnm" path="res://scenes/player_status_modal2.tscn" id="25_8wafx"]
 [ext_resource type="Script" path="res://PlayerManagerNode.gd" id="25_player"]
 [ext_resource type="PackedScene" uid="uid://bl3nnm77yt7tt" path="res://scenes/general_select_modal.tscn" id="26_shq03"]
@@ -79,8 +79,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_ui")
 
-[node name="ArmyModal" parent="UI" instance=ExtResource("9_sedvr")]
-
 [node name="RegionModal" parent="UI" instance=ExtResource("10_lauhs")]
 
 [node name="InfoModal" parent="UI" instance=ExtResource("13_35f3x")]
@@ -121,6 +119,8 @@ unique_name_in_owner = true
 [node name="GeneralSelectModal" parent="UI" instance=ExtResource("26_shq03")]
 
 [node name="RegionSelectModal" parent="UI" instance=ExtResource("26_yt65y")]
+
+[node name="TransferSelectModal" parent="UI" instance=ExtResource("24_xybgh")]
 
 [node name="Players" type="Node2D" parent="."]
 
