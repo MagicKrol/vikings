@@ -1,20 +1,10 @@
 extends Control
 class_name InfoModal
 
-# Styling constants (same as UIModal)
-const FRAME_COLOR = Color("#b7975e")
-const BORDER_COLOR = Color.BLACK
-const SHADOW_OFFSET = Vector2(4, 4)
-const SHADOW_COLOR = Color(0, 0, 0, 0.3)
-const BORDER_WIDTH = 4.0
-
 # UI manager reference for modal mode
 var ui_manager: UIManager = null
 # Sound manager reference
 var sound_manager: SoundManager = null
-
-# Content container reference
-var content_container: VBoxContainer = null
 
 # Current display mode
 enum DisplayMode { NONE, ARMY, REGION }
@@ -24,20 +14,10 @@ var current_mode: DisplayMode = DisplayMode.NONE
 var current_army: Army = null
 var current_region: Region = null
 
-# UI elements for army display
-var army_header: Label = null
-var army_info_container: VBoxContainer = null
-var composition_container: VBoxContainer = null
-
-# UI elements for region display
-var region_header: Label = null
-var region_info_container: VBoxContainer = null
-
 func _ready():
 	# Get references
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
-	content_container = get_node("ContentContainer") as VBoxContainer
 	
 	# Initially hidden
 	visible = false
@@ -87,7 +67,6 @@ func close_modal() -> void:
 	current_army = null
 	current_region = null
 	current_mode = DisplayMode.NONE
-	_clear_content()
 	visible = false
 	
 	# Always set modal mode inactive when fully closing
@@ -100,35 +79,31 @@ func _update_army_display() -> void:
 		hide_modal()
 		return
 	
-	# Only clear and recreate UI if we don't have army UI elements
-	if army_header == null or army_info_container == null:
-		_clear_content()
-		_create_army_ui()
+	# Show Army node, hide Region node
+	var army_node = get_node("Panel/Army")
+	var region_node = get_node("Panel/Region")
+	army_node.visible = true
+	region_node.visible = false
 	
 	# Update army header
-	if army_header:
-		army_header.text = current_army.name.to_upper()
+	var army_name_label = get_node("Panel/Army/HeaderSection/ArmyName")
+	army_name_label.text = "Army " + str(current_army.number)
 	
-	# Clear existing info rows
-	if army_info_container:
-		for child in army_info_container.get_children():
-			child.queue_free()
-		
-		# Add movement information
-		var current_points = current_army.get_movement_points()
-		_create_info_row(army_info_container, "Movement:", str(current_points) + " / 5")
-		
-		# Add efficiency information
-		var current_efficiency = current_army.get_efficiency()
-		_create_info_row(army_info_container, "Efficiency:", str(current_efficiency) + "%")
-		
-		# Add spacer
-		var spacer = Control.new()
-		spacer.custom_minimum_size = Vector2(0, 10)
-		army_info_container.add_child(spacer)
+	# Update movement points
+	var mp_value = get_node("Panel/Army/PopulationSection/MP/Value")
+	var max_mp = GameParameters.MOVEMENT_POINTS_PER_TURN
+	mp_value.text = str(current_army.get_movement_points()) + " / " + str(max_mp)
 	
-	# Update composition
-	_update_composition_display()
+	# Update vigor
+	var vigor_value = get_node("Panel/Army/PopulationSection/Vigor/Value")
+	vigor_value.text = str(current_army.get_efficiency()) + "%"
+	
+	# Update total men count
+	var men_value = get_node("Panel/Army/PopulationSection/Men/Value")
+	men_value.text = str(current_army.get_total_soldiers())
+	
+	# Update unit composition
+	_update_army_unit_values()
 
 func _update_region_display() -> void:
 	"""Update the display with current region information"""
@@ -136,173 +111,144 @@ func _update_region_display() -> void:
 		hide_modal()
 		return
 	
-	# Only clear and recreate UI if we don't have region UI elements
-	if region_header == null or region_info_container == null:
-		_clear_content()
-		_create_region_ui()
+	# Show Region node, hide Army node
+	var army_node = get_node("Panel/Army")
+	var region_node = get_node("Panel/Region")
+	army_node.visible = false
+	region_node.visible = true
 	
-	# Update region header
-	if region_header:
-		region_header.text = current_region.get_region_name()
+	# Update region header with formatted name
+	var region_name_label = get_node("Panel/Region/HeaderSection/RegionName")
+	var formatted_name = current_region.get_region_level_string() + " of " + current_region.get_region_name()
+	region_name_label.text = formatted_name
 	
-	# Clear existing info rows
-	if region_info_container:
-		for child in region_info_container.get_children():
-			child.queue_free()
-		
-		# Add region level
-		_create_info_row(region_info_container, "Level:", current_region.get_region_level_string())
-		
-		# Add region type
-		if current_region.is_ocean_region():
-			_create_info_row(region_info_container, "Type:", "Ocean Region")
-		else:
-			var region_type_name = RegionTypeEnum.type_to_string(current_region.get_region_type())
-			region_type_name = region_type_name.capitalize().replace("_", " ")
-			_create_info_row(region_info_container, "Type:", region_type_name)
-		
-		# Add spacer
-		var spacer1 = Control.new()
-		spacer1.custom_minimum_size = Vector2(0, 10)
-		region_info_container.add_child(spacer1)
-		
-		# Add population and recruit information
-		var population = current_region.get_population()
-		var available_recruits = current_region.get_available_recruits()
-		var max_recruits = current_region.get_max_recruits()
-		_create_info_row(region_info_container, "Population:", str(population))
-		_create_info_row(region_info_container, "Recruits:", str(available_recruits) + "/" + str(max_recruits))
-		
-		# Add spacer
-		var spacer2 = Control.new()
-		spacer2.custom_minimum_size = Vector2(0, 10)
-		region_info_container.add_child(spacer2)
-		
-		# Add resources information
-		if current_region.resources and current_region.resources.has_resources():
-			var has_resources = false
-			# Show each resource with its amount (but only if it can be collected)
-			for resource_type in ResourcesEnum.get_all_types():
-				var amount = current_region.get_resource_amount(resource_type)
-				if amount > 0 and current_region.can_collect_resource(resource_type):  # Only show resources that have a positive amount and can be collected
-					var resource_name = ResourcesEnum.type_to_string(resource_type)
-					resource_name = resource_name.capitalize()
-					_create_info_row(region_info_container, resource_name + ":", str(amount))
-					has_resources = true
-			
-			# If no resources have positive amounts, show "None"
-			if not has_resources:
-				_create_info_row(region_info_container, "Resources:", "None")
-		else:
-			_create_info_row(region_info_container, "Resources:", "None")
+	# Update population
+	var population_value = get_node("Panel/Region/PopulationSection/Population/Value")
+	population_value.text = str(current_region.get_population())
+	
+	# Update growth rate
+	var growth_value = get_node("Panel/Region/PopulationSection/Growth/Value")
+	var growth_rate = GameParameters.POPULATION_GROWTH_RATE * 100
+	growth_value.text = "+" + str(snappedf(growth_rate, 0.1)) + "%"
+	
+	# Update income (last population growth)
+	var income_value = get_node("Panel/Region/PopulationSection/Income/Value")
+	income_value.text = str(current_region.last_population_growth)
+	
+	# Update castle/defenses
+	var castle_value = get_node("Panel/Region/GarisonSection/Castle/Value")
+	castle_value.text = current_region.get_castle_type_string().to_upper()
+	
+	# Update defense score
+	var defense_value = get_node("Panel/Region/GarisonSection/Growth/Value")
+	var defense_bonus = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
+	defense_value.text = str(defense_bonus) + "%"
+	
+	# Update recruits
+	var recruits_value = get_node("Panel/Region/GarisonSection/Recruits/Value")
+	var available = current_region.get_available_recruits()
+	var max_recruits = current_region.get_max_recruits()
+	recruits_value.text = str(available) + " / " + str(max_recruits)
+	
+	# Update resources
+	_update_region_resource_values()
+	
+	# Update construction status
+	_update_construction_status()
+	
+	# Update mine status
+	_update_mine_status()
 
-func _create_army_ui() -> void:
-	"""Create UI elements for army display"""
-	if not content_container:
+func _update_army_unit_values() -> void:
+	"""Update army unit composition values"""
+	if current_army == null:
 		return
 	
-	# Army header
-	army_header = Label.new()
-	army_header.theme = preload("res://themes/header_text_theme.tres")
-	army_header.add_theme_color_override("font_color", Color.WHITE)
-	army_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content_container.add_child(army_header)
-	
-	# Spacer
-	var spacer1 = Control.new()
-	spacer1.custom_minimum_size = Vector2(0, 20)
-	content_container.add_child(spacer1)
-	
-	# Army info container (for movement, morale, etc.)
-	army_info_container = VBoxContainer.new()
-	content_container.add_child(army_info_container)
-	
-	# Composition container
-	composition_container = VBoxContainer.new()
-	content_container.add_child(composition_container)
-
-func _create_region_ui() -> void:
-	"""Create UI elements for region display"""
-	if not content_container:
-		return
-	
-	# Region header
-	region_header = Label.new()
-	region_header.theme = preload("res://themes/header_text_theme.tres")
-	region_header.add_theme_color_override("font_color", Color.WHITE)
-	region_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	content_container.add_child(region_header)
-	
-	# Spacer
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 20)
-	content_container.add_child(spacer)
-	
-	# Main region info container (will be populated with rows in _update_region_display)
-	region_info_container = VBoxContainer.new()
-	content_container.add_child(region_info_container)
-
-func _create_info_row(container: VBoxContainer, text: String, value: String) -> void:
-	"""Create a row with text label (300px, left-aligned) and value label (80px, right-aligned)"""
-	var row_container = HBoxContainer.new()
-	row_container.add_theme_constant_override("separation", 0)
-	container.add_child(row_container)
-	
-	# Text label (300px, left-aligned)
-	var text_label = Label.new()
-	text_label.text = text
-	text_label.theme = preload("res://themes/standard_text_theme.tres")
-	text_label.add_theme_color_override("font_color", Color.WHITE)
-	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	text_label.custom_minimum_size = Vector2(200, 0)
-	text_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	row_container.add_child(text_label)
-	
-	# Value label (80px, right-aligned)
-	var value_label = Label.new()
-	value_label.text = value
-	value_label.theme = preload("res://themes/standard_text_theme.tres")
-	value_label.add_theme_color_override("font_color", Color.WHITE)
-	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	value_label.custom_minimum_size = Vector2(80, 0)
-	value_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	row_container.add_child(value_label)
-
-func _update_composition_display() -> void:
-	"""Create individual labels for each unit type using row layout"""
-	if not composition_container or current_army == null:
-		return
-	
-	# Clear existing composition labels
-	for child in composition_container.get_children():
-		child.queue_free()
-	
-	# Get army composition directly from the army object
 	var composition = current_army.get_composition()
 	
-	# Show each unit type with its count using the row format
-	for unit_type in SoldierTypeEnum.get_all_types():
-		var count = composition.get_soldier_count(unit_type)
-		if count > 0:  # Only show unit types that exist
-			var unit_name = SoldierTypeEnum.type_to_string(unit_type)
-			unit_name = unit_name.capitalize() + ":"
-			_create_info_row(composition_container, unit_name, str(count))
+	# Update each unit type
+	var unit_nodes = [
+		"Peasants", "Spearmen", "Archers", "Swordmen", 
+		"Crossbowmen", "Horsemen", "Knights", "Mounted Knights", "Royal Guard"
+	]
+	
+	var unit_types = [
+		SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN, 
+		SoldierTypeEnum.Type.ARCHERS, SoldierTypeEnum.Type.SWORDSMEN,
+		SoldierTypeEnum.Type.CROSSBOWMEN, SoldierTypeEnum.Type.HORSEMEN,
+		SoldierTypeEnum.Type.KNIGHTS, SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
+		SoldierTypeEnum.Type.ROYAL_GUARD
+	]
+	
+	for i in unit_nodes.size():
+		var value_node = get_node("Panel/Army/UnitsSection/" + unit_nodes[i] + "/Value")
+		var count = composition.get_soldier_count(unit_types[i])
+		value_node.text = str(count)
 
-func _clear_content() -> void:
-	"""Clear all content from the container"""
-	if not content_container:
+func _update_region_resource_values() -> void:
+	"""Update region resource values"""
+	if current_region == null:
 		return
 	
-	for child in content_container.get_children():
-		child.queue_free()
+	var resource_nodes = ["Resource1", "Resource2", "Resource3"]
+	var resource_types = [ResourcesEnum.Type.FOOD, ResourcesEnum.Type.WOOD, ResourcesEnum.Type.STONE, ResourcesEnum.Type.IRON, ResourcesEnum.Type.GOLD]
+	var resource_index = 0
 	
-	# Reset references
-	army_header = null
-	army_info_container = null
-	composition_container = null
-	region_header = null
-	region_info_container = null
+	# Fill resources that exist and can be collected
+	for resource_type in resource_types:
+		var amount = current_region.get_resource_amount(resource_type)
+		if amount > 0 and current_region.can_collect_resource(resource_type) and resource_index < resource_nodes.size():
+			var label_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Label")
+			var value_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Value")
+			var resource_name = ResourcesEnum.type_to_string(resource_type)
+			label_node.text = resource_name.capitalize() + ":"
+			value_node.text = str(amount)
+			resource_index += 1
+	
+	# Clear remaining resource slots
+	while resource_index < resource_nodes.size():
+		var label_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Label")
+		var value_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Value")
+		label_node.text = ""
+		value_node.text = ""
+		resource_index += 1
 
+func _update_construction_status() -> void:
+	"""Update construction status label"""
+	var construction_label = get_node("Panel/Region/OtherSection/Construction")
+	
+	if current_region == null:
+		construction_label.text = ""
+		return
+	
+	if current_region.is_castle_under_construction():
+		var castle_type = current_region.get_castle_under_construction()
+		var turns_remaining = current_region.get_castle_build_turns_remaining()
+		var castle_name = CastleTypeEnum.type_to_string(castle_type)
+		construction_label.text = "Construction " + castle_name + " - " + str(turns_remaining) + " turn"
+	else:
+		construction_label.text = ""
 
-func _draw():
-	pass
+func _update_mine_status() -> void:
+	"""Update mine status label"""
+	var mine_label = get_node("Panel/Region/OtherSection/Mine")
+	
+	if current_region == null:
+		mine_label.text = ""
+		return
+	
+	# Only show mine info for hills and forest hills
+	if not GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
+		mine_label.text = ""
+		return
+	
+	var discovered_ores = current_region.get_discovered_ores()
+	if not discovered_ores.is_empty():
+		var ore_names: Array[String] = []
+		for ore in discovered_ores:
+			ore_names.append(ResourcesEnum.type_to_string(ore))
+		mine_label.text = ", ".join(ore_names) + " discovered"
+	elif current_region.get_ore_search_attempts_remaining() > 0:
+		mine_label.text = "ore search potential!"
+	else:
+		mine_label.text = "Region has no ore"

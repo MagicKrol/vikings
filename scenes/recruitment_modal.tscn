@@ -1,9 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://bqr2nv8w1py8"]
+[gd_scene load_steps=6 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
-[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_4fnsp"]
-[ext_resource type="Theme" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
-[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="4_5tvus"]
+[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_ykq2s"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_b8gke"]
+
+[sub_resource type="Theme" id="Theme_h27cw"]
+default_font = ExtResource("3_b8gke")
+default_font_size = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
 
 [node name="RecruitmentModal" type="Control"]
 layout_mode = 3
@@ -20,161 +32,407 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_42aob")
 
-[node name="OuterFrame" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="TextureRect2" type="TextureRect" parent="."]
+offset_right = 800.0
+offset_bottom = 600.0
+texture = ExtResource("2_ykq2s")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Panel" type="Panel" parent="."]
+offset_right = 800.0
+offset_bottom = 600.0
+theme = SubResource("Theme_h27cw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wgf6c")
+
+[node name="Army" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+offset_left = 23.0
+offset_top = 20.0
+offset_right = 776.0
+offset_bottom = 579.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.717647, 0.592157, 0.368627, 1)
+theme_override_constants/separation = 15
 
-[node name="BorderMargin" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="MainContainer" type="VBoxContainer" parent="BorderMargin"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="TitleContainer" type="Control" parent="BorderMargin/MainContainer"]
-custom_minimum_size = Vector2(0, 60)
+[node name="Header" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
-[node name="RecruitmentTitleLabel" type="Label" parent="BorderMargin/MainContainer/TitleContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("2_4fnsp")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Recruitment in Region"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HeaderContainer" type="Control" parent="BorderMargin/MainContainer"]
-custom_minimum_size = Vector2(0, 40)
+[node name="RecruitmentRegion" type="Label" parent="Panel/Army/Header"]
 layout_mode = 2
-
-[node name="HeaderRow" type="HBoxContainer" parent="BorderMargin/MainContainer/HeaderContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 0
-
-[node name="HeaderMargin" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(20, 0)
-
-[node name="ArmyHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
-layout_mode = 2
-theme = ExtResource("3_fd5av")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Army I"
-custom_minimum_size = Vector2(280, 0)
-horizontal_alignment = 0
-
-[node name="RecruitHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
-layout_mode = 2
-theme = ExtResource("3_fd5av")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Recruit"
-custom_minimum_size = Vector2(200, 0)
+text = "Recruitment in Bornholm"
 horizontal_alignment = 1
 
-[node name="CostHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+[node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
-theme = ExtResource("3_fd5av")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
+layout_mode = 2
+
+[node name="ArmyName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+layout_mode = 2
+text = "Army III"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="RecruitmentLabel" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+layout_mode = 2
+text = "Recruits"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+
+[node name="CostLabel" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+layout_mode = 2
 text = "Cost"
-custom_minimum_size = Vector2(200, 0)
 horizontal_alignment = 1
 
-[node name="MainContent" type="MarginContainer" parent="BorderMargin/MainContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-
-[node name="ArmyUnitsContainer" type="VBoxContainer" parent="BorderMargin/MainContainer/MainContent"]
-layout_mode = 2
-theme_override_constants/separation = 3
-
-[node name="TotalRow" type="Control" parent="BorderMargin/MainContainer"]
-custom_minimum_size = Vector2(0, 35)
+[node name="UnitsSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
-[node name="TotalRowContainer" type="HBoxContainer" parent="BorderMargin/MainContainer/TotalRow"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 0
-
-[node name="TotalMargin" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+[node name="Peasants" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
-custom_minimum_size = Vector2(20, 0)
 
-[node name="TotalLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-theme = ExtResource("4_5tvus")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Total:"
-custom_minimum_size = Vector2(200, 0)
-horizontal_alignment = 0
+text = "Peasants:"
 
-[node name="TotalCountLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
-layout_mode = 2
-theme = ExtResource("4_5tvus")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "0"
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
 custom_minimum_size = Vector2(80, 0)
-horizontal_alignment = 2
-
-[node name="Margin1" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+text = "4534"
 
-[node name="TotalRecruitLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme = ExtResource("4_5tvus")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "0 / 0"
-custom_minimum_size = Vector2(133, 0)
-horizontal_alignment = 1
+text = "453"
 
-[node name="ButtonContainer" type="Control" parent="BorderMargin/MainContainer"]
-custom_minimum_size = Vector2(0, 60)
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="ContinueButton" type="Button" parent="BorderMargin/MainContainer/ButtonContainer"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -60.0
-offset_top = -20.0
-offset_right = 60.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
+layout_mode = 2
+text = "Gold: 0"
+
+[node name="Spearmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Spearmen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "15"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
+layout_mode = 2
+text = "Gold: 1"
+
+[node name="Archers" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Archers:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "13"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Archers"]
+layout_mode = 2
+text = "Gold: 3 Wood: 1"
+
+[node name="Swordmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Swordmen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "5"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+layout_mode = 2
+text = "Gold: 2"
+
+[node name="Crossbowmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Crossbowmen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "0
+"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
+layout_mode = 2
+text = "Gold: 3 Wood: 1"
+
+[node name="Horsemen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Horsemen:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "0
+"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
+layout_mode = 2
+text = "Gold: 5"
+
+[node name="Knights" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Knights:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "2
+"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Knights"]
+layout_mode = 2
+text = "Gold: 5 Iron: 1"
+
+[node name="Mounted Knights" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Mounted Knights:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "0"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
+layout_mode = 2
+text = "Gold: 10 Wood: 1"
+
+[node name="Royal Guard" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Royal Guard:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "0
+"
+
+[node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "453"
+
+[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 2
+size_flags_vertical = 1
+value = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+layout_mode = 2
+text = "Gold: 20 iron: 1"
+
+[node name="TotalSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/TotalSection"]
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Total:"
+
+[node name="TotalValue" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "1231
+"
+
+[node name="TotalHiredValue" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "343"
+
+[node name="TotalAvailable" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "/ 400 Available 
+"
+
+[node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
+layout_mode = 2
 text = "Continue"

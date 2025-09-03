@@ -1,9 +1,40 @@
-[gd_scene load_steps=2 format=3 uid="uid://br6g71fb32il1"]
+[gd_scene load_steps=8 format=3 uid="uid://cwr00tkaux1gm"]
 
-[ext_resource type="Script" path="res://army_select_modal.gd" id="1_fh621"]
+[ext_resource type="Script" path="res://army_select_modal.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="3_0sgnf"]
+[ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="3_inner"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pkw2g"]
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryqcf"]
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="Theme" id="Theme_n4uq5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yiy2e"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.847059)
+shadow_size = 5
 
 [node name="ArmySelectModal" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -12,29 +43,64 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
 offset_top = -200.0
-offset_right = 150.0
+offset_right = 120.0
 offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_fh621")
+script = ExtResource("1_script")
 
-[node name="OuterFrame" type="ColorRect" parent="."]
+[node name="OuterFrame" type="Panel" parent="."]
+visible = false
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -20.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.00233, 1.00736)
+theme_override_styles/panel = SubResource("StyleBoxFlat_pkw2g")
+
+[node name="TextureRect" type="TextureRect" parent="OuterFrame"]
+visible = false
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 400.0
+texture = ExtResource("3_inner")
+expand_mode = 2
+
+[node name="InnerPanel" type="Panel" parent="."]
+clip_children = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.717647, 0.592157, 0.368627, 1)
+scale = Vector2(0.997566, 0.999408)
+theme_override_styles/panel = SubResource("StyleBoxFlat_ryqcf")
 
-[node name="ButtonContainer" type="VBoxContainer" parent="."]
+[node name="TextureRect" type="TextureRect" parent="InnerPanel"]
+layout_mode = 0
+offset_right = 280.0
+offset_bottom = 380.0
+texture = ExtResource("3_0sgnf")
+expand_mode = 2
+
+[node name="ButtonContainer" type="VBoxContainer" parent="InnerPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Border" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 270.0
+offset_bottom = 400.0
+mouse_filter = 2
+theme = SubResource("Theme_n4uq5")
+theme_override_styles/panel = SubResource("StyleBoxFlat_yiy2e")

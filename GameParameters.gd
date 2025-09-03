@@ -294,7 +294,7 @@ const UNIT_STATS = {
 	},
 	SoldierTypeEnum.Type.KNIGHTS: {
 		"attack": 25,     # 60% hit chance per unit
-		"defense": 60,    # 60% chance to deflect hits
+		"defense": 70,    # 60% chance to deflect hits
 		"cost": 10,       # Recruitment cost
 		"gold_cost": 10,
 		"food_cost": 0.2,
@@ -305,7 +305,7 @@ const UNIT_STATS = {
 	},
 	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: {
 		"attack": 30,     # 65% hit chance per unit
-		"defense": 60,    # 60% chance to deflect hits
+		"defense": 70,    # 60% chance to deflect hits
 		"cost": 15,       # Recruitment cost
 		"gold_cost": 15,
 		"food_cost": 0.4,
@@ -316,7 +316,7 @@ const UNIT_STATS = {
 	},
 	SoldierTypeEnum.Type.ROYAL_GUARD: {
 		"attack": 40,     # 80% hit chance per unit
-		"defense": 80,    # 80% chance to deflect hits
+		"defense": 90,    # 80% chance to deflect hits
 		"cost": 20,       # Recruitment cost
 		"gold_cost": 20,
 		"food_cost": 0.3,
@@ -345,11 +345,11 @@ const REGION_RESOURCES = {
 	},
 	RegionTypeEnum.Type.FOREST: {
 		ResourcesEnum.Type.FOOD: {"min": 1, "max": 2},
-		ResourcesEnum.Type.WOOD: {"min": 4, "max": 8}
+		ResourcesEnum.Type.WOOD: {"min": 3, "max": 5}
 	},
 	RegionTypeEnum.Type.HILLS: {
 		ResourcesEnum.Type.FOOD: {"min": 0, "max": 1},
-		ResourcesEnum.Type.STONE: {"min": 3, "max": 6},
+		ResourcesEnum.Type.STONE: {"min": 2, "max": 5},
 		ResourcesEnum.Type.IRON: {"min": 2, "max": 5},
 		ResourcesEnum.Type.GOLD: {"min": 5, "max": 15}
 	},
