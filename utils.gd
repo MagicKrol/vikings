@@ -151,7 +151,20 @@ static func get_region_shape_analysis(region_data: Dictionary) -> Dictionary:
 	
 	return analyze_polygon_shape(polygon_points)
 
-static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, base_scale: float, polygon_scale: float) -> void:
+static func get_map_size_icon_scale(map_size: int) -> float:
+	"""Get the icon scale factor based on the current map size setting"""
+	# Map size scaling factors
+	var map_size_scales := {
+		0: 1.0,           # TINY
+		1: 26.0/38.0,     # SMALL ~0.684
+		2: 18.0/38.0,     # MEDIUM ~0.474
+		3: 12.8/38.0,     # LARGE ~0.337
+		4: 9.0/38.0       # HUGE ~0.237
+	}
+	
+	return map_size_scales.get(map_size, 1.0)
+
+static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, base_scale: float, polygon_scale: float, map_size_scale: float = 1.0) -> void:
 	"""
 	Create mountain icon with size and shape modifiers based on region characteristics.
 	- Larger regions get larger icons
@@ -180,13 +193,13 @@ static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region
 	# Debug output for mountain regions
 	var region_id: int = region_data.get("id", -1)
 	
-	# Calculate size modifier based on area
+	# Calculate size modifier based on area (less aggressive scaling for better visibility)
 	# Based on debug output, areas are around 6000-9000, so we'll use 8000 as baseline
 	var area_scale_factor: float = 1.0
 	if area > 0:
-		# Normalize area to a reasonable scale factor (0.6 to 1.8) for more visible differences
+		# Normalize area to a reasonable scale factor (0.9 to 1.3) for subtle size differences
 		var normalized_area: float = area / 8000.0  # 8000 as baseline based on actual data
-		area_scale_factor = clamp(normalized_area, 0.6, 1.8)
+		area_scale_factor = clamp(normalized_area, 0.9, 1.3)
 
 	# Create first mountain icon
 	var icon1 := Sprite2D.new()
@@ -194,7 +207,9 @@ static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region
 	if icon1.texture == null:
 		return
 	
-	icon1.position = center + Vector2(0, -20)
+	# Apply scaled position offset
+	icon1.position = center + Vector2(0, -20 * map_size_scale)
+	# Maintain same ratio with other biomes by not applying map_size_scale to mountains
 	var final_scale: float = base_scale * polygon_scale * area_scale_factor
 	icon1.scale = Vector2(final_scale, final_scale)
 	icon1.z_index = parent_pg.z_index + 10
@@ -207,7 +222,7 @@ static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region
 	icon2.scale = Vector2(second_icon_scale, second_icon_scale)
 	icon2.z_index = parent_pg.z_index + 11  # Higher z-index for second icon
 	
-	# Position second icon below and slightly to the right of first icon
-	icon2.position = center + Vector2(20, 10)  # 15px right, 20px below first icon
+	# Position second icon below and slightly to the right of first icon (scaled)
+	icon2.position = center + Vector2(20 * map_size_scale, 10 * map_size_scale)
 	
 	parent_pg.add_child(icon2)

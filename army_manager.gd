@@ -106,6 +106,10 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 			var center := center_meta as Vector2
 			army.position = center + _get_army_position_offset(region_container)
 	
+	# Apply map size scaling
+	if map_generator != null:
+		army.apply_map_size_scaling(map_generator)
+	
 	# Add army to region container
 	region_container.add_child(army)
 	
@@ -125,13 +129,18 @@ func create_raised_army(region_container: Node, player_id: int) -> Army:
 
 func _get_army_position_offset(region_container: Node) -> Vector2:
 	"""Get the appropriate position offset for army based on region contents"""
+	# Get map size scaling factor
+	var map_size_scale := 1.0
+	if map_generator != null:
+		map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+	
 	# Check if there's a castle in the region
 	var castle = region_container.get_node_or_null("Castle")
 	if castle != null:
-		return Vector2(15, 0)  # Army positioned to the right of castle
+		return Vector2(15 * map_size_scale, 0)  # Army positioned to the right of castle (scaled)
 	
-	# Default positioning when no castle is present
-	return Vector2(0, -5)  # Army positioned slightly above center
+	# Default positioning when no castle is present (scaled)
+	return Vector2(0, -5 * map_size_scale)  # Army positioned slightly above center
 
 func select_army(army: Army, region_container: Node, current_player_id: int = -1) -> void:
 	"""Select an army for movement - only allow selecting armies owned by current player"""

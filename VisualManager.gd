@@ -72,18 +72,22 @@ func place_castle_visual(region_container: Node) -> void:
 		DebugLogger.log("UISystem", "Error: Could not load castle texture from " + icon_path)
 		return
 	
-	# Position castle at region center (moved left and up by 5px)
+	# Scale castle appropriately - 20% smaller than biome icons
+	var castle_scale := 0.12  # 0.15 * 0.8 = 0.12 (20% smaller)
+	var map_size_scale := 1.0
+	if _map_generator != null:
+		# Apply both polygon scale and map size scale
+		map_size_scale = Utils.get_map_size_icon_scale(_map_generator.map_size)
+		castle_scale = castle_scale * _map_generator.polygon_scale * map_size_scale
+	
+	# Position castle at region center (moved left and up by 5px, scaled)
 	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
 	if polygon != null:
 		var center_meta = polygon.get_meta("center")
 		if center_meta != null:
 			var center := center_meta as Vector2
-			castle.position = center + Vector2(-5, -5)  # Move left and up by 5px
+			castle.position = center + Vector2(-5 * map_size_scale, -5 * map_size_scale)  # Scaled offset
 	
-	# Scale castle appropriately - 20% smaller than biome icons
-	var castle_scale := 0.12  # 0.15 * 0.8 = 0.12 (20% smaller)
-	if _map_generator != null:
-		castle_scale = castle_scale * _map_generator.polygon_scale
 	castle.scale = Vector2(castle_scale, castle_scale)
 	
 	# Set z-index to appear above other elements

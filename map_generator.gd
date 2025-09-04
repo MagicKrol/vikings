@@ -3,7 +3,7 @@ extends Node2D
 class_name MapGenerator
 
 # Configuration
-@export var data_file_path: String = "data12.json"
+@export var data_file_path: String = "mapdata-280-small.json"
 @export var noisy_edges_enabled: bool = true
 @export var debug_draw_overlay: bool = false
 @export var show_region_colors: bool = false
@@ -12,6 +12,26 @@ class_name MapGenerator
 @export var region_point_inner_color: Color = Color.RED
 @export var polygon_scale: float = 2.0
 @export var ocean_frame_width: float = 500.0
+
+# Map size configuration
+enum MapSize {
+	TINY,
+	SMALL,
+	MEDIUM,
+	LARGE,
+	HUGE
+}
+
+@export var map_size: MapSize = MapSize.SMALL
+
+# Map size scaling factors
+const MAP_SIZE_SCALES := {
+	MapSize.TINY: 1.0,
+	MapSize.SMALL: 26.0/38.0,  # ~0.684
+	MapSize.MEDIUM: 18.0/38.0,  # ~0.474
+	MapSize.LARGE: 12.8/38.0,   # ~0.337
+	MapSize.HUGE: 9.0/38.0      # ~0.237
+}
 
 # Global icon sizing (tune this to adjust biome icon sizes)
 const BIOME_ICON_SCALE: float = 0.15
@@ -473,9 +493,12 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	print(biome_name)
 	print(icon_path)
 	if icon_path != "":
+		# Get map size scaling factor
+		var map_size_scale = Utils.get_map_size_icon_scale(map_size)
+		
 		# Check if this is a mountain biome and use special handling
 		if biome_name.to_lower() == "mountains":
-			Utils.create_mountain_icon_with_size_modifier(pg, region_data, icon_path, BIOME_ICON_SCALE, polygon_scale)
+			Utils.create_mountain_icon_with_size_modifier(pg, region_data, icon_path, BIOME_ICON_SCALE, polygon_scale, map_size_scale)
 		else:
 			_add_icon_at_region_center(pg, region_data, icon_path, biome_name)
 
@@ -1242,7 +1265,14 @@ func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, i
 	icon.texture = load(icon_path)
 	if icon.texture == null:
 		return
-	icon.position = center + Vector2(0, -30)
+	# Get map size scaling factor
+	var map_size_scale = Utils.get_map_size_icon_scale(map_size)
+	
+	# Apply scaled position offset (no offset for hill biomes)
+	if biome_name.to_lower().contains("hill"):
+		icon.position = center
+	else:
+		icon.position = center + Vector2(0, -30 * map_size_scale)
 	
 	# Use forest-specific scale for forest biomes, otherwise use general biome scale
 	var icon_scale: float
@@ -1251,7 +1281,7 @@ func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, i
 	else:
 		icon_scale = GameParameters.BIOME_ICON_SCALE
 	
-	icon.scale = Vector2(icon_scale * polygon_scale, icon_scale * polygon_scale)
+	icon.scale = Vector2(icon_scale * polygon_scale * map_size_scale, icon_scale * polygon_scale * map_size_scale)
 	icon.z_index = parent_pg.z_index + 10
 	icon.modulate.a = 0.85  # High transparency (15%)
 	parent_pg.add_child(icon)

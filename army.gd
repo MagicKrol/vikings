@@ -48,6 +48,15 @@ func _init():
 	scale = Vector2(0.06, 0.06)
 	z_index = 125
 
+func apply_map_size_scaling(map_generator: MapGenerator) -> void:
+	"""Apply map size scaling to the army visual"""
+	if map_generator == null:
+		return
+	
+	var map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+	var base_scale = 0.06
+	scale = Vector2(base_scale * map_size_scale, base_scale * map_size_scale)
+
 func setup_army(new_player_id: int, roman_number: String) -> void:
 	"""Setup the army with player ID and default composition"""
 	player_id = new_player_id
