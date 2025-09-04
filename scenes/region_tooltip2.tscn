@@ -1,8 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://cml12by6pyhyc"]
+[gd_scene load_steps=12 format=3 uid="uid://cml12by6pyhyc"]
 
 [ext_resource type="Script" path="res://region_tooltip_2.gd" id="1_65wef"]
 [ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_u85qw"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_owbma"]
+[ext_resource type="Texture2D" uid="uid://c30y8te4yqwy0" path="res://images/icons/population.png" id="4_pop"]
+[ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/food.png" id="5_food"]
+[ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/wood.png" id="6_wood"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="7_stone"]
+[ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/iron.png" id="8_iron"]
+[ext_resource type="Texture2D" uid="uid://tq0lrv702naa" path="res://images/icons/gold.png" id="9_gold"]
 
 [sub_resource type="Theme" id="Theme_86wrq"]
 default_font = ExtResource("3_owbma")
@@ -55,74 +61,104 @@ layout_mode = 2
 text = "Shire of Hornhold"
 horizontal_alignment = 1
 
-[node name="PopulationSection" type="VBoxContainer" parent="Panel/Army"]
+[node name="ValuesSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
-theme_override_constants/separation = -3
+theme_override_constants/separation = 2
 
-[node name="PopulationLevel" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
-custom_minimum_size = Vector2(226, 0)
+[node name="Images" type="HBoxContainer" parent="Panel/Army/ValuesSection"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="PopulationLabel" type="Label" parent="Panel/Army/PopulationSection/PopulationLevel"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Population:"
-
-[node name="PopulationValue" type="Label" parent="Panel/Army/PopulationSection/PopulationLevel"]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-text = "343"
-
-[node name="PopulationLevel2" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
-visible = false
-custom_minimum_size = Vector2(226, 0)
-layout_mode = 2
-
-[node name="LevelLabel" type="Label" parent="Panel/Army/PopulationSection/PopulationLevel2"]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 2
-text = "Level:"
-
-[node name="LevelValue" type="Label" parent="Panel/Army/PopulationSection/PopulationLevel2"]
+[node name="Spacer" type="Control" parent="Panel/Army/ValuesSection/Images"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-text = "2"
 
-[node name="Resources" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
+[node name="PopulationIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("4_pop")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FoodIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("5_food")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WoodIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("6_wood")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StoneIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("7_stone")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IronIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+visible = false
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("8_iron")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+visible = false
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("9_gold")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Values" type="HBoxContainer" parent="Panel/Army/ValuesSection"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Spacer" type="Control" parent="Panel/Army/ValuesSection/Values"]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/Army/PopulationSection/Resources"]
-custom_minimum_size = Vector2(120, 0)
+[node name="PopulationValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
-text = "Food:"
+text = "999"
+horizontal_alignment = 1
 
-[node name="Value" type="Label" parent="Panel/Army/PopulationSection/Resources"]
-custom_minimum_size = Vector2(30, 0)
+[node name="FoodValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
-text = "3"
+text = "99"
+horizontal_alignment = 1
 
-[node name="Resources2" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
+[node name="WoodValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
+text = "99"
+horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="Panel/Army/PopulationSection/Resources2"]
-custom_minimum_size = Vector2(120, 0)
+[node name="StoneValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
-text = "Food:"
+text = "99"
+horizontal_alignment = 1
 
-[node name="Value" type="Label" parent="Panel/Army/PopulationSection/Resources2"]
-custom_minimum_size = Vector2(30, 0)
+[node name="IronValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+visible = false
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
-text = "3"
+text = "99"
+horizontal_alignment = 1
 
-[node name="Resources3" type="HBoxContainer" parent="Panel/Army/PopulationSection"]
+[node name="GoldValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+visible = false
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
-
-[node name="Label" type="Label" parent="Panel/Army/PopulationSection/Resources3"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-text = "Food:"
-
-[node name="Value" type="Label" parent="Panel/Army/PopulationSection/Resources3"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-text = "3"
+text = "99"
+horizontal_alignment = 1

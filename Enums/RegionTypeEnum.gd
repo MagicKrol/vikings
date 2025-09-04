@@ -14,26 +14,21 @@ enum Type {
 
 # Convert string biome name to final region type
 static func string_to_type(biome_string: String) -> Type:
-	var biome_upper = biome_string.to_upper()
-	
-	# Mountains - impassable terrain
-	if biome_upper.contains("MOUNTAIN"):
-		return Type.MOUNTAINS
-	
-	# Hills - check if it's in a forest area (forest hills) or regular hills
-	elif biome_upper.contains("HILL"):
-		if _is_forest_biome(biome_string):
-			return Type.FOREST_HILLS
-		else:
+	match biome_string:
+		"grassland":
+			return Type.GRASSLAND
+		"hill":
 			return Type.HILLS
-	
-	# Forest types - all forest biomes become FOREST
-	elif _is_forest_biome(biome_string):
-		return Type.FOREST
-	
-	# All other biomes become grassland (including deserts, tundra, etc.)
-	else:
-		return Type.GRASSLAND
+		"hill_forest":
+			return Type.FOREST_HILLS
+		"forest":
+			return Type.FOREST
+		"forest2":
+			return Type.FOREST
+		"mountains":
+			return Type.MOUNTAINS
+		_:
+			return Type.GRASSLAND  # Default fallback
 
 # Convert enum type back to string
 static func type_to_string(region_type: Type) -> String:

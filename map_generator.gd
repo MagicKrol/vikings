@@ -3,7 +3,7 @@ extends Node2D
 class_name MapGenerator
 
 # Configuration
-@export var data_file_path: String = "data8.json"
+@export var data_file_path: String = "data12.json"
 @export var noisy_edges_enabled: bool = true
 @export var debug_draw_overlay: bool = false
 @export var show_region_colors: bool = false
@@ -15,8 +15,6 @@ class_name MapGenerator
 
 # Global icon sizing (tune this to adjust biome icon sizes)
 const BIOME_ICON_SCALE: float = 0.15
-
-
 
 # Noisy edge parameters (matching JS defaults)
 @export var noisy_edge_amplitude: float = 0.15
@@ -472,6 +470,8 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	# Add biome icons based on mapping rules
 	var biome_name := String(region_data.get("biome", ""))
 	var icon_path := BiomeManager.get_icon_path_for_biome(biome_name)
+	print(biome_name)
+	print(icon_path)
 	if icon_path != "":
 		# Check if this is a mountain biome and use special handling
 		if biome_name.to_lower() == "mountains":
@@ -1231,6 +1231,7 @@ func _is_ocean_region_coastal(ocean_region_id: int) -> bool:
 	return false  # No land neighbors found
 
 func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, biome_name: String = "") -> void:
+	print(biome_name)
 	if icon_path == "":
 		return
 	var center_data = region_data.get("center", [500, 500])

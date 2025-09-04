@@ -84,6 +84,7 @@ func setup_region(region_data: Dictionary) -> void:
 	region_id = int(region_data.get("id", -1))
 	biome = String(region_data.get("biome", ""))
 	region_type = RegionTypeEnum.string_to_type(biome)
+	print("Region type: ", region_type)
 	is_ocean = bool(region_data.get("ocean", false))
 	
 	# Initialize garrison and resources
