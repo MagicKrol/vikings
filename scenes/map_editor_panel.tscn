@@ -1,0 +1,179 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqh3nxjy5v8g4"]
+
+[ext_resource type="PackedScene" uid="uid://h2augxohyp55" path="res://scenes/info_modal.tscn" id="1_base"]
+[ext_resource type="Script" path="res://map_editor_panel.gd" id="2_script"]
+
+[node name="MapEditorPanel" instance=ExtResource("1_base")]
+anchors_preset = 9
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.25
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+script = ExtResource("2_script")
+
+[node name="Region" parent="Panel" index="0"]
+visible = false
+
+[node name="Army" parent="Panel" index="1"]
+visible = false
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IDRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="IDLabel" type="Label" parent="Panel/Content/IDRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Region ID:"
+
+[node name="IDValue" type="Label" parent="Panel/Content/IDRow"]
+layout_mode = 2
+text = "-"
+
+[node name="NameRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Panel/Content/NameRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Name:"
+
+[node name="NameEdit" type="LineEdit" parent="Panel/Content/NameRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="Panel/Content/TypeRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Region type:"
+
+[node name="TypeOption" type="OptionButton" parent="Panel/Content/TypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LevelRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="Panel/Content/LevelRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Region level:"
+
+[node name="LevelOption" type="OptionButton" parent="Panel/Content/LevelRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PopulationRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="PopulationLabel" type="Label" parent="Panel/Content/PopulationRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Population:"
+
+[node name="PopulationEdit" type="LineEdit" parent="Panel/Content/PopulationRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="CastleRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="CastleLabel" type="Label" parent="Panel/Content/CastleRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Castle level:"
+
+[node name="CastleOption" type="OptionButton" parent="Panel/Content/CastleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResourcesLabel" type="Label" parent="Panel/Content"]
+layout_mode = 2
+text = "Resources:"
+
+[node name="FoodRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="FoodLabel" type="Label" parent="Panel/Content/FoodRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "FOOD"
+
+[node name="FoodEdit" type="LineEdit" parent="Panel/Content/FoodRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="WoodRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="WoodLabel" type="Label" parent="Panel/Content/WoodRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "WOOD"
+
+[node name="WoodEdit" type="LineEdit" parent="Panel/Content/WoodRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="StoneRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="StoneLabel" type="Label" parent="Panel/Content/StoneRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "STONE"
+
+[node name="StoneEdit" type="LineEdit" parent="Panel/Content/StoneRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="IronRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="IronLabel" type="Label" parent="Panel/Content/IronRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "IRON"
+
+[node name="IronEdit" type="LineEdit" parent="Panel/Content/IronRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GoldRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="GoldLabel" type="Label" parent="Panel/Content/GoldRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "GOLD"
+
+[node name="GoldEdit" type="LineEdit" parent="Panel/Content/GoldRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="OreRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="OreLabel" type="Label" parent="Panel/Content/OreRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Ore discovered:"
+
+[node name="OreCheck" type="CheckBox" parent="Panel/Content/OreRow"]
+layout_mode = 2
