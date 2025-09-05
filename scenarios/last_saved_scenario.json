@@ -1,0 +1,8138 @@
+{
+	"armies": [],
+	"map_file": "mapdata-280-small.json",
+	"regions": [
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 287,
+			"level": "Shire",
+			"name": "Sargate",
+			"ocean": false,
+			"owner": 0,
+			"population": 249,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 382,
+			"level": "Shire",
+			"name": "Frostpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 260,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 396,
+			"level": "Shire",
+			"name": "Morwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 161,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 417,
+			"level": "Shire",
+			"name": "Frostpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 299,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 422,
+			"level": "Shire",
+			"name": "Morburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 261,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 423,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 426,
+			"level": "Shire",
+			"name": "Norwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 225,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 436,
+			"level": "Shire",
+			"name": "Frowood",
+			"ocean": false,
+			"owner": 0,
+			"population": 190,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 439,
+			"level": "Shire",
+			"name": "Eldfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 232,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 443,
+			"level": "Shire",
+			"name": "Quelland",
+			"ocean": false,
+			"owner": 0,
+			"population": 284,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 457,
+			"level": "Shire",
+			"name": "Greenvale",
+			"ocean": false,
+			"owner": 0,
+			"population": 182,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 472,
+			"level": "Shire",
+			"name": "Dorgate",
+			"ocean": false,
+			"owner": 0,
+			"population": 286,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 473,
+			"level": "Shire",
+			"name": "Triton's Trench",
+			"ocean": false,
+			"owner": 0,
+			"population": 286,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 475,
+			"level": "Shire",
+			"name": "Xarport",
+			"ocean": false,
+			"owner": 0,
+			"population": 198,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 481,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 271,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 482,
+			"level": "Shire",
+			"name": "Dragonborn's Den",
+			"ocean": false,
+			"owner": 0,
+			"population": 233,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 484,
+			"level": "Shire",
+			"name": "Elf's Sanctuary",
+			"ocean": false,
+			"owner": 0,
+			"population": 284,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 495,
+			"level": "Shire",
+			"name": "Kelholm",
+			"ocean": false,
+			"owner": 0,
+			"population": 229,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 507,
+			"level": "Shire",
+			"name": "Froloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 168,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 509,
+			"level": "Shire",
+			"name": "Olborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 286,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 516,
+			"level": "Shire",
+			"name": "Silverbrook",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 522,
+			"level": "Shire",
+			"name": "Islshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 280,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 524,
+			"level": "Shire",
+			"name": "Gnome's Workshop",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 528,
+			"level": "Shire",
+			"name": "Olberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 238,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 529,
+			"level": "Shire",
+			"name": "Islhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 178,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 530,
+			"level": "Shire",
+			"name": "Norhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 255,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 531,
+			"level": "Shire",
+			"name": "Eldfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 532,
+			"level": "Shire",
+			"name": "Minotaur's Maze",
+			"ocean": false,
+			"owner": 0,
+			"population": 190,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 535,
+			"level": "Shire",
+			"name": "Lorwatch",
+			"ocean": false,
+			"owner": 0,
+			"population": 175,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 536,
+			"level": "Shire",
+			"name": "Wenwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 186,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 540,
+			"level": "Shire",
+			"name": "Shadowmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 544,
+			"level": "Shire",
+			"name": "Bluewater",
+			"ocean": false,
+			"owner": 0,
+			"population": 150,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 545,
+			"level": "Shire",
+			"name": "Ravencliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 167,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 546,
+			"level": "Shire",
+			"name": "Ravencliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 172,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 547,
+			"level": "Shire",
+			"name": "Greenvale",
+			"ocean": false,
+			"owner": 0,
+			"population": 257,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 553,
+			"level": "Shire",
+			"name": "Yuan-ti's Temple",
+			"ocean": false,
+			"owner": 0,
+			"population": 293,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 554,
+			"level": "Shire",
+			"name": "Varburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 562,
+			"level": "Shire",
+			"name": "Torstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 169,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 563,
+			"level": "Shire",
+			"name": "Greenvale",
+			"ocean": false,
+			"owner": 0,
+			"population": 180,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 564,
+			"level": "Shire",
+			"name": "Norwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 566,
+			"level": "Shire",
+			"name": "Whitecliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 229,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 567,
+			"level": "Shire",
+			"name": "Jarkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 179,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 575,
+			"level": "Shire",
+			"name": "Goldenfield",
+			"ocean": false,
+			"owner": 0,
+			"population": 228,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 581,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 160,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 582,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 272,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 583,
+			"level": "Shire",
+			"name": "Galwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 175,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 584,
+			"level": "Shire",
+			"name": "Torford",
+			"ocean": false,
+			"owner": 0,
+			"population": 219,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 591,
+			"level": "Shire",
+			"name": "Wenhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 226,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 592,
+			"level": "Shire",
+			"name": "Islshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 206,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 593,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 273,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 600,
+			"level": "Shire",
+			"name": "Morwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 184,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 601,
+			"level": "Shire",
+			"name": "Eldwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 256,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 603,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 252,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 612,
+			"level": "Shire",
+			"name": "Norhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 251,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 613,
+			"level": "Shire",
+			"name": "Wenmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 620,
+			"level": "Shire",
+			"name": "Wenton",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 622,
+			"level": "Shire",
+			"name": "Bearclaw",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 623,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 625,
+			"level": "Shire",
+			"name": "Argate",
+			"ocean": false,
+			"owner": 0,
+			"population": 246,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 626,
+			"level": "Shire",
+			"name": "Eldwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 282,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 627,
+			"level": "Shire",
+			"name": "Xarshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 229,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 628,
+			"level": "Shire",
+			"name": "Zalstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 271,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 629,
+			"level": "Shire",
+			"name": "Ardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 274,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 631,
+			"level": "Shire",
+			"name": "Belhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 281,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 633,
+			"level": "Shire",
+			"name": "Belberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 248,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 635,
+			"level": "Shire",
+			"name": "Norwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 255,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 636,
+			"level": "Shire",
+			"name": "Lionheart",
+			"ocean": false,
+			"owner": 0,
+			"population": 221,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 637,
+			"level": "Shire",
+			"name": "Wenmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 155,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 638,
+			"level": "Shire",
+			"name": "Morwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 300,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 639,
+			"level": "Shire",
+			"name": "Belmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 251,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 640,
+			"level": "Shire",
+			"name": "Wenwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 240,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 641,
+			"level": "Shire",
+			"name": "Kelhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 168,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 642,
+			"level": "Shire",
+			"name": "Orc's Stronghold",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 643,
+			"level": "Shire",
+			"name": "Xarberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 644,
+			"level": "Shire",
+			"name": "Norland",
+			"ocean": false,
+			"owner": 0,
+			"population": 214,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 645,
+			"level": "Shire",
+			"name": "Normoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 199,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 647,
+			"level": "Shire",
+			"name": "Belstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 208,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 648,
+			"level": "Shire",
+			"name": "Kelholm",
+			"ocean": false,
+			"owner": 0,
+			"population": 231,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 649,
+			"level": "Shire",
+			"name": "Belhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 231,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 650,
+			"level": "Shire",
+			"name": "Darkmarsh",
+			"ocean": false,
+			"owner": 0,
+			"population": 218,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 651,
+			"level": "Shire",
+			"name": "Galcrag",
+			"ocean": false,
+			"owner": 0,
+			"population": 280,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 652,
+			"level": "Shire",
+			"name": "Yuan-ti's Temple",
+			"ocean": false,
+			"owner": 0,
+			"population": 259,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 653,
+			"level": "Shire",
+			"name": "Tabaxi's Trail",
+			"ocean": false,
+			"owner": 0,
+			"population": 158,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 654,
+			"level": "Shire",
+			"name": "Eldfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 180,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 655,
+			"level": "Shire",
+			"name": "Frowood",
+			"ocean": false,
+			"owner": 0,
+			"population": 240,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 656,
+			"level": "Shire",
+			"name": "Islhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 164,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 657,
+			"level": "Shire",
+			"name": "Troll's Bridge",
+			"ocean": false,
+			"owner": 0,
+			"population": 188,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 658,
+			"level": "Shire",
+			"name": "Kelkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 291,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 659,
+			"level": "Shire",
+			"name": "Hardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 201,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 660,
+			"level": "Shire",
+			"name": "Blackwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 300,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 663,
+			"level": "Shire",
+			"name": "Ravencliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 285,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 664,
+			"level": "Shire",
+			"name": "Ulkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 249,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 665,
+			"level": "Shire",
+			"name": "Griffin's Peak",
+			"ocean": false,
+			"owner": 0,
+			"population": 300,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 667,
+			"level": "Shire",
+			"name": "Olmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 239,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 668,
+			"level": "Shire",
+			"name": "Froshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 164,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 669,
+			"level": "Shire",
+			"name": "Hardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 274,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 672,
+			"level": "Shire",
+			"name": "Quelland",
+			"ocean": false,
+			"owner": 0,
+			"population": 204,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 682,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 230,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 683,
+			"level": "Shire",
+			"name": "Firbolg's Forest",
+			"ocean": false,
+			"owner": 0,
+			"population": 190,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 685,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 250,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 686,
+			"level": "Shire",
+			"name": "Kenku's Cliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 205,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 687,
+			"level": "Shire",
+			"name": "Argate",
+			"ocean": false,
+			"owner": 0,
+			"population": 154,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 688,
+			"level": "Shire",
+			"name": "Wenloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 215,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 689,
+			"level": "Shire",
+			"name": "Pershire",
+			"ocean": false,
+			"owner": 0,
+			"population": 196,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 690,
+			"level": "Shire",
+			"name": "Wenhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 152,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 691,
+			"level": "Shire",
+			"name": "Belstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 175,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 692,
+			"level": "Shire",
+			"name": "Eldwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 292,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 693,
+			"level": "Shire",
+			"name": "Dragon's Rest",
+			"ocean": false,
+			"owner": 0,
+			"population": 273,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 700,
+			"level": "Shire",
+			"name": "Redstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 152,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 702,
+			"level": "Shire",
+			"name": "Orc's Stronghold",
+			"ocean": false,
+			"owner": 0,
+			"population": 155,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 704,
+			"level": "Shire",
+			"name": "Wenloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 285,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 705,
+			"level": "Shire",
+			"name": "Thunderpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 242,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 706,
+			"level": "Shire",
+			"name": "Olkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 172,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 708,
+			"level": "Shire",
+			"name": "Ravfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 709,
+			"level": "Shire",
+			"name": "Ulkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 296,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 710,
+			"level": "Shire",
+			"name": "Olkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 266,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 711,
+			"level": "Shire",
+			"name": "Bearclaw",
+			"ocean": false,
+			"owner": 0,
+			"population": 160,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 712,
+			"level": "Shire",
+			"name": "Olkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 295,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 713,
+			"level": "Shire",
+			"name": "Wenwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 283,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 716,
+			"level": "Shire",
+			"name": "Kenku's Cliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 718,
+			"level": "Shire",
+			"name": "Wenmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 720,
+			"level": "Shire",
+			"name": "Olhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 269,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 721,
+			"level": "Shire",
+			"name": "Halfling's Hill",
+			"ocean": false,
+			"owner": 0,
+			"population": 192,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 722,
+			"level": "Shire",
+			"name": "Lorborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 214,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 723,
+			"level": "Shire",
+			"name": "Wenton",
+			"ocean": false,
+			"owner": 0,
+			"population": 234,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 724,
+			"level": "Shire",
+			"name": "Frostpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 255,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 725,
+			"level": "Shire",
+			"name": "Vardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 206,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 726,
+			"level": "Shire",
+			"name": "Northmark",
+			"ocean": false,
+			"owner": 0,
+			"population": 225,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 727,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 175,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 728,
+			"level": "Shire",
+			"name": "Belmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 187,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 729,
+			"level": "Shire",
+			"name": "Olberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 231,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 730,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 215,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 731,
+			"level": "Shire",
+			"name": "Froloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 160,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 732,
+			"level": "Shire",
+			"name": "Torstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 261,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 734,
+			"level": "Shire",
+			"name": "Kelhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 243,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 735,
+			"level": "Shire",
+			"name": "Aasimar's Altar",
+			"ocean": false,
+			"owner": 0,
+			"population": 204,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 736,
+			"level": "Shire",
+			"name": "Silverbrook",
+			"ocean": false,
+			"owner": 0,
+			"population": 159,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 737,
+			"level": "Shire",
+			"name": "Griffin's Peak",
+			"ocean": false,
+			"owner": 0,
+			"population": 219,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 738,
+			"level": "Shire",
+			"name": "Dorstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 276,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 739,
+			"level": "Shire",
+			"name": "Ardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 182,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 740,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 157,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 741,
+			"level": "Shire",
+			"name": "Gnome's Workshop",
+			"ocean": false,
+			"owner": 0,
+			"population": 297,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 742,
+			"level": "Shire",
+			"name": "Eldfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 270,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 743,
+			"level": "Shire",
+			"name": "Tordale",
+			"ocean": false,
+			"owner": 0,
+			"population": 187,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 744,
+			"level": "Shire",
+			"name": "Sarmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 300,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 745,
+			"level": "Shire",
+			"name": "Ardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 151,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 746,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 254,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 747,
+			"level": "Shire",
+			"name": "Xarport",
+			"ocean": false,
+			"owner": 0,
+			"population": 296,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 748,
+			"level": "Shire",
+			"name": "Sarford",
+			"ocean": false,
+			"owner": 0,
+			"population": 226,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 749,
+			"level": "Shire",
+			"name": "Aasimar's Altar",
+			"ocean": false,
+			"owner": 0,
+			"population": 243,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 750,
+			"level": "Shire",
+			"name": "Islshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 226,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 751,
+			"level": "Shire",
+			"name": "Fromoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 207,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 752,
+			"level": "Shire",
+			"name": "Goliath's Gorge",
+			"ocean": false,
+			"owner": 0,
+			"population": 181,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 753,
+			"level": "Shire",
+			"name": "Pershire",
+			"ocean": false,
+			"owner": 0,
+			"population": 176,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 754,
+			"level": "Shire",
+			"name": "Genasi's Grove",
+			"ocean": false,
+			"owner": 0,
+			"population": 211,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 755,
+			"level": "Shire",
+			"name": "Zalstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 183,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 756,
+			"level": "Shire",
+			"name": "Goldenfield",
+			"ocean": false,
+			"owner": 0,
+			"population": 248,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 757,
+			"level": "Shire",
+			"name": "Wenhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 157,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 758,
+			"level": "Shire",
+			"name": "Torford",
+			"ocean": false,
+			"owner": 0,
+			"population": 294,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 759,
+			"level": "Shire",
+			"name": "Kelland",
+			"ocean": false,
+			"owner": 0,
+			"population": 298,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 760,
+			"level": "Shire",
+			"name": "Eldfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 186,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 761,
+			"level": "Shire",
+			"name": "Arloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 165,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 762,
+			"level": "Shire",
+			"name": "Whitecliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 211,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 763,
+			"level": "Shire",
+			"name": "Galhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 169,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 765,
+			"level": "Shire",
+			"name": "Harford",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 766,
+			"level": "Shire",
+			"name": "Wenton",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 768,
+			"level": "Shire",
+			"name": "Norwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 769,
+			"level": "Shire",
+			"name": "Belstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 770,
+			"level": "Shire",
+			"name": "Calhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 196,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 771,
+			"level": "Shire",
+			"name": "Jarhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 183,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 772,
+			"level": "Shire",
+			"name": "Olkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 214,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 773,
+			"level": "Shire",
+			"name": "Centaur's Run",
+			"ocean": false,
+			"owner": 0,
+			"population": 166,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 774,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 159,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 775,
+			"level": "Shire",
+			"name": "Galwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 198,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 777,
+			"level": "Shire",
+			"name": "Ravfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 168,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 779,
+			"level": "Shire",
+			"name": "Froloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 209,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 780,
+			"level": "Shire",
+			"name": "Olmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 291,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 782,
+			"level": "Shire",
+			"name": "Tordale",
+			"ocean": false,
+			"owner": 0,
+			"population": 218,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 785,
+			"level": "Shire",
+			"name": "Arstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 235,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 786,
+			"level": "Shire",
+			"name": "Dragon's Rest",
+			"ocean": false,
+			"owner": 0,
+			"population": 270,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 787,
+			"level": "Shire",
+			"name": "Olborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 235,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 788,
+			"level": "Shire",
+			"name": "Olhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 296,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 789,
+			"level": "Shire",
+			"name": "Olmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 248,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 790,
+			"level": "Shire",
+			"name": "Morfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 154,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 791,
+			"level": "Shire",
+			"name": "Vardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 159,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 792,
+			"level": "Shire",
+			"name": "Stormhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 215,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 793,
+			"level": "Shire",
+			"name": "Belberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 201,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 794,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 255,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 795,
+			"level": "Shire",
+			"name": "Lizardfolk's Lagoon",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 796,
+			"level": "Shire",
+			"name": "Varport",
+			"ocean": false,
+			"owner": 0,
+			"population": 192,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 797,
+			"level": "Shire",
+			"name": "Elf's Sanctuary",
+			"ocean": false,
+			"owner": 0,
+			"population": 183,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 798,
+			"level": "Shire",
+			"name": "Olkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 284,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 799,
+			"level": "Shire",
+			"name": "Whitecliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 188,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 800,
+			"level": "Shire",
+			"name": "Frohold",
+			"ocean": false,
+			"owner": 0,
+			"population": 183,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 801,
+			"level": "Shire",
+			"name": "Bluewater",
+			"ocean": false,
+			"owner": 0,
+			"population": 180,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 802,
+			"level": "Shire",
+			"name": "Varburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 172,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 805,
+			"level": "Shire",
+			"name": "Zalstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 281,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 806,
+			"level": "Shire",
+			"name": "Griffin's Peak",
+			"ocean": false,
+			"owner": 0,
+			"population": 192,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 807,
+			"level": "Shire",
+			"name": "Eaglecrest",
+			"ocean": false,
+			"owner": 0,
+			"population": 274,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 808,
+			"level": "Shire",
+			"name": "Sarmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 242,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 809,
+			"level": "Shire",
+			"name": "Kelholm",
+			"ocean": false,
+			"owner": 0,
+			"population": 206,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 811,
+			"level": "Shire",
+			"name": "Hardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 232,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 812,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 296,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 813,
+			"level": "Shire",
+			"name": "Wenhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 174,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 814,
+			"level": "Shire",
+			"name": "Whitecliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 261,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 815,
+			"level": "Shire",
+			"name": "Morburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 194,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 816,
+			"level": "Shire",
+			"name": "Fromoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 290,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 818,
+			"level": "Shire",
+			"name": "Varport",
+			"ocean": false,
+			"owner": 0,
+			"population": 197,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 819,
+			"level": "Shire",
+			"name": "Lorkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 222,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 820,
+			"level": "Shire",
+			"name": "Yuan-ti's Temple",
+			"ocean": false,
+			"owner": 0,
+			"population": 228,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 821,
+			"level": "Shire",
+			"name": "Thunderpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 263,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 822,
+			"level": "Shire",
+			"name": "Varburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 153,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 823,
+			"level": "Shire",
+			"name": "Shadowmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 187,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 824,
+			"level": "Shire",
+			"name": "Lorborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 266,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 825,
+			"level": "Shire",
+			"name": "Xarport",
+			"ocean": false,
+			"owner": 0,
+			"population": 251,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 826,
+			"level": "Shire",
+			"name": "Olhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 204,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 827,
+			"level": "Shire",
+			"name": "Shadowmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 248,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 828,
+			"level": "Shire",
+			"name": "Kelborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 259,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 829,
+			"level": "Shire",
+			"name": "Frostpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 235,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 830,
+			"level": "Shire",
+			"name": "Genasi's Grove",
+			"ocean": false,
+			"owner": 0,
+			"population": 173,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 831,
+			"level": "Shire",
+			"name": "Kelborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 243,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 832,
+			"level": "Shire",
+			"name": "Quelland",
+			"ocean": false,
+			"owner": 0,
+			"population": 184,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 833,
+			"level": "Shire",
+			"name": "Kenku's Cliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 170,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 834,
+			"level": "Shire",
+			"name": "Goblin's Cave",
+			"ocean": false,
+			"owner": 0,
+			"population": 293,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 835,
+			"level": "Shire",
+			"name": "Xarport",
+			"ocean": false,
+			"owner": 0,
+			"population": 281,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 836,
+			"level": "Shire",
+			"name": "Varberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 837,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 151,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 838,
+			"level": "Shire",
+			"name": "Zalhold",
+			"ocean": false,
+			"owner": 0,
+			"population": 152,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 839,
+			"level": "Shire",
+			"name": "Zalhold",
+			"ocean": false,
+			"owner": 0,
+			"population": 190,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 840,
+			"level": "Shire",
+			"name": "Xarshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 261,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 841,
+			"level": "Shire",
+			"name": "Wenwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 842,
+			"level": "Shire",
+			"name": "Wenton",
+			"ocean": false,
+			"owner": 0,
+			"population": 240,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 843,
+			"level": "Shire",
+			"name": "Aasimar's Altar",
+			"ocean": false,
+			"owner": 0,
+			"population": 179,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 844,
+			"level": "Shire",
+			"name": "Varport",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 845,
+			"level": "Shire",
+			"name": "Ravborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 264,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 846,
+			"level": "Shire",
+			"name": "Kenku's Cliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 196,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 847,
+			"level": "Shire",
+			"name": "Icewind",
+			"ocean": false,
+			"owner": 0,
+			"population": 224,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 848,
+			"level": "Shire",
+			"name": "Northmark",
+			"ocean": false,
+			"owner": 0,
+			"population": 247,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 849,
+			"level": "Shire",
+			"name": "Bearclaw",
+			"ocean": false,
+			"owner": 0,
+			"population": 277,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 850,
+			"level": "Shire",
+			"name": "Varburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 267,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 851,
+			"level": "Shire",
+			"name": "Brightwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 186,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 852,
+			"level": "Shire",
+			"name": "Lorwatch",
+			"ocean": false,
+			"owner": 0,
+			"population": 269,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 853,
+			"level": "Shire",
+			"name": "Ravborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 193,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 854,
+			"level": "Shire",
+			"name": "Sarcrag",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 855,
+			"level": "Shire",
+			"name": "Yorshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 856,
+			"level": "Shire",
+			"name": "Calhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 186,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 857,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 177,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 858,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 233,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 859,
+			"level": "Shire",
+			"name": "Frowood",
+			"ocean": false,
+			"owner": 0,
+			"population": 158,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 860,
+			"level": "Shire",
+			"name": "Belberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 162,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 861,
+			"level": "Shire",
+			"name": "Yorshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 165,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 862,
+			"level": "Shire",
+			"name": "Wenhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 251,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 863,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 265,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 864,
+			"level": "Shire",
+			"name": "Mistral",
+			"ocean": false,
+			"owner": 0,
+			"population": 189,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 865,
+			"level": "Shire",
+			"name": "Belstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 227,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 866,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 255,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 867,
+			"level": "Shire",
+			"name": "Olborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 197,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 868,
+			"level": "Shire",
+			"name": "Frostpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 869,
+			"level": "Shire",
+			"name": "Triton's Trench",
+			"ocean": false,
+			"owner": 0,
+			"population": 226,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 870,
+			"level": "Shire",
+			"name": "Wenton",
+			"ocean": false,
+			"owner": 0,
+			"population": 182,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 871,
+			"level": "Shire",
+			"name": "Blackwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 257,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 872,
+			"level": "Shire",
+			"name": "Eldfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 222,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 873,
+			"level": "Shire",
+			"name": "Ravhold",
+			"ocean": false,
+			"owner": 0,
+			"population": 294,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 874,
+			"level": "Shire",
+			"name": "Ulwatch",
+			"ocean": false,
+			"owner": 0,
+			"population": 299,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 875,
+			"level": "Shire",
+			"name": "Arloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 166,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 876,
+			"level": "Shire",
+			"name": "Sargate",
+			"ocean": false,
+			"owner": 0,
+			"population": 257,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 877,
+			"level": "Shire",
+			"name": "Harmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 298,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 878,
+			"level": "Shire",
+			"name": "Griffin's Peak",
+			"ocean": false,
+			"owner": 0,
+			"population": 278,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 879,
+			"level": "Shire",
+			"name": "Quelland",
+			"ocean": false,
+			"owner": 0,
+			"population": 211,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 880,
+			"level": "Shire",
+			"name": "Thunderpeak",
+			"ocean": false,
+			"owner": 0,
+			"population": 240,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 881,
+			"level": "Shire",
+			"name": "Belberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 294,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 882,
+			"level": "Shire",
+			"name": "Normoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 283,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 883,
+			"level": "Shire",
+			"name": "Varborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 255,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 884,
+			"level": "Shire",
+			"name": "Kelholm",
+			"ocean": false,
+			"owner": 0,
+			"population": 226,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 885,
+			"level": "Shire",
+			"name": "Wenloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 215,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 886,
+			"level": "Shire",
+			"name": "Calshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 292,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 887,
+			"level": "Shire",
+			"name": "Shadowmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 234,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 889,
+			"level": "Shire",
+			"name": "Eldfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 172,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 890,
+			"level": "Shire",
+			"name": "Tiefling's Tower",
+			"ocean": false,
+			"owner": 0,
+			"population": 299,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 891,
+			"level": "Shire",
+			"name": "Perwatch",
+			"ocean": false,
+			"owner": 0,
+			"population": 218,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 892,
+			"level": "Shire",
+			"name": "Blackwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 217,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 893,
+			"level": "Shire",
+			"name": "Olkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 162,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 894,
+			"level": "Shire",
+			"name": "Ravhold",
+			"ocean": false,
+			"owner": 0,
+			"population": 190,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 895,
+			"level": "Shire",
+			"name": "Belstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 191,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 896,
+			"level": "Shire",
+			"name": "Dragon's Rest",
+			"ocean": false,
+			"owner": 0,
+			"population": 179,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 897,
+			"level": "Shire",
+			"name": "Belmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 218,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 898,
+			"level": "Shire",
+			"name": "Minotaur's Maze",
+			"ocean": false,
+			"owner": 0,
+			"population": 197,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 899,
+			"level": "Shire",
+			"name": "Goliath's Gorge",
+			"ocean": false,
+			"owner": 0,
+			"population": 202,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 900,
+			"level": "Shire",
+			"name": "Aasimar's Altar",
+			"ocean": false,
+			"owner": 0,
+			"population": 283,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 901,
+			"level": "Shire",
+			"name": "Morkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 260,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 902,
+			"level": "Shire",
+			"name": "Bluewater",
+			"ocean": false,
+			"owner": 0,
+			"population": 205,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 903,
+			"level": "Shire",
+			"name": "Goldenfield",
+			"ocean": false,
+			"owner": 0,
+			"population": 299,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 904,
+			"level": "Shire",
+			"name": "Norland",
+			"ocean": false,
+			"owner": 0,
+			"population": 160,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 905,
+			"level": "Shire",
+			"name": "Eldwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 157,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 906,
+			"level": "Shire",
+			"name": "Aasimar's Altar",
+			"ocean": false,
+			"owner": 0,
+			"population": 174,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 907,
+			"level": "Shire",
+			"name": "Morwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 279,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 908,
+			"level": "Shire",
+			"name": "Varberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 180,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 909,
+			"level": "Shire",
+			"name": "Phoenix Rise",
+			"ocean": false,
+			"owner": 0,
+			"population": 251,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 910,
+			"level": "Shire",
+			"name": "Zalstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 240,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 911,
+			"level": "Shire",
+			"name": "Wolfhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 912,
+			"level": "Shire",
+			"name": "Torberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 172,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 913,
+			"level": "Shire",
+			"name": "Olberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 200,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 914,
+			"level": "Shire",
+			"name": "Halfling's Hill",
+			"ocean": false,
+			"owner": 0,
+			"population": 204,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 915,
+			"level": "Shire",
+			"name": "Islshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 171,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 916,
+			"level": "Shire",
+			"name": "Argate",
+			"ocean": false,
+			"owner": 0,
+			"population": 278,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 917,
+			"level": "Shire",
+			"name": "Eldstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 193,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 918,
+			"level": "Shire",
+			"name": "Zalstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 159,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 919,
+			"level": "Shire",
+			"name": "Kelland",
+			"ocean": false,
+			"owner": 0,
+			"population": 235,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 920,
+			"level": "Shire",
+			"name": "Galwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 282,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 921,
+			"level": "Shire",
+			"name": "Zalwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 217,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 922,
+			"level": "Shire",
+			"name": "Dragonborn's Den",
+			"ocean": false,
+			"owner": 0,
+			"population": 161,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 923,
+			"level": "Shire",
+			"name": "Eldstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 234,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 924,
+			"level": "Shire",
+			"name": "Froloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 270,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 925,
+			"level": "Shire",
+			"name": "Galhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 187,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 926,
+			"level": "Shire",
+			"name": "Goliath's Gorge",
+			"ocean": false,
+			"owner": 0,
+			"population": 213,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 927,
+			"level": "Shire",
+			"name": "Morkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 234,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 928,
+			"level": "Shire",
+			"name": "Varberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 929,
+			"level": "Shire",
+			"name": "Varburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 254,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 930,
+			"level": "Shire",
+			"name": "Lionheart",
+			"ocean": false,
+			"owner": 0,
+			"population": 192,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 931,
+			"level": "Shire",
+			"name": "Bluewater",
+			"ocean": false,
+			"owner": 0,
+			"population": 176,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 932,
+			"level": "Shire",
+			"name": "Lionheart",
+			"ocean": false,
+			"owner": 0,
+			"population": 287,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 933,
+			"level": "Shire",
+			"name": "Varberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 152,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 934,
+			"level": "Shire",
+			"name": "Fireforge",
+			"ocean": false,
+			"owner": 0,
+			"population": 158,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 935,
+			"level": "Shire",
+			"name": "Belmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 936,
+			"level": "Shire",
+			"name": "Lionheart",
+			"ocean": false,
+			"owner": 0,
+			"population": 237,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 937,
+			"level": "Shire",
+			"name": "Ulkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 183,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 938,
+			"level": "Shire",
+			"name": "Aasimar's Altar",
+			"ocean": false,
+			"owner": 0,
+			"population": 173,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 939,
+			"level": "Shire",
+			"name": "Sargate",
+			"ocean": false,
+			"owner": 0,
+			"population": 238,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 940,
+			"level": "Shire",
+			"name": "Troll's Bridge",
+			"ocean": false,
+			"owner": 0,
+			"population": 234,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 941,
+			"level": "Shire",
+			"name": "Wenhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 164,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 942,
+			"level": "Shire",
+			"name": "Vardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 266,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 943,
+			"level": "Shire",
+			"name": "Morfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 268,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 944,
+			"level": "Shire",
+			"name": "Stonebridge",
+			"ocean": false,
+			"owner": 0,
+			"population": 297,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 945,
+			"level": "Shire",
+			"name": "Pershire",
+			"ocean": false,
+			"owner": 0,
+			"population": 254,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 2,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 946,
+			"level": "Shire",
+			"name": "Islhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 220,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 947,
+			"level": "Shire",
+			"name": "Norwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 222,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 948,
+			"level": "Shire",
+			"name": "Zalhold",
+			"ocean": false,
+			"owner": 0,
+			"population": 300,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 949,
+			"level": "Shire",
+			"name": "Norland",
+			"ocean": false,
+			"owner": 0,
+			"population": 222,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 950,
+			"level": "Shire",
+			"name": "Zalwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 280,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 2,
+				"Wood": 4
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 951,
+			"level": "Shire",
+			"name": "Xarberg",
+			"ocean": false,
+			"owner": 0,
+			"population": 292,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 952,
+			"level": "Shire",
+			"name": "Islhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 256,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 953,
+			"level": "Shire",
+			"name": "Human's Keep",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 954,
+			"level": "Shire",
+			"name": "Redstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 218,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 955,
+			"level": "Shire",
+			"name": "Eaglecrest",
+			"ocean": false,
+			"owner": 0,
+			"population": 270,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 3,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 956,
+			"level": "Shire",
+			"name": "Ulwatch",
+			"ocean": false,
+			"owner": 0,
+			"population": 159,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 957,
+			"level": "Shire",
+			"name": "Eldfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 291,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 958,
+			"level": "Shire",
+			"name": "Eldfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 296,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 3,
+				"Stone": 3,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 959,
+			"level": "Shire",
+			"name": "Arloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 154,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 960,
+			"level": "Shire",
+			"name": "Morkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 250,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 961,
+			"level": "Shire",
+			"name": "Harmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 233,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 962,
+			"level": "Shire",
+			"name": "Kelkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 175,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 963,
+			"level": "Shire",
+			"name": "Belmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 175,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 964,
+			"level": "Shire",
+			"name": "Ardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 201,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 965,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 966,
+			"level": "Shire",
+			"name": "Kelholm",
+			"ocean": false,
+			"owner": 0,
+			"population": 223,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 967,
+			"level": "Shire",
+			"name": "Dorstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 222,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 2,
+				"Wood": 4
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 968,
+			"level": "Shire",
+			"name": "Blackwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 204,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 969,
+			"level": "Shire",
+			"name": "Ravencliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 250,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 970,
+			"level": "Shire",
+			"name": "Ardale",
+			"ocean": false,
+			"owner": 0,
+			"population": 272,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 971,
+			"level": "Shire",
+			"name": "Wenhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 202,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 972,
+			"level": "Shire",
+			"name": "Shadowmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 168,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 973,
+			"level": "Shire",
+			"name": "Sarcrag",
+			"ocean": false,
+			"owner": 0,
+			"population": 227,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 974,
+			"level": "Shire",
+			"name": "Olmoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 221,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 975,
+			"level": "Shire",
+			"name": "Halfling's Hill",
+			"ocean": false,
+			"owner": 0,
+			"population": 181,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 976,
+			"level": "Shire",
+			"name": "Fromoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 257,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 977,
+			"level": "Shire",
+			"name": "Sarford",
+			"ocean": false,
+			"owner": 0,
+			"population": 231,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 978,
+			"level": "Shire",
+			"name": "Phoenix Rise",
+			"ocean": false,
+			"owner": 0,
+			"population": 276,
+			"resources": {
+				"Food": 6,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 979,
+			"level": "Shire",
+			"name": "Triton's Trench",
+			"ocean": false,
+			"owner": 0,
+			"population": 224,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 980,
+			"level": "Shire",
+			"name": "Whitecliff",
+			"ocean": false,
+			"owner": 0,
+			"population": 269,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 981,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 247,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 982,
+			"level": "Shire",
+			"name": "Olland",
+			"ocean": false,
+			"owner": 0,
+			"population": 202,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 983,
+			"level": "Shire",
+			"name": "Eldfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 216,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 984,
+			"level": "Shire",
+			"name": "Orc's Stronghold",
+			"ocean": false,
+			"owner": 0,
+			"population": 188,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 985,
+			"level": "Shire",
+			"name": "Elf's Sanctuary",
+			"ocean": false,
+			"owner": 0,
+			"population": 156,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 986,
+			"level": "Shire",
+			"name": "Tordale",
+			"ocean": false,
+			"owner": 0,
+			"population": 174,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 987,
+			"level": "Shire",
+			"name": "Lionheart",
+			"ocean": false,
+			"owner": 0,
+			"population": 165,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 988,
+			"level": "Shire",
+			"name": "Morfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 206,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 989,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 272,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 990,
+			"level": "Shire",
+			"name": "Sarfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 228,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 991,
+			"level": "Shire",
+			"name": "Tordale",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 992,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 202,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 993,
+			"level": "Shire",
+			"name": "Northmark",
+			"ocean": false,
+			"owner": 0,
+			"population": 164,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 994,
+			"level": "Shire",
+			"name": "Fromoor",
+			"ocean": false,
+			"owner": 0,
+			"population": 238,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 995,
+			"level": "Shire",
+			"name": "Norhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 270,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 996,
+			"level": "Shire",
+			"name": "Norhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 997,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 234,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 3,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 998,
+			"level": "Shire",
+			"name": "Ulwatch",
+			"ocean": false,
+			"owner": 0,
+			"population": 256,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 999,
+			"level": "Shire",
+			"name": "Kelkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1000,
+			"level": "Shire",
+			"name": "Morfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 243,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1001,
+			"level": "Shire",
+			"name": "Varburn",
+			"ocean": false,
+			"owner": 0,
+			"population": 213,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1002,
+			"level": "Shire",
+			"name": "Quelstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 242,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1003,
+			"level": "Shire",
+			"name": "Bluewater",
+			"ocean": false,
+			"owner": 0,
+			"population": 277,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1004,
+			"level": "Shire",
+			"name": "Kelkeep",
+			"ocean": false,
+			"owner": 0,
+			"population": 224,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1005,
+			"level": "Shire",
+			"name": "Unicorn's Glade",
+			"ocean": false,
+			"owner": 0,
+			"population": 195,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1006,
+			"level": "Shire",
+			"name": "Goldenfield",
+			"ocean": false,
+			"owner": 0,
+			"population": 229,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1007,
+			"level": "Shire",
+			"name": "Arstead",
+			"ocean": false,
+			"owner": 0,
+			"population": 243,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "lake",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1008,
+			"level": "Shire",
+			"name": "Zalstone",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1009,
+			"level": "Shire",
+			"name": "Northmark",
+			"ocean": false,
+			"owner": 0,
+			"population": 218,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1010,
+			"level": "Shire",
+			"name": "Norwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 216,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1011,
+			"level": "Shire",
+			"name": "Ravfall",
+			"ocean": false,
+			"owner": 0,
+			"population": 226,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1012,
+			"level": "Shire",
+			"name": "Tordale",
+			"ocean": false,
+			"owner": 0,
+			"population": 206,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1013,
+			"level": "Shire",
+			"name": "Yorshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 239,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1014,
+			"level": "Shire",
+			"name": "Olborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 286,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1015,
+			"level": "Shire",
+			"name": "Islhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 248,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 3,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1016,
+			"level": "Shire",
+			"name": "Kelhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 186,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1017,
+			"level": "Shire",
+			"name": "Kelborough",
+			"ocean": false,
+			"owner": 0,
+			"population": 151,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1018,
+			"level": "Shire",
+			"name": "Tabaxi's Trail",
+			"ocean": false,
+			"owner": 0,
+			"population": 238,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1019,
+			"level": "Shire",
+			"name": "Dragonborn's Den",
+			"ocean": false,
+			"owner": 0,
+			"population": 278,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1020,
+			"level": "Shire",
+			"name": "Belhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 236,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1021,
+			"level": "Shire",
+			"name": "Belmere",
+			"ocean": false,
+			"owner": 0,
+			"population": 168,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1022,
+			"level": "Shire",
+			"name": "Yuan-ti's Temple",
+			"ocean": false,
+			"owner": 0,
+			"population": 298,
+			"resources": {
+				"Food": 5,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1023,
+			"level": "Shire",
+			"name": "Mistral",
+			"ocean": false,
+			"owner": 0,
+			"population": 164,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1024,
+			"level": "Shire",
+			"name": "Norwick",
+			"ocean": false,
+			"owner": 0,
+			"population": 221,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1025,
+			"level": "Shire",
+			"name": "Norhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 171,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "mountains",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1026,
+			"level": "Shire",
+			"name": "Wenhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 269,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Mountains"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1027,
+			"level": "Shire",
+			"name": "Olhaven",
+			"ocean": false,
+			"owner": 0,
+			"population": 263,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1028,
+			"level": "Shire",
+			"name": "Genasi's Grove",
+			"ocean": false,
+			"owner": 0,
+			"population": 154,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1029,
+			"level": "Shire",
+			"name": "Northmark",
+			"ocean": false,
+			"owner": 0,
+			"population": 275,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1030,
+			"level": "Shire",
+			"name": "Sarfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 191,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 3,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1031,
+			"level": "Shire",
+			"name": "Orc's Stronghold",
+			"ocean": false,
+			"owner": 0,
+			"population": 287,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1032,
+			"level": "Shire",
+			"name": "Norwood",
+			"ocean": false,
+			"owner": 0,
+			"population": 200,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 4
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1033,
+			"level": "Shire",
+			"name": "Sarfell",
+			"ocean": false,
+			"owner": 0,
+			"population": 207,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1034,
+			"level": "Shire",
+			"name": "Genasi's Grove",
+			"ocean": false,
+			"owner": 0,
+			"population": 245,
+			"resources": {
+				"Food": 7,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1035,
+			"level": "Shire",
+			"name": "Xarshire",
+			"ocean": false,
+			"owner": 0,
+			"population": 194,
+			"resources": {
+				"Food": 4,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1036,
+			"level": "Shire",
+			"name": "Belhall",
+			"ocean": false,
+			"owner": 0,
+			"population": 258,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1037,
+			"level": "Shire",
+			"name": "Griffin's Peak",
+			"ocean": false,
+			"owner": 0,
+			"population": 210,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hill_forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1038,
+			"level": "Shire",
+			"name": "Wenloch",
+			"ocean": false,
+			"owner": 0,
+			"population": 190,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 1,
+				"Stone": 3,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 1039,
+			"level": "Shire",
+			"name": "Goblin's Cave",
+			"ocean": false,
+			"owner": 0,
+			"population": 253,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 5
+			},
+			"type_display": "Forest"
+		}
+	]
+}
