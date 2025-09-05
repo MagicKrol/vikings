@@ -98,6 +98,46 @@ text = "Castle level:"
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="OwnershipRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="OwnershipLabel" type="Label" parent="Panel/Content/OwnershipRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Ownership:"
+
+[node name="OwnershipOption" type="OptionButton" parent="Panel/Content/OwnershipRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ArmyRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="ArmyLabel" type="Label" parent="Panel/Content/ArmyRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Army:"
+
+[node name="ArmyToggleButton" type="Button" parent="Panel/Content/ArmyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
+
+[node name="ArmyEditRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="ArmyEditLabel" type="Label" parent="Panel/Content/ArmyEditRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Edit:"
+
+[node name="EditArmyButton" type="Button" parent="Panel/Content/ArmyEditRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Edit Army"
+
+
+
 [node name="ResourcesLabel" type="Label" parent="Panel/Content"]
 layout_mode = 2
 text = "Resources:"
@@ -177,3 +217,222 @@ text = "Ore discovered:"
 
 [node name="OreCheck" type="CheckBox" parent="Panel/Content/OreRow"]
 layout_mode = 2
+
+[node name="SaveRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="SaveLabel" type="Label" parent="Panel/Content/SaveRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Scenario Save:"
+
+[node name="ScenarioNameEdit" type="LineEdit" parent="Panel/Content/SaveRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "scenario_name"
+
+[node name="SaveButtonRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="SaveScenarioButton" type="Button" parent="Panel/Content/SaveButtonRow"]
+layout_mode = 2
+text = "Save Scenario"
+
+[node name="LoadScenarioSelectRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="ScenarioSelect" type="OptionButton" parent="Panel/Content/LoadScenarioSelectRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LoadScenarioButtonRow" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="LoadScenarioButton" type="Button" parent="Panel/Content/LoadScenarioButtonRow"]
+layout_mode = 2
+text = "Load"
+
+[node name="ArmyPanel" type="Panel" parent="."]
+visible = false
+anchors_preset = 9
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="ArmyContent" type="VBoxContainer" parent="ArmyPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ArmyHeaderRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="ArmyHeader" type="Label" parent="ArmyPanel/ArmyContent/ArmyHeaderRow"]
+layout_mode = 2
+text = "Army Editor"
+
+[node name="CloseArmyButton" type="Button" parent="ArmyPanel/ArmyContent/ArmyHeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Close"
+
+[node name="RegionIDRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="RegionIDLabel" type="Label" parent="ArmyPanel/ArmyContent/RegionIDRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Region ID:"
+
+[node name="RegionIDValue" type="Label" parent="ArmyPanel/ArmyContent/RegionIDRow"]
+layout_mode = 2
+text = "-"
+
+[node name="RegionNameRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="RegionNameLabel" type="Label" parent="ArmyPanel/ArmyContent/RegionNameRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Region Name:"
+
+[node name="RegionNameValue" type="Label" parent="ArmyPanel/ArmyContent/RegionNameRow"]
+layout_mode = 2
+text = "-"
+
+[node name="ArmyNameRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="ArmyNameLabel" type="Label" parent="ArmyPanel/ArmyContent/ArmyNameRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Army Name:"
+
+[node name="ArmyNameValue" type="Label" parent="ArmyPanel/ArmyContent/ArmyNameRow"]
+layout_mode = 2
+text = "-"
+
+[node name="UnitsLabel" type="Label" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+text = "Units:"
+
+[node name="PeasantsRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="PeasantsLabel" type="Label" parent="ArmyPanel/ArmyContent/PeasantsRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Peasants"
+
+[node name="PeasantsEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/PeasantsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="SpearmenRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="SpearmenLabel" type="Label" parent="ArmyPanel/ArmyContent/SpearmenRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Spearmen"
+
+[node name="SpearmenEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/SpearmenRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="SwordsmenRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="SwordsmenLabel" type="Label" parent="ArmyPanel/ArmyContent/SwordsmenRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Swordsmen"
+
+[node name="SwordsmenEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/SwordsmenRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="ArchersRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="ArchersLabel" type="Label" parent="ArmyPanel/ArmyContent/ArchersRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Archers"
+
+[node name="ArchersEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/ArchersRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="CrossbowmenRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="CrossbowmenLabel" type="Label" parent="ArmyPanel/ArmyContent/CrossbowmenRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Crossbowmen"
+
+[node name="CrossbowmenEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/CrossbowmenRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="HorsemenRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="HorsemenLabel" type="Label" parent="ArmyPanel/ArmyContent/HorsemenRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Horsemen"
+
+[node name="HorsemenEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/HorsemenRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="KnightsRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="KnightsLabel" type="Label" parent="ArmyPanel/ArmyContent/KnightsRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Knights"
+
+[node name="KnightsEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/KnightsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="MountedKnightsRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="MountedKnightsLabel" type="Label" parent="ArmyPanel/ArmyContent/MountedKnightsRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Mounted Knights"
+
+[node name="MountedKnightsEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/MountedKnightsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="RoyalGuardRow" type="HBoxContainer" parent="ArmyPanel/ArmyContent"]
+layout_mode = 2
+
+[node name="RoyalGuardLabel" type="Label" parent="ArmyPanel/ArmyContent/RoyalGuardRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 0)
+text = "Royal Guard"
+
+[node name="RoyalGuardEdit" type="LineEdit" parent="ArmyPanel/ArmyContent/RoyalGuardRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"

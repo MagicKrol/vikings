@@ -281,6 +281,15 @@ func _initialize_map_editor() -> void:
 	var map_editor = get_node("../MapEditor")
 	map_editor.initialize()
 	DebugLogger.log("GameInit", "MapEditor initialized successfully")
+
+	# Minimal managers for editor actions (ownership/army toggles)
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	_region_manager = RegionManager.new(map_generator)
+	_army_manager = ArmyManager.new(map_generator, _region_manager)
+	# Provide to ClickManager so editor code can use them
+	click_manager = get_node("../ClickManager")
+	if click_manager.has_method("set_managers"):
+		click_manager.set_managers(_region_manager, _army_manager)
 	
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")

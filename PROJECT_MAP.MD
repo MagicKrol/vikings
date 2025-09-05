@@ -47,6 +47,20 @@ Notes
 - UI modals are extracted into separate `.tscn` scenes and instanced under `UI` (no longer inline).
 - Regions, armies, castles are created at runtime under `Map/Regions`.
 
+Map Editor Panel (editor mode)
+- Fields: ID, Name, Type, Level, Population, Castle, Resources, Ore.
+- Ownership: OptionButton with Neutral (0) and Players 1–6. Emits `region_type_changed` with `OWNER:<id>`.
+- Army: Single-button toggle. Shows Add Army/Remove Army when owner > 0; hidden for Neutral. Emits `ARMY_ADD` / `ARMY_REMOVE`.
+- MapEditor handles these signals by delegating to `RegionManager.set_region_ownership` (creates/removes overlays, regenerates borders) and `ArmyManager.create_raised_army` / removal.
+- Panels: Two main panels under `MapEditorPanel`:
+  - `Panel` (Region editor) — visible by default.
+  - `ArmyPanel` (Army editor) — hidden by default, opened via "Edit Army" button; shows Region ID/Name, Army Name, and per-unit counts (editable). "Close" saves changes and switches back to Region panel.
+ - Save Scenario: Input + button in Region panel. Writes JSON to `res://scenarios/<scenario_name>.json` (or `last_saved_scenario.json` if empty) with:
+  - `map_file` (source mapdata JSON path)
+  - `regions`: list with id, name, biome/ocean/type_display, level, castle_type, population, owner, resources, discovered_ores
+  - `armies`: list with region_id, player_id, name, composition (per unit type)
+ - Load Scenario: At bottom of Region panel, lists all `res://scenarios/*.json` in a select box and shows a "Load" button (no-op for now).
+
 ## Core Managers & Flow
 
 ### game_manager.gd (GameManager)

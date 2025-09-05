@@ -45,6 +45,8 @@ func _setup_editor_panel() -> void:
 	# Connect selection changed from panel
 	if map_editor_panel.has_signal("region_type_changed"):
 		map_editor_panel.connect("region_type_changed", Callable(self, "_on_region_type_changed"))
+	if map_editor_panel.has_signal("army_edit_saved"):
+		map_editor_panel.connect("army_edit_saved", Callable(self, "_on_army_edit_saved"))
 	
 	DebugLogger.log("MapEditor", "Map editor panel setup complete")
 
@@ -66,6 +68,34 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 	var mg: MapGenerator = get_node("../Map") as MapGenerator
 	var region_container = mg.get_region_container_by_id(region_id)
 	var region := region_container as Region
+	# Ownership change via editor
+	if selection.begins_with("OWNER:"):
+		var owner_id = int(selection.substr(6, selection.length()))
+		# Use RegionManager through ClickManager for canonical visuals and borders
+		var click_mgr: ClickManager = get_node("../ClickManager") as ClickManager
+		var region_mgr: RegionManager = click_mgr.get_region_manager()
+		# Neutral (0) clears ownership, otherwise assign
+		region_mgr.set_region_ownership(region_id, owner_id)
+		return
+	# Army add/remove toggle
+	if selection == "ARMY_ADD":
+		var click_mgr2: ClickManager = get_node("../ClickManager") as ClickManager
+		var army_mgr: ArmyManager = click_mgr2.get_army_manager()
+		var owner := region.get_region_owner()
+		if owner > 0:
+			army_mgr.create_raised_army(region_container, owner)
+		return
+	if selection == "ARMY_REMOVE":
+		# Remove first army found in region and from tracking
+		var click_mgr3: ClickManager = get_node("../ClickManager") as ClickManager
+		var army_mgr2: ArmyManager = click_mgr3.get_army_manager()
+		for child in region_container.get_children():
+			if child is Army:
+				army_mgr2.remove_army_from_tracking(child)
+				region_container.remove_child(child)
+				child.queue_free()
+				break
+		return
 	if selection == "Ocean":
 		region.set_ocean(true)
 		mg.region_by_id[region_id]["ocean"] = true
@@ -147,3 +177,15 @@ func _display_to_enum(txt: String) -> RegionTypeEnum.Type:
 			return RegionTypeEnum.Type.MOUNTAINS
 		_:
 			return RegionTypeEnum.Type.GRASSLAND
+
+func _on_army_edit_saved(region_id: int, data: Dictionary) -> void:
+	var mg: MapGenerator = get_node("../Map") as MapGenerator
+	var region_container = mg.get_region_container_by_id(region_id)
+	var army: Army = null
+	for child in region_container.get_children():
+		if child is Army:
+			army = child as Army
+			break
+	for t in SoldierTypeEnum.get_all_types():
+		var val = int(data[t])
+		army.get_composition().set_soldier_count(t, val)
