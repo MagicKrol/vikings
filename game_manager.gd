@@ -77,7 +77,7 @@ var _battle_modal: BattleModal
 
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
-var debug_heatmap: bool = true
+var debug_heatmap: bool = false
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 
