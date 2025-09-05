@@ -31,6 +31,10 @@ func _ready():
 	
 	# Get game manager reference
 	game_manager = get_node("../../GameManager") as GameManager
+	# In editor mode, keep hidden and skip updates
+	if game_manager and game_manager.enable_map_editor:
+		visible = false
+		return
 	
 	# Connect end turn button signal
 	var end_turn_button = get_node("ResourceContainer/EndTurnButton")

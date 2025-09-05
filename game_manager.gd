@@ -49,6 +49,9 @@ var castle_placing_mode: bool = true
 var castle_placement_order: Array[int] = []  # Track castle placement order
 var castles_placed: int = 0
 
+# Map editor mode state
+var enable_map_editor: bool = true  # Configurable flag to enable map editor mode
+
 # Army placement settings
 var armies_per_castle: int = 3  # Configurable - can be adjusted for difficulty/scenario
 
@@ -85,6 +88,12 @@ var _sound_manager: SoundManager
 var click_manager: Node = null
 
 func _ready():
+	# Early init gate: check if map editor is enabled BEFORE normal init
+	if enable_map_editor:
+		DebugLogger.log("GameInit", "Map editor mode enabled - initializing editor instead of game flow")
+		_initialize_map_editor()
+		return
+
 	# Initialize all game systems
 	initialize_managers()
 	
@@ -198,6 +207,10 @@ func initialize_managers():
 		heat.compute_and_show()
 		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying strategic points heatmap. Castle placement and turns are disabled.")
 	else:
+		# In map editor mode, skip heatmap/castle placement/turn flow entirely
+		if enable_map_editor:
+			DebugLogger.log("GameInit", "Map editor enabled: skipping heatmap and castle placement initialization")
+			return
 		var heat_calc := StrategicPointsHeatmap.new()
 		heat_calc.initialize(_region_manager, map_generator)
 		heat_calc.enable_key_toggle = false
@@ -261,6 +274,30 @@ func next_turn():
 		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")
 	
 	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler
+
+func _initialize_map_editor() -> void:
+	"""Initialize map editor mode instead of normal game flow"""
+	# Initialize MapEditor controller
+	var map_editor = get_node("../MapEditor")
+	map_editor.initialize()
+	DebugLogger.log("GameInit", "MapEditor initialized successfully")
+	
+	# Hide player/turn UI modals that are not needed in editor mode
+	var ui_node = get_node("../UI")
+	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2")
+	var turn_modal = ui_node.get_node("TurnModal") 
+	var next_player_modal = ui_node.get_node("NextPlayerModal")
+	
+	player_status_modal2.hide()
+	turn_modal.hide()
+	next_player_modal.hide()
+	
+	# Show map editor panel
+	var map_editor_panel = ui_node.get_node("MapEditorPanel")
+	map_editor_panel.show()
+	DebugLogger.log("GameInit", "Map editor panel shown")
+	
+	DebugLogger.log("GameInit", "Map editor initialization complete")
 
 func _get_next_player() -> int:
 	"""Get the next player in the turn sequence"""

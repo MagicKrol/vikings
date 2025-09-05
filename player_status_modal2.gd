@@ -19,10 +19,12 @@ var game_manager: GameManager = null
 func _ready():
 	# Get game manager reference
 	game_manager = get_node("../../GameManager") as GameManager
-	
-	# Make visible by default as a status bar
+	# In editor mode, keep this hidden and skip updates
+	if game_manager and game_manager.enable_map_editor:
+		visible = false
+		return
+	# Make visible by default as a status bar (non-editor)
 	visible = true
-	
 	# Update display immediately when ready
 	call_deferred("_update_display_from_game_state")
 

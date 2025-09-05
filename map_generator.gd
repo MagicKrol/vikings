@@ -1422,3 +1422,33 @@ func regenerate_borders_for_region(region_id: int) -> void:
 					if borders_container:
 						_create_border_line_for_region(edge, region2_id, region1_id, borders_container, rng)
 	
+
+func refresh_region_visual(region_id: int) -> void:
+	"""Refresh the visual for a single region after type change (editor mode)."""
+	var region_container = get_region_container_by_id(region_id)
+	var region := region_container as Region
+	var polygon := region_container.get_node("Polygon") as Polygon2D
+	# Remove existing icon sprites under polygon
+	for child in polygon.get_children():
+		if child is Sprite2D:
+			child.queue_free()
+	# Apply ocean or land visuals
+	if region.is_ocean_region():
+		# Ocean-like look
+		polygon.texture = load("res://images/sea_transparent_large.png")
+		polygon.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
+		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
+	else:
+		# Restore land grass texture
+		polygon.texture = load("res://images/grass.png")
+		polygon.texture_scale = Vector2(1.0 / polygon_scale * 5.0, 1.0 / polygon_scale * 5.0)
+		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+		# Re-add biome icon
+		var rdata: Dictionary = region_by_id.get(region_id, {})
+		rdata["biome"] = region.get_biome()
+		region_by_id[region_id] = rdata
+		var icon_path := BiomeManager.get_icon_path_for_biome(region.get_biome())
+		if icon_path != "":
+			_add_icon_at_region_center(polygon, rdata, icon_path, region.get_biome())
+	# Regenerate borders for region and neighbors
+	regenerate_borders_for_region(region_id)

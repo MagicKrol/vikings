@@ -97,9 +97,7 @@ func _on_left_click(screen_pos: Vector2) -> void:
 	for region_container in regions_node.get_children():
 		if not (region_container is Node):
 			continue
-		var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
-		if polygon == null:
-			continue
+		var polygon := region_container.get_node("Polygon") as Polygon2D
 		# Only non-ocean regions have Polygon nodes here
 		if _point_in_polygon(world_pos, polygon):
 			_handle_region_click(region_container)
@@ -116,6 +114,11 @@ func _point_in_polygon(p: Vector2, polygon: Polygon2D) -> bool:
 	return Geometry2D.is_point_in_polygon(local, polygon.polygon)
 
 func _handle_region_click(region_container: Node) -> void:
+	# Optional guard: check if in map editor mode and handle differently
+	if _game_manager and _game_manager.enable_map_editor:
+		_handle_editor_region_click(region_container)
+		return
+	
 	# Get region script to check if it's a mountain
 	var region = region_container as Region
 	if region != null:
@@ -151,6 +154,16 @@ func _is_mountain_region(region: Region) -> bool:
 		return false
 	var biome_name = region.get_biome().to_lower()
 	return biome_name == "mountains"
+
+func _handle_editor_region_click(region_container: Node) -> void:
+	"""Handle region clicks in map editor mode - do nothing for now"""
+	var region = region_container as Region
+	if region == null:
+		return
+
+	# Update editor panel selection
+	var map_editor: MapEditor = get_node("../MapEditor") as MapEditor
+	map_editor.set_current_region(region)
 
 
 func _handle_army_selection_and_movement(region_container: Node) -> void:

@@ -20,6 +20,7 @@ Main (Node2D) [place_armies.gd]
 ├ GameManager (Node) [game_manager.gd]
 ├ SoundManager (Node) [sound_manager.gd]
 ├ PlayerManager (Node) [PlayerManagerNode.gd]
+├ MapEditor (Node) [map_editor.gd]
 ├ UI (CanvasLayer)
 │	├ UIManager (Control) [ui_manager.gd]
 │	├ ArmyModal [scenes/army_modal.tscn] [army_modal.gd]
@@ -37,7 +38,8 @@ Main (Node2D) [place_armies.gd]
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd]
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd]
-│	└ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
+│	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
+│	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
 	├ Player1..Player6 (Node2D) – reserved containers
 
@@ -53,6 +55,7 @@ Notes
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
 - Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
+- Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
 
 ### TurnController.gd (TurnController)
 - Purpose: Unified turn pipeline for AI (and fits human pipeline shape).
@@ -92,6 +95,11 @@ Notes
 
 ### VisualManager.gd (VisualManager)
 - Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates.
+
+### map_editor.gd (MapEditor)
+- Purpose: Map editor mode controller for toggling editor UI.
+- Key: `initialize()` — shows MapEditorPanel, hides player/turn UI.
+- Note: Empty panel for now, based on info_modal.tscn (25% width left side).
 
 ### PlayerManagerNode.gd (PlayerManagerNode)
 - Purpose: Player storage and per-player economy as a scene node.

@@ -15,11 +15,12 @@ func _ready():
 	var end_turn_button = get_node("Panel/VBoxContainer/EndTurnButton")
 	if end_turn_button:
 		end_turn_button.pressed.connect(_on_end_turn_button_pressed)
-	
-	# Make visible by default
+	# In editor mode, keep hidden and skip updates
+	if game_manager and game_manager.enable_map_editor:
+		visible = false
+		return
+	# Make visible by default (non-editor) and update display
 	visible = true
-	
-	# Update display immediately when ready
 	call_deferred("update_turn_display")
 
 func update_turn_display() -> void:

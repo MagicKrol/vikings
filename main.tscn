@@ -26,6 +26,8 @@
 [ext_resource type="PackedScene" uid="uid://bl3nnm77yt7tt" path="res://scenes/general_select_modal.tscn" id="26_shq03"]
 [ext_resource type="PackedScene" uid="uid://bregionselmod" path="res://scenes/region_select_modal.tscn" id="26_yt65y"]
 [ext_resource type="PackedScene" uid="uid://7iyyajasdhd3" path="res://scenes/turn_modal.tscn" id="27_o7y1n"]
+[ext_resource type="Script" path="res://map_editor.gd" id="28_mapeditor"]
+[ext_resource type="PackedScene" uid="uid://bqh3nxjy5v8g4" path="res://scenes/map_editor_panel.tscn" id="29_mapeditorpanel"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -66,6 +68,9 @@ script = ExtResource("14_sound")
 
 [node name="PlayerManager" type="Node" parent="."]
 script = ExtResource("25_player")
+
+[node name="MapEditor" type="Node" parent="."]
+script = ExtResource("28_mapeditor")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -124,6 +129,9 @@ unique_name_in_owner = true
 [node name="RegionSelectModal" parent="UI" instance=ExtResource("26_yt65y")]
 
 [node name="TransferSelectModal" parent="UI" instance=ExtResource("24_xybgh")]
+
+[node name="MapEditorPanel" parent="UI" instance=ExtResource("29_mapeditorpanel")]
+visible = false
 
 [node name="Players" type="Node2D" parent="."]
 

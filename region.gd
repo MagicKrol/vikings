@@ -142,6 +142,25 @@ func is_ocean_region() -> bool:
 	"""Check if this is an ocean region"""
 	return is_ocean
 
+# Editor helpers for changing region classification
+func set_region_type(t: RegionTypeEnum.Type) -> void:
+	region_type = t
+	biome = RegionTypeEnum.type_to_string(t).to_lower()
+	is_ocean = false
+
+func set_ocean(enabled: bool) -> void:
+	is_ocean = enabled
+	if enabled:
+		biome = "ocean"
+
+func set_any_ore_discovered(enabled: bool) -> void:
+	"""Editor: toggle generic ore discovered flag (iron default)."""
+	if enabled:
+		if not ResourcesEnum.Type.IRON in discovered_ores:
+			discovered_ores.append(ResourcesEnum.Type.IRON)
+	else:
+		discovered_ores.clear()
+
 func get_region_level() -> RegionLevelEnum.Level:
 	"""Get the region level"""
 	return region_level
@@ -386,7 +405,7 @@ func _recalculate_recruitment_limits() -> void:
 func _update_castle_visual() -> void:
 	"""Update the castle visual when construction completes"""
 	# Find the GameManager and get the VisualManager
-	var game_manager = get_node("/root/Main/GameManager") as GameManager
+	var game_manager = get_node("/root/Main/GameManager")
 	if game_manager == null:
 		DebugLogger.log("RegionManagement", "Warning: Could not find GameManager for visual update")
 		return
