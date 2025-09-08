@@ -67,8 +67,8 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	set_pending_conquest(attacker, target_region)
 
 	# Collect all battle participants
-	var owner_id := _region_manager.get_region_owner(target_region_id)
-	var defender_armies := _collect_defender_armies(target_region, owner_id, attacker)
+	# Collect ALL enemy armies present in the region (regardless of region ownership)
+	var defender_armies := _collect_defender_armies(target_region, attacker)
 	var garrison := target_region.get_garrison()
 	
 	# Persist the pending contributors so we can apply proportional losses later
@@ -239,10 +239,12 @@ func _check_ai_turn_resumption(army_player_id: int) -> void:
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle completed for Player %d - AI turn will continue automatically" % army_player_id)
 
 # --- Collect all defending armies owned by the region owner in the region (excluding the attacker if already reparented) ---
-func _collect_defender_armies(region: Region, owner_id: int, attacker: Army) -> Array[Army]:
+func _collect_defender_armies(region: Region, attacker: Army) -> Array[Army]:
+	"""Collect all armies in the region that belong to enemy players (not the attacker's owner)."""
 	var list: Array[Army] = []
+	var attacker_owner := attacker.get_player_id()
 	for child in region.get_children():
-		if child is Army and child != attacker and child.get_player_id() == owner_id:
+		if child is Army and child != attacker and child.get_player_id() != attacker_owner:
 			list.append(child)
 	return list
 

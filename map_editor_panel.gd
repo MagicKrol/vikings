@@ -170,18 +170,7 @@ func _check_and_populate_scenario_name() -> void:
 			_scenario_name_edit.text = scenario_name
 			DebugLogger.log("MapEditorPanel", "Populated scenario name: " + scenario_name)
 			return
-	
-	# Alternative: Check tree metadata for editor start payload
-	if get_tree().has_meta("editor_start_payload"):
-		var payload = get_tree().get_meta("editor_start_payload")
-		if payload and payload.has("scenario_path"):
-			var scenario_path = payload["scenario_path"]
-			var scenario_name = scenario_path.get_file()
-			# Remove .json extension if present
-			if scenario_name.ends_with(".json"):
-				scenario_name = scenario_name.substr(0, scenario_name.length() - 5)
-			_scenario_name_edit.text = scenario_name
-			DebugLogger.log("MapEditorPanel", "Populated scenario name from payload: " + scenario_name)
+	# If game manager didn't report a scenario name, leave field as-is
 
 func _populate_types() -> void:
 	_option.clear()
