@@ -25,27 +25,27 @@ static var _instance: DebugLogger = null
 # Debug categories and their enabled state
 var debug_categories: Dictionary = {
 	# AI Systems
-	"AIMovement": true,           # Army movement and pathfinding
+	"AIMovement": false,           # Army movement and pathfinding
 	"AIPathfinding": true,        # Detailed pathfinding calculations
 	"AIScoring": false,            # Target scoring and evaluation
 	"AIPlanning": false,           # Strategic planning decisions
-	"AITurnManager": true,        # High-level AI turn processing
+	"AITurnManager": false,        # High-level AI turn processing
 	"AIEconomy": true,            # AI economy decisions and raise army
-	"AIRecruitment": true,        # AI recruitment and budget allocation
+	"AIRecruitment": false,        # AI recruitment and budget allocation
 	
 	# Resource Systems
 	"ResourceManagement": false,   # Resource income and spending
 	"ResourceCalculation": false,  # Detailed resource calculations
 	
 	# Battle Systems
-	"BattleSystem": false,         # Combat and battle resolution
-	"BattleCalculation": false,    # Detailed battle calculations
+	"BattleSystem": true,         # Combat and battle resolution
+	"BattleCalculation": true,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management
 	"RegionScoring": false,        # Region evaluation and scoring
-	"MapGeneration": true,        # Map generation and setup
+	"MapGeneration": false,        # Map generation and setup
 	
 	# Castle Systems
 	"CastlePlacement": false,      # Castle placement decisions
@@ -62,7 +62,7 @@ var debug_categories: Dictionary = {
 	"InputSystem": false,          # Input handling and processing
 	"GameInit": false,             # Game initialization and setup
 	"SaveLoad": false,             # Save and load operations
-	"Testing": true                # Test framework output
+	"Testing": false                # Test framework output
 }
 
 # Color coding for different log levels

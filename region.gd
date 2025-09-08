@@ -262,14 +262,28 @@ func hire_recruits(count: int) -> int:
 	var modified_available = get_available_recruits()  # Get ownership-modified available recruits
 	var actual_hired = min(count, modified_available)
 	if actual_hired > 0:
-		available_recruits -= actual_hired
-		# Reduce population by hired recruits
-		population -= actual_hired
-		# Recalculate max recruits after population reduction
-		var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
-		# Ensure available recruits don't exceed new maximum
-		available_recruits = min(available_recruits, max_recruits)
+		# Use the centralized function to reduce recruits and population
+		_reduce_recruits_and_population(actual_hired)
 	return actual_hired
+
+func reduce_recruits(count: int) -> int:
+	"""Reduce available recruits (for battle losses), returns actual reduced count"""
+	var base_available = get_base_available_recruits()  # Use base without ownership modifier for losses
+	var actual_reduced = min(count, base_available)
+	if actual_reduced > 0:
+		# Use the centralized function to reduce recruits and population
+		_reduce_recruits_and_population(actual_reduced)
+	return actual_reduced
+
+func _reduce_recruits_and_population(count: int) -> void:
+	"""Internal function to reduce both recruits and population"""
+	available_recruits -= count
+	# Reduce population by the same amount
+	population -= count
+	# Recalculate max recruits after population reduction
+	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	# Ensure available recruits don't exceed new maximum
+	available_recruits = min(available_recruits, max_recruits)
 
 func replenish_recruits() -> void:
 	"""Replenish recruits based on current population (called each turn)"""

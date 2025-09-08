@@ -89,8 +89,8 @@ var click_manager: Node = null
 
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
-# var scenario_path: String = "mission1.json"
-var scenario_path: String = "battle_test.json"
+var scenario_path: String = "mission1.json"
+# var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 
 func _ready():
@@ -993,17 +993,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		army_name = army.name
 	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + result + " for " + army_name)
 	
-	# Apply battle losses using existing BattleManager logic
+	# Apply battle losses using BattleManager rule
 	if battle_report and _battle_manager:
-		_battle_manager._apply_losses_proportionally(battle_report.attacker_losses, attacking_armies, null)
-		_battle_manager._apply_losses_proportionally(battle_report.defender_losses, defending_armies, defending_garrison)
-		# Cleanup only battle participants that hit zero soldiers
-		for a in attacking_armies:
-			if a.get_total_soldiers() <= 0:
-				_battle_manager._handle_battle_defeat(a)
-		for d in defending_armies:
-			if d.get_total_soldiers() <= 0:
-				_battle_manager._handle_battle_defeat(d)
+		_battle_manager._apply_battle_losses()
 	
 	# Handle battle outcome
 	if result == "victory":

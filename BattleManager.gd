@@ -38,6 +38,8 @@ var pending_conquest_region: Region = null
 var _pending_attackers: Array[Army] = []
 var _pending_defenders: Array[Army] = []
 var _pending_garrison: ArmyComposition = null
+var _pending_recruits_count: int = 0
+var _pending_recruits_region: Region = null
 
 # Manager references
 var _region_manager: RegionManager
@@ -66,21 +68,37 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	# Set up battle context
 	set_pending_conquest(attacker, target_region)
 
-	# Collect all battle participants
-	# Collect ALL enemy armies present in the region (regardless of region ownership)
-	var defender_armies := _collect_defender_armies(target_region, attacker)
+	# Collect all battle participants (owner-based defenders under invariant)
+	var owner_id := _region_manager.get_region_owner(target_region_id)
+	var defender_armies: Array[Army] = []
+	for child in target_region.get_children():
+		if child is Army and child.get_player_id() == owner_id and child != attacker:
+			defender_armies.append(child)
 	var garrison := target_region.get_garrison()
 	
 	# Persist the pending contributors so we can apply proportional losses later
 	_pending_attackers = [attacker]
 	_pending_defenders = defender_armies
 	_pending_garrison = garrison
+	_pending_recruits_count = target_region.get_base_available_recruits()
+	_pending_recruits_region = target_region
 	
 	# Emit battle started signal
 	emit_signal("battle_started", attacker, target_region_id)
 	
 	# AI background path: no modal, instant simulation when flag is on
-	if _game_manager.debug_disable_battle_modal and _game_manager.is_player_computer(attacker.get_player_id()):
+	# Exception: if the defender is human (region owner or defending army), always show modal
+	var attacker_is_ai := _game_manager.is_player_computer(attacker.get_player_id())
+	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
+	var defender_is_human := false
+	if defender_owner_id != -1 and _game_manager.is_player_human(defender_owner_id):
+		defender_is_human = true
+	else:
+		for d in defender_armies:
+			if _game_manager.is_player_human(d.get_player_id()):
+				defender_is_human = true
+				break
+	if _game_manager.debug_disable_battle_modal and attacker_is_ai and not defender_is_human:
 		var atk_comps = _compositions_from_armies([attacker])
 		var def_comps = _compositions_from_armies(defender_armies)
 		var attacker_eff = attacker.get_efficiency()
@@ -114,10 +132,39 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle started: " + str(attacker.name) + " vs " + str(target_region.get_region_name()))
 
 func set_pending_conquest(army: Army, region: Region) -> void:
-	"""Set the pending conquest context for battle resolution"""
-	pending_conquest_army = army
-	pending_conquest_region = region
-	DebugLogger.log("BattleSystem", "[BattleManager] Set pending conquest: Army " + str(army.name) + " vs Region " + str(region.get_region_name()))
+	"""Set or extend the pending conquest context for battle resolution (multi-army join)."""
+	if pending_conquest_region != null and pending_conquest_region == region:
+		var exists := false
+		for a in _pending_attackers:
+			if a == army:
+				exists = true
+				break
+		if not exists:
+			_pending_attackers.append(army)
+	else:
+		pending_conquest_region = region
+		pending_conquest_army = army
+		_pending_attackers = [army]
+		_pending_defenders = []
+		_pending_garrison = null
+		_pending_recruits_count = 0
+		_pending_recruits_region = null
+		DebugLogger.log("BattleSystem", "[BattleManager] Set pending conquest: Army " + str(army.name) + " vs Region " + str(region.get_region_name()))
+
+func prepare_human_battle(attacker: Army, region: Region) -> void:
+	"""Prepare defender participants for a human-initiated battle while keeping pending conquest logic."""
+	# Ensure attacker is part of the pending attacker list (multi-army join)
+	set_pending_conquest(attacker, region)
+	# Collect defending armies based on region ownership (neutral has no armies per invariant)
+	var owner_id := _region_manager.get_region_owner(region.get_region_id())
+	var defenders: Array[Army] = []
+	for child in region.get_children():
+		if child is Army and child.get_player_id() == owner_id:
+			defenders.append(child)
+	_pending_defenders = defenders
+	_pending_garrison = region.get_garrison()
+	_pending_recruits_count = region.get_base_available_recruits()
+	_pending_recruits_region = region
 
 
 func handle_battle_modal_closed() -> void:
@@ -164,11 +211,22 @@ func _apply_battle_losses() -> void:
 		return
 	var report := _battle_modal.battle_report
 	
-	# Attackers' losses across all attacking armies (currently just the attacker)
-	_apply_losses_proportionally(report.attacker_losses, _pending_attackers, null)
-	
-	# Defenders' losses across all defending armies + garrison
-	_apply_losses_proportionally(report.defender_losses, _pending_defenders, _pending_garrison)
+	# New rule:
+	# - Losing side takes 100% losses (destroyed) → no need to calculate for losing side
+	# - Apply calculated losses only to winning side, or to both sides when withdrawal
+	if report.winner == "Attackers":
+		# Destroy defenders entirely (armies + garrison + recruits)
+		_destroy_defender_side()
+		# Apply attackers' calculated losses
+		_apply_losses_proportionally(report.attacker_losses, _pending_attackers, null)
+	elif report.winner == "Withdrawal":
+		# Apply both sides' calculated losses
+		_apply_losses_proportionally(report.attacker_losses, _pending_attackers, null)
+		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
+	else:
+		# Defenders win: destroy attackers entirely; apply defender losses
+		_destroy_attacker_side()
+		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
 
 	# Cleanup defeated armies ONLY among battle participants
 	for a in _pending_attackers:
@@ -177,6 +235,35 @@ func _apply_battle_losses() -> void:
 	for d in _pending_defenders:
 		if d.get_total_soldiers() <= 0:
 			_handle_battle_defeat(d)
+
+func _destroy_defender_side() -> void:
+	# Zero-out all defender armies
+	for d in _pending_defenders:
+		if is_instance_valid(d):
+			for unit_type in SoldierTypeEnum.get_all_types():
+				var cnt := d.get_soldier_count(unit_type)
+				if cnt > 0:
+					d.remove_soldiers(unit_type, cnt)
+	# Zero-out garrison
+	if _pending_garrison != null:
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var gc := _pending_garrison.get_soldier_count(unit_type)
+			if gc > 0:
+				_pending_garrison.remove_soldiers(unit_type, gc)
+	# Zero-out recruits (using reduce_recruits for battle losses)
+	if _pending_recruits_region != null:
+		var base_avail: int = _pending_recruits_region.get_base_available_recruits()
+		if base_avail > 0:
+			_pending_recruits_region.reduce_recruits(base_avail)
+
+func _destroy_attacker_side() -> void:
+	# Zero-out all attacking armies
+	for a in _pending_attackers:
+		if is_instance_valid(a):
+			for unit_type in SoldierTypeEnum.get_all_types():
+				var cnt := a.get_soldier_count(unit_type)
+				if cnt > 0:
+					a.remove_soldiers(unit_type, cnt)
 
 func _get_battle_result() -> String:
 	"""Get the battle result: 'victory', 'withdrawal', or 'defeat'"""
@@ -339,6 +426,64 @@ func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garri
 				continue
 			if entry.has("garrison"):
 				entry["comp"].remove_soldiers(unit_type, take)
+			else:
+				var army := entry["army"] as Army
+				army.remove_soldiers(unit_type, take)
+
+func _apply_losses_proportionally_with_recruits(losses: Dictionary, armies: Array[Army], garrison: ArmyComposition, recruits_region: Region, recruits_count: int) -> void:
+	for unit_type in losses.keys():
+		var total_loss: int = int(losses[unit_type])
+		if total_loss <= 0:
+			continue
+		var avail: Array = []
+		var total_available := 0
+		for a in armies:
+			if not is_instance_valid(a):
+				continue
+			var c := a.get_composition().get_soldier_count(unit_type)
+			if c > 0:
+				avail.append({"army": a, "count": c})
+				total_available += c
+		if garrison != null:
+			var gc := garrison.get_soldier_count(unit_type)
+			if gc > 0:
+				avail.append({"garrison": true, "comp": garrison, "count": gc})
+				total_available += gc
+		if unit_type == SoldierTypeEnum.Type.PEASANTS and recruits_count > 0 and recruits_region != null:
+			avail.append({"recruits": true, "region": recruits_region, "count": recruits_count})
+			total_available += recruits_count
+		if total_available <= 0:
+			continue
+		var allocations: Array = []
+		var taken_sum := 0
+		for entry in avail:
+			var share := float(total_loss) * float(entry["count"]) / float(total_available)
+			var take := int(floor(share))
+			var frac := share - float(take)
+			allocations.append({"entry": entry, "take": take, "frac": frac})
+			taken_sum += take
+		var remainder := total_loss - taken_sum
+		allocations.sort_custom(func(a, b): return a["frac"] > b["frac"])
+		var i := 0
+		while remainder > 0 and i < allocations.size():
+			var entry: Dictionary = allocations[i]["entry"]
+			var cap: int = entry["count"] - allocations[i]["take"]
+			if cap > 0:
+				allocations[i]["take"] += 1
+				remainder -= 1
+			i += 1
+			if i >= allocations.size() and remainder > 0:
+				i = 0
+		for alloc in allocations:
+			var entry: Dictionary = alloc["entry"]
+			var take: int = min(alloc["take"], entry["count"])
+			if take <= 0:
+				continue
+			if entry.has("garrison"):
+				entry["comp"].remove_soldiers(unit_type, take)
+			elif entry.has("recruits"):
+				# Use reduce_recruits for battle losses (not hire_recruits)
+				entry["region"].reduce_recruits(take)
 			else:
 				var army := entry["army"] as Army
 				army.remove_soldiers(unit_type, take)

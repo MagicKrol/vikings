@@ -199,8 +199,12 @@ func move_army(army: Army, target_region: Region) -> bool:
 	var result = move_army_to_region(target_region)
 	
 	# Restore previous selection
-	selected_army = previous_selection
-	selected_region_container = previous_region
+	if is_instance_valid(previous_selection) and is_instance_valid(previous_region):
+		selected_army = previous_selection
+		selected_region_container = previous_region
+	else:
+		selected_army = null
+		selected_region_container = null
 	
 	return result
 
@@ -418,8 +422,12 @@ func _create_move_arrow(from_pos: Vector2, to_pos: Vector2, disabled: bool = fal
 
 		return null
 	
-	# Scale the arrow
-	arrow.scale = Vector2(0.2, 0.2)
+	# Scale arrows like region/castle icons: baseline × polygon_scale × map_size_scale
+	var scale_factor := 0.08
+	if map_generator != null:
+		var mss := Utils.get_map_size_icon_scale(map_generator.map_size)
+		scale_factor *= (map_generator.polygon_scale * mss)
+	arrow.scale = Vector2(scale_factor, scale_factor)
 	
 	# Calculate position (65% towards target, 35% from source)
 	arrow.position = from_pos + (to_pos - from_pos) * 0.65

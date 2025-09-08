@@ -396,8 +396,11 @@ func _serialize_region(region: Region) -> Dictionary:
 	data["castle_type"] = CastleTypeEnum.type_to_string(region.get_castle_type())
 	data["population"] = region.get_population()
 	data["owner"] = region.get_region_owner()
-	# Optional garrison: include only if customized in editor
-	if _garrison_customized.has(region.get_region_id()):
+	# Optional garrison: include if present (total > 0), or if customized in editor
+	var include_garrison := _garrison_customized.has(region.get_region_id())
+	if not include_garrison:
+		include_garrison = region.get_garrison().get_total_soldiers() > 0
+	if include_garrison:
 		var gcomp: Dictionary = {}
 		for t in SoldierTypeEnum.get_all_types():
 			var tname = SoldierTypeEnum.type_to_string(t)

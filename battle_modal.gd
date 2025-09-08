@@ -389,29 +389,43 @@ func _update_attacker_units() -> void:
 			_create_attacker_unit_row(unit_type, current_count, initial_composition[unit_type])
 
 func _update_defender_units() -> void:
-	"""Update defender unit display"""
+	"""Update defender unit display (aggregated: armies + garrison + recruits)"""
 	# Clear existing unit displays
 	for child in defender_units_container.get_children():
 		child.queue_free()
 	
-	# Get current composition to display
-	var composition_to_show: Dictionary
+	# Aggregate initial composition via BattleManager
 	var initial_composition: Dictionary = {}
-	
-	# Always get initial composition for color comparison
+	var gm = get_node("../../GameManager") as GameManager
+	var bm = gm.get_battle_manager()
+	# Defending armies
+	var def_comps: Array = bm.get_pending_defending_compositions()
+	for comp in def_comps:
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var c = comp.get_soldier_count(unit_type)
+			if c > 0:
+				initial_composition[unit_type] = initial_composition.get(unit_type, 0) + c
+	# Garrison
 	var garrison_comp = defending_region.get_garrison()
 	for unit_type in SoldierTypeEnum.get_all_types():
-		var count = garrison_comp.get_soldier_count(unit_type)
-		initial_composition[unit_type] = count
-	
+		var gc = garrison_comp.get_soldier_count(unit_type)
+		if gc > 0:
+			initial_composition[unit_type] = initial_composition.get(unit_type, 0) + gc
+	# Recruits (peasant-only)
+	var recruits_count = defending_region.get_base_available_recruits()
+	if recruits_count > 0:
+		initial_composition[SoldierTypeEnum.Type.PEASANTS] = initial_composition.get(SoldierTypeEnum.Type.PEASANTS, 0) + recruits_count
+
+	# Composition to show
+	var composition_to_show: Dictionary
 	if battle_in_progress:
 		composition_to_show = current_defender_composition
 	elif battle_report != null:
 		composition_to_show = battle_report.final_defender
 	else:
 		composition_to_show = initial_composition
-	
-	# Create unit display rows for all unit types that were initially present
+
+	# Draw rows for unit types present initially
 	for unit_type in SoldierTypeEnum.get_all_types():
 		if initial_composition.get(unit_type, 0) > 0:
 			var current_count = composition_to_show.get(unit_type, 0)
@@ -499,18 +513,31 @@ func _run_battle_simulation() -> void:
 	current_attacker_composition = {}
 	current_defender_composition = {}
 	
-	# Store initial compositions for display
-	var army_comp = attacking_army.get_composition()
-	for unit_type in SoldierTypeEnum.get_all_types():
-		var count = army_comp.get_soldier_count(unit_type)
-		if count > 0:
-			current_attacker_composition[unit_type] = count
-	
+	# Store initial compositions for display (aggregate attackers/defenders via BattleManager)
+	var gm = get_node("../../GameManager") as GameManager
+	var bm = gm.get_battle_manager()
+	# Prepare defender participants now for human path
+	bm.prepare_human_battle(attacking_army, defending_region)
+	# Aggregate attackers for display
+	var atk_comps: Array = bm.get_pending_attacking_compositions()
+	for comp in atk_comps:
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var c = comp.get_soldier_count(unit_type)
+			if c > 0:
+				current_attacker_composition[unit_type] = current_attacker_composition.get(unit_type, 0) + c
+	# Aggregate defenders: armies + garrison + recruits
+	var def_comps: Array = bm.get_pending_defending_compositions()
+	for comp in def_comps:
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var c = comp.get_soldier_count(unit_type)
+			if c > 0:
+				current_defender_composition[unit_type] = current_defender_composition.get(unit_type, 0) + c
+	# Add garrison to display
 	var garrison_comp = defending_region.get_garrison()
 	for unit_type in SoldierTypeEnum.get_all_types():
-		var count = garrison_comp.get_soldier_count(unit_type)
-		if count > 0:
-			current_defender_composition[unit_type] = count
+		var gc = garrison_comp.get_soldier_count(unit_type)
+		if gc > 0:
+			current_defender_composition[unit_type] = current_defender_composition.get(unit_type, 0) + gc
 	
 	# During battle, show withdraw button and disable continue
 	if continue_button:
@@ -522,12 +549,18 @@ func _run_battle_simulation() -> void:
 		withdraw_button.disabled = false
 		withdraw_button.visible = true
 	
-	# Get attacking armies (just one for now)
-	var attacking_compositions = [attacking_army.get_composition()]
+	# Get attacking compositions (all pending attackers)
+	var attacking_compositions = bm.get_pending_attacking_compositions()
 	
-	# Get defending forces (region garrison)
-	var defending_compositions = []
+	# Get defending forces (armies + recruits as defending_compositions, garrison separate)
+	var defending_compositions = bm.get_pending_defending_compositions()
 	var region_garrison = defending_region.get_garrison()
+	# Append recruits composition if available
+	var recruits_count = defending_region.get_base_available_recruits()
+	if recruits_count > 0:
+		var recruits_comp := ArmyComposition.new()
+		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, recruits_count)
+		defending_compositions.append(recruits_comp)
 	
 	# Start the animated battle with attacker efficiency
 	var attacker_efficiency = attacking_army.get_efficiency()
@@ -553,9 +586,11 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	battle_in_progress = false
 	battle_report = report
 
-	# If AI modal is disabled for debugging, finalize immediately and emit signal
+	# If AI modal is disabled for debugging, finalize immediately only when defender is not human
 	var gm = get_node("../../GameManager") as GameManager
-	if gm.debug_disable_battle_modal and gm.is_player_computer(attacking_army.get_player_id()):
+	var owner_id := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	var defender_is_human := (owner_id != -1 and gm.is_player_human(owner_id))
+	if gm.debug_disable_battle_modal and gm.is_player_computer(attacking_army.get_player_id()) and not defender_is_human:
 		gm.get_battle_manager().handle_battle_modal_closed()
 		# Hide modal and stop here to avoid waiting for UI interaction
 		hide_modal()

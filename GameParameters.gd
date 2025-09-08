@@ -227,7 +227,7 @@ const CASTLE_RECRUITMENT_TIERS = {
 # Stats migrated from battle_sim.py for consistency
 const UNIT_STATS = {
 	SoldierTypeEnum.Type.PEASANTS: {
-		"attack": 5,      # 5% hit chance per unit
+		"attack": 3,      # 5% hit chance per unit
 		"defense": 10,    # 10% chance to deflect hits
 		"cost": 0,        # Free recruitment (food cost 0.1 handled separately)
 		"gold_cost": 0,
