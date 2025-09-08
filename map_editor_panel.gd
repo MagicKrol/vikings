@@ -46,6 +46,12 @@ var _scenario_name_edit: LineEdit
 var _tab_container: TabContainer
 var _army_default_content: VBoxContainer
 var _army_edit_panel: VBoxContainer
+var _garrison_edit_panel: VBoxContainer
+var _edit_garrison_button: Button
+var _close_garrison_button: Button
+var _garrison_unit_edits: Dictionary = {}
+var _garrison_customized: Dictionary = {}
+var _region_default_nodes: Array = []
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
@@ -92,6 +98,39 @@ func _ready() -> void:
 		ResourcesEnum.Type.IRON: get_node("Panel/TabContainer/Region/IronRow/IronEdit") as LineEdit,
 		ResourcesEnum.Type.GOLD: get_node("Panel/TabContainer/Region/GoldRow/GoldEdit") as LineEdit
 	}
+	# Cache default Region tab nodes for show/hide when editing garrison
+	_region_default_nodes = [
+		get_node("Panel/TabContainer/Region/IDRow"),
+		get_node("Panel/TabContainer/Region/NameRow"),
+		get_node("Panel/TabContainer/Region/TypeRow"),
+		get_node("Panel/TabContainer/Region/LevelRow"),
+		get_node("Panel/TabContainer/Region/PopulationRow"),
+		get_node("Panel/TabContainer/Region/CastleRow"),
+		get_node("Panel/TabContainer/Region/OwnershipRow"),
+		get_node("Panel/TabContainer/Region/ResourcesLabel"),
+		get_node("Panel/TabContainer/Region/FoodRow"),
+		get_node("Panel/TabContainer/Region/WoodRow"),
+		get_node("Panel/TabContainer/Region/StoneRow"),
+		get_node("Panel/TabContainer/Region/IronRow"),
+		get_node("Panel/TabContainer/Region/GoldRow"),
+		get_node("Panel/TabContainer/Region/OreRow"),
+		get_node("Panel/TabContainer/Region/GarrisonEditRow")
+	]
+	# Garrison UI nodes
+	_edit_garrison_button = get_node("Panel/TabContainer/Region/GarrisonEditRow/EditGarrisonButton") as Button
+	_garrison_edit_panel = get_node("Panel/TabContainer/Region/GarrisonEditPanel") as VBoxContainer
+	_close_garrison_button = get_node("Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow/CloseGarrisonButton") as Button
+	_garrison_unit_edits = {
+		SoldierTypeEnum.Type.PEASANTS: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow/GPeasantsEdit") as LineEdit,
+		SoldierTypeEnum.Type.SPEARMEN: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow/GSpearmenEdit") as LineEdit,
+		SoldierTypeEnum.Type.SWORDSMEN: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow/GSwordsmenEdit") as LineEdit,
+		SoldierTypeEnum.Type.ARCHERS: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow/GArchersEdit") as LineEdit,
+		SoldierTypeEnum.Type.CROSSBOWMEN: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow/GCrossbowmenEdit") as LineEdit,
+		SoldierTypeEnum.Type.HORSEMEN: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow/GHorsemenEdit") as LineEdit,
+		SoldierTypeEnum.Type.KNIGHTS: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow/GKnightsEdit") as LineEdit,
+		SoldierTypeEnum.Type.MOUNTED_KNIGHTS: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow/GMountedKnightsEdit") as LineEdit,
+		SoldierTypeEnum.Type.ROYAL_GUARD: get_node("Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow/GRoyalGuardEdit") as LineEdit
+	}
 	# Populate dropdowns and wire signals
 	_populate_types()
 	_option.item_selected.connect(_on_type_selected)
@@ -109,6 +148,8 @@ func _ready() -> void:
 	_army_toggle_button.pressed.connect(_on_army_toggle_pressed)
 	_edit_army_button.pressed.connect(_on_edit_army_pressed)
 	_close_army_button.pressed.connect(_on_close_army_pressed)
+	_edit_garrison_button.pressed.connect(_on_edit_garrison_pressed)
+	_close_garrison_button.pressed.connect(_on_close_garrison_pressed)
 	_save_scenario_button.pressed.connect(_on_save_scenario_pressed)
 	_save_map_button.pressed.connect(_on_save_map_pressed)
 	_exit_button.pressed.connect(_on_exit_pressed)
@@ -170,6 +211,14 @@ func update_from_region(region: Region) -> void:
 	# Make sure army panels are in default state
 	_army_default_content.visible = true
 	_army_edit_panel.visible = false
+	# Hide garrison edit panel by default
+	_garrison_edit_panel.visible = false
+	# Ensure default Region tab content is visible by default
+	_set_region_default_visible(true)
+
+func _set_region_default_visible(visible: bool) -> void:
+	for n in _region_default_nodes:
+		n.visible = visible
 
 func _select_text(txt: String) -> void:
 	for i in range(_option.item_count):
@@ -276,6 +325,26 @@ func _on_close_army_pressed() -> void:
 	_army_edit_panel.visible = false
 	_army_default_content.visible = true
 
+func _on_edit_garrison_pressed() -> void:
+	# Populate garrison panel with current garrison counts
+	var g := _current_region_node.get_garrison()
+	for t in _garrison_unit_edits.keys():
+		var count := g.get_soldier_count(t)
+		(_garrison_unit_edits[t] as LineEdit).text = str(count)
+	# Show panel
+	_garrison_edit_panel.visible = true
+	_set_region_default_visible(false)
+
+func _on_close_garrison_pressed() -> void:
+	# Save garrison edits to region and mark as customized
+	var g := _current_region_node.get_garrison()
+	for t in _garrison_unit_edits.keys():
+		var e: LineEdit = _garrison_unit_edits[t]
+		g.set_soldier_count(t, int(e.text))
+	_garrison_customized[_current_region_id] = true
+	_garrison_edit_panel.visible = false
+	_set_region_default_visible(true)
+
 func _on_save_scenario_pressed() -> void:
 	var mg: MapGenerator = get_node("../../Map") as MapGenerator
 	var regions_node: Node = mg.get_node("Regions")
@@ -306,6 +375,13 @@ func _serialize_region(region: Region) -> Dictionary:
 	data["castle_type"] = CastleTypeEnum.type_to_string(region.get_castle_type())
 	data["population"] = region.get_population()
 	data["owner"] = region.get_region_owner()
+	# Optional garrison: include only if customized in editor
+	if _garrison_customized.has(region.get_region_id()):
+		var gcomp: Dictionary = {}
+		for t in SoldierTypeEnum.get_all_types():
+			var tname = SoldierTypeEnum.type_to_string(t)
+			gcomp[tname] = region.get_garrison().get_soldier_count(t)
+		data["garrison"] = gcomp
 	var res: Dictionary = {}
 	for rt in ResourcesEnum.get_all_types():
 		var rt_name = ResourcesEnum.type_to_string(rt)

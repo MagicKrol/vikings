@@ -159,7 +159,8 @@ static func get_map_size_icon_scale(map_size: int) -> float:
 		1: 26.0/38.0,     # SMALL ~0.684
 		2: 18.0/38.0,     # MEDIUM ~0.474
 		3: 12.8/38.0,     # LARGE ~0.337
-		4: 9.0/38.0       # HUGE ~0.237
+		4: 9.0/38.0,      # HUGE ~0.237
+		5: 55.0/38.0      # XTINY ~1.447 (more regions than TINY)
 	}
 	
 	return map_size_scales.get(map_size, 1.0)

@@ -32,6 +32,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_on_left_click(event.global_position)
 	elif event is InputEventKey and event.pressed:
+		# Editor quick-ownership mode: number keys 1..6 select owner, ESC cancels
+		if _game_manager and _game_manager.enable_map_editor:
+			var code: int = event.keycode
+			if code >= KEY_1 and code <= KEY_6:
+				_editor_ownership_mode = true
+				_editor_owner_id = code - KEY_1 + 1
+				return
+			if code == KEY_ESCAPE:
+				_editor_ownership_mode = false
+				# fallthrough to any deselection below
 		if event.keycode == KEY_ESCAPE:
 			if _army_manager != null:
 				_army_manager.deselect_army()
@@ -44,6 +54,10 @@ func _unhandled_input(event: InputEvent) -> void:
 # Legacy manager references for backward compatibility during transition
 @onready var _region_manager: RegionManager
 @onready var _army_manager: ArmyManager
+
+# Editor quick-ownership mode state
+var _editor_ownership_mode: bool = false
+var _editor_owner_id: int = 0
 
 func _ready():
 	# Managers will be provided by GameManager via set_managers()
@@ -178,6 +192,15 @@ func _handle_editor_region_click(region_container: Node) -> void:
 	"""Handle region clicks in map editor mode - do nothing for now"""
 	var region = region_container as Region
 	if region == null:
+		return
+
+	# If ownership mode is active, assign owner and update panel
+	if _editor_ownership_mode:
+		var region_id := region.get_region_id()
+		_region_manager.set_region_ownership(region_id, _editor_owner_id)
+		# Keep panel in sync with current region
+		var map_editor2: MapEditor = get_node("../MapEditor") as MapEditor
+		map_editor2.set_current_region(region)
 		return
 
 	# Update editor panel selection

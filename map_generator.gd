@@ -3,7 +3,7 @@ extends Node2D
 class_name MapGenerator
 
 # Configuration
-@export var data_file_path: String = "mapdata-280-small.json"
+@export var data_file_path: String = "mapdata-208-tiny.json"
 @export var noisy_edges_enabled: bool = true
 @export var debug_draw_overlay: bool = false
 @export var show_region_colors: bool = false
@@ -19,10 +19,11 @@ enum MapSize {
 	SMALL,
 	MEDIUM,
 	LARGE,
-	HUGE
+	HUGE,
+	XTINY
 }
 
-@export var map_size: MapSize = MapSize.SMALL
+@export var map_size: MapSize = MapSize.TINY
 
 # Map size scaling factors
 const MAP_SIZE_SCALES := {
@@ -30,7 +31,8 @@ const MAP_SIZE_SCALES := {
 	MapSize.SMALL: 26.0/38.0,  # ~0.684
 	MapSize.MEDIUM: 18.0/38.0,  # ~0.474
 	MapSize.LARGE: 12.8/38.0,   # ~0.337
-	MapSize.HUGE: 9.0/38.0      # ~0.237
+	MapSize.HUGE: 9.0/38.0,     # ~0.237
+	MapSize.XTINY: 55.0/38.0    # ~1.447 (more regions than TINY)
 }
 
 # Global icon sizing (tune this to adjust biome icon sizes)
@@ -108,9 +110,10 @@ func _clear_children(node: Node) -> void:
 
 # -------------------- JSON Data Loading --------------------
 func _load_json_data() -> void:
-	var file = FileAccess.open(data_file_path, FileAccess.READ)
+	var path := _resolve_mapdata_path(data_file_path)
+	var file = FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		DebugLogger.log("MapGeneration", "ERROR: Could not open file: " + data_file_path)
+		DebugLogger.log("MapGeneration", "ERROR: Could not open file: " + path)
 		return
 		
 	var json_string = file.get_as_text()
@@ -125,6 +128,7 @@ func _load_json_data() -> void:
 	map_data = json.data
 	regions = map_data.get("regions", [])
 	edges = map_data.get("edges", [])
+	DebugLogger.log("MapGeneration", "Loaded map: regions=" + str(regions.size()) + ", edges=" + str(edges.size()) + ", file=" + path)
 	region_by_id.clear()
 	for r in regions:
 		var rid = int(r.get("id", -1))
@@ -138,6 +142,16 @@ func _load_json_data() -> void:
 	# Scale all coordinates if polygon_scale != 1.0
 	if polygon_scale != 1.0:
 		_scale_map_data()
+
+func _resolve_mapdata_path(name: String) -> String:
+	# Always read from res://mapdata/. Accept bare filenames or full paths; normalize to folder.
+	if name == null or name == "":
+		return "res://mapdata/mapdata-280-small.json"
+	if name.begins_with("res://"):
+		var base := name.get_file()
+		return "res://mapdata/" + base
+	var file_only := name.get_file()
+	return "res://mapdata/" + file_only
 	
 
 func _scale_map_data() -> void:
@@ -306,6 +320,8 @@ func _render_from_json() -> void:
 	# DebugLogger.log("MapGeneration", "Ocean IDs: " + str(ocean_region_ids))
 	# DebugLogger.log("MapGeneration", "Land IDs: " + str(land_region_ids))
 
+	DebugLogger.log("MapGeneration", "Ocean polygons added=" + str(ocean_count))
+
 	# Draw noisy borders from edge data with correct quadrilateral constraints
 	_draw_region_borders()
 
@@ -313,7 +329,7 @@ func _render_from_json() -> void:
 	_build_and_draw_region_graph_overlay()
 
 
-	# DebugLogger.log("MapGeneration", "Rendered edges: " + str(edges.size()))
+	DebugLogger.log("MapGeneration", "Rendered edges: " + str(edges.size()) + ", land regions created=" + str(_region_count))
 
 func _create_region_from_data(region_data: Dictionary) -> void:
 	var polygon_data = region_data.get("polygon", [])
@@ -638,7 +654,9 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 			var line := Line2D.new()
 			line.points = seg
 			line.closed = false
-			line.width = 3.0 * polygon_scale
+			# Scale border width by map size (TINY=1.0 baseline)
+			var map_size_scale := Utils.get_map_size_icon_scale(map_size)
+			line.width = 3.0 * polygon_scale * map_size_scale
 			line.default_color = Color8(0x41, 0x2c, 0x16, 255)  # Brown for external (ocean)
 			borders_container.add_child(line)
 	elif region_owner != -1 and other_owner != -1 and region_owner != other_owner:
@@ -649,7 +667,9 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 		var line := Line2D.new()
 		line.points = seg
 		line.closed = false
-		line.width = 3.0 * polygon_scale
+		# Scale border width by map size (TINY=1.0 baseline)
+		var map_size_scale2 := Utils.get_map_size_icon_scale(map_size)
+		line.width = 3.0 * polygon_scale * map_size_scale2
 		line.default_color = _get_player_border_color(region_owner)
 		borders_container.add_child(line)
 	else:
@@ -657,7 +677,9 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 		var line := Line2D.new()
 		line.points = seg
 		line.closed = false
-		line.width = 1.5 * polygon_scale
+		# Scale border width by map size (TINY=1.0 baseline)
+		var map_size_scale3 := Utils.get_map_size_icon_scale(map_size)
+		line.width = 1.5 * polygon_scale * map_size_scale3
 		line.default_color = Color8(0x00, 0x00, 0x00, 50)   # Thin black for internal
 		borders_container.add_child(line)
 	
@@ -955,7 +977,9 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 	var line := Line2D.new()
 	line.points = offset_points
 	line.closed = false
-	line.width = 2.0 * polygon_scale
+	# Scale border width by map size (TINY=1.0 baseline)
+	var map_size_scale4 := Utils.get_map_size_icon_scale(map_size)
+	line.width = 2.0 * polygon_scale * map_size_scale4
 	line.default_color = _get_player_border_color(player_id)
 	
 	borders_container.add_child(line)
@@ -1002,7 +1026,9 @@ func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, 
 	var line := Line2D.new()
 	line.points = offset_points
 	line.closed = false
-	line.width = 2.0 * polygon_scale
+	# Scale border width by map size (TINY=1.0 baseline)
+	var map_size_scale5 := Utils.get_map_size_icon_scale(map_size)
+	line.width = 2.0 * polygon_scale * map_size_scale5
 	line.default_color = _get_player_border_color(player_id)
 	
 	borders_container.add_child(line)
@@ -1050,7 +1076,9 @@ func _create_ocean_offset_border_line(original_points: PackedVector2Array, curre
 	var line := Line2D.new()
 	line.points = offset_points
 	line.closed = false
-	line.width = 2.0 * polygon_scale
+	# Scale border width by map size (TINY=1.0 baseline)
+	var map_size_scale6 := Utils.get_map_size_icon_scale(map_size)
+	line.width = 2.0 * polygon_scale * map_size_scale6
 	line.default_color = Color.BLACK
 	
 	borders_container.add_child(line)

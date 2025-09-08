@@ -45,7 +45,7 @@ var debug_categories: Dictionary = {
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management
 	"RegionScoring": false,        # Region evaluation and scoring
-	"MapGeneration": false,        # Map generation and setup
+	"MapGeneration": true,        # Map generation and setup
 	
 	# Castle Systems
 	"CastlePlacement": false,      # Castle placement decisions

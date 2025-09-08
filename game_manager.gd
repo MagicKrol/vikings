@@ -81,7 +81,7 @@ var debug_heatmap: bool = false
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 # Map editor mode state
-var enable_map_editor: bool = true  # Configurable flag to enable map editor mode
+var enable_map_editor: bool = false  # Configurable flag to enable map editor mode
 
 
 # References to other managers
@@ -89,7 +89,7 @@ var click_manager: Node = null
 
 # Scenario mode
 var game_mode: String = "custom"  # "custom" | "scenario"
-var scenario_path: String = "res://scenarios/scenario.json"
+var scenario_path: String = "res://scenarios/mission1.json"
 
 func _ready():
 	# Early init gate: check if map editor is enabled BEFORE normal init
@@ -107,9 +107,13 @@ func _ready():
 	# Scenario pre-load: if scenario mode, set map file upfront and regenerate map
 	if game_mode == "scenario" and scenario_path != "":
 		var map_generator: MapGenerator = get_node("../Map") as MapGenerator
-		var scen := ScenarioManager.new().load_scenario(scenario_path)
+		# Normalize scenario path to res://scenarios/<file>
+		var scen_file := String(scenario_path).get_file()
+		var scen_full := "res://scenarios/" + scen_file
+		var scen := ScenarioManager.new().load_scenario(scen_full)
 		if scen.has("map_file"):
-			map_generator.data_file_path = String(scen.get("map_file"))
+			# Expect bare filename; normalize to file name
+			map_generator.data_file_path = String(scen.get("map_file")).get_file()
 			map_generator.generate_map()
 
 	# Initialize all game systems
@@ -336,15 +340,18 @@ func _initialize_map_editor() -> void:
 		var payload = get_tree().get_meta("editor_start_payload")
 		var kind := String(payload.get("type", ""))
 		if kind == "map":
-			map_generator.data_file_path = String(payload.get("map_file"))
+			# Expect bare filename; normalize if path included
+			map_generator.data_file_path = String(payload.get("map_file")).get_file()
 			_map_set_size_from_string(map_generator, String(payload.get("map_size", "small")))
 			map_generator.generate_map()
 		elif kind == "scenario":
 			var scen_path := String(payload.get("scenario_path"))
 			var scen_mgr := ScenarioManager.new()
-			var scen := scen_mgr.load_scenario(scen_path)
+			# Normalize scenario path to res://scenarios/<file>
+			var scen_full := "res://scenarios/" + scen_path.get_file()
+			var scen := scen_mgr.load_scenario(scen_full)
 			if scen.has("map_file"):
-				map_generator.data_file_path = String(scen.get("map_file"))
+				map_generator.data_file_path = String(scen.get("map_file")).get_file()
 				_map_set_size_from_string(map_generator, String(payload.get("map_size", "small")))
 				map_generator.generate_map()
 			# After managers are created (below), apply scenario deltas
@@ -386,6 +393,8 @@ func _initialize_map_editor() -> void:
 func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
 	var s := size_str.to_lower()
 	match s:
+		"xtiny":
+			mg.map_size = MapGenerator.MapSize.XTINY
 		"tiny":
 			mg.map_size = MapGenerator.MapSize.TINY
 		"small":

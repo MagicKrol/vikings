@@ -264,6 +264,157 @@ text = "Ore discovered:"
 [node name="OreCheck" type="CheckBox" parent="Panel/TabContainer/Region/OreRow" index="1"]
 layout_mode = 2
 
+[node name="GarrisonEditRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="14"]
+layout_mode = 2
+
+[node name="GarrisonEditLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Garrison:"
+
+[node name="EditGarrisonButton" type="Button" parent="Panel/TabContainer/Region/GarrisonEditRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Edit Garrison"
+
+[node name="GarrisonEditPanel" type="VBoxContainer" parent="Panel/TabContainer/Region" index="15"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GarrisonHeaderRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="0"]
+layout_mode = 2
+
+[node name="GarrisonHeader" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow" index="0"]
+layout_mode = 2
+text = "Garrison Editor"
+
+[node name="CloseGarrisonButton" type="Button" parent="Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Close"
+
+[node name="GarrisonUnitsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="1"]
+layout_mode = 2
+text = "Units:"
+
+[node name="GPeasantsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="2"]
+layout_mode = 2
+
+[node name="GPeasantsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Peasants"
+
+[node name="GPeasantsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GSpearmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="3"]
+layout_mode = 2
+
+[node name="GSpearmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Spearmen"
+
+[node name="GSpearmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GSwordsmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="4"]
+layout_mode = 2
+
+[node name="GSwordsmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Swordsmen"
+
+[node name="GSwordsmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GArchersRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="5"]
+layout_mode = 2
+
+[node name="GArchersLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Archers"
+
+[node name="GArchersEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GCrossbowmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="6"]
+layout_mode = 2
+
+[node name="GCrossbowmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Crossbowmen"
+
+[node name="GCrossbowmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GHorsemenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="7"]
+layout_mode = 2
+
+[node name="GHorsemenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Horsemen"
+
+[node name="GHorsemenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="8"]
+layout_mode = 2
+
+[node name="GKnightsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Knights"
+
+[node name="GKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GMountedKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="9"]
+layout_mode = 2
+
+[node name="GMountedKnightsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Mounted Knights"
+
+[node name="GMountedKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="GRoyalGuardRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="10"]
+layout_mode = 2
+
+[node name="GRoyalGuardLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow" index="0"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Royal Guard"
+
+[node name="GRoyalGuardEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
 [node name="Army" type="VBoxContainer" parent="Panel/TabContainer" index="4"]
 visible = false
 layout_mode = 2
