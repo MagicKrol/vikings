@@ -3,7 +3,7 @@ extends Node2D
 class_name MapGenerator
 
 # Configuration
-@export var data_file_path: String = "mapdata-208-tiny.json"
+@export var data_file_path: String = "mapdata-207-xtiny.json"
 @export var noisy_edges_enabled: bool = true
 @export var debug_draw_overlay: bool = false
 @export var show_region_colors: bool = false
@@ -23,7 +23,7 @@ enum MapSize {
 	XTINY
 }
 
-@export var map_size: MapSize = MapSize.TINY
+@export var map_size: MapSize = MapSize.XTINY
 
 # Map size scaling factors
 const MAP_SIZE_SCALES := {
@@ -938,8 +938,10 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 	"""Create an offset border line for ownership-based borders"""
 	if original_points.size() < 2:
 		return
-	
-	var offset_distance = 1.0 * polygon_scale  # Offset distance in pixels
+
+	# Scale offset distance with map size to keep proportional spacing
+	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
+	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Offset distance in pixels
 	
 	# Determine offset direction based on region ID ordering
 	# This ensures consistent opposite directions for the two regions
@@ -978,8 +980,7 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 	line.points = offset_points
 	line.closed = false
 	# Scale border width by map size (TINY=1.0 baseline)
-	var map_size_scale4 := Utils.get_map_size_icon_scale(map_size)
-	line.width = 2.0 * polygon_scale * map_size_scale4
+	line.width = 2.0 * polygon_scale * map_size_scale
 	line.default_color = _get_player_border_color(player_id)
 	
 	borders_container.add_child(line)
@@ -988,8 +989,10 @@ func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, 
 	"""Create an offset colored border line for land side of ocean border"""
 	if original_points.size() < 2:
 		return
-	
-	var offset_distance = 1.0 * polygon_scale  # Same offset distance as enemy borders
+
+	# Scale offset distance with map size (TINY baseline)
+	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
+	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Same offset distance as enemy borders
 	
 	# Determine which side is land by checking region center position
 	var land_offset_direction = _get_land_side_offset_direction(original_points, current_region_id)
@@ -1027,8 +1030,7 @@ func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, 
 	line.points = offset_points
 	line.closed = false
 	# Scale border width by map size (TINY=1.0 baseline)
-	var map_size_scale5 := Utils.get_map_size_icon_scale(map_size)
-	line.width = 2.0 * polygon_scale * map_size_scale5
+	line.width = 2.0 * polygon_scale * map_size_scale
 	line.default_color = _get_player_border_color(player_id)
 	
 	borders_container.add_child(line)
@@ -1037,8 +1039,10 @@ func _create_ocean_offset_border_line(original_points: PackedVector2Array, curre
 	"""Create an offset black border line for ocean side"""
 	if original_points.size() < 2:
 		return
-	
-	var offset_distance = 1.0 * polygon_scale  # Same offset distance as enemy borders
+
+	# Scale offset distance with map size (TINY baseline)
+	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
+	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Same offset distance as enemy borders
 	
 	# Ocean gets the opposite offset direction from the land region
 	var land_offset_direction = _get_land_side_offset_direction(original_points, current_region_id)

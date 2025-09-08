@@ -214,7 +214,9 @@ editor_start.tscn (Editor Start)
 ## Static vs Dynamic
 - Static nodes: `Map/Regions`, `Map/Ocean`, `Map/Frame`, all UI nodes under `UI`, and `Players/Player1..6` containers.
 - Dynamic nodes: `Region` instances under `Map/Regions` (land + ocean; ocean `Polygon` hidden, visuals from `Map/Ocean`), `Army` nodes parented to regions, `Castle` sprites under regions, border/overlay visuals.
- - Border widths: In `MapGenerator`, all Line2D borders scale by map size (TINY baseline; SMALL/MEDIUM thinner) using `Utils.get_map_size_icon_scale()`.
+- Border widths: In `MapGenerator`, all Line2D borders scale by map size (TINY baseline; SMALL/MEDIUM thinner) using `Utils.get_map_size_icon_scale()`.
+ - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
+ - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
 
 ## Notable Relationships
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.

@@ -281,6 +281,8 @@ func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garri
 		var total_available := 0
 		
 		for a in armies:
+			if a == null or not is_instance_valid(a):
+				continue
 			var cnt := a.get_composition().get_soldier_count(unit_type)
 			if cnt > 0:
 				avail.append({"army": a, "count": cnt})

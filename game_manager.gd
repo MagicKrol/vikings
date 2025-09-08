@@ -88,8 +88,8 @@ var enable_map_editor: bool = false  # Configurable flag to enable map editor mo
 var click_manager: Node = null
 
 # Scenario mode
-var game_mode: String = "custom"  # "custom" | "scenario"
-var scenario_path: String = "res://scenarios/mission1.json"
+var game_mode: String = "scenario"  # "custom" | "scenario"
+var scenario_path: String = "mission1.json"
 
 func _ready():
 	# Early init gate: check if map editor is enabled BEFORE normal init
@@ -123,6 +123,8 @@ func _ready():
 	await get_tree().process_frame
 	if _sound_manager:
 		DebugLogger.log("GameInit", "Starting game audio sequence...")
+		# Ensure music/horn are enabled (was temporarily disabled)
+		_sound_manager.set_music_enabled(true)
 		_sound_manager.play_game_start_sequence()
 	else:
 		DebugLogger.log("GameInit", "Error: Sound manager not found!")

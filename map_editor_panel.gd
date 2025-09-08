@@ -367,7 +367,10 @@ func _on_save_scenario_pressed() -> void:
 func _serialize_region(region: Region) -> Dictionary:
 	var data: Dictionary = {}
 	data["id"] = region.get_region_id()
-	data["name"] = region.get_region_name()
+	# Include name only if non-empty (avoid empty names for oceans)
+	var nm := region.get_region_name().strip_edges()
+	if nm != "":
+		data["name"] = nm
 	data["biome"] = region.get_biome()
 	data["ocean"] = region.is_ocean_region()
 	data["type_display"] = region.get_region_type_display_string()

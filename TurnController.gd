@@ -110,9 +110,9 @@ func start_turn(player_id: int) -> void:
 
 func _process_turn(player_id: int) -> void:
 	"""Main turn processing loop - shared between Human and AI"""
-	var armies := _get_available_armies(player_id)
-	
 	while true:
+		# Refresh army list each loop to avoid referencing freed armies after battles
+		var armies := _get_available_armies(player_id)
 		# Step 1: Find frontier targets
 		var frontier := region_manager.get_frontier_regions(player_id)
 		if frontier.is_empty():
