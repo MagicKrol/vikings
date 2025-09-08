@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://dq451kljlqywk"]
+
+[ext_resource type="Script" path="res://editor_start.gd" id="1"]
+
+[node name="EditorStart" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Center" type="VBoxContainer" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -160.0
+offset_right = 240.0
+offset_bottom = 160.0
+theme_override_constants/separation = 12
+
+[node name="MapLabel" type="Label" parent="Center"]
+layout_mode = 2
+text = "Map Data:"
+
+[node name="MapSelect" type="OptionButton" parent="Center"]
+layout_mode = 2
+
+[node name="EditMapButton" type="Button" parent="Center"]
+layout_mode = 2
+text = "Edit Map or New Scenario"
+
+[node name="Spacer1" type="Control" parent="Center"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="ScenarioLabel" type="Label" parent="Center"]
+layout_mode = 2
+text = "Scenario:"
+
+[node name="ScenarioSelect" type="OptionButton" parent="Center"]
+layout_mode = 2
+
+[node name="EditScenarioButton" type="Button" parent="Center"]
+layout_mode = 2
+text = "Edit Scenario"
