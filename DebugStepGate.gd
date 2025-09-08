@@ -34,7 +34,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_SPACE and step_pending:
+		if event.keycode == KEY_SHIFT and step_pending:
 			DebugLogger.log("AIPlanning", "Spacebar pressed - continuing step")
 			_continue_step()
 

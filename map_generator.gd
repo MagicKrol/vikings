@@ -220,6 +220,11 @@ func _render_from_json() -> void:
 				var ocean_pg := Polygon2D.new()
 				ocean_count += 1
 				ocean_pg.name = "ocean" + str(ocean_count)
+				# Tag with region metadata for editor hit-testing
+				ocean_pg.set_meta("region_id", region_id)
+				var cmeta: Array = region_data.get("center", [])
+				if cmeta.size() == 2:
+					ocean_pg.set_meta("center", Vector2(float(cmeta[0]), float(cmeta[1])))
 				
 				# Check if this ocean region is adjacent to land
 				var is_coastal := _is_ocean_region_coastal(region_id)
@@ -246,7 +251,7 @@ func _render_from_json() -> void:
 	
 
 
-	# Build non-ocean polygons
+	# Build region containers for all regions and land polygons
 	var _region_count := 0
 	var _total_regions := 0
 	var land_region_ids: Array[int] = []
@@ -254,24 +259,19 @@ func _render_from_json() -> void:
 		_total_regions += 1
 		var is_ocean := bool(region_data.get("ocean", false))
 		var region_id := int(region_data.get("id", -1))
+		# Create region container structure with Region script for ALL regions
+		var region_container := Node2D.new()
+		region_container.set_script(load("res://region.gd"))
+		region_container.setup_region(region_data)
+		_assign_region_name_if_available(region_container)
+		map_node_regions.add_child(region_container)
+		region_container_by_id[region_id] = region_container
+		
 		if not is_ocean:
 			land_region_ids.append(region_id)
 			_region_count += 1
-			# Create region container structure with Region script
-			var region_container := Node2D.new()
-			# Explicitly attach the Region script
-			region_container.set_script(load("res://region.gd"))
-			region_container.setup_region(region_data)
-			
-			# Assign name through RegionManager if available
-			_assign_region_name_if_available(region_container)
-			
-			map_node_regions.add_child(region_container)
-			region_container_by_id[region_id] = region_container
-			
-			# Add polygon under region container
+			# Land: add visible polygon under region container
 			var _polygon_node := _add_region_polygon_node(region_data, null, "Polygon", region_container)
-			
 			# Add region point under region container
 			if show_region_points:
 				var center_data = region_data.get("center", [])
@@ -280,11 +280,19 @@ func _render_from_json() -> void:
 					var region_point := RegionPoints.create_region_point(center, polygon_scale, region_point_inner_color)
 					region_point.name = "RegionPoint"
 					region_container.add_child(region_point)
-			
-			# Add Borders container
-			var borders_node := Node2D.new()
-			borders_node.name = "Borders"
-			region_container.add_child(borders_node)
+		else:
+			# Ocean: add hidden polygon for editor hit logic and future land conversion
+			var ocean_poly_points := _build_region_polygon_points(region_data)
+			if ocean_poly_points.size() >= 3:
+				var hidden_pg := Polygon2D.new()
+				hidden_pg.name = "Polygon"
+				hidden_pg.polygon = ocean_poly_points
+				hidden_pg.visible = false
+				region_container.add_child(hidden_pg)
+		# Add Borders container for all regions (needed when ocean becomes land)
+		var borders_node := Node2D.new()
+		borders_node.name = "Borders"
+		region_container.add_child(borders_node)
 	
 	# DebugLogger.log("MapGeneration", "Total regions in JSON: " + str(total_regions))
 	# DebugLogger.log("MapGeneration", "Ocean regions: " + str(ocean_count) + ", Land regions: " + str(region_count))
@@ -1409,14 +1417,26 @@ func regenerate_borders_for_region(region_id: int) -> void:
 		if region1_id in regions_to_update or region2_id in regions_to_update:
 			# Process the edge for both regions
 			if region1_id != -1 and region1_id in regions_to_update:
-				var region1_container = get_region_container_by_id(region1_id)
+				# Skip drawing for ocean regions
+				var r1_data: Dictionary = region_by_id.get(region1_id, {})
+				var region1_container = null
+				if bool(r1_data.get("ocean", false)):
+					pass
+				else:
+					region1_container = get_region_container_by_id(region1_id)
 				if region1_container:
 					var borders_container = region1_container.get_node_or_null("Borders")
 					if borders_container:
 						_create_border_line_for_region(edge, region1_id, region2_id, borders_container, rng)
 			
 			if region2_id != -1 and region2_id in regions_to_update:
-				var region2_container = get_region_container_by_id(region2_id)
+				# Skip drawing for ocean regions
+				var r2_data: Dictionary = region_by_id.get(region2_id, {})
+				var region2_container = null
+				if bool(r2_data.get("ocean", false)):
+					pass
+				else:
+					region2_container = get_region_container_by_id(region2_id)
 				if region2_container:
 					var borders_container = region2_container.get_node_or_null("Borders")
 					if borders_container:
@@ -1443,6 +1463,7 @@ func refresh_region_visual(region_id: int) -> void:
 		polygon.texture = load("res://images/grass.png")
 		polygon.texture_scale = Vector2(1.0 / polygon_scale * 5.0, 1.0 / polygon_scale * 5.0)
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+		polygon.visible = true
 		# Re-add biome icon
 		var rdata: Dictionary = region_by_id.get(region_id, {})
 		rdata["biome"] = region.get_biome()

@@ -93,17 +93,33 @@ func _on_left_click(screen_pos: Vector2) -> void:
 	
 	var region_clicked = false
 	
-	# Iterate regions and test polygon hit
+	# Iterate regions and test polygon hit (handles land and hidden ocean polygons)
 	for region_container in regions_node.get_children():
 		if not (region_container is Node):
 			continue
-		var polygon := region_container.get_node("Polygon") as Polygon2D
-		# Only non-ocean regions have Polygon nodes here
-		if _point_in_polygon(world_pos, polygon):
+		var hit := false
+		for child in region_container.get_children():
+			if child is Polygon2D:
+				if _point_in_polygon(world_pos, child as Polygon2D):
+					hit = true
+					break
+		if hit:
 			_handle_region_click(region_container)
 			region_clicked = true
 			break
-	
+
+	# In editor mode, allow clicking ocean polygons (from Map/Ocean)
+	if not region_clicked and _game_manager and _game_manager.enable_map_editor:
+		var ocean_node := map_root.get_node("Ocean") as Node
+		for ocean_pg in ocean_node.get_children():
+			if ocean_pg is Polygon2D:
+				if _point_in_polygon(world_pos, ocean_pg as Polygon2D):
+					var rid := int(ocean_pg.get_meta("region_id"))
+					var ocean_region_container := _map_script.get_region_container_by_id(rid)
+					_handle_editor_region_click(ocean_region_container)
+					region_clicked = true
+					break
+
 	# If no region was clicked and we have a selected army, deselect it
 	if not region_clicked and _army_manager and _army_manager.selected_army != null:
 		_army_manager.deselect_army()
@@ -118,10 +134,13 @@ func _handle_region_click(region_container: Node) -> void:
 	if _game_manager and _game_manager.enable_map_editor:
 		_handle_editor_region_click(region_container)
 		return
-	
+
 	# Get region script to check if it's a mountain
 	var region = region_container as Region
 	if region != null:
+		# Ignore ocean regions in gameplay
+		if region.is_ocean_region():
+			return
 		# Check if this is a mountain region - if so, ignore clicks
 		if _is_mountain_region(region):
 			return

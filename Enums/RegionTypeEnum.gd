@@ -14,18 +14,18 @@ enum Type {
 
 # Convert string biome name to final region type
 static func string_to_type(biome_string: String) -> Type:
-	match biome_string:
+	# Normalize and support common synonyms from map JSON
+	var b := biome_string.to_lower()
+	match b:
 		"grassland":
 			return Type.GRASSLAND
-		"hill":
+		"hill", "hills":
 			return Type.HILLS
-		"hill_forest":
+		"hill_forest", "forest_hills", "hills_forest":
 			return Type.FOREST_HILLS
-		"forest":
+		"forest", "forest2":
 			return Type.FOREST
-		"forest2":
-			return Type.FOREST
-		"mountains":
+		"mountain", "mountains":
 			return Type.MOUNTAINS
 		_:
 			return Type.GRASSLAND  # Default fallback

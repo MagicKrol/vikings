@@ -30,7 +30,7 @@ var _population_edit: LineEdit
 var _ownership_option: OptionButton
 var _army_toggle_button: Button
 var _has_army_cached: bool = false
-var _army_panel: Panel
+var _army_panel: Control
 var _region_panel: Node
 var _edit_army_button: Button
 var _close_army_button: Button
@@ -40,51 +40,57 @@ var _region_id_value_army: Label
 var _region_name_value_army: Label
 var _current_region_node: Region
 var _save_scenario_button: Button
-var _scenario_select: OptionButton
-var _load_scenario_button: Button
+var _save_map_button: Button
+var _exit_button: Button
 var _scenario_name_edit: LineEdit
+var _tab_container: TabContainer
+var _army_default_content: VBoxContainer
+var _army_edit_panel: VBoxContainer
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
 	DebugLogger.log("MapEditorPanel", "Map editor panel ready")
 	# Get references to static nodes
-	_id_value = get_node("Panel/Content/IDRow/IDValue") as Label
-	_name_edit = get_node("Panel/Content/NameRow/NameEdit") as LineEdit
-	_option = get_node("Panel/Content/TypeRow/TypeOption") as OptionButton
-	_level_option = get_node("Panel/Content/LevelRow/LevelOption") as OptionButton
-	_population_edit = get_node("Panel/Content/PopulationRow/PopulationEdit") as LineEdit
-	_castle_option = get_node("Panel/Content/CastleRow/CastleOption") as OptionButton
-	_ore_check = get_node("Panel/Content/OreRow/OreCheck") as CheckBox
-	_ownership_option = get_node("Panel/Content/OwnershipRow/OwnershipOption") as OptionButton
-	_army_toggle_button = get_node("Panel/Content/ArmyRow/ArmyToggleButton") as Button
+	_tab_container = get_node("Panel/TabContainer") as TabContainer
+	_id_value = get_node("Panel/TabContainer/Region/IDRow/IDValue") as Label
+	_name_edit = get_node("Panel/TabContainer/Region/NameRow/NameEdit") as LineEdit
+	_option = get_node("Panel/TabContainer/Region/TypeRow/TypeOption") as OptionButton
+	_level_option = get_node("Panel/TabContainer/Region/LevelRow/LevelOption") as OptionButton
+	_population_edit = get_node("Panel/TabContainer/Region/PopulationRow/PopulationEdit") as LineEdit
+	_castle_option = get_node("Panel/TabContainer/Region/CastleRow/CastleOption") as OptionButton
+	_ore_check = get_node("Panel/TabContainer/Region/OreRow/OreCheck") as CheckBox
+	_ownership_option = get_node("Panel/TabContainer/Region/OwnershipRow/OwnershipOption") as OptionButton
+	_army_toggle_button = get_node("Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow/ArmyToggleButton") as Button
 	_region_panel = get_node("Panel")
-	_army_panel = get_node("ArmyPanel") as Panel
-	_edit_army_button = get_node("Panel/Content/ArmyEditRow/EditArmyButton") as Button
-	_close_army_button = get_node("ArmyPanel/ArmyContent/ArmyHeaderRow/CloseArmyButton") as Button
-	_army_name_value = get_node("ArmyPanel/ArmyContent/ArmyNameRow/ArmyNameValue") as Label
-	_region_id_value_army = get_node("ArmyPanel/ArmyContent/RegionIDRow/RegionIDValue") as Label
-	_region_name_value_army = get_node("ArmyPanel/ArmyContent/RegionNameRow/RegionNameValue") as Label
-	_save_scenario_button = get_node("Panel/Content/SaveButtonRow/SaveScenarioButton") as Button
-	_scenario_name_edit = get_node("Panel/Content/SaveRow/ScenarioNameEdit") as LineEdit
-	_scenario_select = get_node("Panel/Content/LoadScenarioSelectRow/ScenarioSelect") as OptionButton
-	_load_scenario_button = get_node("Panel/Content/LoadScenarioButtonRow/LoadScenarioButton") as Button
+	_army_panel = get_node("Panel/TabContainer/Army") as Control
+	_army_default_content = get_node("Panel/TabContainer/Army/ArmyDefaultContent") as VBoxContainer
+	_army_edit_panel = get_node("Panel/TabContainer/Army/ArmyEditPanel") as VBoxContainer
+	_edit_army_button = get_node("Panel/TabContainer/Army/ArmyDefaultContent/ArmyEditRow/EditArmyButton") as Button
+	_close_army_button = get_node("Panel/TabContainer/Army/ArmyEditPanel/ArmyHeaderRow/CloseArmyButton") as Button
+	_army_name_value = get_node("Panel/TabContainer/Army/ArmyEditPanel/ArmyNameRow/ArmyNameValue") as Label
+	_region_id_value_army = get_node("Panel/TabContainer/Army/ArmyEditPanel/RegionIDRow/RegionIDValue") as Label
+	_region_name_value_army = get_node("Panel/TabContainer/Army/ArmyEditPanel/RegionNameRow/RegionNameValue") as Label
+	_save_scenario_button = get_node("Panel/TabContainer/Main/SaveButtonRow/SaveScenarioButton") as Button
+	_save_map_button = get_node("Panel/TabContainer/Main/SaveMapButtonRow/SaveMapButton") as Button
+	_scenario_name_edit = get_node("Panel/TabContainer/Main/SaveRow/ScenarioNameEdit") as LineEdit
+	_exit_button = get_node("Panel/TabContainer/Main/ExitButtonRow/ExitButton") as Button
 	_unit_edits = {
-		SoldierTypeEnum.Type.PEASANTS: get_node("ArmyPanel/ArmyContent/PeasantsRow/PeasantsEdit") as LineEdit,
-		SoldierTypeEnum.Type.SPEARMEN: get_node("ArmyPanel/ArmyContent/SpearmenRow/SpearmenEdit") as LineEdit,
-		SoldierTypeEnum.Type.SWORDSMEN: get_node("ArmyPanel/ArmyContent/SwordsmenRow/SwordsmenEdit") as LineEdit,
-		SoldierTypeEnum.Type.ARCHERS: get_node("ArmyPanel/ArmyContent/ArchersRow/ArchersEdit") as LineEdit,
-		SoldierTypeEnum.Type.CROSSBOWMEN: get_node("ArmyPanel/ArmyContent/CrossbowmenRow/CrossbowmenEdit") as LineEdit,
-		SoldierTypeEnum.Type.HORSEMEN: get_node("ArmyPanel/ArmyContent/HorsemenRow/HorsemenEdit") as LineEdit,
-		SoldierTypeEnum.Type.KNIGHTS: get_node("ArmyPanel/ArmyContent/KnightsRow/KnightsEdit") as LineEdit,
-		SoldierTypeEnum.Type.MOUNTED_KNIGHTS: get_node("ArmyPanel/ArmyContent/MountedKnightsRow/MountedKnightsEdit") as LineEdit,
-		SoldierTypeEnum.Type.ROYAL_GUARD: get_node("ArmyPanel/ArmyContent/RoyalGuardRow/RoyalGuardEdit") as LineEdit
+		SoldierTypeEnum.Type.PEASANTS: get_node("Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow/PeasantsEdit") as LineEdit,
+		SoldierTypeEnum.Type.SPEARMEN: get_node("Panel/TabContainer/Army/ArmyEditPanel/SpearmenRow/SpearmenEdit") as LineEdit,
+		SoldierTypeEnum.Type.SWORDSMEN: get_node("Panel/TabContainer/Army/ArmyEditPanel/SwordsmenRow/SwordsmenEdit") as LineEdit,
+		SoldierTypeEnum.Type.ARCHERS: get_node("Panel/TabContainer/Army/ArmyEditPanel/ArchersRow/ArchersEdit") as LineEdit,
+		SoldierTypeEnum.Type.CROSSBOWMEN: get_node("Panel/TabContainer/Army/ArmyEditPanel/CrossbowmenRow/CrossbowmenEdit") as LineEdit,
+		SoldierTypeEnum.Type.HORSEMEN: get_node("Panel/TabContainer/Army/ArmyEditPanel/HorsemenRow/HorsemenEdit") as LineEdit,
+		SoldierTypeEnum.Type.KNIGHTS: get_node("Panel/TabContainer/Army/ArmyEditPanel/KnightsRow/KnightsEdit") as LineEdit,
+		SoldierTypeEnum.Type.MOUNTED_KNIGHTS: get_node("Panel/TabContainer/Army/ArmyEditPanel/MountedKnightsRow/MountedKnightsEdit") as LineEdit,
+		SoldierTypeEnum.Type.ROYAL_GUARD: get_node("Panel/TabContainer/Army/ArmyEditPanel/RoyalGuardRow/RoyalGuardEdit") as LineEdit
 	}
 	_resource_edits = {
-		ResourcesEnum.Type.FOOD: get_node("Panel/Content/FoodRow/FoodEdit") as LineEdit,
-		ResourcesEnum.Type.WOOD: get_node("Panel/Content/WoodRow/WoodEdit") as LineEdit,
-		ResourcesEnum.Type.STONE: get_node("Panel/Content/StoneRow/StoneEdit") as LineEdit,
-		ResourcesEnum.Type.IRON: get_node("Panel/Content/IronRow/IronEdit") as LineEdit,
-		ResourcesEnum.Type.GOLD: get_node("Panel/Content/GoldRow/GoldEdit") as LineEdit
+		ResourcesEnum.Type.FOOD: get_node("Panel/TabContainer/Region/FoodRow/FoodEdit") as LineEdit,
+		ResourcesEnum.Type.WOOD: get_node("Panel/TabContainer/Region/WoodRow/WoodEdit") as LineEdit,
+		ResourcesEnum.Type.STONE: get_node("Panel/TabContainer/Region/StoneRow/StoneEdit") as LineEdit,
+		ResourcesEnum.Type.IRON: get_node("Panel/TabContainer/Region/IronRow/IronEdit") as LineEdit,
+		ResourcesEnum.Type.GOLD: get_node("Panel/TabContainer/Region/GoldRow/GoldEdit") as LineEdit
 	}
 	# Populate dropdowns and wire signals
 	_populate_types()
@@ -104,8 +110,8 @@ func _ready() -> void:
 	_edit_army_button.pressed.connect(_on_edit_army_pressed)
 	_close_army_button.pressed.connect(_on_close_army_pressed)
 	_save_scenario_button.pressed.connect(_on_save_scenario_pressed)
-	_load_scenario_button.pressed.connect(_on_load_scenario_pressed)
-	_populate_scenario_list()
+	_save_map_button.pressed.connect(_on_save_map_pressed)
+	_exit_button.pressed.connect(_on_exit_pressed)
 
 func _populate_types() -> void:
 	_option.clear()
@@ -159,9 +165,11 @@ func update_from_region(region: Region) -> void:
 		_army_toggle_button.text = "Remove Army" if has_army else "Add Army"
 	# Enable Edit Army only if an army exists to edit
 	_edit_army_button.disabled = not has_army
-	# Ensure correct default visibility (Region panel shown by default)
-	_region_panel.visible = true
-	_army_panel.visible = false
+	# Default to Region tab when a region is selected
+	_tab_container.current_tab = 2  # Region tab
+	# Make sure army panels are in default state
+	_army_default_content.visible = true
+	_army_edit_panel.visible = false
 
 func _select_text(txt: String) -> void:
 	for i in range(_option.item_count):
@@ -252,8 +260,11 @@ func _on_army_toggle_pressed() -> void:
 
 func _on_edit_army_pressed() -> void:
 	_populate_army_panel()
-	_region_panel.visible = false
-	_army_panel.visible = true
+	# Switch to Army tab
+	_tab_container.current_tab = 3  # Army tab
+	# Show army edit panel, hide default content
+	_army_default_content.visible = false
+	_army_edit_panel.visible = true
 
 func _on_close_army_pressed() -> void:
 	var data: Dictionary = {}
@@ -261,8 +272,9 @@ func _on_close_army_pressed() -> void:
 		var e: LineEdit = _unit_edits[t]
 		data[t] = int(e.text)
 	army_edit_saved.emit(_current_region_id, data)
-	_army_panel.visible = false
-	_region_panel.visible = true
+	# Show default army content, hide edit panel
+	_army_edit_panel.visible = false
+	_army_default_content.visible = true
 
 func _on_save_scenario_pressed() -> void:
 	var mg: MapGenerator = get_node("../../Map") as MapGenerator
@@ -327,33 +339,70 @@ func _write_scenario(scenario: Dictionary) -> void:
 	var json_text := JSON.stringify(scenario, "\t")
 	file.store_string(json_text)
 	file.close()
-	_populate_scenario_list()
+	DebugLogger.log("MapEditorPanel", "Scenario saved to " + path)
 
-func _populate_scenario_list() -> void:
-	_scenario_select.clear()
-	var dir := DirAccess.open("res://scenarios")
-	if dir == null:
+func _on_exit_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/editor_start.tscn")
+
+func _on_save_map_pressed() -> void:
+	var mg: MapGenerator = get_node("../../Map") as MapGenerator
+	if not mg or not mg.data_file_path:
+		DebugLogger.log("MapEditorPanel", "No map data file to save")
 		return
-	dir.list_dir_begin()
-	var files: Array[String] = []
-	while true:
-		var f := dir.get_next()
-		if f == "":
-			break
-		if dir.current_is_dir():
-			continue
-		if f.to_lower().ends_with(".json"):
-			files.append(f)
-	dir.list_dir_end()
-	files.sort()  # stable order
-	for f in files:
-		_scenario_select.add_item(f)
-
-func _on_load_scenario_pressed() -> void:
-	# Placeholder: selection is available via _scenario_select.get_item_text(index)
-	var i := _scenario_select.get_selected_id()
-	var name := _scenario_select.get_item_text(_scenario_select.get_selected()) if _scenario_select.item_count > 0 else ""
-	DebugLogger.log("MapEditorPanel", "Selected scenario: " + name)
+	
+	# Load the original map data
+	var file := FileAccess.open(mg.data_file_path, FileAccess.READ)
+	if not file:
+		DebugLogger.log("MapEditorPanel", "Failed to open map file: " + mg.data_file_path)
+		return
+	
+	var json_text := file.get_as_text()
+	file.close()
+	
+	var json := JSON.new()
+	var parse_result := json.parse(json_text)
+	if parse_result != OK:
+		DebugLogger.log("MapEditorPanel", "Failed to parse map JSON")
+		return
+	
+	var data: Dictionary = json.data
+	if not data.has("regions"):
+		DebugLogger.log("MapEditorPanel", "Map data has no regions")
+		return
+	
+	# Update region types in the data
+	var regions_node: Node = mg.get_node("Regions")
+	var updated_count := 0
+	
+	for region_data in data["regions"]:
+		var region_id: int = region_data["id"]
+		# Find the corresponding Region node
+		for child in regions_node.get_children():
+			if child is Region:
+				var region := child as Region
+				if region.get_region_id() == region_id:
+					# Update the region type/biome in the data
+					if region.is_ocean_region():
+						region_data["biome"] = "ocean"
+						region_data["ocean"] = true
+					else:
+						region_data["biome"] = region.get_biome()
+						region_data["type"] = region.get_region_type()
+						region_data["ocean"] = false
+					updated_count += 1
+					break
+	
+	# Save the updated data back to the file
+	var save_file := FileAccess.open(mg.data_file_path, FileAccess.WRITE)
+	if not save_file:
+		DebugLogger.log("MapEditorPanel", "Failed to open map file for writing: " + mg.data_file_path)
+		return
+	
+	var updated_json := JSON.stringify(data, "\t")
+	save_file.store_string(updated_json)
+	save_file.close()
+	
+	DebugLogger.log("MapEditorPanel", "Map saved to " + mg.data_file_path + " (" + str(updated_count) + " regions updated)")
 
 func _populate_army_panel() -> void:
 	_region_id_value_army.text = str(_current_region_id)

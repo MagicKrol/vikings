@@ -33,9 +33,9 @@ var total_players: int = 6
 # Player type management (up to 6 players)
 var player_types: Array[PlayerTypeEnum.Type] = [
 	PlayerTypeEnum.Type.HUMAN,   # Player 1 - Computer (temporarily for testing)
-	PlayerTypeEnum.Type.OFF,   # Player 2 - Computer
-	PlayerTypeEnum.Type.OFF,   # Player 3 - Computer
-	PlayerTypeEnum.Type.OFF,   # Player 4 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 2 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 3 - Computer
+	PlayerTypeEnum.Type.COMPUTER,   # Player 4 - Computer
 	PlayerTypeEnum.Type.OFF,   # Player 5 - Computer
 	PlayerTypeEnum.Type.OFF    # Player 6 - Computer
 ]
@@ -48,9 +48,6 @@ var players_per_round: Array[int] = [1, 2, 3, 4, 5, 6]  # Sequence: Player 1, 2,
 var castle_placing_mode: bool = true
 var castle_placement_order: Array[int] = []  # Track castle placement order
 var castles_placed: int = 0
-
-# Map editor mode state
-var enable_map_editor: bool = true  # Configurable flag to enable map editor mode
 
 # Army placement settings
 var armies_per_castle: int = 3  # Configurable - can be adjusted for difficulty/scenario
@@ -83,19 +80,40 @@ var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
+# Map editor mode state
+var enable_map_editor: bool = true  # Configurable flag to enable map editor mode
+
 
 # References to other managers
 var click_manager: Node = null
 
+# Scenario mode
+var game_mode: String = "custom"  # "custom" | "scenario"
+var scenario_path: String = "res://scenarios/scenario.json"
+
 func _ready():
 	# Early init gate: check if map editor is enabled BEFORE normal init
 	if enable_map_editor:
-		DebugLogger.log("GameInit", "Map editor mode enabled - initializing editor instead of game flow")
+		DebugLogger.log("GameInit", "Map editor mode enabled")
+		# If no editor start payload, jump to EditorStart scene first
+		if not get_tree().has_meta("editor_start_payload") or get_tree().get_meta("editor_start_payload") == null:
+			DebugLogger.log("GameInit", "Opening EditorStart scene for selection")
+			get_tree().change_scene_to_file("res://scenes/editor_start.tscn")
+			return
+		# Otherwise, proceed to initialize editor inside main scene
 		_initialize_map_editor()
 		return
 
+	# Scenario pre-load: if scenario mode, set map file upfront and regenerate map
+	if game_mode == "scenario" and scenario_path != "":
+		var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+		var scen := ScenarioManager.new().load_scenario(scenario_path)
+		if scen.has("map_file"):
+			map_generator.data_file_path = String(scen.get("map_file"))
+			map_generator.generate_map()
+
 	# Initialize all game systems
-	initialize_managers()
+	initialize_managers(game_mode == "scenario")
 	
 	# Start the game audio sequence after a brief delay to ensure sound manager is ready
 	await get_tree().process_frame
@@ -105,7 +123,7 @@ func _ready():
 	else:
 		DebugLogger.log("GameInit", "Error: Sound manager not found!")
 
-func initialize_managers():
+func initialize_managers(is_scenario: bool = false):
 	"""Initialize all game managers and establish dependencies"""
 	# Get core components - these are required
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
@@ -160,6 +178,8 @@ func initialize_managers():
 		DebugLogger.log("GameInit", "Successfully cast to PlayerManagerNode: " + str(player_manager))
 		player_manager.initialize_with_managers(_region_manager, map_generator)
 		player_manager.set_army_manager(_army_manager)
+		# Ensure players are initialized before any UI or scenario logic uses them
+		player_manager._initialize_players()
 		
 		# Connect to player change signal to refresh UI
 		player_manager.current_player_changed.connect(_on_current_player_changed)
@@ -207,6 +227,10 @@ func initialize_managers():
 		heat.compute_and_show()
 		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying strategic points heatmap. Castle placement and turns are disabled.")
 	else:
+		# Scenario mode: apply scenario and start game immediately
+		if is_scenario and scenario_path != "":
+			_start_scenario()
+			return
 		# In map editor mode, skip heatmap/castle placement/turn flow entirely
 		if enable_map_editor:
 			DebugLogger.log("GameInit", "Map editor enabled: skipping heatmap and castle placement initialization")
@@ -216,6 +240,28 @@ func initialize_managers():
 		heat_calc.enable_key_toggle = false
 		heat_calc.compute_and_store()
 		_initialize_castle_placement_sequence()
+
+func _start_scenario() -> void:
+	"""Apply scenario to runtime and start gameplay (no castle placement)."""
+	DebugLogger.log("GameInit", "Starting scenario mode from: " + scenario_path)
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var scen_mgr := ScenarioManager.new()
+	var scen := scen_mgr.load_scenario(scenario_path)
+	# Apply to runtime
+	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen)
+	# Set game state for immediate play
+	castle_placing_mode = false
+	current_player = 1
+	player_manager.set_current_player(current_player)
+	# Allow a frame for UI to be ready, then show status modals
+	await get_tree().process_frame
+	var ui_node = get_node("../UI")
+	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
+	player_status_modal2.show_and_update()
+	turn_modal.show_and_update()
+	# Start first turn immediately
+	_start_first_turn()
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
@@ -282,15 +328,44 @@ func _initialize_map_editor() -> void:
 	map_editor.initialize()
 	DebugLogger.log("GameInit", "MapEditor initialized successfully")
 
-	# Minimal managers for editor actions (ownership/army toggles)
+	# Map reference
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+
+	# Handle editor start payload (from EditorStart scene)
+	if get_tree().has_meta("editor_start_payload"):
+		var payload = get_tree().get_meta("editor_start_payload")
+		var kind := String(payload.get("type", ""))
+		if kind == "map":
+			map_generator.data_file_path = String(payload.get("map_file"))
+			_map_set_size_from_string(map_generator, String(payload.get("map_size", "small")))
+			map_generator.generate_map()
+		elif kind == "scenario":
+			var scen_path := String(payload.get("scenario_path"))
+			var scen_mgr := ScenarioManager.new()
+			var scen := scen_mgr.load_scenario(scen_path)
+			if scen.has("map_file"):
+				map_generator.data_file_path = String(scen.get("map_file"))
+				_map_set_size_from_string(map_generator, String(payload.get("map_size", "small")))
+				map_generator.generate_map()
+			# After managers are created (below), apply scenario deltas
+			get_tree().set_meta("__scenario_to_apply__", scen)
+		# Clear payload
+		get_tree().set_meta("editor_start_payload", null)
+
+	# Minimal managers for editor actions (ownership/army toggles) — create AFTER map generation
 	_region_manager = RegionManager.new(map_generator)
 	_army_manager = ArmyManager.new(map_generator, _region_manager)
 	# Provide to ClickManager so editor code can use them
 	click_manager = get_node("../ClickManager")
 	if click_manager.has_method("set_managers"):
 		click_manager.set_managers(_region_manager, _army_manager)
-	
+
+	# If a scenario was queued, apply its deltas now
+	if get_tree().has_meta("__scenario_to_apply__") and get_tree().get_meta("__scenario_to_apply__") != null:
+		var scen: Dictionary = get_tree().get_meta("__scenario_to_apply__") as Dictionary
+		get_tree().set_meta("__scenario_to_apply__", null)
+		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, null, scen)
+
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")
 	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2")
@@ -307,6 +382,22 @@ func _initialize_map_editor() -> void:
 	DebugLogger.log("GameInit", "Map editor panel shown")
 	
 	DebugLogger.log("GameInit", "Map editor initialization complete")
+
+func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
+	var s := size_str.to_lower()
+	match s:
+		"tiny":
+			mg.map_size = MapGenerator.MapSize.TINY
+		"small":
+			mg.map_size = MapGenerator.MapSize.SMALL
+		"medium":
+			mg.map_size = MapGenerator.MapSize.MEDIUM
+		"large":
+			mg.map_size = MapGenerator.MapSize.LARGE
+		"huge":
+			mg.map_size = MapGenerator.MapSize.HUGE
+		_:
+			mg.map_size = MapGenerator.MapSize.SMALL
 
 func _get_next_player() -> int:
 	"""Get the next player in the turn sequence"""

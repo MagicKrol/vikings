@@ -23,10 +23,8 @@ func _ready():
 	if game_manager and game_manager.enable_map_editor:
 		visible = false
 		return
-	# Make visible by default as a status bar (non-editor)
+	# Make visible by default as a status bar (non-editor). GameManager triggers updates.
 	visible = true
-	# Update display immediately when ready
-	call_deferred("_update_display_from_game_state")
 
 func set_resource_data(resource_type: ResourcesEnum.Type, amount: int, income: int = 0) -> void:
 	"""Update resource data for a specific type"""
@@ -95,7 +93,9 @@ func _update_resource_display(container_name: String, resource_type: ResourcesEn
 
 func _update_display_from_game_state() -> void:
 	"""Update display from current game state"""
-	
+	# Ensure game manager reference is set (resolve on-demand)
+	game_manager = get_node("../../GameManager") as GameManager
+
 	# Get current player
 	var current_player = game_manager.player_manager.get_current_player()
 	
