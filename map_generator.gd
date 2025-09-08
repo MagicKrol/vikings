@@ -2,6 +2,8 @@ extends Node2D
 
 class_name MapGenerator
 
+signal map_generated
+
 # Configuration
 @export var data_file_path: String = "mapdata-207-xtiny.json"
 @export var noisy_edges_enabled: bool = true
@@ -330,6 +332,8 @@ func _render_from_json() -> void:
 
 
 	DebugLogger.log("MapGeneration", "Rendered edges: " + str(edges.size()) + ", land regions created=" + str(_region_count))
+	# Notify listeners that the map has been generated
+	emit_signal("map_generated")
 
 func _create_region_from_data(region_data: Dictionary) -> void:
 	var polygon_data = region_data.get("polygon", [])

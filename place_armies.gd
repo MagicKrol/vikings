@@ -3,29 +3,16 @@ extends Node
 # This script finds the first non-ocean region center from MapGenerator
 # and creates the initial army there using proper Roman numeral naming.
 
-@onready var map_generator: MapGenerator = get_node_or_null("MapGenerator") as MapGenerator
+@onready var map_generator: MapGenerator = get_node("Map") as MapGenerator
 
 func _ready() -> void:
-	# If MapGenerator already has data, try to place immediately; otherwise, defer a bit
-	_call_deferred_placement()
+	# Place army after map generation completes
+	map_generator.map_generated.connect(_on_map_generated)
+	# If map already built, proceed immediately
+	if not map_generator.regions.is_empty():
+		_on_map_generated()
 
-func _call_deferred_placement() -> void:
-	# Defer to next frame to ensure MapGenerator finished
-	await get_tree().process_frame
-	# Wait a few frames if regions not yet loaded
-	var tries := 0
-	while tries < 30 and (map_generator == null or map_generator.regions.is_empty()):
-		await get_tree().process_frame
-		tries += 1
-	
-	# Wait for ClickManager and ArmyManager to be ready
-	var click_manager = get_node_or_null("ClickManager")
-	var army_manager_tries := 0
-	while army_manager_tries < 30 and (click_manager == null or not click_manager.has_method("get_army_manager") or click_manager.get_army_manager() == null):
-		await get_tree().process_frame
-		army_manager_tries += 1
-		click_manager = get_node_or_null("ClickManager")
-	
+func _on_map_generated() -> void:
 	_create_initial_army()
 
 func _create_initial_army() -> void:
@@ -53,8 +40,8 @@ func _create_initial_army() -> void:
 		return
 	
 	# Get army manager from ClickManager
-	var click_manager = get_node_or_null("ClickManager")
-	if click_manager == null or not click_manager.has_method("get_army_manager"):
+	var click_manager = get_node("ClickManager")
+	if not click_manager.has_method("get_army_manager"):
 		DebugLogger.log("GameInit", "Cannot find army manager")
 		return
 	

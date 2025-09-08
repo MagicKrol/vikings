@@ -215,7 +215,7 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		if child is Army:
 			armies_in_region.append(child as Army)
 	
-	# If there are armies in this region, check for conquest first
+	# If there are armies in this region, check for conquest or selection first
 	if not armies_in_region.is_empty():
 		var region = region_container as Region
 		if region != null:
@@ -243,11 +243,12 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 				if army.get_player_id() == current_player_id:
 					current_player_armies.append(army)
 			
-			# Only show SelectModal if current player has armies in this region
+			# Only show SelectModal if current player has armies in this region.
+			# If there are only enemy armies here, allow movement to proceed below (attack).
 			if not current_player_armies.is_empty():
 				var select_modal = get_node("../UI/GeneralSelectModal") as GeneralSelectModal
 				select_modal.show_selection(region, current_player_armies)
-		return
+				return
 	
 	# If we have a selected army, try to move it to this region
 	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:

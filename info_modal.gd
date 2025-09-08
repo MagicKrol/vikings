@@ -5,6 +5,7 @@ class_name InfoModal
 var ui_manager: UIManager = null
 # Sound manager reference
 var sound_manager: SoundManager = null
+var game_manager: GameManager = null
 
 # Current display mode
 enum DisplayMode { NONE, ARMY, REGION }
@@ -18,12 +19,16 @@ func _ready():
 	# Get references
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
+	game_manager = get_node("../../GameManager") as GameManager
 	
 	# Initially hidden
 	visible = false
 
 func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 	"""Show the modal with army information"""
+	# Prevent showing during AI/computer turns
+	if not _is_human_turn():
+		return
 	if army == null:
 		hide_modal()
 		return
@@ -40,6 +45,9 @@ func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 
 func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	"""Show the modal with region information"""
+	# Prevent showing during AI/computer turns
+	if not _is_human_turn():
+		return
 	if region == null:
 		hide_modal()
 		return
@@ -53,6 +61,10 @@ func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	# Set modal mode active only if requested
 	if manage_modal_mode and ui_manager:
 		ui_manager.set_modal_active(true)
+
+func _is_human_turn() -> bool:
+	var pid := game_manager.get_current_player_id()
+	return game_manager.is_player_human(pid)
 
 func hide_modal(manage_modal_mode: bool = true) -> void:
 	"""Hide the modal but keep content intact"""

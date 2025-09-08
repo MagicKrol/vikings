@@ -153,6 +153,35 @@ func _ready() -> void:
 	_save_scenario_button.pressed.connect(_on_save_scenario_pressed)
 	_save_map_button.pressed.connect(_on_save_map_pressed)
 	_exit_button.pressed.connect(_on_exit_pressed)
+	
+	# Check for loaded scenario name after a short delay to ensure GameManager is ready
+	call_deferred("_check_and_populate_scenario_name")
+
+func _check_and_populate_scenario_name() -> void:
+	"""Check if we loaded from a scenario and populate the name field"""
+	# Check if there's a scenario path in the game manager or metadata
+	var gm = get_node_or_null("../../GameManager")
+	if gm and gm.has_method("get_loaded_scenario_name"):
+		var scenario_name = gm.get_loaded_scenario_name()
+		if scenario_name != "":
+			# Remove .json extension if present
+			if scenario_name.ends_with(".json"):
+				scenario_name = scenario_name.substr(0, scenario_name.length() - 5)
+			_scenario_name_edit.text = scenario_name
+			DebugLogger.log("MapEditorPanel", "Populated scenario name: " + scenario_name)
+			return
+	
+	# Alternative: Check tree metadata for editor start payload
+	if get_tree().has_meta("editor_start_payload"):
+		var payload = get_tree().get_meta("editor_start_payload")
+		if payload and payload.has("scenario_path"):
+			var scenario_path = payload["scenario_path"]
+			var scenario_name = scenario_path.get_file()
+			# Remove .json extension if present
+			if scenario_name.ends_with(".json"):
+				scenario_name = scenario_name.substr(0, scenario_name.length() - 5)
+			_scenario_name_edit.text = scenario_name
+			DebugLogger.log("MapEditorPanel", "Populated scenario name from payload: " + scenario_name)
 
 func _populate_types() -> void:
 	_option.clear()

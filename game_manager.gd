@@ -89,7 +89,9 @@ var click_manager: Node = null
 
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
-var scenario_path: String = "mission1.json"
+# var scenario_path: String = "mission1.json"
+var scenario_path: String = "battle_test.json"
+var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 
 func _ready():
 	# Early init gate: check if map editor is enabled BEFORE normal init
@@ -98,7 +100,8 @@ func _ready():
 		# If no editor start payload, jump to EditorStart scene first
 		if not get_tree().has_meta("editor_start_payload") or get_tree().get_meta("editor_start_payload") == null:
 			DebugLogger.log("GameInit", "Opening EditorStart scene for selection")
-			get_tree().change_scene_to_file("res://scenes/editor_start.tscn")
+			# Defer scene change to avoid remove_child during initialization
+			get_tree().call_deferred("change_scene_to_file", "res://scenes/editor_start.tscn")
 			return
 		# Otherwise, proceed to initialize editor inside main scene
 		_initialize_map_editor()
@@ -352,6 +355,8 @@ func _initialize_map_editor() -> void:
 			# Normalize scenario path to res://scenarios/<file>
 			var scen_full := "res://scenarios/" + scen_path.get_file()
 			var scen := scen_mgr.load_scenario(scen_full)
+			# Track the loaded scenario name
+			loaded_scenario_name = scen_path.get_file().get_basename()
 			if scen.has("map_file"):
 				map_generator.data_file_path = String(scen.get("map_file")).get_file()
 				_map_set_size_from_string(map_generator, String(payload.get("map_size", "small")))
@@ -1165,6 +1170,10 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		var current_pos = final_position.get_region_id() if final_position else -1
 		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
 		return "blocked"
+
+func get_loaded_scenario_name() -> String:
+	"""Get the name of the loaded scenario (for map editor)"""
+	return loaded_scenario_name
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""
