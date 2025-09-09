@@ -6,7 +6,6 @@ var current_region: Region = null
 var current_armies: Array[Army] = []
 
 # Additional references specific to selection
-var region_modal: RegionModal = null
 var army_select_modal: ArmySelectModal = null
 var region_select_modal: RegionSelectModal = null
 
@@ -15,7 +14,6 @@ func _ready():
 	_setup_select_references()
 
 func _setup_select_references():
-	region_modal = get_node("../RegionModal") as RegionModal
 	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
 	region_select_modal = get_node("../RegionSelectModal") as RegionSelectModal
 

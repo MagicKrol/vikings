@@ -143,9 +143,10 @@ func _update_region_display() -> void:
 	var growth_rate = GameParameters.POPULATION_GROWTH_RATE * 100
 	growth_value.text = "+" + str(snappedf(growth_rate, 0.1)) + "%"
 	
-	# Update income (last population growth)
+	# Update income (gold income from population)
 	var income_value = get_node("Panel/Region/PopulationSection/Income/Value")
-	income_value.text = str(current_region.last_population_growth)
+	var gold_income = current_region.get_income()
+	income_value.text = str(gold_income)
 	
 	# Update castle/defenses
 	var castle_value = get_node("Panel/Region/GarisonSection/Castle/Value")

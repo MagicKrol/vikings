@@ -24,7 +24,6 @@ Main (Node2D) [place_armies.gd]
 ├ UI (CanvasLayer)
 │	├ UIManager (Control) [ui_manager.gd]
 │	├ ArmyModal [scenes/army_modal.tscn] [army_modal.gd]
-│	├ RegionModal [scenes/region_modal.tscn] [region_modal.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd]
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
@@ -203,7 +202,7 @@ editor_start.tscn (Editor Start)
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions.
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; provides PlayerStatusModal.
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
-- Scenes in `scenes/` folder (each with paired script): `army_modal`, `region_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.
+- Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.
 
 ## Data & Parameters
 - Player.gd: resources, name/color/id, afford/pay helpers, serialization.

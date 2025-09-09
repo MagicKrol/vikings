@@ -9,7 +9,6 @@
 [ext_resource type="Script" path="res://ui_manager.gd" id="8_ui"]
 [ext_resource type="PackedScene" uid="uid://darmyselmodal" path="res://scenes/army_select_modal.tscn" id="9_7d6ox"]
 [ext_resource type="PackedScene" uid="uid://cml12by6pyhyc" path="res://scenes/region_tooltip2.tscn" id="9_cgk76"]
-[ext_resource type="PackedScene" uid="uid://b5x0rd34s8wqj" path="res://scenes/region_modal.tscn" id="10_lauhs"]
 [ext_resource type="PackedScene" uid="uid://h2augxohyp55" path="res://scenes/info_modal.tscn" id="13_35f3x"]
 [ext_resource type="Script" path="res://sound_manager.gd" id="14_sound"]
 [ext_resource type="PackedScene" uid="uid://btws5g1cdahse" path="res://scenes/region_tooltip.tscn" id="15_d3ude"]
@@ -86,8 +85,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_ui")
-
-[node name="RegionModal" parent="UI" instance=ExtResource("10_lauhs")]
 
 [node name="InfoModal" parent="UI" instance=ExtResource("13_35f3x")]
 

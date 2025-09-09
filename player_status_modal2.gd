@@ -153,7 +153,7 @@ func _calculate_region_income(player_id: int) -> Dictionary:
 				income[resource_type] += region_resource_amount
 			
 			# Add population-based gold income
-			var pop_gold_income = _calculate_population_gold_income(region_node)
+			var pop_gold_income = region_node.get_income()
 			income[ResourcesEnum.Type.GOLD] += pop_gold_income
 	
 	# Subtract army food costs from food income to show net food income
@@ -195,37 +195,3 @@ func _calculate_population_data(player_id: int) -> Dictionary:
 			population_data.income += region_node.last_population_growth
 	
 	return population_data
-
-func _calculate_population_gold_income(region: Region) -> int:
-	"""Calculate gold income from population based on formula: floor(population / (56 - 6 * region_level))"""
-	var population = region.get_population()
-	var region_level = region.get_region_level()
-	
-	# Convert region level enum to integer (assuming L1=1, L2=2, etc.)
-	var level_int = _region_level_to_int(region_level)
-	
-	# Formula: floor(Population / (56 - 6 * region_level))
-	var divisor = 56 - (6 * level_int)
-	
-	# Prevent division by zero or negative divisors
-	if divisor <= 0:
-		return 0
-	
-	var gold_income = int(population / divisor)
-	return max(0, gold_income)
-
-func _region_level_to_int(region_level: RegionLevelEnum.Level) -> int:
-	"""Convert region level enum to integer"""
-	match region_level:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1  # Default to level 1

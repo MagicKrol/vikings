@@ -172,9 +172,6 @@ func _handle_region_click(region_container: Node) -> void:
 			if _game_manager.can_place_castle_in_region(region):
 				_game_manager.handle_castle_placement(region)
 			else:
-				# Show info modal for invalid placement
-				var region_modal = get_node("../UI/RegionModal") as RegionModal
-				region_modal.show_region_info(region)
 				DebugLogger.log("InputSystem", "Cannot place castle - region already owned by another player")
 		else:
 			# For now, delegate army handling back to legacy system
@@ -281,10 +278,9 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		if region_owner == current_player_id:
 			var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
 			region_select_modal.show_region_actions(region)
-		# Otherwise, open RegionModal for unowned/enemy regions
+		# Otherwise, just log for unowned/enemy regions (no modal)
 		else:
-			var region_modal = get_node("../UI/RegionModal") as RegionModal
-			region_modal.show_region_info(region)
+			DebugLogger.log("InputSystem", "Clicked on region: " + region.get_region_name() + " (Owner: " + str(region_owner) + ")")
 
 # Legacy functions kept for compatibility - these now delegate to appropriate managers
 func reset_army_moves() -> void:

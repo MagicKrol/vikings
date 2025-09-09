@@ -40,7 +40,7 @@ anchors_preset = 0
 offset_left = 810.0
 offset_top = 340.0
 offset_right = 1080.0
-offset_bottom = 740.0
+offset_bottom = 540.0
 script = ExtResource("1_1f07t")
 
 [node name="OuterFrame" type="Panel" parent="."]
@@ -78,7 +78,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_trljc")
 
 [node name="TextureRect" type="TextureRect" parent="InnerPanel"]
 layout_mode = 0
-offset_right = 280.0
+offset_right = 380.0
 offset_bottom = 380.0
 texture = ExtResource("3_gjdoo")
 expand_mode = 2
@@ -92,8 +92,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Border" type="Panel" parent="."]
+layout_mode = 0
 offset_right = 270.0
-offset_bottom = 400.0
+offset_bottom = 200.0
 mouse_filter = 2
 theme = SubResource("Theme_tn0g7")
 theme_override_styles/panel = SubResource("StyleBoxFlat_qllfe")

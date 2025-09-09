@@ -106,6 +106,10 @@ const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for go
 ## Army Management Constants
 const RAISE_ARMY_COST = 20                     # Gold cost to raise a new army
 
+## Population Income Formula Constants
+const POPULATION_INCOME_BASE_DIVISOR = 56      # Base divisor for population gold income formula
+const POPULATION_INCOME_LEVEL_MULTIPLIER = 6   # Level multiplier for population gold income formula
+
 ## AI Raise Army Decision Parameters
 # Cost/Reserves
 const AI_RESERVE_GOLD_MIN = 30                 # Minimum gold to keep after raising army
@@ -193,10 +197,10 @@ const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry u
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
 	CastleTypeEnum.Type.NONE: 0,          # No castle - 0% hit avoidance
-	CastleTypeEnum.Type.OUTPOST: 20,      # Outpost - 20% hit avoidance  
-	CastleTypeEnum.Type.KEEP: 40,         # Keep - 40% hit avoidance
-	CastleTypeEnum.Type.CASTLE: 60,       # Castle - 60% hit avoidance
-	CastleTypeEnum.Type.STRONGHOLD: 75    # Stronghold - 75% hit avoidance
+	CastleTypeEnum.Type.OUTPOST: 50,      # Outpost - 20% hit avoidance  
+	CastleTypeEnum.Type.KEEP: 60,         # Keep - 40% hit avoidance
+	CastleTypeEnum.Type.CASTLE: 70,       # Castle - 60% hit avoidance
+	CastleTypeEnum.Type.STRONGHOLD: 85    # Stronghold - 75% hit avoidance
 }
 
 ## Unit Tier System
@@ -227,7 +231,7 @@ const CASTLE_RECRUITMENT_TIERS = {
 # Stats migrated from battle_sim.py for consistency
 const UNIT_STATS = {
 	SoldierTypeEnum.Type.PEASANTS: {
-		"attack": 3,      # 5% hit chance per unit
+		"attack": 5,      # 5% hit chance per unit
 		"defense": 10,    # 10% chance to deflect hits
 		"cost": 0,        # Free recruitment (food cost 0.1 handled separately)
 		"gold_cost": 0,

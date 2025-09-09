@@ -163,13 +163,45 @@ func _resize_modal(num_buttons: int) -> void:
 	var border_height = outer_height + BORDER_PADDING
 
 	var inner_panel: Control = $InnerPanel
+	inner_panel.custom_minimum_size.y = inner_height
 	inner_panel.size.y = inner_height
 
 	var outer_panel: Control = $OuterFrame
+	outer_panel.custom_minimum_size.y = outer_height
 	outer_panel.size.y = outer_height
 
 	var border: Control = $Border
+	border.custom_minimum_size.y = border_height
 	border.size.y = border_height
+
+	# Resize TextureRects inside panels to match heights
+	var outer_tex: TextureRect = get_node_or_null("OuterFrame/TextureRect") as TextureRect
+	if outer_tex:
+		# Fill parent rect so width/height always match OuterFrame
+		outer_tex.anchor_left = 0.0
+		outer_tex.anchor_top = 0.0
+		outer_tex.anchor_right = 1.0
+		outer_tex.anchor_bottom = 1.0
+		outer_tex.offset_left = 0
+		outer_tex.offset_top = 0
+		outer_tex.offset_right = 0
+		outer_tex.offset_bottom = 0
+	var inner_tex: TextureRect = get_node_or_null("InnerPanel/TextureRect") as TextureRect
+	if inner_tex:
+		# Fill parent rect so width/height always match InnerPanel
+		inner_tex.anchor_left = 0.0
+		inner_tex.anchor_top = 0.0
+		inner_tex.anchor_right = 1.0
+		inner_tex.anchor_bottom = 1.0
+		inner_tex.offset_left = 0
+		inner_tex.offset_top = 0
+		inner_tex.offset_right = 0
+		inner_tex.offset_bottom = 0
+
+	# Notify layout that minimum sizes changed
+	emit_signal("minimum_size_changed")
+
+	# Note: Do not resize the root Control here; keep visuals aligned to Border/OuterFrame/InnerPanel.
 
 func _on_tooltip_hovered(tooltip_key: String) -> void:
 	if select_tooltip_modal != null:

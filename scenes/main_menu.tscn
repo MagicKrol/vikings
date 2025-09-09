@@ -1,8 +1,73 @@
-[gd_scene load_steps=4 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=15 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
 [ext_resource type="Theme" uid="uid://cdrs8n52og4kp" path="res://themes/main_menu_theme.tres" id="3_theme"]
+[ext_resource type="Texture2D" uid="uid://bcyawbhhrhk7u" path="res://images/modal_bg3.png" id="4_jiisd"]
+[ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="5_background"]
+[ext_resource type="FontFile" uid="uid://cavdsubauup7v" path="res://fonts/Viking.TTF" id="7_viking_font"]
+[ext_resource type="FontFile" uid="uid://pclcml0fh6k3" path="res://fonts/Cardo-Bold.ttf" id="8_cardo_bold_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
+draw_center = false
+
+[sub_resource type="Theme" id="Theme_scenario"]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(0.9, 0.6, 0.4, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(0.9, 0.6, 0.4, 1)
+Button/colors/font_shadow_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 5
+Button/constants/shadow_offset_x = 1
+Button/constants/shadow_offset_y = 1
+Button/font_sizes/font_size = 30
+Button/fonts/font = ExtResource("8_cardo_bold_font")
+Button/styles/focus = SubResource("StyleBoxFlat_scenario")
+Button/styles/hover = SubResource("StyleBoxFlat_scenario")
+Button/styles/normal = SubResource("StyleBoxFlat_scenario")
+Button/styles/pressed = SubResource("StyleBoxFlat_scenario")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3"]
+
+[sub_resource type="Theme" id="Theme_play_button"]
+Button/colors/font_color = Color(0.988235, 0.921569, 0.760784, 1)
+Button/colors/font_disabled_color = Color(0.5, 0.5, 0.5, 1)
+Button/colors/font_hover_color = Color(0.592157, 0.266667, 0.0509804, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(0.592157, 0.266667, 0.0509804, 1)
+Button/colors/font_shadow_color = Color(0, 0, 0, 1)
+Button/constants/outline_size = 10
+Button/constants/shadow_offset_x = 2
+Button/constants/shadow_offset_y = 2
+Button/font_sizes/font_size = 50
+Button/fonts/font = ExtResource("7_viking_font")
+Button/styles/disabled = SubResource("StyleBoxEmpty_3")
+Button/styles/focus = SubResource("StyleBoxEmpty_3")
+Button/styles/hover = SubResource("StyleBoxEmpty_3")
+Button/styles/normal = SubResource("StyleBoxEmpty_3")
+Button/styles/pressed = SubResource("StyleBoxEmpty_3")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1o4cw"]
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="Theme" id="Theme_icaip"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqi7r"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.847059)
+shadow_size = 5
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -23,6 +88,7 @@ grow_vertical = 2
 texture = ExtResource("2_background")
 
 [node name="MenuContainer" type="VBoxContainer" parent="."]
+z_index = 10
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -76,3 +142,328 @@ layout_mode = 2
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Exit"
+
+[node name="NewGame" type="VBoxContainer" parent="."]
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CampaignButton" type="Button" parent="NewGame"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Campaign"
+
+[node name="Spacer1" type="Control" parent="NewGame"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="ScenarioButton" type="Button" parent="NewGame"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Scenario"
+
+[node name="Spacer2" type="Control" parent="NewGame"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="NewGame"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Back"
+
+[node name="Spacer3" type="Control" parent="NewGame"]
+custom_minimum_size = Vector2(0, 213)
+layout_mode = 2
+
+[node name="Options" type="VBoxContainer" parent="."]
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AudoButton" type="Button" parent="Options"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Audio"
+
+[node name="Spacer1" type="Control" parent="Options"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="MusicButton" type="Button" parent="Options"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Music"
+
+[node name="Spacer2" type="Control" parent="Options"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Options"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Back"
+
+[node name="Spacer3" type="Control" parent="Options"]
+custom_minimum_size = Vector2(0, 213)
+layout_mode = 2
+
+[node name="Campaign" type="VBoxContainer" parent="."]
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -300.0
+offset_right = 200.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer1" type="Control" parent="Campaign"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Campaign"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Back"
+
+[node name="Spacer3" type="Control" parent="Campaign"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="ScenarioContainer" type="TextureRect" parent="Campaign"]
+custom_minimum_size = Vector2(400, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("5_background")
+expand_mode = 2
+
+[node name="InnerMargin" type="MarginContainer" parent="Campaign/ScenarioContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Campaign/ScenarioContainer/InnerMargin"]
+layout_mode = 2
+
+[node name="ScenarioList" type="VBoxContainer" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Scenario1" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 1"
+alignment = 0
+
+[node name="Scenario2" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 2"
+alignment = 0
+
+[node name="Scenario3" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 3"
+alignment = 0
+
+[node name="Scenario4" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 4"
+alignment = 0
+
+[node name="Scenario5" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 5"
+alignment = 0
+
+[node name="Scenario6" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 6"
+alignment = 0
+
+[node name="Scenario7" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 7"
+alignment = 0
+
+[node name="Scenario8" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 8"
+alignment = 0
+
+[node name="Scenario9" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 9"
+alignment = 0
+
+[node name="Scenario10" type="Button" parent="Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_scenario")
+text = "Scenario 10"
+alignment = 0
+
+[node name="Spacer2" type="Control" parent="Campaign"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="Campaign"]
+layout_mode = 2
+theme = SubResource("Theme_play_button")
+disabled = true
+text = "Play"
+
+[node name="Scenario" type="VBoxContainer" parent="."]
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -300.0
+offset_right = 200.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer1" type="Control" parent="Scenario"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Scenario"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Back"
+
+[node name="Spacer3" type="Control" parent="Scenario"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="MapContainer" type="TextureRect" parent="Scenario"]
+custom_minimum_size = Vector2(400, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("5_background")
+expand_mode = 2
+
+[node name="InnerMargin" type="MarginContainer" parent="Scenario/MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Scenario/MapContainer/InnerMargin"]
+layout_mode = 2
+
+[node name="MapList" type="VBoxContainer" parent="Scenario/MapContainer/InnerMargin/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Spacer2" type="Control" parent="Scenario"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="Scenario"]
+layout_mode = 2
+theme = SubResource("Theme_play_button")
+disabled = true
+text = "Play"
+
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 710.0
+offset_top = 240.0
+offset_right = 1210.0
+offset_bottom = 840.0
+mouse_filter = 2
+
+[node name="InnerPanel" type="Panel" parent="Control"]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.997566, 0.999408)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1o4cw")
+
+[node name="TextureRect" type="TextureRect" parent="Control/InnerPanel"]
+modulate = Color(1, 1, 1, 0.941176)
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 600.0
+mouse_filter = 2
+texture = ExtResource("4_jiisd")
+expand_mode = 2
+
+[node name="Border" type="Panel" parent="Control"]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 600.0
+mouse_filter = 2
+theme = SubResource("Theme_icaip")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")

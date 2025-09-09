@@ -38,7 +38,6 @@ var is_modal_active: bool = false
 var _select_modal: GeneralSelectModal
 var _army_select_modal: ArmySelectModal
 var _region_select_modal: RegionSelectModal
-var _region_modal: RegionModal
 var _player_status_modal2: PlayerStatusModal2
 var _turn_modal: TurnModal
 
@@ -72,7 +71,6 @@ func _ready():
 	_select_modal = get_parent().get_node("GeneralSelectModal") as GeneralSelectModal
 	_army_select_modal = get_parent().get_node("ArmySelectModal") as ArmySelectModal
 	_region_select_modal = get_parent().get_node("RegionSelectModal") as RegionSelectModal
-	_region_modal = get_parent().get_node("RegionModal") as RegionModal
 	_player_status_modal2 = get_parent().get_node("PlayerStatusModal2") as PlayerStatusModal2
 	_turn_modal = get_parent().get_node("TurnModal") as TurnModal
 	
@@ -178,14 +176,12 @@ func close_all_active_modals() -> void:
 		_army_select_modal.hide_modal()
 	if _region_select_modal and _region_select_modal.visible:
 		_region_select_modal.hide_modal()
-	if _region_modal and _region_modal.visible:
-		_region_modal.hide_modal()
 	if battle_modal and battle_modal.visible:
 		battle_modal.hide_modal()
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
-	var modals = [_select_modal, _army_select_modal, _region_select_modal, _region_modal, battle_modal]
+	var modals = [_select_modal, _army_select_modal, _region_select_modal, battle_modal]
 	for modal in modals:
 		if modal and modal.visible:
 			return true
