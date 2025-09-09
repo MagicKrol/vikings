@@ -107,6 +107,24 @@ func _ready():
 		_initialize_map_editor()
 		return
 
+	# Main menu start payload (scenario/custom)
+	if get_tree().has_meta("start_payload") and get_tree().get_meta("start_payload") != null:
+		var payload = get_tree().get_meta("start_payload")
+		var kind := String(payload.get("type", ""))
+		var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+		if kind == "scenario":
+			game_mode = "scenario"
+			scenario_path = String(payload.get("scenario_path", ""))
+		elif kind == "map":
+			game_mode = "custom"
+			var map_path := String(payload.get("map_file", ""))
+			var size_str := String(payload.get("map_size", "small"))
+			map_generator.data_file_path = map_path.get_file()
+			_map_set_size_from_string(map_generator, size_str)
+			map_generator.generate_map()
+		# Clear payload to avoid reuse
+		get_tree().set_meta("start_payload", null)
+
 	# Scenario pre-load: if scenario mode, set map file upfront and regenerate map
 	if game_mode == "scenario" and scenario_path != "":
 		var map_generator: MapGenerator = get_node("../Map") as MapGenerator

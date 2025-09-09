@@ -7,8 +7,17 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 
 ### main_menu.tscn
 - Entry UI. Starts a new game or continues; loads `main.tscn`.
- - MapPreview: Visible only in Campaign/Scenario menus. `InnerPanel` background stays visible while menu is open; `MapScreenshot` toggled on hover. Fits height (keeps aspect), width is clipped.
- - Menu UX: No click sounds on button presses in main menu.
+- MapPreview: Visible only in Campaign/Scenario menus. `InnerPanel` background stays visible while menu is open; `MapScreenshot` toggled on hover. Fits height (keeps aspect), width is clipped.
+- Menu UX: No click sounds on button presses in main menu.
+
+Start Flow
+- Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
+  - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
+  - Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <xtiny|tiny|small|medium|large|huge> }` (size inferred from filename suffix)
+- `GameManager._ready()` reads `start_payload`:
+  - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file).
+  - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, then `generate_map()`.
+  - Payload is cleared after consumption.
 
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]

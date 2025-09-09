@@ -177,13 +177,22 @@ text = "Scenario"
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
+[node name="ScenarioButton2" type="Button" parent="NewGame"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Custom Map"
+
+[node name="Spacer4" type="Control" parent="NewGame"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
 [node name="BackButton" type="Button" parent="NewGame"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Back"
 
 [node name="Spacer3" type="Control" parent="NewGame"]
-custom_minimum_size = Vector2(0, 213)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
 [node name="Options" type="VBoxContainer" parent="."]
@@ -431,6 +440,61 @@ theme = SubResource("Theme_play_button")
 disabled = true
 text = "Play"
 
+[node name="Scenario" type="VBoxContainer" parent="Scenario"]
+visible = false
+z_index = 10
+layout_mode = 2
+
+[node name="Spacer1" type="Control" parent="Scenario/Scenario"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Scenario/Scenario"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Back"
+
+[node name="Spacer3" type="Control" parent="Scenario/Scenario"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="MapContainer" type="TextureRect" parent="Scenario/Scenario"]
+custom_minimum_size = Vector2(400, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("5_background")
+expand_mode = 2
+
+[node name="InnerMargin" type="MarginContainer" parent="Scenario/Scenario/MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Scenario/Scenario/MapContainer/InnerMargin"]
+layout_mode = 2
+
+[node name="MapList" type="VBoxContainer" parent="Scenario/Scenario/MapContainer/InnerMargin/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Spacer2" type="Control" parent="Scenario/Scenario"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="Scenario/Scenario"]
+layout_mode = 2
+theme = SubResource("Theme_play_button")
+disabled = true
+text = "Play"
+
 [node name="Control" type="Control" parent="."]
 anchors_preset = 0
 offset_left = 710.0
@@ -516,3 +580,69 @@ offset_bottom = 500.0
 mouse_filter = 2
 theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
+
+[node name="CustomMap" type="VBoxContainer" parent="."]
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -300.0
+offset_right = 200.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer1" type="Control" parent="CustomMap"]
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CustomMap"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Back"
+
+[node name="Spacer3" type="Control" parent="CustomMap"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="MapContainer" type="TextureRect" parent="CustomMap"]
+custom_minimum_size = Vector2(400, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("5_background")
+expand_mode = 2
+
+[node name="InnerMargin" type="MarginContainer" parent="CustomMap/MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CustomMap/MapContainer/InnerMargin"]
+layout_mode = 2
+
+[node name="MapList" type="VBoxContainer" parent="CustomMap/MapContainer/InnerMargin/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Spacer2" type="Control" parent="CustomMap"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="CustomMap"]
+layout_mode = 2
+theme = SubResource("Theme_play_button")
+disabled = true
+text = "Play"

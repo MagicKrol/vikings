@@ -10,6 +10,7 @@ class_name MainMenu
 # New Game menu buttons
 @onready var campaign_button: Button = $NewGame/CampaignButton
 @onready var scenario_button: Button = $NewGame/ScenarioButton
+@onready var custom_map_button: Button = $NewGame/ScenarioButton2
 @onready var new_game_back_button: Button = $NewGame/BackButton
 
 # Campaign menu elements
@@ -23,7 +24,12 @@ class_name MainMenu
 # Scenario menu buttons
 @onready var scenario_back_button: Button = $Scenario/BackButton
 @onready var scenario_play_button: Button = $Scenario/PlayButton
-@onready var map_list: VBoxContainer = $Scenario/MapContainer/InnerMargin/ScrollContainer/MapList
+@onready var scenario_list_scenario: VBoxContainer = $Scenario/Scenario/MapContainer/InnerMargin/ScrollContainer/MapList
+
+# CustomMap menu buttons
+@onready var custom_map_back_button: Button = $CustomMap/BackButton
+@onready var custom_map_play_button: Button = $CustomMap/PlayButton
+@onready var custom_map_list: VBoxContainer = $CustomMap/MapContainer/InnerMargin/ScrollContainer/MapList
 
 # Container references
 @onready var menu_container: VBoxContainer = $MenuContainer
@@ -31,6 +37,7 @@ class_name MainMenu
 @onready var options_container: VBoxContainer = $Options
 @onready var campaign_container: VBoxContainer = $Campaign
 @onready var scenario_container: VBoxContainer = $Scenario
+@onready var custom_map_container: VBoxContainer = $CustomMap
 
 # Map preview references
 @onready var map_preview: Control = $MapPreview
@@ -38,12 +45,13 @@ class_name MainMenu
 
 var hover_timer: Timer
 var current_hovered_item: String = ""
+var default_preview_item: String = ""
 
 var sound_manager: SoundManager = null
 var selected_scenario: String = ""
-var selected_map: String = ""
+var selected_custom_map: String = ""
 var selected_scenario_button: Button = null
-var selected_map_button: Button = null
+var selected_custom_map_button: Button = null
 
 func _ready():
 	# Create and add sound manager
@@ -75,6 +83,7 @@ func _ready():
 	# Connect new game menu button signals
 	campaign_button.pressed.connect(_on_campaign_pressed)
 	scenario_button.pressed.connect(_on_scenario_pressed)
+	custom_map_button.pressed.connect(_on_custom_map_pressed)
 	new_game_back_button.pressed.connect(_on_new_game_back_pressed)
 	
 	# Connect campaign menu button signals
@@ -85,6 +94,10 @@ func _ready():
 	options_back_button.pressed.connect(_on_options_back_pressed)
 	scenario_back_button.pressed.connect(_on_scenario_back_pressed)
 	scenario_play_button.pressed.connect(_on_scenario_play_pressed)
+	
+	# Connect custom map menu button signals
+	custom_map_back_button.pressed.connect(_on_custom_map_back_pressed)
+	custom_map_play_button.pressed.connect(_on_custom_map_play_pressed)
 	
 	# Hover sounds removed - no sound on mouse enter
 	
@@ -142,6 +155,10 @@ func _on_scenario_pressed():
 	DebugLogger.log("UISystem", "Scenario button pressed")
 	_show_scenario_menu()
 
+func _on_custom_map_pressed():
+	DebugLogger.log("UISystem", "Custom Map button pressed")
+	_show_custom_map_menu()
+
 func _on_new_game_back_pressed():
 	DebugLogger.log("UISystem", "New Game Back button pressed")
 	_show_main_menu()
@@ -153,8 +170,14 @@ func _on_campaign_back_pressed():
 func _on_campaign_play_pressed():
 	DebugLogger.log("UISystem", "Campaign Play button pressed with scenario: " + selected_scenario)
 	if selected_scenario != "":
-		# TODO: Load the selected scenario
-		pass
+		var scen_path := "res://scenarios/" + selected_scenario + ".json"
+		get_tree().set_meta("start_payload", {
+			"type": "scenario",
+			"scenario_path": scen_path
+		})
+		if sound_manager:
+			sound_manager.stop_main_menu_music()
+		get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
@@ -165,10 +188,36 @@ func _on_scenario_back_pressed():
 	_show_new_game_menu()
 
 func _on_scenario_play_pressed():
-	DebugLogger.log("UISystem", "Scenario Play button pressed with map: " + selected_map)
-	if selected_map != "":
-		# TODO: Load the selected map
-		pass
+	DebugLogger.log("UISystem", "Scenario Play button pressed with scenario: " + selected_scenario)
+	if selected_scenario != "":
+		var scen_path := "res://scenarios/" + selected_scenario + ".json"
+		get_tree().set_meta("start_payload", {
+			"type": "scenario",
+			"scenario_path": scen_path
+		})
+		if sound_manager:
+			sound_manager.stop_main_menu_music()
+		get_tree().change_scene_to_file("res://main.tscn")
+
+func _on_custom_map_back_pressed():
+	DebugLogger.log("UISystem", "Custom Map Back button pressed")  
+	_show_new_game_menu()
+
+func _on_custom_map_play_pressed():
+	DebugLogger.log("UISystem", "Custom Map Play button pressed with map: " + selected_custom_map)
+	if selected_custom_map != "":
+		var map_file := selected_custom_map + ".json"
+		var map_path := "res://mapdata/" + map_file
+		var parts := selected_custom_map.split("-")
+		var size_str: String = parts[parts.size() - 1]
+		get_tree().set_meta("start_payload", {
+			"type": "map",
+			"map_file": map_path,
+			"map_size": size_str
+		})
+		if sound_manager:
+			sound_manager.stop_main_menu_music()
+		get_tree().change_scene_to_file("res://main.tscn")
 
 func _show_main_menu():
 	"""Show the main menu and hide other menus"""
@@ -177,6 +226,7 @@ func _show_main_menu():
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
+	custom_map_container.visible = false
 	map_preview.visible = false
 
 func _show_new_game_menu():
@@ -186,6 +236,7 @@ func _show_new_game_menu():
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
+	custom_map_container.visible = false
 	map_preview.visible = false
 
 func _show_options_menu():
@@ -195,6 +246,7 @@ func _show_options_menu():
 	options_container.visible = true
 	campaign_container.visible = false
 	scenario_container.visible = false
+	custom_map_container.visible = false
 	map_preview.visible = false
 
 func _show_campaign_menu():
@@ -204,8 +256,10 @@ func _show_campaign_menu():
 	options_container.visible = false
 	campaign_container.visible = true
 	scenario_container.visible = false
+	custom_map_container.visible = false
 	map_preview.visible = true
 	selected_scenario = ""
+	default_preview_item = ""
 	if selected_scenario_button:
 		selected_scenario_button.modulate = Color.WHITE
 	selected_scenario_button = null
@@ -213,19 +267,38 @@ func _show_campaign_menu():
 	_load_scenario_list()
 
 func _show_scenario_menu():
-	"""Show the scenario menu and load map list"""
+	"""Show the scenario menu and load scenario list"""
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = true
+	custom_map_container.visible = false
 	map_preview.visible = true
-	selected_map = ""
-	if selected_map_button:
-		selected_map_button.modulate = Color.WHITE
-	selected_map_button = null
+	selected_scenario = ""
+	default_preview_item = ""
+	if selected_scenario_button:
+		selected_scenario_button.modulate = Color.WHITE
+	selected_scenario_button = null
 	scenario_play_button.disabled = true
-	_load_map_list()
+	_load_scenario_list_for_scenario()
+
+func _show_custom_map_menu():
+	"""Show the custom map menu and load map list"""
+	menu_container.visible = false
+	new_game_container.visible = false
+	options_container.visible = false
+	campaign_container.visible = false
+	scenario_container.visible = false
+	custom_map_container.visible = true
+	map_preview.visible = true
+	selected_custom_map = ""
+	default_preview_item = ""
+	if selected_custom_map_button:
+		selected_custom_map_button.modulate = Color.WHITE
+	selected_custom_map_button = null
+	custom_map_play_button.disabled = true
+	_load_custom_map_list()
 
 func _load_scenario_list():
 	"""Load and display available scenarios"""
@@ -290,6 +363,89 @@ func _add_scenario_button(scenario_name: String):
 	
 	scenario_list.add_child(button)
 
+func _load_scenario_list_for_scenario():
+	"""Load and display available scenarios for scenario menu"""
+	# Clear existing list
+	for child in scenario_list_scenario.get_children():
+		child.queue_free()
+	
+	# Get all scenario files
+	var dir = DirAccess.open("res://scenarios")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".json"):
+				_add_scenario_button_for_scenario(file_name.trim_suffix(".json"))
+			file_name = dir.get_next()
+		dir.list_dir_end()
+
+func _add_scenario_button_for_scenario(scenario_name: String):
+	"""Add a button for a scenario to the scenario menu list"""
+	var button = Button.new()
+	button.text = scenario_name.capitalize().replace("_", " ")
+	
+	# Create the scenario theme dynamically to match the scene theme
+	var scenario_theme = Theme.new()
+	var font = load("res://fonts/Cardo-Bold.ttf")
+	
+	# Set font and styling to match Theme_scenario from scene
+	scenario_theme.set_font("font", "Button", font)
+	scenario_theme.set_font_size("font_size", "Button", 30)
+	scenario_theme.set_color("font_color", "Button", Color(1, 1, 1, 1))  # White
+	scenario_theme.set_color("font_hover_color", "Button", Color(0.9, 0.6, 0.4, 1))  # Even lighter orange-red
+	scenario_theme.set_color("font_pressed_color", "Button", Color(0.9, 0.6, 0.4, 1))  # Same as hover
+	scenario_theme.set_color("font_outline_color", "Button", Color(0, 0, 0, 1))  # Black outline
+	scenario_theme.set_color("font_shadow_color", "Button", Color(0, 0, 0, 1))  # Black shadow
+	scenario_theme.set_constant("outline_size", "Button", 5)
+	scenario_theme.set_constant("shadow_offset_x", "Button", 1)
+	scenario_theme.set_constant("shadow_offset_y", "Button", 1)
+	
+	# Create StyleBoxFlat with no borders for all button states
+	var style_flat = StyleBoxFlat.new()
+	style_flat.draw_center = false
+	style_flat.border_width_left = 0
+	style_flat.border_width_top = 0
+	style_flat.border_width_right = 0
+	style_flat.border_width_bottom = 0
+	scenario_theme.set_stylebox("normal", "Button", style_flat)
+	scenario_theme.set_stylebox("hover", "Button", style_flat)
+	scenario_theme.set_stylebox("pressed", "Button", style_flat)
+	scenario_theme.set_stylebox("focus", "Button", style_flat)
+	
+	button.theme = scenario_theme
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT  # Left align
+	button.custom_minimum_size.y = 50
+	
+	# Connect the button to select this scenario
+	button.pressed.connect(_on_scenario_selected_for_scenario.bind(scenario_name, button))
+	
+	# Connect hover signals for preview
+	button.mouse_entered.connect(_on_scenario_hovered.bind(scenario_name))
+	button.mouse_exited.connect(_on_scenario_unhovered)
+	
+	scenario_list_scenario.add_child(button)
+
+func _on_scenario_selected_for_scenario(scenario_name: String, button: Button):
+	"""Handle scenario selection in scenario menu"""
+	# Reset previous selection
+	if selected_scenario_button:
+		selected_scenario_button.modulate = Color.WHITE
+	
+	# Set new selection
+	selected_scenario = scenario_name
+	selected_scenario_button = button
+	button.modulate = Color(0.8, 0.4, 0.2, 1)  # Selected color (darker orange-red)
+	
+	# Set as default preview
+	default_preview_item = scenario_name
+	_show_preview(scenario_name)
+	
+	# Enable play button
+	scenario_play_button.disabled = false
+	
+	DebugLogger.log("UISystem", "Selected scenario: " + scenario_name)
+
 func _on_scenario_selected(scenario_name: String, button: Button):
 	"""Handle scenario selection"""
 	# Reset previous selection
@@ -301,16 +457,20 @@ func _on_scenario_selected(scenario_name: String, button: Button):
 	selected_scenario_button = button
 	button.modulate = Color(0.8, 0.4, 0.2, 1)  # Selected color (darker orange-red)
 	
+	# Set as default preview
+	default_preview_item = scenario_name
+	_show_preview(scenario_name)
+	
 	# Enable play button
 	campaign_play_button.disabled = false
 	
 	DebugLogger.log("UISystem", "Selected scenario: " + scenario_name)
 	# no click sound in main menu
 
-func _load_map_list():
-	"""Load and display available maps from mapdata folder"""
+func _load_custom_map_list():
+	"""Load and display available maps from mapdata folder for custom map menu"""
 	# Clear existing list
-	for child in map_list.get_children():
+	for child in custom_map_list.get_children():
 		child.queue_free()
 	
 	# Get all map files from mapdata folder
@@ -320,12 +480,12 @@ func _load_map_list():
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".json"):
-				_add_map_button(file_name.trim_suffix(".json"))
+				_add_custom_map_button(file_name.trim_suffix(".json"))
 			file_name = dir.get_next()
 		dir.list_dir_end()
 
-func _add_map_button(map_name: String):
-	"""Add a button for a map to the list"""
+func _add_custom_map_button(map_name: String):
+	"""Add a button for a map to the custom map list"""
 	var button = Button.new()
 	button.text = map_name.capitalize().replace("_", " ").replace("-", " ")
 	
@@ -362,30 +522,33 @@ func _add_map_button(map_name: String):
 	button.custom_minimum_size.y = 50
 	
 	# Connect the button to select this map
-	button.pressed.connect(_on_map_selected.bind(map_name, button))
+	button.pressed.connect(_on_custom_map_selected.bind(map_name, button))
 	
 	# Connect hover signals for preview
 	button.mouse_entered.connect(_on_map_hovered.bind(map_name))
 	button.mouse_exited.connect(_on_map_unhovered)
 	
-	map_list.add_child(button)
+	custom_map_list.add_child(button)
 
-func _on_map_selected(map_name: String, button: Button):
-	"""Handle map selection"""
+func _on_custom_map_selected(map_name: String, button: Button):
+	"""Handle custom map selection"""
 	# Reset previous selection
-	if selected_map_button:
-		selected_map_button.modulate = Color.WHITE
+	if selected_custom_map_button:
+		selected_custom_map_button.modulate = Color.WHITE
 	
 	# Set new selection
-	selected_map = map_name
-	selected_map_button = button
+	selected_custom_map = map_name
+	selected_custom_map_button = button
 	button.modulate = Color(0.8, 0.4, 0.2, 1)  # Selected color (darker orange-red)
 	
-	# Enable play button
-	scenario_play_button.disabled = false
+	# Set as default preview
+	default_preview_item = map_name
+	_show_preview(map_name)
 	
-	DebugLogger.log("UISystem", "Selected map: " + map_name)
-	# no click sound in main menu
+	# Enable play button
+	custom_map_play_button.disabled = false
+	
+	DebugLogger.log("UISystem", "Selected custom map: " + map_name)
 
 func _on_scenario_hovered(scenario_name: String):
 	"""Handle scenario hover for preview"""
@@ -410,9 +573,12 @@ func _on_map_unhovered():
 	hover_timer.start()
 
 func _on_hover_timer_timeout():
-	"""Handle delayed hide of preview"""
+	"""Handle delayed return to default preview"""
 	if current_hovered_item == "":
-		_hide_preview()
+		if default_preview_item != "":
+			_show_preview(default_preview_item)
+		else:
+			_hide_preview()
 
 func _show_preview(item_name: String):
 	"""Show preview image for scenario or map"""
