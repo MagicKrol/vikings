@@ -7,6 +7,8 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 
 ### main_menu.tscn
 - Entry UI. Starts a new game or continues; loads `main.tscn`.
+ - MapPreview: Visible only in Campaign/Scenario menus. `InnerPanel` background stays visible while menu is open; `MapScreenshot` toggled on hover. Fits height (keeps aspect), width is clipped.
+ - Menu UX: No click sounds on button presses in main menu.
 
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
@@ -204,6 +206,10 @@ editor_start.tscn (Editor Start)
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.
 
+- F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. Names file by mode: `res://screenshots/screenshot_<scenario>.png` in scenario mode (from `GameManager.scenario_path`) or `res://screenshots/screenshot_<mapdata>.png` in custom mode (from `MapGenerator.data_file_path`). Camera centers/zooms out, UI hides for capture, then both restore.
+
+- F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. It centers and zooms out the camera, hides `UI`, captures the viewport, restores `UI` and camera, and saves to `res://screenshots/screenshot.png`.
+
 ## Data & Parameters
 - Player.gd: resources, name/color/id, afford/pay helpers, serialization.
 - ResourceComposition.gd / ArmyComposition.gd: storage and math helpers; food cost, power.
@@ -219,6 +225,7 @@ editor_start.tscn (Editor Start)
 
 ## Notable Relationships
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.
+- Sound: `SoundManager` respects `music_enabled`; `GameManager` does not force-enable music and calls `play_game_start_sequence()` which no-ops when disabled.
 - TurnController owns pathfinder/scorer; calls `GameManager.ai_travel_to` for movement and battle stepping; uses `BudgetManager` and `RecruitmentManager` when armies request reinforcement.
 - PlayerManagerNode is the authoritative per-player economy and emits player-change signals used by UI.
 

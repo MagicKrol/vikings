@@ -126,8 +126,7 @@ func _ready():
 	await get_tree().process_frame
 	if _sound_manager:
 		DebugLogger.log("GameInit", "Starting game audio sequence...")
-		# Ensure music/horn are enabled (was temporarily disabled)
-		_sound_manager.set_music_enabled(true)
+		# Respect user's music setting; do not force-enable
 		_sound_manager.play_game_start_sequence()
 	else:
 		DebugLogger.log("GameInit", "Error: Sound manager not found!")
@@ -290,6 +289,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				DebugLogger.log("TurnProcessing", "Step-by-step AI debug mode: " + ("enabled" if not current_mode else "disabled"))
 			elif castle_placing_mode:
 				DebugLogger.log("TurnProcessing", "Step-by-step mode not available during castle placement")
+		elif event.keycode == KEY_F8:
+			# Take screenshot with proper setup
+			_take_game_screenshot()
 		# SPACE key handling is now managed by TurnController's DebugStepGate
 
 func next_turn():
@@ -1191,3 +1193,6 @@ func _start_first_turn() -> void:
 		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")
 	
 	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler
+func _take_game_screenshot() -> void:
+	"""Take a screenshot using Utils function"""
+	Utils.take_screenshot()

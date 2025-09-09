@@ -467,3 +467,52 @@ offset_bottom = 600.0
 mouse_filter = 2
 theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
+
+[node name="MapPreview" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 100.0
+offset_top = 240.0
+offset_right = 600.0
+offset_bottom = 740.0
+mouse_filter = 2
+
+[node name="InnerPanel" type="Panel" parent="MapPreview"]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.997566, 0.999408)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1o4cw")
+
+[node name="TextureRect" type="TextureRect" parent="MapPreview/InnerPanel"]
+modulate = Color(1, 1, 1, 0.941176)
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 500.0
+mouse_filter = 2
+texture = ExtResource("4_jiisd")
+expand_mode = 2
+
+[node name="MapScreenshot" type="TextureRect" parent="MapPreview/InnerPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 2
+stretch_mode = 6
+
+[node name="Border" type="Panel" parent="MapPreview"]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 500.0
+mouse_filter = 2
+theme = SubResource("Theme_icaip")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")

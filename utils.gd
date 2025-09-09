@@ -227,3 +227,36 @@ static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region
 	icon2.position = center + Vector2(20 * map_size_scale, 10 * map_size_scale)
 	
 	parent_pg.add_child(icon2)
+
+static func take_screenshot(filename: String = "res://screenshots/screenshot.png") -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var scene := tree.current_scene
+	var viewport := scene.get_viewport()
+	var camera: CameraController = scene.get_node("Camera2D")
+	var ui_layer: CanvasLayer = scene.get_node("UI")
+
+	# Derive filename by mode: scenario file name or mapdata file name
+	var gm: GameManager = scene.get_node("GameManager")
+	var map_gen: MapGenerator = scene.get_node("Map")
+	var base_name := "screenshot"
+	if gm.game_mode == "scenario":
+		base_name = String(gm.scenario_path).get_file().get_basename()
+	else:
+		base_name = String(map_gen.data_file_path).get_file().get_basename()
+	var final_path := "res://previews/" + base_name + ".png"
+
+	var original_state := camera.get_current_state()
+	camera.set_instant_mode(true)
+	camera.move_to_center()
+	camera.zoom_out_for_screenshot()
+
+	ui_layer.visible = false
+	await tree.process_frame
+	await RenderingServer.frame_post_draw
+
+	var img: Image = viewport.get_texture().get_image()
+	img.convert(Image.FORMAT_RGBA8)
+	img.save_png(final_path)
+
+	ui_layer.visible = true
+	camera.restore_state(original_state)

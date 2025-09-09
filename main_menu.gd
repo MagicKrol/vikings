@@ -32,6 +32,13 @@ class_name MainMenu
 @onready var campaign_container: VBoxContainer = $Campaign
 @onready var scenario_container: VBoxContainer = $Scenario
 
+# Map preview references
+@onready var map_preview: Control = $MapPreview
+@onready var map_screenshot: TextureRect = $MapPreview/InnerPanel/MapScreenshot
+
+var hover_timer: Timer
+var current_hovered_item: String = ""
+
 var sound_manager: SoundManager = null
 var selected_scenario: String = ""
 var selected_map: String = ""
@@ -43,8 +50,17 @@ func _ready():
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
 	
+	# Create hover timer for delayed hide
+	hover_timer = Timer.new()
+	hover_timer.wait_time = 0.2
+	hover_timer.one_shot = true
+	hover_timer.timeout.connect(_on_hover_timer_timeout)
+	add_child(hover_timer)
+	
 	# Play main menu music
 	sound_manager.play_main_menu_music()
+	# Ensure preview background is always visible; hide screenshot until available
+	map_screenshot.visible = false
 	
 	# Apply font outlines to all buttons
 	_apply_font_outlines()
@@ -100,81 +116,56 @@ func _on_button_hover():
 func _on_continue_pressed():
 	DebugLogger.log("UISystem", "Continue button pressed")
 	if sound_manager:
-		sound_manager.click_sound()
 		sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_new_game_pressed():
 	DebugLogger.log("UISystem", "New Game button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_new_game_menu()
 
 func _on_load_game_pressed():
 	DebugLogger.log("UISystem", "Load Game button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 
 func _on_options_pressed():
 	DebugLogger.log("UISystem", "Options button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_options_menu()
 
 func _on_exit_pressed():
 	DebugLogger.log("UISystem", "Exit button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	get_tree().quit()
 
 func _on_campaign_pressed():
 	DebugLogger.log("UISystem", "Campaign button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_campaign_menu()
 
 func _on_scenario_pressed():
 	DebugLogger.log("UISystem", "Scenario button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_scenario_menu()
 
 func _on_new_game_back_pressed():
 	DebugLogger.log("UISystem", "New Game Back button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_main_menu()
 
 func _on_campaign_back_pressed():
 	DebugLogger.log("UISystem", "Campaign Back button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_new_game_menu()
 
 func _on_campaign_play_pressed():
 	DebugLogger.log("UISystem", "Campaign Play button pressed with scenario: " + selected_scenario)
-	if sound_manager:
-		sound_manager.click_sound()
 	if selected_scenario != "":
 		# TODO: Load the selected scenario
 		pass
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_main_menu()
 
 func _on_scenario_back_pressed():
 	DebugLogger.log("UISystem", "Scenario Back button pressed")  
-	if sound_manager:
-		sound_manager.click_sound()
 	_show_new_game_menu()
 
 func _on_scenario_play_pressed():
 	DebugLogger.log("UISystem", "Scenario Play button pressed with map: " + selected_map)
-	if sound_manager:
-		sound_manager.click_sound()
 	if selected_map != "":
 		# TODO: Load the selected map
 		pass
@@ -186,6 +177,7 @@ func _show_main_menu():
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
+	map_preview.visible = false
 
 func _show_new_game_menu():
 	"""Show the new game menu"""
@@ -194,6 +186,7 @@ func _show_new_game_menu():
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
+	map_preview.visible = false
 
 func _show_options_menu():
 	"""Show the options menu"""
@@ -202,6 +195,7 @@ func _show_options_menu():
 	options_container.visible = true
 	campaign_container.visible = false
 	scenario_container.visible = false
+	map_preview.visible = false
 
 func _show_campaign_menu():
 	"""Show the campaign menu and load scenarios"""
@@ -210,6 +204,7 @@ func _show_campaign_menu():
 	options_container.visible = false
 	campaign_container.visible = true
 	scenario_container.visible = false
+	map_preview.visible = true
 	selected_scenario = ""
 	if selected_scenario_button:
 		selected_scenario_button.modulate = Color.WHITE
@@ -224,6 +219,7 @@ func _show_scenario_menu():
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = true
+	map_preview.visible = true
 	selected_map = ""
 	if selected_map_button:
 		selected_map_button.modulate = Color.WHITE
@@ -288,6 +284,10 @@ func _add_scenario_button(scenario_name: String):
 	# Connect the button to select this scenario
 	button.pressed.connect(_on_scenario_selected.bind(scenario_name, button))
 	
+	# Connect hover signals for preview
+	button.mouse_entered.connect(_on_scenario_hovered.bind(scenario_name))
+	button.mouse_exited.connect(_on_scenario_unhovered)
+	
 	scenario_list.add_child(button)
 
 func _on_scenario_selected(scenario_name: String, button: Button):
@@ -305,8 +305,7 @@ func _on_scenario_selected(scenario_name: String, button: Button):
 	campaign_play_button.disabled = false
 	
 	DebugLogger.log("UISystem", "Selected scenario: " + scenario_name)
-	if sound_manager:
-		sound_manager.click_sound()
+	# no click sound in main menu
 
 func _load_map_list():
 	"""Load and display available maps from mapdata folder"""
@@ -365,6 +364,10 @@ func _add_map_button(map_name: String):
 	# Connect the button to select this map
 	button.pressed.connect(_on_map_selected.bind(map_name, button))
 	
+	# Connect hover signals for preview
+	button.mouse_entered.connect(_on_map_hovered.bind(map_name))
+	button.mouse_exited.connect(_on_map_unhovered)
+	
 	map_list.add_child(button)
 
 func _on_map_selected(map_name: String, button: Button):
@@ -382,5 +385,50 @@ func _on_map_selected(map_name: String, button: Button):
 	scenario_play_button.disabled = false
 	
 	DebugLogger.log("UISystem", "Selected map: " + map_name)
-	if sound_manager:
-		sound_manager.click_sound()
+	# no click sound in main menu
+
+func _on_scenario_hovered(scenario_name: String):
+	"""Handle scenario hover for preview"""
+	current_hovered_item = scenario_name
+	hover_timer.stop()
+	_show_preview(scenario_name)
+
+func _on_scenario_unhovered():
+	"""Handle scenario unhover"""
+	current_hovered_item = ""
+	hover_timer.start()
+
+func _on_map_hovered(map_name: String):
+	"""Handle map hover for preview"""
+	current_hovered_item = map_name
+	hover_timer.stop()
+	_show_preview(map_name)
+
+func _on_map_unhovered():
+	"""Handle map unhover"""
+	current_hovered_item = ""
+	hover_timer.start()
+
+func _on_hover_timer_timeout():
+	"""Handle delayed hide of preview"""
+	if current_hovered_item == "":
+		_hide_preview()
+
+func _show_preview(item_name: String):
+	"""Show preview image for scenario or map"""
+	var preview_path = "res://previews/" + item_name + ".png"
+	
+	# Check if preview image exists
+	if ResourceLoader.exists(preview_path):
+		var texture = load(preview_path)
+		if texture:
+			map_screenshot.texture = texture
+			map_screenshot.visible = true
+	else:
+		# No preview available
+		_hide_preview()
+
+func _hide_preview():
+	"""Hide preview image"""
+	map_screenshot.visible = false
+	map_screenshot.texture = null

@@ -268,3 +268,32 @@ func enable_touch_controls(enable: bool) -> void:
 		is_panning = false
 		is_zooming = false
 		touch_points.clear()
+
+func move_to_center() -> void:
+	"""Move camera to center of map (1000, 1000 for 2000x2000 map)"""
+	set_camera_target(Vector2(1000, 1000))
+
+func zoom_out_for_screenshot() -> void:
+	"""Zoom out to see whole map"""
+	set_zoom_target(0.5)
+
+func get_current_state() -> Dictionary:
+	"""Get current camera state for restoration"""
+	return {
+		"position": target_position,
+		"zoom": target_zoom,
+		"smooth_pan": smooth_pan,
+		"smooth_zoom": smooth_zoom
+	}
+
+func restore_state(state: Dictionary) -> void:
+	"""Restore camera to previous state"""
+	set_camera_target(state.get("position", Vector2.ZERO))
+	target_zoom = state.get("zoom", Vector2.ONE)
+	smooth_pan = state.get("smooth_pan", true)
+	smooth_zoom = state.get("smooth_zoom", true)
+
+func set_instant_mode(instant: bool) -> void:
+	"""Enable/disable instant camera movement (no smoothing)"""
+	smooth_pan = not instant
+	smooth_zoom = not instant
