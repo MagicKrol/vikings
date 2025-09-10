@@ -1058,7 +1058,58 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		army_name = army.name
 	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + result + " for " + army_name)
 	
-	# Apply battle losses using BattleManager rule
+	# Compute wounded BEFORE applying losses and before summary
+	if battle_report:
+		battle_report.attacker_wounded = Utils.compute_wounded(battle_report.attacker_losses)
+		battle_report.defender_wounded = Utils.compute_wounded(battle_report.defender_losses)
+		# Allocate wounded to armies (attackers: single army; defenders: proportionally across armies; ignore garrison/recruits)
+		# Attackers
+		if not attacking_armies.is_empty():
+			var atk_army: Army = attacking_armies[0]
+			for ut in battle_report.attacker_wounded.keys():
+				atk_army.get_wounded_composition().add_soldiers(ut, int(battle_report.attacker_wounded[ut]))
+		# Defenders
+		if not defending_armies.is_empty():
+			for ut in battle_report.defender_wounded.keys():
+				var wounded_total: int = int(battle_report.defender_wounded[ut])
+				if wounded_total <= 0:
+					continue
+				# Measure availability among defender armies pre-application
+				var avail: Array = [] # [{army: Army, count:int}]
+				var total_available: int = 0
+				for d in defending_armies:
+					var cnt: int = d.get_composition().get_soldier_count(ut)
+					if cnt > 0:
+						avail.append({"army": d, "count": cnt})
+						total_available += cnt
+				if total_available <= 0:
+					continue
+				# Proportional allocation by largest remainder
+				var allocations: Array = [] # [{army:Army, take:int, frac:float}]
+				var taken_sum: int = 0
+				for entry in avail:
+					var share: float = float(wounded_total) * float(entry["count"]) / float(total_available)
+					var take: int = int(floor(share))
+					var frac: float = share - float(take)
+					allocations.append({"army": entry["army"], "take": take, "frac": frac})
+					taken_sum += take
+				var remainder: int = wounded_total - taken_sum
+				allocations.sort_custom(func(a, b): return a["frac"] > b["frac"])
+				var i: int = 0
+				while remainder > 0 and i < allocations.size():
+					allocations[i]["take"] += 1
+					remainder -= 1
+					i += 1
+					if i >= allocations.size() and remainder > 0:
+						i = 0
+				# Apply wounded allocations to defender wounded compositions
+				for alloc in allocations:
+					var army_d := alloc["army"] as Army
+					var take := int(alloc["take"])
+					if take > 0:
+						army_d.get_wounded_composition().add_soldiers(ut, take)
+
+	# Apply battle losses using BattleManager rule (removes both dead and wounded from active comps)
 	if battle_report and _battle_manager:
 		_battle_manager._apply_battle_losses()
 	
@@ -1078,6 +1129,8 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
 			_battle_manager._handle_army_withdrawal(army)
+			# Free post-battle heal: attempt to heal wounded across the army, ensuring at least 1 unit returns if any wounded exist
+			army.heal_army(true)
 	else:
 		# Attackers lost - remove the army
 		if army and is_instance_valid(army) and _battle_manager:

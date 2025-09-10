@@ -408,5 +408,9 @@ func calculate_total_army_food_cost(player_id: int) -> float:
 				if army_composition != null:
 					var army_food_cost = army_composition.get_total_food_cost()
 					total_food_cost += army_food_cost
+					# Include wounded composition upkeep
+					var wounded_comp = army.get_wounded_composition()
+					if wounded_comp != null:
+						total_food_cost += wounded_comp.get_total_food_cost()
 	
 	return total_food_cost

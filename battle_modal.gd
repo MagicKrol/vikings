@@ -160,8 +160,11 @@ func _update_display() -> void:
 		var region_name = defending_region.get_region_name()
 		battle_title_label.text = "Battle for " + region_name
 		
-		# Ensure headers and effectiveness are visible for normal battle
-		attacker_header.text = "Attacker"
+		# Set appropriate headers for normal battle
+		if attacking_army != null:
+			attacker_header.text = "Army " + str(attacking_army.number)
+		else:
+			attacker_header.text = "Attacker"
 		defender_header.text = "Defender"
 		attacker_effectiveness.visible = true
 		defender_effectiveness.visible = true
@@ -600,6 +603,9 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	"""Handle battle completion"""
 	battle_in_progress = false
+	# Compute wounded before showing summary
+	report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
+	report.defender_wounded = Utils.compute_wounded(report.defender_losses)
 	battle_report = report
 
 	# If AI modal is disabled for debugging, finalize immediately only when defender is not human

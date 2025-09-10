@@ -91,7 +91,7 @@ func _update_display() -> void:
 	
 	# Update army and region names
 	if attacking_army:
-		attacker_name_label.text = attacking_army.name
+		attacker_name_label.text = "Army " + str(attacking_army.number)
 	if defending_region:
 		defender_name_label.text = defending_region.get_region_name()
 	
@@ -150,14 +150,21 @@ func _update_unit_sections() -> void:
 		if battle_report.final_defender != null:
 			defender_final = battle_report.final_defender.get(soldier_type, 0)
 		
-		# Calculate losses (dead)
-		var attacker_dead = max(0, attacker_initial - attacker_final)
-		var defender_dead = max(0, defender_initial - defender_final)
+		# Calculate wounded from report if available
+		var aw := 0
+		var dw := 0
+		if battle_report.attacker_wounded != null:
+			aw = int(battle_report.attacker_wounded.get(type_mapping[unit_name], 0))
+		if battle_report.defender_wounded != null:
+			dw = int(battle_report.defender_wounded.get(type_mapping[unit_name], 0))
+		# Calculate dead excluding wounded
+		var attacker_dead = max(0, attacker_initial - attacker_final - aw)
+		var defender_dead = max(0, defender_initial - defender_final - dw)
 		
 		# Update labels with color coding
-		_update_unit_row(unit_node, attacker_dead, 0, attacker_final, defender_dead, 0, defender_final, attacker_initial, defender_initial)
+		_update_unit_row(unit_node, attacker_dead, aw, attacker_final, defender_dead, dw, defender_final, attacker_initial, defender_initial)
 
-func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int, attacker_remain: int, 
+func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int, attacker_remain: int,
 					  defender_dead: int, defender_wounded: int, defender_remain: int,
 					  attacker_initial: int = 0, defender_initial: int = 0) -> void:
 	"""Update a single unit row with values and color coding"""
@@ -174,7 +181,8 @@ func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int
 	if attacker_remain_label:
 		attacker_remain_label.text = str(attacker_remain)
 		# Apply color coding for attacker remaining units
-		_apply_remain_color(attacker_remain_label, attacker_remain, attacker_initial)
+		var atk_had_losses := (attacker_dead + attacker_wounded) > 0
+		_apply_remain_color(attacker_remain_label, attacker_remain, atk_had_losses)
 	
 	# Update defender values
 	var defender_dead_label = unit_node.get_node_or_null("DefenderDead")
@@ -189,7 +197,8 @@ func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int
 	if defender_remain_label:
 		defender_remain_label.text = str(defender_remain)
 		# Apply color coding for defender remaining units
-		_apply_remain_color(defender_remain_label, defender_remain, defender_initial)
+		var def_had_losses := (defender_dead + defender_wounded) > 0
+		_apply_remain_color(defender_remain_label, defender_remain, def_had_losses)
 
 func _update_totals() -> void:
 	"""Update the total row with aggregated values"""
@@ -218,13 +227,21 @@ func _update_totals() -> void:
 			attacker_final = battle_report.final_attacker.get(unit_type, 0)
 		if battle_report.final_defender != null:
 			defender_final = battle_report.final_defender.get(unit_type, 0)
+		var aw := 0
+		var dw := 0
+		if battle_report.attacker_wounded != null:
+			aw = int(battle_report.attacker_wounded.get(unit_type, 0))
+		if battle_report.defender_wounded != null:
+			dw = int(battle_report.defender_wounded.get(unit_type, 0))
 		
 		total_attacker_initial += attacker_initial
-		total_attacker_dead += max(0, attacker_initial - attacker_final)
+		total_attacker_dead += max(0, attacker_initial - attacker_final - aw)
 		total_attacker_remain += attacker_final
+		total_attacker_wounded += aw
 		total_defender_initial += defender_initial
-		total_defender_dead += max(0, defender_initial - defender_final)
+		total_defender_dead += max(0, defender_initial - defender_final - dw)
 		total_defender_remain += defender_final
+		total_defender_wounded += dw
 	
 	# Update total labels
 	var attacker_dead_label = total_node.get_node_or_null("AttackerDead")
@@ -239,7 +256,8 @@ func _update_totals() -> void:
 	if attacker_remain_label:
 		attacker_remain_label.text = str(total_attacker_remain)
 		# Apply color coding for total attacker remaining
-		_apply_remain_color(attacker_remain_label, total_attacker_remain, total_attacker_initial)
+		var atk_losses_total: bool = (total_attacker_dead + total_attacker_wounded) > 0
+		_apply_remain_color(attacker_remain_label, total_attacker_remain, atk_losses_total)
 	
 	var defender_dead_label = total_node.get_node_or_null("DefenderDead")
 	if defender_dead_label:
@@ -253,20 +271,20 @@ func _update_totals() -> void:
 	if defender_remain_label:
 		defender_remain_label.text = str(total_defender_remain)
 		# Apply color coding for total defender remaining
-		_apply_remain_color(defender_remain_label, total_defender_remain, total_defender_initial)
+		var def_losses_total: bool = (total_defender_dead + total_defender_wounded) > 0
+		_apply_remain_color(defender_remain_label, total_defender_remain, def_losses_total)
 
-func _apply_remain_color(label: Label, remaining: int, initial: int) -> void:
-	"""Apply color coding to remaining unit count labels"""
-	if initial == 0:
-		# No initial units, no color change
+func _apply_remain_color(label: Label, remaining: int, had_losses: bool) -> void:
+	"""Apply color: red if remaining==0; yellow if any losses; else default."""
+	if remaining == 0:
+		label.add_theme_color_override("font_color", GameParameters.UI_COLOR_DEAD)
 		return
-	elif remaining == 0:
-		# All units died - red
-		label.add_theme_color_override("font_color", Color.RED)
-	elif remaining < initial:
-		# Some losses - yellow
-		label.add_theme_color_override("font_color", Color.YELLOW)
-	# No losses - keep default color (no override needed)
+	if had_losses:
+		label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+		return
+	# Reset to default when no losses
+	if label.has_theme_color_override("font_color"):
+		label.remove_theme_color_override("font_color")
 
 func _on_continue_pressed() -> void:
 	"""Handle continue button press"""

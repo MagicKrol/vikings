@@ -176,8 +176,9 @@ func _update_army_unit_values() -> void:
 	"""Update army unit composition values"""
 	if current_army == null:
 		return
-	
+
 	var composition = current_army.get_composition()
+	var wounded_comp = current_army.get_wounded_composition()
 	
 	# Update each unit type
 	var unit_nodes = [
@@ -194,9 +195,18 @@ func _update_army_unit_values() -> void:
 	]
 	
 	for i in unit_nodes.size():
-		var value_node = get_node("Panel/Army/UnitsSection/" + unit_nodes[i] + "/Value")
+		var base_path = "Panel/Army/UnitsSection/" + unit_nodes[i]
+		var value_node = get_node(base_path + "/Value")
 		var count = composition.get_soldier_count(unit_types[i])
 		value_node.text = str(count)
+		# Wounded display as "(n)" in yellow; empty if none
+		var wounded_node = get_node(base_path + "/Wounded") as Label
+		var wcount: int = wounded_comp.get_soldier_count(unit_types[i])
+		if wcount > 0:
+			wounded_node.text = "(" + str(wcount) + ")"
+			wounded_node.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+		else:
+			wounded_node.text = ""
 
 func _update_region_resource_values() -> void:
 	"""Update region resource values"""

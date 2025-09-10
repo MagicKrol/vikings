@@ -41,6 +41,7 @@ var just_raised: bool = false  # Marks freshly raised AI armies for instant recr
 
 # Army composition - soldiers in this army
 var composition: ArmyComposition
+var wounded_composition: ArmyComposition
 
 func _init():
 	# Set up the army sprite with default warrior image (will be updated in setup)
@@ -63,6 +64,7 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 	movement_points = GameParameters.MOVEMENT_POINTS_PER_TURN
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
+	wounded_composition = ArmyComposition.new()
 	number = roman_number
 	just_raised = false
 	
@@ -82,6 +84,7 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	movement_points = 0
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
+	wounded_composition = ArmyComposition.new()
 	number = roman_number
 	just_raised = true
 	
@@ -110,8 +113,39 @@ func make_camp() -> void:
 	
 	# Restore 10 efficiency (capped at 100%)
 	restore_efficiency(10)
+	# Attempt to heal wounded units using per-unit chance
+	heal_army(false)
 	
 	DebugLogger.log("ArmyManagement", "[Army] " + str(name) + " made camp - efficiency restored to " + str(efficiency) + "%")
+
+func heal_army(force_at_least_one: bool = false) -> void:
+	"""Attempt to heal wounded across all unit types using CAMP_HEAL_CHANCE per unit.
+	If force_at_least_one is true and there are wounded but none healed randomly, heal one guaranteed.
+	"""
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var healed_total: int = 0
+	# Iterate unit types to keep logic simple and deterministic by type order
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var wc: int = wounded_composition.get_soldier_count(unit_type)
+		if wc <= 0:
+			continue
+		var to_heal: int = 0
+		for i in wc:
+			if rng.randf() < float(GameParameters.CAMP_HEAL_CHANCE):
+				to_heal += 1
+		if to_heal > 0:
+			wounded_composition.remove_soldiers(unit_type, to_heal)
+			composition.add_soldiers(unit_type, to_heal)
+			healed_total += to_heal
+	# Ensure at least one is healed when requested
+	if force_at_least_one and healed_total == 0 and wounded_composition.get_total_soldiers() > 0:
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var wc2: int = wounded_composition.get_soldier_count(unit_type)
+			if wc2 > 0:
+				wounded_composition.remove_soldiers(unit_type, 1)
+				composition.add_soldiers(unit_type, 1)
+				break
 
 func get_player_id() -> int:
 	"""Get the player ID"""
@@ -141,6 +175,10 @@ func restore_efficiency(amount: int) -> void:
 func get_composition() -> ArmyComposition:
 	"""Get the army composition"""
 	return composition
+
+func get_wounded_composition() -> ArmyComposition:
+	"""Get the wounded army composition"""
+	return wounded_composition
 
 func get_soldier_count(soldier_type: SoldierTypeEnum.Type) -> int:
 	"""Get count of specific soldier type"""

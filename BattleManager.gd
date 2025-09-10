@@ -119,6 +119,9 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 		var castle_type = target_region.get_castle_type()
 		var sim = BattleSimulator.new()
 		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type)
+		# Compute wounded for background path so summary data is present
+		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
+		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
 		_last_battle_report = report
 		var winner = report.winner
 		var result = "victory" if winner == "Attackers" else "defeat"
@@ -245,6 +248,7 @@ func _apply_battle_losses() -> void:
 		# Defenders win: destroy attackers entirely; apply defender losses
 		_destroy_attacker_side()
 		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
+
 
 	# Cleanup defeated armies ONLY among battle participants
 	for a in _pending_attackers:

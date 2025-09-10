@@ -260,3 +260,26 @@ static func take_screenshot(filename: String = "res://screenshots/screenshot.png
 
 	ui_layer.visible = true
 	camera.restore_state(original_state)
+
+static func compute_wounded(losses: Dictionary) -> Dictionary:
+	"""Compute wounded counts per unit type from a losses dictionary.
+	Uses base WOUNDED_CHANCE modified by unit defense: chance = base * (1 + defense_percent).
+	Returns a dict { unit_type: wounded_count }.
+	"""
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var result := {}
+	for unit_type in losses.keys():
+		var dead_count: int = int(losses[unit_type])
+		if dead_count <= 0:
+			continue
+		var base: float = float(GameParameters.WOUNDED_CHANCE)
+		var defense_pct: float = float(GameParameters.get_unit_stat(unit_type, "defense")) / 100.0
+		var chance: float = clampf(base * (1.0 + defense_pct), 0.0, 1.0)
+		var wounded: int = 0
+		for i in range(dead_count):
+			if rng.randf() < chance:
+				wounded += 1
+		if wounded > 0:
+			result[unit_type] = wounded
+	return result

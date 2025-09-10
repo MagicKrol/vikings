@@ -11,12 +11,16 @@ class BattleReport:
 	var defender_losses: Dictionary
 	var final_attacker: Dictionary
 	var final_defender: Dictionary
+	var attacker_wounded: Dictionary
+	var defender_wounded: Dictionary
 	
 	func _init():
 		attacker_losses = {}
 		defender_losses = {}
 		final_attacker = {}
 		final_defender = {}
+		attacker_wounded = {}
+		defender_wounded = {}
 
 # Main battle function - accepts arrays of compositions for each side
 func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> BattleReport:

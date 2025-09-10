@@ -45,6 +45,10 @@ const BORDER_VALUE_REDUCTION = 0.15           # Darken borders by 15%
 const BORDER_OPACITY = 0.9                    # Border opacity (90%)
 const BORDER_MIN_VALUE = 0.2                  # Minimum darkness to prevent too-dark borders
 
+## UI Colors (shared)
+const UI_COLOR_DEAD = Color.RED                # Used for dead counts in summaries
+const UI_COLOR_WOUNDED = Color.YELLOW          # Used for wounded counts in summaries
+
 ## Region Level Bonuses
 const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
@@ -193,6 +197,10 @@ const ARMOR_PIERCING_DEFENSE_REDUCTION = 0.5    # Halves enemy defense (50% redu
 
 ## Long-Spears Bonuses
 const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry units
+
+# Wounded system
+const WOUNDED_CHANCE = 0.30						# Base chance per casualty to become wounded (0..1)
+const CAMP_HEAL_CHANCE = 0.50						# Chance to heal one wounded unit on make_camp() (0..1)
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
