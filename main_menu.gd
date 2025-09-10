@@ -30,6 +30,8 @@ class_name MainMenu
 @onready var custom_map_back_button: Button = $CustomMap/BackButton
 @onready var custom_map_play_button: Button = $CustomMap/PlayButton
 @onready var custom_map_list: VBoxContainer = $CustomMap/MapContainer/InnerMargin/ScrollContainer/MapList
+@onready var custom_map_settings: Control = $CustomMapSettings
+@onready var player_settings_container: VBoxContainer = $CustomMapSettings/InnerPanel/PlayerSettings
 
 # Container references
 @onready var menu_container: VBoxContainer = $MenuContainer
@@ -52,6 +54,9 @@ var selected_scenario: String = ""
 var selected_custom_map: String = ""
 var selected_scenario_button: Button = null
 var selected_custom_map_button: Button = null
+
+# Player settings for custom map
+var player_settings: Array = []  # Array of dictionaries with player configuration
 
 func _ready():
 	# Create and add sound manager
@@ -103,6 +108,9 @@ func _ready():
 	
 	# Initially show main menu
 	_show_main_menu()
+	
+	# Initialize player settings UI
+	_initialize_player_settings()
 
 func _apply_font_outlines():
 	"""Apply black outline to all menu buttons"""
@@ -213,7 +221,8 @@ func _on_custom_map_play_pressed():
 		get_tree().set_meta("start_payload", {
 			"type": "map",
 			"map_file": map_path,
-			"map_size": size_str
+			"map_size": size_str,
+			"player_settings": player_settings
 		})
 		if sound_manager:
 			sound_manager.stop_main_menu_music()
@@ -228,6 +237,7 @@ func _show_main_menu():
 	scenario_container.visible = false
 	custom_map_container.visible = false
 	map_preview.visible = false
+	custom_map_settings.visible = false
 
 func _show_new_game_menu():
 	"""Show the new game menu"""
@@ -238,6 +248,7 @@ func _show_new_game_menu():
 	scenario_container.visible = false
 	custom_map_container.visible = false
 	map_preview.visible = false
+	custom_map_settings.visible = false
 
 func _show_options_menu():
 	"""Show the options menu"""
@@ -292,6 +303,7 @@ func _show_custom_map_menu():
 	scenario_container.visible = false
 	custom_map_container.visible = true
 	map_preview.visible = true
+	custom_map_settings.visible = true
 	selected_custom_map = ""
 	default_preview_item = ""
 	if selected_custom_map_button:
@@ -598,3 +610,88 @@ func _hide_preview():
 	"""Hide preview image"""
 	map_screenshot.visible = false
 	map_screenshot.texture = null
+
+func _initialize_player_settings():
+	"""Initialize the player settings UI with 6 player rows"""
+	# Initialize player settings array with default values
+	player_settings.clear()
+	for i in range(1, 7):  # Players 1-6
+		player_settings.append({
+			"player_id": i,
+			"control_type": "Off" if i > 2 else ("Player" if i == 1 else "Computer")
+		})
+	
+	# Create UI rows for each player
+	var font = load("res://fonts/Cardo-Bold.ttf")
+	
+	for i in range(6):
+		var player_num = i + 1
+		var player_color = GameParameters.get_player_color(player_num)
+		
+		# Create horizontal container for the row
+		var row_container = HBoxContainer.new()
+		row_container.custom_minimum_size.y = 50
+		
+		# Create player label with color
+		var player_label = Label.new()
+		player_label.text = "Player " + str(player_num)
+		player_label.custom_minimum_size.x = 100
+		player_label.modulate = player_color
+		player_label.add_theme_font_override("font", font)
+		player_label.add_theme_font_size_override("font_size", 24)
+		player_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		player_label.add_theme_constant_override("outline_size", 2)
+		row_container.add_child(player_label)
+		
+		# Add spacer
+		var spacer = Control.new()
+		spacer.custom_minimum_size.x = 30
+		row_container.add_child(spacer)
+		
+		# Create button group for this player
+		var button_group = ButtonGroup.new()
+		
+		# Create Player button
+		var player_button = Button.new()
+		player_button.text = "Player"
+		player_button.custom_minimum_size.x = 80
+		player_button.toggle_mode = true
+		player_button.button_group = button_group
+		player_button.add_theme_font_override("font", font)
+		player_button.add_theme_font_size_override("font_size", 20)
+		player_button.button_pressed = (player_settings[i].control_type == "Player")
+		player_button.toggled.connect(_on_player_control_changed.bind(player_num, "Player"))
+		row_container.add_child(player_button)
+		
+		# Create Computer button
+		var computer_button = Button.new()
+		computer_button.text = "Computer"
+		computer_button.custom_minimum_size.x = 100
+		computer_button.toggle_mode = true
+		computer_button.button_group = button_group
+		computer_button.add_theme_font_override("font", font)
+		computer_button.add_theme_font_size_override("font_size", 20)
+		computer_button.button_pressed = (player_settings[i].control_type == "Computer")
+		computer_button.toggled.connect(_on_player_control_changed.bind(player_num, "Computer"))
+		row_container.add_child(computer_button)
+		
+		# Create Off button
+		var off_button = Button.new()
+		off_button.text = "Off"
+		off_button.custom_minimum_size.x = 60
+		off_button.toggle_mode = true
+		off_button.button_group = button_group
+		off_button.add_theme_font_override("font", font)
+		off_button.add_theme_font_size_override("font_size", 20)
+		off_button.button_pressed = (player_settings[i].control_type == "Off")
+		off_button.toggled.connect(_on_player_control_changed.bind(player_num, "Off"))
+		row_container.add_child(off_button)
+		
+		# Add row to container
+		player_settings_container.add_child(row_container)
+
+func _on_player_control_changed(toggled_on: bool, player_num: int, control_type: String):
+	"""Handle player control type change"""
+	if toggled_on:
+		player_settings[player_num - 1].control_type = control_type
+		DebugLogger.log("UISystem", "Player " + str(player_num) + " set to: " + control_type)

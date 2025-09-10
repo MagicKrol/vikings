@@ -52,7 +52,7 @@ var debug_categories: Dictionary = {
 	"CastleConstruction": false,   # Castle building and upgrades
 	
 	# Army Systems
-	"ArmyManagement": false,       # Army creation and management
+	"ArmyManagement": true,       # Army creation and management
 	"ArmyComposition": false,      # Army composition and units
 	
 	# General Systems

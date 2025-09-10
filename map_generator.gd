@@ -518,8 +518,6 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	# Add biome icons based on mapping rules
 	var biome_name := String(region_data.get("biome", ""))
 	var icon_path := BiomeManager.get_icon_path_for_biome(biome_name)
-	print(biome_name)
-	print(icon_path)
 	if icon_path != "":
 		# Get map size scaling factor
 		var map_size_scale = Utils.get_map_size_icon_scale(map_size)
@@ -1298,7 +1296,6 @@ func _is_ocean_region_coastal(ocean_region_id: int) -> bool:
 	return false  # No land neighbors found
 
 func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, biome_name: String = "") -> void:
-	print(biome_name)
 	if icon_path == "":
 		return
 	var center_data = region_data.get("center", [500, 500])

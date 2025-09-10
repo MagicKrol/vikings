@@ -121,6 +121,11 @@ func _ready():
 			var size_str := String(payload.get("map_size", "small"))
 			map_generator.data_file_path = map_path.get_file()
 			_map_set_size_from_string(map_generator, size_str)
+			
+			# Apply player settings from CustomMap
+			if payload.has("player_settings"):
+				_apply_custom_map_player_settings(payload.get("player_settings"))
+			
 			map_generator.generate_map()
 		# Clear payload to avoid reuse
 		get_tree().set_meta("start_payload", null)
@@ -416,6 +421,46 @@ func _initialize_map_editor() -> void:
 	DebugLogger.log("GameInit", "Map editor panel shown")
 	
 	DebugLogger.log("GameInit", "Map editor initialization complete")
+
+func _apply_custom_map_player_settings(settings: Array) -> void:
+	"""Apply player settings from CustomMap to game state"""
+	DebugLogger.log("GameInit", "Applying custom map player settings...")
+	
+	# Reset player types array to defaults
+	for i in range(player_types.size()):
+		player_types[i] = PlayerTypeEnum.Type.OFF
+	
+	var active_players = 0
+	
+	# Apply each player's setting
+	for setting in settings:
+		if not setting is Dictionary:
+			continue
+			
+		var player_id = int(setting.get("player_id", 0))
+		var control_type = String(setting.get("control_type", "Off"))
+		
+		if player_id >= 1 and player_id <= 6:
+			var player_type: PlayerTypeEnum.Type
+			match control_type:
+				"Player":
+					player_type = PlayerTypeEnum.Type.HUMAN
+					active_players += 1
+				"Computer":
+					player_type = PlayerTypeEnum.Type.COMPUTER
+					active_players += 1
+				"Off":
+					player_type = PlayerTypeEnum.Type.OFF
+				_:
+					player_type = PlayerTypeEnum.Type.OFF
+			
+			player_types[player_id - 1] = player_type
+			DebugLogger.log("GameInit", "Player " + str(player_id) + " set to " + PlayerTypeEnum.type_to_string(player_type))
+	
+	# Update total_players to reflect active players (keep at 6 for array consistency)
+	total_players = 6
+	
+	DebugLogger.log("GameInit", "Custom map player settings applied - " + str(active_players) + " active players")
 
 func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
 	var s := size_str.to_lower()

@@ -51,6 +51,9 @@ var _game_manager: GameManager
 # Unified battle report storage (works for modal and background)
 var _last_battle_report: BattleSimulator.BattleReport = null
 
+# Store the fighting army for re-selection after battle (human players only)
+var _fighting_army_for_reselection: Army = null
+
 func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_modal: BattleModal, sound_manager: SoundManager):
 	_region_manager = region_manager
 	_army_manager = army_manager
@@ -64,6 +67,15 @@ func set_game_manager(game_manager: GameManager) -> void:
 func start_battle(attacker: Army, target_region_id: int) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+
+	# Store the fighting army for potential re-selection after battle (only for human players)
+	if _game_manager and _game_manager.is_player_human(attacker.get_player_id()):
+		_fighting_army_for_reselection = attacker
+		DebugLogger.log("BattleSystem", "[BattleManager] Stored army " + attacker.name + " for re-selection after battle. Current stored army: " + str(_fighting_army_for_reselection))
+	else:
+		DebugLogger.log("BattleSystem", "[BattleManager] Clearing stored army (AI player or no GameManager). Previous: " + str(_fighting_army_for_reselection))
+		_fighting_army_for_reselection = null
+		DebugLogger.log("BattleSystem", "[BattleManager] Not storing army for re-selection (AI player or no GameManager)")
 
 	# Set up battle context
 	set_pending_conquest(attacker, target_region)
@@ -121,6 +133,8 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 			"defending_garrison": _pending_garrison
 		}
 		_game_manager.finalize_battle_result(result_data)
+		# Re-select fighting army for human players after instant battle
+		call_deferred("_reselect_fighting_army_after_battle")
 		call_deferred("_emit_battle_finished", result)
 		DebugLogger.log("BattleSystem", "[BattleManager] Background battle done: " + result)
 		return
@@ -198,6 +212,10 @@ func handle_battle_modal_closed() -> void:
 		pending_conquest_region = null
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] No pending conquest found")
+	
+	# Re-select fighting army for human players after battle (delayed to ensure modal is fully closed)
+	DebugLogger.log("BattleSystem", "[BattleManager] About to call deferred re-selection. Current stored army: " + str(_fighting_army_for_reselection))
+	call_deferred("_reselect_fighting_army_after_battle")
 	
 	# Emit battle finished signal
 	var result = _get_battle_result()
@@ -357,6 +375,63 @@ func get_last_battle_report() -> BattleSimulator.BattleReport:
 
 func _emit_battle_finished(result: String) -> void:
 	emit_signal("battle_finished", result)
+
+func _reselect_fighting_army_after_battle() -> void:
+	"""Re-select the fighting army and show movement arrows after battle completion (human players only)"""
+	DebugLogger.log("BattleSystem", "[BattleManager] _reselect_fighting_army_after_battle called")
+	
+	# Wait a frame to ensure the modal is fully closed and UI state is updated
+	await Engine.get_main_loop().process_frame
+	
+	if _fighting_army_for_reselection == null:
+		DebugLogger.log("BattleSystem", "[BattleManager] No army stored for re-selection")
+		return
+	
+	DebugLogger.log("BattleSystem", "[BattleManager] Found stored army: " + _fighting_army_for_reselection.name)
+	
+	# Check if army is still valid and alive after battle
+	if not is_instance_valid(_fighting_army_for_reselection):
+		DebugLogger.log("BattleSystem", "[BattleManager] Stored army is no longer valid")
+		_fighting_army_for_reselection = null
+		return
+	
+	if _fighting_army_for_reselection.get_total_soldiers() <= 0:
+		DebugLogger.log("BattleSystem", "[BattleManager] Stored army has no soldiers left")
+		_fighting_army_for_reselection = null
+		return
+	
+	# Only re-select for human players
+	if _game_manager and not _game_manager.is_player_human(_fighting_army_for_reselection.get_player_id()):
+		DebugLogger.log("BattleSystem", "[BattleManager] Army belongs to AI player, not re-selecting")
+		_fighting_army_for_reselection = null
+		return
+	
+	# Get the current region container where the army is located
+	var current_region_container = _fighting_army_for_reselection.get_parent()
+	if current_region_container == null:
+		DebugLogger.log("BattleSystem", "[BattleManager] Army has no parent region container")
+		_fighting_army_for_reselection = null
+		return
+	
+	DebugLogger.log("BattleSystem", "[BattleManager] Army is in region: " + current_region_container.name)
+	
+	# Re-select the army and show arrows (without modal)
+	if _army_manager != null:
+		DebugLogger.log("BattleSystem", "[BattleManager] Re-selecting army without modal for continued movement")
+		# Set the selected army directly without showing modal
+		_army_manager.selected_army = _fighting_army_for_reselection
+		_army_manager.selected_region_container = current_region_container
+		
+		# Show arrows if this is a human player
+		if _army_manager._should_show_human_arrows():
+			_army_manager._show_move_arrows(current_region_container)
+		
+		DebugLogger.log("BattleSystem", "[BattleManager] Re-selected army " + _fighting_army_for_reselection.name + " after battle completion (no modal)")
+	else:
+		DebugLogger.log("BattleSystem", "[BattleManager] ArmyManager is null, cannot re-select army")
+	
+	# Clear the stored army reference
+	_fighting_army_for_reselection = null
 
 # --- Proportional loss distribution across an array of Army nodes (and optional garrison) ---
 func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garrison: ArmyComposition) -> void:

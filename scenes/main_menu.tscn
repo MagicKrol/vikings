@@ -646,3 +646,54 @@ layout_mode = 2
 theme = SubResource("Theme_play_button")
 disabled = true
 text = "Play"
+
+[node name="CustomMapSettings" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1310.0
+offset_top = 240.0
+offset_right = 1810.0
+offset_bottom = 640.0
+mouse_filter = 2
+
+[node name="InnerPanel" type="Panel" parent="CustomMapSettings"]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1o4cw")
+
+[node name="TextureRect" type="TextureRect" parent="CustomMapSettings/InnerPanel"]
+modulate = Color(1, 1, 1, 0.941176)
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 400.0
+mouse_filter = 2
+texture = ExtResource("4_jiisd")
+expand_mode = 2
+
+[node name="PlayerSettings" type="VBoxContainer" parent="CustomMapSettings/InnerPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Border" type="Panel" parent="CustomMapSettings"]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 400.0
+mouse_filter = 2
+theme = SubResource("Theme_icaip")
+theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")

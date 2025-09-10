@@ -144,10 +144,14 @@ func _get_army_position_offset(region_container: Node) -> Vector2:
 
 func select_army(army: Army, region_container: Node, current_player_id: int = -1) -> void:
 	"""Select an army for movement - only allow selecting armies owned by current player"""
+	DebugLogger.log("ArmyManagement", "select_army called for army " + (army.name if army else "null"))
+	
 	if army == null or not is_instance_valid(army):
+		DebugLogger.log("ArmyManagement", "Army is null or invalid")
 		return
 	
 	if region_container == null:
+		DebugLogger.log("ArmyManagement", "Region container is null")
 		return
 	
 	# Check if army belongs to current player (if current_player_id is provided)
@@ -155,16 +159,23 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 		DebugLogger.log("ArmyManagement", "Cannot select army owned by Player " + str(army.get_player_id()) + " (current player is " + str(current_player_id) + ")")
 		return
 	
+	DebugLogger.log("ArmyManagement", "Setting selected_army to " + army.name)
 	selected_army = army
 	selected_region_container = region_container
 
 	# Show army modal
 	if army_modal != null:
+		DebugLogger.log("ArmyManagement", "Showing army modal")
 		army_modal.show_army_info(army)
+	else:
+		DebugLogger.log("ArmyManagement", "Army modal is null")
 
 	# Only show move arrows for human players
 	if _should_show_human_arrows():
+		DebugLogger.log("ArmyManagement", "Showing move arrows for human player")
 		_show_move_arrows(region_container)
+	else:
+		DebugLogger.log("ArmyManagement", "Not showing move arrows (not human player)")
 
 func deselect_army() -> void:
 	"""Deselect the currently selected army"""
@@ -590,13 +601,9 @@ func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -
 				return
 			var battle_manager = game_manager.get_battle_manager()
 			if battle_manager:
-				# Set up battle through BattleManager
-				battle_manager.set_pending_conquest(attacking_army, defending_region)
+				# Start battle through BattleManager (this will handle army storage for re-selection)
+				battle_manager.start_battle(attacking_army, defending_region.get_region_id())
 				DebugLogger.log("ArmyManagement", "Combat triggered: Army " + attacking_army.name + " vs Region " + defending_region.get_region_name())
-				
-				# Show battle modal for AI combat (non-interactive)
-				if battle_modal:
-					battle_modal.show_battle(attacking_army, defending_region)
 				
 				# Deselect army since combat is now handling it
 				deselect_army()
