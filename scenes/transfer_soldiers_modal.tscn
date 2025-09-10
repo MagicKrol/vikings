@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cptn3kw8h3p7w"]
+[gd_scene load_steps=5 format=3 uid="uid://b3ovrt5dclfvx"]
 
 [ext_resource type="Script" path="res://transfer_soldiers_modal.gd" id="1_42aob"]
 [ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_4fnsp"]
-[ext_resource type="Theme" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
+[ext_resource type="Theme" uid="uid://c8m4n5k6l7p2q" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="4_5tvus"]
 
 [node name="TransferSoldiersModal" type="Control"]
@@ -76,39 +76,39 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="HeaderMargin" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
-layout_mode = 2
 custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
 
 [node name="ArmyHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("3_fd5av")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Army I"
-custom_minimum_size = Vector2(140, 0)
 horizontal_alignment = 1
 
 [node name="Margin1" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
-layout_mode = 2
 custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
 
 [node name="TransferHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fd5av")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Transfer"
-custom_minimum_size = Vector2(200, 0)
 horizontal_alignment = 1
 
 [node name="Margin2" type="Control" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
-layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
 
 [node name="RegionHeaderLabel" type="Label" parent="BorderMargin/MainContainer/HeaderContainer/HeaderRow"]
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("3_fd5av")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Region Name"
-custom_minimum_size = Vector2(140, 0)
 horizontal_alignment = 1
 
 [node name="MainContent" type="MarginContainer" parent="BorderMargin/MainContainer"]
@@ -137,39 +137,38 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="TotalMargin" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
 
 [node name="TotalLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("4_5tvus")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Total:"
-custom_minimum_size = Vector2(140, 0)
-horizontal_alignment = 0
 
 [node name="Margin1a" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
 
 [node name="TotalArmyLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("4_5tvus")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
-custom_minimum_size = Vector2(140, 0)
 horizontal_alignment = 1
 
 [node name="Margin1" type="Control" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
 
 [node name="TotalRegionLabel" type="Label" parent="BorderMargin/MainContainer/TotalRow/TotalRowContainer"]
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("4_5tvus")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
-custom_minimum_size = Vector2(140, 0)
 horizontal_alignment = 2
 
 [node name="ButtonContainer" type="Control" parent="BorderMargin/MainContainer"]

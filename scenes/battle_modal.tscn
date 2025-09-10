@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://battle_modal.gd" id="1_42aob"]
 [ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_4fnsp"]
-[ext_resource type="Theme" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
+[ext_resource type="Theme" uid="uid://c8m4n5k6l7p2q" path="res://themes/subheader_text_theme.tres" id="3_fd5av"]
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="4_5tvus"]
 
 [node name="BattleModal" type="Control"]

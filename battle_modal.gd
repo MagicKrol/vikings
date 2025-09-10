@@ -35,6 +35,11 @@ var current_defender_composition: Dictionary = {}
 
 # Battle report state
 var showing_battle_report: bool = false
+# Battle summary modal reference
+var battle_summary_modal: BattleSummaryModal = null
+# Store initial compositions for summary
+var initial_attacker_comp: Dictionary = {}
+var initial_defender_comp: Dictionary = {}
 
 # Withdrawal state
 var withdrawal_in_progress: bool = false
@@ -75,6 +80,9 @@ func _ready():
 	
 	# Initially hidden
 	visible = false
+	
+	# Try to find or create battle summary modal
+	_setup_battle_summary_modal()
 
 func show_battle(army: Army, region: Region) -> void:
 	"""Show the battle modal with army vs region information"""
@@ -412,9 +420,9 @@ func _update_defender_units() -> void:
 		if gc > 0:
 			initial_composition[unit_type] = initial_composition.get(unit_type, 0) + gc
 	# Recruits (peasant-only)
-	var recruits_count = defending_region.get_base_available_recruits()
-	if recruits_count > 0:
-		initial_composition[SoldierTypeEnum.Type.PEASANTS] = initial_composition.get(SoldierTypeEnum.Type.PEASANTS, 0) + recruits_count
+	var base_recruits = defending_region.get_base_available_recruits()
+	if base_recruits > 0:
+		initial_composition[SoldierTypeEnum.Type.PEASANTS] = initial_composition.get(SoldierTypeEnum.Type.PEASANTS, 0) + base_recruits
 
 	# Composition to show
 	var composition_to_show: Dictionary
@@ -539,6 +547,14 @@ func _run_battle_simulation() -> void:
 		if gc > 0:
 			current_defender_composition[unit_type] = current_defender_composition.get(unit_type, 0) + gc
 	
+	# Store initial compositions for battle summary
+	initial_attacker_comp = current_attacker_composition.duplicate()
+	initial_defender_comp = current_defender_composition.duplicate()
+	# Add recruits to initial defender composition
+	var summary_recruits = defending_region.get_base_available_recruits()
+	if summary_recruits > 0:
+		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
+	
 	# During battle, show withdraw button and disable continue
 	if continue_button:
 		continue_button.disabled = true
@@ -556,10 +572,10 @@ func _run_battle_simulation() -> void:
 	var defending_compositions = bm.get_pending_defending_compositions()
 	var region_garrison = defending_region.get_garrison()
 	# Append recruits composition if available
-	var recruits_count = defending_region.get_base_available_recruits()
-	if recruits_count > 0:
+	var available_recruits = defending_region.get_base_available_recruits()
+	if available_recruits > 0:
 		var recruits_comp := ArmyComposition.new()
-		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, recruits_count)
+		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, available_recruits)
 		defending_compositions.append(recruits_comp)
 	
 	# Start the animated battle with attacker efficiency
@@ -630,9 +646,16 @@ func _on_ok_pressed() -> void:
 		_show_battle_report()
 
 func _show_battle_report() -> void:
-	"""Switch to showing the battle report screen"""
-	showing_battle_report = true
-	_update_display()
+	"""Switch to showing the battle report screen using the new summary modal"""
+	if battle_summary_modal and battle_report:
+		# Hide the battle modal
+		visible = false
+		# Show the summary modal with battle data
+		battle_summary_modal.show_battle_summary(attacking_army, defending_region, battle_report, initial_attacker_comp, initial_defender_comp)
+	else:
+		# Fallback to old display if summary modal not available
+		showing_battle_report = true
+		_update_display()
 
 func _on_withdraw_pressed() -> void:
 	"""Handle Withdraw button press"""
@@ -722,6 +745,26 @@ func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""
 	label.theme = preload("res://themes/standard_text_theme.tres")
 	label.add_theme_color_override("font_color", Color.WHITE)
+
+func _setup_battle_summary_modal() -> void:
+	"""Setup reference to battle summary modal"""
+	# First try to find existing modal in UI
+	var ui_node = get_parent()
+	if ui_node:
+		battle_summary_modal = ui_node.get_node_or_null("BattleSummaryModal") as BattleSummaryModal
+	
+	# If not found, try to load and instantiate it
+	if battle_summary_modal == null:
+		var summary_scene = load("res://scenes/battle_summary_modal.tscn")
+		if summary_scene:
+			battle_summary_modal = summary_scene.instantiate()
+			if ui_node:
+				ui_node.add_child(battle_summary_modal)
+
+func _on_summary_closed() -> void:
+	"""Called when battle summary modal is closed"""
+	# Hide the battle modal completely and notify closure
+	hide_modal()
 
 func _draw():
 	# Draw shadow first (behind everything)
