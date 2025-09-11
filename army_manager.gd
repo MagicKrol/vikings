@@ -43,6 +43,9 @@ var battle_modal: BattleModal = null
 # Reference to the sound manager for sound effects
 var sound_manager: SoundManager = null
 
+# Reference to the move modal for UI updates
+var move_modal: MoveModal = null
+
 # All armies in the game: player_id -> Array[Army]
 var armies_by_player: Dictionary = {}
 
@@ -74,6 +77,12 @@ func set_battle_modal(modal: BattleModal) -> void:
 func set_sound_manager(manager: SoundManager) -> void:
 	"""Set the sound manager reference"""
 	sound_manager = manager
+
+func set_move_modal(modal: MoveModal) -> void:
+	"""Set the move modal reference"""
+	move_modal = modal
+	if move_modal:
+		move_modal.set_army_manager(self)
 
 func _find_army_modal() -> void:
 	"""Find and store reference to the army modal"""
@@ -174,6 +183,9 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 	if _should_show_human_arrows():
 		DebugLogger.log("ArmyManagement", "Showing move arrows for human player")
 		_show_move_arrows(region_container)
+		# Show move modal when arrows are shown
+		if move_modal:
+			move_modal.show_move_modal(army)
 	else:
 		DebugLogger.log("ArmyManagement", "Not showing move arrows (not human player)")
 
@@ -185,6 +197,10 @@ func deselect_army() -> void:
 	# Hide army modal
 	if army_modal != null:
 		army_modal.hide_modal()
+	
+	# Hide move modal
+	if move_modal != null:
+		move_modal.hide_move_modal()
 
 	_clear_move_arrows()
 
@@ -313,6 +329,9 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		_clear_move_arrows()
 		if _should_show_human_arrows():
 			_show_move_arrows(target_region_container)
+			# Update move modal with current army
+			if move_modal and selected_army:
+				move_modal.show_move_modal(selected_army)
 		
 		# Update army modal with new movement points
 		if army_modal != null and selected_army != null:

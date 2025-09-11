@@ -8,14 +8,12 @@ const SHADOW_OFFSET = Vector2(4, 4)
 const SHADOW_COLOR = Color(0, 0, 0, 0.3)
 const BORDER_WIDTH = 4.0
 
-# UI elements - references to static nodes from main.tscn
+# UI elements - references to static nodes from updated scene
 var battle_title_label: Label
 var attacker_header: Label
 var defender_header: Label
 var attacker_effectiveness: Label
 var defender_effectiveness: Label
-var attacker_defense: Label
-var defender_defense: Label
 var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
@@ -52,20 +50,20 @@ var ui_manager: UIManager = null
 var click_manager: Node = null
 
 func _ready():
-	# Get references to static UI elements from main.tscn
-	battle_title_label = get_node("BorderMargin/MainContainer/TitleContainer/BattleTitleLabel")
-	attacker_header = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerHeader")
-	defender_header = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderHeader")
-	attacker_effectiveness = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerEffectiveness")
-	defender_effectiveness = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderEffectiveness")
-	attacker_units_container = get_node("BorderMargin/MainContainer/MainContent/AttackerColumnMargin/AttackerColumn/AttackerUnitsContainer")
-	defender_units_container = get_node("BorderMargin/MainContainer/MainContent/DefenderColumnMargin/DefenderColumn/DefenderUnitsContainer")
-	continue_button = get_node("BorderMargin/MainContainer/ButtonContainer/ButtonsContainer/ContinueButton")
-	withdraw_button = get_node("BorderMargin/MainContainer/ButtonContainer/ButtonsContainer/WithdrawButton")
+	# Get references to static UI elements from updated scene structure
+	battle_title_label = get_node("Panel/Army/Header/Region")
+	attacker_header = get_node("Panel/Army/HeaderSection/HBoxContainer/AttackerName")
+	defender_header = get_node("Panel/Army/HeaderSection/HBoxContainer/DefenderName")
+	attacker_effectiveness = get_node("Panel/Army/HeaderSection/Status/AttackerVigor")
+	defender_effectiveness = get_node("Panel/Army/HeaderSection/Status/DefenderVigor")
+	attacker_units_container = get_node("Panel/Army/UnitsSection")
+	defender_units_container = get_node("Panel/Army/UnitsSection")
+	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
+	withdraw_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	
-	# Connect button signals
-	continue_button.pressed.connect(_on_ok_pressed)
-	withdraw_button.pressed.connect(_on_withdraw_pressed)
+	# Connect button signals - single button handles both continue and withdraw
+	continue_button.pressed.connect(_on_button_pressed)
+	withdraw_button = continue_button  # Both reference the same button
 	
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -126,15 +124,10 @@ func hide_modal() -> void:
 	current_attacker_composition.clear()
 	current_defender_composition.clear()
 	
-	# Reset buttons
+	# Reset button
 	if continue_button:
 		continue_button.disabled = false
 		continue_button.text = "Continue"
-	
-	if withdraw_button:
-		withdraw_button.disabled = false
-		withdraw_button.text = "Withdraw"
-		withdraw_button.visible = true
 	
 	# Reset withdrawal state
 	withdrawal_in_progress = false
@@ -165,22 +158,12 @@ func _update_display() -> void:
 			attacker_header.text = "Army " + str(attacking_army.number)
 		else:
 			attacker_header.text = "Attacker"
-		defender_header.text = "Defender"
+		defender_header.text = defending_region.get_region_name()
 		attacker_effectiveness.visible = true
 		defender_effectiveness.visible = true
 		
-		# Create or update defense labels
-		_create_defense_labels()
-		
-		# Show defense labels
-		if attacker_defense:
-			attacker_defense.visible = true
-		if defender_defense:
-			defender_defense.visible = true
-		
-		# Update effectiveness and defense displays
+		# Update vigor displays
 		_update_effectiveness_displays()
-		_update_defense_displays()
 		
 		# Update attacker units
 		_update_attacker_units()
@@ -188,91 +171,29 @@ func _update_display() -> void:
 		# Update defender units  
 		_update_defender_units()
 
-func _create_defense_labels() -> void:
-	"""Create defense labels if they don't exist"""
-	if attacker_defense == null:
-		# Get the attacker column container
-		var attacker_column = attacker_effectiveness.get_parent()
-		
-		# Create attacker defense label (empty to maintain spacing)
-		attacker_defense = Label.new()
-		attacker_defense.text = ""
-		_apply_standard_theme(attacker_defense)
-		
-		# Insert after effectiveness label
-		var effectiveness_index = attacker_column.get_children().find(attacker_effectiveness)
-		attacker_column.add_child(attacker_defense)
-		attacker_column.move_child(attacker_defense, effectiveness_index + 1)
-		
-		# Convert to split format
-		_convert_single_label_to_split(attacker_defense)
-	
-	if defender_defense == null:
-		# Get the defender column container
-		var defender_column = defender_effectiveness.get_parent()
-		
-		# Create defender defense label
-		defender_defense = Label.new()
-		defender_defense.text = ""
-		_apply_standard_theme(defender_defense)
-		
-		# Insert after effectiveness label
-		var effectiveness_index = defender_column.get_children().find(defender_effectiveness)
-		defender_column.add_child(defender_defense)
-		defender_column.move_child(defender_defense, effectiveness_index + 1)
-		
-		# Convert to split format
-		_convert_single_label_to_split(defender_defense)
 
 func _update_effectiveness_displays() -> void:
-	"""Update the effectiveness labels with current efficiency values"""
+	"""Update the vigor labels with current values"""
 	if attacking_army == null or defending_region == null:
 		return
 	
-	# Check if we need to convert single labels to split text/value format
-	_convert_to_split_labels()
+	# Get attacking army vigor
+	var attacker_vigor = attacking_army.get_efficiency()
+	attacker_effectiveness.text = "Vigor: " + str(attacker_vigor) + "%"
 	
-	# Get attacking army efficiency
-	var attacker_efficiency = attacking_army.get_efficiency()
-	_update_split_label(attacker_effectiveness, "Efficiency:", str(attacker_efficiency) + "%")
-	
-	# Defender efficiency: garrison always 100%, armies use their efficiency
+	# Defender vigor: garrison always 100%, armies use their efficiency
 	# For now, we're always fighting against garrison, so it's 100%
-	_update_split_label(defender_effectiveness, "Efficiency:", "100%")
+	defender_effectiveness.text = "Vigor: 100%"
 
-func _update_defense_displays() -> void:
-	"""Update the defense labels with castle defense bonus"""
-	if attacking_army == null or defending_region == null:
-		return
-	
-	# Attacker gets no defense bonus (empty label for spacing)
-	if attacker_defense:
-		_update_split_label(attacker_defense, "", "")
-	
-	# Defender gets castle defense bonus
-	if defender_defense:
-		var castle_type = defending_region.get_castle_type()
-		var defense_bonus = GameParameters.get_castle_defense_bonus(castle_type)
-		_update_split_label(defender_defense, "Defense:", str(defense_bonus) + "%")
 
 func _display_battle_report() -> void:
 	"""Display the battle report screen"""
 	# Update title
 	battle_title_label.text = "Battle Report"
 	
-	# Clear both unit containers for report display
-	for child in attacker_units_container.get_children():
-		child.queue_free()
-	for child in defender_units_container.get_children():
-		child.queue_free()
-	
-	# Hide effectiveness and defense labels (not needed for report)
+	# Hide vigor labels (not needed for report)
 	attacker_effectiveness.visible = false
 	defender_effectiveness.visible = false
-	if attacker_defense:
-		attacker_defense.visible = false
-	if defender_defense:
-		defender_defense.visible = false
 	
 	# Change column headers
 	attacker_header.text = "Your Losses"
@@ -288,94 +209,58 @@ func _display_battle_report() -> void:
 
 func _display_army_losses() -> void:
 	"""Display losses for both armies in the report format"""
-	# Display attacker losses (your losses)
-	if not battle_report.attacker_losses.is_empty():
-		for unit_type in SoldierTypeEnum.get_all_types():
-			if battle_report.attacker_losses.has(unit_type) and battle_report.attacker_losses[unit_type] > 0:
-				_create_attacker_loss_row(unit_type, battle_report.attacker_losses[unit_type])
-	else:
-		# No losses
-		_create_no_losses_label(attacker_units_container, "No losses!")
+	# Update unit labels to show losses instead of remaining counts
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_name = SoldierTypeEnum.type_to_string(unit_type).to_lower().capitalize() + "s"
+		
+		# Update attacker losses
+		var attacker_losses = battle_report.attacker_losses.get(unit_type, 0)
+		if attacker_losses > 0:
+			_update_loss_label(unit_name, attacker_losses, true)
+		
+		# Update defender losses
+		var defender_losses = battle_report.defender_losses.get(unit_type, 0)
+		if defender_losses > 0:
+			_update_loss_label(unit_name, defender_losses, false)
 	
-	# Display defender losses (enemy losses)
-	if not battle_report.defender_losses.is_empty():
-		for unit_type in SoldierTypeEnum.get_all_types():
-			if battle_report.defender_losses.has(unit_type) and battle_report.defender_losses[unit_type] > 0:
-				_create_defender_loss_row(unit_type, battle_report.defender_losses[unit_type])
-	else:
-		# No losses
-		_create_no_losses_label(defender_units_container, "No losses!")
+	# Update totals
+	var total_attacker_losses = 0
+	var total_defender_losses = 0
+	for unit_type in battle_report.attacker_losses:
+		total_attacker_losses += battle_report.attacker_losses[unit_type]
+	for unit_type in battle_report.defender_losses:
+		total_defender_losses += battle_report.defender_losses[unit_type]
+	
+	if total_attacker_losses > 0:
+		_update_loss_label("Total", total_attacker_losses, true)
+	if total_defender_losses > 0:
+		_update_loss_label("Total", total_defender_losses, false)
 
-func _create_attacker_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> void:
-	"""Create a loss row for attacker: 'Unit: <count>' with right-aligned count"""
-	# Add margin before this row (except for the first row)
-	if attacker_units_container.get_child_count() > 0:
-		var margin = MarginContainer.new()
-		margin.custom_minimum_size = Vector2(0, 5)
-		attacker_units_container.add_child(margin)
+func _update_loss_label(unit_section_name: String, loss_count: int, is_attacker: bool) -> void:
+	"""Update loss labels in the static scene structure"""
+	var section_path = "Panel/Army/UnitsSection/" + unit_section_name
+	if unit_section_name == "Total":
+		section_path = "Panel/Army/TotalSection/Total"
 	
-	var row_container = HBoxContainer.new()
-	row_container.add_theme_constant_override("separation", 0)
-	attacker_units_container.add_child(row_container)
+	var section_node = get_node_or_null(section_path)
+	if not section_node:
+		return
 	
-	# Unit name (left-aligned)
-	var unit_label = Label.new()
-	unit_label.text = SoldierTypeEnum.type_to_string(unit_type) + ":"
-	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label)
-	row_container.add_child(unit_label)
+	var attacker_label = section_node.get_node_or_null("AttackerRemaining")
+	var defender_label = section_node.get_node_or_null("DefenderRemaining")
 	
-	# Count (right-aligned, fixed width)
-	var count_label = Label.new()
-	count_label.text = str(count)
-	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	count_label.custom_minimum_size = Vector2(60, 0)
-	_apply_standard_theme(count_label)
-	row_container.add_child(count_label)
+	if is_attacker and attacker_label:
+		attacker_label.text = str(loss_count)
+		attacker_label.add_theme_color_override("font_color", Color.RED)
+	
+	if not is_attacker and defender_label:
+		defender_label.text = str(loss_count)
+		defender_label.add_theme_color_override("font_color", Color.RED)
 
-func _create_defender_loss_row(unit_type: SoldierTypeEnum.Type, count: int) -> void:
-	"""Create a loss row for defender: '<count> :Unit' with left-aligned count"""
-	# Add margin before this row (except for the first row)
-	if defender_units_container.get_child_count() > 0:
-		var margin = MarginContainer.new()
-		margin.custom_minimum_size = Vector2(0, 5)
-		defender_units_container.add_child(margin)
-	
-	var row_container = HBoxContainer.new()
-	row_container.add_theme_constant_override("separation", 0)
-	defender_units_container.add_child(row_container)
-	
-	# Count (left-aligned, fixed width)
-	var count_label = Label.new()
-	count_label.text = str(count)
-	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	count_label.custom_minimum_size = Vector2(60, 0)
-	_apply_standard_theme(count_label)
-	row_container.add_child(count_label)
-	
-	# Unit name (right-aligned)
-	var unit_label = Label.new()
-	unit_label.text = " :" + SoldierTypeEnum.type_to_string(unit_type)
-	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label)
-	row_container.add_child(unit_label)
 
-func _create_no_losses_label(container: VBoxContainer, text: String) -> void:
-	"""Create a 'no losses' label for cases where there were no casualties"""
-	var no_loss_label = Label.new()
-	no_loss_label.text = text
-	no_loss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_standard_theme(no_loss_label)
-	container.add_child(no_loss_label)
 
 func _update_attacker_units() -> void:
-	"""Update attacker unit display"""
-	# Clear existing unit displays
-	for child in attacker_units_container.get_children():
-		child.queue_free()
-	
+	"""Update attacker unit display using the new scene structure"""
 	# Get current composition to display
 	var composition_to_show: Dictionary
 	var initial_composition: Dictionary = {}
@@ -393,18 +278,28 @@ func _update_attacker_units() -> void:
 	else:
 		composition_to_show = initial_composition
 	
-	# Create unit display rows for all unit types that were initially present
-	for unit_type in SoldierTypeEnum.get_all_types():
-		if initial_composition.get(unit_type, 0) > 0:
-			var current_count = composition_to_show.get(unit_type, 0)
-			_create_attacker_unit_row(unit_type, current_count, initial_composition[unit_type])
+	# Update each unit type in the static scene structure
+	_update_unit_count_label("Peasants", SoldierTypeEnum.Type.PEASANTS, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Archers", SoldierTypeEnum.Type.ARCHERS, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Spearmen", SoldierTypeEnum.Type.SPEARMEN, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Swordsmen", SoldierTypeEnum.Type.SWORDSMEN, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Crossbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Horsemen", SoldierTypeEnum.Type.HORSEMEN, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Knights", SoldierTypeEnum.Type.KNIGHTS, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Mounted Knights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Royal Guard", SoldierTypeEnum.Type.ROYAL_GUARD, composition_to_show, initial_composition, true)
+	
+	# Update total
+	var total_current = 0
+	var total_initial = 0
+	for unit_type in composition_to_show:
+		total_current += composition_to_show[unit_type]
+	for unit_type in initial_composition:
+		total_initial += initial_composition[unit_type]
+	_update_unit_count_label("Total", null, {"total": total_current}, {"total": total_initial}, true)
 
 func _update_defender_units() -> void:
-	"""Update defender unit display (aggregated: armies + garrison + recruits)"""
-	# Clear existing unit displays
-	for child in defender_units_container.get_children():
-		child.queue_free()
-	
+	"""Update defender unit display using the new scene structure"""
 	# Aggregate initial composition via BattleManager
 	var initial_composition: Dictionary = {}
 	var gm = get_node("../../GameManager") as GameManager
@@ -436,81 +331,81 @@ func _update_defender_units() -> void:
 	else:
 		composition_to_show = initial_composition
 
-	# Draw rows for unit types present initially
-	for unit_type in SoldierTypeEnum.get_all_types():
-		if initial_composition.get(unit_type, 0) > 0:
-			var current_count = composition_to_show.get(unit_type, 0)
-			_create_defender_unit_row(unit_type, current_count, initial_composition[unit_type])
+	# Update each unit type in the static scene structure
+	_update_unit_count_label("Peasants", SoldierTypeEnum.Type.PEASANTS, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Archers", SoldierTypeEnum.Type.ARCHERS, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Spearmen", SoldierTypeEnum.Type.SPEARMEN, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Swordsmen", SoldierTypeEnum.Type.SWORDSMEN, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Crossbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Horsemen", SoldierTypeEnum.Type.HORSEMEN, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Knights", SoldierTypeEnum.Type.KNIGHTS, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Mounted Knights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Royal Guard", SoldierTypeEnum.Type.ROYAL_GUARD, composition_to_show, initial_composition, false)
+	
+	# Update total
+	var total_current = 0
+	var total_initial = 0
+	for unit_type in composition_to_show:
+		total_current += composition_to_show[unit_type]
+	for unit_type in initial_composition:
+		total_initial += initial_composition[unit_type]
+	_update_unit_count_label("Total", null, {"total": total_current}, {"total": total_initial}, false)
 
-func _create_attacker_unit_row(unit_type: SoldierTypeEnum.Type, count: int, initial_count: int = 0) -> void:
-	"""Create a unit row for attacker: 'Unit: <count>' with right-aligned count"""
-	# Add margin before this row (except for the first row)
-	if attacker_units_container.get_child_count() > 0:
-		var margin = MarginContainer.new()
-		margin.custom_minimum_size = Vector2(0, 5)
-		attacker_units_container.add_child(margin)
+func _update_unit_count_label(unit_section_name: String, unit_type, current_composition: Dictionary, initial_composition: Dictionary, is_attacker: bool) -> void:
+	"""Update unit count labels in the static scene structure"""
+	var section_path = "Panel/Army/UnitsSection/" + unit_section_name
+	if unit_section_name == "Total":
+		section_path = "Panel/Army/TotalSection/Total"
 	
-	var row_container = HBoxContainer.new()
-	row_container.add_theme_constant_override("separation", 0)
-	attacker_units_container.add_child(row_container)
+	var section_node = get_node_or_null(section_path)
+	if not section_node:
+		return
 	
-	# Unit name (left-aligned)
-	var unit_label = Label.new()
-	unit_label.text = SoldierTypeEnum.type_to_string(unit_type) + ":"
-	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label)
-	row_container.add_child(unit_label)
+	var attacker_label = section_node.get_node_or_null("AttackerRemaining")
+	var defender_label = section_node.get_node_or_null("DefenderRemaining")
 	
-	# Count (right-aligned, fixed width)
-	var count_label = Label.new()
-	count_label.text = str(count)
-	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	count_label.custom_minimum_size = Vector2(60, 0)
-	_apply_standard_theme(count_label)
+	if is_attacker and attacker_label:
+		var current_count = 0
+		var initial_count = 0
+		
+		if unit_type == null:
+			current_count = current_composition.get("total", 0)
+			initial_count = initial_composition.get("total", 0)
+		else:
+			current_count = current_composition.get(unit_type, 0)
+			initial_count = initial_composition.get(unit_type, 0)
+		
+		attacker_label.text = str(current_count)
+		
+		# Apply color coding
+		if current_count == 0 and initial_count > 0:
+			attacker_label.add_theme_color_override("font_color", Color.RED)
+		elif current_count < initial_count:
+			attacker_label.add_theme_color_override("font_color", Color.YELLOW)
+		else:
+			attacker_label.remove_theme_color_override("font_color")
 	
-	# Apply color coding based on remaining units
-	if count == 0:
-		count_label.add_theme_color_override("font_color", Color.RED)
-	elif count < initial_count:
-		count_label.add_theme_color_override("font_color", Color.YELLOW)
-	
-	row_container.add_child(count_label)
+	if not is_attacker and defender_label:
+		var current_count = 0
+		var initial_count = 0
+		
+		if unit_type == null:
+			current_count = current_composition.get("total", 0)
+			initial_count = initial_composition.get("total", 0)
+		else:
+			current_count = current_composition.get(unit_type, 0)
+			initial_count = initial_composition.get(unit_type, 0)
+		
+		defender_label.text = str(current_count)
+		
+		# Apply color coding
+		if current_count == 0 and initial_count > 0:
+			defender_label.add_theme_color_override("font_color", Color.RED)
+		elif current_count < initial_count:
+			defender_label.add_theme_color_override("font_color", Color.YELLOW)
+		else:
+			defender_label.remove_theme_color_override("font_color")
 
-func _create_defender_unit_row(unit_type: SoldierTypeEnum.Type, count: int, initial_count: int = 0) -> void:
-	"""Create a unit row for defender: '<count> :Unit' with left-aligned count"""
-	# Add margin before this row (except for the first row)
-	if defender_units_container.get_child_count() > 0:
-		var margin = MarginContainer.new()
-		margin.custom_minimum_size = Vector2(0, 5)
-		defender_units_container.add_child(margin)
-	
-	var row_container = HBoxContainer.new()
-	row_container.add_theme_constant_override("separation", 0)
-	defender_units_container.add_child(row_container)
-	
-	# Count (left-aligned, fixed width)
-	var count_label = Label.new()
-	count_label.text = str(count)
-	count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	count_label.custom_minimum_size = Vector2(100, 0)
-	_apply_standard_theme(count_label)
-	
-	# Apply color coding based on remaining units
-	if count == 0:
-		count_label.add_theme_color_override("font_color", Color.RED)
-	elif count < initial_count:
-		count_label.add_theme_color_override("font_color", Color.YELLOW)
-	
-	row_container.add_child(count_label)
-	
-	# Unit name (right-aligned)
-	var unit_label = Label.new()
-	unit_label.text = " :" + SoldierTypeEnum.type_to_string(unit_type)
-	unit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	unit_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(unit_label)
-	row_container.add_child(unit_label)
 
 func _run_battle_simulation() -> void:
 	"""Run the animated battle simulation between attacking army and region garrison"""
@@ -558,15 +453,10 @@ func _run_battle_simulation() -> void:
 	if summary_recruits > 0:
 		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
 	
-	# During battle, show withdraw button and disable continue
+	# During battle, show withdraw functionality
 	if continue_button:
-		continue_button.disabled = true
-		continue_button.text = "Continue"
-	
-	# Show withdraw button during battle
-	if withdraw_button:
-		withdraw_button.disabled = false
-		withdraw_button.visible = true
+		continue_button.disabled = false
+		continue_button.text = "Withdraw"
 	
 	# Get attacking compositions (all pending attackers)
 	var attacking_compositions = bm.get_pending_attacking_compositions()
@@ -618,13 +508,10 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 		hide_modal()
 		return
 	
-	# Re-enable continue button and hide withdraw button
+	# Re-enable continue button
 	if continue_button:
 		continue_button.disabled = false
 		continue_button.text = "Continue"
-	
-	if withdraw_button:
-		withdraw_button.visible = false
 	
 	# Reset withdrawal state
 	withdrawal_in_progress = false
@@ -634,16 +521,21 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	
 	DebugLogger.log("UISystem", "Battle finished! Winner: " + str(report.winner))
 
-func _on_ok_pressed() -> void:
-	"""Handle Continue button press"""
-	# Don't allow interaction during battle
-	if battle_in_progress:
-		return
-	
+func _on_button_pressed() -> void:
+	"""Handle button press - either Continue or Withdraw based on battle state"""
 	# Play click sound for button press
 	if sound_manager:
 		sound_manager.click_sound()
 	
+	if battle_in_progress:
+		# During battle, button acts as withdraw
+		_on_withdraw_pressed()
+	else:
+		# After battle, button acts as continue
+		_on_ok_pressed()
+
+func _on_ok_pressed() -> void:
+	"""Handle Continue button press"""
 	if showing_battle_report:
 		# We're on the battle report screen - close the modal
 		hide_modal()
@@ -680,12 +572,7 @@ func _on_withdraw_pressed() -> void:
 	# Start withdrawal process
 	withdrawal_in_progress = true
 	
-	# Update button state
-	if withdraw_button:
-		withdraw_button.disabled = true
-		withdraw_button.text = "Withdrawing..."
-	
-	# Also disable continue button during withdrawal
+	# Update button state during withdrawal
 	if continue_button:
 		continue_button.disabled = true
 		continue_button.text = "Withdrawing..."
@@ -696,56 +583,8 @@ func _on_withdraw_pressed() -> void:
 	
 	DebugLogger.log("UISystem", "Starting withdrawal...")
 
-func _convert_to_split_labels() -> void:
-	"""Convert single effectiveness labels to split text/value format"""
-	_convert_single_label_to_split(attacker_effectiveness)
-	_convert_single_label_to_split(defender_effectiveness)
 
-func _convert_single_label_to_split(label: Label) -> void:
-	"""Convert a single label to split text/value format with HBoxContainer"""
-	# Check if already converted (has HBoxContainer as child)
-	if label.get_child_count() > 0 and label.get_child(0) is HBoxContainer:
-		return
-	
-	# Clear existing text
-	label.text = ""
-	
-	# Create HBoxContainer for text and value
-	var hbox = HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 0)
-	label.add_child(hbox)
-	
-	# Create text label (left-aligned)
-	var text_label = Label.new()
-	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	text_label.custom_minimum_size = Vector2(120, 0)
-	text_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_standard_theme(text_label)
-	hbox.add_child(text_label)
-	
-	# Create value label (right-aligned, fixed width)
-	var value_label = Label.new()
-	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	value_label.custom_minimum_size = Vector2(60, 0)
-	_apply_standard_theme(value_label)
-	hbox.add_child(value_label)
 
-func _update_split_label(parent_label: Label, text: String, value: String) -> void:
-	"""Update a split label with text and value"""
-	if parent_label.get_child_count() == 0:
-		return
-	
-	var hbox = parent_label.get_child(0) as HBoxContainer
-	if hbox == null or hbox.get_child_count() < 2:
-		return
-	
-	var text_label = hbox.get_child(0) as Label
-	var value_label = hbox.get_child(1) as Label
-	
-	if text_label:
-		text_label.text = text
-	if value_label:
-		value_label.text = value
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""

@@ -184,9 +184,11 @@ func initialize_managers(is_scenario: bool = false):
 	
 	# Connect UI components to ArmyManager
 	var army_modal = ui_node.get_node("InfoModal") as InfoModal
+	var move_modal = ui_node.get_node("MoveModal") as MoveModal
 	if _army_manager:
 		_army_manager.set_army_modal(army_modal)
 		_army_manager.set_battle_modal(_battle_modal)
+		_army_manager.set_move_modal(move_modal)
 	
 	_sound_manager = get_node("../SoundManager") as SoundManager
 	

@@ -82,12 +82,15 @@ func get_army_manager() -> ArmyManager:
 func _on_left_click(screen_pos: Vector2) -> void:
 	# Check if any modal is active and close them first
 	if _ui_manager and _ui_manager.is_modal_active:
+		DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
 		# Don't close modals if BattleModal is in battle mode (battle_in_progress)
 		var battle_modal = get_node("../UI/BattleModal") as BattleModal
 		if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
 			# Battle is active - don't allow closing the modal
+			DebugLogger.log("InputSystem", "Battle is active, not closing modal")
 			return
 		_ui_manager.close_all_active_modals()
+		DebugLogger.log("InputSystem", "Closed all active modals, returning")
 		return
 	
 	# Get the camera and convert screen to world coordinates properly
@@ -134,7 +137,7 @@ func _on_left_click(screen_pos: Vector2) -> void:
 					region_clicked = true
 					break
 
-	# If no region was clicked and we have a selected army, deselect it
+	# If no region was clicked and we have a selected army, deselect it (cancels move)
 	if not region_clicked and _army_manager and _army_manager.selected_army != null:
 		_army_manager.deselect_army()
 
@@ -250,9 +253,11 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 	# If we have a selected army, try to move it to this region
 	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
 		# Check if selected army has movement points
-		if _army_manager.selected_army.get_movement_points() <= 0:
-			# Deselect army if no movement points
-			_army_manager.deselect_army()
+		var movement_points = _army_manager.selected_army.get_movement_points()
+		DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
+		if movement_points <= 0:
+			# Don't allow movement but keep army selected - just log the attempt
+			DebugLogger.log("InputSystem", "Cannot move army - no movement points remaining")
 			return
 		
 		# Use GameManager orchestration for region entry

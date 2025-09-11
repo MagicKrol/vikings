@@ -40,6 +40,8 @@ var _army_select_modal: ArmySelectModal
 var _region_select_modal: RegionSelectModal
 var _player_status_modal2: PlayerStatusModal2
 var _turn_modal: TurnModal
+var _info_modal: InfoModal
+var _move_modal: MoveModal
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -73,6 +75,8 @@ func _ready():
 	_region_select_modal = get_parent().get_node("RegionSelectModal") as RegionSelectModal
 	_player_status_modal2 = get_parent().get_node("PlayerStatusModal2") as PlayerStatusModal2
 	_turn_modal = get_parent().get_node("TurnModal") as TurnModal
+	_info_modal = get_parent().get_node("InfoModal") as InfoModal
+	_move_modal = get_parent().get_node("MoveModal") as MoveModal
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
@@ -178,10 +182,14 @@ func close_all_active_modals() -> void:
 		_region_select_modal.hide_modal()
 	if battle_modal and battle_modal.visible:
 		battle_modal.hide_modal()
+	if _info_modal and _info_modal.visible:
+		_info_modal.hide_modal()
+	if _move_modal and _move_modal.visible:
+		_move_modal.hide_move_modal()
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
-	var modals = [_select_modal, _army_select_modal, _region_select_modal, battle_modal]
+	var modals = [_select_modal, _army_select_modal, _region_select_modal, battle_modal, _info_modal, _move_modal]
 	for modal in modals:
 		if modal and modal.visible:
 			return true

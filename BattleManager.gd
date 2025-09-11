@@ -477,18 +477,14 @@ func _reselect_fighting_army_after_battle() -> void:
 	
 	DebugLogger.log("BattleSystem", "[BattleManager] Army is in region: " + current_region_container.name)
 	
-	# Re-select the army and show arrows (without modal)
+	# Re-select the army and show arrows and modals (same as clicking "move army")
 	if _army_manager != null:
-		DebugLogger.log("BattleSystem", "[BattleManager] Re-selecting army without modal for continued movement")
-		# Set the selected army directly without showing modal
-		_army_manager.selected_army = _fighting_army_for_reselection
-		_army_manager.selected_region_container = current_region_container
+		DebugLogger.log("BattleSystem", "[BattleManager] Re-selecting army with full functionality for continued movement")
+		# Use proper select_army method to trigger the same action as clicking "move army"
+		var current_player_id = _game_manager.get_current_player_id() if _game_manager else -1
+		_army_manager.select_army(_fighting_army_for_reselection, current_region_container, current_player_id)
 		
-		# Show arrows if this is a human player
-		if _army_manager._should_show_human_arrows():
-			_army_manager._show_move_arrows(current_region_container)
-		
-		DebugLogger.log("BattleSystem", "[BattleManager] Re-selected army " + _fighting_army_for_reselection.name + " after battle completion (no modal)")
+		DebugLogger.log("BattleSystem", "[BattleManager] Re-selected army " + _fighting_army_for_reselection.name + " after battle completion (with modals)")
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] ArmyManager is null, cannot re-select army")
 	
