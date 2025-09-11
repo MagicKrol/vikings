@@ -128,6 +128,7 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 			map_generator.remove_ownership_overlay(region_id)
 	else:
 		# Assign ownership to player_id
+		var previous_owner: int = get_region_owner(region_id)
 		region_ownership[region_id] = player_id
 		# Update the region's ownership tracking
 		var region_container2 = map_generator.get_region_container_by_id(region_id)
@@ -135,9 +136,12 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 			var region2 = region_container2 as Region
 			if region2 != null:
 				region2.set_region_owner(player_id)
-		# Create colored overlay for owned region
-		if map_generator and map_generator.has_method("create_ownership_overlay"):
-			map_generator.create_ownership_overlay(region_id, player_id)
+				# Create or update colored overlay for owned region
+				if map_generator:
+					if previous_owner == -1:
+						map_generator.create_ownership_overlay(region_id, player_id)
+					else:
+						map_generator.update_ownership_overlay(region_id, player_id)
 	
 	# Trigger border recalculation for colored borders
 	if map_generator and map_generator.has_method("regenerate_borders_for_region"):

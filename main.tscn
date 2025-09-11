@@ -34,6 +34,19 @@ script = ExtResource("5_place")
 
 [node name="Map" type="Node2D" parent="."]
 script = ExtResource("1_m7t5v")
+data_file_path = null
+noisy_edges_enabled = null
+debug_draw_overlay = null
+show_region_colors = null
+show_region_graph = null
+show_region_points = null
+region_point_inner_color = null
+polygon_scale = null
+ocean_frame_width = null
+map_size = null
+noisy_edge_amplitude = null
+noisy_edge_length = null
+noisy_edge_seed = null
 
 [node name="Regions" type="Node2D" parent="Map"]
 

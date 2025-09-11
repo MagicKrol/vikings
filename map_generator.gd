@@ -797,7 +797,7 @@ func _get_player_border_color(player_id: int) -> Color:
 	return border_color
 
 func create_ownership_overlay(region_id: int, player_id: int) -> void:
-	"""Create a semi-transparent colored polygon overlay for owned regions"""
+	"""Create a new ownership overlay named OwnershipOverlay for this region."""
 	var region_container = get_region_container_by_id(region_id)
 	if region_container == null:
 		DebugLogger.log("MapGeneration", "Error: Could not find region container for ID: " + str(region_id))
@@ -809,10 +809,8 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 		DebugLogger.log("MapGeneration", "Error: Could not find original polygon for region: " + str(region_id))
 		return
 	
-	# Remove existing ownership overlay if it exists
-	var existing_overlay = region_container.get_node_or_null("OwnershipOverlay")
-	if existing_overlay != null:
-		existing_overlay.queue_free()
+	# This function is only for creation in fresh setups (scenario or neutral conquest)
+	# Assume no existing overlay needs updating here.
 	
 	# Create noisy polygon points that match the border noise
 	var noisy_polygon_points = _create_noisy_polygon_for_region(region_id)
@@ -830,9 +828,9 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	overlay_polygon.rotation = original_polygon.rotation
 	overlay_polygon.scale = original_polygon.scale
 	
-	# Set player color with high transparency
+	# Set player color with default alpha for overlays (configured on creation only)
 	var player_color = _get_player_color(player_id)
-	player_color.a = 0.25  # High transparency (15%)
+	player_color.a = 0.25
 	overlay_polygon.color = player_color
 	
 	# Set z-index to appear above the original polygon but below other elements
@@ -840,6 +838,16 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	
 	# Add to region container
 	region_container.add_child(overlay_polygon)
+
+func update_ownership_overlay(region_id: int, player_id: int) -> void:
+	"""Update color of existing ownership overlay (do not change alpha)."""
+	var region_container = get_region_container_by_id(region_id)
+	if region_container == null:
+		return
+	var overlay = region_container.get_node_or_null("OwnershipOverlay") as Polygon2D
+	if overlay != null:
+		var player_color = _get_player_color(player_id)
+		overlay.color = Color(player_color.r, player_color.g, player_color.b, overlay.color.a)
 
 func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 	"""Extract polygon points directly from the existing Line2D borders"""

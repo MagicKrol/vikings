@@ -322,10 +322,68 @@ func _handle_battle_defeat(defeated_army: Army) -> void:
 	if defeated_army == null or not is_instance_valid(defeated_army):
 		return
 	
-	DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " was defeated and will be removed from the map")
+	DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " was defeated in battle")
 	
 	# Get the army's parent (region container)
-	var parent_region = defeated_army.get_parent()
+	var parent_region = defeated_army.get_parent() as Region
+	if parent_region == null:
+		DebugLogger.log("BattleSystem", "[BattleManager] Warning: Defeated army has no parent region")
+		return
+	
+	# Give the defeated army a free heal_army call
+	DebugLogger.log("BattleSystem", "[BattleManager] Applying free healing to defeated army")
+	defeated_army.heal_army(true)  # Force at least one unit to heal
+	
+	# Check if army still has soldiers after healing
+	if defeated_army.get_total_soldiers() > 0:
+		DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " survived with " + str(defeated_army.get_total_soldiers()) + " soldiers after healing")
+		
+		# Find a random owned neighboring region to retreat to
+		var army_owner = defeated_army.get_player_id()
+		var current_region_id = parent_region.get_region_id()
+		var neighbors = _region_manager.get_neighbor_regions(current_region_id)
+		
+		# Filter for owned neighbors
+		var owned_neighbors: Array = []
+		for neighbor_id in neighbors:
+			if _region_manager.get_region_owner(neighbor_id) == army_owner:
+				owned_neighbors.append(neighbor_id)
+		
+		if owned_neighbors.size() > 0:
+			# Pick a random owned neighbor for retreat
+			var retreat_region_id = owned_neighbors[randi() % owned_neighbors.size()]
+			var retreat_region = _region_manager.map_generator.get_region_container_by_id(retreat_region_id) as Region
+			
+			if retreat_region != null:
+				DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " retreating to " + str(retreat_region.get_region_name()))
+				
+				# Move army to retreat region
+				parent_region.remove_child(defeated_army)
+				retreat_region.add_child(defeated_army)
+				
+				# Update army position to retreat region center
+				var polygon = retreat_region.get_node_or_null("Polygon") as Polygon2D
+				if polygon != null:
+					var center_meta = polygon.get_meta("center")
+					if center_meta != null:
+						var center = center_meta as Vector2
+						# Calculate appropriate offset based on region contents
+						var offset = Vector2.ZERO
+						if _army_manager != null:
+							offset = _army_manager._get_army_position_offset(retreat_region)
+						defeated_army.position = center + offset
+				
+				DebugLogger.log("BattleSystem", "[BattleManager] Army successfully retreated to " + str(retreat_region.get_region_name()))
+				return
+			else:
+				DebugLogger.log("BattleSystem", "[BattleManager] Warning: Could not find retreat region container")
+		else:
+			DebugLogger.log("BattleSystem", "[BattleManager] No owned neighboring regions available for retreat")
+	else:
+		DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " has no soldiers left after healing")
+	
+	# If we reach here, army either has no soldiers or couldn't retreat - remove it
+	DebugLogger.log("BattleSystem", "[BattleManager] Removing army " + str(defeated_army.name) + " from the map")
 	
 	# Remove the army from the scene
 	if parent_region != null:
