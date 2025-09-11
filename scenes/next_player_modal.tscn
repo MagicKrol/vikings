@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://c8n7d4e2gvxpxh"]
+[gd_scene load_steps=4 format=3 uid="uid://cuk4cfsmlpk23"]
 
 [ext_resource type="Script" path="res://next_player_modal.gd" id="1_nextplayerscript"]
-[ext_resource type="Theme" uid="uid://c7o6yhcjomh2l" path="res://themes/header_text_theme.tres" id="2_headertheme"]
-[ext_resource type="Theme" uid="uid://by7qgvqcnwbyx" path="res://themes/standard_text_theme.tres" id="3_standardtheme"]
+[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_headertheme"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_standardtheme"]
 
 [node name="NextPlayerModal" type="Control"]
+z_index = 150
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -17,7 +18,6 @@ offset_right = 250.0
 offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
-z_index = 150
 script = ExtResource("1_nextplayerscript")
 
 [node name="ContentContainer" type="VBoxContainer" parent="."]
@@ -40,8 +40,8 @@ text = "Next Turn"
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="ContentContainer"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="PlayerLabel" type="RichTextLabel" parent="ContentContainer"]
 layout_mode = 2

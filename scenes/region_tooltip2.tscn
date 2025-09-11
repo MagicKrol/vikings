@@ -32,7 +32,7 @@ script = ExtResource("1_65wef")
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 240.0
-offset_bottom = 115.0
+offset_bottom = 100.0
 texture = ExtResource("2_u85qw")
 expand_mode = 1
 stretch_mode = 1
@@ -40,7 +40,7 @@ stretch_mode = 1
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 240.0
-offset_bottom = 115.0
+offset_bottom = 100.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_1b424")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]

@@ -1,13 +1,6 @@
 extends Control
 class_name SelectTooltipModal
 
-# Styling constants (same as other modals)
-const FRAME_COLOR = Color("#b7975e")
-const BORDER_COLOR = Color.BLACK
-const SHADOW_OFFSET = Vector2(4, 4)
-const SHADOW_COLOR = Color(0, 0, 0, 0.3)
-const BORDER_WIDTH = 4.0
-
 # UI elements - references to static nodes from scene
 @onready var tooltip_label: Label = $MarginContainer/TooltipLabel
 
@@ -18,7 +11,7 @@ const TOOLTIP_TEXTS = {
 	
 	# Army Select Modal tooltips  
 	"move_army": "Move this army to an adjacent region. Costs movement points based on terrain type.",
-	"make_camp": "Rest the army to restore efficiency. Costs 1 movement point and restores 10 efficiency.",
+	"make_camp": "Rest the army to restore efficiency. Costs 1 movement point and restores 10 vigor.",
 	"transfer_soldiers": "Transfer soldiers between this army and the region garrison, or other armies in the region.",
 	"recruit_soldiers": "Recruit new soldiers for this army using regional population and resources.",
 	"back": "Return to the previous selection menu.",
@@ -44,7 +37,8 @@ func _ready():
 
 func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 	"""Show the tooltip with the specified text"""
-	var tooltip_text = TOOLTIP_TEXTS.get(tooltip_key, "No information available.")
+	var key = String(tooltip_key).to_lower()
+	var tooltip_text = TOOLTIP_TEXTS.get(key, "No information available.")
 	
 	# Add dynamic cost information for promote_region tooltip
 	if tooltip_key == "promote_region" and context_data.has("current_region"):
@@ -159,15 +153,3 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 func hide_tooltip() -> void:
 	"""Hide the tooltip"""
 	visible = false
-
-func _draw():
-	# Draw shadow first (behind everything)
-	var shadow_rect = Rect2(SHADOW_OFFSET, size)
-	draw_rect(shadow_rect, SHADOW_COLOR)
-	
-	# Draw background fill
-	var bg_rect = Rect2(Vector2.ZERO, size)
-	draw_rect(bg_rect, FRAME_COLOR)
-	
-	# Draw black border on top
-	draw_rect(Rect2(Vector2.ZERO, size), BORDER_COLOR, false, BORDER_WIDTH)

@@ -12,7 +12,7 @@ func _ready():
 	ui_manager = get_node("../UIManager") as UIManager
 	
 	# Connect end turn button signal
-	var end_turn_button = get_node("Panel/VBoxContainer/EndTurnButton")
+	var end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton")
 	if end_turn_button:
 		end_turn_button.pressed.connect(_on_end_turn_button_pressed)
 	# In editor mode, keep hidden and skip updates
@@ -47,7 +47,7 @@ func update_turn_display() -> void:
 	player_label.modulate = player_color
 	
 	# Update button text based on mode
-	var end_turn_btn = get_node("Panel/VBoxContainer/EndTurnButton")
+	var end_turn_btn = get_node("Panel/VBoxContainer/Button/EndTurnButton")
 	if game_manager.is_castle_placing_mode():
 		end_turn_btn.text = "SKIP"
 	else:

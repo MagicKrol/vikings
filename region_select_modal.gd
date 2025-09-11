@@ -72,7 +72,7 @@ func _create_action_buttons() -> void:
 			"text": "Promote Region",
 			"enabled": can_afford,
 			"action": "_on_promote_region_pressed",
-			"tooltip": "_on_promote_tooltip_hovered"
+			"tooltip": Callable(self, "_on_promote_tooltip_hovered")
 		})
 	
 	# Recruit Soldiers button
@@ -80,7 +80,7 @@ func _create_action_buttons() -> void:
 		"text": "Recruit Soldiers",
 		"enabled": true,
 		"action": "_on_recruit_soldiers_pressed",
-		"tooltip": "_on_tooltip_hovered.bind('recruit_soldiers_garrison')"
+		"tooltip": Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers_garrison")
 	})
 	
 	# Build Castle button
@@ -94,7 +94,7 @@ func _create_action_buttons() -> void:
 		"text": "Call To Arms",
 		"enabled": has_castle,
 		"action": "_on_call_to_arms_pressed",
-		"tooltip": "_on_call_to_arms_tooltip_hovered"
+		"tooltip": Callable(self, "_on_call_to_arms_tooltip_hovered")
 	})
 	
 	# Ore Search button (only for hills/forest hills)
@@ -105,7 +105,7 @@ func _create_action_buttons() -> void:
 			"text": "Ore Search",
 			"enabled": can_search and can_afford,
 			"action": "_on_ore_search_pressed",
-			"tooltip": "_on_ore_search_tooltip_hovered"
+			"tooltip": Callable(self, "_on_ore_search_tooltip_hovered")
 		})
 	
 	
@@ -136,7 +136,7 @@ func _create_action_buttons() -> void:
 			"text": "Back",
 			"enabled": true,
 			"action": "_on_back_pressed",
-			"tooltip": "_on_tooltip_hovered.bind('back')"
+			"tooltip": Callable(self, "_on_tooltip_hovered").bind("back")
 		})
 	
 	_resize_modal(buttons_to_add.size())
@@ -163,10 +163,10 @@ func _create_action_buttons() -> void:
 				button.pressed.connect(Callable(self, button_data.action))
 		
 		if button_data.has("tooltip"):
-			if button_data.tooltip is String:
-				button.mouse_entered.connect(_on_tooltip_hovered.bind(button_data.tooltip))
-			else:
+			if button_data.tooltip is Callable:
 				button.mouse_entered.connect(button_data.tooltip)
+			elif button_data.tooltip is String:
+				button.mouse_entered.connect(Callable(self, "_on_tooltip_hovered").bind(button_data.tooltip))
 			button.mouse_exited.connect(_on_tooltip_unhovered)
 		
 		button_container.add_child(button)
@@ -184,7 +184,7 @@ func _get_castle_button_data() -> Dictionary:
 		return {
 			"text": "Building " + CastleTypeEnum.type_to_string(castle_being_built) + " (" + str(turns_remaining) + " turns)",
 			"enabled": false,
-			"tooltip": "_on_castle_tooltip_hovered.bind('castle_construction')"
+			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
 		}
 	elif castle_type == CastleTypeEnum.Type.NONE:
 		var can_afford = _can_player_afford_any_castle()
@@ -192,7 +192,7 @@ func _get_castle_button_data() -> Dictionary:
 			"text": "Build Outpost",
 			"enabled": can_afford and current_region.can_build_castle(),
 			"action": "_on_build_castle_pressed",
-			"tooltip": "_on_castle_tooltip_hovered.bind('build_castle')"
+			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("build_castle")
 		}
 	else:
 		var next_castle_type = CastleTypeEnum.get_next_level(castle_type)
@@ -202,13 +202,13 @@ func _get_castle_button_data() -> Dictionary:
 				"text": "Upgrade to " + CastleTypeEnum.type_to_string(next_castle_type),
 				"enabled": can_afford and current_region.can_upgrade_castle(),
 				"action": "_on_upgrade_castle_pressed",
-				"tooltip": "_on_castle_tooltip_hovered.bind('upgrade_castle')"
+				"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("upgrade_castle")
 			}
 		else:
 			return {
 				"text": "Castle at Maximum Level",
 				"enabled": false,
-				"tooltip": "_on_castle_tooltip_hovered.bind('castle_max_level')"
+				"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_max_level")
 			}
 
 func _on_promote_region_pressed() -> void:

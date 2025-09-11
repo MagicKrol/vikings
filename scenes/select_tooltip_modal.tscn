@@ -1,7 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://ba4uqx2hhbwjg"]
+[gd_scene load_steps=11 format=3 uid="uid://ba4uqx2hhbwjg"]
 
 [ext_resource type="Script" path="res://select_tooltip_modal.gd" id="1_tooltip"]
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://bd6s1e8mr3cpa" path="res://images/icons/time.png" id="3_8rk5j"]
+[ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/food.png" id="4_qlo7v"]
+[ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/wood.png" id="5_y7hg1"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="6_ib42q"]
+[ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/iron.png" id="7_efheu"]
+[ext_resource type="Texture2D" uid="uid://tq0lrv702naa" path="res://images/icons/gold.png" id="8_ubm30"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shadow"]
+bg_color = Color(0, 0, 0, 0.3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_frame"]
+bg_color = Color(0.718, 0.592, 0.369, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
 
 [node name="SelectTooltipModal" type="Control"]
 layout_mode = 3
@@ -18,11 +35,37 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tooltip")
 
+[node name="Shadow" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_shadow")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_frame")
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 11.0
+offset_top = -7.0
+offset_right = -9.0
+offset_bottom = 7.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 10
@@ -30,11 +73,106 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="TooltipLabel" type="Label" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TooltipLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 theme = ExtResource("2_theme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
 text = "Tooltip text will appear here"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="ValuesSection" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Images" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ValuesSection"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TimeIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("3_8rk5j")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FoodIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("4_qlo7v")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WoodIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("5_y7hg1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StoneIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("6_ib42q")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IronIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("7_efheu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("8_ubm30")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Values" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ValuesSection"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TimeValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "999"
+horizontal_alignment = 1
+
+[node name="FoodValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "99"
+horizontal_alignment = 1
+
+[node name="WoodValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "99"
+horizontal_alignment = 1
+
+[node name="StoneValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "99"
+horizontal_alignment = 1
+
+[node name="IronValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "99"
+horizontal_alignment = 1
+
+[node name="GoldValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "99"
+horizontal_alignment = 1

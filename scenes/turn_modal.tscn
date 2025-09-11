@@ -3,6 +3,7 @@
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_1swsd"]
 [ext_resource type="Script" path="res://turn_modal.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_23kdy"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_fkqds"]
 
 [sub_resource type="Theme" id="Theme_fcepg"]
 default_font = ExtResource("1_1swsd")
@@ -16,13 +17,6 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 shadow_size = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
-bg_color = Color(0.2, 0.2, 0.2, 0.8)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [node name="TurnModal" type="Control"]
 modulate = Color(1, 0.99961, 0.928772, 1)
@@ -75,10 +69,14 @@ layout_mode = 2
 text = "Lord Balirn"
 horizontal_alignment = 1
 
-[node name="EndTurnButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="Button" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_button")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_button")
-theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer/Button"]
+custom_minimum_size = Vector2(38, 0)
+layout_mode = 2
+
+[node name="EndTurnButton" type="Button" parent="Panel/VBoxContainer/Button"]
+layout_mode = 2
+theme = ExtResource("4_fkqds")
 text = "END TURN"
