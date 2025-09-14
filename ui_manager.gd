@@ -91,6 +91,12 @@ func set_modal_active(active: bool) -> void:
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
+		return
+	# Allow closing active modals with ESC
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if is_modal_active:
+			close_all_active_modals()
+			set_modal_active(false)
 			
 
 func _handle_mouse_motion(event: InputEventMouseMotion):

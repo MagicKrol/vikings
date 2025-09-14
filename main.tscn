@@ -136,10 +136,6 @@ visible = false
 [node name="TurnModal" parent="UI" instance=ExtResource("27_o7y1n")]
 visible = false
 
-[node name="MainSelectModal" parent="UI" instance=ExtResource("26_yt65y")]
-unique_name_in_owner = true
-visible = false
-
 [node name="GeneralSelectModal" parent="UI" instance=ExtResource("26_shq03")]
 visible = false
 
