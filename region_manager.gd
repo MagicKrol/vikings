@@ -214,6 +214,14 @@ func get_player_regions(player_id: int) -> Array[int]:
 			player_regions.append(region_id)
 	return player_regions
 
+func heal_wounded_for_player(player_id: int) -> void:
+	"""Heal wounded garrisons and recruits in all regions owned by the player."""
+	var owned = get_player_regions(player_id)
+	for region_id in owned:
+		var region_container = map_generator.get_region_container_by_id(region_id)
+		var region = region_container as Region
+		region.heal_all_wounded()
+
 func increment_all_ownership_counters() -> void:
 	"""Increment ownership counters for all owned regions (called each turn)"""
 	for region_id in region_ownership:

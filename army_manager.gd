@@ -126,10 +126,13 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 	if not armies_by_player.has(player_id):
 		armies_by_player[player_id] = []
 	armies_by_player[player_id].append(army)
-	
+
 	if is_raised:
 		DebugLogger.log("ArmyManagement", "Raised new army for player " + str(player_id) + " in region " + region_container.name)
-	
+
+	# Reposition all armies in region to avoid overlap
+	_apply_army_offsets_for_region(region_container)
+
 	return army
 
 func create_raised_army(region_container: Node, player_id: int) -> Army:
@@ -150,6 +153,41 @@ func _get_army_position_offset(region_container: Node) -> Vector2:
 	
 	# Default positioning when no castle is present (scaled)
 	return Vector2(0, -5 * map_size_scale)  # Army positioned slightly above center
+
+func _apply_army_offsets_for_region(region_container: Node) -> void:
+	"""Reposition all armies in a region using stacked offsets and z-index order."""
+	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
+	if polygon == null:
+		return
+	var center_meta = polygon.get_meta("center")
+	if center_meta == null:
+		return
+	var center := center_meta as Vector2
+	var base_offset := _get_army_position_offset(region_container)
+	var map_size_scale := 1.0
+	if map_generator != null:
+		map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+	var extra_offsets: Array[Vector2] = [
+		Vector2(0, 0),
+		Vector2(-15, -10),
+		Vector2(-30, -20),
+		Vector2(15, -10),
+		Vector2(30, -20)
+	]
+	var armies: Array[Army] = []
+	for child in region_container.get_children():
+		if child is Army:
+			armies.append(child as Army)
+	for i in armies.size():
+		var army := armies[i]
+		var idx := i if i < extra_offsets.size() else 0
+		var extra: Vector2 = (extra_offsets[idx] as Vector2) * map_size_scale
+		army.position = center + base_offset + extra
+		var base_z := 125 + army.get_player_id()
+		if i >= 1 and i <= 4:
+			army.z_index = base_z - i
+		else:
+			army.z_index = base_z
 
 func select_army(army: Army, region_container: Node, current_player_id: int = -1) -> void:
 	"""Select an army for movement - only allow selecting armies owned by current player"""
@@ -287,6 +325,9 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		if center_meta != null:
 			var center = center_meta as Vector2
 			selected_army.position = center + _get_army_position_offset(target_region_container)
+	# Reposition armies in both source and target regions to avoid overlap
+	_apply_army_offsets_for_region(source_region)
+	_apply_army_offsets_for_region(target_region_container)
 	
 	# Check if we should change ownership (only for already owned regions or friendly moves)
 	var target_region_owner = region_manager.get_region_owner(target_region_id)
@@ -765,6 +806,10 @@ func retreat_army_to_previous_region(army: Army) -> void:
 		if center_meta != null:
 			var center = center_meta as Vector2
 			army.position = center + _get_army_position_offset(previous_region)
+	# Reposition offsets in both regions
+	if current_parent != null:
+		_apply_army_offsets_for_region(current_parent)
+	_apply_army_offsets_for_region(previous_region)
 	
 	DebugLogger.log("ArmyManagement", "Army " + army.name + " retreated to " + previous_region.name)
 	

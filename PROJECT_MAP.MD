@@ -82,6 +82,7 @@ editor_start.tscn (Editor Start)
 - Map Data: lists `mapdata-*.json` under `res://mapdata/`; “Edit Map or New Scenario” passes `res://mapdata/<filename>` to `MapGenerator.data_file_path`, then loads `main.tscn` and applies map size inferred from filename.
 - Map Data: lists `mapdata-*.json` under `res://mapdata/`; code always reads map files from this folder. `MapGenerator.data_file_path` expects a bare filename (no `res://` or folder). Supported sizes: xtiny, tiny, small, medium, large, huge.
 - Scenario: lists `res://scenarios/*.json`; loader always resolves scenarios from `res://scenarios/` and accepts bare filenames or full paths. Scenario `map_file` field should be a bare filename; loader resolves from `res://mapdata/`.
+ - Launch: EditorStart sets `SceneTree` meta `editor_start_payload` and switches to `main.tscn`. `GameManager._ready()` force-enables editor mode when this payload is present and calls `_initialize_map_editor()` to show `MapEditorPanel`.
 
 ## Core Managers & Flow
 
@@ -210,7 +211,7 @@ editor_start.tscn (Editor Start)
 - AnimatedBattleSimulator.gd: Round-based animated presentation and reporting for the BattleModal.
 
 ## Input & UI
-- click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions.
+- click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there.
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; provides PlayerStatusModal.
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.
@@ -235,18 +236,24 @@ editor_start.tscn (Editor Start)
 ## Notable Relationships
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.
 - Sound: `SoundManager` respects `music_enabled`; `GameManager` does not force-enable music and calls `play_game_start_sequence()` which no-ops when disabled.
-- Wounded: Simple wounded system added. `GameParameters.WOUNDED_CHANCE` base chance; per casualty wounded chance is `base * (1 + defense%)`. `Utils.compute_wounded()` calculates wounded per unit type from loss dicts. `GameManager.finalize_battle_result()` computes and stores `attacker_wounded`/`defender_wounded` in the battle report, allocates wounded to armies (attackers: attacker army; defenders: proportional across defending armies), then applies losses. `Army` tracks a separate `wounded_composition` excluded from battles but included in food upkeep via `PlayerManagerNode.calculate_total_army_food_cost()`.
-- Healing: `GameParameters.CAMP_HEAL_CHANCE` controls healing probability. `Army.make_camp()` calls `heal_army(false)` to attempt healing across all wounded (per-unit chance). `Army.heal_army(force_at_least_one=false)` heals each wounded unit independently by chance; if `force_at_least_one` it guarantees at least one heal when wounded remain. On withdrawal defeat, `GameManager.finalize_battle_result()` calls `army.heal_army(true)` once as a free post-battle heal.
- - Ownership Overlays: Creation/update centralized in `MapGenerator`.
-   - `create_ownership_overlay(region_id, player_id)`: Creates a new `Polygon2D` named `OwnershipOverlay` with standard alpha; used for scenario setup and neutral conquests.
-   - `update_ownership_overlay(region_id, player_id)`: Recolors existing `OwnershipOverlay` without changing alpha; used when conquering non‑neutral regions.
-   - `RegionManager.set_region_ownership` calls create for previous owner = -1, update otherwise. Prevents duplicate overlays.
+- Wounded: Simple wounded system added. `GameParameters.WOUNDED_CHANCE` base chance; per casualty wounded chance is `base * (1 + defense%)`. `Utils.compute_wounded()` calculates wounded per unit type from loss dicts. Wounded are computed exactly once when a battle finishes (modal path computes on finish; background path sets it before finalization). `GameManager.finalize_battle_result()` never computes wounded; it assumes they exist on the report, allocates them proportionally (attackers: attacker army; defenders: across defending armies, garrison, and recruits), then applies losses. `Army` tracks a separate `wounded_composition` excluded from battles but included in food upkeep via `PlayerManagerNode.calculate_total_army_food_cost()`.
+  - Storage: `Army.wounded_composition`, `Region.wounded_garrison`, `Region.wounded_recruits` (peasants only).
+  - Allocation: Wounded distributed proportionally by availability before losses are applied. Defenders include armies, garrison, and recruits in the proportional distribution.
+  - Summary: Battle summary displays total wounded from all sources; loss application removes from active comps/recruits.
+- Healing: `GameParameters.CAMP_HEAL_CHANCE` controls healing probability. `Army.make_camp()` calls `heal_army(false)` to attempt healing across all wounded (per-unit chance). `Army.heal_army(force_at_least_one=false)` heals each wounded unit independently by chance; if `force_at_least_one` it guarantees at least one heal when wounded remain. There is no free post-battle heal on defeat or withdrawal; healing occurs only when making camp.
+ - Healing: `GameParameters.CAMP_HEAL_CHANCE` controls army healing when camping. There is no free post-battle heal on defeat/withdrawal. At the start of a player's turn, all owned regions fully heal their regional wounded pools: `RegionManager.heal_wounded_for_player(player_id)` moves `Region.wounded_garrison` back into `garrison` and clears `Region.wounded_recruits` (peasants). This is invoked in `GameManager._process_player_turn_start()` before income.
+- Ownership Overlays: Creation/update centralized in `MapGenerator`.
+  - `create_ownership_overlay(region_id, player_id)`: Creates a new `Polygon2D` named `OwnershipOverlay` with standard alpha; used for scenario setup and neutral conquests.
+  - `update_ownership_overlay(region_id, player_id)`: Recolors existing `OwnershipOverlay` without changing alpha; used when conquering non‑neutral regions.
+  - `RegionManager.set_region_ownership` calls create for previous owner = -1, update otherwise. Prevents duplicate overlays.
+ - InfoModal: Region view shows local garrison total in `Garison -> Value` (sum of region garrison composition; excludes available recruits).
 - TurnController owns pathfinder/scorer; calls `GameManager.ai_travel_to` for movement and battle stepping; uses `BudgetManager` and `RecruitmentManager` when armies request reinforcement.
 - PlayerManagerNode is the authoritative per-player economy and emits player-change signals used by UI.
 
 ### army_manager.gd (ArmyManager)
 - Purpose: Army creation, selection, and adjacent-region movement.
 - Key: `create_army()`, `move_army()`, `move_army_to_region()`, `reset_all_army_movement_points()`.
+- Stacking: `_apply_army_offsets_for_region(region)` repositions all armies in a region to avoid overlap using fixed extra offsets. Applied on create, move (both source and target), and retreat. Pattern: 1st = base; 2nd = x-15/y-10/z-1; 3rd = x-30/y-20/z-2; 4th = x+15/y-10/z-3; 5th = x+30/y-20/z-4; 6th+ same as 1st.
 - Logging: After each move, logs `Moved to region <id>, Cost: <mp>, MP left: <left>/<per_turn>`.
 
 ## Missing/Added Since Last Map

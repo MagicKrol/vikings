@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/wood.png" id="5_y7hg1"]
 [ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="6_ib42q"]
 [ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/iron.png" id="7_efheu"]
-[ext_resource type="Texture2D" uid="uid://tq0lrv702naa" path="res://images/icons/gold.png" id="8_ubm30"]
+[ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/coin.png" id="8_svy5y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shadow"]
 bg_color = Color(0, 0, 0, 0.3)
@@ -30,7 +30,7 @@ anchor_bottom = 0.5
 offset_left = 170.0
 offset_top = -199.0
 offset_right = 570.0
-offset_bottom = 1.0
+offset_bottom = 11.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tooltip")
@@ -73,10 +73,10 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="CostContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="TooltipLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="TooltipLabel" type="Label" parent="MarginContainer/CostContainer"]
 custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 theme = ExtResource("2_theme")
@@ -87,91 +87,91 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ValuesSection" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ValuesSection" type="VBoxContainer" parent="MarginContainer/CostContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Images" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ValuesSection"]
+[node name="Images" type="HBoxContainer" parent="MarginContainer/CostContainer/ValuesSection"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="TimeIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+[node name="TimeIcon" type="TextureRect" parent="MarginContainer/CostContainer/ValuesSection/Images"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 texture = ExtResource("3_8rk5j")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="FoodIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+[node name="FoodIcon" type="TextureRect" parent="MarginContainer/CostContainer/ValuesSection/Images"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 texture = ExtResource("4_qlo7v")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WoodIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+[node name="WoodIcon" type="TextureRect" parent="MarginContainer/CostContainer/ValuesSection/Images"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 texture = ExtResource("5_y7hg1")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="StoneIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+[node name="StoneIcon" type="TextureRect" parent="MarginContainer/CostContainer/ValuesSection/Images"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 texture = ExtResource("6_ib42q")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="IronIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+[node name="IronIcon" type="TextureRect" parent="MarginContainer/CostContainer/ValuesSection/Images"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
 texture = ExtResource("7_efheu")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="GoldIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/ValuesSection/Images"]
+[node name="GoldIcon" type="TextureRect" parent="MarginContainer/CostContainer/ValuesSection/Images"]
 custom_minimum_size = Vector2(35, 35)
 layout_mode = 2
-texture = ExtResource("8_ubm30")
+texture = ExtResource("8_svy5y")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Values" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ValuesSection"]
+[node name="Values" type="HBoxContainer" parent="MarginContainer/CostContainer/ValuesSection"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="TimeValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+[node name="TimeValue" type="Label" parent="MarginContainer/CostContainer/ValuesSection/Values"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "999"
 horizontal_alignment = 1
 
-[node name="FoodValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+[node name="FoodValue" type="Label" parent="MarginContainer/CostContainer/ValuesSection/Values"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "99"
 horizontal_alignment = 1
 
-[node name="WoodValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+[node name="WoodValue" type="Label" parent="MarginContainer/CostContainer/ValuesSection/Values"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "99"
 horizontal_alignment = 1
 
-[node name="StoneValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+[node name="StoneValue" type="Label" parent="MarginContainer/CostContainer/ValuesSection/Values"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "99"
 horizontal_alignment = 1
 
-[node name="IronValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+[node name="IronValue" type="Label" parent="MarginContainer/CostContainer/ValuesSection/Values"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "99"
 horizontal_alignment = 1
 
-[node name="GoldValue" type="Label" parent="MarginContainer/VBoxContainer/ValuesSection/Values"]
+[node name="GoldValue" type="Label" parent="MarginContainer/CostContainer/ValuesSection/Values"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "99"

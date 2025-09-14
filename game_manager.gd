@@ -94,6 +94,10 @@ var scenario_path: String = "mission1.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 
 func _ready():
+	# If EditorStart provided a payload, force-enable editor mode
+	if get_tree().has_meta("editor_start_payload") and get_tree().get_meta("editor_start_payload") != null:
+		enable_map_editor = true
+
 	# Early init gate: check if map editor is enabled BEFORE normal init
 	if enable_map_editor:
 		DebugLogger.log("GameInit", "Map editor mode enabled")
@@ -563,6 +567,8 @@ func _process_round_start_actions():
 func _process_player_turn_start(player_id: int):
 	"""Process actions that happen at the start of each player's turn"""
 	DebugLogger.log("TurnProcessing", "Processing turn start for Player " + str(player_id) + "...")
+	# Heal wounded garrisons and recruits in owned regions
+	_region_manager.heal_wounded_for_player(player_id)
 	
 	# Process resource income for current player
 	DebugLogger.log("TurnProcessing", "Processing resource income for Player " + str(player_id) + "...")
@@ -1036,7 +1042,9 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 			"battle_report": _battle_manager.get_last_battle_report(),
 			"attacking_armies": _battle_manager._pending_attackers,
 			"defending_armies": _battle_manager._pending_defenders,
-			"defending_garrison": _battle_manager._pending_garrison
+			"defending_garrison": _battle_manager._pending_garrison,
+			"defending_recruits_region": _battle_manager._pending_recruits_region,
+			"defending_recruits_count": _battle_manager._pending_recruits_count
 		}
 		finalize_battle_result(result_data)
 	
@@ -1054,62 +1062,85 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var attacking_armies: Array = result_data.get("attacking_armies", [])
 	var defending_armies: Array = result_data.get("defending_armies", [])
 	var defending_garrison = result_data.get("defending_garrison")
+	var defending_recruits_region: Region = result_data.get("defending_recruits_region")
+	var defending_recruits_count: int = result_data.get("defending_recruits_count", 0)
 	
 	var army_name = "unknown army"
 	if army != null:
 		army_name = army.name
 	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + result + " for " + army_name)
 	
-	# Compute wounded BEFORE applying losses and before summary
-	if battle_report:
-		battle_report.attacker_wounded = Utils.compute_wounded(battle_report.attacker_losses)
-		battle_report.defender_wounded = Utils.compute_wounded(battle_report.defender_losses)
-		# Allocate wounded to armies (attackers: single army; defenders: proportionally across armies; ignore garrison/recruits)
-		# Attackers
-		if not attacking_armies.is_empty():
-			var atk_army: Army = attacking_armies[0]
-			for ut in battle_report.attacker_wounded.keys():
-				atk_army.get_wounded_composition().add_soldiers(ut, int(battle_report.attacker_wounded[ut]))
-		# Defenders
-		if not defending_armies.is_empty():
-			for ut in battle_report.defender_wounded.keys():
-				var wounded_total: int = int(battle_report.defender_wounded[ut])
-				if wounded_total <= 0:
-					continue
-				# Measure availability among defender armies pre-application
-				var avail: Array = [] # [{army: Army, count:int}]
-				var total_available: int = 0
-				for d in defending_armies:
-					var cnt: int = d.get_composition().get_soldier_count(ut)
-					if cnt > 0:
-						avail.append({"army": d, "count": cnt})
-						total_available += cnt
-				if total_available <= 0:
-					continue
-				# Proportional allocation by largest remainder
-				var allocations: Array = [] # [{army:Army, take:int, frac:float}]
-				var taken_sum: int = 0
-				for entry in avail:
-					var share: float = float(wounded_total) * float(entry["count"]) / float(total_available)
-					var take: int = int(floor(share))
-					var frac: float = share - float(take)
-					allocations.append({"army": entry["army"], "take": take, "frac": frac})
-					taken_sum += take
-				var remainder: int = wounded_total - taken_sum
-				allocations.sort_custom(func(a, b): return a["frac"] > b["frac"])
-				var i: int = 0
-				while remainder > 0 and i < allocations.size():
+	# Wounded must be precomputed by the battle flow (modal/background) before finalization
+	# GameManager does not compute wounded.
+	# Allocate wounded to armies (attackers: single army; defenders: proportionally across armies, garrison, and recruits)
+	# Attackers (apply to initiating army)
+	if not attacking_armies.is_empty():
+		var atk_army: Army = attacking_armies[0]
+		for ut in battle_report.attacker_wounded.keys():
+			atk_army.get_wounded_composition().add_soldiers(ut, int(battle_report.attacker_wounded[ut]))
+	# Defenders - distribute among armies, garrison, and recruits proportionally (independent of attackers list)
+	for ut in battle_report.defender_wounded.keys():
+			var wounded_total: int = int(battle_report.defender_wounded[ut])
+			if wounded_total <= 0:
+				continue
+			# Measure availability among all defender sources pre-application
+			var avail: Array = [] # [{type: "army"/"garrison"/"recruits", ref: Army/Region, count:int}]
+			var total_available: int = 0
+			# Add armies
+			for d in defending_armies:
+				var cnt: int = d.get_composition().get_soldier_count(ut)
+				if cnt > 0:
+					avail.append({"type": "army", "ref": d, "count": cnt})
+					total_available += cnt
+			# Add garrison
+			if defending_garrison != null:
+				var g_cnt: int = defending_garrison.get_soldier_count(ut)
+				if g_cnt > 0:
+					avail.append({"type": "garrison", "ref": defending_recruits_region, "count": g_cnt})
+					total_available += g_cnt
+			# Add recruits (only for PEASANTS)
+			if ut == SoldierTypeEnum.Type.PEASANTS and defending_recruits_count > 0 and defending_recruits_region != null:
+				avail.append({"type": "recruits", "ref": defending_recruits_region, "count": defending_recruits_count})
+				total_available += defending_recruits_count
+			if total_available <= 0:
+				continue
+			# Proportional allocation by largest remainder
+			var allocations: Array = [] # [{entry:dict, take:int, frac:float}]
+			var taken_sum: int = 0
+			for entry in avail:
+				var share: float = float(wounded_total) * float(entry["count"]) / float(total_available)
+				var take: int = int(floor(share))
+				var frac: float = share - float(take)
+				allocations.append({"entry": entry, "take": take, "frac": frac})
+				taken_sum += take
+			var remainder: int = wounded_total - taken_sum
+			allocations.sort_custom(func(a, b): return a["frac"] > b["frac"])
+			var i: int = 0
+			while remainder > 0 and i < allocations.size():
+				var entry = allocations[i]["entry"]
+				var cap: int = entry["count"] - allocations[i]["take"]
+				if cap > 0:
 					allocations[i]["take"] += 1
 					remainder -= 1
-					i += 1
-					if i >= allocations.size() and remainder > 0:
-						i = 0
-				# Apply wounded allocations to defender wounded compositions
-				for alloc in allocations:
-					var army_d := alloc["army"] as Army
-					var take := int(alloc["take"])
-					if take > 0:
+				i += 1
+				if i >= allocations.size() and remainder > 0:
+					i = 0
+			# Apply wounded allocations to appropriate wounded pools
+			for alloc in allocations:
+				var entry = alloc["entry"]
+				var take := int(alloc["take"])
+				if take <= 0:
+					continue
+				match entry["type"]:
+					"army":
+						var army_d := entry["ref"] as Army
 						army_d.get_wounded_composition().add_soldiers(ut, take)
+					"garrison":
+						var region := entry["ref"] as Region
+						region.get_wounded_garrison().add_soldiers(ut, take)
+					"recruits":
+						var region := entry["ref"] as Region
+						region.get_wounded_recruits().add_soldiers(ut, take)
 
 	# Apply battle losses using BattleManager rule (removes both dead and wounded from active comps)
 	if battle_report and _battle_manager:
@@ -1131,8 +1162,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
 			_battle_manager._handle_army_withdrawal(army)
-			# Free post-battle heal: attempt to heal wounded across the army, ensuring at least 1 unit returns if any wounded exist
-			army.heal_army(true)
+			# No post-battle healing here; healing only occurs during make_camp()
 	else:
 		# Attackers lost - remove the army
 		if army and is_instance_valid(army) and _battle_manager:

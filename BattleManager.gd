@@ -46,7 +46,7 @@ var _region_manager: RegionManager
 var _army_manager: ArmyManager
 var _battle_modal: BattleModal
 var _sound_manager: SoundManager
-var _game_manager: GameManager
+var _game_manager
 
 # Unified battle report storage (works for modal and background)
 var _last_battle_report: BattleSimulator.BattleReport = null
@@ -60,7 +60,7 @@ func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_moda
 	_battle_modal = battle_modal
 	_sound_manager = sound_manager
 
-func set_game_manager(game_manager: GameManager) -> void:
+func set_game_manager(game_manager) -> void:
 	"""Set GameManager reference for AI turn resumption"""
 	_game_manager = game_manager
 
@@ -100,9 +100,9 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	
 	# AI background path: no modal, instant simulation when flag is on
 	# Exception: if the defender is human (region owner or defending army), always show modal
-	var attacker_is_ai := _game_manager.is_player_computer(attacker.get_player_id())
+	var attacker_is_ai: bool = _game_manager.is_player_computer(attacker.get_player_id())
 	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
-	var defender_is_human := false
+	var defender_is_human: bool = false
 	if defender_owner_id != -1 and _game_manager.is_player_human(defender_owner_id):
 		defender_is_human = true
 	else:
@@ -113,6 +113,11 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	if _game_manager.debug_disable_battle_modal and attacker_is_ai and not defender_is_human:
 		var atk_comps = _compositions_from_armies([attacker])
 		var def_comps = _compositions_from_armies(defender_armies)
+		# Include recruits in defenders for background simulation (parity with animated/human path)
+		if _pending_recruits_count > 0:
+			var recruits_comp = ArmyComposition.new()
+			recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, _pending_recruits_count)
+			def_comps.append(recruits_comp)
 		var attacker_eff = attacker.get_efficiency()
 		var defender_eff = 100
 		var terrain_type = target_region.get_region_type()
@@ -133,7 +138,9 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 			"battle_report": report,
 			"attacking_armies": _pending_attackers,
 			"defending_armies": _pending_defenders,
-			"defending_garrison": _pending_garrison
+			"defending_garrison": _pending_garrison,
+			"defending_recruits_region": _pending_recruits_region,
+			"defending_recruits_count": _pending_recruits_count
 		}
 		_game_manager.finalize_battle_result(result_data)
 		# Re-select fighting army for human players after instant battle
@@ -203,7 +210,9 @@ func handle_battle_modal_closed() -> void:
 			"battle_report": _last_battle_report,
 			"attacking_armies": _pending_attackers,
 			"defending_armies": _pending_defenders,
-			"defending_garrison": _pending_garrison
+			"defending_garrison": _pending_garrison,
+			"defending_recruits_region": _pending_recruits_region,
+			"defending_recruits_count": _pending_recruits_count
 		}
 		
 		# Use GameManager's unified finalization
@@ -330,13 +339,9 @@ func _handle_battle_defeat(defeated_army: Army) -> void:
 		DebugLogger.log("BattleSystem", "[BattleManager] Warning: Defeated army has no parent region")
 		return
 	
-	# Give the defeated army a free heal_army call
-	DebugLogger.log("BattleSystem", "[BattleManager] Applying free healing to defeated army")
-	defeated_army.heal_army(true)  # Force at least one unit to heal
-	
-	# Check if army still has soldiers after healing
+	# Check if army still has soldiers
 	if defeated_army.get_total_soldiers() > 0:
-		DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " survived with " + str(defeated_army.get_total_soldiers()) + " soldiers after healing")
+		DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(defeated_army.name) + " survived with " + str(defeated_army.get_total_soldiers()) + " soldiers")
 		
 		# Find a random owned neighboring region to retreat to
 		var army_owner = defeated_army.get_player_id()

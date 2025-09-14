@@ -33,6 +33,7 @@ grow_vertical = 2
 script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
 offset_right = 560.0
 offset_bottom = 600.0
 texture = ExtResource("2_jogyy")
@@ -40,6 +41,7 @@ expand_mode = 1
 stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
+layout_mode = 0
 offset_right = 560.0
 offset_bottom = 600.0
 theme = SubResource("Theme_tx0fs")
@@ -246,35 +248,35 @@ layout_mode = 2
 text = "1"
 horizontal_alignment = 1
 
-[node name="Swordmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+[node name="Swordsmen" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
-[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordmen"]
+[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordsmen"]
 custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
 
-[node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+[node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Swordsmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "1"
 horizontal_alignment = 1
 
-[node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordmen"]
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordsmen"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="UnitName" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+[node name="UnitName" type="Label" parent="Panel/Army/UnitsSection/Swordsmen"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-text = "Swordmen"
+text = "Swordsmen"
 horizontal_alignment = 1
 
-[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordmen"]
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordsmen"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="DefenderRemaining" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
+[node name="DefenderRemaining" type="Label" parent="Panel/Army/UnitsSection/Swordsmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "1"
@@ -503,3 +505,6 @@ layout_mode = 2
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
 layout_mode = 2
 text = "Continue"
+
+[node name="Value" type="Label" parent="."]
+text = "15 / 17"

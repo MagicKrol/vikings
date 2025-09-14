@@ -1,31 +1,30 @@
 [gd_scene load_steps=3 format=3 uid="uid://dq1rsdkl0qiwb"]
 
-[ext_resource type="PackedScene" uid="uid://h2augxohyp55" path="res://scenes/info_modal.tscn" id="1_base"]
-[ext_resource type="Script" path="res://map_editor_panel.gd" id="2_script"]
+[ext_resource type="Script" path="res://map_editor_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_uf27e"]
 
-[node name="MapEditorPanel" instance=ExtResource("1_base")]
-anchors_preset = -1
-anchor_right = 0.25
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-grow_vertical = 2
-script = ExtResource("2_script")
+[node name="MapEditorPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 400.0
+offset_bottom = 1000.0
+script = ExtResource("1_script")
 
-[node name="TextureRect" parent="." index="0"]
-offset_right = 438.0
-offset_bottom = 1067.0
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 1000.0
+texture = ExtResource("2_uf27e")
+expand_mode = 1
+stretch_mode = 1
 
-[node name="Panel" parent="." index="1"]
-offset_right = 437.0
-offset_bottom = 1072.0
+[node name="Panel" type="Panel" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 1000.0
 
-[node name="Army" parent="Panel" index="1"]
-visible = false
-
-[node name="TabContainer" type="TabContainer" parent="Panel" index="2"]
+[node name="TabContainer" type="TabContainer" parent="Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,588 +37,599 @@ grow_horizontal = 2
 grow_vertical = 2
 current_tab = 0
 
-[node name="Main" type="VBoxContainer" parent="Panel/TabContainer" index="1"]
+[node name="Main" type="VBoxContainer" parent="Panel/TabContainer"]
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 0
 
-[node name="SaveRow" type="HBoxContainer" parent="Panel/TabContainer/Main" index="0"]
+[node name="SaveRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
-[node name="SaveLabel" type="Label" parent="Panel/TabContainer/Main/SaveRow" index="0"]
+[node name="SaveLabel" type="Label" parent="Panel/TabContainer/Main/SaveRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Scenario Save:"
 
-[node name="ScenarioNameEdit" type="LineEdit" parent="Panel/TabContainer/Main/SaveRow" index="1"]
+[node name="ScenarioNameEdit" type="LineEdit" parent="Panel/TabContainer/Main/SaveRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "scenario_name"
 
-[node name="SaveButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main" index="1"]
+[node name="SaveButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
-[node name="SaveScenarioButton" type="Button" parent="Panel/TabContainer/Main/SaveButtonRow" index="0"]
+[node name="SaveScenarioButton" type="Button" parent="Panel/TabContainer/Main/SaveButtonRow"]
 layout_mode = 2
 text = "Save Scenario"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/TabContainer/Main" index="2"]
+[node name="HSeparator" type="HSeparator" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
-[node name="SaveMapButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main" index="3"]
+[node name="SaveMapButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
-[node name="SaveMapButton" type="Button" parent="Panel/TabContainer/Main/SaveMapButtonRow" index="0"]
+[node name="SaveMapButton" type="Button" parent="Panel/TabContainer/Main/SaveMapButtonRow"]
 layout_mode = 2
 text = "Save Map Data"
 
-[node name="HSeparator2" type="HSeparator" parent="Panel/TabContainer/Main" index="4"]
+[node name="HSeparator2" type="HSeparator" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
-[node name="ExitButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main" index="5"]
+[node name="ExitButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
-[node name="ExitButton" type="Button" parent="Panel/TabContainer/Main/ExitButtonRow" index="0"]
+[node name="ExitButton" type="Button" parent="Panel/TabContainer/Main/ExitButtonRow"]
 layout_mode = 2
 text = "Exit to Editor Start"
 
-[node name="Scenario" type="VBoxContainer" parent="Panel/TabContainer" index="2"]
+[node name="Scenario" type="VBoxContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
 
-[node name="PlaceholderLabel" type="Label" parent="Panel/TabContainer/Scenario" index="0"]
+[node name="ScenarioLabel" type="Label" parent="Panel/TabContainer/Scenario"]
 layout_mode = 2
-text = "Scenario settings will be added here"
+text = "Scenario Settings"
 
-[node name="Region" type="VBoxContainer" parent="Panel/TabContainer" index="3"]
+[node name="HSeparator" type="HSeparator" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+
+[node name="PlayerSettingsLabel" type="Label" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+text = "Player Settings:"
+
+[node name="PlayerSettingsContainer" type="VBoxContainer" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Region" type="VBoxContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 2
 
-[node name="IDRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="0"]
+[node name="IDRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="IDLabel" type="Label" parent="Panel/TabContainer/Region/IDRow" index="0"]
+[node name="IDLabel" type="Label" parent="Panel/TabContainer/Region/IDRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region ID:"
 
-[node name="IDValue" type="Label" parent="Panel/TabContainer/Region/IDRow" index="1"]
+[node name="IDValue" type="Label" parent="Panel/TabContainer/Region/IDRow"]
 layout_mode = 2
 text = "-"
 
-[node name="NameRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="1"]
+[node name="NameRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="Panel/TabContainer/Region/NameRow" index="0"]
+[node name="NameLabel" type="Label" parent="Panel/TabContainer/Region/NameRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Name:"
 
-[node name="NameEdit" type="LineEdit" parent="Panel/TabContainer/Region/NameRow" index="1"]
+[node name="NameEdit" type="LineEdit" parent="Panel/TabContainer/Region/NameRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypeRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="2"]
+[node name="TypeRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="TypeLabel" type="Label" parent="Panel/TabContainer/Region/TypeRow" index="0"]
+[node name="TypeLabel" type="Label" parent="Panel/TabContainer/Region/TypeRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region type:"
 
-[node name="TypeOption" type="OptionButton" parent="Panel/TabContainer/Region/TypeRow" index="1"]
+[node name="TypeOption" type="OptionButton" parent="Panel/TabContainer/Region/TypeRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LevelRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="3"]
+[node name="LevelRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="LevelLabel" type="Label" parent="Panel/TabContainer/Region/LevelRow" index="0"]
+[node name="LevelLabel" type="Label" parent="Panel/TabContainer/Region/LevelRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region level:"
 
-[node name="LevelOption" type="OptionButton" parent="Panel/TabContainer/Region/LevelRow" index="1"]
+[node name="LevelOption" type="OptionButton" parent="Panel/TabContainer/Region/LevelRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PopulationRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="4"]
+[node name="PopulationRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="PopulationLabel" type="Label" parent="Panel/TabContainer/Region/PopulationRow" index="0"]
+[node name="PopulationLabel" type="Label" parent="Panel/TabContainer/Region/PopulationRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Population:"
 
-[node name="PopulationEdit" type="LineEdit" parent="Panel/TabContainer/Region/PopulationRow" index="1"]
+[node name="PopulationEdit" type="LineEdit" parent="Panel/TabContainer/Region/PopulationRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="CastleRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="5"]
+[node name="CastleRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="CastleLabel" type="Label" parent="Panel/TabContainer/Region/CastleRow" index="0"]
+[node name="CastleLabel" type="Label" parent="Panel/TabContainer/Region/CastleRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Castle level:"
 
-[node name="CastleOption" type="OptionButton" parent="Panel/TabContainer/Region/CastleRow" index="1"]
+[node name="CastleOption" type="OptionButton" parent="Panel/TabContainer/Region/CastleRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="OwnershipRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="6"]
+[node name="OwnershipRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="OwnershipLabel" type="Label" parent="Panel/TabContainer/Region/OwnershipRow" index="0"]
+[node name="OwnershipLabel" type="Label" parent="Panel/TabContainer/Region/OwnershipRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Ownership:"
 
-[node name="OwnershipOption" type="OptionButton" parent="Panel/TabContainer/Region/OwnershipRow" index="1"]
+[node name="OwnershipOption" type="OptionButton" parent="Panel/TabContainer/Region/OwnershipRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ResourcesLabel" type="Label" parent="Panel/TabContainer/Region" index="7"]
+[node name="ResourcesLabel" type="Label" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 text = "Resources:"
 
-[node name="FoodRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="8"]
+[node name="FoodRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="FoodLabel" type="Label" parent="Panel/TabContainer/Region/FoodRow" index="0"]
+[node name="FoodLabel" type="Label" parent="Panel/TabContainer/Region/FoodRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "FOOD"
 
-[node name="FoodEdit" type="LineEdit" parent="Panel/TabContainer/Region/FoodRow" index="1"]
+[node name="FoodEdit" type="LineEdit" parent="Panel/TabContainer/Region/FoodRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="WoodRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="9"]
+[node name="WoodRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="WoodLabel" type="Label" parent="Panel/TabContainer/Region/WoodRow" index="0"]
+[node name="WoodLabel" type="Label" parent="Panel/TabContainer/Region/WoodRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "WOOD"
 
-[node name="WoodEdit" type="LineEdit" parent="Panel/TabContainer/Region/WoodRow" index="1"]
+[node name="WoodEdit" type="LineEdit" parent="Panel/TabContainer/Region/WoodRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="StoneRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="10"]
+[node name="StoneRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="StoneLabel" type="Label" parent="Panel/TabContainer/Region/StoneRow" index="0"]
+[node name="StoneLabel" type="Label" parent="Panel/TabContainer/Region/StoneRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "STONE"
 
-[node name="StoneEdit" type="LineEdit" parent="Panel/TabContainer/Region/StoneRow" index="1"]
+[node name="StoneEdit" type="LineEdit" parent="Panel/TabContainer/Region/StoneRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="IronRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="11"]
+[node name="IronRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="IronLabel" type="Label" parent="Panel/TabContainer/Region/IronRow" index="0"]
+[node name="IronLabel" type="Label" parent="Panel/TabContainer/Region/IronRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "IRON"
 
-[node name="IronEdit" type="LineEdit" parent="Panel/TabContainer/Region/IronRow" index="1"]
+[node name="IronEdit" type="LineEdit" parent="Panel/TabContainer/Region/IronRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GoldRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="12"]
+[node name="GoldRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="GoldLabel" type="Label" parent="Panel/TabContainer/Region/GoldRow" index="0"]
+[node name="GoldLabel" type="Label" parent="Panel/TabContainer/Region/GoldRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "GOLD"
 
-[node name="GoldEdit" type="LineEdit" parent="Panel/TabContainer/Region/GoldRow" index="1"]
+[node name="GoldEdit" type="LineEdit" parent="Panel/TabContainer/Region/GoldRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="OreRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="13"]
+[node name="OreRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="OreLabel" type="Label" parent="Panel/TabContainer/Region/OreRow" index="0"]
+[node name="OreLabel" type="Label" parent="Panel/TabContainer/Region/OreRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Ore discovered:"
 
-[node name="OreCheck" type="CheckBox" parent="Panel/TabContainer/Region/OreRow" index="1"]
+[node name="OreCheck" type="CheckBox" parent="Panel/TabContainer/Region/OreRow"]
 layout_mode = 2
 
-[node name="GarrisonEditRow" type="HBoxContainer" parent="Panel/TabContainer/Region" index="14"]
+[node name="GarrisonEditRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 
-[node name="GarrisonEditLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditRow" index="0"]
+[node name="GarrisonEditLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Garrison:"
 
-[node name="EditGarrisonButton" type="Button" parent="Panel/TabContainer/Region/GarrisonEditRow" index="1"]
+[node name="EditGarrisonButton" type="Button" parent="Panel/TabContainer/Region/GarrisonEditRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Edit Garrison"
 
-[node name="GarrisonEditPanel" type="VBoxContainer" parent="Panel/TabContainer/Region" index="15"]
+[node name="GarrisonEditPanel" type="VBoxContainer" parent="Panel/TabContainer/Region"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="GarrisonHeaderRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="0"]
+[node name="GarrisonHeaderRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GarrisonHeader" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow" index="0"]
+[node name="GarrisonHeader" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow"]
 layout_mode = 2
 text = "Garrison Editor"
 
-[node name="CloseGarrisonButton" type="Button" parent="Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow" index="1"]
+[node name="CloseGarrisonButton" type="Button" parent="Panel/TabContainer/Region/GarrisonEditPanel/GarrisonHeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Close"
 
-[node name="GarrisonUnitsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="1"]
+[node name="GarrisonUnitsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 text = "Units:"
 
-[node name="GPeasantsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="2"]
+[node name="GPeasantsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GPeasantsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow" index="0"]
+[node name="GPeasantsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Peasants"
 
-[node name="GPeasantsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow" index="1"]
+[node name="GPeasantsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GPeasantsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GSpearmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="3"]
+[node name="GSpearmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GSpearmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow" index="0"]
+[node name="GSpearmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Spearmen"
 
-[node name="GSpearmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow" index="1"]
+[node name="GSpearmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSpearmenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GSwordsmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="4"]
+[node name="GSwordsmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GSwordsmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow" index="0"]
+[node name="GSwordsmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Swordsmen"
 
-[node name="GSwordsmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow" index="1"]
+[node name="GSwordsmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GSwordsmenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GArchersRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="5"]
+[node name="GArchersRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GArchersLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow" index="0"]
+[node name="GArchersLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Archers"
 
-[node name="GArchersEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow" index="1"]
+[node name="GArchersEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GArchersRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GCrossbowmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="6"]
+[node name="GCrossbowmenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GCrossbowmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow" index="0"]
+[node name="GCrossbowmenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Crossbowmen"
 
-[node name="GCrossbowmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow" index="1"]
+[node name="GCrossbowmenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GCrossbowmenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GHorsemenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="7"]
+[node name="GHorsemenRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GHorsemenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow" index="0"]
+[node name="GHorsemenLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Horsemen"
 
-[node name="GHorsemenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow" index="1"]
+[node name="GHorsemenEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GHorsemenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="8"]
+[node name="GKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GKnightsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow" index="0"]
+[node name="GKnightsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Knights"
 
-[node name="GKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow" index="1"]
+[node name="GKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GKnightsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GMountedKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="9"]
+[node name="GMountedKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GMountedKnightsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow" index="0"]
+[node name="GMountedKnightsLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Mounted Knights"
 
-[node name="GMountedKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow" index="1"]
+[node name="GMountedKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GMountedKnightsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="GRoyalGuardRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel" index="10"]
+[node name="GRoyalGuardRow" type="HBoxContainer" parent="Panel/TabContainer/Region/GarrisonEditPanel"]
 layout_mode = 2
 
-[node name="GRoyalGuardLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow" index="0"]
+[node name="GRoyalGuardLabel" type="Label" parent="Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Royal Guard"
 
-[node name="GRoyalGuardEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow" index="1"]
+[node name="GRoyalGuardEdit" type="LineEdit" parent="Panel/TabContainer/Region/GarrisonEditPanel/GRoyalGuardRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="Army" type="VBoxContainer" parent="Panel/TabContainer" index="4"]
+[node name="Army" type="VBoxContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 3
 
-[node name="ArmyDefaultContent" type="VBoxContainer" parent="Panel/TabContainer/Army" index="0"]
+[node name="ArmyDefaultContent" type="VBoxContainer" parent="Panel/TabContainer/Army"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="ArmyRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyDefaultContent" index="0"]
+[node name="ArmyRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyDefaultContent"]
 layout_mode = 2
 
-[node name="ArmyLabel" type="Label" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow" index="0"]
+[node name="ArmyLabel" type="Label" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Army:"
 
-[node name="ArmyToggleButton" type="Button" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow" index="1"]
+[node name="ArmyToggleButton" type="Button" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ArmyEditRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyDefaultContent" index="1"]
+[node name="ArmyEditRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyDefaultContent"]
 layout_mode = 2
 
-[node name="ArmyEditLabel" type="Label" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyEditRow" index="0"]
+[node name="ArmyEditLabel" type="Label" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyEditRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Edit:"
 
-[node name="EditArmyButton" type="Button" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyEditRow" index="1"]
+[node name="EditArmyButton" type="Button" parent="Panel/TabContainer/Army/ArmyDefaultContent/ArmyEditRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Edit Army"
 
-[node name="ArmyEditPanel" type="VBoxContainer" parent="Panel/TabContainer/Army" index="1"]
+[node name="ArmyEditPanel" type="VBoxContainer" parent="Panel/TabContainer/Army"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="ArmyHeaderRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="0"]
+[node name="ArmyHeaderRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="ArmyHeader" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyHeaderRow" index="0"]
+[node name="ArmyHeader" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyHeaderRow"]
 layout_mode = 2
 text = "Army Editor"
 
-[node name="CloseArmyButton" type="Button" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyHeaderRow" index="1"]
+[node name="CloseArmyButton" type="Button" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyHeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Close"
 
-[node name="RegionIDRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="1"]
+[node name="RegionIDRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="RegionIDLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionIDRow" index="0"]
+[node name="RegionIDLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionIDRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region ID:"
 
-[node name="RegionIDValue" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionIDRow" index="1"]
+[node name="RegionIDValue" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionIDRow"]
 layout_mode = 2
 text = "-"
 
-[node name="RegionNameRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="2"]
+[node name="RegionNameRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="RegionNameLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionNameRow" index="0"]
+[node name="RegionNameLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionNameRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region Name:"
 
-[node name="RegionNameValue" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionNameRow" index="1"]
+[node name="RegionNameValue" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RegionNameRow"]
 layout_mode = 2
 text = "-"
 
-[node name="ArmyNameRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="3"]
+[node name="ArmyNameRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="ArmyNameLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyNameRow" index="0"]
+[node name="ArmyNameLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyNameRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Army Name:"
 
-[node name="ArmyNameValue" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyNameRow" index="1"]
+[node name="ArmyNameValue" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArmyNameRow"]
 layout_mode = 2
 text = "-"
 
-[node name="UnitsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel" index="4"]
+[node name="UnitsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 text = "Units:"
 
-[node name="PeasantsRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="5"]
+[node name="PeasantsRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="PeasantsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow" index="0"]
+[node name="PeasantsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Peasants"
 
-[node name="PeasantsEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow" index="1"]
+[node name="PeasantsEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="SpearmenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="6"]
+[node name="SpearmenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="SpearmenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/SpearmenRow" index="0"]
+[node name="SpearmenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/SpearmenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Spearmen"
 
-[node name="SpearmenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/SpearmenRow" index="1"]
+[node name="SpearmenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/SpearmenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="SwordsmenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="7"]
+[node name="SwordsmenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="SwordsmenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/SwordsmenRow" index="0"]
+[node name="SwordsmenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/SwordsmenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Swordsmen"
 
-[node name="SwordsmenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/SwordsmenRow" index="1"]
+[node name="SwordsmenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/SwordsmenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="ArchersRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="8"]
+[node name="ArchersRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="ArchersLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArchersRow" index="0"]
+[node name="ArchersLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/ArchersRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Archers"
 
-[node name="ArchersEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/ArchersRow" index="1"]
+[node name="ArchersEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/ArchersRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="CrossbowmenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="9"]
+[node name="CrossbowmenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="CrossbowmenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/CrossbowmenRow" index="0"]
+[node name="CrossbowmenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/CrossbowmenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Crossbowmen"
 
-[node name="CrossbowmenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/CrossbowmenRow" index="1"]
+[node name="CrossbowmenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/CrossbowmenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="HorsemenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="10"]
+[node name="HorsemenRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="HorsemenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/HorsemenRow" index="0"]
+[node name="HorsemenLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/HorsemenRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Horsemen"
 
-[node name="HorsemenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/HorsemenRow" index="1"]
+[node name="HorsemenEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/HorsemenRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="KnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="11"]
+[node name="KnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="KnightsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/KnightsRow" index="0"]
+[node name="KnightsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/KnightsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Knights"
 
-[node name="KnightsEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/KnightsRow" index="1"]
+[node name="KnightsEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/KnightsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="MountedKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="12"]
+[node name="MountedKnightsRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="MountedKnightsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/MountedKnightsRow" index="0"]
+[node name="MountedKnightsLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/MountedKnightsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Mounted Knights"
 
-[node name="MountedKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/MountedKnightsRow" index="1"]
+[node name="MountedKnightsEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/MountedKnightsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="RoyalGuardRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel" index="13"]
+[node name="RoyalGuardRow" type="HBoxContainer" parent="Panel/TabContainer/Army/ArmyEditPanel"]
 layout_mode = 2
 
-[node name="RoyalGuardLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RoyalGuardRow" index="0"]
+[node name="RoyalGuardLabel" type="Label" parent="Panel/TabContainer/Army/ArmyEditPanel/RoyalGuardRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Royal Guard"
 
-[node name="RoyalGuardEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/RoyalGuardRow" index="1"]
+[node name="RoyalGuardEdit" type="LineEdit" parent="Panel/TabContainer/Army/ArmyEditPanel/RoyalGuardRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"

@@ -186,6 +186,12 @@ func _on_army_edit_saved(region_id: int, data: Dictionary) -> void:
 		if child is Army:
 			army = child as Army
 			break
+	
+	# Check if army was found before trying to modify it
+	if army == null:
+		DebugLogger.log("MapEditor", "No army found in region " + str(region_id) + " to edit")
+		return
+	
 	for t in SoldierTypeEnum.get_all_types():
 		var val = int(data[t])
 		army.get_composition().set_soldier_count(t, val)

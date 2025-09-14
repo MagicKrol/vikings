@@ -208,69 +208,52 @@ func _handle_editor_region_click(region_container: Node) -> void:
 	map_editor.set_current_region(region)
 
 
+
 func _handle_army_selection_and_movement(region_container: Node) -> void:
+	# If we have a selected army, prioritize movement to the clicked region
+	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
+		var movement_points = _army_manager.selected_army.get_movement_points()
+		DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
+		if movement_points > 0:
+			var target_region = region_container as Region
+			var target_region_id = target_region.get_region_id()
+			var result = await _game_manager.perform_region_entry(_army_manager.selected_army, target_region_id, "human")
+			if result == "blocked":
+				_army_manager.deselect_army()
+			return
+		# If no movement points, fall through to selection/info handling
+
 	# Get all armies in this region
 	var armies_in_region: Array[Army] = []
 	for child in region_container.get_children():
 		if child is Army:
 			armies_in_region.append(child as Army)
-	
-	# If there are armies in this region, check for conquest or selection first
+
+	# If there are armies in this region, check for conquest or selection
 	if not armies_in_region.is_empty():
 		var region = region_container as Region
-		if region != null:
-			var region_id = region.get_region_id()
-			var region_owner = _region_manager.get_region_owner(region_id)
-			
-			# Check if this is a conquest scenario (player army in unowned region)
-			var current_player_id = _game_manager.get_current_player_id() if _game_manager else 1
-			var player_army_in_region = _army_manager.get_army_in_region(region_container, current_player_id)
-			if player_army_in_region != null and region_owner != current_player_id:
-				# Player has army in unowned region - use PENDING conquest for humans
-				# This shows the battle modal and waits for human to click battle button
-				var battle_manager = _game_manager.get_battle_manager()
-				if battle_manager:
-					battle_manager.set_pending_conquest(player_army_in_region, region)
-					
-					# Show battle modal for human interaction
-					var battle_modal = get_node("../UI/BattleModal") as BattleModal
-					battle_modal.show_battle(player_army_in_region, region)
-				return
-			
-			# Not a conquest scenario - filter armies by current player ownership
-			var current_player_armies: Array[Army] = []
-			for army in armies_in_region:
-				if army.get_player_id() == current_player_id:
-					current_player_armies.append(army)
-			
-			# Only show SelectModal if current player has armies in this region.
-			# If there are only enemy armies here, allow movement to proceed below (attack).
-			if not current_player_armies.is_empty():
-				var select_modal = get_node("../UI/GeneralSelectModal") as GeneralSelectModal
-				select_modal.show_selection(region, current_player_armies)
-				return
-	
-	# If we have a selected army, try to move it to this region
-	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
-		# Check if selected army has movement points
-		var movement_points = _army_manager.selected_army.get_movement_points()
-		DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
-		if movement_points <= 0:
-			# Don't allow movement but keep army selected - just log the attempt
-			DebugLogger.log("InputSystem", "Cannot move army - no movement points remaining")
+		var region_id = region.get_region_id()
+		var region_owner = _region_manager.get_region_owner(region_id)
+		var current_player_id = _game_manager.get_current_player_id()
+
+		# Conquest scenario (player already has army in unowned/enemy region)
+		var player_army_in_region = _army_manager.get_army_in_region(region_container, current_player_id)
+		if player_army_in_region != null and region_owner != current_player_id:
+			var battle_manager = _game_manager.get_battle_manager()
+			battle_manager.set_pending_conquest(player_army_in_region, region)
+			var battle_modal = get_node("../UI/BattleModal") as BattleModal
+			battle_modal.show_battle(player_army_in_region, region)
 			return
-		
-		# Use GameManager orchestration for region entry
-		var target_region = region_container as Region
-		var target_region_id = target_region.get_region_id()
-		var result = await _game_manager.perform_region_entry(_army_manager.selected_army, target_region_id, "human")
-		
-		if result == "blocked":
-			_army_manager.deselect_army()
-			return  # Only return if movement was blocked
-		
-		# If movement succeeded or battle started, always return to prevent conquest detection in same click
-		return
+
+		# If the region has current player's armies, allow choosing one (no selected army case)
+		var current_player_armies: Array[Army] = []
+		for army in armies_in_region:
+			if army.get_player_id() == current_player_id:
+				current_player_armies.append(army)
+		if not current_player_armies.is_empty():
+			var select_modal = get_node("../UI/GeneralSelectModal") as GeneralSelectModal
+			select_modal.show_selection(region, current_player_armies)
+			return
 	
 	# If no armies in region and no selected army, show region info
 	var region = region_container as Region

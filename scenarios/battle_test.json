@@ -71,6 +71,22 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
+				"Peasants": 1,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"name": "Army V",
+			"player_id": 1,
+			"region_id": 373
+		},
+		{
+			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
 				"Peasants": 100,
 				"Royal Guard": 0,
 				"Spearmen": 0,
@@ -98,6 +114,32 @@
 		}
 	],
 	"map_file": "mapdata-207-tiny.json",
+	"player_settings": [
+		{
+			"control_type": "Player",
+			"player_id": 1
+		},
+		{
+			"control_type": "Computer",
+			"player_id": 2
+		},
+		{
+			"control_type": "Off",
+			"player_id": 3
+		},
+		{
+			"control_type": "Off",
+			"player_id": 4
+		},
+		{
+			"control_type": "Off",
+			"player_id": 5
+		},
+		{
+			"control_type": "Off",
+			"player_id": 6
+		}
+	],
 	"regions": [
 		{
 			"biome": "ocean",
@@ -7732,7 +7774,7 @@
 			"level": "Shire",
 			"name": "Eyvik",
 			"ocean": false,
-			"owner": 0,
+			"owner": 1,
 			"population": 233,
 			"resources": {
 				"Food": 1,

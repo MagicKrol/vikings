@@ -156,12 +156,42 @@ func _update_region_display() -> void:
 	var defense_value = get_node("Panel/Region/GarisonSection/Growth/Value")
 	var defense_bonus = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
 	defense_value.text = str(defense_bonus) + "%"
+
+	# Update local garrison total (exclude recruits; garrison is a separate composition)
+	var garrison_value = get_node("Panel/Region/GarisonSection/Garison/Value")
+	var garrison_comp = current_region.get_garrison()
+	var garrison_total: int = 0
+	if garrison_comp != null:
+		garrison_total = garrison_comp.get_total_soldiers()
+	garrison_value.text = str(garrison_total)
+	# Update garrison wounded "(n)" or empty when zero
+	var garrison_wounded_label = get_node("Panel/Region/GarisonSection/Garison/WoundedValue") as Label
+	var wg_total: int = 0
+	var wg_comp = current_region.get_wounded_garrison()
+	if wg_comp != null:
+		wg_total = wg_comp.get_total_soldiers()
+	if wg_total > 0:
+		garrison_wounded_label.text = "(" + str(wg_total) + ")"
+		garrison_wounded_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+	else:
+		garrison_wounded_label.text = ""
 	
 	# Update recruits
 	var recruits_value = get_node("Panel/Region/GarisonSection/Recruits/Value")
 	var available = current_region.get_available_recruits()
 	var max_recruits = current_region.get_max_recruits()
 	recruits_value.text = str(available) + " / " + str(max_recruits)
+	# Update recruits wounded (peasants only) "(n)" or empty when zero
+	var recruits_wounded_label = get_node("Panel/Region/GarisonSection/Recruits/WoundedValue") as Label
+	var wr_total: int = 0
+	var wr_comp = current_region.get_wounded_recruits()
+	if wr_comp != null:
+		wr_total = wr_comp.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	if wr_total > 0:
+		recruits_wounded_label.text = "(" + str(wr_total) + ")"
+		recruits_wounded_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+	else:
+		recruits_wounded_label.text = ""
 	
 	# Update resources
 	_update_region_resource_values()
@@ -248,7 +278,9 @@ func _update_construction_status() -> void:
 		var castle_type = current_region.get_castle_under_construction()
 		var turns_remaining = current_region.get_castle_build_turns_remaining()
 		var castle_name = CastleTypeEnum.type_to_string(castle_type)
-		construction_label.text = "Construction " + castle_name + " - " + str(turns_remaining) + " turn"
+		construction_label.text = "Building " + castle_name + " - " + str(turns_remaining) + " turn"
+		if turns_remaining > 1: 
+			construction_label.text = construction_label.text + "s"
 	else:
 		construction_label.text = ""
 

@@ -52,6 +52,8 @@ var _close_garrison_button: Button
 var _garrison_unit_edits: Dictionary = {}
 var _garrison_customized: Dictionary = {}
 var _region_default_nodes: Array = []
+var _player_settings_container: VBoxContainer
+var player_settings: Array = []  # Array of dictionaries with player configuration
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
@@ -154,6 +156,12 @@ func _ready() -> void:
 	_save_map_button.pressed.connect(_on_save_map_pressed)
 	_exit_button.pressed.connect(_on_exit_pressed)
 	
+	# Get player settings container
+	_player_settings_container = get_node("Panel/TabContainer/Scenario/PlayerSettingsContainer") as VBoxContainer
+	
+	# Initialize player settings UI
+	_initialize_player_settings()
+	
 	# Check for loaded scenario name after a short delay to ensure GameManager is ready
 	call_deferred("_check_and_populate_scenario_name")
 
@@ -169,8 +177,53 @@ func _check_and_populate_scenario_name() -> void:
 				scenario_name = scenario_name.substr(0, scenario_name.length() - 5)
 			_scenario_name_edit.text = scenario_name
 			DebugLogger.log("MapEditorPanel", "Populated scenario name: " + scenario_name)
+			
+			# Try to load player settings from the scenario
+			_load_player_settings_from_scenario(scenario_name)
 			return
 	# If game manager didn't report a scenario name, leave field as-is
+
+func _load_player_settings_from_scenario(scenario_name: String) -> void:
+	"""Load player settings from an existing scenario file"""
+	var path := "res://scenarios/" + scenario_name + ".json"
+	var file := FileAccess.open(path, FileAccess.READ)
+	if not file:
+		DebugLogger.log("MapEditorPanel", "Could not open scenario file: " + path)
+		return
+	
+	var json_text := file.get_as_text()
+	file.close()
+	
+	var json := JSON.new()
+	var parse_result := json.parse(json_text)
+	if parse_result != OK:
+		DebugLogger.log("MapEditorPanel", "Failed to parse scenario JSON")
+		return
+	
+	var data: Dictionary = json.data
+	if data.has("player_settings"):
+		# Update our player settings array
+		var loaded_settings = data["player_settings"]
+		if loaded_settings is Array and loaded_settings.size() == 6:
+			player_settings = loaded_settings.duplicate(true)
+			# Update the UI to reflect loaded settings
+			_update_player_settings_ui()
+			DebugLogger.log("MapEditorPanel", "Loaded player settings from scenario")
+
+func _update_player_settings_ui() -> void:
+	"""Update the player settings UI to reflect current player_settings array"""
+	var rows = _player_settings_container.get_children()
+	for i in range(min(rows.size(), player_settings.size())):
+		var row = rows[i]
+		var control_type = player_settings[i].control_type
+		
+		# Find and press the appropriate button
+		for child in row.get_children():
+			if child is Button and child.toggle_mode:
+				if child.text == control_type:
+					child.button_pressed = true
+				else:
+					child.button_pressed = false
 
 func _populate_types() -> void:
 	_option.clear()
@@ -378,7 +431,8 @@ func _on_save_scenario_pressed() -> void:
 	var scenario := {
 		"map_file": mg.data_file_path,
 		"regions": regions_data,
-		"armies": armies_data
+		"armies": armies_data,
+		"player_settings": player_settings
 	}
 	_write_scenario(scenario)
 
@@ -512,7 +566,96 @@ func _populate_army_panel() -> void:
 		if child is Army:
 			army_found = child as Army
 			break
+	
+	# Check if army was found before trying to access it
+	if army_found == null:
+		DebugLogger.log("MapEditorPanel", "No army found in region to edit")
+		_army_name_value.text = "-"
+		# Clear all unit edit fields
+		for t in _unit_edits.keys():
+			(_unit_edits[t] as LineEdit).text = "0"
+		return
+	
 	_army_name_value.text = army_found.name
 	for t in _unit_edits.keys():
 		var count = army_found.get_soldier_count(t)
 		(_unit_edits[t] as LineEdit).text = str(count)
+
+func _initialize_player_settings() -> void:
+	"""Initialize the player settings UI with 6 player rows"""
+	# Initialize player settings array with default values
+	player_settings.clear()
+	for i in range(1, 7):  # Players 1-6
+		player_settings.append({
+			"player_id": i,
+			"control_type": "Off" if i > 2 else ("Player" if i == 1 else "Computer")
+		})
+	
+	# Create UI rows for each player
+	for i in range(6):
+		var player_num = i + 1
+		var player_color = GameParameters.get_player_color(player_num)
+		
+		# Create horizontal container for the row
+		var row_container = HBoxContainer.new()
+		row_container.custom_minimum_size.y = 40
+		
+		# Create player label with color
+		var player_label = Label.new()
+		player_label.text = "Player " + str(player_num)
+		player_label.custom_minimum_size.x = 80
+		player_label.modulate = player_color
+		player_label.add_theme_font_size_override("font_size", 16)
+		player_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		player_label.add_theme_constant_override("outline_size", 2)
+		row_container.add_child(player_label)
+		
+		# Add spacer
+		var spacer = Control.new()
+		spacer.custom_minimum_size.x = 10
+		row_container.add_child(spacer)
+		
+		# Create button group for this player
+		var button_group = ButtonGroup.new()
+		
+		# Create Player button
+		var player_button = Button.new()
+		player_button.text = "Player"
+		player_button.custom_minimum_size.x = 60
+		player_button.toggle_mode = true
+		player_button.button_group = button_group
+		player_button.add_theme_font_size_override("font_size", 14)
+		player_button.button_pressed = (player_settings[i].control_type == "Player")
+		player_button.toggled.connect(_on_player_control_changed.bind(player_num, "Player"))
+		row_container.add_child(player_button)
+		
+		# Create Computer button
+		var computer_button = Button.new()
+		computer_button.text = "Computer"
+		computer_button.custom_minimum_size.x = 80
+		computer_button.toggle_mode = true
+		computer_button.button_group = button_group
+		computer_button.add_theme_font_size_override("font_size", 14)
+		computer_button.button_pressed = (player_settings[i].control_type == "Computer")
+		computer_button.toggled.connect(_on_player_control_changed.bind(player_num, "Computer"))
+		row_container.add_child(computer_button)
+		
+		# Create Off button
+		var off_button = Button.new()
+		off_button.text = "Off"
+		off_button.custom_minimum_size.x = 40
+		off_button.toggle_mode = true
+		off_button.button_group = button_group
+		off_button.add_theme_font_size_override("font_size", 14)
+		off_button.button_pressed = (player_settings[i].control_type == "Off")
+		off_button.toggled.connect(_on_player_control_changed.bind(player_num, "Off"))
+		row_container.add_child(off_button)
+		
+		# Add row to container
+		_player_settings_container.add_child(row_container)
+
+func _on_player_control_changed(toggled_on: bool, player_num: int, control_type: String) -> void:
+	"""Handle player control type change"""
+	if toggled_on:
+		player_settings[player_num - 1].control_type = control_type
+		DebugLogger.log("MapEditorPanel", "Player " + str(player_num) + " set to: " + control_type)
