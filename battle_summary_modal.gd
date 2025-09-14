@@ -82,12 +82,23 @@ func _update_display() -> void:
 	"""Update all display elements with battle data"""
 	if battle_report == null:
 		return
-	
-	# Update battle status (won/lost)
+
+	# Update battle status (won/lost) from the current player's perspective
+	var gm = get_node("../../GameManager") as GameManager
+	var current_player_id = gm.get_current_player_id() if gm else -1
+	var attacker_pid = attacking_army.get_player_id() if attacking_army else -2
+	var defender_owner = -3
+	if gm and defending_region:
+		defender_owner = gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	var player_is_attacker = current_player_id == attacker_pid
+	var player_is_defender = current_player_id == defender_owner
+	var player_won = false
 	if battle_report.winner == "Attackers":
-		battle_status_label.text = "Battle Won!"
-	else:
-		battle_status_label.text = "Battle Lost!"
+		player_won = player_is_attacker
+	elif battle_report.winner == "Defenders":
+		player_won = player_is_defender
+	# Set label
+	battle_status_label.text = "Battle Won!" if player_won else "Battle Lost!"
 	
 	# Update army and region names
 	if attacking_army:

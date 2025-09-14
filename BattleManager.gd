@@ -496,6 +496,39 @@ func _reselect_fighting_army_after_battle() -> void:
 	# Clear the stored army reference
 	_fighting_army_for_reselection = null
 
+# --- AI withdrawal evaluation (attacker-side only) ---
+func evaluate_ai_attacker_withdrawal() -> bool:
+	"""Check if the attacking side (AI) should initiate withdrawal based on power ratio.
+	Only counts armies (ignores garrison and recruits). Returns true to start withdrawal."""
+	if _pending_attackers.is_empty():
+		return false
+	if _game_manager == null:
+		return false
+	# Only attackers can withdraw with current simulator
+	var attacker_owner := _pending_attackers[0].get_player_id()
+	if not _game_manager.is_player_computer(attacker_owner):
+		return false
+	# Compute combined powers (armies only)
+	var atk_power := 0
+	for a in _pending_attackers:
+		if is_instance_valid(a):
+			atk_power += a.get_army_power()
+	var def_power := 0
+	for d in _pending_defenders:
+		if is_instance_valid(d):
+			def_power += d.get_army_power()
+	if def_power <= 0:
+		return false
+	# Check threshold
+	var ratio := float(atk_power) / float(def_power)
+	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
+		return false
+	# Chance = (def - atk)/def = 1 - ratio
+	var chance: float = clampf(1.0 - ratio, 0.0, 1.0)
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	return rng.randf() < chance
+
 # --- Proportional loss distribution across an array of Army nodes (and optional garrison) ---
 func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garrison: ArmyComposition) -> void:
 	for unit_type in losses.keys():

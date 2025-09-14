@@ -488,6 +488,13 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	# Update display with current round data
 	_update_display()
 	
+	# AI withdraw check (attacker-side only)
+	var gm = get_node("../../GameManager") as GameManager
+	var bm = gm.get_battle_manager()
+	if bm and animated_simulator and not animated_simulator.is_withdrawing:
+		if bm.evaluate_ai_attacker_withdrawal():
+			animated_simulator.start_withdrawal_round()
+	
 	DebugLogger.log("UISystem", "Round " + str(current_round) + " completed - Attackers: " + str(round_data["attacker_size"]) + ", Defenders: " + str(round_data["defender_size"]))
 
 func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:

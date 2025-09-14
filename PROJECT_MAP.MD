@@ -209,6 +209,7 @@ editor_start.tscn (Editor Start)
 ## Battle Simulation
 - BattleSimulator.gd: Statistical resolution with efficiency and proportional loss distribution.
 - AnimatedBattleSimulator.gd: Round-based animated presentation and reporting for the BattleModal.
+ - AI Withdrawal: After each round, BattleModal asks BattleManager to evaluate AI attacker withdrawal. Threshold `AI_WITHDRAW_POWER_THRESHOLD` in `GameParameters.gd`. Chance = 1 - (AI_power / enemy_power). On success, triggers the same withdraw flow as the player (animated simulator withdrawal rounds).
 
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there.

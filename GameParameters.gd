@@ -201,6 +201,7 @@ const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry u
 # Wounded system
 const WOUNDED_CHANCE = 0.30						# Base chance per casualty to become wounded (0..1)
 const CAMP_HEAL_CHANCE = 0.50						# Chance to heal one wounded unit on make_camp() (0..1)
+const AI_WITHDRAW_POWER_THRESHOLD = 0.80			# AI withdraw triggers when own power <= 80% of enemy power
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
