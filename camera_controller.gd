@@ -297,3 +297,15 @@ func set_instant_mode(instant: bool) -> void:
 	"""Enable/disable instant camera movement (no smoothing)"""
 	smooth_pan = not instant
 	smooth_zoom = not instant
+
+func center_on_army(army: Army) -> void:
+	"""Center camera on a specific army"""
+	if army == null or not is_instance_valid(army):
+		return
+	
+	var army_global_pos = army.global_position
+	set_camera_target(army_global_pos)
+
+func center_on_position(position: Vector2) -> void:
+	"""Center camera on a specific position"""
+	set_camera_target(position)

@@ -154,8 +154,9 @@ func _get_army_position_offset(region_container: Node) -> Vector2:
 	# Default positioning when no castle is present (scaled)
 	return Vector2(0, -5 * map_size_scale)  # Army positioned slightly above center
 
-func _apply_army_offsets_for_region(region_container: Node) -> void:
-	"""Reposition all armies in a region using stacked offsets and z-index order."""
+func _apply_army_offsets_for_region(region_container: Node, skip_army: Army = null) -> void:
+	"""Reposition all armies in a region using stacked offsets and z-index order.
+	If skip_army is provided, its position will not be set here (useful for animation)."""
 	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
 	if polygon == null:
 		return
@@ -182,12 +183,42 @@ func _apply_army_offsets_for_region(region_container: Node) -> void:
 		var army := armies[i]
 		var idx := i if i < extra_offsets.size() else 0
 		var extra: Vector2 = (extra_offsets[idx] as Vector2) * map_size_scale
-		army.position = center + base_offset + extra
 		var base_z := 125 + army.get_player_id()
 		if i >= 1 and i <= 4:
 			army.z_index = base_z - i
 		else:
 			army.z_index = base_z
+		if skip_army != null and army == skip_army:
+			continue
+		army.position = center + base_offset + extra
+
+func _compute_army_target_position(region_container: Node, army: Army) -> Vector2:
+	"""Compute the stacked target position for a specific army in a region."""
+	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
+	var center_meta = polygon.get_meta("center")
+	var center := center_meta as Vector2
+	var base_offset := _get_army_position_offset(region_container)
+	var map_size_scale := 1.0
+	if map_generator != null:
+		map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+	var extra_offsets: Array[Vector2] = [
+		Vector2(0, 0),
+		Vector2(-15, -10),
+		Vector2(-30, -20),
+		Vector2(15, -10),
+		Vector2(30, -20)
+	]
+	var armies: Array[Army] = []
+	for child in region_container.get_children():
+		if child is Army:
+			armies.append(child as Army)
+	var idx := 0
+	for i in armies.size():
+		if armies[i] == army:
+			idx = i
+			break
+	var extra: Vector2 = (extra_offsets[idx if idx < extra_offsets.size() else 0] as Vector2) * map_size_scale
+	return center + base_offset + extra
 
 func select_army(army: Army, region_container: Node, current_player_id: int = -1) -> void:
 	"""Select an army for movement - only allow selecting armies owned by current player"""
@@ -261,7 +292,7 @@ func move_army(army: Army, target_region: Region) -> bool:
 	selected_region_container = source_region_container
 	
 	# Use existing movement logic
-	var result = move_army_to_region(target_region)
+	var result = await move_army_to_region(target_region)
 	
 	# Restore previous selection
 	if is_instance_valid(previous_selection) and is_instance_valid(previous_region):
@@ -314,22 +345,25 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Store previous region for potential retreat
 	army_previous_regions[selected_army] = selected_region_container
 	
-	# Move the army
+	# Move the army node, keeping its global start position
+	var start_global := selected_army.global_position
 	selected_army.get_parent().remove_child(selected_army)
 	target_region_container.add_child(selected_army)
-	
-	# Update army position to new region center
-	var polygon = target_region_container.get_node_or_null("Polygon") as Polygon2D
-	if polygon != null:
-		var center_meta = polygon.get_meta("center")
-		if center_meta != null:
-			var center = center_meta as Vector2
-			selected_army.position = center + _get_army_position_offset(target_region_container)
-	# Reposition armies in both source and target regions to avoid overlap
+	selected_army.global_position = start_global
+
+	# Reposition remaining armies in source region (selected army removed)
 	_apply_army_offsets_for_region(source_region)
-	_apply_army_offsets_for_region(target_region_container)
+
+	# Compute stacked target for selected army in target region and apply others immediately
+	var target_local := _compute_army_target_position(target_region_container, selected_army)
+	_apply_army_offsets_for_region(target_region_container, selected_army)
+	# Animate the moving army to its target position (use global for robust animation)
+	var target_global: Vector2 = target_region_container.to_global(target_local)
+	var tween: Tween = selected_army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	await tween.finished
+	# Do not re-apply offsets for the moving army here; let the tween finish
 	
-	# Check if we should change ownership (only for already owned regions or friendly moves)
+	# After animation completes, check if we should change ownership (only for already owned regions or friendly moves)
 	var target_region_owner = region_manager.get_region_owner(target_region_id)
 	var army_player_id = selected_army.player_id
 	
@@ -366,7 +400,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		# Update selected region container to the new region
 		selected_region_container = target_region_container
 		
-		# Clear old arrows and show new ones for the new position (only for human players)
+	# Clear old arrows and show new ones for the new position (only for human players)
 		_clear_move_arrows()
 		if _should_show_human_arrows():
 			_show_move_arrows(target_region_container)
@@ -493,8 +527,8 @@ func _create_move_arrow(from_pos: Vector2, to_pos: Vector2, disabled: bool = fal
 
 		return null
 	
-	# Scale arrows like region/castle icons: baseline × polygon_scale × map_size_scale
-	var scale_factor := 0.08
+	# Scale arrows like castle icons: baseline × polygon_scale × map_size_scale
+	var scale_factor := 0.12
 	if map_generator != null:
 		var mss := Utils.get_map_size_icon_scale(map_generator.map_size)
 		scale_factor *= (map_generator.polygon_scale * mss)
@@ -792,24 +826,21 @@ func retreat_army_to_previous_region(army: Army) -> void:
 	
 	DebugLogger.log("ArmyManagement", "Retreating army " + army.name + " to previous region")
 	
-	# Move army back to previous region
+	# Move army back to previous region, keep global start
 	var current_parent = army.get_parent()
+	var start_global := army.global_position
 	if current_parent != null:
 		current_parent.remove_child(army)
-	
 	previous_region.add_child(army)
-	
-	# Update army position to previous region center
-	var polygon = previous_region.get_node_or_null("Polygon") as Polygon2D
-	if polygon != null:
-		var center_meta = polygon.get_meta("center")
-		if center_meta != null:
-			var center = center_meta as Vector2
-			army.position = center + _get_army_position_offset(previous_region)
-	# Reposition offsets in both regions
+	army.global_position = start_global
+	# Reposition others in source, compute and animate target for this army, then apply others in dest
 	if current_parent != null:
 		_apply_army_offsets_for_region(current_parent)
-	_apply_army_offsets_for_region(previous_region)
+	var target_local := _compute_army_target_position(previous_region, army)
+	_apply_army_offsets_for_region(previous_region, army)
+	var target_global: Vector2 = previous_region.to_global(target_local)
+	var retreat_tween: Tween = army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	await retreat_tween.finished
 	
 	DebugLogger.log("ArmyManagement", "Army " + army.name + " retreated to " + previous_region.name)
 	

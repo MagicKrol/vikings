@@ -485,13 +485,13 @@ func _load_custom_map_list():
 	for child in custom_map_list.get_children():
 		child.queue_free()
 	
-	# Get all map files from mapdata folder
+	# Get all map files from mapdata folder (both old mapdata-* and new formats)
 	var dir = DirAccess.open("res://mapdata")
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
-			if file_name.ends_with(".json"):
+			if file_name.ends_with(".json") and _is_valid_map_file(file_name):
 				_add_custom_map_button(file_name.trim_suffix(".json"))
 			file_name = dir.get_next()
 		dir.list_dir_end()
@@ -499,7 +499,8 @@ func _load_custom_map_list():
 func _add_custom_map_button(map_name: String):
 	"""Add a button for a map to the custom map list"""
 	var button = Button.new()
-	button.text = map_name.capitalize().replace("_", " ").replace("-", " ")
+	var display_text = _format_map_name_for_display(map_name)
+	button.text = display_text
 	
 	# Create the map theme dynamically to match scenario theme
 	var map_theme = Theme.new()
@@ -689,6 +690,59 @@ func _initialize_player_settings():
 		
 		# Add row to container
 		player_settings_container.add_child(row_container)
+
+func _convert_size_name(old_size: String) -> String:
+	"""Convert old size names to new display names: XTiny->Small, Tiny->Medium, Small->Large, Medium->Huge"""
+	var size_lower = old_size.to_lower()
+	match size_lower:
+		"xtiny":
+			return "Small"
+		"tiny":
+			return "Medium"
+		"small":
+			return "Large"
+		"medium":
+			return "Huge"
+		_:
+			# For any other size (including already new names), just capitalize
+			return old_size.capitalize()
+
+func _is_valid_map_file(filename: String) -> bool:
+	"""Check if filename follows valid map file pattern (old or new format)"""
+	var name_without_extension = filename.trim_suffix(".json")
+	var parts = name_without_extension.split("-")
+	
+	# Old format: mapdata-id-size (3 parts)
+	if parts.size() == 3 and parts[0] == "mapdata":
+		return true
+	
+	# New format: MapName-id-size (at least 3 parts, but could be more for multi-word names)
+	if parts.size() >= 3:
+		var size_part = parts[parts.size() - 1].to_lower()
+		# Check if last part is a valid size (old or new naming)
+		var valid_old_sizes = ["xtiny", "tiny", "small", "medium", "large", "huge"]
+		var valid_new_sizes = ["small", "medium", "large", "huge"]
+		return size_part in valid_old_sizes or size_part in valid_new_sizes
+	
+	return false
+
+func _format_map_name_for_display(map_name: String) -> String:
+	"""Format map name for display: MapName-id-size -> 'Size MapName' (hide ID, replace underscores with spaces)"""
+	var parts = map_name.split("-")
+	
+	if parts.size() >= 3:
+		# After file renaming, all files now use new size names (small, medium, large, huge)
+		# So we just capitalize them - no conversion needed
+		var raw_size = parts[parts.size() - 1]
+		var size_part = raw_size.capitalize()
+		
+		# Use first part as map name (before first hyphen)
+		var map_name_part = parts[0].replace("_", " ")
+		
+		return size_part + " " + map_name_part
+	else:
+		# Fallback for unexpected format
+		return map_name.capitalize().replace("_", " ").replace("-", " ")
 
 func _on_player_control_changed(toggled_on: bool, player_num: int, control_type: String):
 	"""Handle player control type change"""

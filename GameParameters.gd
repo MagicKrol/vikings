@@ -202,6 +202,13 @@ const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry u
 const WOUNDED_CHANCE = 0.30						# Base chance per casualty to become wounded (0..1)
 const CAMP_HEAL_CHANCE = 0.50						# Chance to heal one wounded unit on make_camp() (0..1)
 const AI_WITHDRAW_POWER_THRESHOLD = 0.80			# AI withdraw triggers when own power <= 80% of enemy power
+const MOVE_ANIMATION_DURATION = 0.5				# Seconds for army move animation
+
+## Camera Centering Timing Constants
+const CAMERA_ARMY_START_DELAY = 1.5			# Seconds to pause after centering on army before movement
+const CAMERA_BATTLE_RESULT_DELAY = 2.0			# Seconds to pause after battle results (victory/defeat/withdrawal)
+const CAMERA_CONQUEST_DELAY = 1.5				# Seconds to pause after region conquest to show ownership change
+const CAMERA_FRIENDLY_MOVE_DELAY = 0.8			# Seconds to pause after friendly army moves
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {

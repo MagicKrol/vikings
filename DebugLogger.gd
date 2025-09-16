@@ -38,6 +38,7 @@ var debug_categories: Dictionary = {
 	"ResourceCalculation": false,  # Detailed resource calculations
 	
 	# Battle Systems
+	"BattleAI": true, 
 	"BattleSystem": true,         # Combat and battle resolution
 	"BattleCalculation": true,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds

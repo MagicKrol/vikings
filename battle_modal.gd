@@ -25,6 +25,7 @@ var defending_region: Region = null
 var battle_report: BattleSimulator.BattleReport = null
 var animated_simulator: AnimatedBattleSimulator = null
 var battle_in_progress: bool = false
+var _def_ai_withdraw_notice_logged: bool = false
 
 # Real-time battle display data
 var current_round: int = 0
@@ -41,6 +42,7 @@ var initial_defender_comp: Dictionary = {}
 
 # Withdrawal state
 var withdrawal_in_progress: bool = false
+var _defender_start_recruits: int = 0
 
 # Sound manager reference
 var sound_manager: SoundManager = null
@@ -450,6 +452,7 @@ func _run_battle_simulation() -> void:
 	initial_defender_comp = current_defender_composition.duplicate()
 	# Add recruits to initial defender composition
 	var summary_recruits = defending_region.get_base_available_recruits()
+	_defender_start_recruits = summary_recruits
 	if summary_recruits > 0:
 		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
 	
@@ -492,8 +495,19 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	var gm = get_node("../../GameManager") as GameManager
 	var bm = gm.get_battle_manager()
 	if bm and animated_simulator and not animated_simulator.is_withdrawing:
-		if bm.evaluate_ai_attacker_withdrawal():
+		if bm.evaluate_ai_attacker_withdrawal(current_attacker_composition, current_defender_composition, defending_region.get_garrison(), _defender_start_recruits):
 			animated_simulator.start_withdrawal_round()
+		else:
+			# Optional notice for defender AI (not yet supported)
+			if not _def_ai_withdraw_notice_logged:
+				var any_def_ai := false
+				for d in bm._pending_defenders:
+					if gm.is_player_computer(d.get_player_id()):
+						any_def_ai = true
+						break
+				if any_def_ai:
+					DebugLogger.log("BattleAI", "Defender AI withdrawal is not implemented in the current simulator (attacker-only).")
+					_def_ai_withdraw_notice_logged = true
 	
 	DebugLogger.log("UISystem", "Round " + str(current_round) + " completed - Attackers: " + str(round_data["attacker_size"]) + ", Defenders: " + str(round_data["defender_size"]))
 

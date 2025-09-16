@@ -25,7 +25,7 @@ func _populate_map_list() -> void:
 			break
 		if dir.current_is_dir():
 			continue
-		if f.begins_with("mapdata-") and f.to_lower().ends_with(".json"):
+		if _is_valid_map_file(f):
 			files.append(f)
 	dir.list_dir_end()
 	files.sort()
@@ -84,8 +84,46 @@ func _on_edit_scenario_pressed() -> void:
 	get_tree().set_meta("editor_start_payload", payload)
 	get_tree().change_scene_to_file("res://main.tscn")
 
+func _convert_size_name(old_size: String) -> String:
+	"""Convert old size names to new display names: XTiny->Small, Tiny->Medium, Small->Large, Medium->Huge"""
+	var size_lower = old_size.to_lower()
+	match size_lower:
+		"xtiny":
+			return "Small"
+		"tiny":
+			return "Medium"
+		"small":
+			return "Large"
+		"medium":
+			return "Huge"
+		_:
+			# For any other size (including already new names), just capitalize
+			return old_size.capitalize()
+
+func _is_valid_map_file(filename: String) -> bool:
+	"""Check if filename follows valid map file pattern (old or new format)"""
+	if not filename.to_lower().ends_with(".json"):
+		return false
+		
+	var name_without_extension = filename.trim_suffix(".json")
+	var parts = name_without_extension.split("-")
+	
+	# Old format: mapdata-id-size (3 parts)
+	if parts.size() == 3 and parts[0] == "mapdata":
+		return true
+	
+	# New format: MapName-id-size (at least 3 parts, but could be more for multi-word names)
+	if parts.size() >= 3:
+		var size_part = parts[parts.size() - 1].to_lower()
+		# Check if last part is a valid size (old or new naming)
+		var valid_old_sizes = ["xtiny", "tiny", "small", "medium", "large", "huge"]
+		var valid_new_sizes = ["small", "medium", "large", "huge"]
+		return size_part in valid_old_sizes or size_part in valid_new_sizes
+	
+	return false
+
 func _extract_size_from_map_filename(name: String) -> String:
-	# Expected: mapdata-XXX-small.json → returns "small"
+	# Expected: mapdata-XXX-small.json or Road_to_Hell-34-small.json → returns "small"
 	var base := name.get_basename()
 	var parts := base.split("-")
 	if parts.size() >= 3:

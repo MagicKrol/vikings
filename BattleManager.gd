@@ -497,9 +497,10 @@ func _reselect_fighting_army_after_battle() -> void:
 	_fighting_army_for_reselection = null
 
 # --- AI withdrawal evaluation (attacker-side only) ---
-func evaluate_ai_attacker_withdrawal() -> bool:
-	"""Check if the attacking side (AI) should initiate withdrawal based on power ratio.
-	Only counts armies (ignores garrison and recruits). Returns true to start withdrawal."""
+func evaluate_ai_attacker_withdrawal(current_atk: Dictionary = {}, current_def: Dictionary = {}, garrison: ArmyComposition = null, recruits_peasants: int = 0) -> bool:
+	"""Check if the attacking AI should withdraw based on power ratio.
+	Uses dynamic round compositions when provided; otherwise falls back to army nodes.
+	Defender power subtracts garrison and recruit peasants."""
 	if _pending_attackers.is_empty():
 		return false
 	if _game_manager == null:
@@ -508,26 +509,54 @@ func evaluate_ai_attacker_withdrawal() -> bool:
 	var attacker_owner := _pending_attackers[0].get_player_id()
 	if not _game_manager.is_player_computer(attacker_owner):
 		return false
-	# Compute combined powers (armies only)
 	var atk_power := 0
-	for a in _pending_attackers:
-		if is_instance_valid(a):
-			atk_power += a.get_army_power()
 	var def_power := 0
-	for d in _pending_defenders:
-		if is_instance_valid(d):
-			def_power += d.get_army_power()
+	if current_atk.is_empty() or current_def.is_empty():
+		for a in _pending_attackers:
+			if is_instance_valid(a):
+				atk_power += a.get_army_power()
+		for d in _pending_defenders:
+			if is_instance_valid(d):
+				def_power += d.get_army_power()
+	else:
+		# Compute from compositions
+		for ut in current_atk.keys():
+			var qty: int = int(current_atk[ut])
+			if qty > 0:
+				atk_power += GameParameters.get_unit_stat(ut, "power") * qty
+		# Start with total defenders
+		var def_dict := current_def.duplicate()
+		# Subtract garrison
+		if garrison != null:
+			for ut in SoldierTypeEnum.get_all_types():
+				var g := garrison.get_soldier_count(ut)
+				if g > 0:
+					var cur := int(def_dict.get(ut, 0))
+					def_dict[ut] = max(0, cur - g)
+		# Subtract recruits (peasants only)
+		if recruits_peasants > 0:
+			var curp := int(def_dict.get(SoldierTypeEnum.Type.PEASANTS, 0))
+			var remove: int = min(curp, recruits_peasants)
+			def_dict[SoldierTypeEnum.Type.PEASANTS] = max(0, curp - remove)
+		for ut in def_dict.keys():
+			var qtyd: int = int(def_dict[ut])
+			if qtyd > 0:
+				def_power += GameParameters.get_unit_stat(ut, "power") * qtyd
 	if def_power <= 0:
 		return false
 	# Check threshold
 	var ratio := float(atk_power) / float(def_power)
 	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
+		DebugLogger.log("BattleAI", "AI withdraw check (attacker): atk=" + str(atk_power) + ", def=" + str(def_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", threshold=" + str(GameParameters.AI_WITHDRAW_POWER_THRESHOLD) + " -> no attempt")
 		return false
 	# Chance = (def - atk)/def = 1 - ratio
 	var chance: float = clampf(1.0 - ratio, 0.0, 1.0)
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	return rng.randf() < chance
+	var roll := rng.randf()
+	var will_withdraw := roll < chance
+	DebugLogger.log("BattleAI", "AI withdraw attempt (attacker): atk=" + str(atk_power) + ", def=" + str(def_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", chance=" + str(snappedf(chance, 0.001)) + ", roll=" + str(snappedf(roll, 0.001)) + ", result=" + ("WITHDRAW" if will_withdraw else "CONTINUE"))
+	return will_withdraw
 
 # --- Proportional loss distribution across an array of Army nodes (and optional garrison) ---
 func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garrison: ArmyComposition) -> void:

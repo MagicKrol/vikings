@@ -13,7 +13,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 Start Flow
 - Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
   - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
-  - Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <xtiny|tiny|small|medium|large|huge> }` (size inferred from filename suffix)
+- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <small|medium|large|huge> }` (size inferred from filename suffix; new names map internally to legacy values)
 - `GameManager._ready()` reads `start_payload`:
   - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file).
   - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, then `generate_map()`.
@@ -213,6 +213,7 @@ editor_start.tscn (Editor Start)
 
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there.
+- Movement animation: Army moves animate smoothly using tweens (`Army.animate_move_to`). `ArmyManager.move_army_to_region()` preserves global position across reparenting, computes the stacked target, animates to global target, awaits tween completion, then proceeds (ownership, battle checks, UI). All callers (`GameManager.perform_region_entry`, `ai_travel_to`) await move completion, so no new actions start until the animation ends.
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; provides PlayerStatusModal. ESC closes any active modal via `close_all_active_modals()`.
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.
@@ -221,16 +222,19 @@ editor_start.tscn (Editor Start)
 
 - F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. It centers and zooms out the camera, hides `UI`, captures the viewport, restores `UI` and camera, and saves to `res://screenshots/screenshot.png`.
 
+- Camera Centering: Auto-centers on armies/assets during turns with configurable timing via `GameParameters` constants. For AI armies: `GameManager.ai_travel_to()` centers on army before movement (`CAMERA_ARMY_START_DELAY`), after battles (`CAMERA_BATTLE_RESULT_DELAY`), after conquests (`CAMERA_CONQUEST_DELAY`), and between friendly moves (`CAMERA_FRIENDLY_MOVE_DELAY`). For human players: `GameManager._on_current_player_changed()` centers on first army or castle. Battle outcomes including withdrawals are properly visualized.
+
 ## Data & Parameters
 - Player.gd: resources, name/color/id, afford/pay helpers, serialization.
 - ResourceComposition.gd / ArmyComposition.gd: storage and math helpers; food cost, power.
-- GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*).
+- GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*), camera timing constants (CAMERA_*).
 - Enums (Enums/*.gd): Regions, Levels, Soldiers, Players, Resources, Unit traits, Castle types.
 
 ## Static vs Dynamic
 - Static nodes: `Map/Regions`, `Map/Ocean`, `Map/Frame`, all UI nodes under `UI`, and `Players/Player1..6` containers.
 - Dynamic nodes: `Region` instances under `Map/Regions` (land + ocean; ocean `Polygon` hidden, visuals from `Map/Ocean`), `Army` nodes parented to regions, `Castle` sprites under regions, border/overlay visuals.
-- Border widths: In `MapGenerator`, all Line2D borders scale by map size (TINY baseline; SMALL/MEDIUM thinner) using `Utils.get_map_size_icon_scale()`.
+- Border widths: In `MapGenerator`, all Line2D borders scale by map size using `Utils.get_map_size_icon_scale()`.
+- Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains intentionally ignore map-size scale and use polygon scale only.
  - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
 

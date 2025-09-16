@@ -83,20 +83,36 @@ func _update_display() -> void:
 	if battle_report == null:
 		return
 
-	# Update battle status (won/lost) from the current player's perspective
+	# Update battle status (won/lost) from the human player's perspective
 	var gm = get_node("../../GameManager") as GameManager
-	var current_player_id = gm.get_current_player_id() if gm else -1
 	var attacker_pid = attacking_army.get_player_id() if attacking_army else -2
 	var defender_owner = -3
 	if gm and defending_region:
 		defender_owner = gm.get_region_manager().get_region_owner(defending_region.get_region_id())
-	var player_is_attacker = current_player_id == attacker_pid
-	var player_is_defender = current_player_id == defender_owner
+	# Determine human perspective ID (prefer human among attacker/defender)
+	var perspective_id = -1
+	if gm:
+		if gm.is_player_human(attacker_pid):
+			perspective_id = attacker_pid
+		elif gm.is_player_human(defender_owner):
+			perspective_id = defender_owner
+		else:
+			perspective_id = gm.get_current_player_id()
+	else:
+		perspective_id = defender_owner
+	var player_is_attacker = perspective_id == attacker_pid
+	var player_is_defender = perspective_id == defender_owner
 	var player_won = false
-	if battle_report.winner == "Attackers":
-		player_won = player_is_attacker
-	elif battle_report.winner == "Defenders":
-		player_won = player_is_defender
+	match battle_report.winner:
+		"Attackers":
+			player_won = player_is_attacker
+		"Defenders":
+			player_won = player_is_defender
+		"Withdrawal":
+			# Attackers withdrew: defenders effectively succeed
+			player_won = player_is_defender
+		_:
+			player_won = false
 	# Set label
 	battle_status_label.text = "Battle Won!" if player_won else "Battle Lost!"
 	

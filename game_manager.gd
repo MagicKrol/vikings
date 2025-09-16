@@ -58,6 +58,7 @@ var player_manager: PlayerManagerNode
 # Manager references
 var _region_manager: RegionManager
 var _army_manager: ArmyManager
+var _active_battles: int = 0
 var _battle_manager: BattleManager
 var _visual_manager: VisualManager
 var _ui_manager: UIManager
@@ -203,6 +204,8 @@ func initialize_managers(is_scenario: bool = false):
 	# Initialize specialized managers
 	_battle_manager = BattleManager.new(_region_manager, _army_manager, _battle_modal, _sound_manager)
 	_battle_manager.set_game_manager(self)
+	_battle_manager.battle_started.connect(_on_battle_started)
+	_battle_manager.battle_finished.connect(_on_battle_finished)
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
 	
 	# Get the PlayerManager node FIRST before initializing other systems that depend on it
@@ -354,6 +357,7 @@ func next_turn():
 	if not castle_placing_mode and is_player_computer(current_player):
 		DebugLogger.log("TurnProcessing", "AI Player " + str(current_player) + " starting turn processing with TurnController...")
 		await _turn_controller.start_turn(current_player)
+		await _await_pending_battles()
 		next_turn()  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
 	else:
@@ -469,7 +473,16 @@ func _apply_custom_map_player_settings(settings: Array) -> void:
 	DebugLogger.log("GameInit", "Custom map player settings applied - " + str(active_players) + " active players")
 
 func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
-	var s := size_str.to_lower()
+	# First check if it's a new size name that needs conversion
+	var old_size_names = ["xtiny", "tiny", "small", "medium", "large", "huge"]
+	var input_lower = size_str.to_lower()
+	
+	# If it's not an old size name, try to convert from new naming
+	var actual_size = size_str
+	if not input_lower in old_size_names:
+		actual_size = _convert_new_size_to_old(size_str)
+	
+	var s := actual_size.to_lower()
 	match s:
 		"xtiny":
 			mg.map_size = MapGenerator.MapSize.XTINY
@@ -485,6 +498,21 @@ func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
 			mg.map_size = MapGenerator.MapSize.HUGE
 		_:
 			mg.map_size = MapGenerator.MapSize.SMALL
+
+func _convert_new_size_to_old(new_size: String) -> String:
+	"""Convert new size names back to old internal names for MapGenerator"""
+	var size_lower = new_size.to_lower()
+	match size_lower:
+		"small":
+			return "xtiny"  # New Small maps to old XTiny
+		"medium":
+			return "tiny"   # New Medium maps to old Tiny  
+		"large":
+			return "small"  # New Large maps to old Small
+		"huge":
+			return "medium" # New Huge maps to old Medium
+		_:
+			return new_size  # Return as-is for old names or unknown
 
 func _get_next_player() -> int:
 	"""Get the next player in the turn sequence"""
@@ -645,6 +673,10 @@ func _on_current_player_changed(player_id: int) -> void:
 	
 	# Update player status display
 	_update_player_status_display()
+	
+	# Center camera on player's first army or castle (only for human players)
+	if is_player_human(player_id) and not castle_placing_mode:
+		_center_camera_on_player_assets(player_id)
 	
 	# Show next player modal only for active players
 	if _next_player_modal and is_player_active(player_id):
@@ -981,7 +1013,7 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 		return "blocked"
 	
 	# Call ArmyManager.move_army
-	var move_success = _army_manager.move_army(army, target_region)
+	var move_success = await _army_manager.move_army(army, target_region)
 	if not move_success:
 		return "blocked"
 	
@@ -1006,7 +1038,7 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 			if result == "victory":
 				return "battle_victory"
 			elif result == "withdrawal":
-				return "battle_defeat" 
+				return "battle_withdrawal" 
 			else:
 				return "battle_defeat"
 	
@@ -1049,6 +1081,19 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 		finalize_battle_result(result_data)
 	
 	return result
+
+func _on_battle_started(attacker: Army, target_region_id: int) -> void:
+	_active_battles += 1
+	DebugLogger.log("TurnProcessing", "Battle started. Active battles: " + str(_active_battles))
+
+func _on_battle_finished(result: String) -> void:
+	_active_battles = max(0, _active_battles - 1)
+	DebugLogger.log("TurnProcessing", "Battle finished (" + result + "). Active battles: " + str(_active_battles))
+
+func _await_pending_battles() -> void:
+	"""Await until there are no active battles remaining."""
+	while _active_battles > 0:
+		await _battle_manager.battle_finished
 
 func finalize_battle_result(result_data: Dictionary) -> void:
 	"""
@@ -1155,6 +1200,20 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			refresh_ai_debug_scores()
 			DebugLogger.log("TurnProcessing", "Player " + str(player_id) + " conquered region " + str(target_region_id) + " via unified finalization")
 			
+			# Center camera on conquered region and pause to show ownership change
+			var camera_controller = get_node("../Camera2D") as CameraController
+			if camera_controller != null:
+				if is_instance_valid(army):
+					camera_controller.center_on_army(army)
+				else:
+					# Find the region and center on it
+					var region_container = _region_manager.map_generator.get_region_container_by_id(target_region_id)
+					if region_container != null:
+						camera_controller.center_on_position(region_container.global_position)
+				
+				# Extra pause to show the conquest and ownership change
+				await get_tree().create_timer(GameParameters.CAMERA_CONQUEST_DELAY).timeout
+			
 			# Reduce efficiency for conquest
 			army.reduce_efficiency(5)
 			DebugLogger.log("TurnProcessing", "Reduced " + army.name + " efficiency to " + str(army.get_efficiency()) + "% after conquest")
@@ -1225,6 +1284,16 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Army not in valid region")
 		return "blocked"
 	
+	# Center camera on the army before it moves
+	var camera_controller = get_node("../Camera2D") as CameraController
+	if camera_controller != null:
+		camera_controller.center_on_army(army)
+		DebugLogger.log("AIMovement", "ai_travel_to: Centered camera on army %s at position %s" % [army.name, army.global_position])
+		# Give the camera time to move before starting army movement
+		await get_tree().create_timer(GameParameters.CAMERA_ARMY_START_DELAY).timeout
+	else:
+		DebugLogger.log("AIMovement", "ai_travel_to: Camera controller not found!")
+	
 	var current_region_id = current_region.get_region_id()
 	var player_id = army.get_player_id()
 	
@@ -1278,10 +1347,24 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 			# Log step result
 			DebugLogger.log("AIMovement", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
 			
+			# Center camera on the battle location and pause to show result
+			if camera_controller != null:
+				if is_instance_valid(army):
+					camera_controller.center_on_army(army)
+				else:
+					camera_controller.center_on_position(next_region.global_position)
+				
+				# Longer pause for battle results so player can see what happened
+				await get_tree().create_timer(GameParameters.CAMERA_BATTLE_RESULT_DELAY).timeout
+			
 			match battle_result:
 				"battle_victory":
+					DebugLogger.log("AIMovement", "ai_travel_to: Army victorious, continuing movement")
 					# Continue to next step after victory
 					continue
+				"battle_withdrawal":
+					DebugLogger.log("AIMovement", "ai_travel_to: Army withdrew from battle")
+					return "battle_withdrawal"
 				"battle_defeat":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army defeated in battle")
 					return "battle_defeat"
@@ -1294,11 +1377,14 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		else:
 			# Friendly step - use ArmyManager.move_army()
 			DebugLogger.log("AIMovement", "ai_travel_to: Friendly step - using ArmyManager.move_army")
-			var move_success = _army_manager.move_army(army, next_region)
+			var move_success = await _army_manager.move_army(army, next_region)
 			
 			# Log step result  
 			if move_success:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move successful for step %d" % i)
+				# Small pause after friendly moves to let camera follow
+				if camera_controller != null:
+					await get_tree().create_timer(GameParameters.CAMERA_FRIENDLY_MOVE_DELAY).timeout
 			else:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move failed for step %d" % i)
 				return "blocked"
@@ -1341,6 +1427,43 @@ func _start_first_turn() -> void:
 		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")
 	
 	# Note: next player modal and player status display are now handled by _on_current_player_changed signal handler
+func _center_camera_on_player_assets(player_id: int) -> void:
+	"""Center camera on player's first army, or if no armies, their castle"""
+	var camera_controller = get_node("../Camera2D") as CameraController
+	if camera_controller == null:
+		DebugLogger.log("TurnProcessing", "Camera controller not found for player centering!")
+		return
+	
+	DebugLogger.log("TurnProcessing", "Attempting to center camera for Player " + str(player_id))
+	
+	# First try to find the player's armies
+	if _army_manager != null:
+		var player_armies = _army_manager.get_player_armies(player_id)
+		if not player_armies.is_empty():
+			var first_army = player_armies[0]
+			camera_controller.center_on_army(first_army)
+			DebugLogger.log("TurnProcessing", "Centered camera on Player " + str(player_id) + "'s first army: " + first_army.name)
+			return
+	
+	# If no armies, try to find their castle
+	if _region_manager != null:
+		var owned_regions = _region_manager.get_player_regions(player_id)
+		var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+		if map_generator != null:
+			var regions_node = map_generator.get_node_or_null("Regions")
+			if regions_node != null:
+				for region_id in owned_regions:
+					var region_container = map_generator.get_region_container_by_id(region_id)
+					if region_container != null:
+						var castle = region_container.get_node_or_null("Castle")
+						if castle != null:
+							var castle_global_pos = castle.global_position
+							camera_controller.center_on_position(castle_global_pos)
+							DebugLogger.log("TurnProcessing", "Centered camera on Player " + str(player_id) + "'s castle in region " + str(region_id))
+							return
+	
+	DebugLogger.log("TurnProcessing", "No assets found to center camera on for Player " + str(player_id))
+
 func _take_game_screenshot() -> void:
 	"""Take a screenshot using Utils function"""
 	Utils.take_screenshot()

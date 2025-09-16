@@ -27,14 +27,14 @@ enum MapSize {
 
 @export var map_size: MapSize = MapSize.XTINY
 
-# Map size scaling factors
+# Map size scaling factors (SMALL is baseline 1.0)
 const MAP_SIZE_SCALES := {
-	MapSize.TINY: 1.0,
-	MapSize.SMALL: 26.0/38.0,  # ~0.684
-	MapSize.MEDIUM: 18.0/38.0,  # ~0.474
-	MapSize.LARGE: 12.8/38.0,   # ~0.337
-	MapSize.HUGE: 9.0/38.0,     # ~0.237
-	MapSize.XTINY: 55.0/38.0    # ~1.447 (more regions than TINY)
+	MapSize.TINY: 38.0/26.0,     # ~1.461538
+	MapSize.SMALL: 1.0,          # Baseline
+	MapSize.MEDIUM: 18.0/26.0,   # ~0.692308
+	MapSize.LARGE: 12.8/26.0,    # ~0.492308
+	MapSize.HUGE: 9.0/26.0,      # ~0.346154
+	MapSize.XTINY: 55.0/26.0     # ~2.115385
 }
 
 # Global icon sizing (tune this to adjust biome icon sizes)
