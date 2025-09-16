@@ -209,7 +209,7 @@ func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int
 		attacker_remain_label.text = str(attacker_remain)
 		# Apply color coding for attacker remaining units
 		var atk_had_losses := (attacker_dead + attacker_wounded) > 0
-		_apply_remain_color(attacker_remain_label, attacker_remain, atk_had_losses)
+		_apply_remain_color(attacker_remain_label, attacker_remain, atk_had_losses, attacker_initial)
 	
 	# Update defender values
 	var defender_dead_label = unit_node.get_node_or_null("DefenderDead")
@@ -225,7 +225,7 @@ func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int
 		defender_remain_label.text = str(defender_remain)
 		# Apply color coding for defender remaining units
 		var def_had_losses := (defender_dead + defender_wounded) > 0
-		_apply_remain_color(defender_remain_label, defender_remain, def_had_losses)
+		_apply_remain_color(defender_remain_label, defender_remain, def_had_losses, defender_initial)
 
 func _update_totals() -> void:
 	"""Update the total row with aggregated values"""
@@ -284,7 +284,7 @@ func _update_totals() -> void:
 		attacker_remain_label.text = str(total_attacker_remain)
 		# Apply color coding for total attacker remaining
 		var atk_losses_total: bool = (total_attacker_dead + total_attacker_wounded) > 0
-		_apply_remain_color(attacker_remain_label, total_attacker_remain, atk_losses_total)
+		_apply_remain_color(attacker_remain_label, total_attacker_remain, atk_losses_total, total_attacker_initial)
 	
 	var defender_dead_label = total_node.get_node_or_null("DefenderDead")
 	if defender_dead_label:
@@ -299,10 +299,13 @@ func _update_totals() -> void:
 		defender_remain_label.text = str(total_defender_remain)
 		# Apply color coding for total defender remaining
 		var def_losses_total: bool = (total_defender_dead + total_defender_wounded) > 0
-		_apply_remain_color(defender_remain_label, total_defender_remain, def_losses_total)
+		_apply_remain_color(defender_remain_label, total_defender_remain, def_losses_total, total_defender_initial)
 
-func _apply_remain_color(label: Label, remaining: int, had_losses: bool) -> void:
-	"""Apply color: red if remaining==0; yellow if any losses; else default."""
+func _apply_remain_color(label: Label, remaining: int, had_losses: bool, initial_count: int) -> void:
+	"""Apply color based on remaining count and initial presence."""
+	if initial_count <= 0:
+		label.add_theme_color_override("font_color", Color(1, 1, 1))
+		return
 	if remaining == 0:
 		label.add_theme_color_override("font_color", GameParameters.UI_COLOR_DEAD)
 		return

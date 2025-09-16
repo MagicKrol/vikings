@@ -27,7 +27,7 @@ anchor_bottom = 0.5
 offset_left = -280.0
 offset_top = -300.0
 offset_right = 280.0
-offset_bottom = 300.0
+offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_42aob")
@@ -35,7 +35,7 @@ script = ExtResource("1_42aob")
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 560.0
-offset_bottom = 600.0
+offset_bottom = 650.0
 texture = ExtResource("2_jogyy")
 expand_mode = 1
 stretch_mode = 1
@@ -43,16 +43,16 @@ stretch_mode = 1
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 560.0
-offset_bottom = 600.0
+offset_bottom = 650.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
 offset_left = 17.5
-offset_top = 19.0
+offset_top = 10.0
 offset_right = 549.5
-offset_bottom = 581.0
+offset_bottom = 637.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 15
@@ -489,6 +489,20 @@ layout_mode = 2
 text = "1"
 horizontal_alignment = 1
 
+[node name="MessageSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/MessageSection"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/MessageSection"]
+layout_mode = 2
+
+[node name="Message" type="Label" parent="Panel/Army/MessageSection/HBoxContainer"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+horizontal_alignment = 1
+
 [node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
@@ -507,4 +521,5 @@ layout_mode = 2
 text = "Continue"
 
 [node name="Value" type="Label" parent="."]
+layout_mode = 0
 text = "15 / 17"

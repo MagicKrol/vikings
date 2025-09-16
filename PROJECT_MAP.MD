@@ -82,6 +82,7 @@ editor_start.tscn (Editor Start)
 - Map Data: lists `mapdata-*.json` under `res://mapdata/`; “Edit Map or New Scenario” passes `res://mapdata/<filename>` to `MapGenerator.data_file_path`, then loads `main.tscn` and applies map size inferred from filename.
 - Map Data: lists `mapdata-*.json` under `res://mapdata/`; code always reads map files from this folder. `MapGenerator.data_file_path` expects a bare filename (no `res://` or folder). Supported sizes: xtiny, tiny, small, medium, large, huge.
 - Scenario: lists `res://scenarios/*.json`; loader always resolves scenarios from `res://scenarios/` and accepts bare filenames or full paths. Scenario `map_file` field should be a bare filename; loader resolves from `res://mapdata/`.
+- Scenario: during load, GameManager infers `map_size` from the scenario `map_file` suffix (e.g., `mapdata-208-medium.json` → `medium`) and applies `_map_set_size_from_string()` before generating the map.
  - Launch: EditorStart sets `SceneTree` meta `editor_start_payload` and switches to `main.tscn`. `GameManager._ready()` force-enables editor mode when this payload is present and calls `_initialize_map_editor()` to show `MapEditorPanel`.
 
 ## Core Managers & Flow
@@ -91,6 +92,7 @@ editor_start.tscn (Editor Start)
 - Key: `initialize_managers()`, `next_turn()`, `_process_round_start_actions()`, `_process_player_turn_start()`, `handle_castle_placement()`, `finalize_battle_result(...)`.
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
 - Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
+- Camera: Sets initial zoom by map size at startup (Small=1.0, Medium=1.5, Large=2.0) and clamps zoom-out to 0.5.
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
  - Modes:
@@ -209,7 +211,13 @@ editor_start.tscn (Editor Start)
 ## Battle Simulation
 - BattleSimulator.gd: Statistical resolution with efficiency and proportional loss distribution.
 - AnimatedBattleSimulator.gd: Round-based animated presentation and reporting for the BattleModal.
- - AI Withdrawal: After each round, BattleModal asks BattleManager to evaluate AI attacker withdrawal. Threshold `AI_WITHDRAW_POWER_THRESHOLD` in `GameParameters.gd`. Chance = 1 - (AI_power / enemy_power). On success, triggers the same withdraw flow as the player (animated simulator withdrawal rounds).
+- BattleModal.gd: Action button switches Withdraw/Continue automatically; message label surfaces withdraw/start/end notices.
+- BattleManager.gd: Re-selects victorious human armies automatically, but skips re-selection after withdrawal outcomes.
+- BattleSummaryModal.gd: Remaining-unit colors only show red when forces started with troops; zero-initial rows use grey.
+- Withdrawal Rules:
+- Attacker (human/AI): May withdraw during battle; human path uses animated withdrawal rounds then returns to the previous region (ArmyManager.retreat_army_to_previous_region). AI attacker uses power-ratio chance (threshold `AI_WITHDRAW_POWER_THRESHOLD`).
+- Defender (AI): Before battle starts, performs a power-ratio withdrawal chance check. If successful AND the region has no military building (castle/outpost/keep/stronghold) AND there is at least one owned neighboring region, all defending armies retreat to a random owned neighbor. Garrison stays; battle proceeds versus garrison.
+- Defender (human): Withdraw button is disabled when the region has a military building or there are no owned neighboring regions. Current UX retreats defending armies to a random owned neighbor; arrow-based region selection can be added later.
 
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there.
@@ -222,7 +230,7 @@ editor_start.tscn (Editor Start)
 
 - F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. It centers and zooms out the camera, hides `UI`, captures the viewport, restores `UI` and camera, and saves to `res://screenshots/screenshot.png`.
 
-- Camera Centering: Auto-centers on armies/assets during turns with configurable timing via `GameParameters` constants. For AI armies: `GameManager.ai_travel_to()` centers on army before movement (`CAMERA_ARMY_START_DELAY`), after battles (`CAMERA_BATTLE_RESULT_DELAY`), after conquests (`CAMERA_CONQUEST_DELAY`), and between friendly moves (`CAMERA_FRIENDLY_MOVE_DELAY`). For human players: `GameManager._on_current_player_changed()` centers on first army or castle. Battle outcomes including withdrawals are properly visualized.
+- Camera Centering: Auto-centers on armies/assets. `CameraController.await_target_reached()` replaces arbitrary delays; `GameManager.ai_travel_to()` awaits camera arrival instead of timers. For human players: `GameManager._on_current_player_changed()` centers on first army or castle, but skips recentering while any battle is active to prevent mid-battle camera jumps.
 
 ## Data & Parameters
 - Player.gd: resources, name/color/id, afford/pay helpers, serialization.

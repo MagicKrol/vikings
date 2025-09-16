@@ -242,7 +242,10 @@ static func take_screenshot(filename: String = "res://screenshots/screenshot.png
 	var map_gen: MapGenerator = scene.get_node("Map")
 	var base_name := "screenshot"
 	if gm.game_mode == "scenario":
-		base_name = String(gm.scenario_path).get_file().get_basename()
+		if gm.loaded_scenario_name != "":
+			base_name = gm.loaded_scenario_name
+		else:
+			base_name = String(gm.scenario_path).get_file().get_basename()
 	else:
 		base_name = String(map_gen.data_file_path).get_file().get_basename()
 	var final_path := "res://previews/" + base_name + ".png"

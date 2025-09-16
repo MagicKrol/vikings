@@ -144,11 +144,19 @@ func _ready():
 		var scen := ScenarioManager.new().load_scenario(scen_full)
 		if scen.has("map_file"):
 			# Expect bare filename; normalize to file name
-			map_generator.data_file_path = String(scen.get("map_file")).get_file()
+			var map_file_only := String(scen.get("map_file")).get_file()
+			map_generator.data_file_path = map_file_only
+			# Infer map size from filename suffix and apply before generating
+			var base := map_file_only.get_basename()
+			var parts := base.split("-")
+			if parts.size() >= 3:
+				var size_str := parts[parts.size() - 1]
+				_map_set_size_from_string(map_generator, size_str)
 			map_generator.generate_map()
 
 	# Initialize all game systems
 	initialize_managers(game_mode == "scenario")
+	_apply_initial_camera_zoom()
 	
 	# Start the game audio sequence after a brief delay to ensure sound manager is ready
 	await get_tree().process_frame
@@ -472,6 +480,21 @@ func _apply_custom_map_player_settings(settings: Array) -> void:
 	
 	DebugLogger.log("GameInit", "Custom map player settings applied - " + str(active_players) + " active players")
 
+func _apply_initial_camera_zoom() -> void:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var camera_controller: CameraController = get_node("../Camera2D") as CameraController
+	var zoom_value := _get_initial_zoom_value(map_generator.map_size)
+	camera_controller.set_zoom_immediate(zoom_value)
+
+func _get_initial_zoom_value(map_size: MapGenerator.MapSize) -> float:
+	match map_size:
+		MapGenerator.MapSize.MEDIUM:
+			return 1.5
+		MapGenerator.MapSize.LARGE:
+			return 2.0
+		_:
+			return 1.0
+
 func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
 	# First check if it's a new size name that needs conversion
 	var old_size_names = ["xtiny", "tiny", "small", "medium", "large", "huge"]
@@ -674,8 +697,9 @@ func _on_current_player_changed(player_id: int) -> void:
 	# Update player status display
 	_update_player_status_display()
 	
-	# Center camera on player's first army or castle (only for human players)
-	if is_player_human(player_id) and not castle_placing_mode:
+	# Center camera on player's first army or castle (only for human players),
+	# but never recenter while a battle is active
+	if is_player_human(player_id) and not castle_placing_mode and _active_battles == 0:
 		_center_camera_on_player_assets(player_id)
 	
 	# Show next player modal only for active players
@@ -1051,12 +1075,15 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	Returns: 'victory', 'defeat', or 'withdrawal'
 	"""
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.name + " vs region " + str(target_region_id))
-	
+
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
 	_battle_manager.start_battle(army, target_region_id)
 
-	# If background mode is enabled for AI, the result is ready immediately and signal will be emitted deferred
-	if debug_disable_battle_modal and is_player_computer(army.get_player_id()):
+	# If background mode is enabled for AI AND defender is not human,
+	# the result is ready immediately and signal will be emitted deferred
+	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
+	var defender_is_human := (defender_owner_id != -1 and is_player_human(defender_owner_id))
+	if debug_disable_battle_modal and is_player_computer(army.get_player_id()) and not defender_is_human:
 		var report = _battle_manager.get_last_battle_report()
 		var res = "victory" if report and report.winner == "Attackers" else "defeat"
 		return res
@@ -1284,13 +1311,12 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Army not in valid region")
 		return "blocked"
 	
-	# Center camera on the army before it moves
+	# Center camera on the army before it moves and await arrival (no arbitrary delays)
 	var camera_controller = get_node("../Camera2D") as CameraController
 	if camera_controller != null:
 		camera_controller.center_on_army(army)
 		DebugLogger.log("AIMovement", "ai_travel_to: Centered camera on army %s at position %s" % [army.name, army.global_position])
-		# Give the camera time to move before starting army movement
-		await get_tree().create_timer(GameParameters.CAMERA_ARMY_START_DELAY).timeout
+		await camera_controller.await_target_reached()
 	else:
 		DebugLogger.log("AIMovement", "ai_travel_to: Camera controller not found!")
 	
@@ -1347,15 +1373,13 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 			# Log step result
 			DebugLogger.log("AIMovement", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
 			
-			# Center camera on the battle location and pause to show result
+			# Center camera on the battle location and await arrival (no arbitrary delays)
 			if camera_controller != null:
 				if is_instance_valid(army):
 					camera_controller.center_on_army(army)
 				else:
 					camera_controller.center_on_position(next_region.global_position)
-				
-				# Longer pause for battle results so player can see what happened
-				await get_tree().create_timer(GameParameters.CAMERA_BATTLE_RESULT_DELAY).timeout
+				await camera_controller.await_target_reached()
 			
 			match battle_result:
 				"battle_victory":
@@ -1382,9 +1406,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 			# Log step result  
 			if move_success:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move successful for step %d" % i)
-				# Small pause after friendly moves to let camera follow
-				if camera_controller != null:
-					await get_tree().create_timer(GameParameters.CAMERA_FRIENDLY_MOVE_DELAY).timeout
+				# Camera follows movement implicitly; no artificial delays
 			else:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move failed for step %d" % i)
 				return "blocked"

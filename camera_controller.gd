@@ -20,7 +20,7 @@ class_name CameraController
 # Touch and gesture settings
 @export var pan_speed: float = 2.0
 @export var zoom_speed: float = 0.1
-@export var min_zoom: float = 0.1
+@export var min_zoom: float = 0.5
 @export var max_zoom: float = 5.0
 @export var smooth_pan: bool = true
 @export var smooth_zoom: bool = true
@@ -146,7 +146,7 @@ func _handle_continuous_keyboard_input(delta: float) -> void:
 func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 	"""Handle discrete keyboard input for zoom and reset actions"""
 	var zoom_amount = 0.2  # Increased zoom speed
-	
+
 	match event.keycode:
 		KEY_Q:
 			var new_zoom = target_zoom * (1.0 + zoom_amount)
@@ -255,11 +255,13 @@ func set_camera_target(pos: Vector2) -> void:
 	target_position = pos
 
 func set_zoom_target(zoom_level: float) -> void:
-	target_zoom = Vector2(zoom_level, zoom_level)
+	var clamped = clamp(zoom_level, min_zoom, max_zoom)
+	target_zoom = Vector2(clamped, clamped)
 
 func reset_camera() -> void:
 	target_position = Vector2.ZERO
-	target_zoom = Vector2.ONE
+	var clamped = clamp(1.0, min_zoom, max_zoom)
+	target_zoom = Vector2(clamped, clamped)
 
 func enable_touch_controls(enable: bool) -> void:
 	touch_enabled = enable
@@ -289,7 +291,13 @@ func get_current_state() -> Dictionary:
 func restore_state(state: Dictionary) -> void:
 	"""Restore camera to previous state"""
 	set_camera_target(state.get("position", Vector2.ZERO))
-	target_zoom = state.get("zoom", Vector2.ONE)
+	var stored_zoom = state.get("zoom", Vector2.ONE)
+	var zoom_value: float
+	if stored_zoom is Vector2:
+		zoom_value = stored_zoom.x
+	else:
+		zoom_value = float(stored_zoom)
+	set_zoom_target(zoom_value)
 	smooth_pan = state.get("smooth_pan", true)
 	smooth_zoom = state.get("smooth_zoom", true)
 
@@ -309,3 +317,17 @@ func center_on_army(army: Army) -> void:
 func center_on_position(position: Vector2) -> void:
 	"""Center camera on a specific position"""
 	set_camera_target(position)
+
+func set_zoom_immediate(zoom_level: float) -> void:
+	var clamped = clamp(zoom_level, min_zoom, max_zoom)
+	target_zoom = Vector2(clamped, clamped)
+	zoom = target_zoom
+
+func await_target_reached(position_threshold: float = 2.0, zoom_threshold: float = 0.01) -> void:
+	"""Await until camera reaches its target position/zoom within thresholds"""
+	while true:
+		var pos_ok: bool = global_position.distance_to(target_position) <= position_threshold or not smooth_pan
+		var zoom_ok: bool = (abs(zoom.x - target_zoom.x) <= zoom_threshold and abs(zoom.y - target_zoom.y) <= zoom_threshold) or not smooth_zoom
+		if pos_ok and zoom_ok:
+			break
+		await get_tree().process_frame

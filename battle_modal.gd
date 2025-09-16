@@ -18,6 +18,7 @@ var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
 var withdraw_button: Button
+var message_label: Label
 
 # Battle data
 var attacking_army: Army = null
@@ -62,10 +63,12 @@ func _ready():
 	defender_units_container = get_node("Panel/Army/UnitsSection")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	withdraw_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
-	
+	message_label = get_node("Panel/Army/MessageSection/HBoxContainer/Message")
+
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
 	withdraw_button = continue_button  # Both reference the same button
+	_set_message("")
 	
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -92,7 +95,9 @@ func show_battle(army: Army, region: Region) -> void:
 	
 	attacking_army = army
 	defending_region = region
-	
+
+	_set_message("")
+
 	# Show initial display BEFORE starting battle
 	_update_display()
 	visible = true
@@ -125,14 +130,13 @@ func hide_modal() -> void:
 	current_round = 0
 	current_attacker_composition.clear()
 	current_defender_composition.clear()
-	
-	# Reset button
-	if continue_button:
-		continue_button.disabled = false
-		continue_button.text = "Continue"
-	
+	_set_message("")
+
 	# Reset withdrawal state
 	withdrawal_in_progress = false
+
+	# Reset button
+	_update_action_button()
 	
 	visible = false
 	
@@ -172,6 +176,8 @@ func _update_display() -> void:
 		
 		# Update defender units  
 		_update_defender_units()
+		
+		_update_action_button()
 
 
 func _update_effectiveness_displays() -> void:
@@ -457,9 +463,7 @@ func _run_battle_simulation() -> void:
 		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
 	
 	# During battle, show withdraw functionality
-	if continue_button:
-		continue_button.disabled = false
-		continue_button.text = "Withdraw"
+	_update_action_button()
 	
 	# Get attacking compositions (all pending attackers)
 	var attacking_compositions = bm.get_pending_attacking_compositions()
@@ -496,6 +500,7 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	var bm = gm.get_battle_manager()
 	if bm and animated_simulator and not animated_simulator.is_withdrawing:
 		if bm.evaluate_ai_attacker_withdrawal(current_attacker_composition, current_defender_composition, defending_region.get_garrison(), _defender_start_recruits):
+			_set_message("Enemy is withdrawing")
 			animated_simulator.start_withdrawal_round()
 		else:
 			# Optional notice for defender AI (not yet supported)
@@ -529,14 +534,11 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 		hide_modal()
 		return
 	
-	# Re-enable continue button
-	if continue_button:
-		continue_button.disabled = false
-		continue_button.text = "Continue"
-	
 	# Reset withdrawal state
 	withdrawal_in_progress = false
-	
+	_set_message("Battle has ended")
+	_update_action_button()
+
 	# Final display update
 	_update_display()
 	
@@ -590,19 +592,94 @@ func _on_withdraw_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
 	
-	# Start withdrawal process
-	withdrawal_in_progress = true
+	# Role-specific withdrawal handling
+	var gm = get_node("../../GameManager") as GameManager
+	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	var current_player := gm.get_current_player_id()
+	var player_is_defender := (region_owner == current_player)
 	
-	# Update button state during withdrawal
-	if continue_button:
-		continue_button.disabled = true
-		continue_button.text = "Withdrawing..."
-	
-	# Tell the animated simulator to start withdrawal round
-	if animated_simulator:
-		animated_simulator.start_withdrawal_round()
-	
-	DebugLogger.log("UISystem", "Starting withdrawal...")
+	# Defender (human): retreat not simulated with attacker-only withdrawal rounds
+	if player_is_defender:
+		# If not allowed, ignore
+		if not _is_withdraw_allowed_for_current_role():
+			return
+		# For now, retreat defending armies to a random owned neighbor (simple UX);
+		# arrow-based selection requires additional UI plumbing between modal and click manager.
+		var neighbors := gm.get_region_manager().get_neighbor_regions(defending_region.get_region_id())
+		var owned_neighbors: Array = []
+		for nid in neighbors:
+			if gm.get_region_manager().get_region_owner(nid) == region_owner:
+				owned_neighbors.append(nid)
+		if owned_neighbors.is_empty():
+			return
+		var pick_id: int = owned_neighbors[randi() % owned_neighbors.size()]
+		var dest_region := gm.get_region_manager().map_generator.get_region_container_by_id(pick_id) as Region
+		# Move all defending armies (exclude garrison)
+		var moved_any := false
+		var message_shown := false
+		for child in defending_region.get_children():
+			if child is Army and child.get_player_id() == region_owner:
+				if not message_shown:
+					_set_message("Your army is withdrawing")
+					message_shown = true
+				var d := child as Army
+				var start_global := d.global_position
+				defending_region.remove_child(d)
+				dest_region.add_child(d)
+				var target_local := gm.get_army_manager()._compute_army_target_position(dest_region, d)
+				gm.get_army_manager()._apply_army_offsets_for_region(dest_region, d)
+				var target_global: Vector2 = dest_region.to_global(target_local)
+				d.global_position = start_global
+				var tw := d.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+				await tw.finished
+				moved_any = true
+		if moved_any:
+			DebugLogger.log("UISystem", "Defender withdrew armies to neighbor; continuing battle vs garrison only")
+			return
+	else:
+		# Attacker withdrawal: use animated simulator flow (defender free hits), then finalize to previous region
+		withdrawal_in_progress = true
+		_set_message("Your army is withdrawing")
+		_update_action_button()
+		if animated_simulator:
+			animated_simulator.start_withdrawal_round()
+		DebugLogger.log("UISystem", "Starting withdrawal...")
+
+func _is_withdraw_allowed_for_current_role() -> bool:
+	# Attacker (human): always allowed (withdraws to previous region)
+	var gm = get_node("../../GameManager") as GameManager
+	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	var current_player := gm.get_current_player_id()
+	var player_is_defender := (region_owner == current_player)
+	if not player_is_defender:
+		return true
+	# Defender rules:
+	# - Region must have no military building
+	if defending_region.get_castle_type() != CastleTypeEnum.Type.NONE:
+		return false
+	# - Must have at least one owned neighboring region
+	var neighbors := gm.get_region_manager().get_neighbor_regions(defending_region.get_region_id())
+	for nid in neighbors:
+		if gm.get_region_manager().get_region_owner(nid) == region_owner:
+			return true
+	return false
+
+
+func _update_action_button() -> void:
+	if battle_in_progress:
+		if withdrawal_in_progress:
+			continue_button.text = "Continue"
+			continue_button.disabled = true
+		else:
+			continue_button.text = "Withdraw"
+			continue_button.disabled = not _is_withdraw_allowed_for_current_role()
+	else:
+		continue_button.text = "Continue"
+		continue_button.disabled = false
+
+
+func _set_message(text: String) -> void:
+	message_label.text = text
 
 
 
