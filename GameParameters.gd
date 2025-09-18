@@ -38,6 +38,8 @@ const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per
 const POPULATION_GROWTH_RATE = 0.03            # Base population growth rate (%)
 const WITHDRAWAL_FREE_HIT_ROUNDS = 3           # Number of free hit rounds enemy gets during withdrawal
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 3    # Extra rounds mobility units get to attack withdrawing enemies
+const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
+const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
 
 ## Border Enhancement Constants
 const BORDER_SATURATION_BOOST = 0.1           # Increase saturation by 20% for colored borders

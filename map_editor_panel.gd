@@ -54,6 +54,11 @@ var _garrison_customized: Dictionary = {}
 var _region_default_nodes: Array = []
 var _player_settings_container: VBoxContainer
 var player_settings: Array = []  # Array of dictionaries with player configuration
+var _player_resource_selector: OptionButton
+var _player_resource_fields: Dictionary = {}
+var player_resources: Array = []  # Array of dictionaries storing starting resources per player
+var _current_resource_player_index: int = 0
+var _is_updating_player_resources_ui: bool = false
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
@@ -158,9 +163,24 @@ func _ready() -> void:
 	
 	# Get player settings container
 	_player_settings_container = get_node("Panel/TabContainer/Scenario/PlayerSettingsContainer") as VBoxContainer
+	_player_resource_selector = get_node("Panel/TabContainer/Scenario/PlayerResourceSelectorRow/PlayerResourceSelector") as OptionButton
+	_player_resource_fields = {
+		ResourcesEnum.Type.GOLD: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/GoldRow/GoldValue") as LineEdit,
+		ResourcesEnum.Type.WOOD: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/WoodRow/WoodValue") as LineEdit,
+		ResourcesEnum.Type.FOOD: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/FoodRow/FoodValue") as LineEdit,
+		ResourcesEnum.Type.STONE: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow/StoneValue") as LineEdit,
+		ResourcesEnum.Type.IRON: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow/IronValue") as LineEdit
+	}
 	
-	# Initialize player settings UI
+	# Initialize player settings and resource UI
 	_initialize_player_settings()
+	_initialize_player_resources()
+	
+	_player_resource_selector.item_selected.connect(_on_player_resource_selected)
+	for rt in _player_resource_fields.keys():
+		var field := _player_resource_fields[rt] as LineEdit
+		field.text_submitted.connect(_on_player_resource_value_submitted.bind(rt))
+		field.focus_exited.connect(_on_player_resource_focus_exited.bind(rt))
 	
 	# Check for loaded scenario name after a short delay to ensure GameManager is ready
 	call_deferred("_check_and_populate_scenario_name")
@@ -209,6 +229,11 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 			# Update the UI to reflect loaded settings
 			_update_player_settings_ui()
 			DebugLogger.log("MapEditorPanel", "Loaded player settings from scenario")
+	if data.has("player_resources"):
+		var loaded_resources = data["player_resources"]
+		if loaded_resources is Array:
+			_apply_loaded_player_resources(loaded_resources)
+			DebugLogger.log("MapEditorPanel", "Loaded player resources from scenario")
 
 func _update_player_settings_ui() -> void:
 	"""Update the player settings UI to reflect current player_settings array"""
@@ -224,6 +249,100 @@ func _update_player_settings_ui() -> void:
 					child.button_pressed = true
 				else:
 					child.button_pressed = false
+
+func _initialize_player_resources() -> void:
+	player_resources.clear()
+	for i in range(6):
+		player_resources.append(_build_default_player_resource_entry(i + 1))
+	_current_resource_player_index = 0
+	_populate_player_resource_selector()
+	_show_player_resources_for_index(_current_resource_player_index)
+
+func _build_default_player_resource_entry(player_id: int) -> Dictionary:
+	var resource_values: Dictionary = {}
+	for rt in ResourcesEnum.get_all_types():
+		var resource_name := ResourcesEnum.type_to_string(rt)
+		resource_values[resource_name] = GameParameters.get_starting_resource_amount(rt)
+	return {
+		"player_id": player_id,
+		"resources": resource_values
+	}
+
+func _populate_player_resource_selector() -> void:
+	_player_resource_selector.clear()
+	for entry in player_resources:
+		var player_id := int(entry.get("player_id", 1))
+		_player_resource_selector.add_item("Player " + str(player_id))
+	_player_resource_selector.select(_current_resource_player_index)
+
+func _show_player_resources_for_index(index: int) -> void:
+	_is_updating_player_resources_ui = true
+	var entry: Dictionary = player_resources[index]
+	var resources: Dictionary = entry.get("resources", {})
+	for rt in _player_resource_fields.keys():
+		var field := _player_resource_fields[rt] as LineEdit
+		var key := ResourcesEnum.type_to_string(rt)
+		if not resources.has(key):
+			resources[key] = GameParameters.get_starting_resource_amount(rt)
+		field.text = str(int(resources[key]))
+	entry["resources"] = resources
+	player_resources[index] = entry
+	_is_updating_player_resources_ui = false
+
+func _on_player_resource_selected(index: int) -> void:
+	_current_resource_player_index = index
+	_show_player_resources_for_index(index)
+
+func _on_player_resource_value_submitted(text: String, resource_type: ResourcesEnum.Type) -> void:
+	_commit_player_resource_value(resource_type, text)
+
+func _on_player_resource_focus_exited(resource_type: ResourcesEnum.Type) -> void:
+	var field := _player_resource_fields[resource_type] as LineEdit
+	_commit_player_resource_value(resource_type, field.text)
+
+func _commit_player_resource_value(resource_type: ResourcesEnum.Type, value_text: String) -> void:
+	if _is_updating_player_resources_ui:
+		return
+	var entry: Dictionary = player_resources[_current_resource_player_index]
+	var resources: Dictionary = entry.get("resources", {})
+	var sanitized_text := value_text.strip_edges()
+	if sanitized_text == "":
+		sanitized_text = "0"
+	var amount := sanitized_text.to_int()
+	if amount < 0:
+		amount = 0
+	var key := ResourcesEnum.type_to_string(resource_type)
+	resources[key] = amount
+	entry["resources"] = resources
+	player_resources[_current_resource_player_index] = entry
+	_is_updating_player_resources_ui = true
+	var field := _player_resource_fields[resource_type] as LineEdit
+	field.text = str(amount)
+	_is_updating_player_resources_ui = false
+
+func _apply_loaded_player_resources(resources_data: Array) -> void:
+	var sanitized: Array = []
+	for i in range(6):
+		sanitized.append(_build_default_player_resource_entry(i + 1))
+	for entry in resources_data:
+		if entry is Dictionary:
+			var player_id := int(entry.get("player_id", 0))
+			if player_id >= 1 and player_id <= sanitized.size():
+				var target: Dictionary = sanitized[player_id - 1]
+				var target_resources: Dictionary = target.get("resources", {})
+				if entry.has("resources") and entry["resources"] is Dictionary:
+					var source_resources: Dictionary = entry["resources"] as Dictionary
+					for rt in ResourcesEnum.get_all_types():
+						var key := ResourcesEnum.type_to_string(rt)
+						if source_resources.has(key):
+							target_resources[key] = int(source_resources.get(key))
+					target["resources"] = target_resources
+					sanitized[player_id - 1] = target
+	player_resources = sanitized
+	_current_resource_player_index = clamp(_current_resource_player_index, 0, player_resources.size() - 1)
+	_populate_player_resource_selector()
+	_player_resource_selector.select(_current_resource_player_index)
+	_show_player_resources_for_index(_current_resource_player_index)
 
 func _populate_types() -> void:
 	_option.clear()
@@ -432,7 +551,8 @@ func _on_save_scenario_pressed() -> void:
 		"map_file": mg.data_file_path,
 		"regions": regions_data,
 		"armies": armies_data,
-		"player_settings": player_settings
+		"player_settings": player_settings,
+		"player_resources": player_resources
 	}
 	_write_scenario(scenario)
 

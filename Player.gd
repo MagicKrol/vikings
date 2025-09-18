@@ -37,6 +37,8 @@ var resources: Dictionary = {}
 var regions_owned: Array[int] = []
 var armies_owned: Array[Army] = []
 var total_population: int = 0
+var enemy_army_memory: Dictionary = {}  # Tracks encountered enemy armies: id -> {power:int, rounds:int}
+var enemy_garrison_memory: Dictionary = {}  # Tracks observed enemy garrisons: region_id -> {power:int, rounds:int}
 
 func _init(id: int = -1, name: String = ""):
 	player_id = id
@@ -141,6 +143,73 @@ func set_player_name(new_name: String) -> void:
 func get_player_color() -> Color:
 	"""Get the player's color"""
 	return player_color
+
+static func get_enemy_tracker_key(army: Army) -> String:
+	if army == null or not is_instance_valid(army):
+		return ""
+	return str(army.get_instance_id())
+
+func update_enemy_army_memory(key: String, power: int) -> void:
+	if key == "":
+		return
+	enemy_army_memory[key] = {
+		"power": max(0, power),
+		"rounds": GameParameters.ENEMY_ARMY_MEMORY_ROUNDS
+	}
+
+
+func update_enemy_garrison_memory(region_id: int, power: int) -> void:
+	if region_id < 0:
+		return
+	var key := str(region_id)
+	enemy_garrison_memory[key] = {
+		"power": max(0, power),
+		"rounds": GameParameters.ENEMY_ARMY_MEMORY_ROUNDS
+	}
+
+func decay_enemy_memory() -> void:
+	if enemy_army_memory.is_empty():
+		pass
+	else:
+		var to_remove: Array[String] = []
+		for key in enemy_army_memory.keys():
+			var entry: Dictionary = enemy_army_memory[key]
+			var rounds_left: int = int(entry.get("rounds", 0)) - 1
+			if rounds_left <= 0:
+				to_remove.append(key)
+			else:
+				entry["rounds"] = rounds_left
+				enemy_army_memory[key] = entry
+		for key in to_remove:
+			enemy_army_memory.erase(key)
+	if enemy_garrison_memory.is_empty():
+		return
+	var to_remove_g: Array[String] = []
+	for key in enemy_garrison_memory.keys():
+		var entry_g: Dictionary = enemy_garrison_memory[key]
+		var rounds_left_g: int = int(entry_g.get("rounds", 0)) - 1
+		if rounds_left_g <= 0:
+			to_remove_g.append(key)
+		else:
+			entry_g["rounds"] = rounds_left_g
+			enemy_garrison_memory[key] = entry_g
+	for key in to_remove_g:
+		enemy_garrison_memory.erase(key)
+
+func get_tracked_enemy_power(key: String) -> int:
+	if key == "":
+		return -1
+	if enemy_army_memory.has(key):
+		return int(enemy_army_memory[key].get("power", -1))
+	return -1
+
+func get_tracked_enemy_garrison_power(region_id: int) -> int:
+	if region_id < 0:
+		return -1
+	var key := str(region_id)
+	if enemy_garrison_memory.has(key):
+		return int(enemy_garrison_memory[key].get("power", -1))
+	return -1
 
 # Resource display methods
 func get_resources_string() -> String:

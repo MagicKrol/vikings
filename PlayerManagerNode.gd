@@ -44,8 +44,9 @@ var map_generator: MapGenerator = null
 var army_manager: ArmyManager = null
 
 func _ready():
-	# Initialize players immediately
-	_initialize_players()
+	# Initialize players immediately when not already prepared (editor mode)
+	if players.is_empty():
+		_initialize_players()
 
 func initialize_with_managers(region_mgr: RegionManager, map_gen: MapGenerator):
 	"""Initialize with manager references from GameManager"""
@@ -140,6 +141,14 @@ func charge_player(player_id: int, cost: Dictionary) -> bool:
 		return false
 	
 	return player.pay_cost(cost)
+
+func set_player_resources(player_id: int, resources_data: Dictionary) -> void:
+	"""Set all resource amounts for a player using a resource dictionary"""
+	var player = get_player(player_id)
+	for resource_type in ResourcesEnum.get_all_types():
+		var key := ResourcesEnum.type_to_string(resource_type)
+		var amount := int(resources_data.get(key, GameParameters.get_starting_resource_amount(resource_type)))
+		player.set_resource_amount(resource_type, amount)
 
 # Resource income and management
 func process_resource_income() -> void:
@@ -303,6 +312,42 @@ func get_total_economy_value() -> int:
 			total += player.get_resource_amount(resource_type)
 	
 	return total
+
+func record_enemy_army_power(observer_id: int, enemy_army: Army) -> void:
+	var player = get_player(observer_id)
+	if player == null:
+		return
+	var key = Player.get_enemy_tracker_key(enemy_army)
+	if key == "":
+		return
+	var power = 0
+	if enemy_army != null and is_instance_valid(enemy_army):
+		power = enemy_army.get_army_power()
+	player.update_enemy_army_memory(key, power)
+
+func record_enemy_garrison(observer_id: int, region_id: int, power: int) -> void:
+	var player = get_player(observer_id)
+	if player == null:
+		return
+	player.update_enemy_garrison_memory(region_id, power)
+
+func decay_enemy_memory_for_player(player_id: int) -> void:
+	var player = get_player(player_id)
+	if player == null:
+		return
+	player.decay_enemy_memory()
+
+func get_tracked_enemy_power(player_id: int, key: String) -> int:
+	var player = get_player(player_id)
+	if player == null:
+		return -1
+	return player.get_tracked_enemy_power(key)
+
+func get_tracked_enemy_garrison_power(player_id: int, region_id: int) -> int:
+	var player = get_player(player_id)
+	if player == null:
+		return -1
+	return player.get_tracked_enemy_garrison_power(region_id)
 
 # Methods for recruitment modal support
 func get_resource_amount(resource_type: ResourcesEnum.Type) -> int:

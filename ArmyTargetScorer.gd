@@ -48,6 +48,7 @@ static func _get_resource_max(resource_type: ResourcesEnum.Type) -> float:
 var region_manager: RegionManager
 var map_generator: MapGenerator
 var player_manager: PlayerManagerNode = null
+var game_manager: GameManager = null
 
 func _init(region_mgr: RegionManager, map_gen: MapGenerator):
 	region_manager = region_mgr
@@ -57,6 +58,7 @@ func _init(region_mgr: RegionManager, map_gen: MapGenerator):
 		var main_node = map_generator.get_parent()
 		if main_node != null:
 			player_manager = main_node.get_node_or_null("PlayerManager") as PlayerManagerNode
+			game_manager = main_node.get_node_or_null("GameManager") as GameManager
 	DebugLogger.log("AIScoring", "Initialized with region and map manager references")
 
 func score_target_regions(target_region_ids: Array[int], player_id: int) -> Array:
@@ -273,20 +275,108 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 	var rng = RandomNumberGenerator.new()
 	rng.seed = army_hash
 	var random_modifier = rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
+
+	var enemy_adjustment := _calculate_enemy_army_adjustment(army, region_id)
 	
 	# Calculate final score: BaseScore + RandomModifier - MovementCost
-	var final_score = base_score + random_modifier - path_result.cost
-	
+	var ownership_bonus := 0.0
+	if region_manager != null:
+		var owner_id := region_manager.get_region_owner(region_id)
+		if owner_id > 0 and owner_id != army.get_player_id():
+			ownership_bonus = float(GameParameters.AI_ENEMY_REGION_SCORE_BONUS)
+
+	var final_score = base_score + ownership_bonus + random_modifier - path_result.cost + enemy_adjustment.get("delta", 0.0)
+	if enemy_adjustment.get("nullify", false):
+		final_score = 0.0
+
 	return {
 		"army": army,
 		"target_id": region_id,
 		"base_score": base_score,
+		"ownership_bonus": ownership_bonus,
 		"random_modifier": random_modifier,
 		"mp_cost": path_result.cost,
 		"final_score": final_score,
+		"enemy_adjustment": enemy_adjustment,
 		"path": path_result.path,
 		"reachable": true
 	}
+
+func _calculate_enemy_army_adjustment(army: Army, region_id: int) -> Dictionary:
+	if army == null or not is_instance_valid(army):
+		return {"delta": 0.0, "nullify": false}
+	if game_manager == null or player_manager == null:
+		return {"delta": 0.0, "nullify": false}
+	var observer_id := army.get_player_id()
+	if not game_manager.is_player_computer(observer_id):
+		return {"delta": 0.0, "nullify": false}
+	var our_power := army.get_army_power()
+	if our_power <= 0:
+		return {"delta": 0.0, "nullify": false}
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return {"delta": 0.0, "nullify": false}
+	var total_enemy_power := 0
+	var max_ratio: float = 0.0
+	var min_ratio: float = INF
+	var has_data := false
+	var saw_enemy_army := false
+	var missing_army_info := false
+	for child in region_container.get_children():
+		if not (child is Army):
+			continue
+		var enemy_army := child as Army
+		if enemy_army == null:
+			continue
+		if enemy_army.get_player_id() == observer_id:
+			continue
+		saw_enemy_army = true
+		var key := Player.get_enemy_tracker_key(enemy_army)
+		if key == "":
+			continue
+		var tracked_power := player_manager.get_tracked_enemy_power(observer_id, key)
+		if tracked_power < 0:
+			missing_army_info = true
+			break
+		has_data = true
+		var ratio := float(tracked_power) / float(max(1, our_power))
+		if ratio > max_ratio:
+			max_ratio = ratio
+		if ratio < min_ratio:
+			min_ratio = ratio
+		total_enemy_power += tracked_power
+	if missing_army_info:
+		return {"delta": 0.0, "nullify": false}
+	var tracked_garrison := player_manager.get_tracked_enemy_garrison_power(observer_id, region_id)
+	if tracked_garrison >= 0:
+		has_data = true
+		var g_ratio := float(tracked_garrison) / float(max(1, our_power))
+		if g_ratio > max_ratio:
+			max_ratio = g_ratio
+		if g_ratio < min_ratio:
+			min_ratio = g_ratio
+		total_enemy_power += tracked_garrison
+	if not has_data:
+		return {"delta": 0.0, "nullify": false}
+	if saw_enemy_army and total_enemy_power <= 0:
+		return {"delta": 0.0, "nullify": false}
+	if not saw_enemy_army and tracked_garrison < 0:
+		return {"delta": 0.0, "nullify": false}
+	if total_enemy_power <= 0:
+		return {"delta": 0.0, "nullify": false}
+	var combined_ratio := float(total_enemy_power) / float(max(1, our_power))
+	if combined_ratio >= 1.25:
+		return {"delta": 0.0, "nullify": true}
+	if combined_ratio > 1.0:
+		var percent_over := combined_ratio - 1.0
+		var steps_over := int(ceil(percent_over / 0.05))
+		return {"delta": float(-steps_over), "nullify": false}
+	var percent_under := 1.0 - combined_ratio
+	if percent_under <= 0.0:
+		return {"delta": 0.0, "nullify": false}
+	var steps_under := int(floor(percent_under / 0.05))
+	steps_under = min(10, max(0, steps_under))
+	return {"delta": float(steps_under), "nullify": false}
 
 func get_base_region_score(region: Region, player_id: int) -> Dictionary:
 	"""Public API: Get base region score (0..100) with component breakdown"""

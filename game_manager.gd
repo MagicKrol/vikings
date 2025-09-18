@@ -88,6 +88,11 @@ var enable_map_editor: bool = false  # Configurable flag to enable map editor mo
 # References to other managers
 var click_manager: Node = null
 
+const FAMINE_MIN_POPULATION: int = 30
+const FAMINE_POP_PER_FOOD: float = 0.1
+
+var _player_initial_turn_completed: Dictionary = {}
+
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
 var scenario_path: String = "mission1.json"
@@ -296,7 +301,7 @@ func _start_scenario() -> void:
 	var scen_mgr := ScenarioManager.new()
 	var scen := scen_mgr.load_scenario(scenario_path)
 	# Apply to runtime
-	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen)
+	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager)
 	# Set game state for immediate play
 	castle_placing_mode = false
 	current_player = 1
@@ -421,7 +426,8 @@ func _initialize_map_editor() -> void:
 	if get_tree().has_meta("__scenario_to_apply__") and get_tree().get_meta("__scenario_to_apply__") != null:
 		var scen: Dictionary = get_tree().get_meta("__scenario_to_apply__") as Dictionary
 		get_tree().set_meta("__scenario_to_apply__", null)
-		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, null, scen)
+		var player_manager_node = get_node("../PlayerManager") as PlayerManagerNode
+		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, null, scen, player_manager_node)
 
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")
@@ -618,16 +624,22 @@ func _process_round_start_actions():
 func _process_player_turn_start(player_id: int):
 	"""Process actions that happen at the start of each player's turn"""
 	DebugLogger.log("TurnProcessing", "Processing turn start for Player " + str(player_id) + "...")
-	# Heal wounded garrisons and recruits in owned regions
-	_region_manager.heal_wounded_for_player(player_id)
-	
-	# Process resource income for current player
+	if player_manager:
+		player_manager.decay_enemy_memory_for_player(player_id)
+	if _region_manager:
+		_region_manager.heal_wounded_for_player(player_id)
+	var initial_turn := not _player_initial_turn_completed.has(player_id)
+	if initial_turn:
+		_player_initial_turn_completed[player_id] = false
+		DebugLogger.log("TurnProcessing", "Skipping economy for Player " + str(player_id) + " (initial turn)")
+		_update_player_status_display()
+		return
 	DebugLogger.log("TurnProcessing", "Processing resource income for Player " + str(player_id) + "...")
 	player_manager.process_resource_income_for_player(player_id)
-	
-	# Deduct food costs for current player's armies and garrisons
 	DebugLogger.log("TurnProcessing", "Deducting army food costs for Player " + str(player_id) + "...")
 	_process_army_food_costs_for_player(player_id)
+	_player_initial_turn_completed[player_id] = true
+	_update_player_status_display()
 	
 
 
@@ -662,19 +674,194 @@ func _process_army_food_costs_for_player(player_id: int) -> void:
 		
 		# Check if player has enough food
 		var current_food = player.get_resource_amount(ResourcesEnum.Type.FOOD)
-		if current_food >= food_cost_int:
-			# Deduct the food cost
-			player.remove_resources(ResourcesEnum.Type.FOOD, food_cost_int)
-			DebugLogger.log("TurnProcessing", "Deducted " + str(food_cost_int) + " food from Player " + str(player_id) + " (" + str(current_food - food_cost_int) + " remaining)")
+		var net_food_after = current_food - food_cost_int
+		if net_food_after >= 0:
+			player.set_resource_amount(ResourcesEnum.Type.FOOD, net_food_after)
+			DebugLogger.log("TurnProcessing", "Deducted " + str(food_cost_int) + " food from Player " + str(player_id) + " (" + str(net_food_after) + " remaining)")
 		else:
-			# Player doesn't have enough food - this could lead to penalties
 			DebugLogger.log("TurnProcessing", "WARNING: Player " + str(player_id) + " doesn't have enough food! Required: " + str(food_cost_int) + ", Available: " + str(current_food))
-			# For now, just deduct all available food
-			if current_food > 0:
-				player.remove_resources(ResourcesEnum.Type.FOOD, current_food)
-				DebugLogger.log("TurnProcessing", "Deducted all available food (" + str(current_food) + ") from Player " + str(player_id))
+			var shortage: float = max(0.0, total_food_cost - float(current_food))
+			player.set_resource_amount(ResourcesEnum.Type.FOOD, 0)
+			if shortage > 0.0:
+				DebugLogger.log("TurnProcessing", "Triggering famine for Player " + str(player_id) + " (food deficit: " + str(snappedf(shortage, 0.01)) + ")")
+				famine_regions(player_id, shortage)
 	else:
 		DebugLogger.log("TurnProcessing", "No army food costs for Player " + str(player_id))
+
+func famine_regions(player_id: int, missing_food: float) -> void:
+	missing_food = max(0.0, missing_food)
+	if missing_food <= 0.0:
+		return
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	if map_generator == null or _region_manager == null or _army_manager == null:
+		DebugLogger.log("TurnProcessing", "Cannot process famine - missing managers")
+		return
+	var entry_map: Dictionary = {}
+	var total_men := 0
+	var owned_region_ids = _region_manager.get_player_regions(player_id)
+	for region_id in owned_region_ids:
+		var region = map_generator.get_region_container_by_id(region_id) as Region
+		if region == null:
+			continue
+		var entry = _get_or_create_famine_entry(entry_map, region)
+		entry.owns_region = true
+		var garrison_comp: ArmyComposition = region.get_garrison()
+		var garrison_total := 0
+		if garrison_comp != null:
+			garrison_total = garrison_comp.get_total_soldiers()
+		entry.garrison = garrison_comp
+		entry.total_men += garrison_total
+		entry_map[region] = entry
+		total_men += garrison_total
+	var player_armies = _army_manager.get_player_armies(player_id)
+	for army in player_armies:
+		if army == null or not is_instance_valid(army):
+			continue
+		var region_node = army.get_parent()
+		if region_node == null or not (region_node is Region):
+			continue
+		var region = region_node as Region
+		var entry = _get_or_create_famine_entry(entry_map, region)
+		var soldier_count = army.get_total_soldiers()
+		entry.armies.append(army)
+		entry.total_men += soldier_count
+		entry_map[region] = entry
+		total_men += soldier_count
+	if total_men <= 0:
+		DebugLogger.log("TurnProcessing", "Famine skipped for Player " + str(player_id) + " - no stationed troops")
+		return
+	var total_population_loss_target = int(floor(missing_food / FAMINE_POP_PER_FOOD))
+	if total_population_loss_target <= 0:
+		return
+	var entries_with_men: Array = []
+	var entries_all: Array = []
+	var floor_sum := 0
+	for region in entry_map.keys():
+		var entry = entry_map[region]
+		if entry.total_men > 0:
+			var share_food := missing_food * float(entry.total_men) / float(total_men)
+			var pop_loss_float := share_food / FAMINE_POP_PER_FOOD
+			entry.loss_target_float = pop_loss_float
+			entry.loss_int = int(floor(pop_loss_float))
+			entry.fraction = pop_loss_float - float(entry.loss_int)
+			floor_sum += entry.loss_int
+			entries_with_men.append(entry)
+		else:
+			entry.loss_target_float = 0.0
+			entry.loss_int = 0
+			entry.fraction = 0.0
+		entries_all.append(entry)
+	var remainder: int = int(max(0, total_population_loss_target - floor_sum))
+	if remainder > 0 and entries_with_men.size() > 0:
+		entries_with_men.sort_custom(Callable(self, "_sort_famine_fraction_desc"))
+		var idx := 0
+		while remainder > 0 and entries_with_men.size() > 0:
+			entries_with_men[idx].loss_int += 1
+			remainder -= 1
+			idx = (idx + 1) % entries_with_men.size()
+	for entry in entries_all:
+		var pop_loss_target: int = entry.loss_int
+		if pop_loss_target <= 0:
+			continue
+		var region: Region = entry.region
+		var actual_loss = region.apply_population_loss(pop_loss_target, FAMINE_MIN_POPULATION)
+		var leftover = pop_loss_target - actual_loss
+		if actual_loss <= 0 and pop_loss_target > 0 and region.last_population_growth >= 0:
+			region.last_population_growth = -pop_loss_target
+		var reached_minimum := region.get_population() <= FAMINE_MIN_POPULATION
+		if entry.owns_region and reached_minimum:
+			var garrison_comp: ArmyComposition = entry.garrison
+			if garrison_comp != null and garrison_comp.get_total_soldiers() > 0:
+				var removed = _remove_casualties_from_composition(garrison_comp, garrison_comp.get_total_soldiers())
+				leftover = max(0, leftover - removed)
+				DebugLogger.log("TurnProcessing", "Famine wiped garrison in " + region.get_region_name())
+		if leftover > 0:
+			leftover = _apply_army_starvation(entry.armies, leftover)
+			if leftover > 0:
+				DebugLogger.log("TurnProcessing", "Famine leftover " + str(leftover) + " not absorbed in region " + region.get_region_name())
+	_army_manager.remove_destroyed_armies()
+
+func has_completed_initial_turn(player_id: int) -> bool:
+	return _player_initial_turn_completed.get(player_id, false)
+
+func _get_or_create_famine_entry(entry_map: Dictionary, region: Region) -> Dictionary:
+	if entry_map.has(region):
+		return entry_map[region]
+	var data = {
+		"region": region,
+		"garrison": region.get_garrison(),
+		"armies": [],
+		"total_men": 0,
+		"owns_region": false,
+		"loss_target_float": 0.0,
+		"loss_int": 0,
+		"fraction": 0.0
+	}
+	entry_map[region] = data
+	return data
+
+func _sort_famine_fraction_desc(a: Dictionary, b: Dictionary) -> bool:
+	return a.fraction > b.fraction
+
+func _remove_casualties_from_composition(composition: ArmyComposition, casualties: int) -> int:
+	if composition == null or casualties <= 0:
+		return 0
+	var remaining := casualties
+	for unit_type in SoldierTypeEnum.get_all_types():
+		if remaining <= 0:
+			break
+		var available = composition.get_soldier_count(unit_type)
+		if available <= 0:
+			continue
+		var to_remove = min(available, remaining)
+		composition.remove_soldiers(unit_type, to_remove)
+		remaining -= to_remove
+	return casualties - remaining
+
+func _apply_army_starvation(armies: Array, casualties: int) -> int:
+	if casualties <= 0 or armies.is_empty():
+		return casualties
+	var army_data: Array = []
+	var total_soldiers := 0
+	for army in armies:
+		if army == null or not is_instance_valid(army):
+			continue
+		var soldiers = army.get_total_soldiers()
+		if soldiers <= 0:
+			continue
+		var data = {
+			"army": army,
+			"soldiers": soldiers,
+			"loss": 0,
+			"fraction": 0.0
+		}
+		army_data.append(data)
+		total_soldiers += soldiers
+	if total_soldiers <= 0:
+		return casualties
+	var total_target = min(casualties, total_soldiers)
+	var floor_sum := 0
+	for data in army_data:
+		var share_float := float(data.soldiers) / float(total_soldiers) * float(total_target)
+		var loss_int := int(floor(share_float))
+		data.loss = loss_int
+		data.fraction = share_float - float(loss_int)
+		floor_sum += loss_int
+	var remainder: int = int(max(0, total_target - floor_sum))
+	if remainder > 0:
+		army_data.sort_custom(Callable(self, "_sort_famine_fraction_desc"))
+		var idx := 0
+		while remainder > 0 and army_data.size() > 0:
+			army_data[idx].loss += 1
+			remainder -= 1
+			idx = (idx + 1) % army_data.size()
+	for data in army_data:
+		var loss_count: int = data.loss
+		if loss_count <= 0:
+			continue
+		var army: Army = data.army
+		_remove_casualties_from_composition(army.get_composition(), loss_count)
+	return casualties - total_target
 
 func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
@@ -802,6 +989,20 @@ func _handle_ai_castle_placement(player_id: int) -> void:
 func get_player_manager() -> PlayerManagerNode:
 	"""Get the player manager instance"""
 	return player_manager
+
+func record_enemy_army_power(observer_id: int, enemy_army: Army) -> void:
+	if player_manager == null:
+		return
+	if not is_player_computer(observer_id):
+		return
+	player_manager.record_enemy_army_power(observer_id, enemy_army)
+
+func record_enemy_garrison(observer_id: int, region_id: int, power: int) -> void:
+	if player_manager == null:
+		return
+	if not is_player_computer(observer_id):
+		return
+	player_manager.record_enemy_garrison(observer_id, region_id, power)
 
 func get_current_player_data() -> Player:
 	"""Get the current player's data"""
@@ -1224,6 +1425,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		if army and is_instance_valid(army) and target_region_id != -1:
 			var player_id = army.get_player_id()
 			_region_manager.set_region_ownership(target_region_id, player_id)
+			var conquered_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+			if conquered_region != null:
+				conquered_region.kill_wounded_garrison()
 			refresh_ai_debug_scores()
 			DebugLogger.log("TurnProcessing", "Player " + str(player_id) + " conquered region " + str(target_region_id) + " via unified finalization")
 			

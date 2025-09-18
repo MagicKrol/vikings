@@ -103,6 +103,91 @@ text = "Player Settings:"
 layout_mode = 2
 theme_override_constants/separation = 4
 
+[node name="PlayerResourcesHeader" type="Label" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+text = "Starting Resources"
+
+[node name="PlayerResourceSelectorRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+
+[node name="PlayerResourceSelectorLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourceSelectorRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Player:"
+
+[node name="PlayerResourceSelector" type="OptionButton" parent="Panel/TabContainer/Scenario/PlayerResourceSelectorRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerResourcesContainer" type="VBoxContainer" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="GoldRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+layout_mode = 2
+
+[node name="GoldLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/GoldRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Gold:"
+
+[node name="GoldValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/GoldRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="WoodRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+layout_mode = 2
+
+[node name="WoodLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/WoodRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Wood:"
+
+[node name="WoodValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/WoodRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="FoodRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+layout_mode = 2
+
+[node name="FoodLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/FoodRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Food:"
+
+[node name="FoodValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/FoodRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="StoneRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+layout_mode = 2
+
+[node name="StoneLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Stone:"
+
+[node name="StoneValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="IronRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+layout_mode = 2
+
+[node name="IronLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Iron:"
+
+[node name="IronValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
 [node name="Region" type="VBoxContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2

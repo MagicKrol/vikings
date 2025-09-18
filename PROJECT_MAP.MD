@@ -64,9 +64,11 @@ Map Editor Panel (editor mode)
     - `map_file` (source mapdata JSON path)
     - `regions`: list with id, name, biome/ocean/type_display, level, castle_type, population, owner, resources, discovered_ores
     - `armies`: list with region_id, player_id, name, composition (per unit type)
+    - `player_settings`: six entries (player_id + control_type: Player/Computer/Off)
+    - `player_resources`: six entries (player_id + resource dictionary for Gold/Wood/Food/Stone/Iron). Applied to `PlayerManagerNode` by `ScenarioManager.apply_to_runtime()` when the scenario starts.
   - Load Scenario: Lists all `res://scenarios/*.json` in a select box with "Load" button (no-op for now)
   - Save Map: Persists edited base map biomes and ocean flags back to the selected `res://mapdata/<file>.json`.
-- Scenario Tab: Empty placeholder for future scenario settings
+- Scenario Tab: Player control toggles plus starting resource editor (dropdown for Player 1–6, rows for Gold/Wood/Food/Stone/Iron with editable amounts saved to `player_resources`).
 - Region Tab: ID, Name, Type, Level, Population, Castle, Resources, Ore, Ownership
   - Ownership: OptionButton with Neutral (0) and Players 1–6. Emits `region_type_changed` with `OWNER:<id>`
 - Army Tab: Army management with two states
@@ -93,15 +95,20 @@ editor_start.tscn (Editor Start)
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
 - Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
 - Camera: Sets initial zoom by map size at startup (Small=1.0, Medium=1.5, Large=2.0) and clamps zoom-out to 0.5.
+- AI memory: Records observed enemy army power for computer players after each battle (5-round decay window via `GameParameters.ENEMY_ARMY_MEMORY_ROUNDS`).
+- AI memory: Records observed enemy garrison power when computer armies attack a region (shared 5-round decay window).
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
  - Modes:
    - Custom: current behavior (castle placement → gameplay).
-   - Scenario: set `game_mode="scenario"` and `scenario_path` before start; map is regenerated from scenario `map_file`, managers init, then `ScenarioManager.apply_to_runtime` is called. Skips castle placement and starts the first turn immediately.
+ - Scenario: set `game_mode="scenario"` and `scenario_path` before start; map is regenerated from scenario `map_file`, managers init, then `ScenarioManager.apply_to_runtime` is called. Skips castle placement and starts the first turn immediately.
+ - Scenario resources: `ScenarioManager.apply_to_runtime()` pushes `player_resources` into `PlayerManagerNode.set_player_resources()` before the first turn.
+- First turn: `_process_player_turn_start()` skips economy/food for each player the first time it runs so HUD deltas stay `+0`; actual income/upkeep begins when that player starts turn two.
+- Famine: `_process_army_food_costs_for_player()` triggers `famine_regions()` when food falls short (1 food deficit = 10 population loss). Starvation reduces region population (floor 30), wipes garrisons at the minimum, and then removes army soldiers proportionally. UI growth indicators flip to red using the region's `last_population_growth`.
 
 ### scenario_manager.gd (ScenarioManager)
 - Purpose: Data-driven loader for premade scenarios (map + region overrides + ownership + castles + armies).
-- API: `load_scenario(path) -> Dictionary`, `apply_to_runtime(map_generator, region_manager, army_manager, visual_manager, scenario)`.
+- API: `load_scenario(path) -> Dictionary`, `apply_to_runtime(map_generator, region_manager, army_manager, visual_manager, scenario, player_manager)`.
 - Order of application: regions (type/ocean, level, population, resources, ores, name) → ownership (via RegionManager) → castles (via VisualManager) → armies (via ArmyManager).
 - Keeps base map geometry in the referenced `map_file`; scenario stores only deltas.
 
@@ -126,10 +133,14 @@ editor_start.tscn (Editor Start)
 - Key: `start_battle()`, `handle_battle_modal_closed()`, emits `battle_finished`; tracks pending conquest; proportional loss application; removes only battle-participant armies reduced to zero (no global scan).
 - Integrates: BattleModal UI, RegionManager (read), ArmyManager (remove/retreat), GameManager (finalization).
 - Behavior: If `GameManager.debug_disable_battle_modal` is enabled for AI, `start_battle()` simulates instantly via `BattleSimulator` and emits `battle_finished` without showing a modal.
+- Post-battle reselection now mirrors `ArmySelectModal -> Move Army` by clearing `UIManager` modal state so the next region click moves immediately.
 
 ### Region systems
 - region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, nearest owned castle search, recruit source aggregation, castle level lookup.
 - region.gd (Region): data container with population, resources, recruits, ownership counter, garrison, castle type/upgrade, ore search, movement/passability helpers.
+  - `apply_population_loss(loss, min_population)` clamps population, recalculates recruits, and forces `last_population_growth` negative for famine turns.
+  - `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
+  - `get_wounded_recruits_total()` exposes the wounded-peasant count for UI consistency.
 
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
@@ -151,7 +162,7 @@ editor_start.tscn (Editor Start)
 
 ### PlayerManagerNode.gd (PlayerManagerNode)
 - Purpose: Player storage and per-player economy as a scene node.
-- Key: initialize players; `current_player_changed` signal; add/remove/afford/pay; per-player income `process_resource_income_for_player()`; total army+garrison food cost; save/load.
+- Key: initialize players; `current_player_changed` signal; add/remove/afford/pay; per-player income `process_resource_income_for_player()`; total army+garrison food cost; `set_player_resources()` for scenario starts; save/load.
 - Used by GameManager and TurnController.
 
 ### Economy & Recruitment
@@ -214,6 +225,9 @@ editor_start.tscn (Editor Start)
 - BattleModal.gd: Action button switches Withdraw/Continue automatically; message label surfaces withdraw/start/end notices.
 - BattleManager.gd: Re-selects victorious human armies automatically, but skips re-selection after withdrawal outcomes.
 - BattleSummaryModal.gd: Remaining-unit colors only show red when forces started with troops; zero-initial rows use grey.
+- ArmyTargetScorer.gd: Applies enemy memory adjustments (nullifies targets when tracked enemy armies are ≥25% stronger, adds ±1 per 5% difference up to ±10).
+- ArmyTargetScorer.gd: Combines stored army and garrison intel; requires known power for every defending army before applying bonuses.
+- ArmyTargetScorer.gd: Adds configurable +5 bonus for enemy-owned regions (`GameParameters.AI_ENEMY_REGION_SCORE_BONUS`).
 - Withdrawal Rules:
 - Attacker (human/AI): May withdraw during battle; human path uses animated withdrawal rounds then returns to the previous region (ArmyManager.retreat_army_to_previous_region). AI attacker uses power-ratio chance (threshold `AI_WITHDRAW_POWER_THRESHOLD`).
 - Defender (AI): Before battle starts, performs a power-ratio withdrawal chance check. If successful AND the region has no military building (castle/outpost/keep/stronghold) AND there is at least one owned neighboring region, all defending armies retreat to a random owned neighbor. Garrison stays; battle proceeds versus garrison.

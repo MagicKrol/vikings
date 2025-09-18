@@ -140,8 +140,20 @@ func _update_region_display() -> void:
 	
 	# Update growth rate
 	var growth_value = get_node("Panel/Region/PopulationSection/Growth/Value")
-	var growth_rate = GameParameters.POPULATION_GROWTH_RATE * 100
-	growth_value.text = "+" + str(snappedf(growth_rate, 0.1)) + "%"
+	var growth_change = current_region.last_population_growth
+	if growth_change > 0:
+		var previous_population = max(1, current_region.get_population() - growth_change)
+		var growth_rate = float(growth_change) / float(previous_population) * 100.0
+		growth_value.text = "+" + str(snappedf(growth_rate, 0.1)) + "%"
+		growth_value.modulate = Color.html("#41b43e")
+	elif growth_change < 0:
+		var previous_population = max(1, current_region.get_population() + abs(growth_change))
+		var decline_rate = float(abs(growth_change)) / float(previous_population) * 100.0
+		growth_value.text = "-" + str(snappedf(decline_rate, 0.1)) + "%"
+		growth_value.modulate = Color.html("#d13131")
+	else:
+		growth_value.text = "+0%"
+		growth_value.modulate = Color.WHITE
 	
 	# Update income (gold income from population)
 	var income_value = get_node("Panel/Region/PopulationSection/Income/Value")
@@ -183,10 +195,7 @@ func _update_region_display() -> void:
 	recruits_value.text = str(available) + " / " + str(max_recruits)
 	# Update recruits wounded (peasants only) "(n)" or empty when zero
 	var recruits_wounded_label = get_node("Panel/Region/GarisonSection/Recruits/WoundedValue") as Label
-	var wr_total: int = 0
-	var wr_comp = current_region.get_wounded_recruits()
-	if wr_comp != null:
-		wr_total = wr_comp.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
+	var wr_total: int = current_region.get_wounded_recruits_total()
 	if wr_total > 0:
 		recruits_wounded_label.text = "(" + str(wr_total) + ")"
 		recruits_wounded_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)

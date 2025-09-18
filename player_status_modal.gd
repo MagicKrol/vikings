@@ -150,18 +150,23 @@ func _update_display_from_game_state() -> void:
 	
 	# Get current player
 	var current_player = game_manager.player_manager.get_current_player()
-	
+	var is_initial_turn := not game_manager.has_completed_initial_turn(current_player.get_player_id())
+
 	# Calculate actual income from owned regions
-	var region_income = _calculate_region_income(current_player.get_player_id())
+	var region_income = _calculate_region_income(current_player.get_player_id(), is_initial_turn)
 	
 	# Calculate population data
 	var population_data = _calculate_population_data(current_player.get_player_id())
 	current_population = population_data
+	if is_initial_turn:
+		current_population.income = 0
 	
 	# Update resource data from current player
 	for resource_type in current_resources:
 		var amount = current_player.get_resource_amount(resource_type)
 		var income = region_income.get(resource_type, 0)
+		if is_initial_turn:
+			income = 0
 		current_resources[resource_type] = {"amount": amount, "income": income}
 	
 	# Update the display
@@ -176,7 +181,7 @@ func show_and_update() -> void:
 	visible = true
 	_update_display_from_game_state()
 
-func _calculate_region_income(player_id: int) -> Dictionary:
+func _calculate_region_income(player_id: int, initial_turn: bool = false) -> Dictionary:
 	"""Calculate net income from regions owned by the player (production - costs)"""
 	var income = {
 		ResourcesEnum.Type.GOLD: 0,
@@ -208,6 +213,11 @@ func _calculate_region_income(player_id: int) -> Dictionary:
 			var pop_gold_income = region_node.get_income()
 			income[ResourcesEnum.Type.GOLD] += pop_gold_income
 	
+	if initial_turn:
+		for key in income.keys():
+			income[key] = 0
+		return income
+
 	# Subtract army food costs from food income to show net food income
 	var total_army_food_cost = game_manager.player_manager.calculate_total_army_food_cost(player_id)
 	var food_cost_int = int(ceil(total_army_food_cost))

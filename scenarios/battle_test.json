@@ -146,6 +146,68 @@
 		}
 	],
 	"map_file": "mapdata-207-medium.json",
+	"player_resources": [
+		{
+			"player_id": 1,
+			"resources": {
+				"Food": 1,
+				"Gold": 1,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 1
+			}
+		},
+		{
+			"player_id": 2,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 3,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 4,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 5,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 6,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		}
+	],
 	"player_settings": [
 		{
 			"control_type": "Player",

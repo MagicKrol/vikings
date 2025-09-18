@@ -296,6 +296,8 @@ func _apply_battle_losses() -> void:
 		_destroy_attacker_side()
 		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
 
+	_update_enemy_power_tracking()
+
 
 	# Cleanup defeated armies ONLY among battle participants
 	for a in _pending_attackers:
@@ -465,6 +467,49 @@ func _compositions_from_armies(armies: Array[Army]) -> Array:
 		comps.append(a.get_composition())
 	return comps
 
+func _update_enemy_power_tracking() -> void:
+	if _game_manager == null:
+		return
+	for attacker in _pending_attackers:
+		if attacker != null and is_instance_valid(attacker):
+			var observer_id := attacker.get_player_id()
+			_record_enemy_observations(observer_id, _pending_defenders)
+	for defender in _pending_defenders:
+		if defender != null and is_instance_valid(defender):
+			var observer_id := defender.get_player_id()
+			_record_enemy_observations(observer_id, _pending_attackers)
+	if _pending_garrison != null and _pending_recruits_region != null:
+		var garrison_power := _calculate_composition_power(_pending_garrison)
+		var region_id := _pending_recruits_region.get_region_id()
+		for attacker in _pending_attackers:
+			if attacker != null and is_instance_valid(attacker):
+				_game_manager.record_enemy_garrison(attacker.get_player_id(), region_id, garrison_power)
+
+func _record_enemy_observations(observer_id: int, enemies: Array) -> void:
+	if enemies.is_empty():
+		return
+	for enemy in enemies:
+		if enemy == null:
+			continue
+		var army_enemy := enemy as Army
+		if army_enemy == null:
+			continue
+		if not is_instance_valid(army_enemy):
+			continue
+		_game_manager.record_enemy_army_power(observer_id, army_enemy)
+
+func _calculate_composition_power(comp: ArmyComposition) -> int:
+	if comp == null:
+		return 0
+	var total := 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var qty := comp.get_soldier_count(unit_type)
+		if qty <= 0:
+			continue
+		var unit_power: int = int(GameParameters.get_unit_stat(unit_type, "power"))
+		total += unit_power * qty
+	return total
+
 # --- Expose compositions for battle modal ---
 func get_pending_attacking_compositions() -> Array:
 	return _compositions_from_armies(_pending_attackers)
@@ -526,6 +571,8 @@ func _reselect_fighting_army_after_battle() -> void:
 		# Use proper select_army method to trigger the same action as clicking "move army"
 		var current_player_id = _game_manager.get_current_player_id() if _game_manager else -1
 		_army_manager.select_army(_fighting_army_for_reselection, current_region_container, current_player_id)
+		var ui_manager: UIManager = _battle_modal.get_parent().get_node("UIManager") as UIManager
+		ui_manager.set_modal_active(false)
 		
 		DebugLogger.log("BattleSystem", "[BattleManager] Re-selected army " + _fighting_army_for_reselection.name + " after battle completion (with modals)")
 	else:

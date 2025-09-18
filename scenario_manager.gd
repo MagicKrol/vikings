@@ -41,13 +41,14 @@ func _resolve_scenario_path(name: String) -> String:
 		return "res://scenarios/" + name.get_file()
 	return "res://scenarios/" + name.get_file()
 
-func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager, visual_manager: VisualManager, scenario: Dictionary) -> void:
+func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager, visual_manager: VisualManager, scenario: Dictionary, player_manager: PlayerManagerNode) -> void:
 	# 1) Ensure map is generated from the scenario's map file (caller should set data_file_path prior to generation)
 	# 2) Apply region deltas, ownership, castles, armies (single pass, order matters)
 	_apply_region_deltas(map_generator, region_manager, scenario)
 	_apply_ownership(map_generator, region_manager, scenario)
 	_apply_castles(map_generator, visual_manager, scenario)
 	_apply_armies(map_generator, army_manager, scenario)
+	_apply_player_resources(player_manager, scenario)
 
 # Internal helpers -------------------------------------------------------------
 
@@ -161,3 +162,15 @@ func _apply_armies(map_generator: MapGenerator, army_manager: ArmyManager, scena
 				var key := SoldierTypeEnum.type_to_string(t)
 				if comp.has(key):
 					army.get_composition().set_soldier_count(t, int(comp.get(key)))
+
+func _apply_player_resources(player_manager: PlayerManagerNode, scenario: Dictionary) -> void:
+	if not scenario.has("player_resources"):
+		return
+	var entries: Array = scenario["player_resources"]
+	for entry in entries:
+		if entry is Dictionary:
+			var player_id := int(entry.get("player_id", 0))
+			if player_id < 1 or player_id > player_manager.get_total_players():
+				continue
+			var resources: Dictionary = entry.get("resources", {})
+			player_manager.set_player_resources(player_id, resources)

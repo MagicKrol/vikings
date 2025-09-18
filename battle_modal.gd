@@ -646,18 +646,20 @@ func _on_withdraw_pressed() -> void:
 		DebugLogger.log("UISystem", "Starting withdrawal...")
 
 func _is_withdraw_allowed_for_current_role() -> bool:
-	# Attacker (human): always allowed (withdraws to previous region)
 	var gm = get_node("../../GameManager") as GameManager
-	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
-	var current_player := gm.get_current_player_id()
-	var player_is_defender := (region_owner == current_player)
-	if not player_is_defender:
+	if gm == null:
+		return false
+	if _player_controls_attacking_army():
 		return true
-	# Defender rules:
-	# - Region must have no military building
+	if not _player_has_defending_army():
+		return false
+	if defending_region == null:
+		return false
+	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	if not gm.is_player_human(region_owner):
+		return false
 	if defending_region.get_castle_type() != CastleTypeEnum.Type.NONE:
 		return false
-	# - Must have at least one owned neighboring region
 	var neighbors := gm.get_region_manager().get_neighbor_regions(defending_region.get_region_id())
 	for nid in neighbors:
 		if gm.get_region_manager().get_region_owner(nid) == region_owner:
@@ -666,7 +668,13 @@ func _is_withdraw_allowed_for_current_role() -> bool:
 
 
 func _update_action_button() -> void:
+	if continue_button == null:
+		return
 	if battle_in_progress:
+		if not _player_has_army_in_battle():
+			continue_button.visible = false
+			return
+		continue_button.visible = true
 		if withdrawal_in_progress:
 			continue_button.text = "Continue"
 			continue_button.disabled = true
@@ -674,12 +682,33 @@ func _update_action_button() -> void:
 			continue_button.text = "Withdraw"
 			continue_button.disabled = not _is_withdraw_allowed_for_current_role()
 	else:
+		continue_button.visible = true
 		continue_button.text = "Continue"
 		continue_button.disabled = false
 
 
 func _set_message(text: String) -> void:
 	message_label.text = text
+
+func _player_controls_attacking_army() -> bool:
+	var gm = get_node("../../GameManager") as GameManager
+	if gm == null or attacking_army == null:
+		return false
+	return gm.is_player_human(attacking_army.get_player_id())
+
+func _player_has_defending_army() -> bool:
+	var gm = get_node("../../GameManager") as GameManager
+	if gm == null or defending_region == null:
+		return false
+	for child in defending_region.get_children():
+		if child is Army:
+			var army_child := child as Army
+			if gm.is_player_human(army_child.get_player_id()):
+				return true
+	return false
+
+func _player_has_army_in_battle() -> bool:
+	return _player_controls_attacking_army() or _player_has_defending_army()
 
 
 
