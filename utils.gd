@@ -165,7 +165,9 @@ static func get_map_size_icon_scale(map_size: int) -> float:
 		5: 55.0/26.0      # XTINY  ~2.115385
 	}
 	
-	return map_size_scales.get(map_size, 1.0)
+	var size = map_size_scales.get(map_size, 1.0)
+	
+	return size * 1.3
 
 static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, base_scale: float, polygon_scale: float, map_size_scale: float = 1.0) -> void:
 	"""

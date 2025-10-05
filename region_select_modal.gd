@@ -111,7 +111,7 @@ func _create_action_buttons() -> void:
 	
 	# Raise Army button
 	var castle_type = current_region.get_castle_type() if current_region != null else CastleTypeEnum.Type.NONE
-	var has_keep_or_higher = castle_type != CastleTypeEnum.Type.NONE and castle_type != CastleTypeEnum.Type.OUTPOST
+	var has_outpost_or_higher = castle_type != CastleTypeEnum.Type.NONE
 	var can_afford_army = _can_player_afford_raise_army()
 	var current_player_id = game_manager.get_current_player() if game_manager != null else 1
 	var has_army_already = _region_has_army_for_player(current_player_id)
@@ -119,9 +119,9 @@ func _create_action_buttons() -> void:
 	
 	buttons_to_add.append({
 		"text": army_text,
-		"enabled": has_keep_or_higher and can_afford_army and not has_army_already,
+		"enabled": has_outpost_or_higher and can_afford_army and not has_army_already,
 		"action": "_on_raise_army_pressed",
-		"tooltip": "_on_raise_army_tooltip_hovered"
+		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
 	})
 	
 	# Back button (only if armies in region)

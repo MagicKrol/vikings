@@ -321,6 +321,10 @@ func replenish_recruits() -> void:
 	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 	available_recruits = min(available_recruits + replenishment, max_recruits)
 
+func fill_recruits_to_maximum() -> void:
+	"""Set available recruits to the current maximum capacity."""
+	available_recruits = get_max_recruits()
+
 func grow_population() -> void:
 	"""Grow population per turn based on recruitment impact and promotion bonuses (called each turn)"""
 	if is_ocean:

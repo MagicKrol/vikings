@@ -77,9 +77,10 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 		if r.has("level"):
 			var lv = RegionLevelEnum.string_to_level(String(r.get("level")))
 			region.set_region_level(lv)
-		# Population
-		if r.has("population"):
-			region.set_population(int(r.get("population")))
+			# Population
+			if r.has("population"):
+				region.set_population(int(r.get("population")))
+				region.fill_recruits_to_maximum()
 		# Resources
 		if r.has("resources"):
 			var res: Dictionary = r.get("resources")
@@ -109,7 +110,10 @@ func _apply_ownership(map_generator: MapGenerator, region_manager: RegionManager
 		var region_id: int = int(r.get("id", -1))
 		if r.has("owner"):
 			var owner_id: int = int(r.get("owner"))
-			region_manager.set_region_ownership(region_id, owner_id)
+			if owner_id > 0:
+				region_manager.set_initial_region_ownership(region_id, owner_id)
+			else:
+				region_manager.set_region_ownership(region_id, owner_id)
 
 func _apply_castles(map_generator: MapGenerator, visual_manager: VisualManager, scenario: Dictionary) -> void:
 	var regions: Array = scenario.get("regions", [])
@@ -119,6 +123,7 @@ func _apply_castles(map_generator: MapGenerator, visual_manager: VisualManager, 
 			var ct = CastleTypeEnum.string_to_type(String(r.get("castle_type")))
 			var region := map_generator.get_region_container_by_id(region_id) as Region
 			region.set_castle_type(ct)
+			region.fill_recruits_to_maximum()
 			if ct != CastleTypeEnum.Type.NONE:
 				if visual_manager != null:
 					visual_manager.place_castle_visual(region)

@@ -92,12 +92,12 @@ grow_vertical = 2
 script = ExtResource("8_ui")
 
 [node name="InfoModal" parent="UI" instance=ExtResource("13_35f3x")]
-visible = false
 
 [node name="RegionTooltip" parent="UI" instance=ExtResource("15_d3ude")]
 visible = false
 
 [node name="BattleModal" parent="UI" instance=ExtResource("16_dtrwa")]
+visible = false
 offset_left = -285.0
 offset_top = -350.0
 offset_right = 275.0

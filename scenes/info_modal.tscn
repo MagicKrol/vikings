@@ -1,12 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=7 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_y5p06"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_font"]
 
+[sub_resource type="FontVariation" id="FontVariation_outline"]
+base_font = ExtResource("3_font")
+
 [sub_resource type="Theme" id="Theme_tq6kf"]
-default_font = ExtResource("3_font")
+default_font = SubResource("FontVariation_outline")
 default_font_size = 22
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.8)
+Label/constants/shadow_offset_x = 2
+Label/constants/shadow_offset_y = 2
+Label/fonts/font = SubResource("FontVariation_outline")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1v0yp"]
 draw_center = false

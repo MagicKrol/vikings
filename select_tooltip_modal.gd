@@ -40,7 +40,7 @@ const TOOLTIP_TEXTS = {
 	"castle_construction": "Castle construction is in progress. Wait for completion before building or upgrading.",
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
 	"promote_region": "Promote region to the next administrative level, increase growth and production.",
-	"call_to_arms": "Gather recruits from neighboring regions to increase local recruitment capacity.",
+	"call_to_arms": "Gather recruits from neighboring regions.",
 	"ore_search": "Search for Gold or Iron ores in this region.",
 	
 	# Generic army tooltip (for army buttons in SelectModal)
@@ -136,13 +136,10 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 			if tooltip_key == "build_castle":
 				# Building first castle (Outpost)
 				castle_type_to_build = CastleTypeEnum.Type.OUTPOST
-				tooltip_text += "\n\nBuilds: " + CastleTypeEnum.type_to_string(castle_type_to_build)
 			elif tooltip_key == "upgrade_castle":
 				# Upgrading existing castle
 				var current_castle_type = current_region.get_castle_type()
 				castle_type_to_build = CastleTypeEnum.get_next_level(current_castle_type)
-				if castle_type_to_build != CastleTypeEnum.Type.NONE:
-					tooltip_text += "\n\nUpgrades to: " + CastleTypeEnum.type_to_string(castle_type_to_build)
 			
 			if castle_type_to_build != CastleTypeEnum.Type.NONE:
 				var cost = GameParameters.get_castle_building_cost(castle_type_to_build)
@@ -171,22 +168,22 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 	if tooltip_key == "call_to_arms" and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null and current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
-			tooltip_text += "\n\nRequires Outpost"
+			tooltip_text += "\nRequires Outpost"
 	
 	# Add requirement info for raise_army tooltip
 	if tooltip_key == "raise_army" and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null:
 			var castle_type = current_region.get_castle_type()
-			var has_keep_or_higher = castle_type != CastleTypeEnum.Type.NONE and castle_type != CastleTypeEnum.Type.OUTPOST
+			var has_outpost_or_higher = castle_type != CastleTypeEnum.Type.NONE
 			
 			# Display raise army cost
 			var raise_army_cost = GameParameters.get_raise_army_cost()
 			var cost_dict = {ResourcesEnum.Type.GOLD: raise_army_cost}
 			_display_cost(cost_dict)
 			
-			if not has_keep_or_higher:
-				tooltip_text += "\n\nRequires Keep"
+			if not has_outpost_or_higher:
+				tooltip_text += "\n\nRequires Outpost"
 	
 	# Add detailed info for ore_search tooltip
 	if tooltip_key == "ore_search" and context_data.has("current_region"):

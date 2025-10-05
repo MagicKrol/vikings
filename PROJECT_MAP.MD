@@ -110,6 +110,8 @@ editor_start.tscn (Editor Start)
 - Purpose: Data-driven loader for premade scenarios (map + region overrides + ownership + castles + armies).
 - API: `load_scenario(path) -> Dictionary`, `apply_to_runtime(map_generator, region_manager, army_manager, visual_manager, scenario, player_manager)`.
 - Order of application: regions (type/ocean, level, population, resources, ores, name) → ownership (via RegionManager) → castles (via VisualManager) → armies (via ArmyManager).
+- Ownership setup treats scenario-owned regions as fully established: `set_initial_region_ownership()` is used for player IDs > 0 so they start turn one with full recruit availability.
+- Region setup now refills recruit pools to the current max after applying population and castle overrides so scenario starts never begin partially depleted.
 - Keeps base map geometry in the referenced `map_file`; scenario stores only deltas.
 
 ### TurnController.gd (TurnController)
@@ -140,6 +142,8 @@ editor_start.tscn (Editor Start)
 - region.gd (Region): data container with population, resources, recruits, ownership counter, garrison, castle type/upgrade, ore search, movement/passability helpers.
   - `apply_population_loss(loss, min_population)` clamps population, recalculates recruits, and forces `last_population_growth` negative for famine turns.
   - `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
+  - `fill_recruits_to_maximum()` resets the recruit pool to the region's current cap (used during scenario setup).
+- Info modal theme uses a `FontVariation` and theme shadow settings for Labels so region stats stay legible over busy backgrounds without outlines.
   - `get_wounded_recruits_total()` exposes the wounded-peasant count for UI consistency.
 
 ### Army systems

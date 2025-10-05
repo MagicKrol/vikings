@@ -210,7 +210,7 @@ func _render_from_json() -> void:
 
 	# Add background image
 	var background := Sprite2D.new()
-	background.texture = load("res://images/background2.png")
+	background.texture = load("res://images/background4.png")
 	var map_center = 500.0 * polygon_scale
 	background.position = Vector2(map_center, map_center)  # Center it
 	background.scale = Vector2(2 * polygon_scale, 2 * polygon_scale)  # Scale with polygons

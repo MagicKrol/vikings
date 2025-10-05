@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cshghdvr7dx5u"]
+[gd_scene load_steps=7 format=3 uid="uid://cshghdvr7dx5u"]
 
 [ext_resource type="Script" path="res://battle_summary_modal.gd" id="1_4o5sl"]
 [ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_aqqhs"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_eemti"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_vn5sm"]
 
 [sub_resource type="Theme" id="Theme_h27cw"]
 default_font = ExtResource("3_eemti")
@@ -916,4 +917,5 @@ layout_mode = 2
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
 layout_mode = 2
+theme = ExtResource("4_vn5sm")
 text = "Continue"
