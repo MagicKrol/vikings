@@ -210,10 +210,16 @@ func _render_from_json() -> void:
 
 	# Add background image
 	var background := Sprite2D.new()
-	background.texture = load("res://images/background4.png")
-	var map_center = 500.0 * polygon_scale
-	background.position = Vector2(map_center, map_center)  # Center it
-	background.scale = Vector2(2 * polygon_scale, 2 * polygon_scale)  # Scale with polygons
+	background.texture = load("res://images/sea_new2.png")
+	var map_dimension := 1000.0 * polygon_scale
+	var frame_width_scaled := ocean_frame_width * polygon_scale
+	var background_size := map_dimension + frame_width_scaled * 2.0
+	background.centered = false
+	background.position = Vector2(-frame_width_scaled, -frame_width_scaled)
+	background.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	background.region_enabled = true
+	background.region_rect = Rect2(Vector2.ZERO, Vector2(background_size, background_size))
+	background.scale = Vector2.ONE
 	background.z_index = -100
 	if map_root != null:
 		map_root.add_child(background)
@@ -223,7 +229,7 @@ func _render_from_json() -> void:
 	# Create blue ocean frame around the map
 	_create_ocean_frame()
 
-	# Create individual ocean polygons with sea or coast texture
+	# Create individual ocean polygons without textures so the main background shows through
 	var ocean_count := 0
 	var ocean_region_ids: Array[int] = []
 	for region_data in regions:
@@ -241,29 +247,11 @@ func _render_from_json() -> void:
 				var cmeta: Array = region_data.get("center", [])
 				if cmeta.size() == 2:
 					ocean_pg.set_meta("center", Vector2(float(cmeta[0]), float(cmeta[1])))
-				
-				# Check if this ocean region is adjacent to land
-				var is_coastal := _is_ocean_region_coastal(region_id)
-				if is_coastal:
-					ocean_pg.texture = load("res://images/coast.png")
-				else:
-					ocean_pg.texture = load("res://images/sea_transparent_large.png")
-				
-				ocean_pg.texture_offset = Vector2(500, 500)
-				
-				# Scale texture to maintain visual density with scaled polygons
-				ocean_pg.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
-				ocean_pg.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
-				
-				# Calculate texture offset based on polygon center to create seamless appearance
-				# var center_data = region_data.get("center", [500, 500])
-				# var center := Vector2(center_data[0], center_data[1])
-				
 				ocean_pg.polygon = poly
-				
-				ocean_pg.z_index = 0  # Ocean on same level as land
+				ocean_pg.visible = false
+				ocean_pg.z_index = 0
 				map_node_ocean.add_child(ocean_pg)
-				# DebugLogger.log("MapGeneration", "Created ocean region ID: " + str(region_id) + " biome: " + str(region_data.get("biome", "unknown")) + " coastal: " + str(is_coastal))
+				# DebugLogger.log("MapGeneration", "Created ocean region ID: " + str(region_id) + " biome: " + str(region_data.get("biome", "unknown")))
 	
 
 
@@ -326,6 +314,9 @@ func _render_from_json() -> void:
 
 	# Draw noisy borders from edge data with correct quadrilateral constraints
 	_draw_region_borders()
+
+	# Sync land polygons with the generated noisy borders
+	_rebuild_region_polygons_from_borders()
 
 	# Build adjacency graph for non-ocean regions and draw overlay
 	_build_and_draw_region_graph_overlay()
@@ -505,8 +496,8 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	pg.polygon = poly
 
 	# Apply grass texture to all non-ocean regions
-	pg.texture = load("res://images/grass.png")
-	pg.texture_scale = Vector2(1.0 / polygon_scale * 5.0, 1.0 / polygon_scale * 5.0)
+	pg.texture = load("res://images/background2new.png")
+	pg.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
 	pg.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	pg.z_index = 0  # Land on same level as ocean
 	if parent_container != null:
@@ -558,6 +549,20 @@ func _draw_region_borders() -> void:
 		borders_created += region_borders_created
 	
 	DebugLogger.log("MapGeneration", "Created " + str(borders_created) + " border lines total (region-centric)")
+
+
+func _rebuild_region_polygons_from_borders() -> void:
+	for region_data in regions:
+		if bool(region_data.get("ocean", false)):
+			continue
+		var region_id := int(region_data.get("id", -1))
+		if region_id == -1:
+			continue
+		var region_container: Node2D = region_container_by_id[region_id]
+		var polygon_node: Polygon2D = region_container.get_node("Polygon")
+		var updated_polygon := _create_noisy_polygon_for_region(region_id)
+		if updated_polygon.size() >= 3:
+			polygon_node.polygon = updated_polygon
 
 
 func _create_borders_for_region(region_id: int, region_data: Dictionary, borders_container: Node2D, rng: RandomNumberGenerator) -> int:
@@ -658,22 +663,15 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 			line.closed = false
 			# Scale border width by map size (TINY=1.0 baseline)
 			var map_size_scale := Utils.get_map_size_icon_scale(map_size)
-			line.width = 3.0 * polygon_scale * map_size_scale
+			line.width = 6.0 * polygon_scale * map_size_scale
 			line.default_color = Color8(0x41, 0x2c, 0x16, 255)  # Brown for external (ocean)
 			borders_container.add_child(line)
 	elif region_owner != -1 and other_owner != -1 and region_owner != other_owner:
 		# Different owners (enemy border): Create offset colored border
 		_create_offset_border_line(seg, region_owner, other_region_id, region_id, borders_container)
 	elif region_owner != -1 and other_owner == -1:
-		# My region vs neutral: Single colored border (thick like ocean borders)
-		var line := Line2D.new()
-		line.points = seg
-		line.closed = false
-		# Scale border width by map size (TINY=1.0 baseline)
-		var map_size_scale2 := Utils.get_map_size_icon_scale(map_size)
-		line.width = 3.0 * polygon_scale * map_size_scale2
-		line.default_color = _get_player_border_color(region_owner)
-		borders_container.add_child(line)
+		# My region vs neutral: Use fading ownership border
+		_create_offset_border_line(seg, region_owner, other_region_id, region_id, borders_container)
 	else:
 		# Same owner or unowned: Default style
 		var line := Line2D.new()
@@ -830,7 +828,7 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	
 	# Set player color with default alpha for overlays (configured on creation only)
 	var player_color = _get_player_color(player_id)
-	player_color.a = 0.25
+	player_color.a = 0.4
 	overlay_polygon.color = player_color
 	
 	# Set z-index to appear above the original polygon but below other elements
@@ -952,13 +950,13 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 	# Scale offset distance with map size to keep proportional spacing
 	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
 	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Offset distance in pixels
-	
+
 	# Determine offset direction based on region ID ordering
 	# This ensures consistent opposite directions for the two regions
 	var offset_direction = 1.0 if current_region_id < other_region_id else -1.0
-	
+
 	var offset_points := PackedVector2Array()
-	
+
 	# Calculate offset for each point
 	for i in range(original_points.size()):
 		var current_point = original_points[i]
@@ -984,15 +982,16 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 			offset_vector = Vector2(-avg_direction.y, avg_direction.x) * offset_distance * offset_direction
 		
 		offset_points.append(current_point + offset_vector)
-	
-	# Create the offset border line
+
+	var base_color := _get_player_border_color(player_id)
 	var line := Line2D.new()
 	line.points = offset_points
 	line.closed = false
 	# Scale border width by map size (TINY=1.0 baseline)
-	line.width = 2.0 * polygon_scale * map_size_scale
-	line.default_color = _get_player_border_color(player_id)
-	
+	var map_size_scale2 := Utils.get_map_size_icon_scale(map_size)
+	line.width = 2.0 * polygon_scale * map_size_scale2
+	line.default_color = base_color
+
 	borders_container.add_child(line)
 
 func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, player_id: int, current_region_id: int, borders_container: Node2D) -> void:
@@ -1035,14 +1034,14 @@ func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, 
 		
 		offset_points.append(current_point + offset_vector)
 	
-	# Create the offset border line with player color
+	var base_color := _get_player_border_color(player_id)
 	var line := Line2D.new()
 	line.points = offset_points
 	line.closed = false
 	# Scale border width by map size (TINY=1.0 baseline)
 	line.width = 2.0 * polygon_scale * map_size_scale
-	line.default_color = _get_player_border_color(player_id)
-	
+	line.default_color = base_color
+
 	borders_container.add_child(line)
 
 func _create_ocean_offset_border_line(original_points: PackedVector2Array, current_region_id: int, borders_container: Node2D) -> void:
@@ -1057,7 +1056,7 @@ func _create_ocean_offset_border_line(original_points: PackedVector2Array, curre
 	# Ocean gets the opposite offset direction from the land region
 	var land_offset_direction = _get_land_side_offset_direction(original_points, current_region_id)
 	var ocean_offset_direction = -land_offset_direction  # Always opposite
-	
+
 	var offset_points := PackedVector2Array()
 	
 	# Calculate offset for each point (same logic as colored borders)
@@ -1086,15 +1085,13 @@ func _create_ocean_offset_border_line(original_points: PackedVector2Array, curre
 		
 		offset_points.append(current_point + offset_vector)
 	
-	# Create the offset border line with black color
+	# Create the offset border line with fading black band
 	var line := Line2D.new()
 	line.points = offset_points
 	line.closed = false
-	# Scale border width by map size (TINY=1.0 baseline)
-	var map_size_scale6 := Utils.get_map_size_icon_scale(map_size)
-	line.width = 2.0 * polygon_scale * map_size_scale6
+	line.width = 2.0 * polygon_scale * map_size_scale
 	line.default_color = Color.BLACK
-	
+
 	borders_container.add_child(line)
 
 func _get_land_side_offset_direction(edge_points: PackedVector2Array, region_id: int) -> float:
@@ -1200,7 +1197,7 @@ func _create_ocean_frame() -> void:
 	# Create a textured frame around the map using 4 rectangles
 	var map_size = 1000.0 * polygon_scale
 	var frame_width = ocean_frame_width * polygon_scale
-	var ocean_texture = load("res://images/sea_transparent_large.png")  # Use same texture as ocean polygons
+	var ocean_texture = load("res://images/transparent.png")  # Use same texture as ocean polygons
 	
 	# Calculate frame rectangle coordinates
 	var frame_rects = [

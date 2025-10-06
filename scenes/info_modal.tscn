@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_y5p06"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_font"]
+[ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="3_m76og"]
 
 [sub_resource type="FontVariation" id="FontVariation_outline"]
 base_font = ExtResource("3_font")
@@ -10,6 +10,7 @@ base_font = ExtResource("3_font")
 [sub_resource type="Theme" id="Theme_tq6kf"]
 default_font = SubResource("FontVariation_outline")
 default_font_size = 22
+Label/colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0.8)
 Label/constants/shadow_offset_x = 2
 Label/constants/shadow_offset_y = 2
@@ -38,9 +39,8 @@ script = ExtResource("1_7mumj")
 layout_mode = 0
 offset_right = 400.0
 offset_bottom = 500.0
-texture = ExtResource("2_y5p06")
+texture = ExtResource("3_m76og")
 expand_mode = 1
-stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
@@ -50,6 +50,7 @@ theme = SubResource("Theme_tq6kf")
 theme_override_styles/panel = SubResource("StyleBoxFlat_1v0yp")
 
 [node name="Region" type="VBoxContainer" parent="Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -234,7 +235,6 @@ layout_mode = 2
 text = "Iron discovered"
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
-visible = false
 layout_mode = 2
 offset_left = 15.0
 offset_top = 15.0
