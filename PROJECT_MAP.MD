@@ -22,7 +22,7 @@ Start Flow
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
 ├ Map (Node2D) [map_generator.gd]
-│	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4.png` and sync shape from noisy borders; ocean polygons hidden by default)
+│	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4.png` and sync shape from noisy borders; mountain clusters use hidden noisy lines; ocean polygons hidden by default)
 │	├ Ocean (Node2D) – metadata-only ocean polygons (hidden visuals)
 │	└ Frame (Node2D)
 ├ Background (Sprite2D)
@@ -57,8 +57,8 @@ Main (Node2D) [place_armies.gd]
 Notes
 - UI modals are extracted into separate `.tscn` scenes and instanced under `UI` (no longer inline).
 - Regions, armies, castles are created at runtime under `Map/Regions`.
-- Map background tiles `sea_new.png` (Sprite2D region repeat) without stretching; ocean visuals rely on base layer only; land polygons rebuild from border noise to stay aligned.
-- Map background tiles `sea_new.png` (Sprite2D region repeat) without stretching; ocean visuals rely on base layer only; land polygons rebuild from border noise to stay aligned; ownership borders render as solid Line2D strokes.
+- Map background tiles `sea_new.png` (Sprite2D region repeat) without stretching; ocean visuals rely on base layer only; land polygons rebuild from border noise to stay aligned (mountain clusters rely on hidden noisy borders for seamless joins).
+- Ownership borders render as solid Line2D strokes.
 
 Map Editor Panel (editor mode)
 - Uses TabContainer with 4 tabs: Main, Scenario, Region, Army

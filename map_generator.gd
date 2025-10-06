@@ -417,10 +417,16 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 	var center := Vector2(center_data[0], center_data[1])
 	var edge_ids: Array = region_data.get("edges", [])
 	var region_id := int(region_data.get("id", -1))
+	var polygon_fallback := PackedVector2Array()
+	var polygon_data = region_data.get("polygon", [])
+	if polygon_data.size() >= 3:
+		for point in polygon_data:
+			if point is Array and point.size() == 2:
+				polygon_fallback.append(Vector2(point[0], point[1]))
 	
 	if edge_ids.is_empty():
 		DebugLogger.log("MapGeneration", "WARNING: Region " + str(region_id) + " has no edges!")
-		return PackedVector2Array()
+		return polygon_fallback
 		
 	var pts: Array[Vector2] = []
 	var invalid_points := 0
@@ -461,10 +467,15 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 		DebugLogger.log("MapGeneration", "WARNING: Region " + str(region_id) + " had " + str(invalid_points) + " invalid coordinates filtered out")
 	
 	if pts.size() < 3:
+		if polygon_fallback.size() >= 3:
+			return polygon_fallback
 		# DebugLogger.log("MapGeneration", "ERROR: Region " + str(region_id) + " has insufficient valid points: " + str(pts.size()))
 		return PackedVector2Array()
 		
-	return Utils.dedup_and_sort_polygon(pts, center)
+	var deduped := Utils.dedup_and_sort_polygon(pts, center)
+	if deduped.size() >= 3:
+		return deduped
+	return polygon_fallback if polygon_fallback.size() >= 3 else deduped
 
 func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name: String = "", parent_container: Node = null) -> Polygon2D:
 	var poly := _build_region_polygon_points(region_data)
@@ -597,8 +608,10 @@ func _create_borders_for_region(region_id: int, region_data: Dictionary, borders
 		if this_is_ocean and other_is_ocean:
 			continue
 		if this_is_mountain and other_is_mountain:
+			if _create_hidden_mountain_border_line(edge, region_id, other_region_id, borders_container, rng):
+				borders_created += 1
 			continue
-			
+		
 		# Create the border line for THIS region
 		if _create_border_line_for_region(edge, region_id, other_region_id, borders_container, rng):
 			borders_created += 1
@@ -683,6 +696,35 @@ func _create_border_line_for_region(edge: Dictionary, region_id: int, other_regi
 		line.default_color = Color8(0x00, 0x00, 0x00, 50)   # Thin black for internal
 		borders_container.add_child(line)
 	
+	return true
+
+
+func _create_hidden_mountain_border_line(edge: Dictionary, region_id: int, other_region_id: int, borders_container: Node2D, rng: RandomNumberGenerator) -> bool:
+	var a_arr: Array = edge.get("start", [])
+	var b_arr: Array = edge.get("end", [])
+	var c0_arr: Array = edge.get("region1_center", [])
+	var c1_arr: Array = edge.get("region2_center", [])
+	if a_arr.size() != 2 or b_arr.size() != 2 or c0_arr.size() != 2 or c1_arr.size() != 2:
+		return false
+	var a := Vector2(a_arr[0], a_arr[1])
+	var b := Vector2(b_arr[0], b_arr[1])
+	var p := Vector2(c0_arr[0], c0_arr[1])
+	var q := Vector2(c1_arr[0], c1_arr[1])
+	var edge_seed = _generate_edge_seed(edge)
+	rng.seed = edge_seed
+	var seg := PackedVector2Array()
+	seg.append(a)
+	var mid_points := NoisyEdges.recursive_subdivision(a, b, p, q, rng, noisy_edge_length, noisy_edge_amplitude)
+	for mp in mid_points:
+		seg.append(mp)
+	seg.append(b)
+	var line := Line2D.new()
+	line.points = seg
+	line.closed = false
+	line.width = 0.1
+	line.default_color = Color(0, 0, 0, 0)
+	line.visible = false
+	borders_container.add_child(line)
 	return true
 
 func _is_external_border_for_region(region_id: int, other_region_id: int) -> bool:
