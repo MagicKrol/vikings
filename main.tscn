@@ -122,7 +122,6 @@ visible = false
 visible = false
 
 [node name="PlayerStatusModal2" parent="UI" instance=ExtResource("25_8wafx")]
-visible = false
 
 [node name="TurnModal" parent="UI" instance=ExtResource("27_o7y1n")]
 visible = false

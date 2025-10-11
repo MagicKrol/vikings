@@ -15,11 +15,24 @@ var current_mode: DisplayMode = DisplayMode.NONE
 var current_army: Army = null
 var current_region: Region = null
 
+const MOVE_ICON_GREEN: Texture2D = preload("res://images/icons/move_green.png")
+const MOVE_ICON_YELLOW: Texture2D = preload("res://images/icons/move_yellow.png")
+const MOVE_ICON_RED: Texture2D = preload("res://images/icons/move_red.png")
+const MOVE_ICON_EMPTY: Texture2D = preload("res://images/icons/move_empty2.png")
+const PROGRESS_TEX_GREEN: Texture2D = preload("res://images/progressbar_green.png")
+const PROGRESS_TEX_YELLOW: Texture2D = preload("res://images/progressbar_yellow.png")
+const PROGRESS_TEX_RED: Texture2D = preload("res://images/progressbar_red.png")
+
+var _progress_style_green: StyleBoxTexture
+var _progress_style_yellow: StyleBoxTexture
+var _progress_style_red: StyleBoxTexture
+
 func _ready():
 	# Get references
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	game_manager = get_node("../../GameManager") as GameManager
+	_initialize_progress_bar_styles()
 	
 	# Initially hidden
 	visible = false
@@ -101,14 +114,14 @@ func _update_army_display() -> void:
 	var army_name_label = get_node("Panel/Army/HeaderSection/ArmyName")
 	army_name_label.text = "Army " + str(current_army.number)
 	
-	# Update movement points
-	var mp_value = get_node("Panel/Army/PopulationSection/MP/Value")
-	var max_mp = GameParameters.MOVEMENT_POINTS_PER_TURN
-	mp_value.text = str(current_army.get_movement_points()) + " / " + str(max_mp)
+	# Update movement points icons
+	_update_move_points_icons(current_army.get_movement_points())
 	
 	# Update vigor
 	var vigor_value = get_node("Panel/Army/PopulationSection/Vigor/Value")
-	vigor_value.text = str(current_army.get_efficiency()) + "%"
+	var vigor_percent = int(round(current_army.get_efficiency()))
+	vigor_value.text = str(vigor_percent) + "%"
+	_update_vigor_bar(vigor_percent)
 	
 	# Update total men count
 	var men_value = get_node("Panel/Army/PopulationSection/Men/Value")
@@ -116,6 +129,63 @@ func _update_army_display() -> void:
 	
 	# Update unit composition
 	_update_army_unit_values()
+
+func _update_move_points_icons(move_points: int) -> void:
+	var move_container = get_node("Panel/Army/PopulationSection/MP/MoveContainer")
+	if move_container == null:
+		return
+	var points = int(move_points)
+	var filled_icons = clamp(points, 0, 5)
+	var active_texture: Texture2D = MOVE_ICON_EMPTY
+	if points >= 5:
+		filled_icons = 5
+		active_texture = MOVE_ICON_GREEN
+	elif points >= 3:
+		active_texture = MOVE_ICON_YELLOW
+	elif points >= 1:
+		active_texture = MOVE_ICON_RED
+	else:
+		filled_icons = 0
+	for i in range(move_container.get_child_count()):
+		var child = move_container.get_child(i)
+		if child is TextureRect:
+			var icon := child as TextureRect
+			if i < filled_icons:
+				icon.texture = active_texture
+			else:
+				icon.texture = MOVE_ICON_EMPTY
+
+func _initialize_progress_bar_styles() -> void:
+	_progress_style_green = StyleBoxTexture.new()
+	_progress_style_green.texture = PROGRESS_TEX_GREEN
+	_progress_style_yellow = StyleBoxTexture.new()
+	_progress_style_yellow.texture = PROGRESS_TEX_YELLOW
+	_progress_style_red = StyleBoxTexture.new()
+	_progress_style_red.texture = PROGRESS_TEX_RED
+	var progress_bar = get_node("Panel/Army/PopulationSection/ProgressBar") as ProgressBar
+	if progress_bar != null:
+		progress_bar.min_value = 0
+		progress_bar.max_value = 100
+		progress_bar.value = 0
+		progress_bar.add_theme_stylebox_override("fill", _progress_style_red)
+
+func _update_vigor_bar(vigor: int) -> void:
+	if _progress_style_green == null:
+		_initialize_progress_bar_styles()
+	var progress_bar = get_node("Panel/Army/PopulationSection/ProgressBar") as ProgressBar
+	if progress_bar == null:
+		return
+	var clamped_vigor = clamp(vigor, 0, 100)
+	progress_bar.min_value = 0
+	progress_bar.max_value = 100
+	progress_bar.value = clamped_vigor
+	var style: StyleBoxTexture = _progress_style_red
+	if clamped_vigor >= 81:
+		style = _progress_style_green
+	elif clamped_vigor >= 51:
+		style = _progress_style_yellow
+	progress_bar.add_theme_stylebox_override("fill", style)
+	progress_bar.queue_redraw()
 
 func _update_region_display() -> void:
 	"""Update the display with current region information"""

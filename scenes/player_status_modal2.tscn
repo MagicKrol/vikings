@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://player_status_modal2.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_t5oev"]
-[ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="1_uovsa"]
+[ext_resource type="Texture2D" uid="uid://bxemb3ssjri2x" path="res://images/topnav_background.png" id="3_uew83"]
 [ext_resource type="Texture2D" uid="uid://c30y8te4yqwy0" path="res://images/icons/population.png" id="4_4a7io"]
 [ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/food.png" id="5_g7hs2"]
 [ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/wood.png" id="6_5qdc5"]
@@ -30,9 +30,8 @@ layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = -10.0
-offset_top = 9.0
 offset_right = -30.0
-offset_bottom = 59.0
+offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = SubResource("Theme_fcepg")
@@ -42,8 +41,7 @@ script = ExtResource("1_script")
 layout_mode = 0
 offset_right = 2000.0
 offset_bottom = 50.0
-texture = ExtResource("1_uovsa")
-expand_mode = 2
+texture = ExtResource("3_uew83")
 stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]

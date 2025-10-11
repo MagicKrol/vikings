@@ -38,7 +38,7 @@ Main (Node2D) [place_armies.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd]
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
-│	│	└ Theme font color set to #f1d891 for all labels
+│	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
 │	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd]
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd]
