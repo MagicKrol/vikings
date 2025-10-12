@@ -46,6 +46,9 @@ var sound_manager: SoundManager = null
 # Reference to the move modal for UI updates
 var move_modal: MoveModal = null
 
+# Reference to the visual manager for ownership animations
+var visual_manager: VisualManager = null
+
 # All armies in the game: player_id -> Array[Army]
 var armies_by_player: Dictionary = {}
 
@@ -83,6 +86,10 @@ func set_move_modal(modal: MoveModal) -> void:
 	move_modal = modal
 	if move_modal:
 		move_modal.set_army_manager(self)
+
+func set_visual_manager(manager: VisualManager) -> void:
+	"""Set the visual manager reference"""
+	visual_manager = manager
 
 func _find_army_modal() -> void:
 	"""Find and store reference to the army modal"""
@@ -426,6 +433,7 @@ func _show_move_arrows(region_container: Node) -> void:
 	"""Show arrows pointing to all available move destinations"""
 	# Clear any existing arrows first
 	_clear_move_arrows()
+	var move_target_regions: Array = []
 	
 	# Get current movement points for selected army
 	var _current_points = 5  # Default
@@ -504,12 +512,19 @@ func _show_move_arrows(region_container: Node) -> void:
 		var can_move = false
 		if selected_army != null:
 			can_move = can_army_move_to_region(selected_army, neighbor_container)
+		if can_move:
+			move_target_regions.append(neighbor_id)
 		
 		# Create arrow (disabled if cannot move)
 		var arrow = _create_move_arrow(source_center, neighbor_center, !can_move)
 		if arrow != null:
 			move_arrows.append(arrow)
 			arrows_container.add_child(arrow)
+	if visual_manager:
+		if move_target_regions.is_empty():
+			visual_manager.clear_move_region_highlights()
+		else:
+			visual_manager.animate_move_region_highlights(move_target_regions)
 	
 
 
@@ -556,6 +571,8 @@ func _clear_move_arrows() -> void:
 			if arrow != null and is_instance_valid(arrow):
 				arrow.queue_free()
 		move_arrows.clear()
+	if visual_manager:
+		visual_manager.clear_move_region_highlights()
 
 
 func reset_all_army_movement_points() -> void:

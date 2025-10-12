@@ -163,7 +163,7 @@ editor_start.tscn (Editor Start)
 - ArmyMovementPlanner.gd: High-level army movement coordination using canonical raw final scoring from ArmyTargetScorer. Applies danger penalty as separate adjustment after raw final score.
 
 ### VisualManager.gd (VisualManager)
-- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates.
+- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Move highlight uses looping alpha tween (0.5↔0.75); hover shows a cloned overlay at 0.85 while the base tween keeps running.
 
 ### map_editor.gd (MapEditor)
 - Purpose: Map editor mode controller for toggling editor UI.

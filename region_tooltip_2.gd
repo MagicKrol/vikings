@@ -30,8 +30,8 @@ var is_debug_mode: bool = false
 
 func _ready() -> void:
 	visible = false
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
+	_disable_mouse_input(self)
+
 	# Set initial size
 	custom_minimum_size = Vector2(240, 145)
 	size = Vector2(240, 145)
@@ -155,3 +155,9 @@ func _set_debug_font():
 
 func _reset_font():
 	pass
+
+func _disable_mouse_input(node: Node) -> void:
+	if node is Control:
+		(node as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for child in node.get_children():
+		_disable_mouse_input(child)

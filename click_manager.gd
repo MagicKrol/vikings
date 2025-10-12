@@ -31,6 +31,8 @@ class_name ClickManager
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_on_left_click(event.global_position)
+	elif event is InputEventMouseMotion:
+		_handle_mouse_motion()
 	elif event is InputEventKey and event.pressed:
 		# Editor quick-ownership mode: number keys 1..6 select owner, ESC cancels
 		if _game_manager and _game_manager.enable_map_editor:
@@ -180,6 +182,42 @@ func _handle_region_click(region_container: Node) -> void:
 			# For now, delegate army handling back to legacy system
 			# TODO: Move to ArmyManager in future refactor
 			_handle_army_selection_and_movement.call_deferred(region_container)
+
+func _handle_mouse_motion() -> void:
+	if _game_manager == null:
+		return
+	var visual_manager = _game_manager.get_visual_manager()
+	if visual_manager == null:
+		return
+	if not visual_manager.has_move_region_highlights():
+		visual_manager.clear_move_region_hover()
+		return
+	if _army_manager == null or _army_manager.selected_army == null:
+		visual_manager.clear_move_region_hover()
+		return
+	var camera := get_node("../Camera2D") as Camera2D
+	var world_pos = camera.get_global_mouse_position()
+	var regions_node := _map_script.get_node_or_null("Regions")
+	if regions_node == null:
+		visual_manager.clear_move_region_hover()
+		return
+	var highlighted_ids = visual_manager.get_move_region_highlight_ids()
+	var hovered_region_id = -1
+	for region_container in regions_node.get_children():
+		if not (region_container is Region):
+			continue
+		var polygon = region_container.get_node_or_null("Polygon") as Polygon2D
+		if polygon == null:
+			continue
+		if _point_in_polygon(world_pos, polygon):
+			var candidate_id = (region_container as Region).get_region_id()
+			if highlighted_ids.has(candidate_id):
+				hovered_region_id = candidate_id
+			break
+	if hovered_region_id != -1:
+		visual_manager.set_move_region_hover(hovered_region_id)
+	else:
+		visual_manager.clear_move_region_hover()
 
 func _is_mountain_region(region: Region) -> bool:
 	"""Check if a region is a mountain region (unclickable)"""
