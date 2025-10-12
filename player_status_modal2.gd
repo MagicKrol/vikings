@@ -16,16 +16,32 @@ var initial_economy_processed: bool = false
 
 # Game manager reference for resource updates
 var game_manager: GameManager = null
+var ui_manager: UIManager = null
 
 func _ready():
 	# Get game manager reference
 	game_manager = get_node("../../GameManager") as GameManager
+	ui_manager = get_node("../UIManager") as UIManager
+	mouse_entered.connect(_on_mouse_entered)
+	DebugLogger.log("UIManager", "PlayerStatusModal2 ready, mouse_entered connected")
+	DebugLogger.log("UIManager", "PlayerStatusModal2 mouse_filter=" + str(mouse_filter))
+	var panel = get_node("Panel") as Control
+	panel.mouse_entered.connect(_on_panel_mouse_entered)
+	DebugLogger.log("UIManager", "PlayerStatusModal2 Panel mouse_filter=" + str(panel.mouse_filter))
 	# In editor mode, keep this hidden and skip updates
 	if game_manager and game_manager.enable_map_editor:
 		visible = false
 		return
 	# Make visible by default as a status bar (non-editor). GameManager triggers updates.
 	visible = true
+
+func _on_mouse_entered() -> void:
+	DebugLogger.log("UIManager", "PlayerStatusModal2 mouse entered. Hiding tooltip")
+	ui_manager.hide_region_tooltip()
+
+func _on_panel_mouse_entered() -> void:
+	DebugLogger.log("UIManager", "PlayerStatusModal2 Panel mouse entered. Hiding tooltip")
+	ui_manager.hide_region_tooltip()
 
 func set_resource_data(resource_type: ResourcesEnum.Type, amount: int, income: int = 0) -> void:
 	"""Update resource data for a specific type"""

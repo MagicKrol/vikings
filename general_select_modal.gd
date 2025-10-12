@@ -109,13 +109,10 @@ func _on_army_button_hovered(army: Army) -> void:
 func _on_button_unhovered() -> void:
 	if info_modal and info_modal.visible:
 		info_modal.hide_modal(false)
-	if select_tooltip_modal:
-		select_tooltip_modal.hide_tooltip()
+	hide_tooltips()
 
 func _on_region_tooltip_hovered() -> void:
-	if select_tooltip_modal:
-		select_tooltip_modal.show_tooltip("region")
+	show_message_tooltip("region")
 
 func _on_army_tooltip_hovered() -> void:
-	if select_tooltip_modal:
-		select_tooltip_modal.show_tooltip("army")
+	show_message_tooltip("army")

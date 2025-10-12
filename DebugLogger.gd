@@ -53,7 +53,7 @@ var debug_categories: Dictionary = {
 	"CastleConstruction": false,   # Castle building and upgrades
 	
 	# Army Systems
-	"ArmyManagement": true,       # Army creation and management
+	"ArmyManagement": false,       # Army creation and management
 	"ArmyComposition": false,      # Army composition and units
 	
 	# General Systems
@@ -63,7 +63,8 @@ var debug_categories: Dictionary = {
 	"InputSystem": false,          # Input handling and processing
 	"GameInit": false,             # Game initialization and setup
 	"SaveLoad": false,             # Save and load operations
-	"Testing": false                # Test framework output
+	"Testing": false,                # Test framework output
+	"UIManager": false
 }
 
 # Color coding for different log levels

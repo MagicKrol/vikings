@@ -384,29 +384,29 @@ func _on_back_pressed() -> void:
 		select_modal.show_selection(region_to_show, armies_in_region)
 
 func _on_promote_tooltip_hovered() -> void:
-	if select_tooltip_modal != null and current_region != null:
+	if current_region != null:
 		var context_data = {"current_region": current_region}
-		select_tooltip_modal.show_tooltip("promote_region", context_data)
+		show_resource_tooltip("promote_region", context_data)
 
 func _on_castle_tooltip_hovered(tooltip_key: String) -> void:
-	if select_tooltip_modal != null and current_region != null:
+	if current_region != null:
 		var context_data = {"current_region": current_region}
-		select_tooltip_modal.show_tooltip(tooltip_key, context_data)
+		show_resource_tooltip(tooltip_key, context_data)
 
 func _on_call_to_arms_tooltip_hovered() -> void:
-	if select_tooltip_modal != null and current_region != null:
+	if current_region != null:
 		var context_data = {"current_region": current_region}
-		select_tooltip_modal.show_tooltip("call_to_arms", context_data)
+		show_message_tooltip("call_to_arms", context_data)
 
 func _on_raise_army_tooltip_hovered() -> void:
-	if select_tooltip_modal != null and current_region != null:
+	if current_region != null:
 		var context_data = {"current_region": current_region}
-		select_tooltip_modal.show_tooltip("raise_army", context_data)
+		show_resource_tooltip("raise_army", context_data)
 
 func _on_ore_search_tooltip_hovered() -> void:
-	if select_tooltip_modal != null and current_region != null:
+	if current_region != null:
 		var context_data = {"current_region": current_region}
-		select_tooltip_modal.show_tooltip("ore_search", context_data)
+		show_resource_tooltip("ore_search", context_data)
 
 func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 	if player_manager == null:

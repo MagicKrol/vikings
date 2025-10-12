@@ -10,6 +10,12 @@ func _ready():
 	# Get manager references
 	game_manager = get_node("../../GameManager") as GameManager
 	ui_manager = get_node("../UIManager") as UIManager
+	mouse_entered.connect(_on_mouse_entered)
+	DebugLogger.log("UIManager", "TurnModal ready, mouse_entered connected")
+	DebugLogger.log("UIManager", "TurnModal mouse_filter=" + str(mouse_filter))
+	var panel = get_node("Panel") as Control
+	panel.mouse_entered.connect(_on_panel_mouse_entered)
+	DebugLogger.log("UIManager", "TurnModal Panel mouse_filter=" + str(panel.mouse_filter))
 	
 	# Connect end turn button signal
 	var end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton")
@@ -38,14 +44,12 @@ func update_turn_display() -> void:
 	else:
 		var turn_number = game_manager.get_current_turn()
 		turn_label.text = "Turn " + str(turn_number)
-	
+
 	# Update player display
 	var player_label = get_node("Panel/VBoxContainer/Player")
 	player_label.text = "Player " + str(current_player)
-	
-	# Apply player color to text
-	player_label.modulate = player_color
-	
+	player_label.add_theme_color_override("font_color", player_color)
+
 	# Update button text based on mode
 	var end_turn_btn = get_node("Panel/VBoxContainer/Button/EndTurnButton")
 	if game_manager.is_castle_placing_mode():
@@ -68,3 +72,11 @@ func _on_end_turn_button_pressed():
 		game_manager.next_turn()
 	else:
 		DebugLogger.log("UISystem", "Error: Game manager not available")
+
+func _on_mouse_entered() -> void:
+	DebugLogger.log("UIManager", "TurnModal mouse entered. Hiding tooltip")
+	ui_manager.hide_region_tooltip()
+
+func _on_panel_mouse_entered() -> void:
+	DebugLogger.log("UIManager", "TurnModal Panel mouse entered. Hiding tooltip")
+	ui_manager.hide_region_tooltip()

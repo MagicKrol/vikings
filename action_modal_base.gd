@@ -26,6 +26,7 @@ var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
 var select_tooltip_modal: SelectTooltipModal = null
+var select_tooltip_modal_nores: SelectTooltipModalNoRes = null
 
 func _ready():
 	_setup_references()
@@ -38,6 +39,7 @@ func _setup_references():
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
 	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
+	select_tooltip_modal_nores = get_node("../SelectTooltipModalNoRes") as SelectTooltipModalNoRes
 
 func hide_modal() -> void:
 	if info_modal != null and info_modal.visible:
@@ -48,6 +50,8 @@ func hide_modal() -> void:
 	
 	if ui_manager:
 		ui_manager.set_modal_active(false)
+
+	hide_tooltips()
 
 func _make_button(text: String, is_first: bool, is_last: bool, font: Font) -> Button:
 	var b := Button.new()
@@ -204,9 +208,17 @@ func _resize_modal(num_buttons: int) -> void:
 	# Note: Do not resize the root Control here; keep visuals aligned to Border/OuterFrame/InnerPanel.
 
 func _on_tooltip_hovered(tooltip_key: String) -> void:
-	if select_tooltip_modal != null:
-		select_tooltip_modal.show_tooltip(tooltip_key)
+	show_message_tooltip(tooltip_key)
 
 func _on_tooltip_unhovered() -> void:
-	if select_tooltip_modal != null:
-		select_tooltip_modal.hide_tooltip()
+	hide_tooltips()
+
+func show_message_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
+	select_tooltip_modal_nores.show_tooltip(tooltip_key, context_data)
+
+func show_resource_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
+	select_tooltip_modal.show_tooltip(tooltip_key, context_data)
+
+func hide_tooltips() -> void:
+	select_tooltip_modal.hide_tooltip()
+	select_tooltip_modal_nores.hide_tooltip()

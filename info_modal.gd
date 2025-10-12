@@ -26,6 +26,7 @@ const PROGRESS_TEX_RED: Texture2D = preload("res://images/progressbar_red.png")
 var _progress_style_green: StyleBoxTexture
 var _progress_style_yellow: StyleBoxTexture
 var _progress_style_red: StyleBoxTexture
+@onready var army_texture: TextureRect = $ArmyTexture
 
 func _ready():
 	# Get references
@@ -109,6 +110,7 @@ func _update_army_display() -> void:
 	var region_node = get_node("Panel/Region")
 	army_node.visible = true
 	region_node.visible = false
+	army_texture.visible = true
 	
 	# Update army header
 	var army_name_label = get_node("Panel/Army/HeaderSection/ArmyName")
@@ -198,6 +200,7 @@ func _update_region_display() -> void:
 	var region_node = get_node("Panel/Region")
 	army_node.visible = false
 	region_node.visible = true
+	army_texture.visible = false
 	
 	# Update region header with formatted name
 	var region_name_label = get_node("Panel/Region/HeaderSection/RegionName")

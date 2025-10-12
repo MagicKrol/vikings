@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://7iyyajasdhd3"]
+[gd_scene load_steps=8 format=3 uid="uid://7iyyajasdhd3"]
 
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_1swsd"]
 [ext_resource type="Script" path="res://turn_modal.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_23kdy"]
-[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_fkqds"]
+[ext_resource type="Texture2D" uid="uid://cu8m5fc6u2i8n" path="res://images/nextturn.png" id="3_rrvo3"]
+[ext_resource type="Theme" uid="uid://be7ds41tr54fu" path="res://themes/turn_modal_button_theme.tres" id="4_turn_button"]
+[ext_resource type="Theme" uid="uid://c63h6sn4tyxgd" path="res://themes/turn_modal_header_theme.tres" id="5_turn_header"]
 
 [sub_resource type="Theme" id="Theme_fcepg"]
 default_font = ExtResource("1_1swsd")
@@ -39,15 +40,14 @@ script = ExtResource("1_script")
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 250.0
-offset_bottom = 135.0
-texture = ExtResource("2_23kdy")
+offset_bottom = 140.0
+texture = ExtResource("3_rrvo3")
 expand_mode = 2
-stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 250.0
-offset_bottom = 135.0
+offset_bottom = 140.0
 scale = Vector2(0.998918, 1.00196)
 theme_override_styles/panel = SubResource("StyleBoxFlat_11gwm")
 
@@ -57,26 +57,35 @@ offset_top = 5.0
 offset_right = 250.0
 offset_bottom = 129.0
 
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
 [node name="TurnNumber" type="Label" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+theme = ExtResource("5_turn_header")
 text = "Turn 12"
 horizontal_alignment = 1
 
 [node name="Player" type="Label" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+theme = ExtResource("5_turn_header")
+theme_override_constants/outline_size = 5
 text = "Lord Balirn"
 horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
 
 [node name="Button" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer/Button"]
-custom_minimum_size = Vector2(38, 0)
 layout_mode = 2
 
 [node name="EndTurnButton" type="Button" parent="Panel/VBoxContainer/Button"]
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
-theme = ExtResource("4_fkqds")
+theme = ExtResource("4_turn_button")
 text = "END TURN"

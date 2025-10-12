@@ -1,0 +1,13 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://c63h6sn4tyxgd"]
+
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1"]
+
+[sub_resource type="FontVariation" id="FontVariation_header"]
+base_font = ExtResource("1")
+variation_embolden = 0.5
+spacing_glyph = 1
+
+[resource]
+default_font = SubResource("FontVariation_header")
+default_font_size = 26
+Label/fonts/font = SubResource("FontVariation_header")

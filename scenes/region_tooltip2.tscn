@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://cml12by6pyhyc"]
 
 [ext_resource type="Script" path="res://region_tooltip_2.gd" id="1_65wef"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_u85qw"]
+[ext_resource type="Texture2D" uid="uid://1mmetp84t5rh" path="res://images/SelectTooltipModal2.png" id="3_5k8rn"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_owbma"]
 [ext_resource type="Texture2D" uid="uid://c30y8te4yqwy0" path="res://images/icons/population.png" id="4_pop"]
 [ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/food.png" id="5_food"]
@@ -32,28 +32,30 @@ script = ExtResource("1_65wef")
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 240.0
-offset_bottom = 100.0
-texture = ExtResource("2_u85qw")
-expand_mode = 1
-stretch_mode = 1
+offset_bottom = 110.0
+texture = ExtResource("3_5k8rn")
+expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 240.0
-offset_bottom = 100.0
+offset_bottom = 110.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_1b424")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-offset_left = 7.0
-offset_top = 2.0
-offset_right = 233.0
-offset_bottom = 143.0
+offset_top = 7.0
+offset_right = 240.0
+offset_bottom = 148.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 5
 
 [node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection"]
 layout_mode = 2
 
 [node name="RegionName" type="Label" parent="Panel/Army/HeaderSection"]

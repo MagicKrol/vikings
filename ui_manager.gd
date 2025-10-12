@@ -86,7 +86,12 @@ func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
 	is_modal_active = active
 	if is_modal_active and region_tooltip and region_tooltip.visible:
-		region_tooltip.hide_tooltip()
+		hide_region_tooltip()
+
+func hide_region_tooltip() -> void:
+	DebugLogger.log("UIManager", "hide_region_tooltip called. visible=" + str(region_tooltip.visible))
+	region_tooltip.hide_tooltip()
+	last_hovered_region = null
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
@@ -103,30 +108,41 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 	"""Handle mouse movement to show/hide region tooltips"""
 	if not region_tooltip or not map_generator:
 		return
-	
+
 	# Don't show tooltips when any modal is active
 	if is_modal_active:
 		if region_tooltip.visible:
-			region_tooltip.hide_tooltip()
+			hide_region_tooltip()
 		return
-	
+
+	var hovered_control = get_viewport().gui_get_hovered_control()
+	if hovered_control:
+		DebugLogger.log("UIManager", "Hovered control: " + hovered_control.name)
+	else:
+		DebugLogger.log("UIManager", "Hovered control: null")
+	if _is_blocking_control(hovered_control):
+		hide_region_tooltip()
+		return
+
 	# Convert mouse position to world coordinates using same method as click manager
 	var world_pos = _convert_screen_to_world_pos(event.global_position)
-	
+
 	# Find region under mouse
 	var hovered_region = _get_region_under_mouse(world_pos)
-	
+
 	if hovered_region != last_hovered_region:
 		if hovered_region:
 			# Show tooltip for new region
+			DebugLogger.log("UIManager", "Showing tooltip for region id=" + str(hovered_region.get_region_id()))
 			region_tooltip.show_region_tooltip(hovered_region, event.position)
 		else:
 			# Hide tooltip when not over any region
-			region_tooltip.hide_tooltip()
+			hide_region_tooltip()
 		
 		last_hovered_region = hovered_region
 	elif hovered_region and region_tooltip.visible:
 		# Update tooltip position if still hovering same region
+		DebugLogger.log("UIManager", "Updating tooltip position for region id=" + str(hovered_region.get_region_id()))
 		region_tooltip.update_position(event.position)
 
 func _convert_screen_to_world_pos(screen_pos: Vector2) -> Vector2:
@@ -150,9 +166,12 @@ func _get_region_under_mouse(mouse_pos: Vector2) -> Region:
 	for child in regions_node.get_children():
 		if child is Region:
 			var region = child as Region
-			if not region.is_ocean_region():
-				if _is_point_in_region(mouse_pos, region):
-					return region
+			if region.is_ocean_region():
+				continue
+			if region.get_region_type() == RegionTypeEnum.Type.MOUNTAINS:
+				continue
+			if _is_point_in_region(mouse_pos, region):
+				return region
 	
 	return null
 
@@ -177,6 +196,35 @@ func _is_point_in_region(point: Vector2, region: Region) -> bool:
 
 	
 	return is_inside
+
+func _is_blocking_control(control: Control) -> bool:
+	if control == null:
+		DebugLogger.log("UIManager", "_is_blocking_control: control is null")
+		return false
+	if not control.is_visible_in_tree():
+		DebugLogger.log("UIManager", "_is_blocking_control: control " + control.name + " not visible")
+		return false
+	# Allow tooltip itself and its children
+	if control == region_tooltip or region_tooltip.is_ancestor_of(control):
+		DebugLogger.log("UIManager", "_is_blocking_control: control " + control.name + " is tooltip or child")
+		return false
+	var blockers = [
+		_turn_modal,
+		_player_status_modal2,
+		_info_modal,
+		_move_modal,
+		_select_modal,
+		_army_select_modal,
+		_region_select_modal,
+		battle_modal
+	]
+	for blocker in blockers:
+		if blocker and blocker.is_visible_in_tree():
+			if control == blocker or blocker.is_ancestor_of(control) or control.is_ancestor_of(blocker):
+				DebugLogger.log("UIManager", "Blocking control detected: " + blocker.name)
+				return true
+	DebugLogger.log("UIManager", "_is_blocking_control: control " + control.name + " not blocking")
+	return false
 
 func close_all_active_modals() -> void:
 	"""Close any active modals"""

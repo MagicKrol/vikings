@@ -1,0 +1,24 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://be7ds41tr54fu"]
+
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1"]
+
+[sub_resource type="FontVariation" id="FontVariation_button"]
+base_font = ExtResource("1")
+variation_embolden = 0.5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_default"]
+
+[resource]
+default_font = SubResource("FontVariation_button")
+default_font_size = 28
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(1, 1, 1, 0.5)
+Button/colors/font_focus_color = Color(0.945098, 0.847059, 0.568627, 1)
+Button/colors/font_hover_color = Color(0.945098, 0.847059, 0.568627, 1)
+Button/colors/font_pressed_color = Color(0.945098, 0.847059, 0.568627, 1)
+Button/fonts/font = SubResource("FontVariation_button")
+Button/styles/disabled = SubResource("StyleBoxEmpty_default")
+Button/styles/focus = SubResource("StyleBoxEmpty_default")
+Button/styles/hover = SubResource("StyleBoxEmpty_default")
+Button/styles/normal = SubResource("StyleBoxEmpty_default")
+Button/styles/pressed = SubResource("StyleBoxEmpty_default")

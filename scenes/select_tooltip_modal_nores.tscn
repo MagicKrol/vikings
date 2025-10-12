@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcaf2nlkhv16y"]
+
+[ext_resource type="Script" path="res://select_tooltip_modal_nores.gd" id="1_tv1lm"]
+[ext_resource type="Texture2D" uid="uid://dgj6254a3foyr" path="res://images/tooltipmoda.png" id="2_fgk1c"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_6vuqe"]
+
+[node name="SelectTooltipModalNoRes" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 170.0
+offset_top = -199.0
+offset_right = 570.0
+offset_bottom = -49.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tv1lm")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 150.0
+texture = ExtResource("2_fgk1c")
+
+[node name="TooltipLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+offset_left = 20.0
+offset_top = 5.0
+offset_right = 380.0
+offset_bottom = 145.0
+theme = ExtResource("3_6vuqe")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Tooltip text will appear here"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
