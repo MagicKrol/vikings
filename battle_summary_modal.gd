@@ -23,7 +23,7 @@ var total_section: VBoxContainer
 
 func _ready():
 	# Get UI element references
-	battle_status_label = get_node("Panel/Army/Header/RecruitmentRegion")
+	battle_status_label = get_node("Panel/Army/Header/HBoxContainer/RecruitmentRegion")
 	attacker_name_label = get_node("Panel/Army/HeaderSection/HBoxContainer/AttackerName")
 	defender_name_label = get_node("Panel/Army/HeaderSection/HBoxContainer/DefenderName")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")

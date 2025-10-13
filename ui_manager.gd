@@ -93,6 +93,10 @@ func hide_region_tooltip() -> void:
 	region_tooltip.hide_tooltip()
 	last_hovered_region = null
 
+func hide_tooltip_due_to(control: Control) -> void:
+	DebugLogger.log("UIManager", "hide_tooltip_due_to called by " + control.name)
+	hide_region_tooltip()
+
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		_handle_mouse_motion(event)

@@ -1,13 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://ro1oniwb0py8"]
+[gd_scene load_steps=8 format=3 uid="uid://ro1oniwb0py8"]
 
 [ext_resource type="Script" path="res://battle_modal.gd" id="1_42aob"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_jogyy"]
-[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_n3hpo"]
-[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_dtpkl"]
-
-[sub_resource type="Theme" id="Theme_tx0fs"]
-default_font = ExtResource("3_n3hpo")
-default_font_size = 22
+[ext_resource type="Texture2D" uid="uid://dcxj542ybccbq" path="res://images/battlemodal.png" id="2_xc5rj"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard_theme"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header_theme"]
+[ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="4_p6ehi"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="5_button_theme"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4478i"]
 draw_center = false
@@ -27,33 +25,41 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -280.0
 offset_top = -300.0
-offset_right = 280.0
+offset_right = 370.0
 offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("3_standard_theme")
 script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 560.0
 offset_bottom = 650.0
-texture = ExtResource("2_jogyy")
-expand_mode = 1
-stretch_mode = 1
+texture = ExtResource("2_xc5rj")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 187.0
+offset_right = 600.0
+offset_bottom = 532.0
+texture = ExtResource("4_p6ehi")
+expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 560.0
+offset_right = 650.0
 offset_bottom = 650.0
-theme = SubResource("Theme_tx0fs")
+theme = ExtResource("3_standard_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
 offset_left = 17.5
-offset_top = 10.0
-offset_right = 549.5
-offset_bottom = 637.0
+offset_top = 17.0
+offset_right = 627.5
+offset_bottom = 644.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 15
@@ -63,8 +69,12 @@ layout_mode = 2
 
 [node name="Region" type="Label" parent="Panel/Army/Header"]
 layout_mode = 2
+theme = ExtResource("4_header_theme")
 text = "Battle for REGIONNAME"
 horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army"]
+layout_mode = 2
 
 [node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -73,29 +83,28 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
 [node name="AttackerName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "Army III"
-horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(20, 0)
+custom_minimum_size = Vector2(185, 0)
 layout_mode = 2
 
 [node name="DefenderName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 text = "ARMY IV"
-horizontal_alignment = 1
 
 [node name="Status" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
 layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(45, 0)
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
 [node name="AttackerVigor" type="Label" parent="Panel/Army/HeaderSection/Status"]
@@ -116,7 +125,7 @@ text = "Vigor: 95%"
 layout_mode = 2
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(45, 0)
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -135,7 +144,7 @@ text = "Unit"
 horizontal_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(20, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="DefenderRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -152,7 +161,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Peasants"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
@@ -186,7 +195,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Archers"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Archers"]
@@ -220,7 +229,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Spearmen"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
@@ -254,7 +263,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordsmen"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Swordsmen"]
@@ -288,7 +297,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Crossbowmen"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
@@ -322,7 +331,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Horsemen"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
@@ -356,7 +365,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Knights"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Knights"]
@@ -390,7 +399,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Mounted Knights"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
@@ -424,7 +433,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/UnitsSection/Royal Guard"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
@@ -461,7 +470,7 @@ custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/TotalSection/Total"]
-custom_minimum_size = Vector2(55, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/TotalSection/Total"]
@@ -500,8 +509,9 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Message" type="Label" parent="Panel/Army/MessageSection/HBoxContainer"]
-custom_minimum_size = Vector2(520, 0)
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
+text = "asdasdaa"
 horizontal_alignment = 1
 
 [node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
@@ -514,14 +524,13 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
-custom_minimum_size = Vector2(202, 0)
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("4_dtpkl")
+theme = ExtResource("5_button_theme")
 text = "Continue"
 
-[node name="Value" type="Label" parent="."]
-layout_mode = 0
-text = "15 / 17"
+[node name="BoxContainer" type="BoxContainer" parent="Panel/Army"]
+layout_mode = 2

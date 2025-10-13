@@ -41,10 +41,11 @@ Main (Node2D) [place_armies.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
 │	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd]
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
-│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd]
+│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling
+│	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
 │	├ PlayerStatusModal2 [scenes/player_status_modal2.tscn] [player_status_modal2.gd] – resource HUD; hides RegionTooltip2 on mouse enter
-│	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2
+│	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
 │	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd]
 │	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd]
 │	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd]
@@ -53,6 +54,7 @@ Main (Node2D) [place_armies.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd]
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
+│	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
 	├ Player1..Player6 (Node2D) – reserved containers
@@ -163,7 +165,7 @@ editor_start.tscn (Editor Start)
 - ArmyMovementPlanner.gd: High-level army movement coordination using canonical raw final scoring from ArmyTargetScorer. Applies danger penalty as separate adjustment after raw final score.
 
 ### VisualManager.gd (VisualManager)
-- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Move highlight uses looping alpha tween (0.5↔0.75); hover shows a cloned overlay at 0.85 while the base tween keeps running.
+- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Move highlight uses looping alpha tween (0.5↔0.75); hover shows a cloned overlay at 0.85 while the base tween keeps running and hides the region tooltip during move highlighting.
 
 ### map_editor.gd (MapEditor)
 - Purpose: Map editor mode controller for toggling editor UI.

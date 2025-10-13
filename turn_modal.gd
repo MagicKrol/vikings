@@ -33,9 +33,9 @@ func update_turn_display() -> void:
 	"""Update the turn and player information display"""
 	if not game_manager:
 		return
-	
+
 	var current_player = game_manager.get_current_player()
-	var player_color = GameParameters.get_player_color(current_player)
+	var player_color = _get_player_label_color(GameParameters.get_player_color(current_player))
 	
 	# Update turn number
 	var turn_label = get_node("Panel/VBoxContainer/TurnNumber")
@@ -57,6 +57,9 @@ func update_turn_display() -> void:
 	else:
 		end_turn_btn.text = "END TURN"
 
+func _get_player_label_color(base_color: Color) -> Color:
+	return Color.from_hsv(base_color.h, base_color.s, 0.6, base_color.a)
+
 func refresh_from_game_state() -> void:
 	"""Refresh display from current game state"""
 	update_turn_display()
@@ -75,8 +78,8 @@ func _on_end_turn_button_pressed():
 
 func _on_mouse_entered() -> void:
 	DebugLogger.log("UIManager", "TurnModal mouse entered. Hiding tooltip")
-	ui_manager.hide_region_tooltip()
+	ui_manager.hide_tooltip_due_to(self)
 
 func _on_panel_mouse_entered() -> void:
 	DebugLogger.log("UIManager", "TurnModal Panel mouse entered. Hiding tooltip")
-	ui_manager.hide_region_tooltip()
+	ui_manager.hide_tooltip_due_to(self)

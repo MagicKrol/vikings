@@ -9,15 +9,19 @@ var selected_army: Army = null
 
 # Reference to the sound manager
 var sound_manager: SoundManager = null
+var ui_manager: UIManager = null
 
 func _ready():
 	# Get button reference and connect signal
 	var button = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder/Button")
-	if button:
-		button.pressed.connect(_on_cancel_move_pressed)
+	button.pressed.connect(_on_cancel_move_pressed)
 	
 	# Get sound manager reference
 	sound_manager = get_node("../../SoundManager") as SoundManager
+	ui_manager = get_node("../UIManager") as UIManager
+	mouse_entered.connect(_on_mouse_entered)
+	var panel = get_node("Panel") as Control
+	panel.mouse_entered.connect(_on_panel_mouse_entered)
 	
 	# Initially hidden
 	visible = false
@@ -47,6 +51,12 @@ func _cancel_move() -> void:
 	if army_manager:
 		army_manager.deselect_army()
 	hide_move_modal()
+
+func _on_mouse_entered() -> void:
+	ui_manager.hide_tooltip_due_to(self)
+
+func _on_panel_mouse_entered() -> void:
+	ui_manager.hide_tooltip_due_to(self)
 
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle ESC key to cancel move"""

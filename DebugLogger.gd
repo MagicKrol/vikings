@@ -64,7 +64,7 @@ var debug_categories: Dictionary = {
 	"GameInit": false,             # Game initialization and setup
 	"SaveLoad": false,             # Save and load operations
 	"Testing": false,                # Test framework output
-	"UIManager": false
+	"UIManager": true
 }
 
 # Color coding for different log levels

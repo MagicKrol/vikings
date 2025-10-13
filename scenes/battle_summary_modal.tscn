@@ -1,13 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://cshghdvr7dx5u"]
 
 [ext_resource type="Script" path="res://battle_summary_modal.gd" id="1_4o5sl"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_aqqhs"]
-[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_eemti"]
-[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_vn5sm"]
-
-[sub_resource type="Theme" id="Theme_h27cw"]
-default_font = ExtResource("3_eemti")
-default_font_size = 22
+[ext_resource type="Texture2D" uid="uid://bkj1ve8bv3yo" path="res://images/battlesummmary.png" id="3_2el0x"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard_theme"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header_theme"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="5_button_theme"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
 draw_center = false
@@ -31,28 +28,29 @@ offset_right = 510.0
 offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("3_standard_theme")
 script = ExtResource("1_4o5sl")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 1020.0
 offset_bottom = 600.0
-texture = ExtResource("2_aqqhs")
-expand_mode = 1
+texture = ExtResource("3_2el0x")
+expand_mode = 2
 stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 1020.0
 offset_bottom = 600.0
-theme = SubResource("Theme_h27cw")
+theme = ExtResource("3_standard_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_wgf6c")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-offset_left = 20.0
+offset_left = 35.0
 offset_top = 20.0
-offset_right = 1000.0
+offset_right = 1015.0
 offset_bottom = 579.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -61,10 +59,19 @@ theme_override_constants/separation = 15
 [node name="Header" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
-[node name="RecruitmentRegion" type="Label" parent="Panel/Army/Header"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/Header"]
 layout_mode = 2
+
+[node name="RecruitmentRegion" type="Label" parent="Panel/Army/Header/HBoxContainer"]
+custom_minimum_size = Vector2(940, 0)
+layout_mode = 2
+theme = ExtResource("4_header_theme")
 text = "Battle Won!"
 horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/Header/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
 
 [node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -93,6 +100,9 @@ text = "Recruits"
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
 layout_mode = 2
 
+[node name="MarginContainer7" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+layout_mode = 2
+
 [node name="AttackerDead" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 layout_mode = 2
 text = "Dead"
@@ -108,7 +118,7 @@ text = "Wounded"
 horizontal_alignment = 1
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -117,7 +127,7 @@ text = "Remain"
 horizontal_alignment = 1
 
 [node name="MarginContainer6" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 
 [node name="UnitName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -136,7 +146,7 @@ text = "Dead"
 horizontal_alignment = 1
 
 [node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 
 [node name="DefenderWounded" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -145,7 +155,7 @@ text = "Wounded"
 horizontal_alignment = 1
 
 [node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
 [node name="DefenderRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -917,5 +927,5 @@ layout_mode = 2
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("4_vn5sm")
+theme = ExtResource("5_button_theme")
 text = "Continue"

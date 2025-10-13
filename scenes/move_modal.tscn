@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cykx27qbqfbie"]
 
 [ext_resource type="Script" path="res://move_modal.gd" id="1_emb2f"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_4yfhd"]
+[ext_resource type="Texture2D" uid="uid://cvnr33wn44x2k" path="res://images/movemodal.png" id="2_s4lmt"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_6ahqv"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_button_theme"]
 
@@ -22,7 +22,6 @@ shadow_size = 5
 bg_color = Color(0, 0, 0, 1)
 
 [node name="MoveModal" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -31,24 +30,22 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -115.0
 offset_top = 360.0
-offset_right = 115.0
-offset_bottom = 440.0
+offset_right = 135.0
+offset_bottom = 460.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_emb2f")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 230.0
-offset_bottom = 80.0
-texture = ExtResource("2_4yfhd")
-expand_mode = 1
-stretch_mode = 1
+offset_right = 250.0
+offset_bottom = 100.0
+texture = ExtResource("2_s4lmt")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 230.0
-offset_bottom = 80.0
+offset_right = 250.0
+offset_bottom = 100.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
@@ -66,12 +63,14 @@ theme_override_constants/separation = 15
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection"]
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="ButtonBorder" type="Panel" parent="Panel/Army/ButtonSection/HBoxContainer"]

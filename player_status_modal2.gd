@@ -37,11 +37,11 @@ func _ready():
 
 func _on_mouse_entered() -> void:
 	DebugLogger.log("UIManager", "PlayerStatusModal2 mouse entered. Hiding tooltip")
-	ui_manager.hide_region_tooltip()
+	ui_manager.hide_tooltip_due_to(self)
 
 func _on_panel_mouse_entered() -> void:
 	DebugLogger.log("UIManager", "PlayerStatusModal2 Panel mouse entered. Hiding tooltip")
-	ui_manager.hide_region_tooltip()
+	ui_manager.hide_tooltip_due_to(self)
 
 func set_resource_data(resource_type: ResourcesEnum.Type, amount: int, income: int = 0) -> void:
 	"""Update resource data for a specific type"""
