@@ -23,7 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://cwr00tkaux1gm" path="res://scenes/transfer_select_modal.tscn" id="24_xybgh"]
 [ext_resource type="PackedScene" uid="uid://bsqu1omiwntnm" path="res://scenes/player_status_modal2.tscn" id="25_8wafx"]
 [ext_resource type="Script" path="res://PlayerManagerNode.gd" id="25_player"]
-[ext_resource type="PackedScene" uid="uid://bl3nnm77yt7tt" path="res://scenes/general_select_modal.tscn" id="26_shq03"]
+[ext_resource type="PackedScene" uid="uid://dv0m6i7yjqdr7" path="res://scenes/general_select_modal.tscn" id="26_shq03"]
 [ext_resource type="PackedScene" uid="uid://bregionselmod" path="res://scenes/region_select_modal.tscn" id="26_yt65y"]
 [ext_resource type="PackedScene" uid="uid://cshghdvr7dx5u" path="res://scenes/battle_summary_modal.tscn" id="27_3miyo"]
 [ext_resource type="PackedScene" uid="uid://cykx27qbqfbie" path="res://scenes/move_modal.tscn" id="27_movemodal"]
@@ -81,6 +81,8 @@ visible = false
 
 [node name="ArmySelectModal" parent="UI" instance=ExtResource("9_7d6ox")]
 visible = false
+offset_right = 120.0
+offset_bottom = 200.0
 
 [node name="UIManager" type="Control" parent="UI"]
 visible = false
@@ -133,6 +135,7 @@ visible = false
 visible = false
 
 [node name="GeneralSelectModal" parent="UI" instance=ExtResource("26_shq03")]
+visible = false
 
 [node name="RegionSelectModal" parent="UI" instance=ExtResource("26_yt65y")]
 visible = false

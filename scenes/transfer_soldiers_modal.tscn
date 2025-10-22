@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://b3ovrt5dclfvx"]
+[gd_scene load_steps=9 format=3 uid="uid://b3ovrt5dclfvx"]
 
 [ext_resource type="Script" path="res://transfer_soldiers_modal.gd" id="1_42aob"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_pp44e"]
+[ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="2_tajb3"]
+[ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="3_hgr8j"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_hm6e6"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_1d8nt"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="5_5o6hl"]
 
 [sub_resource type="Theme" id="Theme_fhs5n"]
 default_font = ExtResource("3_hm6e6")
@@ -27,22 +29,31 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -400.0
 offset_top = -290.0
-offset_right = 420.0
-offset_bottom = 260.0
+offset_right = 500.0
+offset_bottom = 310.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
-offset_right = 820.0
-offset_bottom = 550.0
-texture = ExtResource("2_pp44e")
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 600.0
+texture = ExtResource("2_tajb3")
 expand_mode = 1
-stretch_mode = 1
+
+[node name="ArmyTexture" type="TextureRect" parent="."]
+offset_left = 15.0
+offset_top = 150.0
+offset_right = 885.0
+offset_bottom = 480.0
+texture = ExtResource("3_hgr8j")
+expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
-offset_right = 820.0
-offset_bottom = 550.0
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 600.0
 theme = SubResource("Theme_fhs5n")
 theme_override_styles/panel = SubResource("StyleBoxFlat_l353s")
 
@@ -61,6 +72,7 @@ layout_mode = 2
 
 [node name="Header" type="Label" parent="Panel/Army/Header"]
 layout_mode = 2
+theme = ExtResource("5_5o6hl")
 text = "Soldiers Transfer"
 horizontal_alignment = 1
 

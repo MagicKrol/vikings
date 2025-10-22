@@ -36,20 +36,21 @@ Main (Node2D) [place_armies.gd]
 │	├ UIManager (Control) [ui_manager.gd]
 │	├ ArmyModal [scenes/army_modal.tscn] [army_modal.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
-│	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd]
+│	├ GeneralSelectModal [scenes/general_select_modal.tscn] [general_select_modal.gd] – fixed-size menu with textured backdrop, themed header, region + army buttons
+│	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
-│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd]
+│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout matching general modal; themed header with region action buttons (white 22px font)
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
 │	├ PlayerStatusModal2 [scenes/player_status_modal2.tscn] [player_status_modal2.gd] – resource HUD; hides RegionTooltip2 on mouse enter
 │	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
-│	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd]
+│	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd] – info-modal fonts with +/-10/1 number buttons per unit; sliders removed
 │	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd]
 │	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd]
-│	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd]
+│	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd]

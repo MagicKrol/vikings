@@ -1,22 +1,47 @@
-[gd_scene load_steps=7 format=3 uid="uid://bus48vblq4ked"]
+[gd_scene load_steps=14 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
-[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="2_ykq2s"]
-[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_b8gke"]
-[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_s8e3m"]
-
-[sub_resource type="Theme" id="Theme_h27cw"]
-default_font = ExtResource("3_b8gke")
-default_font_size = 22
+[ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="2_yfl7o"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header"]
+[ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="4_ufnl7"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="5_s8e3m"]
+[ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="6_gu7nv"]
+[ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/coin.png" id="7_m17ys"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
 draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 shadow_size = 5
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_68w2c"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 1.0
+texture = ExtResource("6_gu7nv")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r3pxw"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pressed_number"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 1.0
+texture = ExtResource("6_gu7nv")
+modulate_color = Color(1, 1, 1, 0.552941)
+
+[sub_resource type="Theme" id="Theme_NumberButtons"]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/icon_max_width = 0
+Button/constants/outline_size = 0
+Button/styles/disabled = SubResource("StyleBoxTexture_68w2c")
+Button/styles/focus = SubResource("StyleBoxEmpty_r3pxw")
+Button/styles/hover = SubResource("StyleBoxTexture_68w2c")
+Button/styles/normal = SubResource("StyleBoxTexture_68w2c")
+Button/styles/pressed = SubResource("StyleBoxTexture_pressed_number")
 
 [node name="RecruitmentModal" type="Control"]
 layout_mode = 3
@@ -27,44 +52,82 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -400.0
 offset_top = -200.0
-offset_right = 440.0
-offset_bottom = 350.0
+offset_right = 500.0
+offset_bottom = 400.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("3_standard")
 script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 840.0
-offset_bottom = 550.0
-texture = ExtResource("2_ykq2s")
-expand_mode = 1
-stretch_mode = 1
+offset_right = 900.0
+offset_bottom = 600.0
+texture = ExtResource("2_yfl7o")
+expand_mode = 3
+
+[node name="ArmyTexture" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 150.0
+offset_right = 885.0
+offset_bottom = 480.0
+texture = ExtResource("4_ufnl7")
+expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 840.0
-offset_bottom = 550.0
-theme = SubResource("Theme_h27cw")
+offset_right = 900.0
+offset_bottom = 600.0
+theme = ExtResource("3_standard")
 theme_override_styles/panel = SubResource("StyleBoxFlat_wgf6c")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-offset_left = 23.0
+offset_left = 30.0
 offset_top = 20.0
-offset_right = 823.0
-offset_bottom = 530.0
+offset_right = 890.0
+offset_bottom = 620.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 5
 
 [node name="Header" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
 [node name="RecruitmentRegion" type="Label" parent="Panel/Army/Header"]
 layout_mode = 2
+theme = ExtResource("4_header")
 text = "Recruitment in Bornholm"
 horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="AvailableRecruits" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/AvailableRecruits"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
+layout_mode = 2
+text = "Available recruits:"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1203"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army"]
+layout_mode = 2
 
 [node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -78,7 +141,7 @@ text = "Army III"
 horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(225, 0)
 layout_mode = 2
 
 [node name="RecruitmentLabel" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
@@ -87,13 +150,16 @@ text = "Recruits"
 horizontal_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(130, 0)
+custom_minimum_size = Vector2(165, 0)
 layout_mode = 2
 
 [node name="CostLabel" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
 layout_mode = 2
 text = "Cost"
 horizontal_alignment = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/Army"]
+layout_mode = 2
 
 [node name="UnitsSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -110,18 +176,42 @@ text = "Peasants:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "4534"
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Peasants"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Peasants"]
 custom_minimum_size = Vector2(20, 0)
@@ -142,22 +232,48 @@ text = "Spearmen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "15"
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Spearmen"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Spearmen"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/Army/UnitsSection/Spearmen"]
+visible = false
+layout_mode = 2
+texture = ExtResource("7_m17ys")
+expand_mode = 2
 
 [node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
 layout_mode = 2
@@ -175,18 +291,38 @@ text = "Archers:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Archers"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "13"
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Archers"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Archers"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Archers"]
 custom_minimum_size = Vector2(20, 0)
@@ -203,23 +339,43 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-text = "Swordmen:"
+text = "Swordsmen:"
 
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "5"
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Swordmen"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordmen"]
 custom_minimum_size = Vector2(20, 0)
@@ -241,19 +397,39 @@ text = "Crossbowmen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0
 "
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Crossbowmen"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Crossbowmen"]
 custom_minimum_size = Vector2(20, 0)
@@ -275,19 +451,39 @@ text = "Horsemen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0
 "
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Horsemen"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Horsemen"]
 custom_minimum_size = Vector2(20, 0)
@@ -309,19 +505,39 @@ text = "Knights:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Knights"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "2
 "
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Knights"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Knights"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Knights"]
 custom_minimum_size = Vector2(20, 0)
@@ -343,18 +559,38 @@ text = "Mounted Knights:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Mounted Knights"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Mounted Knights"]
 custom_minimum_size = Vector2(20, 0)
@@ -376,19 +612,39 @@ text = "Royal Guard:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0
 "
 
 [node name="HiredRecruits" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "453"
 
-[node name="Buttons" type="HSlider" parent="Panel/Army/UnitsSection/Royal Guard"]
-custom_minimum_size = Vector2(150, 30)
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_vertical = 1
-value = 50.0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Royal Guard"]
 custom_minimum_size = Vector2(20, 0)
@@ -397,6 +653,10 @@ layout_mode = 2
 [node name="Cost" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
 layout_mode = 2
 text = "Gold: 20 iron: 1"
+
+[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
 
 [node name="TotalSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -412,19 +672,19 @@ text = "Total:"
 [node name="TotalValue" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "1231
 "
 
 [node name="TotalHiredValue" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "343"
 
-[node name="TotalAvailable" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-text = "/ 400 Available 
-"
 
 [node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -438,5 +698,5 @@ layout_mode = 2
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("4_s8e3m")
+theme = ExtResource("5_s8e3m")
 text = "Continue"

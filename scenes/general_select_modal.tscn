@@ -1,100 +1,55 @@
-[gd_scene load_steps=8 format=3 uid="uid://bl3nnm77yt7tt"]
+[gd_scene load_steps=4 format=3 uid="uid://dv0m6i7yjqdr7"]
 
 [ext_resource type="Script" path="res://general_select_modal.gd" id="1_1f07t"]
-[ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="2_1jgsl"]
-[ext_resource type="Texture2D" uid="uid://d1yg84rafvbo7" path="res://images/modal_bg6.png" id="3_gjdoo"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8gcrg"]
-border_color = Color(0, 0, 0, 1)
-border_blend = true
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_trljc"]
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-
-[sub_resource type="Theme" id="Theme_tn0g7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qllfe"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0, 0, 0, 0.847059)
-shadow_size = 5
+[ext_resource type="Texture2D" uid="uid://c3duu81d31031" path="res://images/selectmenu.png" id="2_k55k4"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="3_header_theme"]
 
 [node name="GeneralSelectModal" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 810.0
 offset_top = 340.0
-offset_right = 1080.0
-offset_bottom = 540.0
+offset_right = 1110.0
+offset_bottom = 940.0
 script = ExtResource("1_1f07t")
 
-[node name="OuterFrame" type="Panel" parent="."]
-visible = false
-clip_children = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -20.0
-offset_bottom = -5.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(1.00233, 1.00736)
-theme_override_styles/panel = SubResource("StyleBoxFlat_8gcrg")
-
-[node name="TextureRect" type="TextureRect" parent="OuterFrame"]
-visible = false
-layout_mode = 0
-offset_right = 400.0
+[node name="Top" type="TextureRect" parent="."]
+layout_mode = 2
+offset_right = 300.0
 offset_bottom = 400.0
-texture = ExtResource("2_1jgsl")
-expand_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_k55k4")
 
-[node name="InnerPanel" type="Panel" parent="."]
-clip_children = 1
-layout_mode = 1
-anchors_preset = 15
+[node name="InnerPanel" type="VBoxContainer" parent="."]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = 405.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderSection" type="Control" parent="InnerPanel"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeaderLabel" type="Label" parent="InnerPanel/HeaderSection"]
+layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.997566, 0.999408)
-theme_override_styles/panel = SubResource("StyleBoxFlat_trljc")
-
-[node name="TextureRect" type="TextureRect" parent="InnerPanel"]
-layout_mode = 0
-offset_right = 380.0
-offset_bottom = 380.0
-texture = ExtResource("3_gjdoo")
-expand_mode = 2
+theme = ExtResource("3_header_theme")
+text = "Select Target"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ButtonContainer" type="VBoxContainer" parent="InnerPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Border" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 270.0
-offset_bottom = 200.0
-mouse_filter = 2
-theme = SubResource("Theme_tn0g7")
-theme_override_styles/panel = SubResource("StyleBoxFlat_qllfe")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0

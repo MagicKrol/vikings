@@ -9,6 +9,7 @@ var cost_header_label: Label
 var army_units_container: VBoxContainer
 var total_count_label: Label
 var total_recruit_label: Label
+var available_recruits_label: Label
 var continue_button: Button
 
 # Recruitment data
@@ -19,9 +20,6 @@ var total_cost: Dictionary = {} # resource_type -> total cost
 
 # Additional manager reference
 var player_manager: PlayerManagerNode = null
-
-# Flag to prevent recursive slider updates
-var is_updating_sliders: bool = false
 
 # Common references
 var sound_manager: SoundManager = null
@@ -48,34 +46,37 @@ func _ready():
 	army_units_container = get_node("Panel/Army/UnitsSection")
 	total_count_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalValue")
 	total_recruit_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalHiredValue")
+	available_recruits_label = get_node("Panel/Army/AvailableRecruits/HBoxContainer/Value")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	
 	# Connect button signal
 	continue_button.pressed.connect(_on_continue_pressed)
 	
-	# Connect slider signals for all unit types
-	_connect_slider_signals()
+	# Connect unit adjustment buttons
+	_connect_button_signals()
 	
 	# Get additional manager reference
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 
-func _connect_slider_signals():
-	"""Connect all slider value_changed signals to handlers"""
-	var sliders = [
-		{"path": "Panel/Army/UnitsSection/Peasants/Buttons", "type": SoldierTypeEnum.Type.PEASANTS},
-		{"path": "Panel/Army/UnitsSection/Spearmen/Buttons", "type": SoldierTypeEnum.Type.SPEARMEN},
-		{"path": "Panel/Army/UnitsSection/Archers/Buttons", "type": SoldierTypeEnum.Type.ARCHERS},
-		{"path": "Panel/Army/UnitsSection/Swordmen/Buttons", "type": SoldierTypeEnum.Type.SWORDSMEN},
-		{"path": "Panel/Army/UnitsSection/Crossbowmen/Buttons", "type": SoldierTypeEnum.Type.CROSSBOWMEN},
-		{"path": "Panel/Army/UnitsSection/Horsemen/Buttons", "type": SoldierTypeEnum.Type.HORSEMEN},
-		{"path": "Panel/Army/UnitsSection/Knights/Buttons", "type": SoldierTypeEnum.Type.KNIGHTS},
-		{"path": "Panel/Army/UnitsSection/Mounted Knights/Buttons", "type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS},
-		{"path": "Panel/Army/UnitsSection/Royal Guard/Buttons", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
+func _connect_button_signals() -> void:
+	var sections = [
+		{"path": "Panel/Army/UnitsSection/Peasants", "type": SoldierTypeEnum.Type.PEASANTS},
+		{"path": "Panel/Army/UnitsSection/Spearmen", "type": SoldierTypeEnum.Type.SPEARMEN},
+		{"path": "Panel/Army/UnitsSection/Archers", "type": SoldierTypeEnum.Type.ARCHERS},
+		{"path": "Panel/Army/UnitsSection/Swordmen", "type": SoldierTypeEnum.Type.SWORDSMEN},
+		{"path": "Panel/Army/UnitsSection/Crossbowmen", "type": SoldierTypeEnum.Type.CROSSBOWMEN},
+		{"path": "Panel/Army/UnitsSection/Horsemen", "type": SoldierTypeEnum.Type.HORSEMEN},
+		{"path": "Panel/Army/UnitsSection/Knights", "type": SoldierTypeEnum.Type.KNIGHTS},
+		{"path": "Panel/Army/UnitsSection/Mounted Knights", "type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS},
+		{"path": "Panel/Army/UnitsSection/Royal Guard", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
 	]
-	
-	for slider_data in sliders:
-		var slider = get_node(slider_data.path) as HSlider
-		slider.value_changed.connect(_on_slider_changed.bind(slider_data.type))
+
+	for section_data in sections:
+		var section = get_node(section_data.path)
+		(section.get_node("Button10") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, 10))
+		(section.get_node("Button1") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, 1))
+		(section.get_node("Button1m") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, -1))
+		(section.get_node("Button10m") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, -10))
 
 func show_recruitment(army: Army, region: Region) -> void:
 	"""Show the recruitment modal with army and region information"""
@@ -226,33 +227,32 @@ func _update_unit_section(section_name: String, unit_type: SoldierTypeEnum.Type,
 			_: required_castle = "Requires Castle Tier " + str(unit_tier)
 		cost_label.text = required_castle
 	
-	# Handle slider setup
-	var slider = section.get_node("Buttons") as HSlider
-	slider.editable = is_available
-	
-	if is_available:
-		# Calculate available recruits for this unit type
-		var total_available = target_region.get_available_recruits()
-		var hired_by_others = _get_total_hired_excluding(unit_type)
-		var max_for_this_unit = total_available - hired_by_others
-		
-		# Store old max to check if it changed
-		var old_max = slider.max_value
-		
-		# Always update min/max values
-		slider.min_value = 0
-		slider.max_value = max(0, max_for_this_unit)
-		
-		# Update slider value
-		if not is_updating_sliders:
-			# Normal update: position based on hired count
-			slider.value = slider.max_value - count_to_hire
-		elif old_max != slider.max_value and count_to_hire == 0:
-			# Max changed but this unit type has 0 hired, keep at max position
-			slider.value = slider.max_value
-	else:
-		slider.value = 0
-		slider.max_value = 0
+	var button_increase_large = section.get_node("Button10") as Button
+	var button_increase_small = section.get_node("Button1") as Button
+	var button_decrease_small = section.get_node("Button1m") as Button
+	var button_decrease_large = section.get_node("Button10m") as Button
+
+	if not is_available:
+		button_increase_large.disabled = true
+		button_increase_small.disabled = true
+		button_decrease_small.disabled = true
+		button_decrease_large.disabled = true
+		button_increase_large.focus_mode = Control.FOCUS_NONE
+		button_increase_small.focus_mode = Control.FOCUS_NONE
+		button_decrease_small.focus_mode = Control.FOCUS_NONE
+		button_decrease_large.focus_mode = Control.FOCUS_NONE
+		return
+
+	var can_hire_one = _can_hire_amount(unit_type, 1)
+	button_increase_small.disabled = not can_hire_one
+	button_increase_large.disabled = not can_hire_one
+	button_decrease_small.disabled = count_to_hire <= 0
+	button_decrease_large.disabled = count_to_hire <= 0
+
+	button_increase_small.focus_mode = Control.FOCUS_ALL
+	button_increase_large.focus_mode = Control.FOCUS_ALL
+	button_decrease_small.focus_mode = Control.FOCUS_ALL
+	button_decrease_large.focus_mode = Control.FOCUS_ALL
 
 func _update_total_row() -> void:
 	"""Update the total row with army/garrison totals and recruitment totals"""
@@ -273,96 +273,86 @@ func _update_total_row() -> void:
 		total_to_hire += count
 	
 	var available_recruits = target_region.get_available_recruits()
-	
+	var remaining_recruits = max(0, available_recruits - total_to_hire)
+
 	# Update labels
 	total_count_label.text = str(total_units)
 	total_recruit_label.text = str(total_to_hire)
-	
-	# Update the "TotalAvailable" label to show available recruits
-	var total_available_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalAvailable")
-	total_available_label.text = "/ " + str(available_recruits) + " Available"
 
-func _on_slider_changed(value: float, unit_type: SoldierTypeEnum.Type) -> void:
-	"""Handle slider value changes for recruitment"""
-	if is_updating_sliders:
-		return  # Prevent recursive updates
-	
-	var slider = _get_slider_for_unit_type(unit_type)
-	var new_count = int(slider.max_value - value)  # hired = max - slider_value
-	var old_count = recruitment_counts.get(unit_type, 0)
-	var count_diff = new_count - old_count
-	
-	# Validate against total available recruits
-	var total_available = target_region.get_available_recruits()
-	var total_hired = _get_total_hired_excluding(unit_type) + new_count
-	if total_hired > total_available:
-		# Trying to hire more than available, adjust to max possible
-		new_count = total_available - _get_total_hired_excluding(unit_type)
-		count_diff = new_count - old_count
-		is_updating_sliders = true
-		slider.value = slider.max_value - new_count
-		is_updating_sliders = false
-	
-	if count_diff > 0:
-		# Hiring more units (slider moved down)
-		var unit_costs = _get_unit_costs(unit_type)
-		if _can_afford_cost_multiple(unit_costs, count_diff):
-			_deduct_unit_cost(unit_type, count_diff)
-			if new_count > 0:
-				recruitment_counts[unit_type] = new_count
-			else:
-				recruitment_counts.erase(unit_type)
-		else:
-			# Can't afford, reset slider
-			is_updating_sliders = true
-			slider.value = slider.max_value - old_count
-			is_updating_sliders = false
+	if available_recruits_label:
+		available_recruits_label.text = str(remaining_recruits)
+
+func _on_unit_button_pressed(unit_type: SoldierTypeEnum.Type, amount: int) -> void:
+	_adjust_recruitment(unit_type, amount)
+
+func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
+	if target_region == null or delta == 0 or player_manager == null:
+		return
+
+	var castle_type = target_region.get_castle_type()
+	if not GameParameters.can_recruit_unit_with_castle(unit_type, castle_type):
+		return
+
+	var current_count = recruitment_counts.get(unit_type, 0)
+	if delta > 0:
+		var free_recruits = target_region.get_available_recruits() - _get_total_hired()
+		if free_recruits <= 0:
 			return
-	elif count_diff < 0:
-		# Unhiring units (slider moved up)
-		_refund_unit_cost(unit_type, -count_diff)
+		var desired = min(delta, free_recruits)
+		var unit_costs = _get_unit_costs(unit_type)
+		var affordable = _max_affordable_units(unit_costs, desired)
+		if affordable <= 0:
+			return
+		_deduct_unit_cost(unit_type, affordable)
+		recruitment_counts[unit_type] = current_count + affordable
+	elif delta < 0:
+		if current_count <= 0:
+			return
+		var remove_amount = min(current_count, -delta)
+		if remove_amount <= 0:
+			return
+		_refund_unit_cost(unit_type, remove_amount)
+		var new_count = current_count - remove_amount
 		if new_count > 0:
 			recruitment_counts[unit_type] = new_count
 		else:
 			recruitment_counts.erase(unit_type)
-	
+
 	_update_costs()
-	is_updating_sliders = true
 	_update_recruitment_display()
-	is_updating_sliders = false
 	_update_total_row()
 
-func _get_total_hired_excluding(exclude_type: SoldierTypeEnum.Type) -> int:
-	"""Calculate total hired recruits excluding a specific unit type"""
+func _max_affordable_units(unit_costs: Dictionary, desired: int) -> int:
+	var result = desired
+	for resource_type in unit_costs:
+		var cost_per_unit = unit_costs[resource_type]
+		if cost_per_unit <= 0:
+			continue
+		var available = player_manager.get_resource_amount(resource_type)
+		var possible = int(available / cost_per_unit)
+		if possible < result:
+			result = possible
+	if result < 0:
+		return 0
+	return result
+
+func _get_total_hired() -> int:
 	var total = 0
-	for unit_type in recruitment_counts:
-		if unit_type != exclude_type:
-			total += recruitment_counts[unit_type]
+	for count in recruitment_counts.values():
+		total += count
 	return total
 
-func _get_slider_for_unit_type(unit_type: SoldierTypeEnum.Type) -> HSlider:
-	"""Get the slider for a specific unit type"""
-	match unit_type:
-		SoldierTypeEnum.Type.PEASANTS:
-			return get_node("Panel/Army/UnitsSection/Peasants/Buttons")
-		SoldierTypeEnum.Type.SPEARMEN:
-			return get_node("Panel/Army/UnitsSection/Spearmen/Buttons")
-		SoldierTypeEnum.Type.ARCHERS:
-			return get_node("Panel/Army/UnitsSection/Archers/Buttons")
-		SoldierTypeEnum.Type.SWORDSMEN:
-			return get_node("Panel/Army/UnitsSection/Swordmen/Buttons")
-		SoldierTypeEnum.Type.CROSSBOWMEN:
-			return get_node("Panel/Army/UnitsSection/Crossbowmen/Buttons")
-		SoldierTypeEnum.Type.HORSEMEN:
-			return get_node("Panel/Army/UnitsSection/Horsemen/Buttons")
-		SoldierTypeEnum.Type.KNIGHTS:
-			return get_node("Panel/Army/UnitsSection/Knights/Buttons")
-		SoldierTypeEnum.Type.MOUNTED_KNIGHTS:
-			return get_node("Panel/Army/UnitsSection/Mounted Knights/Buttons")
-		SoldierTypeEnum.Type.ROYAL_GUARD:
-			return get_node("Panel/Army/UnitsSection/Royal Guard/Buttons")
-		_:
-			return null
+func _can_hire_amount(unit_type: SoldierTypeEnum.Type, amount: int) -> bool:
+	if amount <= 0 or target_region == null or player_manager == null:
+		return false
+	var castle_type = target_region.get_castle_type()
+	if not GameParameters.can_recruit_unit_with_castle(unit_type, castle_type):
+		return false
+	var free_recruits = target_region.get_available_recruits() - _get_total_hired()
+	if free_recruits < amount:
+		return false
+	var unit_costs = _get_unit_costs(unit_type)
+	return _can_afford_cost_multiple(unit_costs, amount)
 
 func _get_unit_costs(unit_type: SoldierTypeEnum.Type) -> Dictionary:
 	"""Get the resource costs for a unit type from GameParameters"""

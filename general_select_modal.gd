@@ -1,6 +1,9 @@
 extends ActionModalBase
 class_name GeneralSelectModal
 
+const HEADER_TEXT := "Select Target"
+const BUTTON_FONT: Font = preload("res://fonts/Cinzel.ttf")
+
 # Current region and armies
 var current_region: Region = null
 var current_armies: Array[Army] = []
@@ -8,6 +11,8 @@ var current_armies: Array[Army] = []
 # Additional references specific to selection
 var army_select_modal: ArmySelectModal = null
 var region_select_modal: RegionSelectModal = null
+
+@onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
 
 func _ready():
 	super._ready()
@@ -37,47 +42,50 @@ func hide_modal() -> void:
 
 func _create_buttons() -> void:
 	_clear_buttons()
+	_update_header()
 
-	var font: Font = load("res://fonts/Cinzel.ttf")
-	var num_buttons = current_armies.size() + 2
+	_add_region_button(BUTTON_FONT)
+	_add_army_buttons(BUTTON_FONT)
 
-	_resize_modal(num_buttons)
 
-	# --- Static first button ("Select target") ---
-	var select_btn := _make_button("Select target", true, false, font)
-	select_btn.disabled = true
-	button_container.add_child(select_btn)
+func _update_header() -> void:
+	header_label.text = HEADER_TEXT
 
-	_add_separator()
 
-	# --- Region button ---
-	var region_btn := _make_button(
-		current_region.get_region_name(),
-		false,
-		false,
-		font
-	)
+func _add_region_button(font: Font) -> void:
+	var is_last := current_armies.is_empty()
+	var region_btn := _make_button(current_region.get_region_name(), true, is_last, font)
 	region_btn.pressed.connect(_on_region_button_pressed)
 	region_btn.mouse_entered.connect(_on_region_button_hovered)
 	region_btn.mouse_entered.connect(_on_region_tooltip_hovered)
 	region_btn.mouse_exited.connect(_on_button_unhovered)
+	_prepare_button(region_btn)
 	button_container.add_child(region_btn)
-
 	_add_separator()
 
-	# --- Army buttons (last one gets bottom-rounded) ---
-	for i in current_armies.size():
-		var is_last := i == current_armies.size() - 1
-		var army := current_armies[i]
-		var b := _make_button("Army " + str(army.number), false, is_last, font)
-		b.pressed.connect(_on_army_button_pressed.bind(army))
-		b.mouse_entered.connect(_on_army_button_hovered.bind(army))
-		b.mouse_entered.connect(_on_army_tooltip_hovered)
-		b.mouse_exited.connect(_on_button_unhovered)
-		button_container.add_child(b)
 
-		if not is_last:
-			_add_separator()
+func _add_army_buttons(font: Font) -> void:
+	for i in current_armies.size():
+		var army := current_armies[i]
+		var is_last := i == current_armies.size() - 1
+		var button := _make_button("Army " + str(army.number), false, is_last, font)
+		button.pressed.connect(_on_army_button_pressed.bind(army))
+		button.mouse_entered.connect(_on_army_button_hovered.bind(army))
+		button.mouse_entered.connect(_on_army_tooltip_hovered)
+		button.mouse_exited.connect(_on_button_unhovered)
+		_prepare_button(button)
+		button_container.add_child(button)
+		_add_separator()
+
+
+func _prepare_button(button: Button) -> void:
+	button.size_flags_vertical = Control.SIZE_FILL
+	button.custom_minimum_size.y = 40
+	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_hover_color", Color.WHITE)
+	button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	button.add_theme_color_override("font_disabled_color", Color.WHITE)
+	button.add_theme_font_size_override("font_size", 22)
 
 
 

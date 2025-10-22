@@ -93,6 +93,7 @@ text = "Population:"
 [node name="Value" type="Label" parent="Panel/Region/PopulationSection/Population"]
 custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "7381"
 
 [node name="Growth" type="HBoxContainer" parent="Panel/Region/PopulationSection"]
@@ -106,6 +107,7 @@ text = "Growth:"
 
 [node name="Value" type="Label" parent="Panel/Region/PopulationSection/Growth"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "+3%"
 
 [node name="Income" type="HBoxContainer" parent="Panel/Region/PopulationSection"]
@@ -119,6 +121,7 @@ text = "Income:"
 
 [node name="Value" type="Label" parent="Panel/Region/PopulationSection/Income"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "12"
 
 [node name="GarisonSection" type="VBoxContainer" parent="Panel/Region"]
@@ -136,11 +139,13 @@ text = "Garrison:"
 [node name="Value" type="Label" parent="Panel/Region/GarisonSection/Garison"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
 
 [node name="WoundedValue" type="Label" parent="Panel/Region/GarisonSection/Garison"]
 custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "(0)"
 
 [node name="Castle" type="HBoxContainer" parent="Panel/Region/GarisonSection"]
@@ -154,6 +159,7 @@ text = "Defenses:"
 [node name="Value" type="Label" parent="Panel/Region/GarisonSection/Castle"]
 custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "OUTPOST"
 
 [node name="Growth" type="HBoxContainer" parent="Panel/Region/GarisonSection"]
@@ -167,6 +173,7 @@ text = "Defense score:"
 
 [node name="Value" type="Label" parent="Panel/Region/GarisonSection/Growth"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "25%"
 
 [node name="Recruits" type="HBoxContainer" parent="Panel/Region/GarisonSection"]
@@ -181,10 +188,12 @@ text = "Recruits:"
 [node name="Value" type="Label" parent="Panel/Region/GarisonSection/Recruits"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "15 / 17"
 
 [node name="WoundedValue" type="Label" parent="Panel/Region/GarisonSection/Recruits"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "(0)"
 
 [node name="ResourcesSection" type="VBoxContainer" parent="Panel/Region"]
@@ -201,6 +210,7 @@ text = "Food:"
 
 [node name="Value" type="Label" parent="Panel/Region/ResourcesSection/Resource1"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "7381"
 
 [node name="Resource2" type="HBoxContainer" parent="Panel/Region/ResourcesSection"]
@@ -214,6 +224,7 @@ text = "Wood:"
 
 [node name="Value" type="Label" parent="Panel/Region/ResourcesSection/Resource2"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "5"
 
 [node name="Resource3" type="HBoxContainer" parent="Panel/Region/ResourcesSection"]
@@ -227,6 +238,7 @@ text = "Stone:"
 
 [node name="Value" type="Label" parent="Panel/Region/ResourcesSection/Resource3"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "3"
 
 [node name="OtherSection" type="VBoxContainer" parent="Panel/Region"]
@@ -235,11 +247,13 @@ layout_mode = 2
 [node name="Construction" type="Label" parent="Panel/Region/OtherSection"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Constructing Keep - 1 turn"
 
 [node name="Mine" type="Label" parent="Panel/Region/OtherSection"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Iron discovered"
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
@@ -319,6 +333,7 @@ text = "Vigor:"
 [node name="Value" type="Label" parent="Panel/Army/PopulationSection/Vigor"]
 custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "90%"
 
 [node name="ProgressBar" type="ProgressBar" parent="Panel/Army/PopulationSection"]
@@ -344,6 +359,7 @@ text = "Men:"
 
 [node name="Value" type="Label" parent="Panel/Army/PopulationSection/Men"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "83
 "
 
@@ -362,6 +378,7 @@ text = "Peasants:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "4533"
 
 [node name="Wounded" type="Label" parent="Panel/Army/UnitsSection/Peasants"]
@@ -379,6 +396,7 @@ text = "Spearmen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "15"
 
 [node name="Wounded" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
@@ -397,6 +415,7 @@ text = "Archers:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Archers"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "13"
 
 [node name="Wounded" type="Label" parent="Panel/Army/UnitsSection/Archers"]
@@ -415,6 +434,7 @@ text = "Swordsmen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "5"
 
 [node name="Wounded" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
@@ -433,6 +453,7 @@ text = "Crossbowmen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Crossbowmen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0
 "
 
@@ -452,6 +473,7 @@ text = "Horsemen:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Horsemen"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0
 "
 
@@ -471,6 +493,7 @@ text = "Knights:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Knights"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "2
 "
 
@@ -490,6 +513,7 @@ text = "Mounted Knights:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
 
 [node name="Wounded" type="Label" parent="Panel/Army/UnitsSection/Mounted Knights"]
@@ -508,6 +532,7 @@ text = "Royal Guard:"
 [node name="Value" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0
 "
 

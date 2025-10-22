@@ -1,6 +1,9 @@
 extends ActionModalBase
 class_name ArmySelectModal
 
+const HEADER_TEXT := "Army Actions"
+const BUTTON_FONT: Font = preload("res://fonts/Cinzel.ttf")
+
 # Current army and region
 var current_army: Army = null
 var current_region: Region = null
@@ -13,9 +16,13 @@ var transfer_select_modal: TransferSelectModal = null
 var army_manager: ArmyManager = null
 var game_manager: GameManager = null
 
+@onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
+
 func _ready():
 	super._ready()
+	button_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_setup_army_references()
+	size.x = 300
 
 func _setup_army_references():
 	select_modal = get_node("../GeneralSelectModal") as GeneralSelectModal
@@ -52,61 +59,107 @@ func hide_modal() -> void:
 
 func _create_action_buttons() -> void:
 	_clear_buttons()
-	
-	var font: Font = load("res://fonts/Cinzel.ttf")
-	var button_count = 6  # Header + Move, Camp, Transfer, Recruit, Back
-	
-	_resize_modal(button_count)
-	
-	# Header button
-	var header_btn = _make_button("Select Action", true, false, font)
-	header_btn.disabled = true
-	button_container.add_child(header_btn)
-	
-	_add_separator()
-	
-	# Move Army button
-	var move_button = _make_button("Move Army", false, false, font)
-	move_button.pressed.connect(_on_move_army_pressed)
-	move_button.mouse_entered.connect(_on_tooltip_hovered.bind("move_army"))
-	move_button.mouse_exited.connect(_on_tooltip_unhovered)
-	button_container.add_child(move_button)
-	
-	_add_separator()
-	
-	# Make Camp button
-	var camp_button = _make_button("Make Camp", false, false, font)
-	camp_button.pressed.connect(_on_make_camp_pressed)
-	camp_button.mouse_entered.connect(_on_tooltip_hovered.bind("make_camp"))
-	camp_button.mouse_exited.connect(_on_tooltip_unhovered)
-	button_container.add_child(camp_button)
-	
-	_add_separator()
-	
-	# Transfer Soldiers button
-	var transfer_button = _make_button("Transfer Soldiers", false, false, font)
-	transfer_button.pressed.connect(_on_transfer_soldiers_pressed)
-	transfer_button.mouse_entered.connect(_on_tooltip_hovered.bind("transfer_soldiers"))
-	transfer_button.mouse_exited.connect(_on_tooltip_unhovered)
-	button_container.add_child(transfer_button)
-	
-	_add_separator()
-	
-	# Recruit Soldiers button
-	var recruit_button = _make_button("Recruit Soldiers", false, false, font)
-	recruit_button.pressed.connect(_on_recruit_soldiers_pressed)
-	recruit_button.mouse_entered.connect(_on_tooltip_hovered.bind("recruit_soldiers"))
-	recruit_button.mouse_exited.connect(_on_tooltip_unhovered)
-	button_container.add_child(recruit_button)
-	
-	_add_separator()
-	
-	# Back button
-	var back_button = _make_button("Back", false, true, font)
-	back_button.pressed.connect(_on_back_pressed)
-	back_button.mouse_entered.connect(_on_tooltip_hovered.bind("back"))
-	back_button.mouse_exited.connect(_on_tooltip_unhovered)
-	button_container.add_child(back_button)
+	header_label.text = HEADER_TEXT
+
+	var button_definitions := _build_button_definitions()
+	if button_definitions.is_empty():
+		return
+
+	for i in button_definitions.size():
+		var button := _create_button_from_definition(
+			button_definitions[i],
+			i == 0,
+			i == button_definitions.size() - 1
+		)
+		button_container.add_child(button)
+		_add_separator()
+
+
+func _build_button_definitions() -> Array[Dictionary]:
+	var definitions: Array[Dictionary] = []
+
+	definitions.append({
+		"text": "Move Army",
+		"enabled": current_army != null and current_region != null,
+		"action": "_on_move_army_pressed",
+		"tooltip": Callable(self, "_on_tooltip_hovered").bind("move_army")
+	})
+
+	definitions.append({
+		"text": "Make Camp",
+		"enabled": current_army != null and current_army.has_method("make_camp"),
+		"action": "_on_make_camp_pressed",
+		"tooltip": Callable(self, "_on_tooltip_hovered").bind("make_camp")
+	})
+
+	definitions.append({
+		"text": "Transfer Soldiers",
+		"enabled": current_region != null,
+		"action": "_on_transfer_soldiers_pressed",
+		"tooltip": Callable(self, "_on_tooltip_hovered").bind("transfer_soldiers")
+	})
+
+	definitions.append({
+		"text": "Recruit Soldiers",
+		"enabled": current_army != null and current_region != null,
+		"action": "_on_recruit_soldiers_pressed",
+		"tooltip": Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers")
+	})
+
+	definitions.append({
+		"text": "Back",
+		"enabled": current_region != null,
+		"action": "_on_back_pressed",
+		"tooltip": Callable(self, "_on_tooltip_hovered").bind("back")
+	})
+
+	return definitions
+
+
+func _create_button_from_definition(button_data: Dictionary, is_first: bool, is_last: bool) -> Button:
+	var button: Button
+	var enabled: bool = button_data.get("enabled", true)
+	var text := button_data.get("text", "") as String
+	if enabled:
+		button = _make_button(text, is_first, is_last, BUTTON_FONT)
+		_prepare_button(button)
+		if button_data.has("action"):
+			button.pressed.connect(Callable(self, button_data.action))
+	else:
+		button = _make_disabled_action_button(text, is_first, is_last, BUTTON_FONT)
+		_prepare_disabled_button(button)
+
+	_attach_tooltip(button_data, button)
+	return button
+
+
+func _prepare_button(button: Button) -> void:
+	button.size_flags_vertical = Control.SIZE_FILL
+	button.custom_minimum_size.y = 40
+	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_hover_color", Color.WHITE)
+	button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	button.add_theme_color_override("font_disabled_color", Color.WHITE)
+	button.add_theme_font_size_override("font_size", 22)
+
+
+func _prepare_disabled_button(button: Button) -> void:
+	button.size_flags_vertical = Control.SIZE_FILL
+	button.custom_minimum_size.y = 40
+	button.add_theme_font_size_override("font_size", 22)
+	button.focus_mode = Control.FOCUS_NONE
+
+
+func _attach_tooltip(button_data: Dictionary, button: Button) -> void:
+	if not button_data.has("tooltip"):
+		return
+
+	var tooltip_value = button_data.tooltip
+	if tooltip_value is Callable:
+		button.mouse_entered.connect(tooltip_value)
+	else:
+		button.mouse_entered.connect(Callable(self, "_on_tooltip_hovered").bind(tooltip_value))
+	button.mouse_exited.connect(_on_tooltip_unhovered)
 
 func _on_move_army_pressed() -> void:
 	if sound_manager:

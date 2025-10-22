@@ -1,6 +1,9 @@
 extends ActionModalBase
 class_name RegionSelectModal
 
+const HEADER_TEXT := "Region Actions"
+const BUTTON_FONT: Font = preload("res://fonts/Cinzel.ttf")
+
 # Current region
 var current_region: Region = null
 
@@ -14,8 +17,11 @@ var player_manager: PlayerManagerNode = null
 var region_manager: RegionManager = null
 var game_manager: GameManager = null
 
+@onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
+
 func _ready():
 	super._ready()
+	button_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_setup_region_references()
 
 func _setup_region_references():
@@ -54,125 +60,134 @@ func hide_modal() -> void:
 
 func _create_action_buttons() -> void:
 	_clear_buttons()
-	
-	var font: Font = load("res://fonts/Cinzel.ttf")
-	var buttons_to_add: Array[Dictionary] = []
-	
-	# Header button
-	buttons_to_add.append({
-		"text": "Select Action",
-		"enabled": true,
-		"is_header": true
-	})
-	
-	# Promote Region button (only if can be promoted)
+	header_label.text = HEADER_TEXT
+
+	var button_definitions := _build_button_definitions()
+	if button_definitions.is_empty():
+		return
+
+	for i in button_definitions.size():
+		var button := _create_button_from_definition(
+			button_definitions[i],
+			i == 0,
+			i == button_definitions.size() - 1
+		)
+		button_container.add_child(button)
+		_add_separator()
+
+
+func _build_button_definitions() -> Array[Dictionary]:
+	var definitions: Array[Dictionary] = []
+
 	if current_region != null and current_region.get_region_level() < RegionLevelEnum.Level.L5:
-		var can_afford = _can_player_afford_promotion(current_region.get_region_level() + 1)
-		buttons_to_add.append({
+		var can_afford_promotion = _can_player_afford_promotion(current_region.get_region_level() + 1)
+		definitions.append({
 			"text": "Promote Region",
-			"enabled": can_afford,
+			"enabled": can_afford_promotion,
 			"action": "_on_promote_region_pressed",
 			"tooltip": Callable(self, "_on_promote_tooltip_hovered")
 		})
-	
-	# Recruit Soldiers button
-	buttons_to_add.append({
+
+	definitions.append({
 		"text": "Recruit Soldiers",
 		"enabled": true,
 		"action": "_on_recruit_soldiers_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers_garrison")
 	})
-	
-	# Build Castle button
+
 	if current_region != null:
-		var castle_data = _get_castle_button_data()
-		buttons_to_add.append(castle_data)
-	
-	# Call To Arms button
-	var has_castle = current_region != null and current_region.get_castle_type() != CastleTypeEnum.Type.NONE
-	buttons_to_add.append({
+		definitions.append(_get_castle_button_data())
+
+	var has_castle := current_region != null and current_region.get_castle_type() != CastleTypeEnum.Type.NONE
+	definitions.append({
 		"text": "Call To Arms",
 		"enabled": has_castle,
 		"action": "_on_call_to_arms_pressed",
 		"tooltip": Callable(self, "_on_call_to_arms_tooltip_hovered")
 	})
-	
-	# Ore Search button (only for hills/forest hills)
+
 	if current_region != null and GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
-		var can_search = current_region.can_search_for_ore()
-		var can_afford = _can_player_afford_ore_search()
-		buttons_to_add.append({
+		var can_search := current_region.can_search_for_ore()
+		var can_afford_ore := _can_player_afford_ore_search()
+		definitions.append({
 			"text": "Ore Search",
-			"enabled": can_search and can_afford,
+			"enabled": can_search and can_afford_ore,
 			"action": "_on_ore_search_pressed",
 			"tooltip": Callable(self, "_on_ore_search_tooltip_hovered")
 		})
-	
-	
-	# Raise Army button
-	var castle_type = current_region.get_castle_type() if current_region != null else CastleTypeEnum.Type.NONE
-	var has_outpost_or_higher = castle_type != CastleTypeEnum.Type.NONE
-	var can_afford_army = _can_player_afford_raise_army()
-	var current_player_id = game_manager.get_current_player() if game_manager != null else 1
-	var has_army_already = _region_has_army_for_player(current_player_id)
-	var army_text = "Raise Army" if has_army_already else "Raise Army"
-	
-	buttons_to_add.append({
-		"text": army_text,
+
+	var castle_type := current_region.get_castle_type() if current_region != null else CastleTypeEnum.Type.NONE
+	var has_outpost_or_higher := castle_type != CastleTypeEnum.Type.NONE
+	var can_afford_army := _can_player_afford_raise_army()
+	var current_player_id := game_manager.get_current_player() if game_manager != null else 1
+	var has_army_already := _region_has_army_for_player(current_player_id)
+	definitions.append({
+		"text": "Raise Army",
 		"enabled": has_outpost_or_higher and can_afford_army and not has_army_already,
 		"action": "_on_raise_army_pressed",
 		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
 	})
-	
-	# Back button (only if armies in region)
+
 	var armies_in_region: Array[Army] = []
 	if current_region != null:
 		for child in current_region.get_children():
 			if child is Army:
 				armies_in_region.append(child as Army)
-	
+
 	if not armies_in_region.is_empty():
-		buttons_to_add.append({
+		definitions.append({
 			"text": "Back",
 			"enabled": true,
 			"action": "_on_back_pressed",
 			"tooltip": Callable(self, "_on_tooltip_hovered").bind("back")
 		})
-	
-	_resize_modal(buttons_to_add.size())
-	
-	# Create buttons
-	for i in buttons_to_add.size():
-		var button_data = buttons_to_add[i]
-		var is_first = i == 0
-		var is_last = i == buttons_to_add.size() - 1
-		
-		var button: Button
-		
-		# Check if it's a header button
-		if button_data.has("is_header") and button_data.is_header:
-			button = _make_button(button_data.text, is_first, is_last, font)
-			button.disabled = true
-		# Check if it's a disabled action button
-		elif not button_data.enabled:
-			button = _make_disabled_action_button(button_data.text, is_first, is_last, font)
-		# Regular enabled button
-		else:
-			button = _make_button(button_data.text, is_first, is_last, font)
-			if button_data.has("action"):
-				button.pressed.connect(Callable(self, button_data.action))
-		
-		if button_data.has("tooltip"):
-			if button_data.tooltip is Callable:
-				button.mouse_entered.connect(button_data.tooltip)
-			elif button_data.tooltip is String:
-				button.mouse_entered.connect(Callable(self, "_on_tooltip_hovered").bind(button_data.tooltip))
-			button.mouse_exited.connect(_on_tooltip_unhovered)
-		
-		button_container.add_child(button)
-		
-		if not is_last:
-			_add_separator()
+
+	return definitions
+
+
+func _create_button_from_definition(button_data: Dictionary, is_first: bool, is_last: bool) -> Button:
+	var button: Button
+	var enabled: bool = button_data.get("enabled", true)
+	if enabled:
+		button = _make_button(button_data.text, is_first, is_last, BUTTON_FONT)
+		_prepare_button(button)
+		if button_data.has("action"):
+			button.pressed.connect(Callable(self, button_data.action))
+	else:
+		button = _make_disabled_action_button(button_data.text, is_first, is_last, BUTTON_FONT)
+		_prepare_disabled_button(button)
+
+	_attach_tooltip(button_data, button)
+	return button
+
+
+func _prepare_button(button: Button) -> void:
+	button.size_flags_vertical = Control.SIZE_FILL
+	button.custom_minimum_size.y = 40
+	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_hover_color", Color.WHITE)
+	button.add_theme_color_override("font_pressed_color", Color.WHITE)
+	button.add_theme_color_override("font_disabled_color", Color.WHITE)
+	button.add_theme_font_size_override("font_size", 22)
+
+
+func _prepare_disabled_button(button: Button) -> void:
+	button.size_flags_vertical = Control.SIZE_FILL
+	button.custom_minimum_size.y = 40
+	button.add_theme_font_size_override("font_size", 22)
+	button.focus_mode = Control.FOCUS_NONE
+
+
+func _attach_tooltip(button_data: Dictionary, button: Button) -> void:
+	if not button_data.has("tooltip"):
+		return
+
+	var tooltip_value = button_data.tooltip
+	if tooltip_value is Callable:
+		button.mouse_entered.connect(tooltip_value)
+	else:
+		button.mouse_entered.connect(Callable(self, "_on_tooltip_hovered").bind(tooltip_value))
+	button.mouse_exited.connect(_on_tooltip_unhovered)
 
 func _get_castle_button_data() -> Dictionary:
 	var castle_type = current_region.get_castle_type()
