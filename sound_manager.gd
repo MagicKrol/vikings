@@ -51,7 +51,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func click_sound() -> void:
 	"""Play click sound effect"""
 	if click_player and click_player.stream:
-		click_player.play()
+		pass
+		#click_player.play()
 
 func play_main_menu_music() -> void:
 	"""Play main menu music"""

@@ -147,7 +147,7 @@ editor_start.tscn (Editor Start)
 - Post-battle reselection now mirrors `ArmySelectModal -> Move Army` by clearing `UIManager` modal state so the next region click moves immediately.
 
 ### Region systems
-- region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, nearest owned castle search, recruit source aggregation, castle level lookup.
+- region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, nearest owned castle search, recruit source aggregation, castle level lookup. Registers `VisualManager` via `set_visual_manager()` so ownership changes can clear any temporary hover highlights before recoloring overlays.
 - region.gd (Region): data container with population, resources, recruits, ownership counter, garrison, castle type/upgrade, ore search, movement/passability helpers.
   - `apply_population_loss(loss, min_population)` clamps population, recalculates recruits, and forces `last_population_growth` negative for famine turns.
   - `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
@@ -166,7 +166,7 @@ editor_start.tscn (Editor Start)
 - ArmyMovementPlanner.gd: High-level army movement coordination using canonical raw final scoring from ArmyTargetScorer. Applies danger penalty as separate adjustment after raw final score.
 
 ### VisualManager.gd (VisualManager)
-- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Move highlight uses looping alpha tween (0.5↔0.75); hover shows a cloned overlay at 0.85 while the base tween keeps running and hides the region tooltip during move highlighting.
+- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Region highlights reuse `animate_region_highlight_on(region_id, params)` / `animate_region_highlight_off(region_id)` for move targets and global hover; movement uses `GameParameters.REGION_ANIM_*` alpha pairs (owned 0.5↔0.75, neutral 0.35↔0.55) with hover alphas (owned 0.85, neutral 0.55). Passing `animated=false` applies map-hover values from `GameParameters.REGION_MAP_HOVER_*` (owned base 0.6→0.7 hover, neutral base 0.2→0.3 hover). `set_map_hover_region()` uses those toned-down values on non-ocean, non-mountain land; movement highlighting remains animated.
 
 ### map_editor.gd (MapEditor)
 - Purpose: Map editor mode controller for toggling editor UI.
@@ -247,7 +247,7 @@ editor_start.tscn (Editor Start)
 - Defender (human): Withdraw button is disabled when the region has a military building or there are no owned neighboring regions. Current UX retreats defending armies to a random owned neighbor; arrow-based region selection can be added later.
 
 ## Input & UI
-- click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there.
+- click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there. Mouse motion feeds `VisualManager` both move-target hover and neutral land hover via the new `set_map_hover_region()`.
 - Movement animation: Army moves animate smoothly using tweens (`Army.animate_move_to`). `ArmyManager.move_army_to_region()` preserves global position across reparenting, computes the stacked target, animates to global target, awaits tween completion, then proceeds (ownership, battle checks, UI). All callers (`GameManager.perform_region_entry`, `ai_travel_to`) await move completion, so no new actions start until the animation ends.
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; `display_message(text)` first closes other modals (incl. TurnModal) then shows MessageModal. ESC closes any active modal via `close_all_active_modals()`. Treats mountain regions like oceans for tooltip suppression.
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
@@ -283,10 +283,11 @@ editor_start.tscn (Editor Start)
   - Summary: Battle summary displays total wounded from all sources; loss application removes from active comps/recruits.
 - Healing: `GameParameters.CAMP_HEAL_CHANCE` controls healing probability. `Army.make_camp()` calls `heal_army(false)` to attempt healing across all wounded (per-unit chance). `Army.heal_army(force_at_least_one=false)` heals each wounded unit independently by chance; if `force_at_least_one` it guarantees at least one heal when wounded remain. There is no free post-battle heal on defeat or withdrawal; healing occurs only when making camp.
  - Healing: `GameParameters.CAMP_HEAL_CHANCE` controls army healing when camping. There is no free post-battle heal on defeat/withdrawal. At the start of a player's turn, all owned regions fully heal their regional wounded pools: `RegionManager.heal_wounded_for_player(player_id)` moves `Region.wounded_garrison` back into `garrison` and clears `Region.wounded_recruits` (peasants). This is invoked in `GameManager._process_player_turn_start()` before income.
-- Ownership Overlays: Creation/update centralized in `MapGenerator`.
-  - `create_ownership_overlay(region_id, player_id)`: Creates a new `Polygon2D` named `OwnershipOverlay` with standard alpha; used for scenario setup and neutral conquests.
+- Ownership Overlays: Creation/update centralized in `MapGenerator`. Every non-ocean region always carries an `OwnershipOverlay`; neutral ownership keeps it fully transparent rather than removing it so highlight/tween logic can reuse it (existing tinted overlays are preserved).
+  - `create_ownership_overlay(region_id, player_id)`: Ensures the overlay exists, syncs the noisy polygon, and applies the player tint (alpha 0.4).
   - `update_ownership_overlay(region_id, player_id)`: Recolors existing `OwnershipOverlay` without changing alpha; used when conquering non‑neutral regions.
-  - `RegionManager.set_region_ownership` calls create for previous owner = -1, update otherwise. Prevents duplicate overlays.
+  - `remove_ownership_overlay(region_id)`: Resets overlay color to transparent neutral black (keeps node alive for reuse).
+  - `RegionManager.set_region_ownership` still calls create for previous owner = -1, update otherwise; neutralizing a region routes through `remove_ownership_overlay`.
  - InfoModal: Region view shows local garrison total in `Garison -> Value` (sum of region garrison composition; excludes available recruits).
 - TurnController owns pathfinder/scorer; calls `GameManager.ai_travel_to` for movement and battle stepping; uses `BudgetManager` and `RecruitmentManager` when armies request reinforcement.
 - PlayerManagerNode is the authoritative per-player economy and emits player-change signals used by UI.

@@ -220,6 +220,7 @@ func initialize_managers(is_scenario: bool = false):
 	_battle_manager.battle_started.connect(_on_battle_started)
 	_battle_manager.battle_finished.connect(_on_battle_finished)
 	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
+	_region_manager.set_visual_manager(_visual_manager)
 	_army_manager.set_visual_manager(_visual_manager)
 	
 	# Get the PlayerManager node FIRST before initializing other systems that depend on it

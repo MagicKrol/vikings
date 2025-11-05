@@ -39,6 +39,7 @@ var region_graph: Dictionary = {}
 
 # Reference to the map generator for region data
 var map_generator: MapGenerator
+var visual_manager: VisualManager
 
 # Region name management
 var available_names: Array[String] = []
@@ -49,6 +50,9 @@ func _init(map_gen: MapGenerator):
 	_load_region_names()
 	_build_region_graph()
 	_generate_all_region_resources()
+
+func set_visual_manager(vm: VisualManager) -> void:
+	visual_manager = vm
 
 func _load_region_names() -> void:
 	"""Load region names from regions.json file"""
@@ -126,6 +130,8 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 		# Remove overlay if present
 		if map_generator and map_generator.has_method("remove_ownership_overlay"):
 			map_generator.remove_ownership_overlay(region_id)
+		if visual_manager:
+			visual_manager.clear_region_highlight_state(region_id)
 	else:
 		# Assign ownership to player_id
 		var previous_owner: int = get_region_owner(region_id)
@@ -142,6 +148,8 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 						map_generator.create_ownership_overlay(region_id, player_id)
 					else:
 						map_generator.update_ownership_overlay(region_id, player_id)
+				if visual_manager:
+					visual_manager.clear_region_highlight_state(region_id)
 	
 	# Trigger border recalculation for colored borders
 	if map_generator and map_generator.has_method("regenerate_borders_for_region"):
@@ -164,6 +172,8 @@ func set_initial_region_ownership(region_id: int, player_id: int) -> void:
 	# Create colored overlay for owned region
 	if map_generator and map_generator.has_method("create_ownership_overlay"):
 		map_generator.create_ownership_overlay(region_id, player_id)
+	if visual_manager:
+		visual_manager.clear_region_highlight_state(region_id)
 	
 	# Trigger border recalculation for colored borders
 	if map_generator and map_generator.has_method("regenerate_borders_for_region"):

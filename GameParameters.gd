@@ -51,6 +51,18 @@ const BORDER_MIN_VALUE = 0.2                  # Minimum darkness to prevent too-
 const UI_COLOR_DEAD = Color.RED                # Used for dead counts in summaries
 const UI_COLOR_WOUNDED = Color.YELLOW          # Used for wounded counts in summaries
 
+## Region Highlight Transparency
+const REGION_ANIM_OWNED_ALPHA_FROM = 0.5
+const REGION_ANIM_OWNED_ALPHA_TO = 0.7
+const REGION_ANIM_NEUTRAL_ALPHA_FROM = 0.3
+const REGION_ANIM_NEUTRAL_ALPHA_TO = 0.5
+const REGION_MOVE_HOVER_OWNED_ALPHA = 0.75
+const REGION_MOVE_HOVER_NEUTRAL_ALPHA = 0.55
+const REGION_MAP_HOVER_OWNED_BASE_ALPHA = 0.6
+const REGION_MAP_HOVER_OWNED_HOVER_ALPHA = 0.7
+const REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA = 0.2
+const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
+
 ## Region Level Bonuses
 const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts

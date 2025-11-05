@@ -317,6 +317,7 @@ func _render_from_json() -> void:
 
 	# Sync land polygons with the generated noisy borders
 	_rebuild_region_polygons_from_borders()
+	_ensure_neutral_overlays_for_all_regions()
 
 	# Build adjacency graph for non-ocean regions and draw overlay
 	_build_and_draw_region_graph_overlay()
@@ -574,6 +575,18 @@ func _rebuild_region_polygons_from_borders() -> void:
 		var updated_polygon := _create_noisy_polygon_for_region(region_id)
 		if updated_polygon.size() >= 3:
 			polygon_node.polygon = updated_polygon
+
+func _ensure_neutral_overlays_for_all_regions() -> void:
+	for region_id in region_container_by_id.keys():
+		var region_container = region_container_by_id[region_id]
+		if region_container == null:
+			continue
+		if region_container is Region:
+			if (region_container as Region).is_ocean_region():
+				continue
+		var overlay = _get_or_create_ownership_overlay(region_id)
+		if overlay != null and overlay.color.a <= 0.001:
+			overlay.color = _get_neutral_overlay_color()
 
 
 func _create_borders_for_region(region_id: int, region_data: Dictionary, borders_container: Node2D, rng: RandomNumberGenerator) -> int:
@@ -837,54 +850,18 @@ func _get_player_border_color(player_id: int) -> Color:
 	return border_color
 
 func create_ownership_overlay(region_id: int, player_id: int) -> void:
-	"""Create a new ownership overlay named OwnershipOverlay for this region."""
-	var region_container = get_region_container_by_id(region_id)
-	if region_container == null:
-		DebugLogger.log("MapGeneration", "Error: Could not find region container for ID: " + str(region_id))
+	"""Create or recolor the ownership overlay for this region."""
+	var overlay_polygon = _get_or_create_ownership_overlay(region_id)
+	if overlay_polygon == null:
+		DebugLogger.log("MapGeneration", "Error: Could not create ownership overlay for region: " + str(region_id))
 		return
-	
-	# Get the original polygon for positioning reference
-	var original_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
-	if original_polygon == null:
-		DebugLogger.log("MapGeneration", "Error: Could not find original polygon for region: " + str(region_id))
-		return
-	
-	# This function is only for creation in fresh setups (scenario or neutral conquest)
-	# Assume no existing overlay needs updating here.
-	
-	# Create noisy polygon points that match the border noise
-	var noisy_polygon_points = _create_noisy_polygon_for_region(region_id)
-	if noisy_polygon_points.is_empty():
-		DebugLogger.log("MapGeneration", "Warning: Could not create noisy polygon for region " + str(region_id))
-		return
-	
-	# Create new ownership overlay polygon
-	var overlay_polygon = Polygon2D.new()
-	overlay_polygon.name = "OwnershipOverlay"
-	
-	# Use the noisy polygon points
-	overlay_polygon.polygon = noisy_polygon_points
-	overlay_polygon.position = original_polygon.position
-	overlay_polygon.rotation = original_polygon.rotation
-	overlay_polygon.scale = original_polygon.scale
-	
-	# Set player color with default alpha for overlays (configured on creation only)
 	var player_color = _get_player_color(player_id)
 	player_color.a = 0.4
 	overlay_polygon.color = player_color
-	
-	# Set z-index to appear above the original polygon but below other elements
-	overlay_polygon.z_index = original_polygon.z_index + 1
-	
-	# Add to region container
-	region_container.add_child(overlay_polygon)
 
 func update_ownership_overlay(region_id: int, player_id: int) -> void:
 	"""Update color of existing ownership overlay (do not change alpha)."""
-	var region_container = get_region_container_by_id(region_id)
-	if region_container == null:
-		return
-	var overlay = region_container.get_node_or_null("OwnershipOverlay") as Polygon2D
+	var overlay = _get_or_create_ownership_overlay(region_id)
 	if overlay != null:
 		var player_color = _get_player_color(player_id)
 		overlay.color = Color(player_color.r, player_color.g, player_color.b, overlay.color.a)
@@ -975,14 +952,42 @@ func _create_polygon_from_border_points(border_points: PackedVector2Array) -> Pa
 	return simplified_points
 
 func remove_ownership_overlay(region_id: int) -> void:
-	"""Remove the ownership overlay for a region"""
+	"""Reset the ownership overlay for a region back to neutral."""
+	var overlay = _get_or_create_ownership_overlay(region_id)
+	if overlay != null:
+		overlay.color = _get_neutral_overlay_color()
+
+func _get_or_create_ownership_overlay(region_id: int) -> Polygon2D:
+	"""Ensure an ownership overlay exists and matches the region polygon."""
 	var region_container = get_region_container_by_id(region_id)
 	if region_container == null:
-		return
-	
-	var overlay = region_container.get_node_or_null("OwnershipOverlay")
-	if overlay != null:
-		overlay.queue_free()
+		return null
+	var original_polygon = region_container.get_node("Polygon") as Polygon2D
+	if original_polygon == null:
+		return null
+	var overlay: Polygon2D
+	var created_overlay := false
+	if region_container.has_node("OwnershipOverlay"):
+		overlay = region_container.get_node("OwnershipOverlay") as Polygon2D
+	else:
+		overlay = Polygon2D.new()
+		overlay.name = "OwnershipOverlay"
+		region_container.add_child(overlay)
+		created_overlay = true
+	var noisy_polygon_points = _create_noisy_polygon_for_region(region_id)
+	if noisy_polygon_points.is_empty():
+		noisy_polygon_points = original_polygon.polygon
+	overlay.polygon = noisy_polygon_points
+	overlay.position = original_polygon.position
+	overlay.rotation = original_polygon.rotation
+	overlay.scale = original_polygon.scale
+	overlay.z_index = original_polygon.z_index + 1
+	if created_overlay:
+		overlay.color = _get_neutral_overlay_color()
+	return overlay
+
+func _get_neutral_overlay_color() -> Color:
+	return Color(0.0, 0.0, 0.0, 0.0)
 
 func _create_offset_border_line(original_points: PackedVector2Array, player_id: int, other_region_id: int, current_region_id: int, borders_container: Node2D) -> void:
 	"""Create an offset border line for ownership-based borders"""

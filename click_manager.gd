@@ -189,20 +189,16 @@ func _handle_mouse_motion() -> void:
 	var visual_manager = _game_manager.get_visual_manager()
 	if visual_manager == null:
 		return
-	if not visual_manager.has_move_region_highlights():
-		visual_manager.clear_move_region_hover()
-		return
-	if _army_manager == null or _army_manager.selected_army == null:
-		visual_manager.clear_move_region_hover()
-		return
 	var camera := get_node("../Camera2D") as Camera2D
 	var world_pos = camera.get_global_mouse_position()
 	var regions_node := _map_script.get_node_or_null("Regions")
 	if regions_node == null:
 		visual_manager.clear_move_region_hover()
+		visual_manager.set_map_hover_region(-1)
 		return
 	var highlighted_ids = visual_manager.get_move_region_highlight_ids()
-	var hovered_region_id = -1
+	var hovered_move_region_id = -1
+	var hovered_general_region_id = -1
 	for region_container in regions_node.get_children():
 		if not (region_container is Region):
 			continue
@@ -210,14 +206,28 @@ func _handle_mouse_motion() -> void:
 		if polygon == null:
 			continue
 		if _point_in_polygon(world_pos, polygon):
-			var candidate_id = (region_container as Region).get_region_id()
-			if highlighted_ids.has(candidate_id):
-				hovered_region_id = candidate_id
+			var region_ref: Region = region_container as Region
+			var candidate_id = region_ref.get_region_id()
+			if visual_manager.has_move_region_highlights() and _army_manager != null and _army_manager.selected_army != null and highlighted_ids.has(candidate_id):
+				hovered_move_region_id = candidate_id
+			elif _should_highlight_region_hover(region_ref) and not highlighted_ids.has(candidate_id):
+				hovered_general_region_id = candidate_id
 			break
-	if hovered_region_id != -1:
-		visual_manager.set_move_region_hover(hovered_region_id)
+	if visual_manager.has_move_region_highlights():
+		visual_manager.set_map_hover_region(-1)
+		if hovered_move_region_id != -1:
+			visual_manager.set_move_region_hover(hovered_move_region_id)
+		else:
+			visual_manager.clear_move_region_hover()
 	else:
 		visual_manager.clear_move_region_hover()
+	if not visual_manager.has_move_region_highlights():
+		if hovered_general_region_id != -1:
+			visual_manager.set_map_hover_region(hovered_general_region_id)
+			visual_manager.set_region_highlight_hover(hovered_general_region_id)
+		else:
+			visual_manager.clear_region_highlight_hover()
+			visual_manager.set_map_hover_region(-1)
 
 func _is_mountain_region(region: Region) -> bool:
 	"""Check if a region is a mountain region (unclickable)"""
@@ -225,6 +235,13 @@ func _is_mountain_region(region: Region) -> bool:
 		return false
 	var biome_name = region.get_biome().to_lower()
 	return biome_name == "mountains"
+
+func _should_highlight_region_hover(region: Region) -> bool:
+	if region == null:
+		return false
+	if region.is_ocean_region():
+		return false
+	return not _is_mountain_region(region)
 
 func _handle_editor_region_click(region_container: Node) -> void:
 	"""Handle region clicks in map editor mode - do nothing for now"""
