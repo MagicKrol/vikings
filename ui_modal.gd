@@ -71,6 +71,9 @@ func show_modal() -> void:
 	if ui_manager:
 		ui_manager.set_modal_active(true)
 
+func display_message(text: String) -> void:
+	ui_manager.display_message(text)
+
 func show_army_info(army: Army) -> void:
 	"""Show the modal with army information"""
 	if army == null:

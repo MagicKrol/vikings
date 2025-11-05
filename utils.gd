@@ -11,6 +11,9 @@ static func hex_to_color(hex: String) -> Color:
 	var b := ("0x" + hex_clean.substr(4, 2)).to_int() / 255.0
 	return Color(r, g, b)
 
+static func build_region_promotion_message(region_name: String, new_level: RegionLevelEnum.Level) -> String:
+	return region_name + " has been promoted to " + RegionLevelEnum.level_to_string(new_level)
+
 static func is_clockwise(poly: PackedVector2Array) -> bool:
 	# Calculate the signed area to determine winding order
 	if poly.size() < 3:

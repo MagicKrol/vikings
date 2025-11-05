@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://c26kgo2bb1pi5"]
+
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_014ah"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_u5ivn"]
+
+[resource]
+default_font = ExtResource("1_014ah")
+default_font_size = 20
+/icons/bg = SubResource("ImageTexture_u5ivn")

@@ -4,7 +4,7 @@
 
 [resource]
 default_font = ExtResource("2_gd4mk")
-default_font_size = 30
+default_font_size = 22
 Label/constants/line_spacing = 8
 Label/font_sizes/font_size = 30
 Label/fonts/font = ExtResource("2_gd4mk")

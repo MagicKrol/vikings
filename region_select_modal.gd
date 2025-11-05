@@ -251,7 +251,12 @@ func _on_promote_region_pressed() -> void:
 		return
 	
 	current_region.set_region_level(next_level)
-	
+	var level_name = RegionLevelEnum.level_to_string(next_level)
+	var promotion_message = "Region promoted to " + level_name + " (level " + str(int(next_level) + 1) + ")"
+	visible = false
+	message_modal.continue_clicked.connect(_on_message_modal_continue)
+	message_modal.display_message(promotion_message)
+
 	if region_manager != null:
 		region_manager.generate_region_resources(current_region)
 	
@@ -267,6 +272,10 @@ func _on_recruit_soldiers_pressed() -> void:
 	
 	if recruitment_modal != null and region_to_recruit != null and is_instance_valid(recruitment_modal) and is_instance_valid(region_to_recruit):
 		recruitment_modal.show_region_recruitment(region_to_recruit)
+
+func _on_message_modal_continue() -> void:
+	visible = true
+
 
 func _on_build_castle_pressed() -> void:
 	if sound_manager:
@@ -300,6 +309,11 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 		return
 	
 	current_region.start_castle_construction(castle_type)
+	var turns_left = current_region.get_castle_build_turns_remaining()
+	var building_name = CastleTypeEnum.type_to_string(castle_type)
+	visible = false
+	message_modal.continue_clicked.connect(_on_message_modal_continue)
+	message_modal.display_message(building_name + " will be done in " + str(turns_left) + " turn(s).")
 	
 	if info_modal != null and info_modal.visible:
 		info_modal.show_region_info(current_region, false)
@@ -325,14 +339,16 @@ func _on_ore_search_pressed() -> void:
 	
 	var search_result = region_manager.perform_ore_search(current_region, 1, player_manager)
 	
-	if search_result.success and message_modal != null and search_result.has("ore_type"):
+	if search_result.success and search_result.has("ore_type"):
 		var ore_type = search_result.ore_type
 		var ore_type_string = ResourcesEnum.type_to_string(ore_type)
 		var ore_amount = current_region.get_resource_amount(ore_type)
 		var header = ore_type_string.capitalize() + " Found!"
 		var message = "Ore size was estimated to " + str(ore_amount) + " units."
+		visible = false
+		message_modal.continue_clicked.connect(_on_message_modal_continue)
 		message_modal.display_message(header, message)
-	elif not search_result.success and message_modal != null:
+	elif not search_result.success:
 		var header = "Ore Search"
 		var remaining_attempts = current_region.get_ore_search_attempts_remaining()
 		var message: String
@@ -342,6 +358,8 @@ func _on_ore_search_pressed() -> void:
 		else:
 			message = "Ore searches exhausted. This region contains no accessible ore deposits."
 		
+		visible = false
+		message_modal.continue_clicked.connect(_on_message_modal_continue)
 		message_modal.display_message(header, message)
 	
 	if info_modal != null and info_modal.visible:
@@ -368,11 +386,10 @@ func _on_raise_army_pressed() -> void:
 	var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
 	
 	if new_army != null:
-		if message_modal != null:
-			var header = "Army Raised"
-			var army_name = new_army.name if new_army.name else "New Army"
-			var message = army_name + " has been raised in " + current_region.get_region_name() + " and will be ready next turn."
-			message_modal.display_message(header, message)
+		var army_name = new_army.name if new_army.name else "New Army"
+		visible = false
+		message_modal.continue_clicked.connect(_on_message_modal_continue)
+		message_modal.display_message(army_name + " is being raised")
 		
 		if info_modal != null and info_modal.visible:
 			info_modal.show_region_info(current_region, false)

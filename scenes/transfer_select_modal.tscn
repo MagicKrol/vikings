@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwr00tkaux1gm"]
+[gd_scene load_steps=5 format=3 uid="uid://cwr00tkaux1gm"]
 
 [ext_resource type="Script" path="res://transfer_select_modal.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://c3duu81d31031" path="res://images/selectmenu.png" id="2_djmmn"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="3_8g2pb"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="4_standard"]
 
 [node name="TransferSelectModal" type="Control"]
 layout_mode = 3
@@ -17,6 +18,7 @@ offset_right = 150.0
 offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("4_standard")
 script = ExtResource("1_script")
 
 [node name="Top" type="TextureRect" parent="."]

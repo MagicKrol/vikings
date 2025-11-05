@@ -40,7 +40,7 @@ Main (Node2D) [place_armies.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
-│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout matching general modal; themed header with region action buttons (white 22px font)
+│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
@@ -48,12 +48,12 @@ Main (Node2D) [place_armies.gd]
 │	├ PlayerStatusModal2 [scenes/player_status_modal2.tscn] [player_status_modal2.gd] – resource HUD; hides RegionTooltip2 on mouse enter
 │	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
 │	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd] – info-modal fonts with +/-10/1 number buttons per unit; sliders removed
-│	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd]
-│	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd]
+│	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd] – transfer-modal layout; region rows use +/-10/1 buttons to shift recruits into target; buttons styled via themes/number_buttons_theme.tres and total row tracks remaining recruits
+│	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer buttons move units between army/garrison; labels use standard modal text theme with white value columns like recruitment
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
-│	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd]
+│	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – simple displayMessage(text) overlay with recruitment-style continue button; emits continue_clicked for restore flows
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
@@ -249,7 +249,7 @@ editor_start.tscn (Editor Start)
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there.
 - Movement animation: Army moves animate smoothly using tweens (`Army.animate_move_to`). `ArmyManager.move_army_to_region()` preserves global position across reparenting, computes the stacked target, animates to global target, awaits tween completion, then proceeds (ownership, battle checks, UI). All callers (`GameManager.perform_region_entry`, `ai_travel_to`) await move completion, so no new actions start until the animation ends.
-- ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; provides PlayerStatusModal. ESC closes any active modal via `close_all_active_modals()`. Treats mountain regions like oceans for tooltip suppression.
+- ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; `display_message(text)` first closes other modals (incl. TurnModal) then shows MessageModal. ESC closes any active modal via `close_all_active_modals()`. Treats mountain regions like oceans for tooltip suppression.
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - select_tooltip_modal.gd: Tooltip text provider for action buttons. Uses `SelectTooltipModal` when resource costs are shown and `SelectTooltipModalNoRes` for message-only tips.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`.

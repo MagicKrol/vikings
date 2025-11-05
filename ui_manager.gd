@@ -42,6 +42,7 @@ var _player_status_modal2: PlayerStatusModal2
 var _turn_modal: TurnModal
 var _info_modal: InfoModal
 var _move_modal: MoveModal
+var _message_modal: MessageModal
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -77,10 +78,17 @@ func _ready():
 	_turn_modal = get_parent().get_node("TurnModal") as TurnModal
 	_info_modal = get_parent().get_node("InfoModal") as InfoModal
 	_move_modal = get_parent().get_node("MoveModal") as MoveModal
+	_message_modal = get_parent().get_node("MessageModal") as MessageModal
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
 	
+
+func display_message(text: String) -> void:
+	# Do not close other modals; just mark modal state and show MessageModal on top
+	set_modal_active(true)
+	_message_modal.displayMessage(text)
+
 
 func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
@@ -244,6 +252,9 @@ func close_all_active_modals() -> void:
 		_info_modal.hide_modal()
 	if _move_modal and _move_modal.visible:
 		_move_modal.hide_move_modal()
+	# Also hide TurnModal so it doesn't intercept input
+	if _turn_modal and _turn_modal.visible:
+		_turn_modal.visible = false
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""

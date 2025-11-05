@@ -1,20 +1,18 @@
 extends Control
 class_name CallToArmsModal
 
-# Styling constants (same as other modals)
-const FRAME_COLOR = Color("#b7975e")
-const BORDER_COLOR = Color.BLACK
-const SHADOW_OFFSET = Vector2(4, 4)
-const SHADOW_COLOR = Color(0, 0, 0, 0.3)
-const BORDER_WIDTH = 4.0
+const NUMBER_BUTTON_THEME := preload("res://themes/number_buttons_theme.tres")
+const STANDARD_TEXT_THEME := preload("res://themes/standard_text_modal_theme.tres")
 
 # UI elements - references to static nodes from scene
 var call_to_arms_title_label: Label
 var regions_header_label: Label
 var called_recruits_header_label: Label
 var available_recruits_header_label: Label
+var buttons_header_label: Label
 var regions_container: VBoxContainer
 var continue_button: Button
+var total_available_label: Label
 
 # Call to Arms data
 var target_region: Region = null
@@ -29,12 +27,14 @@ var game_manager: GameManager = null
 
 func _ready():
 	# Get references to static UI elements from scene
-	call_to_arms_title_label = get_node("BorderMargin/MainContainer/TitleContainer/CallToArmsTitleLabel")
-	regions_header_label = get_node("BorderMargin/MainContainer/HeaderContainer/HeaderRow/RegionsHeaderLabel")
-	called_recruits_header_label = get_node("BorderMargin/MainContainer/HeaderContainer/HeaderRow/CalledRecruitsHeaderLabel")
-	available_recruits_header_label = get_node("BorderMargin/MainContainer/HeaderContainer/HeaderRow/AvailableRecruitsHeaderLabel")
-	regions_container = get_node("BorderMargin/MainContainer/MainContent/RegionsContainer")
-	continue_button = get_node("BorderMargin/MainContainer/ButtonContainer/ContinueButton")
+	call_to_arms_title_label = get_node("Panel/Army/Header/HeaderLabel")
+	regions_header_label = get_node("Panel/Army/HeaderSection/HeaderRow/RegionsHeaderLabel")
+	called_recruits_header_label = get_node("Panel/Army/HeaderSection/HeaderRow/CalledRecruitsHeaderLabel")
+	available_recruits_header_label = get_node("Panel/Army/HeaderSection/HeaderRow/AvailableRecruitsHeaderLabel")
+	buttons_header_label = get_node("Panel/Army/HeaderSection/HeaderRow/ButtonsHeaderLabel")
+	regions_container = get_node("Panel/Army/RegionsSection/RegionsContainer")
+	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
+	total_available_label = get_node("Panel/Army/AvailableSummary/HBoxContainer/AvailableValue")
 	
 	# Connect button signal
 	continue_button.pressed.connect(_on_continue_pressed)
@@ -77,6 +77,7 @@ func hide_modal() -> void:
 	neighboring_regions.clear()
 	called_recruits.clear()
 	total_called = 0
+	total_available_label.text = "0"
 	
 	visible = false
 	
@@ -105,13 +106,8 @@ func _find_neighboring_regions() -> void:
 	var neighbor_ids = region_manager.get_neighbor_regions(target_region.get_region_id())
 	
 	# Get map generator to find region nodes
-	var map_generator = game_manager.get_node("../Map") as MapGenerator
-	if map_generator == null:
-		return
-	
-	var regions_node = map_generator.get_node_or_null("Regions")
-	if regions_node == null:
-		return
+	var map_generator: MapGenerator = game_manager.get_node("../Map")
+	var regions_node = map_generator.get_node("Regions")
 	
 	# Find neighboring regions owned by the same player
 	for neighbor_id in neighbor_ids:
@@ -128,15 +124,16 @@ func _update_display() -> void:
 	if target_region == null:
 		hide_modal()
 		return
-	
+
 	# Update title
 	call_to_arms_title_label.text = "Call to Arms"
-	
+
 	# Update headers
-	regions_header_label.text = "Regions"
-	called_recruits_header_label.text = "Called Recruits"
-	available_recruits_header_label.text = "Available Recruits"
-	
+	regions_header_label.text = "Region"
+	called_recruits_header_label.text = "Called"
+	buttons_header_label.text = "Adjust"
+	available_recruits_header_label.text = "Available"
+
 	# Update regions display
 	_update_regions_display()
 
@@ -145,138 +142,96 @@ func _update_regions_display() -> void:
 	# Clear existing displays
 	for child in regions_container.get_children():
 		child.queue_free()
-	
+
 	# Create rows for neighboring regions
 	for region in neighboring_regions:
 		_create_region_row(region)
 
+	_update_total_available_label()
+
 func _create_region_row(region: Region) -> void:
 	"""Create a single region row with: Region Name | Called Recruits | Buttons | Available Recruits"""
-	# Add margin before this row (except for the first row)
-	if regions_container.get_child_count() > 0:
-		var margin = MarginContainer.new()
-		margin.custom_minimum_size = Vector2(0, 5)
-		regions_container.add_child(margin)
-	
-	# Main row container
 	var row_container = HBoxContainer.new()
 	row_container.add_theme_constant_override("separation", 0)
+	row_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	regions_container.add_child(row_container)
-	
-	# Region name (left-aligned, 200px width)
+
 	var region_label = Label.new()
 	region_label.text = region.get_region_name()
 	region_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	region_label.custom_minimum_size = Vector2(200, 0)
+	region_label.custom_minimum_size = Vector2(230, 0)
 	region_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_apply_standard_theme(region_label)
 	row_container.add_child(region_label)
-	
-	# Margin 50px
-	var margin1 = Control.new()
-	margin1.custom_minimum_size = Vector2(50, 0)
-	row_container.add_child(margin1)
-	
-	# Called recruits count (center-aligned, 80px width)
+
 	var called_count_label = Label.new()
 	var region_id = region.get_region_id()
 	var count_called = called_recruits.get(region_id, 0)
 	called_count_label.text = str(count_called)
 	called_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	called_count_label.custom_minimum_size = Vector2(80, 0)
+	called_count_label.custom_minimum_size = Vector2(60, 0)
 	called_count_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	called_count_label.name = "CalledCount_" + str(region_id)
 	_apply_standard_theme(called_count_label)
 	row_container.add_child(called_count_label)
-	
-	# Margin 20px
-	var margin2 = Control.new()
-	margin2.custom_minimum_size = Vector2(20, 0)
-	row_container.add_child(margin2)
-	
-	# Call buttons: |< < > >|
-	var call_max_button = Button.new()
-	call_max_button.text = "|<"
-	call_max_button.custom_minimum_size = Vector2(30, 25)
-	call_max_button.pressed.connect(_on_call_max_pressed.bind(region))
-	row_container.add_child(call_max_button)
-	
-	var call_one_button = Button.new()
-	call_one_button.text = "<"
-	call_one_button.custom_minimum_size = Vector2(25, 25)
-	call_one_button.pressed.connect(_on_call_one_pressed.bind(region))
-	row_container.add_child(call_one_button)
-	
-	var uncall_one_button = Button.new()
-	uncall_one_button.text = ">"
-	uncall_one_button.custom_minimum_size = Vector2(25, 25)
-	uncall_one_button.pressed.connect(_on_uncall_one_pressed.bind(region))
-	row_container.add_child(uncall_one_button)
-	
-	var uncall_all_button = Button.new()
-	uncall_all_button.text = ">|"
-	uncall_all_button.custom_minimum_size = Vector2(30, 25)
-	uncall_all_button.pressed.connect(_on_uncall_all_pressed.bind(region))
-	row_container.add_child(uncall_all_button)
-	
-	# Margin 20px
-	var margin3 = Control.new()
-	margin3.custom_minimum_size = Vector2(20, 0)
-	row_container.add_child(margin3)
-	
-	# Available recruits (right-aligned, 80px width)
+
+	var left_margin = MarginContainer.new()
+	left_margin.custom_minimum_size = Vector2(20, 0)
+	row_container.add_child(left_margin)
+
+	_create_adjust_button(row_container, region, 10, "+10")
+	_create_adjust_button(row_container, region, 1, "+1")
+	_create_adjust_button(row_container, region, -1, "-1")
+	_create_adjust_button(row_container, region, -10, "-10")
+
+	var right_margin = MarginContainer.new()
+	right_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row_container.add_child(right_margin)
+
 	var available_label = Label.new()
-	available_label.text = str(region.get_available_recruits())
+	available_label.text = str(_get_remaining_recruits(region))
 	available_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	available_label.custom_minimum_size = Vector2(80, 0)
+	available_label.custom_minimum_size = Vector2(60, 0)
 	available_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_apply_standard_theme(available_label)
 	row_container.add_child(available_label)
 
+func _create_adjust_button(container: Container, region: Region, delta: int, label_text: String) -> void:
+	var button = Button.new()
+	button.text = label_text
+	button.custom_minimum_size = Vector2(40, 0)
+	button.focus_mode = Control.FOCUS_NONE
+	button.theme = NUMBER_BUTTON_THEME
+	button.pressed.connect(_on_adjust_button_pressed.bind(region, delta))
+	container.add_child(button)
+
 # Button handlers
-func _on_call_max_pressed(region: Region) -> void:
-	"""Call maximum possible recruits from this region"""
+func _on_adjust_button_pressed(region: Region, delta: int) -> void:
+	"""Adjust called recruits for a region using transfer-style buttons"""
 	var region_id = region.get_region_id()
 	var available_recruits = region.get_available_recruits()
 	var current_called = called_recruits.get(region_id, 0)
-	var max_to_call = available_recruits - current_called
-	
-	if max_to_call > 0:
-		called_recruits[region_id] = available_recruits
-		total_called += max_to_call
-		_update_regions_display()
-
-func _on_call_one_pressed(region: Region) -> void:
-	"""Call one recruit from this region"""
-	var region_id = region.get_region_id()
-	var available_recruits = region.get_available_recruits()
-	var current_called = called_recruits.get(region_id, 0)
-	
-	if current_called < available_recruits:
-		called_recruits[region_id] = current_called + 1
-		total_called += 1
-		_update_regions_display()
-
-func _on_uncall_one_pressed(region: Region) -> void:
-	"""Uncall one recruit from this region"""
-	var region_id = region.get_region_id()
-	var current_called = called_recruits.get(region_id, 0)
-	
-	if current_called > 0:
-		called_recruits[region_id] = current_called - 1
-		total_called -= 1
-		if called_recruits[region_id] == 0:
-			called_recruits.erase(region_id)
-		_update_regions_display()
-
-func _on_uncall_all_pressed(region: Region) -> void:
-	"""Uncall all recruits from this region"""
-	var region_id = region.get_region_id()
-	if called_recruits.has(region_id):
-		var count_to_uncall = called_recruits[region_id]
-		total_called -= count_to_uncall
+	var new_value = clamp(current_called + delta, 0, available_recruits)
+	if new_value == current_called:
+		return
+	if new_value == 0 and called_recruits.has(region_id):
 		called_recruits.erase(region_id)
-		_update_regions_display()
+	else:
+		called_recruits[region_id] = new_value
+	total_called += new_value - current_called
+	_update_regions_display()
+
+func _update_total_available_label() -> void:
+	var total_available := 0
+	for region in neighboring_regions:
+		total_available += _get_remaining_recruits(region)
+	total_available_label.text = str(total_available)
+
+func _get_remaining_recruits(region: Region) -> int:
+	var available_recruits = region.get_available_recruits()
+	var region_id = region.get_region_id()
+	var called = called_recruits.get(region_id, 0)
+	return max(available_recruits - called, 0)
 
 func _on_continue_pressed() -> void:
 	"""Handle Continue button press"""
@@ -321,17 +276,5 @@ func _apply_call_to_arms() -> void:
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""
-	label.theme = preload("res://themes/standard_text_theme.tres")
+	label.theme = STANDARD_TEXT_THEME
 	label.add_theme_color_override("font_color", Color.WHITE)
-
-func _draw():
-	# Draw shadow first (behind everything)
-	var shadow_rect = Rect2(SHADOW_OFFSET, size)
-	draw_rect(shadow_rect, SHADOW_COLOR)
-	
-	# Draw background fill
-	var bg_rect = Rect2(Vector2.ZERO, size)
-	draw_rect(bg_rect, FRAME_COLOR)
-	
-	# Draw black border on top
-	draw_rect(Rect2(Vector2.ZERO, size), BORDER_COLOR, false, BORDER_WIDTH)

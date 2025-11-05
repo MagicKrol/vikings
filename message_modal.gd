@@ -1,6 +1,9 @@
 extends Control
 class_name MessageModal
 
+# Emitted when user clicks Continue
+signal continue_clicked
+
 # Styling constants (same as InfoModal)
 const FRAME_COLOR = Color("#b7975e")
 const BORDER_COLOR = Color.BLACK
@@ -8,71 +11,40 @@ const SHADOW_OFFSET = Vector2(4, 4)
 const SHADOW_COLOR = Color(0, 0, 0, 0.3)
 const BORDER_WIDTH = 4.0
 
-# UI manager reference for modal mode
-var ui_manager: UIManager = null
-# Sound manager reference
-var sound_manager: SoundManager = null
-
-# UI elements
-var header_label: Label = null
-var message_label: Label = null
-var continue_button: Button = null
+@onready var ui_manager: UIManager = get_node("../UIManager") as UIManager
+@onready var sound_manager: SoundManager = get_node("../../SoundManager") as SoundManager
+@onready var message_label: Label = get_node("PanelRoot/ContentContainer/MessageLabel")
+@onready var continue_button: Button = get_node("PanelRoot/ContentContainer/ContinueButton")
 
 func _ready():
-	# Get references
-	ui_manager = get_node("../UIManager") as UIManager
-	sound_manager = get_node("../../SoundManager") as SoundManager
-	
-	# Get UI element references
-	header_label = get_node("ContentContainer/HeaderLabel") as Label
-	message_label = get_node("ContentContainer/MessageLabel") as Label
-	continue_button = get_node("ContentContainer/ContinueButton") as Button
-	
-	# Connect button signal
-	if continue_button:
-		continue_button.pressed.connect(_on_continue_pressed)
-	
-	# Initially hidden
 	visible = false
+	continue_button.pressed.connect(_on_continue_pressed)
 
-func display_message(header: String, message: String) -> void:
-	"""Display a message modal with header and message text"""
-	if header_label:
-		header_label.text = header
-	
-	if message_label:
-		message_label.text = message
-	
-	visible = true
-	
-	# Set modal mode active
-	if ui_manager:
-		ui_manager.set_modal_active(true)
+func displayMessage(text: String) -> void:
+	message_label.text = text
+	_show_modal()
 
-func _on_continue_pressed() -> void:
-	"""Handle Continue button press - hide modal"""
-	# Play click sound
-	if sound_manager:
-		sound_manager.click_sound()
-	
-	hide_modal()
+func display_message(header: String, message: String = "") -> void:
+	if message.is_empty():
+		displayMessage(header)
+		return
+	displayMessage(header + "\n\n" + message)
 
 func hide_modal() -> void:
-	"""Hide the modal"""
+	_hide_modal()
+
+func _show_modal() -> void:
+	visible = true
+	ui_manager.set_modal_active(true)
+
+func _hide_modal() -> void:
 	visible = false
-	
-	# Set modal mode inactive
-	if ui_manager:
-		ui_manager.set_modal_active(false)
+	ui_manager.set_modal_active(false)
+
+func _on_continue_pressed() -> void:
+	sound_manager.click_sound()
+	emit_signal("continue_clicked")
+	_hide_modal()
 
 func _draw():
-	# Draw shadow first (behind everything)
-	var shadow_rect = Rect2(SHADOW_OFFSET, size)
-	draw_rect(shadow_rect, SHADOW_COLOR)
-	
-	# Draw background fill
-	var bg_rect = Rect2(Vector2.ZERO, size)
-	draw_rect(bg_rect, FRAME_COLOR)
-	
-	# Draw black border on top
-	draw_rect(Rect2(Vector2.ZERO, size), BORDER_COLOR, false, BORDER_WIDTH)
+	pass

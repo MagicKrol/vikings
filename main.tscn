@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://btws5g1cdahse" path="res://scenes/region_tooltip.tscn" id="15_d3ude"]
 [ext_resource type="PackedScene" uid="uid://ro1oniwb0py8" path="res://scenes/battle_modal.tscn" id="16_dtrwa"]
 [ext_resource type="PackedScene" uid="uid://bus48vblq4ked" path="res://scenes/recruitment_modal.tscn" id="18_recru"]
-[ext_resource type="PackedScene" path="res://scenes/call_to_arms_modal.tscn" id="19_callarms"]
+[ext_resource type="PackedScene" uid="uid://js8fvqwfb0na" path="res://scenes/call_to_arms_modal.tscn" id="19_callarms"]
 [ext_resource type="PackedScene" uid="uid://b3ovrt5dclfvx" path="res://scenes/transfer_soldiers_modal.tscn" id="20_transfer"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="22_selecttooltip"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="22_selecttooltip_nores"]
@@ -76,6 +76,9 @@ script = ExtResource("28_mapeditor")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
+[node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
+visible = false
+
 [node name="RegionTooltip2" parent="UI" instance=ExtResource("9_cgk76")]
 visible = false
 
@@ -120,9 +123,6 @@ visible = false
 visible = false
 
 [node name="SelectTooltipModalNoRes" parent="UI" instance=ExtResource("22_selecttooltip_nores")]
-visible = false
-
-[node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
 visible = false
 
 [node name="NextPlayerModal" parent="UI" instance=ExtResource("24_nextplayermodal")]
