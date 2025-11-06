@@ -107,6 +107,7 @@ editor_start.tscn (Editor Start)
 - AI memory: Records observed enemy army power for computer players after each battle (5-round decay window via `GameParameters.ENEMY_ARMY_MEMORY_ROUNDS`).
 - AI memory: Records observed enemy garrison power when computer armies attack a region (shared 5-round decay window).
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
+- AI Step Gate: `ai_step_requires_shift` forwards to `DebugStepGate` — when true, AI waits for Shift to advance; false lets AI run automatically.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
  - Modes:
    - Custom: current behavior (castle placement → gameplay).
@@ -291,12 +292,18 @@ editor_start.tscn (Editor Start)
  - InfoModal: Region view shows local garrison total in `Garison -> Value` (sum of region garrison composition; excludes available recruits).
 - TurnController owns pathfinder/scorer; calls `GameManager.ai_travel_to` for movement and battle stepping; uses `BudgetManager` and `RecruitmentManager` when armies request reinforcement.
 - PlayerManagerNode is the authoritative per-player economy and emits player-change signals used by UI.
+- AI camera pacing: `GameManager` routes AI actions (castle placement, move steps, battle resolution) through `AICameraDirector` to enforce pre-action and post-action waits.
 
 ### army_manager.gd (ArmyManager)
 - Purpose: Army creation, selection, and adjacent-region movement.
 - Key: `create_army()`, `move_army()`, `move_army_to_region()`, `reset_all_army_movement_points()`.
 - Stacking: `_apply_army_offsets_for_region(region)` repositions all armies in a region to avoid overlap using fixed extra offsets. Applied on create, move (both source and target), and retreat. Pattern: 1st = base; 2nd = x-15/y-10/z-1; 3rd = x-30/y-20/z-2; 4th = x+15/y-10/z-3; 5th = x+30/y-20/z-4; 6th+ same as 1st.
 - Ready highlight: Caches `_ready_highlight_player_id`, listens to `Army.movement_points_changed`, and refreshes `VisualManager.update_ready_army_highlights()` on turn start, move/camp MP spend, resets, and army removal.
+
+### ai_camera_director.gd (AICameraDirector)
+- Purpose: Coordinates AI camera focus and timing around the shared `CameraController`.
+- Key: `await_focus_on_army()`, `await_focus_on_region()`, `await_delay()`.
+- `GameManager` uses it to wrap AI castle placement, movement steps, and battle resolution with the configured pre/post waits.
 
 ## Missing/Added Since Last Map
 - Extracted UI modals into separate `.tscn` scenes and instanced in `main.tscn` (previously described as inline).

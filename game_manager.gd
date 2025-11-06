@@ -62,6 +62,8 @@ var _active_battles: int = 0
 var _battle_manager: BattleManager
 var _visual_manager: VisualManager
 var _ui_manager: UIManager
+var _ai_camera_director: AICameraDirector
+var ai_step_requires_shift: bool = false
 
 # AI system references
 var _ai_region_scorer: RegionScorer
@@ -254,6 +256,13 @@ func initialize_managers(is_scenario: bool = false):
 	# Note: debug_step_gate_path should be set via inspector to static scene node
 	add_child(_turn_controller)
 	_turn_controller.initialize(_region_manager, _army_manager, player_manager, _battle_manager)
+	if _turn_controller.debug_step_gate:
+		_turn_controller.debug_step_gate.set_debug_enabled(ai_step_requires_shift)
+	_ai_camera_director = AICameraDirector.new()
+	_ai_camera_director.name = "AICameraDirector"
+	add_child(_ai_camera_director)
+	var camera_controller: CameraController = get_node("../Camera2D")
+	_ai_camera_director.initialize(camera_controller)
 	
 	# Add AI debug visualizer to the scene tree
 	var map_node = get_node("../Map")
@@ -591,7 +600,7 @@ func _initialize_castle_placement_sequence() -> void:
 		DebugLogger.log("GameInit", "First player is AI - starting automatic placement...")
 		# Use a small delay to ensure all systems are ready
 		await get_tree().create_timer(1.0).timeout
-		_handle_ai_castle_placement(current_player)
+		await _handle_ai_castle_placement(current_player)
 
 func _process_round_start_actions():
 	"""Process actions that happen once per round (when Player 1 starts)"""
@@ -988,7 +997,9 @@ func _handle_ai_castle_placement(player_id: int) -> void:
 	if regions_node:
 		for child in regions_node.get_children():
 			if child is Region and child.get_region_id() == best_region_id:
-				handle_castle_placement(child)
+				await _ai_camera_director.await_focus_on_region(child)
+				await _ai_camera_director.await_delay(GameParameters.CAMERA_ARMY_START_DELAY)
+				await handle_castle_placement(child)
 				break
 
 # Player resource management
@@ -1051,6 +1062,12 @@ func is_castle_placing_mode() -> bool:
 func set_castle_placing_mode(enabled: bool) -> void:
 	"""Set castle placing mode"""
 	castle_placing_mode = enabled
+
+func set_ai_step_requires_shift(enabled: bool) -> void:
+	"""Enable or disable manual shift gating for AI steps"""
+	ai_step_requires_shift = enabled
+	if _turn_controller != null and _turn_controller.debug_step_gate:
+		_turn_controller.debug_step_gate.set_debug_enabled(enabled)
 
 func get_current_player_id() -> int:
 	"""Get the current active player ID"""
@@ -1136,6 +1153,10 @@ func handle_castle_placement(region: Region) -> void:
 				DebugLogger.log("GameInit", "Placed " + str(armies_per_castle) + " armies for Player " + str(current_player) + " in region " + str(region_id))
 				break
 	
+	if is_player_computer(current_player) and _ai_camera_director:
+		await _ai_camera_director.await_delay(GameParameters.CAMERA_CONQUEST_DELAY)
+		await _ai_camera_director.await_delay(GameParameters.CAMERA_FRIENDLY_MOVE_DELAY)
+
 	# Track castle placement order and advance to next player
 	castle_placement_order.append(current_player)
 	castles_placed += 1
@@ -1181,7 +1202,7 @@ func handle_castle_placement(region: Region) -> void:
 			DebugLogger.log("GameInit", "AI Player " + str(current_player) + " placing castle automatically...")
 			# Use a short delay to allow visuals to update
 			await get_tree().create_timer(0.5).timeout
-			_handle_ai_castle_placement(current_player)
+			await _handle_ai_castle_placement(current_player)
 		# OFF players are skipped by _get_next_active_player()
 	
 	# Show player status modals with current state
@@ -1437,19 +1458,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			refresh_ai_debug_scores()
 			DebugLogger.log("TurnProcessing", "Player " + str(player_id) + " conquered region " + str(target_region_id) + " via unified finalization")
 			
-			# Center camera on conquered region and pause to show ownership change
-			var camera_controller = get_node("../Camera2D") as CameraController
-			if camera_controller != null:
-				if is_instance_valid(army):
-					camera_controller.center_on_army(army)
-				else:
-					# Find the region and center on it
-					var region_container = _region_manager.map_generator.get_region_container_by_id(target_region_id)
-					if region_container != null:
-						camera_controller.center_on_position(region_container.global_position)
-				
-				# Extra pause to show the conquest and ownership change
-				await get_tree().create_timer(GameParameters.CAMERA_CONQUEST_DELAY).timeout
+			if is_player_computer(player_id) and _ai_camera_director:
+				var conquest_delay = max(GameParameters.CAMERA_CONQUEST_DELAY, GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+				await _ai_camera_director.await_delay(conquest_delay)
 			
 			# Reduce efficiency for conquest
 			army.reduce_efficiency(5)
@@ -1457,12 +1468,21 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	elif result == "withdrawal":
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
-			_battle_manager._handle_army_withdrawal(army)
+			await _battle_manager._handle_army_withdrawal(army)
+			if is_player_computer(army.get_player_id()):
+				await _ai_camera_director.await_focus_on_army(army)
+				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 			# No post-battle healing here; healing only occurs during make_camp()
 	else:
 		# Attackers lost - remove the army
 		if army and is_instance_valid(army) and _battle_manager:
 			_battle_manager._handle_battle_defeat(army)
+			if is_player_computer(army.get_player_id()):
+				if target_region_id != -1:
+					var defeated_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+					if defeated_region != null:
+						await _ai_camera_director.await_focus_on_region(defeated_region)
+				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 
 # Manager accessors for external systems
 func get_battle_manager() -> BattleManager:
@@ -1521,14 +1541,8 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Army not in valid region")
 		return "blocked"
 	
-	# Center camera on the army before it moves and await arrival (no arbitrary delays)
-	var camera_controller = get_node("../Camera2D") as CameraController
-	if camera_controller != null:
-		camera_controller.center_on_army(army)
-		DebugLogger.log("AIMovement", "ai_travel_to: Centered camera on army %s at position %s" % [army.name, army.global_position])
-		await camera_controller.await_target_reached()
-	else:
-		DebugLogger.log("AIMovement", "ai_travel_to: Camera controller not found!")
+	await _ai_camera_director.await_focus_on_army(army)
+	await _ai_camera_director.await_delay(GameParameters.CAMERA_ARMY_START_DELAY)
 	
 	var current_region_id = current_region.get_region_id()
 	var player_id = army.get_player_id()
@@ -1569,7 +1583,6 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		if next_region == null:
 			DebugLogger.log("AIMovement", "ai_travel_to: Region %d is not valid" % next_region_id)
 			return "blocked"
-		
 		# Debug step pausing using DebugStepGate
 		if _turn_controller.debug_step_gate:
 			DebugLogger.log("AIMovement", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
@@ -1583,40 +1596,36 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 			# Log step result
 			DebugLogger.log("AIMovement", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
 			
-			# Center camera on the battle location and await arrival (no arbitrary delays)
-			if camera_controller != null:
-				if is_instance_valid(army):
-					camera_controller.center_on_army(army)
-				else:
-					camera_controller.center_on_position(next_region.global_position)
-				await camera_controller.await_target_reached()
-			
 			match battle_result:
 				"battle_victory":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army victorious, continuing movement")
-					# Continue to next step after victory
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 					continue
 				"battle_withdrawal":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army withdrew from battle")
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 					return "battle_withdrawal"
 				"battle_defeat":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army defeated in battle")
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 					return "battle_defeat"
 				"blocked":
 					DebugLogger.log("AIMovement", "ai_travel_to: Movement blocked")
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 					return "blocked"
 				_:
 					DebugLogger.log("AIMovement", "ai_travel_to: Unexpected battle result: %s" % battle_result)
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 					return "blocked"
 		else:
 			# Friendly step - use ArmyManager.move_army()
 			DebugLogger.log("AIMovement", "ai_travel_to: Friendly step - using ArmyManager.move_army")
 			var move_success = await _army_manager.move_army(army, next_region)
+			await _ai_camera_director.await_delay(GameParameters.CAMERA_FRIENDLY_MOVE_DELAY)
 			
 			# Log step result  
 			if move_success:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move successful for step %d" % i)
-				# Camera follows movement implicitly; no artificial delays
 			else:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move failed for step %d" % i)
 				return "blocked"

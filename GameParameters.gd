@@ -219,10 +219,10 @@ const AI_WITHDRAW_POWER_THRESHOLD = 0.80			# AI withdraw triggers when own power
 const MOVE_ANIMATION_DURATION = 0.5				# Seconds for army move animation
 
 ## Camera Centering Timing Constants
-const CAMERA_ARMY_START_DELAY = 1.5			# Seconds to pause after centering on army before movement
-const CAMERA_BATTLE_RESULT_DELAY = 2.0			# Seconds to pause after battle results (victory/defeat/withdrawal)
-const CAMERA_CONQUEST_DELAY = 1.5				# Seconds to pause after region conquest to show ownership change
-const CAMERA_FRIENDLY_MOVE_DELAY = 0.8			# Seconds to pause after friendly army moves
+const CAMERA_ARMY_START_DELAY = 0.5			# Seconds to pause after centering on army before movement
+const CAMERA_BATTLE_RESULT_DELAY = 0.5			# Seconds to pause after battle results (victory/defeat/withdrawal)
+const CAMERA_CONQUEST_DELAY = 0.5				# Seconds to pause after region conquest to show ownership change
+const CAMERA_FRIENDLY_MOVE_DELAY = 0.5			# Seconds to pause after friendly army moves
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
