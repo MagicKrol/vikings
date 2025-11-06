@@ -1,6 +1,8 @@
 extends Sprite2D
 class_name Army
 
+signal movement_points_changed(army: Army, new_points: int)
+
 # ============================================================================
 # ARMY
 # ============================================================================
@@ -97,19 +99,25 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	z_index = 125 + player_id
 	DebugLogger.log("ArmyManagement", "[Army] Raised army setup complete - movement_points: " + str(movement_points) + ", soldiers: " + str(composition.get_total_soldiers()))
 
+func _emit_movement_points_changed() -> void:
+	emit_signal("movement_points_changed", self, movement_points)
+
 func reset_movement_points() -> void:
 	"""Reset movement points for a new turn"""
 	movement_points = GameParameters.MOVEMENT_POINTS_PER_TURN
+	_emit_movement_points_changed()
 
 func spend_movement_points(cost: int) -> void:
 	"""Spend movement points for a move"""
 	movement_points -= cost
+	_emit_movement_points_changed()
 
 func make_camp() -> void:
 	"""Make camp - reduces movement points and restores efficiency"""
 	# Spend 1 movement point for making camp
 	if movement_points > 0:
 		movement_points -= 1
+		_emit_movement_points_changed()
 	
 	# Restore 10 efficiency (capped at 100%)
 	restore_efficiency(10)

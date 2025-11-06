@@ -157,7 +157,7 @@ editor_start.tscn (Editor Start)
 
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
-- army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use).
+- army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Emits `movement_points_changed(army, new_points)` whenever points reset/spent/camped so ArmyManager can refresh highlights. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use).
 - ArmyPathfinder.gd: pathfinding within MP horizon, multi-turn pathfinding with MP constraints.
 - **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
   - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
@@ -166,7 +166,7 @@ editor_start.tscn (Editor Start)
 - ArmyMovementPlanner.gd: High-level army movement coordination using canonical raw final scoring from ArmyTargetScorer. Applies danger penalty as separate adjustment after raw final score.
 
 ### VisualManager.gd (VisualManager)
-- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Region highlights reuse `animate_region_highlight_on(region_id, params)` / `animate_region_highlight_off(region_id)` for move targets and global hover; movement uses `GameParameters.REGION_ANIM_*` alpha pairs (owned 0.5↔0.75, neutral 0.35↔0.55) with hover alphas (owned 0.85, neutral 0.55). Passing `animated=false` applies map-hover values from `GameParameters.REGION_MAP_HOVER_*` (owned base 0.6→0.7 hover, neutral base 0.2→0.3 hover). `set_map_hover_region()` uses those toned-down values on non-ocean, non-mountain land; movement highlighting remains animated.
+- Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Region highlights reuse `animate_region_highlight_on(region_id, params)` / `animate_region_highlight_off(region_id)` for move targets and global hover; movement uses `GameParameters.REGION_ANIM_*` alpha pairs (owned 0.5↔0.75, neutral 0.35↔0.55) with hover alphas (owned 0.85, neutral 0.55). Passing `animated=false` applies map-hover values from `GameParameters.REGION_MAP_HOVER_*` (owned base 0.6→0.7 hover, neutral base 0.2→0.3 hover). `set_map_hover_region()` uses those toned-down values on non-ocean, non-mountain land; movement highlighting remains animated while `_ready_highlight_regions` restores turn-start highlights after hover/move overrides, all animated overlays share a synced tween cycle so new ready regions match existing pulses, and ready-army highlights suspend whenever move-target overlays are shown so only legal destinations animate.
 
 ### map_editor.gd (MapEditor)
 - Purpose: Map editor mode controller for toggling editor UI.
@@ -296,7 +296,7 @@ editor_start.tscn (Editor Start)
 - Purpose: Army creation, selection, and adjacent-region movement.
 - Key: `create_army()`, `move_army()`, `move_army_to_region()`, `reset_all_army_movement_points()`.
 - Stacking: `_apply_army_offsets_for_region(region)` repositions all armies in a region to avoid overlap using fixed extra offsets. Applied on create, move (both source and target), and retreat. Pattern: 1st = base; 2nd = x-15/y-10/z-1; 3rd = x-30/y-20/z-2; 4th = x+15/y-10/z-3; 5th = x+30/y-20/z-4; 6th+ same as 1st.
-- Logging: After each move, logs `Moved to region <id>, Cost: <mp>, MP left: <left>/<per_turn>`.
+- Ready highlight: Caches `_ready_highlight_player_id`, listens to `Army.movement_points_changed`, and refreshes `VisualManager.update_ready_army_highlights()` on turn start, move/camp MP spend, resets, and army removal.
 
 ## Missing/Added Since Last Map
 - Extracted UI modals into separate `.tscn` scenes and instanced in `main.tscn` (previously described as inline).

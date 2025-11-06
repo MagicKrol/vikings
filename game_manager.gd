@@ -346,6 +346,8 @@ func next_turn():
 	if debug_heatmap:
 		DebugLogger.log("TurnProcessing", "Debug heatmap mode active - next_turn ignored")
 		return
+	if _army_manager:
+		_army_manager.set_ready_highlight_player(-1)
 	
 	# Get next active player in sequence (skips OFF players)
 	var next_player_id = _get_next_active_player()
@@ -630,6 +632,8 @@ func _process_player_turn_start(player_id: int):
 		player_manager.decay_enemy_memory_for_player(player_id)
 	if _region_manager:
 		_region_manager.heal_wounded_for_player(player_id)
+	if _army_manager:
+		_army_manager.set_ready_highlight_player(player_id)
 	var initial_turn := not _player_initial_turn_completed.has(player_id)
 	if initial_turn:
 		_player_initial_turn_completed[player_id] = false

@@ -42,6 +42,12 @@ var _region_highlight_hover_alphas: Dictionary = {}
 var _current_hover_region: int = -1
 var _move_highlight_ids: Array = []
 var _map_hover_region_id: int = -1
+var _ready_highlight_regions: Dictionary = {}
+var _ready_highlight_player_id: int = -1
+var _ready_highlights_suspended: bool = false
+var _animated_highlight_regions: Dictionary = {}
+var _highlight_cycle_anchor_time: float = -1.0
+var _highlight_cycle_duration: float = 1.0
 
 func _init(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager):
 	_map_generator = map_generator
@@ -140,42 +146,37 @@ func animate_region_highlight_on(region_id: int, params: Dictionary = {}) -> voi
 	if _region_highlight_tweens.has(region_id):
 		animate_region_highlight_off(region_id)
 	var overlay_setup: Dictionary = _ensure_region_highlight_overlay(region_id)
-	var overlay: Polygon2D = overlay_setup["overlay"]
+	var overlay: Polygon2D = overlay_setup["overlay"] as Polygon2D
 	_region_highlight_nodes[region_id] = overlay
 	var original_color = overlay.color
 	_region_highlight_original_colors[region_id] = original_color
-	var was_neutral: bool = params.get("force_neutral", original_color.a <= 0.01)
+	var was_neutral := bool(params.get("force_neutral", original_color.a <= 0.01))
 	var owned_base_alpha: float
 	var owned_target_alpha: float
 	var neutral_base_alpha: float
 	var neutral_target_alpha: float
 	var hover_alpha_neutral: float
 	var hover_alpha_owned: float
-	var animated_param = params.get("animated", true)
-	var animated: bool = true
-	if animated_param is bool:
-		animated = animated_param
-	else:
-		animated = bool(animated_param)
+	var animated := bool(params.get("animated", true))
 	if animated:
-		owned_base_alpha = params.get("owned_base_alpha", GameParameters.REGION_ANIM_OWNED_ALPHA_FROM)
-		owned_target_alpha = params.get("owned_target_alpha", GameParameters.REGION_ANIM_OWNED_ALPHA_TO)
-		neutral_base_alpha = params.get("neutral_base_alpha", GameParameters.REGION_ANIM_NEUTRAL_ALPHA_FROM)
-		neutral_target_alpha = params.get("neutral_target_alpha", GameParameters.REGION_ANIM_NEUTRAL_ALPHA_TO)
-		hover_alpha_neutral = params.get("hover_alpha_neutral", GameParameters.REGION_MOVE_HOVER_NEUTRAL_ALPHA)
-		hover_alpha_owned = params.get("hover_alpha_owned", GameParameters.REGION_MOVE_HOVER_OWNED_ALPHA)
+		owned_base_alpha = float(params.get("owned_base_alpha", GameParameters.REGION_ANIM_OWNED_ALPHA_FROM))
+		owned_target_alpha = float(params.get("owned_target_alpha", GameParameters.REGION_ANIM_OWNED_ALPHA_TO))
+		neutral_base_alpha = float(params.get("neutral_base_alpha", GameParameters.REGION_ANIM_NEUTRAL_ALPHA_FROM))
+		neutral_target_alpha = float(params.get("neutral_target_alpha", GameParameters.REGION_ANIM_NEUTRAL_ALPHA_TO))
+		hover_alpha_neutral = float(params.get("hover_alpha_neutral", GameParameters.REGION_MOVE_HOVER_NEUTRAL_ALPHA))
+		hover_alpha_owned = float(params.get("hover_alpha_owned", GameParameters.REGION_MOVE_HOVER_OWNED_ALPHA))
 	else:
-		owned_base_alpha = params.get("owned_base_alpha", GameParameters.REGION_MAP_HOVER_OWNED_BASE_ALPHA)
-		owned_target_alpha = params.get("owned_target_alpha", GameParameters.REGION_MAP_HOVER_OWNED_BASE_ALPHA)
-		neutral_base_alpha = params.get("neutral_base_alpha", GameParameters.REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA)
-		neutral_target_alpha = params.get("neutral_target_alpha", GameParameters.REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA)
-		hover_alpha_neutral = params.get("hover_alpha_neutral", GameParameters.REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA)
-		hover_alpha_owned = params.get("hover_alpha_owned", GameParameters.REGION_MAP_HOVER_OWNED_HOVER_ALPHA)
+		owned_base_alpha = float(params.get("owned_base_alpha", GameParameters.REGION_MAP_HOVER_OWNED_BASE_ALPHA))
+		owned_target_alpha = float(params.get("owned_target_alpha", GameParameters.REGION_MAP_HOVER_OWNED_BASE_ALPHA))
+		neutral_base_alpha = float(params.get("neutral_base_alpha", GameParameters.REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA))
+		neutral_target_alpha = float(params.get("neutral_target_alpha", GameParameters.REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA))
+		hover_alpha_neutral = float(params.get("hover_alpha_neutral", GameParameters.REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA))
+		hover_alpha_owned = float(params.get("hover_alpha_owned", GameParameters.REGION_MAP_HOVER_OWNED_HOVER_ALPHA))
 	var base_color: Color
 	var target_color: Color
 	if params.has("base_color") and params.has("target_color"):
-		base_color = params["base_color"]
-		target_color = params["target_color"]
+		base_color = params["base_color"] as Color
+		target_color = params["target_color"] as Color
 	else:
 		if was_neutral:
 			base_color = Color(original_color.r, original_color.g, original_color.b, neutral_base_alpha)
@@ -189,15 +190,15 @@ func animate_region_highlight_on(region_id: int, params: Dictionary = {}) -> voi
 		"neutral": hover_alpha_neutral,
 		"owned": hover_alpha_owned
 	}
-	overlay.color = base_color
-	var duration: float = params.get("duration", 1.0)
+	var duration := float(params.get("duration", 1.0))
 	if animated:
-		var tween = overlay.create_tween()
-		tween.set_loops()
-		tween.tween_property(overlay, "color", target_color, duration)
-		tween.tween_property(overlay, "color", base_color, duration)
-		_region_highlight_tweens[region_id] = tween
+		_animated_highlight_regions[region_id] = true
+		_start_synced_highlight_tween(region_id, overlay, base_color, target_color, duration)
 	else:
+		if _animated_highlight_regions.has(region_id):
+			_animated_highlight_regions.erase(region_id)
+			_reset_highlight_anchor_if_needed()
+		overlay.color = base_color
 		if _region_highlight_tweens.has(region_id):
 			var existing_tween = _region_highlight_tweens[region_id]
 			if existing_tween:
@@ -215,7 +216,10 @@ func animate_region_highlight_off(region_id: int) -> void:
 		if hover_overlay and is_instance_valid(hover_overlay):
 			hover_overlay.queue_free()
 		_region_highlight_hover_overlays.erase(region_id)
-	var overlay: Polygon2D = _region_highlight_nodes.get(region_id, null)
+	if _animated_highlight_regions.has(region_id):
+		_animated_highlight_regions.erase(region_id)
+		_reset_highlight_anchor_if_needed()
+	var overlay: Polygon2D = _region_highlight_nodes.get(region_id, null) as Polygon2D
 	if overlay and is_instance_valid(overlay):
 		overlay.visible = true
 		if _region_highlight_original_colors.has(region_id):
@@ -233,22 +237,141 @@ func animate_region_highlight_off(region_id: int) -> void:
 	if _map_hover_region_id == region_id:
 		_map_hover_region_id = -1
 
+func _start_synced_highlight_tween(region_id: int, overlay: Polygon2D, base_color: Color, target_color: Color, duration: float) -> void:
+	var effective_duration: float = max(duration, 0.01)
+	var phase := _get_highlight_phase(effective_duration)
+	overlay.visible = true
+	if phase <= 0.0001:
+		overlay.color = base_color
+		_begin_looping_highlight(region_id, overlay, base_color, target_color, effective_duration, false)
+		return
+	if phase < effective_duration:
+		var progress: float = phase / effective_duration
+		var current_color := base_color.lerp(target_color, progress)
+		overlay.color = current_color
+		var remaining_up: float = effective_duration - phase
+		if remaining_up <= 0.0001:
+			overlay.color = target_color
+			_begin_looping_highlight(region_id, overlay, base_color, target_color, effective_duration, true)
+			return
+		var partial_up: Tween = overlay.create_tween()
+		_region_highlight_tweens[region_id] = partial_up
+		partial_up.tween_property(overlay, "color", target_color, remaining_up)
+		partial_up.finished.connect(func() -> void:
+			if not _animated_highlight_regions.has(region_id):
+				return
+			if _region_highlight_tweens.get(region_id) == partial_up:
+				_region_highlight_tweens.erase(region_id)
+			if not is_instance_valid(overlay):
+				return
+			_begin_looping_highlight(region_id, overlay, base_color, target_color, effective_duration, true)
+		)
+	else:
+		var down_phase: float = phase - effective_duration
+		var progress_down: float = down_phase / effective_duration
+		var current_down_color := target_color.lerp(base_color, progress_down)
+		overlay.color = current_down_color
+		var remaining_down: float = effective_duration - down_phase
+		if remaining_down <= 0.0001:
+			overlay.color = base_color
+			_begin_looping_highlight(region_id, overlay, base_color, target_color, effective_duration, false)
+			return
+		var partial_down: Tween = overlay.create_tween()
+		_region_highlight_tweens[region_id] = partial_down
+		partial_down.tween_property(overlay, "color", base_color, remaining_down)
+		partial_down.finished.connect(func() -> void:
+			if not _animated_highlight_regions.has(region_id):
+				return
+			if _region_highlight_tweens.get(region_id) == partial_down:
+				_region_highlight_tweens.erase(region_id)
+			if not is_instance_valid(overlay):
+				return
+			_begin_looping_highlight(region_id, overlay, base_color, target_color, effective_duration, false)
+		)
+
+func _get_highlight_phase(duration: float) -> float:
+	if _highlight_cycle_anchor_time < 0.0 or abs(duration - _highlight_cycle_duration) > 0.001:
+		_highlight_cycle_anchor_time = float(Time.get_ticks_msec()) / 1000.0
+		_highlight_cycle_duration = duration
+		return 0.0
+	var elapsed: float = float(Time.get_ticks_msec()) / 1000.0 - _highlight_cycle_anchor_time
+	var cycle: float = duration * 2.0
+	if cycle <= 0.0:
+		return 0.0
+	return fmod(elapsed, cycle)
+
+func _reset_highlight_anchor_if_needed() -> void:
+	if _animated_highlight_regions.is_empty():
+		_highlight_cycle_anchor_time = -1.0
+
+func _begin_looping_highlight(region_id: int, overlay: Polygon2D, base_color: Color, target_color: Color, duration: float, start_from_target: bool) -> void:
+	if not is_instance_valid(overlay):
+		return
+	var loop_tween: Tween = overlay.create_tween()
+	loop_tween.set_loops()
+	if start_from_target:
+		loop_tween.tween_property(overlay, "color", base_color, duration)
+		loop_tween.tween_property(overlay, "color", target_color, duration)
+	else:
+		loop_tween.tween_property(overlay, "color", target_color, duration)
+		loop_tween.tween_property(overlay, "color", base_color, duration)
+	_region_highlight_tweens[region_id] = loop_tween
+
+func _resume_ready_highlights_if_needed() -> void:
+	if not _ready_highlights_suspended:
+		return
+	_ready_highlights_suspended = false
+	if _ready_highlight_regions.is_empty():
+		return
+	for region_id in _ready_highlight_regions.keys():
+		if _move_highlight_ids.has(region_id):
+			continue
+		if region_id == _map_hover_region_id:
+			continue
+		if region_id == _current_hover_region:
+			continue
+		animate_region_highlight_on(region_id)
+
 func animate_move_region_highlights(region_ids: Array) -> void:
 	clear_move_region_highlights()
 	if region_ids.is_empty():
+		_resume_ready_highlights_if_needed()
 		return
 	if _map_hover_region_id != -1 and region_ids.has(_map_hover_region_id):
 		animate_region_highlight_off(_map_hover_region_id)
 		_map_hover_region_id = -1
+	if not _ready_highlight_regions.is_empty():
+		for region_id in _ready_highlight_regions.keys():
+			if _region_highlight_tweens.has(region_id):
+				animate_region_highlight_off(region_id)
+		_ready_highlights_suspended = true
+	var params: Dictionary = {
+		"owned_base_alpha": GameParameters.REGION_ANIM_OWNED_ALPHA_FROM,
+		"owned_target_alpha": GameParameters.REGION_ANIM_OWNED_ALPHA_TO,
+		"neutral_base_alpha": GameParameters.REGION_ANIM_NEUTRAL_ALPHA_FROM,
+		"neutral_target_alpha": GameParameters.REGION_ANIM_NEUTRAL_ALPHA_TO,
+		"hover_alpha_neutral": GameParameters.REGION_MOVE_HOVER_NEUTRAL_ALPHA,
+		"hover_alpha_owned": GameParameters.REGION_MOVE_HOVER_OWNED_ALPHA
+	}
 	for region_id in region_ids:
-		animate_region_highlight_on(region_id)
+		animate_region_highlight_on(region_id, params)
 	_move_highlight_ids = region_ids.duplicate()
 
 func clear_move_region_highlights() -> void:
 	clear_move_region_hover()
+	if _move_highlight_ids.is_empty():
+		_resume_ready_highlights_if_needed()
+		return
+	var to_restore: Array = []
 	for region_id in _move_highlight_ids:
+		if _ready_highlight_regions.has(region_id):
+			to_restore.append(region_id)
 		animate_region_highlight_off(region_id)
 	_move_highlight_ids.clear()
+	if not _ready_highlights_suspended:
+		for region_id in to_restore:
+			animate_region_highlight_on(region_id)
+	_resume_ready_highlights_if_needed()
 
 func has_move_region_highlights() -> bool:
 	return not _move_highlight_ids.is_empty()
@@ -268,7 +391,7 @@ func set_region_highlight_hover(region_id: int) -> void:
 		return
 	if not _region_highlight_original_colors.has(region_id):
 		return
-	var overlay: Polygon2D = _region_highlight_nodes.get(region_id, null)
+	var overlay: Polygon2D = _region_highlight_nodes.get(region_id, null) as Polygon2D
 	if overlay == null:
 		return
 	overlay.visible = false
@@ -283,9 +406,9 @@ func set_region_highlight_hover(region_id: int) -> void:
 		"neutral": GameParameters.REGION_MOVE_HOVER_NEUTRAL_ALPHA,
 		"owned": GameParameters.REGION_MOVE_HOVER_OWNED_ALPHA
 	})
-	var hover_alpha: float = hover_alpha_data["neutral"]
+	var hover_alpha := float(hover_alpha_data.get("neutral", GameParameters.REGION_MOVE_HOVER_NEUTRAL_ALPHA))
 	if original_color.a > 0.01:
-		hover_alpha = hover_alpha_data["owned"]
+		hover_alpha = float(hover_alpha_data.get("owned", GameParameters.REGION_MOVE_HOVER_OWNED_ALPHA))
 	hover_overlay.color = Color(original_color.r, original_color.g, original_color.b, hover_alpha)
 	hover_overlay.z_index = overlay.z_index
 	var parent = overlay.get_parent()
@@ -297,7 +420,7 @@ func set_region_highlight_hover(region_id: int) -> void:
 func clear_region_highlight_state(region_id: int) -> void:
 	var overlay: Polygon2D = null
 	if _region_highlight_nodes.has(region_id):
-		overlay = _region_highlight_nodes[region_id]
+		overlay = _region_highlight_nodes[region_id] as Polygon2D
 	else:
 		var region_container = _map_generator.get_region_container_by_id(region_id)
 		if region_container != null and region_container.has_node("OwnershipOverlay"):
@@ -338,7 +461,7 @@ func clear_region_highlight_hover() -> void:
 func _clear_region_highlight_hover(region_id: int) -> void:
 	if not _region_highlight_original_colors.has(region_id):
 		return
-	var overlay: Polygon2D = _region_highlight_nodes.get(region_id, null)
+	var overlay: Polygon2D = _region_highlight_nodes.get(region_id, null) as Polygon2D
 	if overlay == null:
 		return
 	if _region_highlight_hover_overlays.has(region_id):
@@ -351,15 +474,58 @@ func _clear_region_highlight_hover(region_id: int) -> void:
 func set_map_hover_region(region_id: int) -> void:
 	if region_id == _map_hover_region_id:
 		return
+	var previous_hover := _map_hover_region_id
 	if _map_hover_region_id != -1:
 		animate_region_highlight_off(_map_hover_region_id)
 		_map_hover_region_id = -1
+		if _ready_highlight_regions.has(previous_hover):
+			animate_region_highlight_on(previous_hover)
 	if region_id == -1:
 		return
 	if _move_highlight_ids.has(region_id):
 		return
 	animate_region_highlight_on(region_id, {"animated": false})
 	_map_hover_region_id = region_id
+
+func update_ready_army_highlights(player_id: int, region_ids: Array) -> void:
+	if player_id == -1:
+		clear_ready_army_highlights()
+		return
+	if _ready_highlight_player_id != player_id:
+		clear_ready_army_highlights()
+		_ready_highlight_player_id = player_id
+	var new_regions: Dictionary = {}
+	var apply_visuals := not _ready_highlights_suspended
+	for region_id in region_ids:
+		new_regions[region_id] = true
+		if apply_visuals and not _ready_highlight_regions.has(region_id) and not _move_highlight_ids.has(region_id) and region_id != _map_hover_region_id:
+			animate_region_highlight_on(region_id)
+	var existing_ids := _ready_highlight_regions.keys()
+	for region_id in existing_ids:
+		if not new_regions.has(region_id):
+			_remove_region_highlight_if_unused(region_id)
+	_ready_highlight_regions = new_regions
+
+func clear_ready_army_highlights() -> void:
+	if _ready_highlight_regions.is_empty():
+		_ready_highlight_player_id = -1
+		_ready_highlights_suspended = false
+		return
+	var existing_ids := _ready_highlight_regions.keys()
+	for region_id in existing_ids:
+		_remove_region_highlight_if_unused(region_id)
+	_ready_highlight_regions.clear()
+	_ready_highlight_player_id = -1
+	_ready_highlights_suspended = false
+
+func _remove_region_highlight_if_unused(region_id: int) -> void:
+	if _move_highlight_ids.has(region_id):
+		return
+	if region_id == _map_hover_region_id:
+		return
+	if region_id == _current_hover_region:
+		return
+	animate_region_highlight_off(region_id)
 
 func _ensure_region_highlight_overlay(region_id: int) -> Dictionary:
 	var region_container = _map_generator.get_region_container_by_id(region_id)

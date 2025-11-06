@@ -48,6 +48,7 @@ var move_modal: MoveModal = null
 
 # Reference to the visual manager for ownership animations
 var visual_manager: VisualManager = null
+var _ready_highlight_player_id: int = -1
 
 # All armies in the game: player_id -> Array[Army]
 var armies_by_player: Dictionary = {}
@@ -90,6 +91,8 @@ func set_move_modal(modal: MoveModal) -> void:
 func set_visual_manager(manager: VisualManager) -> void:
 	"""Set the visual manager reference"""
 	visual_manager = manager
+	if _ready_highlight_player_id != -1:
+		update_ready_highlights_for_player(_ready_highlight_player_id)
 
 func _find_army_modal() -> void:
 	"""Find and store reference to the army modal"""
@@ -133,12 +136,16 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 	if not armies_by_player.has(player_id):
 		armies_by_player[player_id] = []
 	armies_by_player[player_id].append(army)
+	army.movement_points_changed.connect(_on_army_movement_points_changed)
 
 	if is_raised:
 		DebugLogger.log("ArmyManagement", "Raised new army for player " + str(player_id) + " in region " + region_container.name)
 
 	# Reposition all armies in region to avoid overlap
 	_apply_army_offsets_for_region(region_container)
+
+	if player_id == _ready_highlight_player_id:
+		update_ready_highlights_for_player(player_id)
 
 	return army
 
@@ -160,6 +167,44 @@ func _get_army_position_offset(region_container: Node) -> Vector2:
 	
 	# Default positioning when no castle is present (scaled)
 	return Vector2(0, -5 * map_size_scale)  # Army positioned slightly above center
+
+func _on_army_movement_points_changed(army: Army, new_points: int) -> void:
+	if army == null or not is_instance_valid(army):
+		return
+	if army.get_player_id() != _ready_highlight_player_id:
+		return
+	update_ready_highlights_for_player(_ready_highlight_player_id)
+
+func set_ready_highlight_player(player_id: int) -> void:
+	_ready_highlight_player_id = player_id
+	if visual_manager == null:
+		return
+	if player_id == -1:
+		visual_manager.clear_ready_army_highlights()
+	else:
+		update_ready_highlights_for_player(player_id)
+
+func update_ready_highlights_for_player(player_id: int) -> void:
+	if visual_manager == null:
+		return
+	if player_id == -1:
+		visual_manager.clear_ready_army_highlights()
+		return
+	if player_id != _ready_highlight_player_id:
+		return
+	var ready_regions: Array = []
+	if armies_by_player.has(player_id):
+		for army in armies_by_player[player_id]:
+			if army == null or not is_instance_valid(army):
+				continue
+			if army.get_movement_points() <= 0:
+				continue
+			var region = army.get_parent()
+			if region is Region:
+				var region_id = (region as Region).get_region_id()
+				if region_id != -1 and not ready_regions.has(region_id):
+					ready_regions.append(region_id)
+	visual_manager.update_ready_army_highlights(player_id, ready_regions)
 
 func _apply_army_offsets_for_region(region_container: Node, skip_army: Army = null) -> void:
 	"""Reposition all armies in a region using stacked offsets and z-index order.
@@ -426,6 +471,8 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Play click sound for successful army movement
 	if sound_manager:
 		sound_manager.click_sound()
+	if selected_army != null and is_instance_valid(selected_army) and selected_army.get_player_id() == _ready_highlight_player_id:
+		update_ready_highlights_for_player(_ready_highlight_player_id)
 	
 	return true
 
@@ -588,7 +635,9 @@ func reset_all_army_movement_points() -> void:
 	# Update army modal if an army is currently selected
 	if army_modal != null and selected_army != null:
 		army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - just update info
-	
+	if _ready_highlight_player_id != -1:
+		update_ready_highlights_for_player(_ready_highlight_player_id)
+
 	DebugLogger.log("ArmyManagement", "Reset movement points for " + str(total_armies) + " armies")
 
 func get_army_in_region(region_container: Node, player_id: int) -> Army:
@@ -782,6 +831,7 @@ func calc_reinforcement_threshold(turn_number: int) -> float:
 
 func remove_destroyed_armies() -> void:
 	"""Remove armies that have no soldiers left after battle"""
+	var dirty_players: Dictionary = {}
 	for player_id in armies_by_player:
 		var armies = armies_by_player[player_id]
 		var i = 0
@@ -803,9 +853,12 @@ func remove_destroyed_armies() -> void:
 				army.queue_free()
 				# Remove from tracking
 				armies.remove_at(i)
+				dirty_players[player_id] = true
 				continue
 			
 			i += 1
+	if _ready_highlight_player_id != -1 and dirty_players.has(_ready_highlight_player_id):
+		update_ready_highlights_for_player(_ready_highlight_player_id)
 
 func remove_army_from_tracking(army: Army) -> void:
 	"""Remove a specific army from tracking (used when army is defeated)"""
@@ -819,6 +872,8 @@ func remove_army_from_tracking(army: Army) -> void:
 		if index != -1:
 			armies.remove_at(index)
 			DebugLogger.log("ArmyManagement", "Removed army " + army.name + " from player " + str(player_id) + " tracking")
+			if player_id == _ready_highlight_player_id:
+				update_ready_highlights_for_player(player_id)
 	
 	# Also remove from previous regions tracking
 	if army_previous_regions.has(army):
