@@ -115,6 +115,10 @@ visible = false
 
 [node name="CallToArmsModal" parent="UI" instance=ExtResource("19_callarms")]
 visible = false
+offset_left = -325.0
+offset_top = -325.0
+offset_right = 325.0
+offset_bottom = 325.0
 
 [node name="TransferSoldiersModal" parent="UI" instance=ExtResource("20_transfer")]
 visible = false

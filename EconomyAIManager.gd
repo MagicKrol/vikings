@@ -184,7 +184,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 	
 	# Gather candidates
 	for region_id in owned_regions:
-		if region_manager.get_castle_level(region_id) < 1:
+		if region_manager.get_castle_level(region_id) < 2:
 			continue
 		castles_checked += 1
 		

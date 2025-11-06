@@ -93,6 +93,8 @@ func display_message(text: String) -> void:
 func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
 	is_modal_active = active
+	if _turn_modal:
+		_turn_modal.visible = not active
 	if is_modal_active and region_tooltip and region_tooltip.visible:
 		hide_region_tooltip()
 
@@ -252,9 +254,6 @@ func close_all_active_modals() -> void:
 		_info_modal.hide_modal()
 	if _move_modal and _move_modal.visible:
 		_move_modal.hide_move_modal()
-	# Also hide TurnModal so it doesn't intercept input
-	if _turn_modal and _turn_modal.visible:
-		_turn_modal.visible = false
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""

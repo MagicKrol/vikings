@@ -998,9 +998,8 @@ func _create_offset_border_line(original_points: PackedVector2Array, player_id: 
 	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
 	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Offset distance in pixels
 
-	# Determine offset direction based on region ID ordering
-	# This ensures consistent opposite directions for the two regions
-	var offset_direction = 1.0 if current_region_id < other_region_id else -1.0
+	# Determine offset direction based on region geometry so offsets remain continuous
+	var offset_direction := _get_land_side_offset_direction(original_points, current_region_id)
 
 	var offset_points := PackedVector2Array()
 

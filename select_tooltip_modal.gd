@@ -143,19 +143,16 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 			
 			if castle_type_to_build != CastleTypeEnum.Type.NONE:
 				var cost = GameParameters.get_castle_building_cost(castle_type_to_build)
-				var build_time = GameParameters.get_castle_build_time(castle_type_to_build)
 				
 				if not cost.is_empty():
-					_display_cost(cost, build_time)
+					_display_cost(cost)
 	
 	# Add construction status for castle_construction tooltip
 	if tooltip_key == "castle_construction" and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null and current_region.is_castle_under_construction():
 			var castle_being_built = current_region.get_castle_under_construction()
-			var turns_remaining = current_region.get_castle_build_turns_remaining()
 			tooltip_text += "\n\nBuilding: " + CastleTypeEnum.type_to_string(castle_being_built)
-			tooltip_text += "\nTurns Remaining: " + str(turns_remaining)
 	
 	# Add current castle info for castle_max_level tooltip
 	if tooltip_key == "castle_max_level" and context_data.has("current_region"):
@@ -175,15 +172,15 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 		var current_region = context_data["current_region"]
 		if current_region != null:
 			var castle_type = current_region.get_castle_type()
-			var has_outpost_or_higher = castle_type != CastleTypeEnum.Type.NONE
+			var has_keep_or_higher = castle_type >= CastleTypeEnum.Type.KEEP
 			
 			# Display raise army cost
 			var raise_army_cost = GameParameters.get_raise_army_cost()
 			var cost_dict = {ResourcesEnum.Type.GOLD: raise_army_cost}
 			_display_cost(cost_dict)
 			
-			if not has_outpost_or_higher:
-				tooltip_text += "\n\nRequires Outpost"
+			if not has_keep_or_higher:
+				tooltip_text += "\n\nRequires Keep"
 	
 	# Add detailed info for ore_search tooltip
 	if tooltip_key == "ore_search" and context_data.has("current_region"):

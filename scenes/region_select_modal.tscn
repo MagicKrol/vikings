@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bregionselmod"]
 
 [ext_resource type="Script" path="res://region_select_modal.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://c3duu81d31031" path="res://images/selectmenu.png" id="2_1x0tc"]
+[ext_resource type="Texture2D" uid="uid://n7mv5wuw08in" path="res://images/mainmenu4.png" id="2_8hrve"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="3_7r5h8"]
 
 [node name="RegionSelectModal" type="Control"]
@@ -20,10 +20,11 @@ grow_vertical = 2
 script = ExtResource("1_script")
 
 [node name="Top" type="TextureRect" parent="."]
+layout_mode = 0
 offset_right = 300.0
-offset_bottom = 400.0
+offset_bottom = 455.0
 size_flags_horizontal = 3
-texture = ExtResource("2_1x0tc")
+texture = ExtResource("2_8hrve")
 expand_mode = 3
 
 [node name="InnerPanel" type="VBoxContainer" parent="."]

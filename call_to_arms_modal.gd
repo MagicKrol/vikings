@@ -1,9 +1,6 @@
 extends Control
 class_name CallToArmsModal
 
-const NUMBER_BUTTON_THEME := preload("res://themes/number_buttons_theme.tres")
-const STANDARD_TEXT_THEME := preload("res://themes/standard_text_modal_theme.tres")
-
 # UI elements - references to static nodes from scene
 var call_to_arms_title_label: Label
 var regions_header_label: Label
@@ -13,6 +10,8 @@ var buttons_header_label: Label
 var regions_container: VBoxContainer
 var continue_button: Button
 var total_available_label: Label
+var total_called_label: Label
+var region_row_template: HBoxContainer
 
 # Call to Arms data
 var target_region: Region = null
@@ -35,7 +34,14 @@ func _ready():
 	regions_container = get_node("Panel/Army/RegionsSection/RegionsContainer")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	total_available_label = get_node("Panel/Army/AvailableSummary/HBoxContainer/AvailableValue")
-	
+	total_called_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalValue")
+	region_row_template = regions_container.get_node_or_null("DefaultRegionRow") as HBoxContainer
+	if region_row_template != null:
+		regions_container.remove_child(region_row_template)
+		region_row_template.visible = false
+	if total_called_label != null:
+		total_called_label.text = "0"
+
 	# Connect button signal
 	continue_button.pressed.connect(_on_continue_pressed)
 	
@@ -78,9 +84,11 @@ func hide_modal() -> void:
 	called_recruits.clear()
 	total_called = 0
 	total_available_label.text = "0"
-	
+	if total_called_label:
+		total_called_label.text = "0"
+
 	visible = false
-	
+
 	# Set modal mode inactive
 	if ui_manager:
 		ui_manager.set_modal_active(false)
@@ -131,7 +139,7 @@ func _update_display() -> void:
 	# Update headers
 	regions_header_label.text = "Region"
 	called_recruits_header_label.text = "Called"
-	buttons_header_label.text = "Adjust"
+	buttons_header_label.text = "CALL"
 	available_recruits_header_label.text = "Available"
 
 	# Update regions display
@@ -139,7 +147,7 @@ func _update_display() -> void:
 
 func _update_regions_display() -> void:
 	"""Update the regions list with call to arms controls"""
-	# Clear existing displays
+	# Clear existing displays (remove template row first for editor previews)
 	for child in regions_container.get_children():
 		child.queue_free()
 
@@ -147,63 +155,60 @@ func _update_regions_display() -> void:
 	for region in neighboring_regions:
 		_create_region_row(region)
 
+	_update_total_called_label()
 	_update_total_available_label()
 
 func _create_region_row(region: Region) -> void:
 	"""Create a single region row with: Region Name | Called Recruits | Buttons | Available Recruits"""
-	var row_container = HBoxContainer.new()
-	row_container.add_theme_constant_override("separation", 0)
-	row_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if region_row_template == null:
+		return
+	var row_container := region_row_template.duplicate() as HBoxContainer
+	row_container.visible = true
+	row_container.name = "RegionRow_" + str(region.get_region_id())
 	regions_container.add_child(row_container)
 
-	var region_label = Label.new()
+	var region_label := row_container.get_node("RegionLabel") as Label
 	region_label.text = region.get_region_name()
-	region_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	region_label.custom_minimum_size = Vector2(230, 0)
-	region_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_apply_standard_theme(region_label)
-	row_container.add_child(region_label)
 
-	var called_count_label = Label.new()
 	var region_id = region.get_region_id()
 	var count_called = called_recruits.get(region_id, 0)
+
+	var called_count_label := row_container.get_node("CalledCountLabel") as Label
 	called_count_label.text = str(count_called)
-	called_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	called_count_label.custom_minimum_size = Vector2(60, 0)
-	called_count_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	called_count_label.name = "CalledCount_" + str(region_id)
-	_apply_standard_theme(called_count_label)
-	row_container.add_child(called_count_label)
 
-	var left_margin = MarginContainer.new()
-	left_margin.custom_minimum_size = Vector2(20, 0)
-	row_container.add_child(left_margin)
-
-	_create_adjust_button(row_container, region, 10, "+10")
-	_create_adjust_button(row_container, region, 1, "+1")
-	_create_adjust_button(row_container, region, -1, "-1")
-	_create_adjust_button(row_container, region, -10, "-10")
-
-	var right_margin = MarginContainer.new()
-	right_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row_container.add_child(right_margin)
-
-	var available_label = Label.new()
+	var available_label := row_container.get_node("AvailableLabel") as Label
 	available_label.text = str(_get_remaining_recruits(region))
-	available_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	available_label.custom_minimum_size = Vector2(60, 0)
-	available_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_apply_standard_theme(available_label)
-	row_container.add_child(available_label)
 
-func _create_adjust_button(container: Container, region: Region, delta: int, label_text: String) -> void:
-	var button = Button.new()
-	button.text = label_text
-	button.custom_minimum_size = Vector2(40, 0)
-	button.focus_mode = Control.FOCUS_NONE
-	button.theme = NUMBER_BUTTON_THEME
-	button.pressed.connect(_on_adjust_button_pressed.bind(region, delta))
-	container.add_child(button)
+	var increase_ten_button := row_container.get_node("IncreaseTenButton") as Button
+	var increase_one_button := row_container.get_node("IncreaseOneButton") as Button
+	var decrease_one_button := row_container.get_node("DecreaseOneButton") as Button
+	var decrease_ten_button := row_container.get_node("DecreaseTenButton") as Button
+
+	increase_ten_button.pressed.connect(_on_adjust_button_pressed.bind(region, 10))
+	increase_one_button.pressed.connect(_on_adjust_button_pressed.bind(region, 1))
+	decrease_one_button.pressed.connect(_on_adjust_button_pressed.bind(region, -1))
+	decrease_ten_button.pressed.connect(_on_adjust_button_pressed.bind(region, -10))
+
+	_update_region_row_buttons(row_container, region)
+
+func _update_region_row_buttons(row_container: HBoxContainer, region: Region) -> void:
+	var region_id := region.get_region_id()
+	var remaining: int = _get_remaining_recruits(region)
+	var count_called: int = called_recruits.get(region_id, 0)
+
+	var increase_ten_button := row_container.get_node("IncreaseTenButton") as Button
+	var increase_one_button := row_container.get_node("IncreaseOneButton") as Button
+	var decrease_one_button := row_container.get_node("DecreaseOneButton") as Button
+	var decrease_ten_button := row_container.get_node("DecreaseTenButton") as Button
+
+	var can_increase: bool = remaining > 0
+	increase_one_button.disabled = not can_increase
+	increase_ten_button.disabled = not can_increase
+
+	var can_decrease: bool = count_called > 0
+	decrease_one_button.disabled = not can_decrease
+	decrease_ten_button.disabled = not can_decrease
 
 # Button handlers
 func _on_adjust_button_pressed(region: Region, delta: int) -> void:
@@ -218,7 +223,6 @@ func _on_adjust_button_pressed(region: Region, delta: int) -> void:
 		called_recruits.erase(region_id)
 	else:
 		called_recruits[region_id] = new_value
-	total_called += new_value - current_called
 	_update_regions_display()
 
 func _update_total_available_label() -> void:
@@ -226,6 +230,13 @@ func _update_total_available_label() -> void:
 	for region in neighboring_regions:
 		total_available += _get_remaining_recruits(region)
 	total_available_label.text = str(total_available)
+
+func _update_total_called_label() -> void:
+	total_called = 0
+	for value in called_recruits.values():
+		total_called += int(value)
+	if total_called_label:
+		total_called_label.text = str(total_called)
 
 func _get_remaining_recruits(region: Region) -> int:
 	var available_recruits = region.get_available_recruits()
@@ -273,8 +284,3 @@ func _apply_call_to_arms() -> void:
 				
 				DebugLogger.log("UISystem", "Moved " + str(actual_moved) + " recruits from " + source_region.get_region_name() + " to " + target_region.get_region_name())
 				DebugLogger.log("UISystem", target_region.get_region_name() + " now has " + str(target_region.get_available_recruits()) + "/" + str(target_region.get_max_recruits()) + " recruits")
-
-func _apply_standard_theme(label: Label) -> void:
-	"""Apply standard theme to a label"""
-	label.theme = STANDARD_TEXT_THEME
-	label.add_theme_color_override("font_color", Color.WHITE)

@@ -117,13 +117,12 @@ func _build_button_definitions() -> Array[Dictionary]:
 		})
 
 	var castle_type := current_region.get_castle_type() if current_region != null else CastleTypeEnum.Type.NONE
-	var has_outpost_or_higher := castle_type != CastleTypeEnum.Type.NONE
+	var has_keep_or_higher := castle_type >= CastleTypeEnum.Type.KEEP
 	var can_afford_army := _can_player_afford_raise_army()
 	var current_player_id := game_manager.get_current_player() if game_manager != null else 1
-	var has_army_already := _region_has_army_for_player(current_player_id)
 	definitions.append({
 		"text": "Raise Army",
-		"enabled": has_outpost_or_higher and can_afford_army and not has_army_already,
+		"enabled": has_keep_or_higher and can_afford_army,
 		"action": "_on_raise_army_pressed",
 		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
 	})
@@ -195,36 +194,30 @@ func _get_castle_button_data() -> Dictionary:
 	
 	if under_construction:
 		var turns_remaining = current_region.get_castle_build_turns_remaining()
-		var castle_being_built = current_region.get_castle_under_construction()
+		var next_type = CastleTypeEnum.get_next_level(current_region.get_castle_under_construction())
+		if next_type == CastleTypeEnum.Type.NONE:
+			return {}
 		return {
-			"text": "Building " + CastleTypeEnum.type_to_string(castle_being_built) + " (" + str(turns_remaining) + " turns)",
+			"text": "Build " + CastleTypeEnum.type_to_string(next_type),
 			"enabled": false,
 			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
 		}
-	elif castle_type == CastleTypeEnum.Type.NONE:
-		var can_afford = _can_player_afford_any_castle()
-		return {
-			"text": "Build Outpost",
-			"enabled": can_afford and current_region.can_build_castle(),
-			"action": "_on_build_castle_pressed",
-			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("build_castle")
-		}
+	var next_castle_type: CastleTypeEnum.Type
+	var can_afford: bool
+	if castle_type == CastleTypeEnum.Type.NONE:
+		next_castle_type = CastleTypeEnum.Type.OUTPOST
+		can_afford = _can_player_afford_any_castle()
 	else:
-		var next_castle_type = CastleTypeEnum.get_next_level(castle_type)
-		if next_castle_type != CastleTypeEnum.Type.NONE:
-			var can_afford = _can_player_afford_castle(next_castle_type)
-			return {
-				"text": "Upgrade to " + CastleTypeEnum.type_to_string(next_castle_type),
-				"enabled": can_afford and current_region.can_upgrade_castle(),
-				"action": "_on_upgrade_castle_pressed",
-				"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("upgrade_castle")
-			}
-		else:
-			return {
-				"text": "Castle at Maximum Level",
-				"enabled": false,
-				"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_max_level")
-			}
+		next_castle_type = CastleTypeEnum.get_next_level(castle_type)
+		if next_castle_type == CastleTypeEnum.Type.NONE:
+			return {}
+		can_afford = _can_player_afford_castle(next_castle_type)
+	return {
+		"text": "Build " + CastleTypeEnum.type_to_string(next_castle_type),
+		"enabled": can_afford and ((castle_type == CastleTypeEnum.Type.NONE and current_region.can_build_castle()) or current_region.can_upgrade_castle()),
+		"action": "_on_build_castle_pressed" if castle_type == CastleTypeEnum.Type.NONE else "_on_upgrade_castle_pressed",
+		"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("upgrade_castle" if castle_type != CastleTypeEnum.Type.NONE else "build_castle")
+	}
 
 func _on_promote_region_pressed() -> void:
 	if sound_manager:
@@ -254,7 +247,8 @@ func _on_promote_region_pressed() -> void:
 	var level_name = RegionLevelEnum.level_to_string(next_level)
 	var promotion_message = "Region promoted to " + level_name + " (level " + str(int(next_level) + 1) + ")"
 	visible = false
-	message_modal.continue_clicked.connect(_on_message_modal_continue)
+	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
+		message_modal.continue_clicked.connect(_on_message_modal_continue)
 	message_modal.display_message(promotion_message)
 
 	if region_manager != null:
@@ -275,6 +269,8 @@ func _on_recruit_soldiers_pressed() -> void:
 
 func _on_message_modal_continue() -> void:
 	visible = true
+	if ui_manager:
+		ui_manager.call_deferred("set_modal_active", true)
 
 
 func _on_build_castle_pressed() -> void:
@@ -312,7 +308,8 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	var turns_left = current_region.get_castle_build_turns_remaining()
 	var building_name = CastleTypeEnum.type_to_string(castle_type)
 	visible = false
-	message_modal.continue_clicked.connect(_on_message_modal_continue)
+	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
+		message_modal.continue_clicked.connect(_on_message_modal_continue)
 	message_modal.display_message(building_name + " will be done in " + str(turns_left) + " turn(s).")
 	
 	if info_modal != null and info_modal.visible:
@@ -346,7 +343,8 @@ func _on_ore_search_pressed() -> void:
 		var header = ore_type_string.capitalize() + " Found!"
 		var message = "Ore size was estimated to " + str(ore_amount) + " units."
 		visible = false
-		message_modal.continue_clicked.connect(_on_message_modal_continue)
+		if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
+			message_modal.continue_clicked.connect(_on_message_modal_continue)
 		message_modal.display_message(header, message)
 	elif not search_result.success:
 		var header = "Ore Search"
@@ -359,7 +357,8 @@ func _on_ore_search_pressed() -> void:
 			message = "Ore searches exhausted. This region contains no accessible ore deposits."
 		
 		visible = false
-		message_modal.continue_clicked.connect(_on_message_modal_continue)
+		if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
+			message_modal.continue_clicked.connect(_on_message_modal_continue)
 		message_modal.display_message(header, message)
 	
 	if info_modal != null and info_modal.visible:

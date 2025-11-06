@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://js8fvqwfb0na"]
+[gd_scene load_steps=9 format=3 uid="uid://js8fvqwfb0na"]
 
 [ext_resource type="Script" path="res://call_to_arms_modal.gd" id="1_callarms"]
 [ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="2_background"]
@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_buttons"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="5_header"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="6_standard"]
+[ext_resource type="Theme" uid="uid://b1bq2hw3v6lux" path="res://themes/number_buttons_theme.tres" id="7_number"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 draw_center = false
@@ -23,10 +24,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -325.0
-offset_top = -325.0
-offset_right = 325.0
-offset_bottom = 325.0
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 500.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_standard")
@@ -34,38 +35,36 @@ script = ExtResource("1_callarms")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 650.0
-offset_bottom = 650.0
+offset_right = 900.0
+offset_bottom = 600.0
 texture = ExtResource("2_background")
-expand_mode = 1
+expand_mode = 3
 
 [node name="ArmyTexture" type="TextureRect" parent="."]
 layout_mode = 0
 offset_left = 15.0
-offset_top = 110.0
-offset_right = 635.0
-offset_bottom = 540.0
+offset_top = 145.0
+offset_right = 885.0
+offset_bottom = 475.0
 texture = ExtResource("3_inner")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 640.0
-offset_bottom = 640.0
+offset_right = 900.0
+offset_bottom = 600.0
 theme = ExtResource("6_standard")
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-offset_left = -31.0
-offset_top = 10.0
-offset_right = 671.0
-offset_bottom = 610.0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 890.0
+offset_bottom = 620.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 5
 
 [node name="Header" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -76,46 +75,9 @@ theme = ExtResource("5_header")
 text = "Call to Arms"
 horizontal_alignment = 1
 
-[node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-
-[node name="HeaderRow" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="RegionsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-custom_minimum_size = Vector2(230, 0)
-layout_mode = 2
-text = "Region"
-
-[node name="SpacerLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-layout_mode = 2
-
-[node name="CalledRecruitsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "Called"
-horizontal_alignment = 1
-
-[node name="SpacerLabel2" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-
-[node name="ButtonsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-custom_minimum_size = Vector2(160, 0)
-layout_mode = 2
-text = "Adjust"
-horizontal_alignment = 1
-
-[node name="SpacerLabel3" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="AvailableRecruitsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "Available"
-horizontal_alignment = 1
 
 [node name="AvailableSummary" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -138,8 +100,49 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
 horizontal_alignment = 1
 
+[node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HeaderRow" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="RegionsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Region"
+
+[node name="SpacerLabel" type="MarginContainer" parent="Panel/Army/HeaderSection/HeaderRow"]
+layout_mode = 2
+
+[node name="CalledRecruitsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Called"
+horizontal_alignment = 1
+
+[node name="SpacerLabel2" type="MarginContainer" parent="Panel/Army/HeaderSection/HeaderRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="ButtonsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "CALL"
+horizontal_alignment = 1
+
+[node name="SpacerLabel3" type="MarginContainer" parent="Panel/Army/HeaderSection/HeaderRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="AvailableRecruitsHeaderLabel" type="Label" parent="Panel/Army/HeaderSection/HeaderRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Available"
+horizontal_alignment = 1
+
 [node name="RegionsSection" type="VBoxContainer" parent="Panel/Army"]
-custom_minimum_size = Vector2(0, 360)
+custom_minimum_size = Vector2(0, 320)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 10
@@ -149,25 +152,115 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 
+[node name="DefaultRegionRow" type="HBoxContainer" parent="Panel/Army/RegionsSection/RegionsContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="RegionLabel" type="Label" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("6_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Region Name"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="CalledCountLabel" type="Label" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("6_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="LeftMargin" type="MarginContainer" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="IncreaseTenButton" type="Button" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("7_number")
+text = "+10"
+
+[node name="IncreaseOneButton" type="Button" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("7_number")
+text = "+1"
+
+[node name="DecreaseOneButton" type="Button" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("7_number")
+text = "-1"
+
+[node name="DecreaseTenButton" type="Button" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("7_number")
+text = "-10"
+
+[node name="RightMargin" type="MarginContainer" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="AvailableLabel" type="Label" parent="Panel/Army/RegionsSection/RegionsContainer/DefaultRegionRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("6_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0"
+horizontal_alignment = 2
+
+[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="TotalSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/TotalSection"]
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Total:"
+
+[node name="TotalValue" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
 [node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection"]
-custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
 layout_mode = 2
-
-[node name="MarginLeft" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
+alignment = 1
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_buttons")
 text = "Continue"
-
-[node name="MarginRight" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
