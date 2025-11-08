@@ -240,7 +240,11 @@ func _on_promote_region_pressed() -> void:
 		return
 	
 	var current_player = player_manager.get_player(1)
-	if current_player == null or not current_player.pay_cost(promotion_cost):
+	if current_player == null:
+		return
+	if not _passes_food_upgrade_safeguard(current_player.get_player_id(), promotion_cost):
+		return
+	if not current_player.pay_cost(promotion_cost):
 		return
 	
 	current_region.set_region_level(next_level)
@@ -443,6 +447,10 @@ func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 	if player_manager == null:
 		return false
 	
+	var promotion_cost = GameParameters.get_promotion_cost(target_level)
+	if promotion_cost.is_empty():
+		return false
+	
 	var current_player = player_manager.get_player(1)
 	if current_player == null:
 		return false
@@ -454,8 +462,16 @@ func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 		ResourcesEnum.Type.IRON: current_player.get_resource_amount(ResourcesEnum.Type.IRON),
 		ResourcesEnum.Type.STONE: current_player.get_resource_amount(ResourcesEnum.Type.STONE)
 	}
+	if not GameParameters.can_afford_promotion(target_level, player_resources):
+		return false
 	
-	return GameParameters.can_afford_promotion(target_level, player_resources)
+	return _passes_food_upgrade_safeguard(current_player.get_player_id(), promotion_cost)
+
+func _passes_food_upgrade_safeguard(player_id: int, promotion_cost: Dictionary) -> bool:
+	if player_manager == null:
+		return false
+	var food_cost = int(promotion_cost.get(ResourcesEnum.Type.FOOD, 0))
+	return player_manager.meets_food_upgrade_safeguard(player_id, food_cost)
 
 func _can_player_afford_castle(castle_type: CastleTypeEnum.Type) -> bool:
 	if player_manager == null:

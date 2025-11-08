@@ -294,7 +294,7 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 	var castle_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L3)
 	castle_region.set_population(castle_population)
 	# Initialize recruits for castle region (will have outpost castle type)
-	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population, CastleTypeEnum.Type.OUTPOST)
+	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population, CastleTypeEnum.Type.KEEP)
 	
 	# Get neighboring regions and upgrade them to L2
 	var neighbor_ids = get_neighbor_regions(castle_region.get_region_id())

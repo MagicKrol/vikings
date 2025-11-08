@@ -192,6 +192,7 @@ const AI_PEA_POWER_HIGH_MIN = 300               # Lower bound for "high power" a
 const AI_PEA_TARGET_PROP_LOW = 0.40             # Target share for low power armies (40%)
 const AI_PEA_TARGET_PROP_MID = 0.30             # Target share for mid power armies (30%)
 const AI_PEA_TARGET_PROP_HIGH = 0.20            # Target share for high power armies (20%)
+const AI_MIN_FOOD_AFTER_UPGRADE = 50            # Minimum net food after region upgrade safeguard
 
 ## Army Pathfinder Algorithm Constants
 const ARMY_PATHFINDER_HORIZON_MP = 15          # Maximum MP horizon for pathfinding (3 turns * 5 MP)
@@ -219,10 +220,10 @@ const AI_WITHDRAW_POWER_THRESHOLD = 0.80			# AI withdraw triggers when own power
 const MOVE_ANIMATION_DURATION = 0.5				# Seconds for army move animation
 
 ## Camera Centering Timing Constants
-const CAMERA_ARMY_START_DELAY = 0.5			# Seconds to pause after centering on army before movement
-const CAMERA_BATTLE_RESULT_DELAY = 0.5			# Seconds to pause after battle results (victory/defeat/withdrawal)
-const CAMERA_CONQUEST_DELAY = 0.5				# Seconds to pause after region conquest to show ownership change
-const CAMERA_FRIENDLY_MOVE_DELAY = 0.5			# Seconds to pause after friendly army moves
+const CAMERA_ARMY_START_DELAY = 0.1			# Seconds to pause after centering on army before movement
+const CAMERA_BATTLE_RESULT_DELAY = 0.1			# Seconds to pause after battle results (victory/defeat/withdrawal)
+const CAMERA_CONQUEST_DELAY = 0.1				# Seconds to pause after region conquest to show ownership change
+const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army moves
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
@@ -498,28 +499,26 @@ const POPULATION_BY_LEVEL = {
 # Costs required to promote a region to the specified level
 const REGION_PROMOTION_COSTS = {
 	RegionLevelEnum.Level.L2: {  # Cost to promote from L1 to L2
-		ResourcesEnum.Type.GOLD: 50,
-		ResourcesEnum.Type.WOOD: 20,
-		ResourcesEnum.Type.STONE: 10
+		ResourcesEnum.Type.GOLD: 10,
+		ResourcesEnum.Type.FOOD: 10
 	},
 	RegionLevelEnum.Level.L3: {  # Cost to promote from L2 to L3
-		ResourcesEnum.Type.GOLD: 100,
-		ResourcesEnum.Type.WOOD: 40,
-		ResourcesEnum.Type.STONE: 30,
-		ResourcesEnum.Type.FOOD: 20
+		ResourcesEnum.Type.GOLD: 15,
+		ResourcesEnum.Type.FOOD: 20,
+		ResourcesEnum.Type.WOOD: 5,
 	},
 	RegionLevelEnum.Level.L4: {  # Cost to promote from L3 to L4
-		ResourcesEnum.Type.GOLD: 200,
-		ResourcesEnum.Type.WOOD: 60,
-		ResourcesEnum.Type.STONE: 50,
-		ResourcesEnum.Type.IRON: 20
+		ResourcesEnum.Type.GOLD: 20,
+		ResourcesEnum.Type.FOOD: 30,
+		ResourcesEnum.Type.WOOD: 10,
+		ResourcesEnum.Type.STONE: 5,
 	},
 	RegionLevelEnum.Level.L5: {  # Cost to promote from L4 to L5
-		ResourcesEnum.Type.GOLD: 400,
-		ResourcesEnum.Type.WOOD: 100,
-		ResourcesEnum.Type.STONE: 80,
-		ResourcesEnum.Type.IRON: 40,
-		ResourcesEnum.Type.FOOD: 50
+		ResourcesEnum.Type.GOLD: 25,
+		ResourcesEnum.Type.FOOD: 40,
+		ResourcesEnum.Type.WOOD: 15,
+		ResourcesEnum.Type.STONE: 10,
+		ResourcesEnum.Type.IRON: 5
 	}
 }
 

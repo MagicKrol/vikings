@@ -425,6 +425,26 @@ func give_test_resources(player_id: int) -> void:
 	
 	DebugLogger.log("PlayerManagement", "Gave test resources to " + player.get_player_name())
 
+func get_player_food_growth(player_id: int) -> float:
+	"""Calculate net food change per turn (income - upkeep)"""
+	var owned_regions = region_manager.get_player_regions(player_id)
+	var food_income := 0.0
+	for region_id in owned_regions:
+		var region_node = map_generator.get_region_container_by_id(region_id) as Region
+		if region_node != null and region_node.can_collect_resource(ResourcesEnum.Type.FOOD):
+			food_income += float(region_node.get_resource_amount(ResourcesEnum.Type.FOOD))
+	var total_food_cost = calculate_total_army_food_cost(player_id)
+	return food_income - total_food_cost
+
+func meets_food_upgrade_safeguard(player_id: int, food_cost: int) -> bool:
+	"""Check if player keeps minimum food buffer after a region upgrade"""
+	var player = get_player(player_id)
+	if player == null:
+		return false
+	var food_after_upgrade = float(player.get_resource_amount(ResourcesEnum.Type.FOOD) - food_cost)
+	var projected_food = food_after_upgrade + get_player_food_growth(player_id)
+	return projected_food >= float(GameParameters.AI_MIN_FOOD_AFTER_UPGRADE)
+
 func calculate_total_army_food_cost(player_id: int) -> float:
 	"""Calculate total food cost for all armies and garrisons owned by a player"""
 	var total_food_cost = 0.0

@@ -46,6 +46,8 @@ var debug_step_gate: DebugStepGate
 # Turn state
 var current_player_id: int = -1
 var moved_armies: Dictionary = {}  # Army -> bool
+var _log_active_turn: bool = false
+var _recruitment_status_cache: Dictionary = {}
 
 func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: PlayerManagerNode, battle_mgr: BattleManager) -> void:
 	"""Initialize with manager references"""
@@ -90,10 +92,15 @@ func start_turn(player_id: int) -> void:
 	moved_armies.clear()
 	
 	var turn_number := _get_current_turn()
+	_log_active_turn = game_manager.is_player_ai(player_id)
+	if _log_active_turn:
+		game_manager.ensure_ai_log_started()
+		_recruitment_status_cache.clear()
 	
 	# Step 1: Use EconomyAIManager to plan economy and allocate budgets (recruitment wired-in)
 	var econ := EconomyAIManager.new(region_manager, army_manager, player_manager)
 	var econ_result = econ.plan_turn(player_id, turn_number)
+	_log_turn_intro(player_id, turn_number, econ_result)
 	var assigned_count = int(econ_result.get("recruit_assigned", 0))
 	var raise_result = econ_result.get("raise_army_result", {"raised": false})
 	DebugLogger.log("AITurnManager", "[TurnController] EconomyAIManager assigned recruitment budgets to " + str(assigned_count) + " armies at castles")
@@ -133,6 +140,7 @@ func _process_turn(player_id: int) -> void:
 			if army.get_efficiency() < 75:
 				while army.get_movement_points() > 0:
 					army.make_camp()
+					_log_army_make_camp(army)
 				moved_armies[army] = true
 				continue
 			
@@ -142,23 +150,33 @@ func _process_turn(player_id: int) -> void:
 				continue
 			var region_id: int = on_region.get_region_id()
 			var on_castle := region_manager.get_castle_level(region_id) >= 1
+			var needs_recruitment := army.needs_recruitment(turn_number)
 			
 			if army.is_recruitment_requested():
-				if on_castle and army.assigned_budget != null:
-					var allow_recruit := army.get_movement_points() >= 1
-					# Allow instant recruitment for freshly raised AI armies (flagged)
-					if game_manager.is_player_ai(player_id) and army.just_raised:
-						allow_recruit = true
-					if allow_recruit:
-						var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
-						var result = recruitment_manager.hire_soldiers(army, true)
-						army.just_raised = false
-						if result.has("error"):
-							DebugLogger.log("AITurnManager", "[TurnController] RecruitmentManager error: " + str(result.get("error", "unknown")))
+				if on_castle:
+					if army.assigned_budget != null:
+						var allow_recruit := army.get_movement_points() >= 1
+						# Allow instant recruitment for freshly raised AI armies (flagged)
+						if game_manager.is_player_ai(player_id) and army.just_raised:
+							allow_recruit = true
+						if allow_recruit:
+							var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
+							var comp_before = _get_army_composition_suffix(army)
+							var power_before = army.get_army_power()
+							var result = recruitment_manager.hire_soldiers(army, true)
+							army.just_raised = false
+							if result.has("error"):
+								DebugLogger.log("AITurnManager", "[TurnController] RecruitmentManager error: " + str(result.get("error", "unknown")))
+								_log_recruitment_skip(army, region_id, String(result.get("error", "unknown")))
+							else:
+								_log_recruitment_success(army, region_id, result, comp_before, power_before)
+						else:
+							DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " cannot recruit now (no MP and not fresh AI). Skipping.")
+							_log_recruitment_skip(army, region_id, "no_movement_points")
 					else:
-						DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " cannot recruit now (no MP and not fresh AI). Skipping.")
-
+						_log_recruitment_skip(army, region_id, "no_budget_assigned")
 				else:
+					_log_recruitment_skip(army, region_id, "not_at_castle")
 					# Not on castle → override target: go to nearest owned castle
 					var castle_id := region_manager.find_nearest_owned_castle_region_id(region_id, army.get_player_id())
 					if castle_id != -1:
@@ -176,6 +194,13 @@ func _process_turn(player_id: int) -> void:
 								"can_reach_now": int(pf["cost"]) <= army.get_movement_points()
 							})
 							continue  # Skip normal frontier evaluation
+					else:
+						_log_recruitment_skip(army, region_id, "no_castle_available")
+			else:
+				if needs_recruitment:
+					_log_recruitment_status_once(army, region_id, "no_budget_assigned")
+				else:
+					_log_recruitment_status_once(army, region_id, "not_needed")
 			
 			# Check peasants-only recruitment (only if normal recruitment not needed)
 			var peasant_plan = _needs_recruitment_peasants(army, turn_number)
@@ -187,6 +212,7 @@ func _process_turn(player_id: int) -> void:
 						var hired = _hire_peasants_at_region(army, on_region, peasant_plan["ideal_needed"])
 						if hired > 0:
 							DebugLogger.log("AIRecruitment", "Army " + str(army.name) + " hired " + str(hired) + " peasants at current region")
+							_log_peasant_recruitment(army, on_region, hired)
 						# Continue to normal movement scoring since army can still move/fight
 					else:
 						# Need to move to different region for peasants
@@ -238,12 +264,14 @@ func _process_turn(player_id: int) -> void:
 	var turn_idx := _get_current_turn()
 	var econ_post_result := econ_post.plan_post_movement(player_id, turn_idx)
 	DebugLogger.log("AITurnManager", "[TurnController] Post-movement economy result: " + str(econ_post_result))
+	_log_economy_result(econ_post_result)
 
 	# Rest rule 1: any remaining MPs at end of turn are spent making camp
 	var all_armies := army_manager.get_player_armies(player_id)
 	for a in all_armies:
 		while a.get_movement_points() > 0:
 			a.make_camp()
+			_log_army_make_camp(a)
 
 func _get_available_armies(player_id: int) -> Array[Army]:
 	"""Get armies that can still move this turn"""
@@ -323,16 +351,20 @@ func _execute_move(move: Dictionary) -> bool:
 	emit_signal("move_started", army, target_id)
 	DebugLogger.log("AITurnManager", "[TurnController] Executing move: %s -> Region %d (score: %.1f, goal: %s)"
 		% [army.name, target_id, move["final_score"], move.get("goal", "attack")])
+	_log_army_move_action(army, move)
 
 	# Handle peasants-only moves specially
 	if move.get("goal", "") == "peasants":
 		var result = await game_manager.ai_travel_to(army, target_id)
+		_log_army_move_result(army, target_id, result)
 		if result == "arrived":
 			# Hire peasants at destination
 			var target_region = region_manager.map_generator.get_region_container_by_id(target_id)
 			var peasant_plan = move.get("peasant_plan", {})
 			var hired = _hire_peasants_at_region(army, target_region, peasant_plan.get("ideal_needed", 0))
 			DebugLogger.log("AIRecruitment", "Peasants-only move completed: hired " + str(hired) + " peasants")
+			if hired > 0:
+				_log_peasant_recruitment(army, target_region, hired)
 		return false  # No ownership change for peasants-only moves
 
 	# Only allow a battle if the army could afford the full cost now.
@@ -347,8 +379,10 @@ func _execute_move(move: Dictionary) -> bool:
 			var times = min(2, army.get_movement_points())
 			for i in range(times):
 				army.make_camp()
+				_log_army_make_camp(army)
 		# Army can reach target this turn - use ai_travel_to for step-by-step debug
 		var result = await game_manager.ai_travel_to(army, target_id)
+		_log_army_move_result(army, target_id, result)
 		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
 		if result == "out_of_movement_points":
 			return false
@@ -369,6 +403,7 @@ func _execute_move(move: Dictionary) -> bool:
 		DebugLogger.log("AITurnManager", "[TurnController] Army cannot reach target this turn")
 		# Army cannot reach target this turn - use ai_travel_to for partial movement
 		var result = await game_manager.ai_travel_to(army, target_id)
+		_log_army_move_result(army, target_id, result)
 		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
 		if result == "battle_victory":
 			emit_signal("region_conquered", target_id, army.get_player_id())
@@ -490,3 +525,307 @@ func _hire_peasants_at_region(army: Army, region: Region, max_needed: int) -> in
 		return actual_hired
 	
 	return 0
+
+func _log_turn_intro(player_id: int, turn_number: int, econ_result: Dictionary) -> void:
+	if not _log_active_turn:
+		return
+	var player = player_manager.get_player(player_id)
+	var resources = player.get_all_resources()
+	var region_ids = region_manager.get_player_regions(player_id)
+	var region_names: Array[String] = []
+	for region_id in region_ids:
+		var region = region_manager.map_generator.get_region_container_by_id(region_id)
+		region_names.append(region.get_region_name())
+	var signals: Dictionary = econ_result.get("signals", {})
+	var decision = String(econ_result.get("decision", ""))
+	var player_label = "%s (#%d)" % [player.get_player_name(), player_id]
+	game_manager.get_ai_log_manager().log_turn_intro(turn_number, player_label, resources, signals, decision, region_names)
+	_log_economy_decision_details(econ_result)
+
+func _log_army_move_action(army: Army, move: Dictionary) -> void:
+	var action = "Moves"
+	var goal = String(move.get("goal", ""))
+	if goal == "reinforce":
+		action = "Goes to Castle"
+	var target_name = _get_region_name_by_id(move["target_id"])
+	_log_army_summary(army, action, target_name)
+	_log_army_move_path_preview(army, move)
+
+func _log_army_make_camp(army: Army) -> void:
+	_log_army_detail_line("%s makes camp" % army.name)
+
+func _log_army_move_path_preview(army: Army, move: Dictionary) -> void:
+	var path: Array = move.get("path", [])
+	if path.size() <= 1:
+		return
+	for i in range(1, path.size()):
+		var step_name = _get_region_name_by_id(path[i])
+		_log_army_detail_line("Moves to %s" % step_name)
+
+func _log_army_move_result(army: Army, target_region_id: int, result: String) -> void:
+	var target_name = _get_region_name_by_id(target_region_id)
+	match result:
+		"battle_victory":
+			_log_army_detail_line("Fight at %s" % target_name)
+			_log_army_detail_line("Won at %s" % target_name)
+			_log_recent_battle_details(army)
+		"battle_defeat":
+			_log_army_detail_line("Fight at %s" % target_name)
+			_log_army_detail_line("Lost at %s" % target_name)
+			_log_recent_battle_details(army)
+		"battle_withdrawal":
+			_log_army_detail_line("Fight at %s" % target_name)
+			var current_region = army.get_parent() as Region
+			var withdraw_name = current_region.get_region_name() if current_region else target_name
+			_log_army_detail_line("Withdrew to %s" % withdraw_name)
+			_log_recent_battle_details(army)
+		"arrived":
+			_log_army_detail_line("Arrived at %s" % target_name)
+		"blocked":
+			_log_army_detail_line("Movement blocked near %s" % target_name)
+		"out_of_movement_points":
+			_log_army_detail_line("Out of movement points before reaching %s" % target_name)
+		_:
+			pass
+
+func _log_recruitment_success(army: Army, region_id: int, result: Dictionary, composition_before: String = "", power_before: int = -1) -> void:
+	if not _log_active_turn:
+		return
+	var hired: Dictionary = result.get("hired", {})
+	var total_hired = 0
+	for key in hired.keys():
+		total_hired += int(hired[key])
+	var location = _get_region_name_by_id(region_id)
+	var spent_gold = int(result.get("spent_gold", 0))
+	var spent_wood = int(result.get("spent_wood", 0))
+	var spent_iron = int(result.get("spent_iron", 0))
+	var comp_before = composition_before if composition_before != "" else _get_army_composition_suffix(army)
+	var power_for_log = power_before if power_before >= 0 else army.get_army_power()
+	_log_army_summary(army, "Recruits", location, comp_before, power_for_log)
+	var message = "Army %s recruited %d at %s (gold: %d, wood: %d, iron: %d)" % [
+		army.name,
+		total_hired,
+		location,
+		spent_gold,
+		spent_wood,
+		spent_iron
+	]
+	game_manager.get_ai_log_manager().log_recruitment(message)
+	_log_army_detail_line("%s [Power: %d - %s]" % [army.name, army.get_army_power(), _get_army_composition_suffix(army)])
+
+func _log_recruitment_skip(army: Army, region_id: int, reason: String) -> void:
+	if not _log_active_turn:
+		return
+	var location = _get_region_name_by_id(region_id)
+	var message = "Army %s could not recruit at %s (reason: %s)" % [army.name, location, reason]
+	game_manager.get_ai_log_manager().log_recruitment(message)
+
+func _log_recruitment_status_once(army: Army, region_id: int, reason: String) -> void:
+	if not _log_active_turn:
+		return
+	var previous = _recruitment_status_cache.get(army, "")
+	if previous == reason:
+		return
+	_recruitment_status_cache[army] = reason
+	_log_recruitment_skip(army, region_id, reason)
+
+func _log_peasant_recruitment(army: Army, region: Region, amount: int) -> void:
+	if not _log_active_turn or amount <= 0:
+		return
+	var message = "Army %s raised %d peasants at %s" % [army.name, amount, region.get_region_name()]
+	game_manager.get_ai_log_manager().log_recruitment(message)
+
+func _log_economy_decision_details(econ_result: Dictionary) -> void:
+	if not _log_active_turn:
+		return
+	var decision = String(econ_result.get("decision", ""))
+	var recruitment_candidates: Array = econ_result.get("recruitment_candidates", [])
+	if recruitment_candidates.size() > 0:
+		game_manager.get_ai_log_manager().log_economy("Recruitment candidates: %s" % _join_strings(recruitment_candidates))
+	else:
+		game_manager.get_ai_log_manager().log_economy("Recruitment candidates: none (no armies at castles).")
+	var assigned = int(econ_result.get("recruit_assigned", 0))
+	if assigned > 0:
+		game_manager.get_ai_log_manager().log_economy("Recruitment action: Budgets assigned to %d armies at castles." % assigned)
+	else:
+		game_manager.get_ai_log_manager().log_economy("Recruitment action: No budgets assigned.")
+	match decision:
+		"recruit_only":
+			game_manager.get_ai_log_manager().log_economy("Decision outcome: Recruit only (skipped raise/castle economy).")
+		"raised_then_recruit":
+			var raise = econ_result.get("raise", {})
+			if raise.get("raised", false):
+				var region_name = _get_region_name_by_id(int(raise.get("region_id", -1)))
+				game_manager.get_ai_log_manager().log_economy("Raise Army: success at %s." % region_name)
+			else:
+				game_manager.get_ai_log_manager().log_economy("Raise Army: skipped (%s)." % String(raise.get("reason", "unknown")))
+			game_manager.get_ai_log_manager().log_economy("Decision outcome: Raised then recruited.")
+		"defer_region_economy":
+			var raise = econ_result.get("raise", {})
+			if not raise.is_empty():
+				game_manager.get_ai_log_manager().log_economy("Raise Army: NO - %s." % String(raise.get("reason", "unknown")))
+			game_manager.get_ai_log_manager().log_economy("Decision outcome: Deferred region economy (no recruitment or raise).")
+		_:
+			var raise = econ_result.get("raise", {})
+			if not raise.is_empty():
+				if raise.get("raised", false):
+					var region_name = _get_region_name_by_id(int(raise.get("region_id", -1)))
+					game_manager.get_ai_log_manager().log_economy("Raise Army: YES - raised at %s." % region_name)
+				else:
+					game_manager.get_ai_log_manager().log_economy("Raise Army: NO - %s." % String(raise.get("reason", "unknown")))
+			game_manager.get_ai_log_manager().log_economy("Decision outcome: %s" % decision)
+
+func _log_army_summary(army: Army, action: String, target_region: String, composition_override: String = "", power_override: int = -1) -> void:
+	if not _log_active_turn:
+		return
+	var comp = composition_override if composition_override != "" else _get_army_composition_suffix(army)
+	var power_value = power_override if power_override >= 0 else army.get_army_power()
+	game_manager.get_ai_log_manager().log_army_action(army.name, power_value, action, target_region, comp)
+
+func _log_army_detail_line(text: String) -> void:
+	if not _log_active_turn or text == "":
+		return
+	game_manager.get_ai_log_manager().log_army_detail(text)
+
+func _log_recent_battle_details(army: Army) -> void:
+	if not _log_active_turn:
+		return
+	if army == null:
+		return
+	var lines: Array[String] = game_manager.consume_ai_battle_log_for_army(army)
+	if lines.is_empty():
+		return
+	for line in lines:
+		if line == "":
+			game_manager.get_ai_log_manager().log_army_detail("")
+		else:
+			_log_army_detail_line(line)
+
+func _get_army_composition_suffix(army: Army) -> String:
+	var comp = army.get_composition()
+	if comp == null:
+		return ""
+	var mapping = [
+		{"type": SoldierTypeEnum.Type.PEASANTS, "label": "P"},
+		{"type": SoldierTypeEnum.Type.SPEARMEN, "label": "S"},
+		{"type": SoldierTypeEnum.Type.ARCHERS, "label": "A"},
+		{"type": SoldierTypeEnum.Type.SWORDSMEN, "label": "SW"},
+		{"type": SoldierTypeEnum.Type.CROSSBOWMEN, "label": "C"},
+		{"type": SoldierTypeEnum.Type.HORSEMEN, "label": "H"},
+		{"type": SoldierTypeEnum.Type.KNIGHTS, "label": "K"},
+		{"type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS, "label": "M"},
+		{"type": SoldierTypeEnum.Type.ROYAL_GUARD, "label": "R"}
+	]
+	var parts: Array[String] = []
+	for entry in mapping:
+		var count = comp.get_soldier_count(entry["type"])
+		if count > 0:
+			parts.append("%s:%d" % [entry["label"], count])
+	if parts.size() == 0:
+		return "none"
+	var result = ""
+	for i in range(parts.size()):
+		result += parts[i]
+		if i < parts.size() - 1:
+			result += ", "
+	return result
+
+func _log_economy_result(econ_post_result: Dictionary) -> void:
+	if not _log_active_turn:
+		return
+	var region_actions: Dictionary = econ_post_result.get("region_actions", {})
+	var executed: Array = region_actions.get("executed", [])
+	var build_details: Array = region_actions.get("build_castle_details", [])
+	if executed.size() == 0:
+		var reason = String(region_actions.get("reason", "none"))
+		game_manager.get_ai_log_manager().log_economy("No region economy changes (reason: %s)" % reason)
+		_log_build_castle_evaluation(build_details, region_actions)
+		return
+	var labels: Array[String] = []
+	for entry in executed:
+		var label = str(entry.get("action", "unknown"))
+		if entry.has("region_id"):
+			var region_id = int(entry["region_id"])
+			var region = region_manager.map_generator.get_region_container_by_id(region_id)
+			if region:
+				label += " (%s)" % region.get_region_name()
+		labels.append(label)
+	var joined = ""
+	for i in range(labels.size()):
+		joined += labels[i]
+		if i < labels.size() - 1:
+			joined += ", "
+	game_manager.get_ai_log_manager().log_economy("Region economy actions: %s" % joined)
+	_log_build_castle_evaluation(build_details, region_actions)
+
+func _get_region_name_by_id(region_id: int) -> String:
+	if region_id < 0:
+		return "Unknown region"
+	var region = region_manager.map_generator.get_region_container_by_id(region_id)
+	if region:
+		return region.get_region_name()
+	return "Region %d" % region_id
+
+func _log_build_castle_evaluation(build_details: Array, region_actions: Dictionary) -> void:
+	var detail_texts: Array[String] = []
+	for detail in build_details:
+		var name = String(detail.get("name", "Region %d" % int(detail.get("region_id", -1))))
+		var strat = snappedf(float(detail.get("strategic_score", 0.0)), 0.1)
+		var neigh = snappedf(float(detail.get("neighbor_score", 0.0)), 0.1)
+		var distance_label = String(detail.get("distance_status", "Not Checked"))
+		detail_texts.append("%s (Strategic: %.1f, Regions: %.1f, Distance: %s)" % [name, strat, neigh, distance_label])
+	if detail_texts.size() == 0:
+		game_manager.get_ai_log_manager().log_economy("Build Castle Eval: none")
+	else:
+		var eval_text = ""
+		for i in range(detail_texts.size()):
+			eval_text += detail_texts[i]
+			if i < detail_texts.size() - 1:
+				eval_text += " | "
+		game_manager.get_ai_log_manager().log_economy("Build Castle Eval: %s" % eval_text)
+	var build_reason = String(region_actions.get("build_castle_reason", ""))
+	if build_reason != "":
+		game_manager.get_ai_log_manager().log_economy("Build Castle Result: %s" % build_reason)
+	var upgrade_details: Array = region_actions.get("upgrade_castle_details", [])
+	if upgrade_details.size() > 0:
+		var upgrade_texts: Array[String] = []
+		for detail in upgrade_details:
+			var name = String(detail.get("name", "Region %d" % int(detail.get("region_id", -1))))
+			var recruits_total = int(detail.get("recruits_total", 0))
+			var recruit_score = snappedf(float(detail.get("recruit_score", 0.0)), 0.1)
+			var distance_score = snappedf(float(detail.get("distance_score", 0.0)), 0.1)
+			var total_score = snappedf(float(detail.get("total_score", 0.0)), 0.1)
+			var distance_val = int(detail.get("distance", 0))
+			var next_type = CastleTypeEnum.type_to_string(detail.get("next_type", CastleTypeEnum.Type.NONE))
+			upgrade_texts.append("%s (Recruits: %d, RScore: %.1f, DScore: %.1f, Dist: %d, Next: %s, Total: %.1f)" %
+				[name, recruits_total, recruit_score, distance_score, distance_val, next_type, total_score])
+		game_manager.get_ai_log_manager().log_economy("Upgrade Castle Eval: %s" % _join_strings(upgrade_texts))
+	var upgrade_castle_reason = String(region_actions.get("upgrade_castle_reason", ""))
+	if upgrade_castle_reason != "":
+		game_manager.get_ai_log_manager().log_economy("Upgrade Castle Result: %s" % upgrade_castle_reason)
+	var upgrade_region_details: Array = region_actions.get("upgrade_region_details", [])
+	if upgrade_region_details.size() > 0:
+		var region_texts: Array[String] = []
+		for detail in upgrade_region_details:
+			var name = String(detail.get("name", "Region %d" % int(detail.get("region_id", -1))))
+			var score = snappedf(float(detail.get("score", 0.0)), 0.1)
+			var next_level = detail.get("next_level", RegionLevelEnum.Level.L1)
+			var next_name = RegionLevelEnum.level_to_string(next_level)
+			region_texts.append("%s (Next: %s, Score: %.1f)" % [name, next_name, score])
+		game_manager.get_ai_log_manager().log_economy("Upgrade Region Eval: %s" % _join_strings(region_texts))
+	var upgrade_region_reason = String(region_actions.get("upgrade_region_reason", ""))
+	if upgrade_region_reason != "":
+		game_manager.get_ai_log_manager().log_economy("Upgrade Region Result: %s" % upgrade_region_reason)
+	var upgrade_region_actions: Array = region_actions.get("upgrade_region_actions", [])
+	for action_text in upgrade_region_actions:
+		game_manager.get_ai_log_manager().log_economy(action_text)
+
+func _join_strings(items: Array) -> String:
+	if items.is_empty():
+		return ""
+	var result = ""
+	for i in range(items.size()):
+		result += String(items[i])
+		if i < items.size() - 1:
+			result += ", "
+	return result

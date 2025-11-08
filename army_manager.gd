@@ -190,6 +190,10 @@ func update_ready_highlights_for_player(player_id: int) -> void:
 	if player_id == -1:
 		visual_manager.clear_ready_army_highlights()
 		return
+	var game_manager := _get_game_manager()
+	if game_manager != null and not game_manager.is_player_human(player_id):
+		visual_manager.clear_ready_army_highlights()
+		return
 	if player_id != _ready_highlight_player_id:
 		return
 	var ready_regions: Array = []
@@ -362,6 +366,11 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	if not _validate_movement_prerequisites(target_region_container):
 		return false
 	
+	var moving_army := selected_army
+	if moving_army == null or not is_instance_valid(moving_army):
+		DebugLogger.log("AIMovement", "Cannot move army - no valid selection")
+		return false
+	
 	# Get region IDs from Region scripts
 	var source_region = selected_region_container
 	var target_region_node = target_region_container
@@ -379,15 +388,15 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		return false
 	
 	# Get terrain cost once for the entire function (with ownership bonus)
-	var terrain_cost = get_terrain_cost(target_region_container, selected_army.get_player_id())
+	var terrain_cost = get_terrain_cost(target_region_container, moving_army.get_player_id())
 	
 	# Check if army can move to this region
-	if not can_army_move_to_region(selected_army, target_region_container):
+	if not can_army_move_to_region(moving_army, target_region_container):
 		var check_region = target_region_container as Region
 		if check_region != null and not check_region.is_passable():
 			var _region_type_name = RegionTypeEnum.type_to_string(check_region.get_region_type())
 		else:
-			var current_points = selected_army.get_movement_points()
+			var current_points = moving_army.get_movement_points()
 			DebugLogger.log("AIMovement", "Movement blocked - not enough movement points (need " + str(terrain_cost) + ", have " + str(current_points) + ")")
 		return false
 	
@@ -395,29 +404,29 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	var target_region = target_region_container as Region
 	
 	# Store previous region for potential retreat
-	army_previous_regions[selected_army] = selected_region_container
+	army_previous_regions[moving_army] = selected_region_container
 	
 	# Move the army node, keeping its global start position
-	var start_global := selected_army.global_position
-	selected_army.get_parent().remove_child(selected_army)
-	target_region_container.add_child(selected_army)
-	selected_army.global_position = start_global
+	var start_global := moving_army.global_position
+	moving_army.get_parent().remove_child(moving_army)
+	target_region_container.add_child(moving_army)
+	moving_army.global_position = start_global
 
 	# Reposition remaining armies in source region (selected army removed)
 	_apply_army_offsets_for_region(source_region)
 
 	# Compute stacked target for selected army in target region and apply others immediately
-	var target_local := _compute_army_target_position(target_region_container, selected_army)
-	_apply_army_offsets_for_region(target_region_container, selected_army)
+	var target_local := _compute_army_target_position(target_region_container, moving_army)
+	_apply_army_offsets_for_region(target_region_container, moving_army)
 	# Animate the moving army to its target position (use global for robust animation)
 	var target_global: Vector2 = target_region_container.to_global(target_local)
-	var tween: Tween = selected_army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	var tween: Tween = moving_army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
 	await tween.finished
 	# Do not re-apply offsets for the moving army here; let the tween finish
 	
 	# After animation completes, check if we should change ownership (only for already owned regions or friendly moves)
 	var target_region_owner = region_manager.get_region_owner(target_region_id)
-	var army_player_id = selected_army.player_id
+	var army_player_id = moving_army.player_id
 	
 	# Only set ownership if ownership is actually changing (neutral territory without garrison)
 	if target_region_owner == -1 and not target_region.has_garrison():
@@ -428,24 +437,24 @@ func move_army_to_region(target_region_container: Node) -> bool:
 			DebugLogger.log("AIMovement", "Warning: Could not get GameManager for peaceful region claiming")
 	
 	# Deduct movement points
-	selected_army.spend_movement_points(terrain_cost)
+	moving_army.spend_movement_points(terrain_cost)
 
 	# Reduce efficiency by 5 for movement
-	selected_army.reduce_efficiency(5)
+	moving_army.reduce_efficiency(5)
 
 	# Store remaining movement points for logging
-	var remaining_points = selected_army.get_movement_points()
+	var remaining_points = moving_army.get_movement_points()
 	# Per-move debug: region, cost, MP left this turn
 	DebugLogger.log("AIMovement", "Moved to region %d, Cost: %d, MP left: %d/%d" % [target_region_id, terrain_cost, remaining_points, GameParameters.MOVEMENT_POINTS_PER_TURN])
 	
 	# Check if we moved to an unowned region - handle combat scenarios
 	if target_region_owner != army_player_id and target_region_owner != -1:
 		# Moved to enemy territory - trigger combat
-		_trigger_combat_if_needed(selected_army, target_region)
+		_trigger_combat_if_needed(moving_army, target_region)
 		DebugLogger.log("AIMovement", "Army moved to enemy territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
 	elif target_region_owner == -1 and target_region.has_garrison():
 		# Moved to neutral territory with garrison - trigger combat
-		_trigger_combat_if_needed(selected_army, target_region)
+		_trigger_combat_if_needed(moving_army, target_region)
 		DebugLogger.log("AIMovement", "Army moved to neutral territory with garrison (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ") - combat triggered")
 	else:
 		# Moved to friendly territory - keep army selected
@@ -457,11 +466,11 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		if _should_show_human_arrows():
 			_show_move_arrows(target_region_container)
 			# Update move modal with current army
-			if move_modal and selected_army:
+			if move_modal and moving_army == selected_army:
 				move_modal.show_move_modal(selected_army)
 		
 		# Update army modal with new movement points
-		if army_modal != null and selected_army != null:
+		if army_modal != null and moving_army == selected_army:
 			army_modal.show_army_info(selected_army, false)  # Don't manage modal mode - allow continued movement
 		
 		DebugLogger.log("AIMovement", "Army moved to friendly territory (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
@@ -471,7 +480,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	# Play click sound for successful army movement
 	if sound_manager:
 		sound_manager.click_sound()
-	if selected_army != null and is_instance_valid(selected_army) and selected_army.get_player_id() == _ready_highlight_player_id:
+	if moving_army.get_player_id() == _ready_highlight_player_id:
 		update_ready_highlights_for_player(_ready_highlight_player_id)
 	
 	return true
@@ -878,6 +887,14 @@ func remove_army_from_tracking(army: Army) -> void:
 	# Also remove from previous regions tracking
 	if army_previous_regions.has(army):
 		army_previous_regions.erase(army)
+
+func get_previous_region_for_army(army: Army) -> Region:
+	"""Access the previous region stored for an army (used for camera focus on retreat)."""
+	if army_previous_regions.has(army):
+		var previous = army_previous_regions[army]
+		if previous is Region and is_instance_valid(previous):
+			return previous
+	return null
 
 func retreat_army_to_previous_region(army: Army) -> void:
 	"""Move army back to its previous region after withdrawal"""

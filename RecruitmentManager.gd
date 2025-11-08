@@ -40,6 +40,12 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 
 	if result.get("total_recruited", 0) > 0:
 		_deduct_recruits_proportionally(result["total_recruited"], recruit_sources)
+		_deduct_player_resources(
+			army.get_player_id(),
+			int(result.get("spent_gold", 0)),
+			int(result.get("spent_wood", 0)),
+			int(result.get("spent_iron", 0))
+		)
 
 	army.clear_recruitment_request()
 	var recruits_remaining = _count_recruits_remaining(recruit_sources)
@@ -474,3 +480,20 @@ func _normalize_power(powers: Dictionary) -> Dictionary:
 	for t in powers.keys():
 		out[t] = (float(powers[t]) - minp) / range
 	return out
+
+func _deduct_player_resources(player_id: int, gold: int, wood: int, iron: int) -> void:
+	if gold <= 0 and wood <= 0 and iron <= 0:
+		return
+	if game_manager == null:
+		return
+	if not game_manager.has_method("get_player_manager"):
+		return
+	var pm: PlayerManagerNode = game_manager.get_player_manager()
+	if pm == null:
+		return
+	if gold > 0:
+		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.GOLD, gold)
+	if wood > 0:
+		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.WOOD, wood)
+	if iron > 0:
+		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.IRON, iron)

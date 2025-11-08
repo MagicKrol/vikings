@@ -40,7 +40,7 @@ Main (Node2D) [place_armies.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
-│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue
+│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
@@ -108,6 +108,9 @@ editor_start.tscn (Editor Start)
 - AI memory: Records observed enemy garrison power when computer armies attack a region (shared 5-round decay window).
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 - AI Step Gate: `ai_step_requires_shift` forwards to `DebugStepGate` — when true, AI waits for Shift to advance; false lets AI run automatically.
+- AI Logging: Owns `AILogManager`; `ensure_ai_log_started()` names the log `<scenario>_<timestamp>.txt` the first time any AI player takes a turn so all later TurnController events can append to the same file inside the root `logs/` directory.
+- Battle Log Queue: `finalize_battle_result()` snapshots attacker/defender forces before and after `_battle_manager._apply_battle_losses()`, converts the result into readable lines (`Battle started`, attacker/defender power/composition, `Battle Result`, post-battle status) and queues them per attacking army via `consume_ai_battle_log_for_army()` so TurnController can append them immediately after its movement logs.
+- Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
  - Modes:
    - Custom: current behavior (castle placement → gameplay).
@@ -129,6 +132,7 @@ editor_start.tscn (Editor Start)
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
+- Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Resting Logic (AI):
   - Start-of-evaluation: if an army's efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
@@ -139,6 +143,7 @@ editor_start.tscn (Editor Start)
   - Targets peasant share based on army power thresholds (low/mid/high power → 40%/30%/20% peasants)
   - Moves to best reachable owned region with highest available recruits to hire peasants (free cost)
   - Uses pathfinding to find optimal region within current movement points
+- AI Logging: During AI turns `TurnController` calls `AILogManager` to write the requested log format — each turn header includes resources, signals, decision, and owned regions, while every army action logs as `Recruits`, `Goes to Castle`, or `Moves` with its target plus recruitment/economy success or failure reasons.
 
 ### BattleManager.gd (BattleManager)
 - Purpose: Battle UI coordination and post-battle processing via signals.
@@ -177,12 +182,13 @@ editor_start.tscn (Editor Start)
 ### PlayerManagerNode.gd (PlayerManagerNode)
 - Purpose: Player storage and per-player economy as a scene node.
 - Key: initialize players; `current_player_changed` signal; add/remove/afford/pay; per-player income `process_resource_income_for_player()`; total army+garrison food cost; `set_player_resources()` for scenario starts; save/load.
+- Exposes `get_player_food_growth()` and `meets_food_upgrade_safeguard()` so UI/AI can gate promotions on the required post-upgrade food buffer from `GameParameters.AI_MIN_FOOD_AFTER_UPGRADE`.
 - Used by GameManager and TurnController.
 
 ### Economy & Recruitment
 - BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
-- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally.
+- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources.
 
 ### EconomyAIManager.gd
 - Purpose: Central, deterministic planner for AI economy decisions each turn.
@@ -201,6 +207,10 @@ editor_start.tscn (Editor Start)
   - If any armies at castles need recruitment this turn → allocate recruitment budgets and skip raising/building.
   - Else try to raise an army; if raised → allocate recruitment for the new army and skip region spending.
   - Else defer region economy to post-movement phase.
+- Castle building (post-move): checks Outpost affordability, scans owned regions without castles, scores each as `strategic_heatmap*10 + neighbor_support` (friendly neighbors +15, neutral +5, enemy -10). Candidates below 100 points are rejected. A candidate must also be closer to at least one enemy castle than any current friendly castle (BFS distances cached per map). Winning region starts an Outpost build immediately and the action is reported back for AI logging.
+- Castle upgrades: evaluates every owned castle not already upgrading. Score = normalized recruit availability (total recruits from the castle plus neighbors) + normalized proximity to enemy castles. The closest/highest-recruit castle gets 100 per axis; others scale proportionally. The best affordable candidate upgrades to the next tier (Keep → Castle, etc.) while logging the full evaluation list.
+- Region upgrades: continuously promotes the best non-max-level regions while the player can afford the promotion cost. Score = (castle level ×2) + population/100 + neighboring friendly castle levels + recruit status bonus (empty +2, partial +1, full −2) − current region level. Every successful promotion logs `"Upgrading <region> to <level> (score: X)"`.
+- Region upgrades call `PlayerManagerNode.meets_food_upgrade_safeguard()` so the AI skips promotions that would drop projected food (stock − food cost + growth) below `AI_MIN_FOOD_AFTER_UPGRADE`.
 
 #### Raise Army AI (implemented)
 - Goal: Prefer fewer, stronger armies over many weak ones; raise only when we have support and coverage gaps.
@@ -219,6 +229,13 @@ editor_start.tscn (Editor Start)
   - Threshold: `AI_RAISE_THRESHOLD_NORM`
 - Execution: One raise per turn max, deterministic tie-break by region_id
 - Tuning: GameParameters (`AI_RAISE_*` normalized constants) and `ai/RaiseArmyDecision.gd`
+
+## Logging
+### AILogManager.gd (AILogManager)
+- Purpose: Writes AI-only log files under `logs/<scenario>_<timestamp>.txt` in the project root so each game session has its own text file distinct from standard debug logs.
+- API: `start_new_game_log(label)`, `log_turn_intro(turn, player_label, resources, signals, decision, region_names)`, `log_army_action(name, power, action, target)`, plus helpers for recruitment/economy notes.
+- Format: Matches the requested block — `-------`, `[Turn X]`, `[Player Y]`, full resource list, `Signals:` (frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm), `Decision: ...`, `Regions: ...`, followed by `Army N [Power: Z]: Recruits|Goes to Castle|Moves` with `Target: ...` and recruitment/economy rationales.
+- Integration: GameManager creates the logger once per session and exposes it; TurnController logs each AI turn header, army action, recruitment success/failure, peasant hires, and the post-movement economy summary through this manager.
 
 ## AI & Scoring
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance). Used for castle placement scoring.
@@ -299,6 +316,7 @@ editor_start.tscn (Editor Start)
 - Key: `create_army()`, `move_army()`, `move_army_to_region()`, `reset_all_army_movement_points()`.
 - Stacking: `_apply_army_offsets_for_region(region)` repositions all armies in a region to avoid overlap using fixed extra offsets. Applied on create, move (both source and target), and retreat. Pattern: 1st = base; 2nd = x-15/y-10/z-1; 3rd = x-30/y-20/z-2; 4th = x+15/y-10/z-3; 5th = x+30/y-20/z-4; 6th+ same as 1st.
 - Ready highlight: Caches `_ready_highlight_player_id`, listens to `Army.movement_points_changed`, and refreshes `VisualManager.update_ready_army_highlights()` on turn start, move/camp MP spend, resets, and army removal.
+- Retreat Support: `get_previous_region_for_army()` exposes the last region so cameras can focus on withdrawal destinations.
 
 ### ai_camera_director.gd (AICameraDirector)
 - Purpose: Coordinates AI camera focus and timing around the shared `CameraController`.

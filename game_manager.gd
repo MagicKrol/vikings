@@ -100,6 +100,9 @@ var game_mode: String = "scenario"  # "custom" | "scenario"
 var scenario_path: String = "mission1.json"
 # var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
+var _ai_log_manager: AILogManager = AILogManager.new()
+var _ai_log_started: bool = false
+var _ai_battle_log_queue: Dictionary = {}
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -1136,7 +1139,7 @@ func handle_castle_placement(region: Region) -> void:
 		for child in regions_node.get_children():
 			if child is Region and child.get_region_id() == region_id:
 				# Set castle type directly for initial placement
-				child.set_castle_type(CastleTypeEnum.Type.OUTPOST)
+				child.set_castle_type(CastleTypeEnum.Type.KEEP)
 				# Place visual using new system
 				if _visual_manager:
 					_visual_manager.place_castle_visual(child)
@@ -1369,6 +1372,12 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	if army != null:
 		army_name = army.name
 	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + result + " for " + army_name)
+	var should_queue_battle_log := army != null and is_player_computer(army.get_player_id()) and battle_report != null
+	var battle_log_lines: Array[String] = []
+	var defender_entries: Array = []
+	if should_queue_battle_log:
+		defender_entries = _collect_defender_log_entries(defending_armies, defending_garrison)
+		battle_log_lines = _build_battle_pre_log_lines(army, defender_entries)
 	
 	# Wounded must be precomputed by the battle flow (modal/background) before finalization
 	# GameManager does not compute wounded.
@@ -1445,6 +1454,12 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	# Apply battle losses using BattleManager rule (removes both dead and wounded from active comps)
 	if battle_report and _battle_manager:
 		_battle_manager._apply_battle_losses()
+		if should_queue_battle_log:
+			var post_lines := _build_battle_post_log_lines(army, defender_entries, result)
+			var combined := battle_log_lines.duplicate()
+			combined.append_array(post_lines)
+			combined.append("")
+			_enqueue_ai_battle_log(army, combined)
 	
 	# Handle battle outcome
 	if result == "victory":
@@ -1468,11 +1483,19 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	elif result == "withdrawal":
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
+			var is_ai_withdraw := is_player_computer(army.get_player_id())
+			var focused_before_retreat := false
+			if is_ai_withdraw and _ai_camera_director and _army_manager:
+				var retreat_region := _army_manager.get_previous_region_for_army(army)
+				if retreat_region != null:
+					await _ai_camera_director.await_focus_on_region(retreat_region)
+					focused_before_retreat = true
 			await _battle_manager._handle_army_withdrawal(army)
-			if is_player_computer(army.get_player_id()):
-				await _ai_camera_director.await_focus_on_army(army)
+			if is_ai_withdraw and _ai_camera_director:
+				if not focused_before_retreat:
+					await _ai_camera_director.await_focus_on_army(army)
 				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
-			# No post-battle healing here; healing only occurs during make_camp()
+		# No post-battle healing here; healing only occurs during make_camp()
 	else:
 		# Attackers lost - remove the army
 		if army and is_instance_valid(army) and _battle_manager:
@@ -1640,9 +1663,185 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
 		return "blocked"
 
+# ============================================================================
+# AI Battle Log Helpers
+# ============================================================================
+
+func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
+	if army == null or lines.is_empty():
+		return
+	var key := _get_ai_battle_log_key(army)
+	var queue: Array = _ai_battle_log_queue.get(key, [])
+	queue.append(lines)
+	_ai_battle_log_queue[key] = queue
+
+func _get_ai_battle_log_key(army: Army) -> String:
+	return str(army.get_instance_id())
+
+func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition) -> Array:
+	var entries: Array = []
+	for defender in defending_armies:
+		if defender == null:
+			continue
+		entries.append({
+			"type": "army",
+			"ref": defender,
+			"name": defender.name
+		})
+	if defending_garrison != null:
+		entries.append({
+			"type": "garrison",
+			"ref": defending_garrison,
+			"name": "Garrison"
+		})
+	return entries
+
+func _build_battle_pre_log_lines(attacker: Army, defender_entries: Array) -> Array[String]:
+	var lines: Array[String] = []
+	lines.append("Battle started")
+	lines.append(_format_attacker_line("Attacker", attacker, attacker.name if attacker else "Unknown Army"))
+	if defender_entries.is_empty():
+		lines.append("Defender: None")
+	else:
+		for entry in defender_entries:
+			lines.append(_format_defender_pre_line(entry))
+	return lines
+
+func _build_battle_post_log_lines(attacker: Army, defender_entries: Array, result: String) -> Array[String]:
+	var lines: Array[String] = []
+	lines.append("Battle Result: %s" % _format_battle_result_label(result))
+	lines.append(_format_attacker_after_line("Attacker After", attacker, attacker.name if attacker else "Unknown Army"))
+	if defender_entries.is_empty():
+		lines.append("Defender After: None")
+	else:
+		for entry in defender_entries:
+			lines.append(_format_defender_after_line(entry))
+	return lines
+
+func _format_attacker_line(prefix: String, army: Army, fallback_name: String) -> String:
+	if army != null and is_instance_valid(army):
+		return "%s: %s [Power: %d - %s]" % [prefix, army.name, army.get_army_power(), _format_composition_suffix(army.get_composition())]
+	return "%s: %s [Power: 0 - none]" % [prefix, fallback_name]
+
+func _format_attacker_after_line(prefix: String, army: Army, fallback_name: String) -> String:
+	if army != null and is_instance_valid(army):
+		return "%s: %s [Power: %d - %s]" % [prefix, army.name, army.get_army_power(), _format_composition_suffix(army.get_composition())]
+	return "%s: %s destroyed" % [prefix, fallback_name]
+
+func _format_defender_pre_line(entry: Dictionary) -> String:
+	if entry.get("type", "") == "garrison":
+		var garrison_comp: ArmyComposition = entry.get("ref")
+		return "Defender Garrison [Power: %d - %s]" % [
+			_calculate_composition_power(garrison_comp),
+			_format_composition_suffix(garrison_comp)
+		]
+	var defender: Army = entry.get("ref")
+	var label := "Defender %s" % entry.get("name", "Army")
+	if defender != null and is_instance_valid(defender):
+		return "%s [Power: %d - %s]" % [label, defender.get_army_power(), _format_composition_suffix(defender.get_composition())]
+	return "%s [Power: 0 - none]" % label
+
+func _format_defender_after_line(entry: Dictionary) -> String:
+	if entry.get("type", "") == "garrison":
+		var garrison_comp: ArmyComposition = entry.get("ref")
+		return "Defender After (Garrison): %s [Power: %d - %s]" % [
+			entry.get("name", "Garrison"),
+			_calculate_composition_power(garrison_comp),
+			_format_composition_suffix(garrison_comp)
+		]
+	var defender: Army = entry.get("ref")
+	var label := "Defender After: %s" % entry.get("name", "Army")
+	if defender != null and is_instance_valid(defender):
+		return "%s [Power: %d - %s]" % [label, defender.get_army_power(), _format_composition_suffix(defender.get_composition())]
+	return "%s destroyed" % label
+
+func _format_battle_result_label(result: String) -> String:
+	match result:
+		"victory":
+			return "Won"
+		"defeat":
+			return "Defeated"
+		"withdrawal":
+			return "Withdrew"
+		_:
+			return result.capitalize()
+
+func _format_composition_suffix(comp: ArmyComposition) -> String:
+	if comp == null:
+		return "none"
+	var mapping = [
+		{"type": SoldierTypeEnum.Type.PEASANTS, "label": "P"},
+		{"type": SoldierTypeEnum.Type.SPEARMEN, "label": "S"},
+		{"type": SoldierTypeEnum.Type.ARCHERS, "label": "A"},
+		{"type": SoldierTypeEnum.Type.SWORDSMEN, "label": "SW"},
+		{"type": SoldierTypeEnum.Type.CROSSBOWMEN, "label": "C"},
+		{"type": SoldierTypeEnum.Type.HORSEMEN, "label": "H"},
+		{"type": SoldierTypeEnum.Type.KNIGHTS, "label": "K"},
+		{"type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS, "label": "M"},
+		{"type": SoldierTypeEnum.Type.ROYAL_GUARD, "label": "R"}
+	]
+	var parts: Array[String] = []
+	for entry in mapping:
+		var unit_type: SoldierTypeEnum.Type = entry["type"]
+		var count := comp.get_soldier_count(unit_type)
+		if count > 0:
+			parts.append("%s:%d" % [entry["label"], count])
+	if parts.is_empty():
+		return "none"
+	return ", ".join(parts)
+
+func _calculate_composition_power(comp: ArmyComposition) -> int:
+	if comp == null:
+		return 0
+	var total := 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var qty := comp.get_soldier_count(unit_type)
+		if qty <= 0:
+			continue
+		var unit_power: int = int(GameParameters.get_unit_stat(unit_type, "power"))
+		total += unit_power * qty
+	return total
+
 func get_loaded_scenario_name() -> String:
 	"""Get the name of the loaded scenario (for map editor)"""
 	return loaded_scenario_name
+
+func ensure_ai_log_started() -> void:
+	if _ai_log_started:
+		return
+	var label = _derive_ai_log_label()
+	_ai_log_manager.start_new_game_log(label)
+	_ai_log_started = true
+
+func _derive_ai_log_label() -> String:
+	if loaded_scenario_name != "":
+		return loaded_scenario_name
+	if scenario_path != "":
+		return scenario_path.get_file().get_basename()
+	if game_mode == "custom":
+		return "custom_game"
+	return "free_play"
+
+func get_ai_log_manager() -> AILogManager:
+	return _ai_log_manager
+
+func consume_ai_battle_log_for_army(army: Army) -> Array[String]:
+	if army == null:
+		return []
+	var key := _get_ai_battle_log_key(army)
+	if not _ai_battle_log_queue.has(key):
+		return []
+	var queue: Array = _ai_battle_log_queue.get(key, [])
+	if queue.is_empty():
+		_ai_battle_log_queue.erase(key)
+		return []
+	var lines: Array[String] = queue[0]
+	queue.remove_at(0)
+	if queue.is_empty():
+		_ai_battle_log_queue.erase(key)
+	else:
+		_ai_battle_log_queue[key] = queue
+	return lines
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""

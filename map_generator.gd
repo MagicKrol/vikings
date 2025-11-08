@@ -864,7 +864,7 @@ func update_ownership_overlay(region_id: int, player_id: int) -> void:
 	var overlay = _get_or_create_ownership_overlay(region_id)
 	if overlay != null:
 		var player_color = _get_player_color(player_id)
-		overlay.color = Color(player_color.r, player_color.g, player_color.b, overlay.color.a)
+		overlay.color = Color(player_color.r, player_color.g, player_color.b, 0.4)
 
 func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 	"""Extract polygon points directly from the existing Line2D borders"""
