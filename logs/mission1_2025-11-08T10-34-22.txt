@@ -1,0 +1,461 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.750
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury
+
+Army Army I [Power: 152]: Recruits
+Target: Ashley
+
+Recruitment: Army Army I recruited 40 at Ashley (gold: 34, wood: 6, iron: 0)
+
+Army Army II [Power: 149]: Recruits
+Target: Ashley
+
+Recruitment: Army Army II recruited 39 at Ashley (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 149]: Recruits
+Target: Ashley
+
+Recruitment: Army Army III recruited 39 at Ashley (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 149]: Moves
+Target: Woodstadir
+
+Army Army I [Power: 152]: Moves
+Target: Akrfell
+
+Army Army II [Power: 149]: Moves
+Target: Eywich
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Woodstadir (Strategic: 26.3, Regions: 40.0, Distance: True) | Akrfell (Strategic: 15.9, Regions: 45.0, Distance: False) | Eywich (Strategic: 2.5, Regions: 35.0, Distance: False)
+
+Economy: Build Castle Result: insufficient_resources
+
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 68
+Food: 40
+Wood: 30
+Iron: 10
+Stone: 14
+
+Signals:
+frontier_pressure: 1.182
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich
+
+Army Army I [Power: 171]: Moves
+Target: Reykvik
+
+Army Army II [Power: 153]: Moves
+Target: Fossthorpe
+
+Army Army III [Power: 149]: Moves
+Target: Kirkton
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Akrfell (Strategic: 15.9, Regions: 55.0, Distance: False) | Reykvik (Strategic: 20.7, Regions: 50.0, Distance: False) | Woodstadir (Strategic: 26.3, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 147
+Food: 37
+Wood: 58
+Iron: 10
+Stone: 18
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe
+
+Army Army I [Power: 181]: Moves
+Target: Kingdon
+
+Army Army II [Power: 167]: Moves
+Target: Eymere
+
+Army Army III [Power: 164]: Moves
+Target: Kirkton
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Akrfell (Strategic: 15.9, Regions: 75.0, Distance: False) | Reykvik (Strategic: 20.7, Regions: 70.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 45.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 244
+Food: 39
+Wood: 89
+Iron: 10
+Stone: 22
+
+Signals:
+frontier_pressure: 0.750
+underpowered_ratio: 0.000
+castle_spacing: 16.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton
+
+Army Army III [Power: 168]: Moves
+Target: Reykchester
+
+Army Army I [Power: 186]: Moves
+Target: Hvitfjord
+
+Army Army II [Power: 178]: Moves
+Target: Southfjord
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Kirkton (Strategic: 40.8, Regions: 55.0, Distance: True) | Akrfell (Strategic: 15.9, Regions: 75.0, Distance: False) | Reykvik (Strategic: 20.7, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 360
+Food: 52
+Wood: 120
+Iron: 10
+Stone: 26
+
+Signals:
+frontier_pressure: 0.737
+underpowered_ratio: 0.000
+castle_spacing: 19.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord
+
+Army Army III [Power: 177]: Moves
+Target: Hvitthwaite
+
+Army Army I [Power: 188]: Moves
+Target: Hvitoy
+
+Army Army II [Power: 178]: Moves
+Target: Woodchester
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 55.0, Distance: True) | Akrfell (Strategic: 15.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 491
+Food: 71
+Wood: 151
+Iron: 10
+Stone: 34
+
+Signals:
+frontier_pressure: 0.545
+underpowered_ratio: 0.000
+castle_spacing: 22.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester
+
+Army Army III [Power: 181]: Moves
+Target: Woodfjord
+
+Army Army I [Power: 200]: Moves
+Target: Bergvik
+
+Army Army II [Power: 184]: Moves
+Target: Whitchester
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 55.0, Distance: True) | Akrfell (Strategic: 15.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 7]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 630
+Food: 94
+Wood: 182
+Iron: 10
+Stone: 42
+
+Signals:
+frontier_pressure: 0.565
+underpowered_ratio: 0.000
+castle_spacing: 23.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester, Woodfjord
+
+Army Army III [Power: 194]: Moves
+Target: Bergvik
+
+Army Army I [Power: 200]: Moves
+Target: Greennes
+
+Army Army II [Power: 200]: Moves
+Target: Eastdon
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 55.0, Distance: True) | Akrfell (Strategic: 15.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 8]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 788
+Food: 129
+Wood: 213
+Iron: 10
+Stone: 50
+
+Signals:
+frontier_pressure: 0.692
+underpowered_ratio: 0.000
+castle_spacing: 26.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester, Woodfjord, Bergvik, Kingfjord, Eastdon
+
+Army Army I [Power: 200]: Moves
+Target: Kingnes
+
+Army Army II [Power: 200]: Moves
+Target: Reykoy
+
+Army Army III [Power: 203]: Moves
+Target: Hafnley
+
+Economy: Region economy actions: build_castle (Reykoy)
+
+Economy: Build Castle Eval: Reykoy (Strategic: 42.4, Regions: 70.0, Distance: True) | Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+-------
+[Turn 9]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 970
+Food: 176
+Wood: 243
+Iron: 10
+Stone: 57
+
+Signals:
+frontier_pressure: 0.517
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester, Woodfjord, Bergvik, Kingfjord, Eastdon, Kingnes, Reykoy, Hafnley
+
+Army Army I [Power: 216]: Moves
+Target: Hafnby
+
+Army Army II [Power: 219]: Moves
+Target: Reykthorpe
+
+Army Army III [Power: 216]: Moves
+Target: Greennes
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 65.0, Distance: False) | Kingfjord (Strategic: 26.1, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 10]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1173
+Food: 232
+Wood: 274
+Iron: 10
+Stone: 65
+
+Signals:
+frontier_pressure: 0.438
+underpowered_ratio: 0.000
+castle_spacing: 16.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester, Woodfjord, Bergvik, Kingfjord, Eastdon, Kingnes, Reykoy, Hafnley, Hafnby, Reykthorpe, Greennes
+
+Army Army II [Power: 226]: Moves
+Target: Westdal
+
+Army Army III [Power: 225]: Moves
+Target: Kingdal
+
+Army Army I [Power: 226]: Moves
+Target: Oakoy
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 65.0, Distance: False) | Kingfjord (Strategic: 26.1, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+-------
+[Turn 11]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1398
+Food: 297
+Wood: 305
+Iron: 10
+Stone: 73
+
+Signals:
+frontier_pressure: 0.400
+underpowered_ratio: 0.000
+castle_spacing: 17.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester, Woodfjord, Bergvik, Kingfjord, Eastdon, Kingnes, Reykoy, Hafnley, Hafnby, Reykthorpe, Greennes, Westdal, Kingdal, Oakoy
+
+Army Army III [Power: 229]: Moves
+Target: Ashmere
+
+Army Army I [Power: 231]: Moves
+Target: Stonefjord
+
+Army Army II [Power: 244]: Moves
+Target: Hvitby
+
+Economy: Region economy actions: build_castle (Stonefjord)
+
+Economy: Build Castle Eval: Stonefjord (Strategic: 56.1, Regions: 65.0, Distance: True) | Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 65.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+-------
+[Turn 12]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1654
+Food: 368
+Wood: 340
+Iron: 10
+Stone: 80
+
+Signals:
+frontier_pressure: 0.436
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Ashley, Riverby, Oakworth, Riverfjell, Greenthwaite, Riverbury, Vatnfjell, Eybury, Woodstadir, Akrfell, Eywich, Reykvik, Fossthorpe, Kingdon, Eymere, Kirkton, Reykchester, Hvitfjord, Southfjord, Hvitthwaite, Hvitoy, Woodchester, Woodfjord, Bergvik, Kingfjord, Eastdon, Kingnes, Reykoy, Hafnley, Hafnby, Reykthorpe, Greennes, Westdal, Kingdal, Oakoy, Ashmere, Sandthorpe, Stonefjord, Hvitby
+
+Army Army I [Power: 247]: Moves
+Target: Hellaby
+
+Army Army III [Power: 233]: Moves
+Target: Torham
+
+Army Army II [Power: 258]: Moves
+Target: Riverchester
+
+Economy: Region economy actions: build_castle (Torham)
+
+Economy: Build Castle Eval: Torham (Strategic: 74.3, Regions: 45.0, Distance: True) | Hvitfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Kirkton (Strategic: 40.8, Regions: 65.0, Distance: False)
+
+Economy: Build Castle Result: built
+

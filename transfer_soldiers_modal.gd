@@ -243,6 +243,8 @@ func _on_continue_pressed() -> void:
 	
 	# Hide modal
 	hide_modal()
+	if ui_manager:
+		ui_manager.restore_select_context()
 
 func _apply_transfer_changes() -> void:
 	"""Apply transfers based on current button selections"""

@@ -1,0 +1,94 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Northton, Hvitton, Oschester, Riverham, Eystadir, Hafnton, Vatnvik, Eythorpe
+
+Economy: Recruitment candidates: Army I (Northton), Army II (Northton), Army III (Northton)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Northton
+
+Recruitment: Army Army I recruited 40 at Northton (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Northton
+
+Recruitment: Army Army II recruited 40 at Northton (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Northton
+
+Recruitment: Army Army III recruited 40 at Northton (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Ashfjord
+
+Moves to Eythorpe
+Moves to Ashfjord
+Arrived at Ashfjord
+Recruitment: Army Army I could not recruit at Northton (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Northton (reason: not_needed)
+
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Greenwich
+
+Moves to Hvitton
+Moves to Greenwich
+Arrived at Greenwich
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Whithavn
+
+Moves to Eythorpe
+Moves to Whithavn
+Arrived at Whithavn
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Greenwich (Strategic: 24.5, Regions: 50.0, Distance: False) | Whithavn (Strategic: 3.0, Regions: 45.0, Distance: False) | Ashfjord (Strategic: 0.1, Regions: 35.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Northton (Recruits: 65, RScore: 100.0, DScore: 100.0, Dist: 9, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Northton (Next: Duchy, Score: 7.0), Hvitton (Next: March, Score: 5.0), Hafnton (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp

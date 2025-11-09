@@ -1,0 +1,207 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Kirkham, Hvitstadir, Oshavn, Eastham, Eyford, Fosswich, Reykthwaite, Torstadir
+
+Economy: Recruitment candidates: Army I (Kirkham), Army II (Kirkham), Army III (Kirkham)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kirkham
+
+Castle Kirkham - recruits:149, distance:0, level:2, score: 208.6
+Recruitment: Army Army I recruited 41 at Kirkham (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kirkham
+
+Castle Kirkham - recruits:108, distance:0, level:2, score: 151.2
+Recruitment: Army Army II recruited 41 at Kirkham (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kirkham
+
+Castle Kirkham - recruits:67, distance:0, level:2, score: 93.8
+Recruitment: Army Army III recruited 41 at Kirkham (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Fosswich
+Moves to Kingthwaite
+Fight at Kingthwaite
+Battle started
+Attacker: Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army III [Power: 117 - P:28, S:10, A:3, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Whitford
+
+Moves to Torstadir
+Moves to Whitford
+Fight at Whitford
+Battle started
+Attacker: Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army II [Power: 133 - P:36, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Eymere
+
+Moves to Eyford
+Moves to Eymere
+Fight at Eymere
+Battle started
+Attacker: Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 120 - P:29, S:6, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Eymere (Strategic: 20.7, Regions: 60.0, Distance: True) | Whitford (Strategic: 3.0, Regions: 35.0, Distance: False) | Kingthwaite (Strategic: 0.9, Regions: 35.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kirkham (Recruits: 67, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kirkham (Next: Duchy, Score: 7.0), Eyford (Next: March, Score: 5.0), Hvitstadir (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 79
+Food: 67
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.909
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Kirkham, Hvitstadir, Oshavn, Eastham, Eyford, Fosswich, Reykthwaite, Torstadir, Kingthwaite, Whitford, Eymere
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army II [Power: 141 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Redholme
+
+Moves to Redholme
+Fight at Redholme
+Battle started
+Attacker: Army II [Power: 141 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army II [Power: 126 - P:31, S:8, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 127 - P:31, S:10, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Greenhavn
+
+Moves to Eymere
+Moves to Greenhavn
+Fight at Greenhavn
+Battle started
+Attacker: Army III [Power: 127 - P:31, S:10, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 100 - P:22, S:7, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 127 - P:31, S:7, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Stoneford
+
+Moves to Greenhavn
+Moves to Stoneford
+Fight at Stoneford
+Battle started
+Attacker: Army I [Power: 127 - P:31, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 43 - P:5, S:2, A:3, SW:1, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Kirkham)
+
+Economy: Build Castle Eval: Eymere (Strategic: 20.7, Regions: 70.0, Distance: True) | Greenhavn (Strategic: 9.1, Regions: 70.0, Distance: True) | Stoneford (Strategic: 24.7, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kirkham (Recruits: 93, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kirkham (Next: Province, Score: 6.0), Eyford (Next: March, Score: 5.0), Hvitstadir (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Kirkham to Duchy (score: 7.0)
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp

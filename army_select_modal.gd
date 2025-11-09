@@ -43,6 +43,7 @@ func show_army_actions(army: Army, region: Region) -> void:
 	
 	current_army = army
 	current_region = region
+	ui_manager.remember_army_select(current_army, current_region)
 	_create_action_buttons()
 	visible = true
 	
@@ -192,6 +193,7 @@ func _on_make_camp_pressed() -> void:
 func _on_transfer_soldiers_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
+	ui_manager.remember_army_select(current_army, current_region)
 	
 	var army_to_transfer = current_army
 	var region_to_transfer = current_region
@@ -214,6 +216,7 @@ func _on_transfer_soldiers_pressed() -> void:
 func _on_recruit_soldiers_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
+	ui_manager.remember_army_select(current_army, current_region)
 	
 	var army_to_recruit = current_army
 	var region_to_recruit = current_region

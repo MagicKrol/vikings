@@ -1553,7 +1553,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	Gets the path using existing pathfinder, then iterates adjacent steps.
 	For contested steps: use perform_region_entry(army, next_id, "ai")
 	For friendly steps: use ArmyManager.move_army(army, next_region)
-	Returns: "arrived", "blocked", "battle_victory", "battle_defeat"
+	Returns: "arrived", "blocked", "battle_victory", "battle_defeat", "battle_withdrawal"
 	"""
 	if army == null or not is_instance_valid(army):
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Invalid army")
@@ -1588,6 +1588,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	DebugLogger.log("AIPathfinding", "ai_travel_to: Path found with %d steps" % full_path.size())
 	
 	# Iterate adjacent steps starting from index 1 (skip current position)
+	var last_battle_outcome := ""
 	for i in range(1, full_path.size()):
 		var next_region_id = full_path[i]
 		
@@ -1623,6 +1624,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 				"battle_victory":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army victorious, continuing movement")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+					last_battle_outcome = "battle_victory"
 					continue
 				"battle_withdrawal":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army withdrew from battle")
@@ -1657,6 +1659,8 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	var final_position = army.get_parent() as Region
 	if final_position and final_position.get_region_id() == final_region_id:
 		DebugLogger.log("AIMovement", "ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
+		if last_battle_outcome != "":
+			return last_battle_outcome
 		return "arrived"
 	else:
 		var current_pos = final_position.get_region_id() if final_position else -1
@@ -1825,6 +1829,11 @@ func _derive_ai_log_label() -> String:
 func get_ai_log_manager() -> AILogManager:
 	return _ai_log_manager
 
+func get_ai_battle_log_token(army: Army) -> String:
+	if army == null:
+		return ""
+	return _get_ai_battle_log_key(army)
+
 func consume_ai_battle_log_for_army(army: Army) -> Array[String]:
 	if army == null:
 		return []
@@ -1841,6 +1850,23 @@ func consume_ai_battle_log_for_army(army: Army) -> Array[String]:
 		_ai_battle_log_queue.erase(key)
 	else:
 		_ai_battle_log_queue[key] = queue
+	return lines
+
+func consume_ai_battle_log_for_token(token: String) -> Array[String]:
+	if token == "":
+		return []
+	if not _ai_battle_log_queue.has(token):
+		return []
+	var queue: Array = _ai_battle_log_queue.get(token, [])
+	if queue.is_empty():
+		_ai_battle_log_queue.erase(token)
+		return []
+	var lines: Array[String] = queue[0]
+	queue.remove_at(0)
+	if queue.is_empty():
+		_ai_battle_log_queue.erase(token)
+	else:
+		_ai_battle_log_queue[token] = queue
 	return lines
 
 func _start_first_turn() -> void:

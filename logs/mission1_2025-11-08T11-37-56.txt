@@ -1,0 +1,442 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.750
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Northoy, Stonethorpe, Northdon, Greenfjord, Whitchester, Whitfell, Greenhaug, Eyfell
+
+Economy: Recruitment: budgets assigned to 3 armies at castles.
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Northoy
+
+Recruitment: Army Army I recruited 41 at Northoy (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Northoy
+
+Recruitment: Army Army II recruited 41 at Northoy (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Northoy
+
+Recruitment: Army Army III recruited 41 at Northoy (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Reykfjell
+
+Moves to Greenfjord
+Moves to Reykfjell
+Arrived at Reykfjell
+Recruitment: Army Army I could not recruit at Northoy (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Northoy (reason: not_needed)
+
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnbury
+
+Moves to Eyfell
+Moves to Vatnbury
+Arrived at Vatnbury
+Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Akrdon
+
+Moves to Eyfell
+Moves to Vatnbury
+Moves to Akrdon
+Arrived at Akrdon
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Reykfjell (Strategic: 26.3, Regions: 40.0, Distance: True) | Vatnbury (Strategic: 15.9, Regions: 45.0, Distance: False) | Akrdon (Strategic: 20.7, Regions: 40.0, Distance: False)
+
+Economy: Build Castle Result: insufficient_resources
+
+Army I makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 83
+Food: 36
+Wood: 31
+Iron: 10
+Stone: 16
+
+Signals:
+frontier_pressure: 1.364
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Northoy, Stonethorpe, Northdon, Greenfjord, Whitchester, Whitfell, Greenhaug, Eyfell, Reykfjell, Vatnbury, Akrdon
+
+Economy: Recruitment/Raise deferred: no eligible armies or raise candidates.
+
+Recruitment: Army Army I could not recruit at Vatnbury (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Akrdon (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Reykfjell (reason: not_needed)
+
+Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Westley
+
+Moves to Westley
+Army II makes camp
+Army II makes camp
+Arrived at Westley
+Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Southholme
+
+Moves to Southholme
+Army III makes camp
+Army III makes camp
+Movement blocked near Southholme
+Army I [Power: 165 - P:42, S:11, A:3, SW:5, C:1, H:1, K:1]
+Action: Moves
+Target: Ashfjell
+
+Moves to Ashfjell
+Arrived at Ashfjell
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 20.7, Regions: 60.0, Distance: False) | Vatnbury (Strategic: 15.9, Regions: 55.0, Distance: False) | Ashfjell (Strategic: 5.6, Regions: 65.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 158
+Food: 31
+Wood: 54
+Iron: 10
+Stone: 22
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Northoy, Stonethorpe, Northdon, Greenfjord, Whitchester, Whitfell, Greenhaug, Eyfell, Reykfjell, Vatnbury, Akrdon, Westley, Ashfjell
+
+Economy: Raise Army: success at Northoy.
+
+Economy: Post-raise recruitment: budgets assigned to 1 armies.
+
+Recruitment: Army Army I could not recruit at Ashfjell (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Westley (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Reykfjell (reason: not_needed)
+
+Army III [Power: 171 - P:44, S:13, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Southholme
+
+Moves to Southholme
+Arrived at Southholme
+Army II [Power: 178 - P:48, S:14, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossdal
+
+Moves to Akrdon
+Moves to Vatnbury
+Moves to Fossdal
+Arrived at Fossdal
+Army I [Power: 178 - P:45, S:12, A:3, SW:6, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnfell
+
+Moves to Vatnfell
+Arrived at Vatnfell
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 20.7, Regions: 70.0, Distance: False) | Southholme (Strategic: 40.8, Regions: 45.0, Distance: True) | Vatnbury (Strategic: 15.9, Regions: 65.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 269
+Food: 25
+Wood: 85
+Iron: 10
+Stone: 30
+
+Signals:
+frontier_pressure: 0.750
+underpowered_ratio: 0.250
+castle_spacing: 16.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Northoy, Stonethorpe, Northdon, Greenfjord, Whitchester, Whitfell, Greenhaug, Eyfell, Reykfjell, Vatnbury, Akrdon, Westley, Ashfjell, Southholme, Fossdal, Vatnfell
+
+Economy: Recruitment: budgets assigned to 1 armies at castles.
+
+Recruitment: Army Army I could not recruit at Vatnfell (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Fossdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Southholme (reason: not_needed)
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Northoy
+
+Recruitment: Army Army IV recruited 152 at Northoy (gold: 200, wood: 28, iron: 0)
+
+Army IV [Power: 448 - P:53, S:40, A:21, SW:24, C:7, H:7]
+Army III [Power: 175 - P:46, S:13, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Souththwaite
+
+Moves to Souththwaite
+Arrived at Souththwaite
+Recruitment: Army Army IV could not recruit at Northoy (reason: not_needed)
+
+Army IV [Power: 448 - P:53, S:40, A:21, SW:24, C:7, H:7]
+Action: Moves
+Target: Hvitley
+
+Moves to Whitfell
+Moves to Hvitley
+Arrived at Hvitley
+Army II [Power: 188 - P:53, S:14, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverstadir
+
+Moves to Riverstadir
+Arrived at Riverstadir
+Army I [Power: 189 - P:49, S:13, A:3, SW:6, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnton
+
+Moves to Akrdon
+Moves to Vatnton
+Arrived at Vatnton
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 20.7, Regions: 80.0, Distance: False) | Southholme (Strategic: 40.8, Regions: 55.0, Distance: True) | Vatnbury (Strategic: 15.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 196
+Food: 14
+Wood: 88
+Iron: 10
+Stone: 38
+
+Signals:
+frontier_pressure: 0.650
+underpowered_ratio: 0.000
+castle_spacing: 20.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Northoy, Stonethorpe, Northdon, Greenfjord, Whitchester, Whitfell, Greenhaug, Eyfell, Reykfjell, Vatnbury, Akrdon, Westley, Ashfjell, Southholme, Fossdal, Vatnfell, Souththwaite, Hvitley, Riverstadir, Vatnton
+
+Economy: Recruitment/Raise deferred: no eligible armies or raise candidates.
+
+Recruitment: Army Army I could not recruit at Vatnton (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Riverstadir (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Souththwaite (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hvitley (reason: not_needed)
+
+Army III [Power: 187 - P:49, S:15, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Stoneton
+
+Moves to Stoneton
+Arrived at Stoneton
+Army IV [Power: 448 - P:53, S:40, A:21, SW:24, C:7, H:7]
+Action: Moves
+Target: Hvitwich
+
+Moves to Riverstadir
+Moves to Hvitwich
+Arrived at Hvitwich
+Army II [Power: 197 - P:56, S:15, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Bergthorpe
+
+Moves to Whitfell
+Moves to Bergthorpe
+Arrived at Bergthorpe
+Army I [Power: 199 - P:51, S:15, A:3, SW:6, C:1, H:1, K:1]
+Action: Moves
+Target: Weststadir
+
+Moves to Vatnbury
+Moves to Fossdal
+Moves to Riverstadir
+Moves to Weststadir
+Arrived at Weststadir
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Riverstadir (Strategic: 20.0, Regions: 90.0, Distance: False) | Akrdon (Strategic: 20.7, Regions: 80.0, Distance: False) | Souththwaite (Strategic: 44.6, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 328
+Food: 12
+Wood: 124
+Iron: 10
+Stone: 46
+
+Signals:
+frontier_pressure: 0.542
+underpowered_ratio: 0.000
+castle_spacing: 24.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Northoy, Stonethorpe, Northdon, Greenfjord, Whitchester, Whitfell, Greenhaug, Eyfell, Reykfjell, Vatnbury, Akrdon, Westley, Ashfjell, Southholme, Fossdal, Vatnfell, Souththwaite, Hvitley, Riverstadir, Vatnton, Stoneton, Hvitwich, Bergthorpe, Weststadir
+
+Economy: Raise Army: success at Northoy.
+
+Economy: Post-raise recruitment: budgets assigned to 1 armies.
+
+Recruitment: Army Army I could not recruit at Weststadir (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Bergthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Stoneton (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hvitwich (reason: not_needed)
+
+Army III [Power: 195 - P:53, S:15, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Bergstadir
+
+Moves to Souththwaite
+Moves to Bergstadir
+Arrived at Bergstadir
+Army I [Power: 199 - P:51, S:15, A:3, SW:6, C:1, H:1, K:1]
+Action: Moves
+Target: Kington
+
+Moves to Hvitley
+Moves to Whitfell
+Moves to Greenhaug
+Moves to Riverfjell
+Moves to Souththwaite
+Moves to Bergstadir
+Moves to Kington
+Out of movement points before reaching Kington
+Army IV [Power: 457 - P:54, S:41, A:21, SW:25, C:7, H:7]
+Action: Moves
+Target: Kington
+
+Moves to Riverstadir
+Moves to Whitfell
+Moves to Greenhaug
+Moves to Riverfjell
+Moves to Souththwaite
+Moves to Bergstadir
+Moves to Kington
+Out of movement points before reaching Kington
+Army II [Power: 197 - P:56, S:15, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Norththorpe
+
+Moves to Kingvik
+Moves to Norththorpe
+Army II makes camp
+Army II makes camp
+Movement blocked near Norththorpe
+Economy: Region economy actions: build_castle (Souththwaite)
+
+Economy: Build Castle Eval: Riverstadir (Strategic: 20.0, Regions: 90.0, Distance: False) | Souththwaite (Strategic: 44.6, Regions: 65.0, Distance: True) | Southholme (Strategic: 40.8, Regions: 65.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Army II makes camp
+Army III makes camp
+Army III makes camp

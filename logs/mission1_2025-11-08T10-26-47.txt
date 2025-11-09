@@ -1,0 +1,153 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Northworth, Riverton, Riverham, Whithavn, Kirkton, Eastoy, Sandhavn, Northfjord
+
+Army Army I [Power: 156]: Recruits
+Target: Northworth
+
+Recruitment: Army Army I recruited 42 at Northworth (gold: 34, wood: 6, iron: 0)
+
+Army Army II [Power: 153]: Recruits
+Target: Northworth
+
+Recruitment: Army Army II recruited 41 at Northworth (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 153]: Recruits
+Target: Northworth
+
+Recruitment: Army Army III recruited 41 at Northworth (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 153]: Moves
+Target: Blacknes
+
+Army Army II [Power: 153]: Moves
+Target: Greenthwaite
+
+Army Army I [Power: 156]: Moves
+Target: Whitton
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 73
+Food: 64
+Wood: 14
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.818
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Northworth, Riverton, Riverham, Whithavn, Kirkton, Eastoy, Sandhavn, Northfjord, Blacknes, Greenthwaite, Whitton
+
+Army Army III [Power: 163]: Moves
+Target: Reykdal
+
+Army Army II [Power: 155]: Moves
+Target: Reykholme
+
+Army Army I [Power: 165]: Moves
+Target: Riverfjell
+
+Economy: Region economy actions: build_castle (Whithavn)
+
+Economy: Build Castle Eval: Northfjord (Strategic: 20.0, Regions: 90.0, Distance: False) | Riverham (Strategic: 37.0, Regions: 70.0, Distance: False) | Whithavn (Strategic: 36.1, Regions: 65.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 158
+Food: 87
+Wood: 25
+Iron: 10
+Stone: 9
+
+Signals:
+frontier_pressure: 0.615
+underpowered_ratio: 0.000
+castle_spacing: 6.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Northworth, Riverton, Riverham, Whithavn, Kirkton, Eastoy, Sandhavn, Northfjord, Blacknes, Greenthwaite, Whitton, Reykdal, Reykholme
+
+Army Army III [Power: 169]: Moves
+Target: Riverfjell
+
+Army Army I [Power: 167]: Moves
+Target: Akrdal
+
+Army Army II [Power: 161]: Moves
+Target: Westford
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 263
+Food: 112
+Wood: 46
+Iron: 10
+Stone: 9
+
+Signals:
+frontier_pressure: 0.625
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Northworth, Riverton, Riverham, Whithavn, Kirkton, Eastoy, Sandhavn, Northfjord, Blacknes, Greenthwaite, Whitton, Reykdal, Reykholme, Riverfjell, Akrdal, Westford
+
+Army Army II [Power: 161]: Moves
+Target: Ashhaug
+
+Army Army I [Power: 167]: Moves
+Target: Southford
+
+Army Army III [Power: 169]: Moves
+Target: Tormere
+
+Economy: No region economy changes (reason: no_region_actions)
+

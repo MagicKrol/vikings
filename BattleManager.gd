@@ -273,11 +273,13 @@ func handle_battle_modal_closed() -> void:
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle finished with result: " + str(result))
 
 func _apply_battle_losses() -> void:
-	"""Apply battle losses from the battle modal to armies and region"""
-	if _battle_modal == null or _battle_modal.battle_report == null:
+	"""Apply battle losses from the latest battle report to armies and region"""
+	var report := _last_battle_report
+	if report == null and _battle_modal != null:
+		report = _battle_modal.battle_report
+	if report == null:
 		DebugLogger.log("BattleSystem", "[BattleManager] No battle report available")
 		return
-	var report := _battle_modal.battle_report
 	
 	# New rule:
 	# - Losing side takes 100% losses (destroyed) → no need to calculate for losing side
@@ -306,6 +308,8 @@ func _apply_battle_losses() -> void:
 	for d in _pending_defenders:
 		if d.get_total_soldiers() <= 0:
 			_handle_battle_defeat(d)
+	
+	_last_battle_report = null
 
 func _destroy_defender_side() -> void:
 	# Zero-out all defender armies

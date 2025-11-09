@@ -1,0 +1,5670 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite
+
+Economy: Recruitment candidates: Army I (Blackley), Army II (Blackley), Army III (Blackley)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Blackley
+
+Recruitment: Army Army I recruited 40 at Blackley (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Blackley
+
+Recruitment: Army Army II recruited 40 at Blackley (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Blackley
+
+Recruitment: Army Army III recruited 40 at Blackley (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossthorpe
+
+Moves to Saintvik
+Moves to Fossthorpe
+Arrived at Fossthorpe
+Recruitment: Army Army I could not recruit at Blackley (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Blackley (reason: not_needed)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eythwaite
+
+Moves to Redholme
+Moves to Eythwaite
+Arrived at Eythwaite
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Southham
+
+Moves to Saintbury
+Moves to Southham
+Arrived at Southham
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Eythwaite (Strategic: 53.3, Regions: 35.0, Distance: True) | Southham (Strategic: 17.1, Regions: 40.0, Distance: True) | Fossthorpe (Strategic: 0.0, Regions: 20.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Blackley (Recruits: 60, RScore: 100.0, DScore: 100.0, Dist: 8, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Blackley (Next: Duchy, Score: 6.0), Saintvik (Next: March, Score: 5.0), Redholme (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army III makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite
+
+Economy: Recruitment candidates: Army I (Redham), Army II (Redham), Army III (Redham)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Redham
+
+Recruitment: Army Army I recruited 41 at Redham (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Redham
+
+Recruitment: Army Army II recruited 40 at Redham (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Redham
+
+Recruitment: Army Army III recruited 40 at Redham (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Woodchester
+
+Moves to Northnes
+Moves to Woodchester
+Arrived at Woodchester
+Recruitment: Army Army I could not recruit at Redham (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Redham (reason: not_needed)
+
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Kingdal
+
+Moves to Northnes
+Moves to Kingdal
+Arrived at Kingdal
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eydon
+
+Moves to Fosshavn
+Moves to Eydon
+Arrived at Eydon
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Woodchester (Strategic: 69.1, Regions: 45.0, Distance: True) | Kingdal (Strategic: 38.9, Regions: 55.0, Distance: True) | Eydon (Strategic: 27.3, Regions: 50.0, Distance: True)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Redham (Recruits: 66, RScore: 100.0, DScore: 100.0, Dist: 7, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 6.0), Hvitholme (Next: March, Score: 4.0), Fosshavn (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+-------
+[Turn 1]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.125
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford
+
+Economy: Recruitment candidates: Army I (Kingbury), Army II (Kingbury), Army III (Kingbury)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kingbury
+
+Recruitment: Army Army I recruited 37 at Kingbury (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kingbury
+
+Recruitment: Army Army II recruited 37 at Kingbury (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kingbury
+
+Recruitment: Army Army III recruited 37 at Kingbury (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Westmere
+
+Moves to Redmere
+Moves to Westmere
+Arrived at Westmere
+Recruitment: Army Army II could not recruit at Kingbury (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kingbury (reason: not_needed)
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnfjell
+
+Moves to Redmere
+Moves to Westmere
+Moves to Vatnfjell
+Arrived at Vatnfjell
+Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Osberg
+
+Moves to Redmere
+Moves to Westmere
+Moves to Osberg
+Arrived at Osberg
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Osberg (Strategic: 44.6, Regions: 55.0, Distance: True) | Vatnfjell (Strategic: 27.9, Regions: 45.0, Distance: True) | Westmere (Strategic: 13.6, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingbury (Recruits: 51, RScore: 100.0, DScore: 100.0, Dist: 8, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kingbury (Next: Duchy, Score: 5.0), Westford (Next: March, Score: 5.0), Redmere (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.125
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg
+
+Economy: Recruitment candidates: Army I (Eastthorpe), Army II (Eastthorpe), Army III (Eastthorpe)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Eastthorpe
+
+Recruitment: Army Army I recruited 39 at Eastthorpe (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Eastthorpe
+
+Recruitment: Army Army II recruited 39 at Eastthorpe (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Eastthorpe
+
+Recruitment: Army Army III recruited 39 at Eastthorpe (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Greenwich
+
+Moves to Stoneberg
+Moves to Greenwich
+Arrived at Greenwich
+Recruitment: Army Army I could not recruit at Eastthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Eastthorpe (reason: not_needed)
+
+Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Torford
+
+Moves to Westthorpe
+Moves to Torford
+Arrived at Torford
+Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitdon
+
+Moves to Northnes
+Moves to Hvitdon
+Arrived at Hvitdon
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Torford (Strategic: 24.0, Regions: 40.0, Distance: True) | Hvitdon (Strategic: 4.5, Regions: 50.0, Distance: False) | Greenwich (Strategic: 0.5, Regions: 45.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eastthorpe (Recruits: 58, RScore: 100.0, DScore: 100.0, Dist: 7, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Duchy, Score: 5.0), Westthorpe (Next: March, Score: 5.0), Saintdon (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 74
+Food: 46
+Wood: 31
+Iron: 10
+Stone: 14
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Southham (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eythwaite (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Fossthorpe (reason: not_needed)
+
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnley
+
+Moves to Vatnley
+Army I makes camp
+Army I makes camp
+Arrived at Vatnley
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Oakworth
+
+Moves to Oakworth
+Army II makes camp
+Army II makes camp
+Arrived at Oakworth
+Army III [Power: 167 - P:44, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kirkworth
+
+Moves to Kirkworth
+Arrived at Kirkworth
+Economy: Region economy actions: upgrade_castle (Blackley)
+
+Economy: Build Castle Eval: Eythwaite (Strategic: 53.3, Regions: 45.0, Distance: True) | Southham (Strategic: 17.1, Regions: 50.0, Distance: True) | Kirkworth (Strategic: 2.5, Regions: 50.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Blackley (Recruits: 84, RScore: 100.0, DScore: 100.0, Dist: 8, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Blackley (Next: Duchy, Score: 6.0), Saintvik (Next: March, Score: 5.0), Redholme (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 81
+Food: 39
+Wood: 40
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.182
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Kingdal (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eydon (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Woodchester (reason: not_needed)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Army II makes camp
+Army II makes camp
+Movement blocked near Osthorpe
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Tormere
+
+Moves to Tormere
+Army III makes camp
+Army III makes camp
+Arrived at Tormere
+Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Woodchester
+Moves to Tormere
+Moves to Blackbury
+Army I makes camp
+Army I makes camp
+Out of movement points before reaching Blackbury
+Economy: Region economy actions: build_castle (Woodchester)
+
+Economy: Build Castle Eval: Woodchester (Strategic: 69.1, Regions: 55.0, Distance: True) | Kingdal (Strategic: 38.9, Regions: 55.0, Distance: True) | Tormere (Strategic: 54.1, Regions: 30.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 70
+Food: 67
+Wood: 16
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.182
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Westmere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Vatnfjell (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Osberg (reason: not_needed)
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Weststadir
+
+Moves to Weststadir
+Arrived at Weststadir
+Army III [Power: 152 - P:38, S:12, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Saintbury
+
+Moves to Saintbury
+Arrived at Saintbury
+Army I [Power: 169 - P:40, S:12, A:3, SW:5, C:1, H:2, K:1]
+Action: Moves
+Target: Torhavn
+
+Moves to Torhavn
+Arrived at Torhavn
+Economy: Region economy actions: build_castle (Osberg)
+
+Economy: Build Castle Eval: Osberg (Strategic: 44.6, Regions: 65.0, Distance: True) | Vatnfjell (Strategic: 27.9, Regions: 75.0, Distance: True) | Torhavn (Strategic: 22.9, Regions: 70.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 74
+Food: 56
+Wood: 29
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.818
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Hvitdon (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Greenwich (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Torford (reason: not_needed)
+
+Army III [Power: 162 - P:42, S:11, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Whitchester
+
+Moves to Whitchester
+Arrived at Whitchester
+Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Akrdon
+
+Moves to Northnes
+Moves to Akrdon
+Arrived at Akrdon
+Army II [Power: 158 - P:41, S:12, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eastworth
+
+Moves to Hvitdon
+Moves to Vatnwich
+Moves to Eastworth
+Arrived at Eastworth
+Economy: Region economy actions: build_castle (Whitchester)
+
+Economy: Build Castle Eval: Whitchester (Strategic: 100.0, Regions: 40.0, Distance: True) | Akrdon (Strategic: 61.0, Regions: 60.0, Distance: True) | Vatnwich (Strategic: 14.7, Regions: 65.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 144
+Food: 51
+Wood: 53
+Iron: 9
+Stone: 17
+
+Signals:
+frontier_pressure: 0.929
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Blackley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Vatnley (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Oakworth (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kirkworth (reason: not_needed)
+
+Army II [Power: 161 - P:44, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Sandworth
+
+Moves to Sandworth
+Arrived at Sandworth
+Army I [Power: 162 - P:44, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Southfjord
+
+Moves to Southham
+Moves to Southfjord
+Arrived at Southfjord
+Army III [Power: 167 - P:44, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Blackby
+
+Moves to Blackley
+Moves to Blackby
+Arrived at Blackby
+Economy: Region economy actions: build_castle (Southfjord)
+
+Economy: Build Castle Eval: Southfjord (Strategic: 35.9, Regions: 85.0, Distance: True) | Eythwaite (Strategic: 53.3, Regions: 55.0, Distance: True) | Sandworth (Strategic: 41.0, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army II makes camp
+Army II makes camp
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 146
+Food: 30
+Wood: 71
+Iron: 10
+Stone: 9
+
+Signals:
+frontier_pressure: 1.167
+underpowered_ratio: 0.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Redham.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eydon (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Tormere (reason: not_needed)
+
+Army I [Power: 162 - P:44, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Arrived at Blackbury
+Army III [Power: 170 - P:47, S:12, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Kingthwaite
+Arrived at Kingthwaite
+Army II [Power: 164 - P:44, S:12, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Arrived at Osthorpe
+Economy: Region economy actions: upgrade_castle (Redham)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 40.0, Distance: False) | Eydon (Strategic: 27.3, Regions: 60.0, Distance: True) | Kingthwaite (Strategic: 43.3, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Redham (Recruits: 123, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Castle, Total: 87.5), Woodchester (Recruits: 28, RScore: 22.8, DScore: 100.0, Dist: 3, Next: Keep, Total: 61.4)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 7.0), Northnes (Next: March, Score: 6.0), Hvitholme (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 133
+Food: 85
+Wood: 25
+Iron: 10
+Stone: 12
+
+Signals:
+frontier_pressure: 0.929
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Kingbury.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Weststadir (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Saintbury (reason: not_needed)
+
+Army III [Power: 163 - P:42, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Arrived at Hvitfell
+Army I [Power: 179 - P:43, S:12, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Redwich
+
+Moves to Redwich
+Arrived at Redwich
+Army II [Power: 159 - P:43, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Akrmere
+
+Moves to Vatnfjell
+Moves to Osberg
+Moves to Akrmere
+Arrived at Akrmere
+Economy: Region economy actions: build_castle (Torhavn)
+
+Economy: Build Castle Eval: Torhavn (Strategic: 22.9, Regions: 80.0, Distance: True) | Redwich (Strategic: 6.9, Regions: 55.0, Distance: True) | Weststadir (Strategic: 11.2, Regions: 35.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 146
+Food: 62
+Wood: 58
+Iron: 10
+Stone: 12
+
+Signals:
+frontier_pressure: 0.867
+underpowered_ratio: 0.000
+castle_spacing: 7.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eastthorpe.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Akrdon (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eastworth (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Whitchester (reason: not_needed)
+
+Army III [Power: 167 - P:43, S:12, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Oakvik
+
+Moves to Oakvik
+Arrived at Oakvik
+Army II [Power: 158 - P:41, S:12, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnstadir
+
+Moves to Vatnstadir
+Army II makes camp
+Army II makes camp
+Arrived at Vatnstadir
+Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Riverholme
+
+Moves to Eastworth
+Moves to Riverholme
+Army I makes camp
+Army I makes camp
+Arrived at Riverholme
+Economy: Region economy actions: upgrade_castle (Eastthorpe)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 61.0, Regions: 60.0, Distance: False) | Eastworth (Strategic: 23.9, Regions: 65.0, Distance: False) | Vatnwich (Strategic: 14.7, Regions: 65.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eastthorpe (Recruits: 108, RScore: 100.0, DScore: 60.0, Dist: 5, Next: Castle, Total: 80.0), Whitchester (Recruits: 7, RScore: 6.5, DScore: 100.0, Dist: 3, Next: Keep, Total: 53.2)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Duchy, Score: 6.0), Saintdon (Next: March, Score: 5.0), Westthorpe (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 250
+Food: 55
+Wood: 87
+Iron: 9
+Stone: 20
+
+Signals:
+frontier_pressure: 0.765
+underpowered_ratio: 0.250
+castle_spacing: 8.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby
+
+Economy: Recruitment candidates: Army IV (Blackley)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Southfjord (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Sandworth (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Blackby (reason: not_needed)
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Blackley
+
+Recruitment: Army Army IV recruited 140 at Blackley (gold: 189, wood: 28, iron: 0)
+
+Army IV [Power: 413 - P:49, S:35, A:21, SW:21, C:7, H:7]
+Army II [Power: 171 - P:46, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hellaley
+
+Moves to Hellaley
+Arrived at Hellaley
+Recruitment: Army Army IV could not recruit at Blackley (reason: not_needed)
+
+Army I [Power: 162 - P:44, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Reykfjord
+
+Moves to Southham
+Moves to Reykfjord
+Army I makes camp
+Army I makes camp
+Movement blocked near Reykfjord
+Army III [Power: 167 - P:44, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverfjell
+
+Moves to Riverfjell
+Army III makes camp
+Army III makes camp
+Arrived at Riverfjell
+Army IV [Power: 413 - P:49, S:35, A:21, SW:21, C:7, H:7]
+Action: Moves
+Target: Greenford
+
+Moves to Saintbury
+Moves to Greenford
+Arrived at Greenford
+Economy: Region economy actions: build_castle (Hellaley)
+
+Economy: Build Castle Eval: Hellaley (Strategic: 71.9, Regions: 35.0, Distance: True) | Sandworth (Strategic: 41.0, Regions: 50.0, Distance: True) | Greenford (Strategic: 32.8, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 250
+Food: 29
+Wood: 105
+Iron: 9
+Stone: 11
+
+Signals:
+frontier_pressure: 1.067
+underpowered_ratio: 0.250
+castle_spacing: 7.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Blackbury, Kingthwaite, Osthorpe
+
+Economy: Recruitment candidates: Army IV (Redham)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Blackbury (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kingthwaite (reason: not_needed)
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Redham
+
+Recruitment: Army Army IV recruited 153 at Redham (gold: 203, wood: 29, iron: 0)
+
+Army IV [Power: 451 - P:53, S:40, A:22, SW:24, C:7, H:7]
+Army II [Power: 173 - P:47, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Fight at Hvitfell
+Lost at Hvitfell
+Recruitment: Army Army IV could not recruit at Redham (reason: not_needed)
+
+Army I [Power: 176 - P:49, S:10, A:3, SW:5, C:1, H:1, K:1]
+Action: Moves
+Target: Torhavn
+
+Moves to Torhavn
+Arrived at Torhavn
+Army III [Power: 178 - P:48, S:14, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kingfjell
+
+Moves to Blackbury
+Moves to Torhavn
+Moves to Kingfjell
+Arrived at Kingfjell
+Army IV [Power: 451 - P:53, S:40, A:22, SW:24, C:7, H:7]
+Action: Moves
+Target: Vatnvik
+
+Moves to Fosshavn
+Moves to Vatnvik
+Arrived at Vatnvik
+Economy: Region economy actions: upgrade_castle (Woodchester)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 50.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 45.0, Distance: False) | Eydon (Strategic: 27.3, Regions: 70.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Woodchester (Recruits: 21, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Keep, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 8.0), Northnes (Next: March, Score: 7.0), Hvitholme (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 232
+Food: 108
+Wood: 34
+Iron: 10
+Stone: 16
+
+Signals:
+frontier_pressure: 0.765
+underpowered_ratio: 0.250
+castle_spacing: 5.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere
+
+Economy: Recruitment candidates: Army IV (Kingbury)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Redwich (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Akrmere (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hvitfell (reason: not_needed)
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Kingbury
+
+Recruitment: Army Army IV recruited 122 at Kingbury (gold: 164, wood: 24, iron: 0)
+
+Army IV [Power: 360 - P:42, S:32, A:18, SW:18, C:6, H:6]
+Army III [Power: 174 - P:45, S:13, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Fight at Osthorpe
+Lost at Osthorpe
+Recruitment: Army Army IV could not recruit at Kingbury (reason: not_needed)
+
+Army IV [Power: 360 - P:42, S:32, A:18, SW:18, C:6, H:6]
+Action: Moves
+Target: Ashoy
+
+Moves to Eastthorpe
+Moves to Ashoy
+Arrived at Ashoy
+Army II [Power: 172 - P:47, S:11, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Hvithavn
+
+Moves to Saintdal
+Moves to Westford
+Moves to Hafnfjord
+Moves to Hvithavn
+Arrived at Hvithavn
+Army I [Power: 194 - P:46, S:15, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Greenford
+
+Moves to Redmere
+Moves to Akrmere
+Moves to Greenford
+Arrived at Greenford
+Economy: Region economy actions: upgrade_castle (Osberg)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 40.0, Distance: False) | Hvitfell (Strategic: 26.3, Regions: 15.0, Distance: True) | Hvithavn (Strategic: 0.0, Regions: 30.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Osberg (Recruits: 34, RScore: 100.0, DScore: 100.0, Dist: 6, Next: Keep, Total: 100.0), Torhavn (Recruits: 28, RScore: 82.4, DScore: 100.0, Dist: 6, Next: Keep, Total: 91.2), Kingbury (Recruits: 0, RScore: 0.0, DScore: 85.7, Dist: 7, Next: Castle, Total: 42.9)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Kingbury (Next: Duchy, Score: 7.0), Redmere (Next: March, Score: 7.0), Eastthorpe (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 4]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 256
+Food: 74
+Wood: 87
+Iron: 9
+Stone: 16
+
+Signals:
+frontier_pressure: 0.722
+underpowered_ratio: 0.250
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Oakvik, Vatnstadir, Riverholme
+
+Economy: Recruitment candidates: Army IV (Eastthorpe)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Riverholme (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Vatnstadir (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Oakvik (reason: not_needed)
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Eastthorpe
+
+Recruitment: Army Army IV recruited 134 at Eastthorpe (gold: 179, wood: 26, iron: 0)
+
+Army IV [Power: 395 - P:46, S:35, A:20, SW:21, C:6, H:6]
+Army III [Power: 172 - P:44, S:13, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Souththorpe
+
+Moves to Souththorpe
+Arrived at Souththorpe
+Recruitment: Army Army IV could not recruit at Eastthorpe (reason: not_needed)
+
+Army IV [Power: 395 - P:46, S:35, A:20, SW:21, C:6, H:6]
+Action: Moves
+Target: Redberg
+
+Moves to Westthorpe
+Moves to Torford
+Moves to Redberg
+Arrived at Redberg
+Army I [Power: 171 - P:44, S:13, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Torfjell
+
+Moves to Torfjell
+Army I makes camp
+Army I makes camp
+Arrived at Torfjell
+Army II [Power: 186 - P:49, S:13, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Woodfjord
+
+Moves to Eastworth
+Moves to Akrdon
+Moves to Redberg
+Moves to Woodfjord
+Out of movement points before reaching Woodfjord
+Economy: Region economy actions: upgrade_castle (Whitchester)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 61.0, Regions: 70.0, Distance: False) | Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Vatnwich (Strategic: 14.7, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitchester (Recruits: 17, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Keep, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Duchy, Score: 7.0), Saintdon (Next: March, Score: 6.0), Westthorpe (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 5]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 177
+Food: 43
+Wood: 101
+Iron: 9
+Stone: 23
+
+Signals:
+frontier_pressure: 0.650
+underpowered_ratio: 0.000
+castle_spacing: 6.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Southham (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Hellaley (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Riverfjell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Greenford (reason: not_needed)
+
+Army II [Power: 187 - P:49, S:15, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army III [Power: 173 - P:47, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Blackley
+Moves to Saintbury
+Moves to Southfjord
+Moves to Eythwaite
+Moves to Oakworth
+Moves to Sandworth
+Moves to Hellaley
+Moves to Hafnhavn
+Moves to Westham
+Movement blocked near Westham
+Army IV [Power: 413 - P:49, S:35, A:21, SW:21, C:7, H:7]
+Action: Moves
+Target: Reykfjord
+
+Moves to Reykfjord
+Army IV makes camp
+Army IV makes camp
+Arrived at Reykfjord
+Army I [Power: 171 - P:45, S:11, A:3, SW:5, C:1, H:1, K:1]
+Action: Moves
+Target: Bergwich
+
+Moves to Greenford
+Moves to Bergwich
+Arrived at Bergwich
+Economy: Region economy actions: build_castle (Greenford)
+
+Economy: Build Castle Eval: Greenford (Strategic: 32.8, Regions: 75.0, Distance: True) | Reykfjord (Strategic: 16.8, Regions: 70.0, Distance: True) | Bergwich (Strategic: 30.0, Regions: 45.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 162
+Food: 17
+Wood: 115
+Iron: 8
+Stone: 13
+
+Signals:
+frontier_pressure: 1.111
+underpowered_ratio: 0.000
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Blackbury, Kingthwaite, Osthorpe, Torhavn, Kingfjell, Vatnvik
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kingfjell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Vatnvik (reason: not_needed)
+
+Army II [Power: 227 - P:60, S:17, A:5, SW:3, C:1, H:1, K:2]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Fight at Hvitfell
+Lost at Hvitfell
+Army III [Power: 181 - P:48, S:15, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Wooddon
+
+Moves to Wooddon
+Arrived at Wooddon
+Army I [Power: 198 - P:54, S:11, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Akrfjord
+
+Moves to Akrfjord
+Arrived at Akrfjord
+Army IV [Power: 451 - P:53, S:40, A:22, SW:24, C:7, H:7]
+Action: Moves
+Target: Hafnfjell
+
+Moves to Hafnfjell
+Army IV makes camp
+Army IV makes camp
+Movement blocked near Hafnfjell
+Economy: Region economy actions: upgrade_castle (Woodchester)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 60.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 65.0, Distance: False) | Eydon (Strategic: 27.3, Regions: 70.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Woodchester (Recruits: 36, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 7.0), Northnes (Next: March, Score: 7.0), Woodchester (Next: County, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 5]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 160
+Food: 125
+Wood: 19
+Iron: 9
+Stone: 20
+
+Signals:
+frontier_pressure: 0.650
+underpowered_ratio: 0.000
+castle_spacing: 6.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Osberg.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Greenford (reason: not_needed)
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Recruitment: Army Army III could not recruit at Hvitfell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Ashoy (reason: not_needed)
+
+Army I [Power: 199 - P:47, S:16, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Akrfjord
+
+Moves to Akrfjord
+Arrived at Akrfjord
+Army III [Power: 214 - P:55, S:15, A:3, SW:4, C:1, H:4, K:1]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Fight at Osthorpe
+Lost at Osthorpe
+Army IV [Power: 360 - P:42, S:32, A:18, SW:18, C:6, H:6]
+Action: Moves
+Target: Hafnmere
+
+Moves to Hafnmere
+Arrived at Hafnmere
+Economy: Region economy actions: upgrade_castle (Torhavn), upgrade_region (Osberg), upgrade_region (Kingbury), upgrade_region (Redmere), upgrade_region (Westmere)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 50.0, Distance: False) | Hvitfell (Strategic: 26.3, Regions: 15.0, Distance: True) | Akrfjord (Strategic: 6.9, Regions: 30.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Torhavn (Recruits: 50, RScore: 92.6, DScore: 100.0, Dist: 3, Next: Keep, Total: 96.3), Osberg (Recruits: 54, RScore: 100.0, DScore: 60.0, Dist: 5, Next: Castle, Total: 80.0), Kingbury (Recruits: 24, RScore: 44.4, DScore: 75.0, Dist: 4, Next: Castle, Total: 59.7)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Osberg (Next: March, Score: 6.0), Kingbury (Next: Province, Score: 5.0), Redmere (Next: Duchy, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Osberg to County (score: 7.0)
+
+Economy: Upgrading Kingbury to Duchy (score: 6.0)
+
+Economy: Upgrading Redmere to March (score: 6.0)
+
+Economy: Upgrading Westmere to County (score: 6.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 5]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 203
+Food: 72
+Wood: 94
+Iron: 8
+Stone: 23
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 0.000
+castle_spacing: 10.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Oakvik, Vatnstadir, Riverholme, Souththorpe, Redberg, Torfjell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army Army I could not recruit at Torfjell (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Redberg (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Souththorpe (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Redberg (reason: not_needed)
+
+Army III [Power: 181 - P:47, S:14, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Reykley
+
+Moves to Reykley
+Arrived at Reykley
+Army IV [Power: 395 - P:46, S:35, A:20, SW:21, C:6, H:6]
+Action: Moves
+Target: Woodfjord
+
+Moves to Woodfjord
+Army IV makes camp
+Army IV makes camp
+Arrived at Woodfjord
+Army II [Power: 186 - P:49, S:13, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Westhaug
+
+Moves to Woodfjord
+Moves to Westhaug
+Army II makes camp
+Army II makes camp
+Movement blocked near Westhaug
+Army I [Power: 188 - P:51, S:14, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Westhaug
+
+Moves to Vatnwich
+Moves to Akrdon
+Moves to Eyley
+Moves to Westhaug
+Movement blocked near Westhaug
+Economy: Region economy actions: upgrade_castle (Whitchester)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 61.0, Regions: 70.0, Distance: False) | Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Redberg (Strategic: 33.9, Regions: 60.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitchester (Recruits: 26, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Duchy, Score: 6.0), Oakvik (Next: County, Score: 5.0), Whitchester (Next: County, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 6]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 294
+Food: 37
+Wood: 151
+Iron: 9
+Stone: 26
+
+Signals:
+frontier_pressure: 0.696
+underpowered_ratio: 0.000
+castle_spacing: 5.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Hafnhavn, Reykfjord, Bergwich
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Blackley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Bergwich (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Saintbury (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Reykfjord (reason: not_needed)
+
+Army II [Power: 198 - P:53, S:16, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Arrived at Westham
+Army I [Power: 171 - P:45, S:11, A:3, SW:5, C:1, H:1, K:1]
+Action: Moves
+Target: Eyoy
+
+Moves to Eyoy
+Army I makes camp
+Army I makes camp
+Arrived at Eyoy
+Army IV [Power: 432 - P:50, S:38, A:21, SW:23, C:7, H:7]
+Action: Moves
+Target: Fossfjell
+
+Moves to Bergwich
+Moves to Fossfjell
+Arrived at Fossfjell
+Army III [Power: 175 - P:48, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Redton
+
+Moves to Southfjord
+Moves to Redton
+Arrived at Redton
+Economy: Region economy actions: build_castle (Westham)
+
+Economy: Build Castle Eval: Westham (Strategic: 79.3, Regions: 25.0, Distance: True) | Fossfjell (Strategic: 30.6, Regions: 55.0, Distance: True) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army IV makes camp
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 269
+Food: 11
+Wood: 154
+Iron: 7
+Stone: 15
+
+Signals:
+frontier_pressure: 0.900
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Blackbury, Kingthwaite, Osthorpe, Torhavn, Kingfjell, Vatnvik, Wooddon, Akrfjord
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Woodchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Wooddon (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Vatnvik (reason: not_needed)
+
+Army II [Power: 335 - P:77, S:25, A:7, SW:8, C:2, H:1, K:4]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Fight at Hvitfell
+Lost at Hvitfell
+Army I [Power: 204 - P:57, S:11, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Westhaug
+
+Moves to Blackbury
+Moves to Tormere
+Moves to Westhaug
+Arrived at Westhaug
+Army III [Power: 188 - P:48, S:16, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Eastholme
+
+Moves to Kingfjell
+Moves to Eastholme
+Arrived at Eastholme
+Army IV [Power: 458 - P:55, S:41, A:22, SW:24, C:7, H:7]
+Action: Moves
+Target: Hafnfjell
+
+Moves to Hafnfjell
+Arrived at Hafnfjell
+Economy: Region economy actions: build_castle (Eydon)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 60.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 65.0, Distance: False) | Eydon (Strategic: 27.3, Regions: 80.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 6]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 237
+Food: 77
+Wood: 16
+Iron: 8
+Stone: 19
+
+Signals:
+frontier_pressure: 0.545
+underpowered_ratio: 0.200
+castle_spacing: 7.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Akrfjord, Hafnmere
+
+Economy: Recruitment candidates: Army V (Osberg)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Hvithavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hvitfell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hafnmere (reason: not_needed)
+
+Army V [Power: 0 - none]
+Action: Recruits
+Target: Osberg
+
+Recruitment: Army Army V recruited 79 at Osberg (gold: 108, wood: 16, iron: 0)
+
+Army V [Power: 234 - P:27, S:20, A:12, SW:12, C:4, H:4]
+Army V [Power: 234 - P:27, S:20, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Kirkberg
+
+Moves to Greenford
+Moves to Kirkberg
+Arrived at Kirkberg
+Army III [Power: 278 - P:77, S:17, A:3, SW:5, C:1, H:6, K:1]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Fight at Osthorpe
+Lost at Osthorpe
+Army I [Power: 203 - P:49, S:16, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Hafnfjord
+
+Moves to Hafnfjord
+Arrived at Hafnfjord
+Army IV [Power: 372 - P:42, S:33, A:18, SW:19, C:6, H:7]
+Action: Moves
+Target: Southfjord
+
+Moves to Ashoy
+Moves to Southfjord
+Arrived at Southfjord
+Army II [Power: 197 - P:56, S:12, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Riverchester
+
+Moves to Kirkdon
+Moves to Eastthorpe
+Moves to Riverchester
+Arrived at Riverchester
+Economy: Region economy actions: upgrade_region (Torhavn)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Southfjord (Strategic: 36.0, Regions: 25.0, Distance: True) | Akrfjord (Strategic: 6.9, Regions: 50.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Torhavn (Recruits: 44, RScore: 91.7, DScore: 100.0, Dist: 3, Next: Castle, Total: 95.8), Kingbury (Recruits: 48, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Castle, Total: 87.5), Osberg (Recruits: 9, RScore: 18.8, DScore: 60.0, Dist: 5, Next: Castle, Total: 39.4)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Osberg (Next: March, Score: 7.0), Westmere (Next: March, Score: 7.0), Torhavn (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Torhavn to County (score: 7.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 6]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 319
+Food: 68
+Wood: 133
+Iron: 7
+Stone: 31
+
+Signals:
+frontier_pressure: 0.739
+underpowered_ratio: 0.000
+castle_spacing: 11.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Oakvik, Vatnstadir, Riverholme, Souththorpe, Redberg, Torfjell, Reykley, Woodfjord
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eastthorpe.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Akrdon (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Woodfjord (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Reykley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Woodfjord (reason: not_needed)
+
+Army IV [Power: 395 - P:46, S:35, A:20, SW:21, C:6, H:6]
+Action: Moves
+Target: Westhaug
+
+Moves to Westhaug
+Arrived at Westhaug
+Army I [Power: 196 - P:55, S:14, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Westhaug
+
+Moves to Eyley
+Moves to Westhaug
+Arrived at Westhaug
+Army II [Power: 192 - P:52, S:13, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Westhaug
+Moves to Kingthwaite
+Arrived at Kingthwaite
+Army III [Power: 191 - P:52, S:14, A:3, SW:3, C:1, H:2, K:1]
+Action: Moves
+Target: Redley
+
+Moves to Redley
+Arrived at Redley
+Economy: Region economy actions: build_castle (Eyley)
+
+Economy: Build Castle Eval: Akrdon (Strategic: 61.0, Regions: 80.0, Distance: False) | Eyley (Strategic: 55.1, Regions: 75.0, Distance: True) | Redberg (Strategic: 33.9, Regions: 70.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 7]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 452
+Food: 41
+Wood: 205
+Iron: 9
+Stone: 29
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 0.200
+castle_spacing: 5.400
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Hafnhavn, Reykfjord, Bergwich, Westham, Eyoy, Fossfjell, Redton
+
+Economy: Recruitment candidates: Army V (Blackley)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Eyoy (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redton (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Fossfjell (reason: not_needed)
+
+Army V [Power: 0 - none]
+Action: Recruits
+Target: Blackley
+
+Recruitment: Army Army V recruited 84 at Blackley (gold: 130, wood: 23, iron: 0)
+
+Army V [Power: 262 - P:20, S:22, A:15, SW:16, C:8, H:3]
+Army II [Power: 207 - P:56, S:17, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Northdal
+
+Moves to Northdal
+Arrived at Northdal
+Recruitment: Army Army V could not recruit at Blackley (reason: not_needed)
+
+Army I [Power: 177 - P:48, S:11, A:3, SW:5, C:1, H:1, K:1]
+Action: Moves
+Target: Redley
+
+Moves to Fossfjell
+Moves to Redley
+Fight at Redley
+Lost at Redley
+Army IV [Power: 434 - P:51, S:38, A:21, SW:23, C:7, H:7]
+Action: Moves
+Target: Redley
+
+Moves to Redley
+Army IV makes camp
+Army IV makes camp
+Arrived at Redley
+Army V [Power: 262 - P:20, S:22, A:15, SW:16, C:8, H:3]
+Action: Moves
+Target: Hellawich
+
+Moves to Redholme
+Moves to Eythwaite
+Moves to Oakworth
+Moves to Sandworth
+Moves to Hellaley
+Moves to Hafnhavn
+Moves to Westham
+Moves to Northdal
+Moves to Hellawich
+Out of movement points before reaching Hellawich
+Army III [Power: 175 - P:48, S:13, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Oakworth
+Moves to Hafnthwaite
+Army III makes camp
+Army III makes camp
+Movement blocked near Hafnthwaite
+Economy: Region economy actions: upgrade_castle (Greenford)
+
+Economy: Build Castle Eval: Fossfjell (Strategic: 30.6, Regions: 65.0, Distance: True) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Greenford (Recruits: 53, RScore: 100.0, DScore: 50.0, Dist: 6, Next: Keep, Total: 75.0), Southfjord (Recruits: 50, RScore: 94.3, DScore: 50.0, Dist: 6, Next: Keep, Total: 72.2), Hellaley (Recruits: 21, RScore: 39.6, DScore: 100.0, Dist: 3, Next: Keep, Total: 69.8)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Blackley (Next: Duchy, Score: 9.0), Bergvik (Next: March, Score: 8.0), Saintbury (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 7]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 384
+Food: 0
+Wood: 196
+Iron: 7
+Stone: 20
+
+Signals:
+frontier_pressure: 0.810
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Blackbury, Osthorpe, Torhavn, Kingfjell, Vatnvik, Wooddon, Akrfjord, Eastholme, Hafnfjell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Woodchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Eastholme (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hafnfjell (reason: not_needed)
+
+Army I [Power: 209 - P:58, S:12, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Kingthwaite
+Fight at Kingthwaite
+Lost at Kingthwaite
+Army III [Power: 188 - P:48, S:16, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Kingfjell
+Moves to Torhavn
+Moves to Blackbury
+Moves to Kingthwaite
+Fight at Kingthwaite
+Lost at Kingthwaite
+Army II [Power: 459 - P:106, S:35, A:8, SW:10, C:2, H:2, K:6]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Fight at Hvitfell
+Lost at Hvitfell
+Army IV [Power: 462 - P:55, S:41, A:22, SW:25, C:7, H:7]
+Action: Moves
+Target: Westford
+
+Moves to Vatnvik
+Moves to Westford
+Arrived at Westford
+Economy: Region economy actions: upgrade_castle (Redham)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 35.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 65.0, Distance: False) | Westford (Strategic: 31.7, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Redham (Recruits: 87, RScore: 100.0, DScore: 100.0, Dist: 4, Next: Stronghold, Total: 100.0), Eydon (Recruits: 62, RScore: 71.3, DScore: 100.0, Dist: 4, Next: Keep, Total: 85.6)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 9.0), Northnes (Next: March, Score: 8.0), Fosshavn (Next: March, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 7]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 253
+Food: 83
+Wood: 22
+Iron: 8
+Stone: 24
+
+Signals:
+frontier_pressure: 0.462
+underpowered_ratio: 0.000
+castle_spacing: 8.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Akrfjord, Hafnmere, Kirkberg, Hafnfjord, Southfjord, Riverchester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Hafnfjord (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Riverchester (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hvitfell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Southfjord (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Kirkberg (reason: not_needed)
+
+Army IV [Power: 374 - P:43, S:33, A:18, SW:19, C:6, H:7]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army II [Power: 197 - P:56, S:12, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Hafnhavn
+Moves to Westham
+Army II makes camp
+Army II makes camp
+Arrived at Westham
+Army V [Power: 242 - P:28, S:22, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Torworth
+
+Moves to Torworth
+Arrived at Torworth
+Army I [Power: 207 - P:51, S:16, A:3, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Hafnbury
+
+Moves to Hafnbury
+Arrived at Hafnbury
+Army III [Power: 377 - P:112, S:21, A:4, SW:6, C:1, H:6, K:2]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Fight at Osthorpe
+Lost at Osthorpe
+Economy: Region economy actions: upgrade_castle (Torhavn), upgrade_region (Redmere), upgrade_region (Westham)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Akrfjord (Strategic: 6.9, Regions: 60.0, Distance: False) | Riverchester (Strategic: 5.8, Regions: 55.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Torhavn (Recruits: 65, RScore: 90.3, DScore: 66.7, Dist: 3, Next: Castle, Total: 78.5), Kingbury (Recruits: 72, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Castle, Total: 75.0), Westham (Recruits: 4, RScore: 5.6, DScore: 100.0, Dist: 2, Next: Keep, Total: 52.8)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Westmere (Next: March, Score: 6.0), Osberg (Next: March, Score: 6.0), Torhavn (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Redmere to Duchy (score: 6.0)
+
+Economy: Upgrading Westham to County (score: 6.0)
+
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 7]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 454
+Food: 68
+Wood: 176
+Iron: 7
+Stone: 39
+
+Signals:
+frontier_pressure: 0.654
+underpowered_ratio: 0.000
+castle_spacing: 8.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Kingthwaite, Oakvik, Vatnstadir, Riverholme, Souththorpe, Redberg, Torfjell, Reykley, Woodfjord, Westhaug, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Westhaug (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Kingthwaite (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Westhaug (reason: not_needed)
+
+Army IV [Power: 398 - P:46, S:36, A:20, SW:21, C:6, H:6]
+Action: Moves
+Target: Blackbury
+
+Moves to Kingthwaite
+Moves to Blackbury
+Arrived at Blackbury
+Army II [Power: 203 - P:56, S:14, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Torhavn
+
+Moves to Blackbury
+Moves to Torhavn
+Arrived at Torhavn
+Army I [Power: 203 - P:57, S:15, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Kingfjell
+
+Moves to Kingthwaite
+Moves to Blackbury
+Moves to Torhavn
+Moves to Kingfjell
+Arrived at Kingfjell
+Army III [Power: 206 - P:56, S:15, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: Region economy actions: upgrade_castle (Eyley), upgrade_region (Eastthorpe)
+
+Economy: Build Castle Eval: Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Blackbury (Strategic: 87.9, Regions: 10.0, Distance: False) | Vatnwich (Strategic: 14.7, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eyley (Recruits: 39, RScore: 50.0, DScore: 100.0, Dist: 2, Next: Keep, Total: 75.0), Eastthorpe (Recruits: 78, RScore: 100.0, DScore: 40.0, Dist: 5, Next: Stronghold, Total: 70.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Province, Score: 7.0), Saintdon (Next: March, Score: 6.0), Westthorpe (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Eastthorpe to Duchy (score: 8.0)
+
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 8]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 462
+Food: 25
+Wood: 236
+Iron: 8
+Stone: 37
+
+Signals:
+frontier_pressure: 0.704
+underpowered_ratio: 0.000
+castle_spacing: 6.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Greenford.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Fossfjell (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Oakworth (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Oakworth (reason: not_needed)
+
+Army II [Power: 207 - P:56, S:17, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army III [Power: 179 - P:48, S:13, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitby
+
+Moves to Sandworth
+Moves to Hvitby
+Arrived at Hvitby
+Army IV [Power: 482 - P:57, S:41, A:22, SW:29, C:7, H:7]
+Action: Moves
+Target: Bergthorpe
+
+Moves to Bergthorpe
+Arrived at Bergthorpe
+Army I [Power: 217 - P:58, S:13, A:5, SW:6, C:2, H:1, K:1]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Hafnthwaite
+Arrived at Hafnthwaite
+Army V [Power: 262 - P:20, S:22, A:15, SW:16, C:8, H:3]
+Action: Moves
+Target: Reykvik
+
+Moves to Sandworth
+Moves to Reykvik
+Army V makes camp
+Army V makes camp
+Movement blocked near Reykvik
+Economy: Region economy actions: build_castle (Fossfjell)
+
+Economy: Build Castle Eval: Fossfjell (Strategic: 30.6, Regions: 85.0, Distance: True) | Hafnthwaite (Strategic: 13.2, Regions: 70.0, Distance: True) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 8]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 489
+Food: 0
+Wood: 242
+Iron: 6
+Stone: 25
+
+Signals:
+frontier_pressure: 1.105
+underpowered_ratio: 0.000
+castle_spacing: 6.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Osthorpe, Vatnvik, Wooddon, Akrfjord, Eastholme, Hafnfjell, Westford
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Woodchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Westford (reason: not_needed)
+
+Army III [Power: 188 - P:48, S:16, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Army III makes camp
+Army III makes camp
+Fight at Blackbury
+Lost at Blackbury
+Army I [Power: 247 - P:70, S:15, A:3, SW:6, C:1, H:3, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army IV [Power: 462 - P:55, S:41, A:22, SW:25, C:7, H:7]
+Action: Moves
+Target: Akrdal
+
+Moves to Akrdal
+Army IV makes camp
+Army IV makes camp
+Arrived at Akrdal
+Army II [Power: 622 - P:142, S:47, A:8, SW:14, C:3, H:3, K:9]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Fight at Hvitfell
+Lost at Hvitfell
+Economy: Region economy actions: upgrade_castle (Eydon)
+
+Economy: Build Castle Eval: Westford (Strategic: 31.7, Regions: 70.0, Distance: False) | Akrdal (Strategic: 20.7, Regions: 40.0, Distance: False) | Eastholme (Strategic: 2.7, Regions: 0.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eydon (Recruits: 73, RScore: 100.0, DScore: 100.0, Dist: 4, Next: Keep, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 11.0), Northnes (Next: March, Score: 9.0), Fosshavn (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 8]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 383
+Food: 64
+Wood: 38
+Iron: 7
+Stone: 23
+
+Signals:
+frontier_pressure: 0.367
+underpowered_ratio: 0.000
+castle_spacing: 7.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Hafnhavn, Akrfjord, Hafnmere, Westham, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Hafnbury (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hvitfell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Torworth (reason: not_needed)
+
+Army IV [Power: 391 - P:44, S:34, A:18, SW:22, C:6, H:7]
+Action: Moves
+Target: Northdal
+
+Moves to Westham
+Moves to Northdal
+Fight at Northdal
+Lost at Northdal
+Army II [Power: 204 - P:58, S:13, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Northdal
+
+Moves to Northdal
+Army II makes camp
+Army II makes camp
+Fight at Northdal
+Lost at Northdal
+Army V [Power: 244 - P:29, S:22, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Hvitoy
+
+Moves to Greenford
+Moves to Hafnfjord
+Moves to Hvitoy
+Arrived at Hvitoy
+Army I [Power: 217 - P:54, S:16, A:3, SW:7, C:1, H:2, K:1]
+Action: Moves
+Target: Eastbury
+
+Moves to Eastbury
+Arrived at Eastbury
+Army III [Power: 505 - P:152, S:33, A:5, SW:7, C:1, H:7, K:2]
+Action: Moves
+Target: Osthorpe
+
+Moves to Osthorpe
+Fight at Osthorpe
+Lost at Osthorpe
+Economy: Region economy actions: upgrade_castle (Kingbury), upgrade_region (Torhavn)
+
+Economy: Build Castle Eval: Eastbury (Strategic: 37.0, Regions: 40.0, Distance: True) | Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Hafnbury (Strategic: 17.4, Regions: 50.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingbury (Recruits: 97, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Castle, Total: 75.0), Westham (Recruits: 16, RScore: 16.5, DScore: 100.0, Dist: 2, Next: Keep, Total: 58.2), Osberg (Recruits: 49, RScore: 50.5, DScore: 50.0, Dist: 4, Next: Castle, Total: 50.3)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Hvitoy (Next: County, Score: 6.0), Torhavn (Next: Duchy, Score: 6.0), Osberg (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Torhavn to March (score: 7.0)
+
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 8]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 589
+Food: 49
+Wood: 215
+Iron: 6
+Stone: 42
+
+Signals:
+frontier_pressure: 0.724
+underpowered_ratio: 0.000
+castle_spacing: 9.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Blackbury, Kingthwaite, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Reykley, Woodfjord, Westhaug, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Recruitment: Army Army II could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Blackbury (reason: not_needed)
+
+Army IV [Power: 400 - P:47, S:36, A:20, SW:21, C:6, H:6]
+Action: Moves
+Target: Wooddon
+
+Moves to Torhavn
+Moves to Wooddon
+Arrived at Wooddon
+Army II [Power: 230 - P:64, S:16, A:3, SW:4, C:1, H:3, K:1]
+Action: Moves
+Target: Akrfjord
+
+Moves to Akrfjord
+Fight at Akrfjord
+Lost at Akrfjord
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: Region economy actions: upgrade_castle (Eyley), upgrade_region (Eyley)
+
+Economy: Build Castle Eval: Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Blackbury (Strategic: 87.9, Regions: 10.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 40.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eyley (Recruits: 56, RScore: 53.8, DScore: 100.0, Dist: 2, Next: Castle, Total: 76.9), Eastthorpe (Recruits: 104, RScore: 100.0, DScore: 40.0, Dist: 5, Next: Stronghold, Total: 70.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Province, Score: 7.0), Eyley (Next: March, Score: 6.0), Westthorpe (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Eyley to County (score: 7.0)
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 9]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 624
+Food: 4
+Wood: 304
+Iron: 8
+Stone: 45
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 0.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Greenford.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Hafnthwaite (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hvitby (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Bergthorpe (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Sandworth (reason: not_needed)
+
+@Sprite2D@6026 [Power: 264 - P:74, S:20, A:3, SW:6, C:2, H:1, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army III [Power: 179 - P:48, S:13, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hellaley
+Moves to Hafnhavn
+Army III makes camp
+Army III makes camp
+Movement blocked near Hafnhavn
+Army V [Power: 262 - P:20, S:22, A:15, SW:16, C:8, H:3]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hellaley
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army I [Power: 245 - P:65, S:13, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Southley
+
+Moves to Fossfjell
+Moves to Southley
+Arrived at Southley
+Army IV [Power: 511 - P:61, S:44, A:22, SW:32, C:7, H:7]
+Action: Moves
+Target: Hvitthorpe
+
+Moves to Hvitthorpe
+Arrived at Hvitthorpe
+Economy: Region economy actions: upgrade_castle (Southfjord)
+
+Economy: Build Castle Eval: Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False) | Vatnley (Strategic: 2.5, Regions: 45.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Southfjord (Recruits: 87, RScore: 95.6, DScore: 40.0, Dist: 5, Next: Keep, Total: 67.8), Greenford (Recruits: 91, RScore: 100.0, DScore: 33.3, Dist: 6, Next: Castle, Total: 66.7), Hellaley (Recruits: 29, RScore: 31.9, DScore: 100.0, Dist: 2, Next: Keep, Total: 65.9)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Blackley (Next: Duchy, Score: 8.0), Saintbury (Next: March, Score: 8.0), Greenford (Next: County, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 9]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 588
+Food: 0
+Wood: 288
+Iron: 5
+Stone: 30
+
+Signals:
+frontier_pressure: 1.211
+underpowered_ratio: 0.000
+castle_spacing: 6.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Osthorpe, Vatnvik, Akrfjord, Eastholme, Hafnfjell, Westford, Akrdal
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eydon.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Akrdal (reason: not_needed)
+
+Army III [Power: 259 - P:65, S:23, A:4, SW:6, C:1, H:2, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Arrived at Blackbury
+Army I [Power: 313 - P:83, S:22, A:4, SW:10, C:1, H:3, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Kingthwaite
+Arrived at Kingthwaite
+Army IV [Power: 470 - P:57, S:41, A:22, SW:26, C:7, H:7]
+Action: Moves
+Target: Vatnley
+
+Moves to Vatnley
+Arrived at Vatnley
+Army II [Power: 726 - P:124, S:59, A:11, SW:23, C:4, H:4, K:14]
+Action: Moves
+Target: Hvitfell
+
+Moves to Hvitfell
+Fight at Hvitfell
+Lost at Hvitfell
+Economy: Region economy actions: upgrade_castle (Woodchester)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 35.0, Distance: False) | Westford (Strategic: 31.7, Regions: 70.0, Distance: False) | Akrdal (Strategic: 20.7, Regions: 50.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Woodchester (Recruits: 58, RScore: 71.6, DScore: 100.0, Dist: 2, Next: Stronghold, Total: 85.8), Eydon (Recruits: 81, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Castle, Total: 75.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 11.0), Northnes (Next: March, Score: 10.0), Fosshavn (Next: March, Score: 9.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 9]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 543
+Food: 38
+Wood: 68
+Iron: 6
+Stone: 27
+
+Signals:
+frontier_pressure: 0.419
+underpowered_ratio: 0.000
+castle_spacing: 7.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Akrfjord, Hafnmere, Westham, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Hvitoy, Eastbury
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Eastbury (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hvitfell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hvitoy (reason: not_needed)
+
+Army II [Power: 226 - P:66, S:15, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army IV [Power: 440 - P:52, S:39, A:20, SW:24, C:7, H:7]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army I [Power: 222 - P:55, S:17, A:3, SW:7, C:1, H:2, K:1]
+Action: Moves
+Target: Northham
+
+Moves to Northham
+Arrived at Northham
+Army V [Power: 244 - P:29, S:22, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Kirkchester
+
+Moves to Kirkchester
+Army V makes camp
+Army V makes camp
+Arrived at Kirkchester
+Army III [Power: 707 - P:216, S:43, A:7, SW:8, C:2, H:13, K:2]
+Action: Moves
+Target: Sandfjell
+
+Moves to Sandfjell
+Arrived at Sandfjell
+Economy: Region economy actions: upgrade_castle (Osberg)
+
+Economy: Build Castle Eval: Eastbury (Strategic: 37.0, Regions: 60.0, Distance: True) | Kirkchester (Strategic: 25.9, Regions: 70.0, Distance: True) | Hafnbury (Strategic: 17.4, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Osberg (Recruits: 73, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Castle, Total: 75.0), Westham (Recruits: 22, RScore: 30.1, DScore: 100.0, Dist: 2, Next: Keep, Total: 65.1)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Osberg (Next: March, Score: 6.0), Westmere (Next: March, Score: 6.0), Akrmere (Next: County, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 9]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 734
+Food: 42
+Wood: 266
+Iron: 5
+Stone: 50
+
+Signals:
+frontier_pressure: 0.786
+underpowered_ratio: 0.000
+castle_spacing: 9.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Reykley, Woodfjord, Westhaug, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eyley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Kingfjell (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Wooddon (reason: not_needed)
+
+Army II [Power: 314 - P:84, S:18, A:5, SW:7, C:1, H:5, K:2]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army IV [Power: 439 - P:51, S:40, A:21, SW:25, C:6, H:6]
+Action: Moves
+Target: Blackbury
+
+Moves to Torhavn
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army I [Power: 225 - P:63, S:17, A:3, SW:5, C:1, H:1, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Torhavn
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: Region economy actions: upgrade_castle (Eastthorpe)
+
+Economy: Build Castle Eval: Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Vatnwich (Strategic: 14.7, Regions: 75.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 15.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eastthorpe (Recruits: 130, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Stronghold, Total: 87.5), Whitchester (Recruits: 54, RScore: 41.5, DScore: 100.0, Dist: 3, Next: Stronghold, Total: 70.8)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Whitchester (Next: County, Score: 8.0), Eastthorpe (Next: Province, Score: 7.0), Eyley (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 10]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 801
+Food: 0
+Wood: 381
+Iron: 7
+Stone: 53
+
+Signals:
+frontier_pressure: 0.656
+underpowered_ratio: 0.000
+castle_spacing: 6.400
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Southley (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hellaley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hvitthorpe (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hafnhavn (reason: not_needed)
+
+@Sprite2D@6026 [Power: 429 - P:124, S:30, A:5, SW:11, C:3, H:2, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Arrived at Westham
+Army V [Power: 271 - P:23, S:23, A:15, SW:16, C:8, H:3]
+Action: Moves
+Target: Hafnhavn
+
+Arrived at Hafnhavn
+Army III [Power: 200 - P:56, S:13, A:3, SW:4, C:1, H:2, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army IV [Power: 517 - P:62, S:44, A:22, SW:33, C:7, H:7]
+Action: Moves
+Target: Saintdon
+
+Moves to Saintdon
+Arrived at Saintdon
+Army I [Power: 259 - P:69, S:15, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Torham
+
+Moves to Torham
+Arrived at Torham
+Economy: Region economy actions: upgrade_castle (Greenford)
+
+Economy: Build Castle Eval: Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False) | Hvitthorpe (Strategic: 23.8, Regions: 30.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Greenford (Recruits: 105, RScore: 100.0, DScore: 50.0, Dist: 6, Next: Castle, Total: 75.0), Southfjord (Recruits: 102, RScore: 97.1, DScore: 50.0, Dist: 6, Next: Castle, Total: 73.6), Fossfjell (Recruits: 72, RScore: 68.6, DScore: 75.0, Dist: 4, Next: Keep, Total: 71.8)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Saintbury (Next: March, Score: 9.0), Blackley (Next: Duchy, Score: 8.0), Bergvik (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 10]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 696
+Food: 0
+Wood: 334
+Iron: 4
+Stone: 35
+
+Signals:
+frontier_pressure: 1.045
+underpowered_ratio: 0.000
+castle_spacing: 7.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Blackbury, Kingthwaite, Osthorpe, Vatnvik, Akrfjord, Eastholme, Hafnfjell, Westford, Akrdal, Vatnley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eydon.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Kingthwaite (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Osthorpe (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Blackbury (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Vatnley (reason: not_needed)
+
+Army II [Power: 687 - P:23, S:85, A:14, SW:31, C:5, H:4, K:18]
+Action: Moves
+Target: Eydon
+
+Moves to Eydon
+Arrived at Eydon
+Recruitment: Army Army II raised 17 peasants at Eydon
+
+Army III [Power: 338 - P:82, S:27, A:6, SW:9, C:1, H:3, K:2]
+Action: Moves
+Target: Torhavn
+
+Moves to Torhavn
+Fight at Torhavn
+Lost at Torhavn
+Army I [Power: 324 - P:87, S:22, A:5, SW:10, C:1, H:3, K:1]
+Action: Moves
+Target: Kingfjell
+
+Moves to Blackbury
+Moves to Torhavn
+Moves to Kingfjell
+Fight at Kingfjell
+Lost at Kingfjell
+Army IV [Power: 470 - P:57, S:41, A:22, SW:26, C:7, H:7]
+Action: Moves
+Target: Southberg
+
+Moves to Akrdal
+Moves to Southberg
+Arrived at Southberg
+Economy: Region economy actions: upgrade_castle (Eydon)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 35.0, Distance: False) | Westford (Strategic: 31.7, Regions: 80.0, Distance: False) | Akrdal (Strategic: 20.7, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eydon (Recruits: 76, RScore: 100.0, DScore: 100.0, Dist: 4, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 11.0), Northnes (Next: March, Score: 11.0), Woodchester (Next: County, Score: 10.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 10]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 735
+Food: 25
+Wood: 110
+Iron: 5
+Stone: 34
+
+Signals:
+frontier_pressure: 0.382
+underpowered_ratio: 0.000
+castle_spacing: 11.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Hafnhavn, Akrfjord, Hafnmere, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Hvitoy, Eastbury, Northham, Kirkchester, Sandfjell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Northham (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Riverchester (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Sandfjell (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Kirkchester (reason: not_needed)
+
+Army II [Power: 374 - P:106, S:28, A:4, SW:6, C:3, H:4, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Hafnhavn
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army IV [Power: 619 - P:76, S:53, A:30, SW:33, C:9, H:10]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army V [Power: 250 - P:30, S:22, A:12, SW:13, C:4, H:4]
+Action: Moves
+Target: Whitbury
+
+Moves to Eastbury
+Moves to Whitbury
+Arrived at Whitbury
+Army I [Power: 232 - P:60, S:17, A:3, SW:7, C:1, H:2, K:1]
+Action: Moves
+Target: Hvitdon
+
+Moves to Whitbury
+Moves to Hvitdon
+Arrived at Hvitdon
+Army III [Power: 870 - P:262, S:53, A:8, SW:10, C:2, H:17, K:3]
+Action: Moves
+Target: Kirkstadir
+
+Moves to Kirkstadir
+Arrived at Kirkstadir
+Economy: Region economy actions: build_castle (Eastbury)
+
+Economy: Build Castle Eval: Eastbury (Strategic: 37.0, Regions: 80.0, Distance: True) | Kirkchester (Strategic: 25.9, Regions: 80.0, Distance: True) | Kirkstadir (Strategic: 36.1, Regions: 65.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 10]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 888
+Food: 32
+Wood: 312
+Iron: 4
+Stone: 58
+
+Signals:
+frontier_pressure: 0.852
+underpowered_ratio: 0.000
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Northnes, Westthorpe, Ashton, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Reykley, Woodfjord, Westhaug, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eastthorpe.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Torhavn (reason: not_needed)
+
+Army II [Power: 400 - P:107, S:27, A:5, SW:9, C:1, H:6, K:2]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army IV [Power: 530 - P:61, S:49, A:23, SW:31, C:7, H:8]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army I [Power: 291 - P:83, S:21, A:3, SW:6, C:1, H:1, K:2]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: Region economy actions: upgrade_castle (Whitchester)
+
+Economy: Build Castle Eval: Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Vatnwich (Strategic: 14.7, Regions: 75.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 15.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitchester (Recruits: 58, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Stronghold, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Province, Score: 9.0), Westthorpe (Next: March, Score: 7.0), Eyley (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 11]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 999
+Food: 0
+Wood: 466
+Iron: 6
+Stone: 61
+
+Signals:
+frontier_pressure: 0.657
+underpowered_ratio: 0.000
+castle_spacing: 5.833
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Saintdon, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Westham, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe, Torham
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Torham (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Saintdon (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hafnhavn (reason: not_needed)
+
+Army V [Power: 423 - P:32, S:38, A:21, SW:27, C:11, H:6]
+Action: Moves
+Target: Hafnhavn
+
+Arrived at Hafnhavn
+Army III [Power: 263 - P:71, S:17, A:4, SW:6, C:1, H:4, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+@Sprite2D@6026 [Power: 457 - P:133, S:32, A:5, SW:12, C:3, H:2, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army IV [Power: 536 - P:65, S:45, A:22, SW:33, C:7, H:9]
+Action: Moves
+Target: Westthorpe
+
+Moves to Westthorpe
+Arrived at Westthorpe
+Army I [Power: 263 - P:71, S:15, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Ashton
+
+Moves to Ashton
+Arrived at Ashton
+Economy: Region economy actions: upgrade_castle (Fossfjell)
+
+Economy: Build Castle Eval: Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False) | Torham (Strategic: 19.2, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Fossfjell (Recruits: 93, RScore: 76.9, DScore: 75.0, Dist: 4, Next: Keep, Total: 75.9), Southfjord (Recruits: 121, RScore: 100.0, DScore: 50.0, Dist: 6, Next: Castle, Total: 75.0), Blackley (Recruits: 112, RScore: 92.6, DScore: 42.9, Dist: 7, Next: Stronghold, Total: 67.7)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Saintbury (Next: March, Score: 9.0), Blackley (Next: Duchy, Score: 8.0), Bergvik (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 11]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 806
+Food: 0
+Wood: 380
+Iron: 3
+Stone: 40
+
+Signals:
+frontier_pressure: 0.957
+underpowered_ratio: 0.000
+castle_spacing: 7.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Blackbury, Kingthwaite, Osthorpe, Vatnvik, Akrfjord, Eastholme, Hafnfjell, Westford, Akrdal, Vatnley, Southberg
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eydon.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army @Sprite2D@6848 could not recruit at Blackbury (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eydon (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Southberg (reason: not_needed)
+
+@Sprite2D@6848 [Power: 399 - P:101, S:30, A:6, SW:15, C:1, H:3, K:1]
+Action: Moves
+Target: Torhavn
+
+Moves to Torhavn
+Fight at Torhavn
+Lost at Torhavn
+Army III [Power: 572 - P:132, S:47, A:10, SW:15, C:3, H:5, K:4]
+Action: Moves
+Target: Torhavn
+
+Moves to Torhavn
+Fight at Torhavn
+Lost at Torhavn
+Army IV [Power: 470 - P:57, S:41, A:22, SW:26, C:7, H:7]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Akrdal
+Moves to Vatnley
+Moves to Hafnthwaite
+Arrived at Hafnthwaite
+Army II [Power: 808 - P:56, S:87, A:16, SW:37, C:6, H:5, K:19]
+Action: Moves
+Target: Eychester
+
+Moves to Vatnvik
+Moves to Eychester
+Arrived at Eychester
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 35.0, Distance: False) | Westford (Strategic: 31.7, Regions: 90.0, Distance: False) | Akrdal (Strategic: 20.7, Regions: 70.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 11.0), Northnes (Next: March, Score: 8.0), Woodchester (Next: County, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 11]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 949
+Food: 1
+Wood: 156
+Iron: 5
+Stone: 41
+
+Signals:
+frontier_pressure: 0.378
+underpowered_ratio: 0.000
+castle_spacing: 9.250
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Hafnhavn, Akrfjord, Hafnmere, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Hvitoy, Eastbury, Northham, Kirkchester, Sandfjell, Whitbury, Hvitdon, Kirkstadir
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Hvitdon (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Southfjord (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kirkstadir (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Whitbury (reason: not_needed)
+
+Army II [Power: 500 - P:141, S:38, A:7, SW:9, C:3, H:5, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army IV [Power: 857 - P:98, S:77, A:39, SW:50, C:12, H:13]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army V [Power: 260 - P:32, S:24, A:12, SW:13, C:4, H:4]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Reykfjell
+Moves to Hafnthwaite
+Army V makes camp
+Army V makes camp
+Out of movement points before reaching Hafnthwaite
+Army III [Power: 996 - P:296, S:59, A:8, SW:15, C:2, H:21, K:3]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Hafnthwaite
+Arrived at Hafnthwaite
+Army I [Power: 240 - P:62, S:17, A:3, SW:8, C:1, H:2, K:1]
+Action: Moves
+Target: Vatnley
+
+Moves to Akrstadir
+Moves to Vatnley
+Fight at Vatnley
+Lost at Vatnley
+Economy: Region economy actions: upgrade_castle (Torhavn)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 60.0, Distance: True) | Akrfjord (Strategic: 6.9, Regions: 60.0, Distance: False) | Riverchester (Strategic: 5.8, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Torhavn (Recruits: 119, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Stronghold, Total: 100.0), Eastbury (Recruits: 42, RScore: 35.3, DScore: 75.0, Dist: 4, Next: Keep, Total: 55.1)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Torhavn (Next: Duchy, Score: 9.0), Redmere (Next: Province, Score: 7.0), Westmere (Next: March, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 11]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 1032
+Food: 0
+Wood: 358
+Iron: 3
+Stone: 66
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 8.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Eastthorpe, Saintdon, Northnes, Redstadir, Stoneberg, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Reykley, Woodfjord, Westhaug, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eastthorpe.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Torhavn (reason: not_needed)
+
+Army IV [Power: 750 - P:89, S:70, A:30, SW:42, C:11, H:12]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Arrived at Blackbury
+Army II [Power: 552 - P:142, S:35, A:7, SW:17, C:1, H:8, K:3]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Blackbury
+Moves to Kingthwaite
+Arrived at Kingthwaite
+Army I [Power: 398 - P:116, S:27, A:5, SW:9, C:1, H:2, K:2]
+Action: Moves
+Target: Akrfjord
+
+Moves to Akrfjord
+Fight at Akrfjord
+Lost at Akrfjord
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Blackbury (Strategic: 87.9, Regions: 10.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 40.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Whitchester (Next: County, Score: 10.0), Eastthorpe (Next: Province, Score: 9.0), Northnes (Next: March, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 12]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 1217
+Food: 0
+Wood: 551
+Iron: 5
+Stone: 69
+
+Signals:
+frontier_pressure: 0.676
+underpowered_ratio: 0.000
+castle_spacing: 6.167
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Saintdon, Westthorpe, Ashton, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Westham, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe, Torham
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Ashton (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Westthorpe (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hafnhavn (reason: not_needed)
+
+Army V [Power: 428 - P:33, S:39, A:21, SW:27, C:11, H:6]
+Action: Moves
+Target: Hafnhavn
+
+Arrived at Hafnhavn
+@Sprite2D@6026 [Power: 655 - P:193, S:45, A:7, SW:17, C:5, H:3, K:1]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army I [Power: 271 - P:72, S:17, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Stoneberg
+
+Moves to Stoneberg
+Arrived at Stoneberg
+Army IV [Power: 546 - P:66, S:46, A:22, SW:33, C:7, H:10]
+Action: Moves
+Target: Eastthorpe
+
+Moves to Eastthorpe
+Arrived at Eastthorpe
+Army III [Power: 381 - P:100, S:27, A:5, SW:9, C:1, H:7, K:1]
+Action: Moves
+Target: Hellawich
+
+Moves to Northdal
+Moves to Hellawich
+Arrived at Hellawich
+Economy: Region economy actions: upgrade_castle (Southfjord)
+
+Economy: Build Castle Eval: Hellawich (Strategic: 61.2, Regions: 25.0, Distance: False) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Southfjord (Recruits: 134, RScore: 95.7, DScore: 50.0, Dist: 6, Next: Castle, Total: 72.9), Blackley (Recruits: 140, RScore: 100.0, DScore: 42.9, Dist: 7, Next: Stronghold, Total: 71.4), Fossfjell (Recruits: 110, RScore: 78.6, DScore: 60.0, Dist: 5, Next: Castle, Total: 69.3)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Province, Score: 11.0), Saintbury (Next: March, Score: 9.0), Blackley (Next: Duchy, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 12]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 911
+Food: 0
+Wood: 432
+Iron: 3
+Stone: 46
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 7.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Osthorpe, Vatnvik, Akrfjord, Eastholme, Hafnfjell, Westford, Akrdal, Vatnley, Southberg, Eychester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eydon.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army @Sprite2D@6848 could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eychester (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Vatnley (reason: not_needed)
+
+@Sprite2D@6848 [Power: 508 - P:103, S:50, A:7, SW:21, C:3, H:5, K:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army III [Power: 607 - P:95, S:62, A:15, SW:21, C:3, H:8, K:5]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Lost at Blackbury
+Army IV [Power: 476 - P:57, S:43, A:22, SW:26, C:7, H:7]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Hafnthwaite
+Fight at Hafnthwaite
+Lost at Hafnthwaite
+Army II [Power: 808 - P:56, S:87, A:16, SW:37, C:6, H:5, K:19]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Hafnthwaite
+Army II makes camp
+Army II makes camp
+Fight at Hafnthwaite
+Lost at Hafnthwaite
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Westford (Strategic: 31.7, Regions: 90.0, Distance: False) | Akrdal (Strategic: 20.7, Regions: 55.0, Distance: True) | Eychester (Strategic: 9.1, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 11.0), Northnes (Next: March, Score: 8.0), Woodchester (Next: County, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 12]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 1182
+Food: 0
+Wood: 206
+Iron: 4
+Stone: 48
+
+Signals:
+frontier_pressure: 0.385
+underpowered_ratio: 0.000
+castle_spacing: 9.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Akrfjord, Hafnmere, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Hvitoy, Eastbury, Northham, Kirkchester, Sandfjell, Whitbury, Hvitdon, Kirkstadir, Hafnthwaite, Reykfjell, Akrstadir
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Akrstadir (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Southfjord (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hafnthwaite (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Southfjord (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Reykfjell (reason: not_needed)
+
+Army IV [Power: 1222 - P:140, S:115, A:58, SW:68, C:14, H:19]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Arrived at Westham
+Army II [Power: 661 - P:184, S:46, A:9, SW:13, C:4, H:8, K:2]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army I [Power: 289 - P:75, S:21, A:4, SW:10, C:1, H:2, K:1]
+Action: Moves
+Target: Akrdal
+
+Moves to Akrdal
+Arrived at Akrdal
+Army V [Power: 277 - P:33, S:25, A:12, SW:16, C:4, H:4]
+Action: Moves
+Target: Southberg
+
+Moves to Akrstadir
+Moves to Akrdal
+Moves to Southberg
+Arrived at Southberg
+Army III [Power: 1034 - P:305, S:64, A:8, SW:15, C:2, H:22, K:3]
+Action: Moves
+Target: Vatnley
+
+Moves to Vatnley
+Arrived at Vatnley
+Economy: Region economy actions: upgrade_castle (Kingbury)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Akrfjord (Strategic: 6.9, Regions: 60.0, Distance: False) | Akrstadir (Strategic: 15.9, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingbury (Recruits: 186, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Stronghold, Total: 75.0), Westham (Recruits: 12, RScore: 6.5, DScore: 100.0, Dist: 2, Next: Keep, Total: 53.2), Eastbury (Recruits: 70, RScore: 37.6, DScore: 50.0, Dist: 4, Next: Keep, Total: 43.8)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Torhavn (Next: Duchy, Score: 11.0), Westmere (Next: March, Score: 8.0), Kingbury (Next: Province, Score: 7.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 12]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 1164
+Food: 0
+Wood: 396
+Iron: 3
+Stone: 75
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 12.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Saintdon, Northnes, Redstadir, Greenwich, Torford, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Blackbury, Kingthwaite, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Reykley, Woodfjord, Westhaug, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Kingthwaite (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Blackbury (reason: not_needed)
+
+Army IV [Power: 812 - P:95, S:74, A:33, SW:47, C:12, H:13]
+Action: Moves
+Target: Eastholme
+
+Moves to Torhavn
+Moves to Kingfjell
+Moves to Eastholme
+Arrived at Eastholme
+Army II [Power: 581 - P:148, S:38, A:7, SW:19, C:1, H:8, K:3]
+Action: Moves
+Target: Akrfjord
+
+Moves to Blackbury
+Moves to Akrfjord
+Fight at Akrfjord
+Lost at Akrfjord
+Army I [Power: 540 - P:153, S:37, A:6, SW:14, C:1, H:3, K:3]
+Action: Moves
+Target: Akrfjord
+
+Moves to Akrfjord
+Fight at Akrfjord
+Lost at Akrfjord
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: Region economy actions: upgrade_castle (Eyley)
+
+Economy: Build Castle Eval: Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False) | Blackbury (Strategic: 87.9, Regions: 10.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 40.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eyley (Recruits: 104, RScore: 100.0, DScore: 100.0, Dist: 2, Next: Stronghold, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eyley (Next: March, Score: 9.0), Whitchester (Next: County, Score: 7.0), Torford (Next: County, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 13]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 1460
+Food: 0
+Wood: 645
+Iron: 4
+Stone: 79
+
+Signals:
+frontier_pressure: 0.675
+underpowered_ratio: 0.000
+castle_spacing: 6.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Eastthorpe, Saintdon, Westthorpe, Ashton, Stoneberg, Fossthorpe, Eythwaite, Southham, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Hafnhavn, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe, Torham, Hellawich
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Stoneberg (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Hellawich (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Eastthorpe (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hafnhavn (reason: not_needed)
+
+Army V [Power: 428 - P:33, S:39, A:21, SW:27, C:11, H:6]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+@Sprite2D@6026 [Power: 766 - P:230, S:51, A:8, SW:20, C:6, H:3, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army III [Power: 381 - P:100, S:27, A:5, SW:9, C:1, H:7, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Northdal
+Moves to Westham
+Army III makes camp
+Army III makes camp
+Movement blocked near Westham
+Army I [Power: 280 - P:75, S:18, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Greenwich
+
+Moves to Greenwich
+Arrived at Greenwich
+Army IV [Power: 548 - P:67, S:46, A:22, SW:33, C:7, H:10]
+Action: Moves
+Target: Torford
+
+Moves to Westthorpe
+Moves to Torford
+Arrived at Torford
+Economy: Region economy actions: upgrade_castle (Blackley)
+
+Economy: Build Castle Eval: Hellawich (Strategic: 61.2, Regions: 25.0, Distance: False) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Blackley (Recruits: 168, RScore: 100.0, DScore: 33.3, Dist: 6, Next: Stronghold, Total: 66.7), Hellaley (Recruits: 45, RScore: 26.8, DScore: 100.0, Dist: 2, Next: Keep, Total: 63.4), Fossfjell (Recruits: 125, RScore: 74.4, DScore: 40.0, Dist: 5, Next: Castle, Total: 57.2)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastthorpe (Next: Province, Score: 9.0), Blackley (Next: Duchy, Score: 8.0), Bergvik (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 13]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 996
+Food: 0
+Wood: 484
+Iron: 3
+Stone: 52
+
+Signals:
+frontier_pressure: 1.056
+underpowered_ratio: 0.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Tormere, Osthorpe, Vatnvik, Akrfjord, Hafnfjell, Westford, Eychester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eydon.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army @Sprite2D@6848 could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Eychester (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Eychester (reason: not_needed)
+
+@Sprite2D@6848 [Power: 195 - A:11, SW:25, C:3, H:6, K:2]
+Action: Moves
+Target: Woodchester
+
+Moves to Blackbury
+Moves to Tormere
+Moves to Woodchester
+Fight at Woodchester
+Lost at Woodchester
+Army II [Power: 718 - S:63, A:19, SW:47, C:6, H:6, K:23]
+Action: Moves
+Target: Redham
+
+Moves to Westford
+Moves to Ashhaug
+Moves to Redham
+Arrived at Redham
+Recruitment: Army Army II raised 41 peasants at Redham
+
+Army III [Power: 260 - A:20, SW:2, C:3, H:14, K:11]
+Action: Moves
+Target: Woodchester
+
+Moves to Blackbury
+Moves to Tormere
+Moves to Woodchester
+Fight at Woodchester
+Lost at Woodchester
+Army IV [Power: 434 - S:46, A:27, SW:36, C:9, H:7]
+Action: Moves
+Target: Fosshavn
+
+Moves to Vatnvik
+Moves to Fosshavn
+Arrived at Fosshavn
+Recruitment: Army Army IV raised 25 peasants at Fosshavn
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Westford (Strategic: 31.7, Regions: 40.0, Distance: False) | Eychester (Strategic: 9.1, Regions: 5.0, Distance: True) | Akrfjord (Strategic: 15.7, Regions: -15.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Redham (Next: Duchy, Score: 10.0), Fosshavn (Next: March, Score: 9.0), Northnes (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 13]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 1429
+Food: 0
+Wood: 256
+Iron: 3
+Stone: 55
+
+Signals:
+frontier_pressure: 0.326
+underpowered_ratio: 0.000
+castle_spacing: 8.600
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Akrfjord, Hafnmere, Westham, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Akrdal, Hvitoy, Eastbury, Vatnley, Northham, Kirkchester, Sandfjell, Southberg, Whitbury, Hvitdon, Kirkstadir, Hafnthwaite, Reykfjell, Akrstadir
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Akrdal (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Riverchester (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Vatnley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Southberg (reason: not_needed)
+
+Army IV [Power: 1259 - P:141, S:118, A:61, SW:71, C:14, H:20]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army II [Power: 850 - P:240, S:57, A:10, SW:15, C:6, H:11, K:3]
+Action: Moves
+Target: Northdal
+
+Moves to Hafnhavn
+Moves to Westham
+Moves to Northdal
+Fight at Northdal
+Lost at Northdal
+Army V [Power: 281 - P:35, S:25, A:12, SW:16, C:4, H:4]
+Action: Moves
+Target: Westton
+
+Moves to Westton
+Army V makes camp
+Army V makes camp
+Arrived at Westton
+Army I [Power: 327 - P:86, S:25, A:4, SW:11, C:1, H:2, K:1]
+Action: Moves
+Target: Ashley
+
+Moves to Akrstadir
+Moves to Hvitdon
+Moves to Whitbury
+Moves to Ashley
+Arrived at Ashley
+Army III [Power: 1025 - P:278, S:70, A:8, SW:18, C:2, H:25, K:3]
+Action: Moves
+Target: Whitdal
+
+Moves to Reykfjell
+Moves to Whitbury
+Moves to Whitdal
+Arrived at Whitdal
+Economy: Region economy actions: upgrade_castle (Osberg)
+
+Economy: Build Castle Eval: Akrstadir (Strategic: 15.9, Regions: 75.0, Distance: True) | Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Akrfjord (Strategic: 6.9, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Osberg (Recruits: 135, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Stronghold, Total: 75.0), Eastbury (Recruits: 95, RScore: 70.4, DScore: 50.0, Dist: 4, Next: Keep, Total: 60.2), Westham (Recruits: 14, RScore: 10.4, DScore: 100.0, Dist: 2, Next: Keep, Total: 55.2)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Torhavn (Next: Duchy, Score: 11.0), Kingbury (Next: Province, Score: 9.0), Osberg (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 13]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 1285
+Food: 0
+Wood: 433
+Iron: 2
+Stone: 83
+
+Signals:
+frontier_pressure: 1.125
+underpowered_ratio: 0.000
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Saintdon, Northnes, Redstadir, Hvitdon, Whitchester, Akrdon, Vatnwich, Eastworth, Blackbury, Kingthwaite, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Reykley, Woodfjord, Westhaug, Eastholme, Eyley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitchester.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Blackbury (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Torhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Eastholme (reason: not_needed)
+
+Army II [Power: 740 - P:188, S:48, A:8, SW:28, C:1, H:10, K:3]
+Action: Moves
+Target: Akrfjord
+
+Moves to Akrfjord
+Arrived at Akrfjord
+Army IV [Power: 851 - P:104, S:81, A:33, SW:47, C:12, H:13]
+Action: Moves
+Target: Hellanes
+
+Moves to Hellanes
+Arrived at Hellanes
+Army I [Power: 639 - P:157, S:53, A:10, SW:18, C:1, H:4, K:4]
+Action: Moves
+Target: Tormere
+
+Moves to Tormere
+Arrived at Tormere
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 60.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 65.0, Distance: False) | Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Eyley (Next: March, Score: 11.0), Whitchester (Next: County, Score: 7.0), Kingthwaite (Next: County, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 14]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 1712
+Food: 0
+Wood: 739
+Iron: 3
+Stone: 89
+
+Signals:
+frontier_pressure: 0.683
+underpowered_ratio: 0.000
+castle_spacing: 6.833
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Eastthorpe, Saintdon, Westthorpe, Ashton, Stoneberg, Fossthorpe, Eythwaite, Southham, Greenwich, Torford, Vatnley, Oakworth, Kirkworth, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe, Torham, Hellawich
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Greenwich (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Torford (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hafnhavn (reason: not_needed)
+
+Army V [Power: 514 - P:18, S:56, A:26, SW:35, C:13, H:8]
+Action: Moves
+Target: Hvitby
+
+Moves to Hellaley
+Moves to Hvitby
+Arrived at Hvitby
+Recruitment: Army Army V raised 17 peasants at Hvitby
+
+Army III [Power: 441 - P:118, S:32, A:5, SW:10, C:1, H:8, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+@Sprite2D@6026 [Power: 1032 - P:305, S:67, A:10, SW:30, C:9, H:5, K:1]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army I [Power: 291 - P:79, S:19, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Hvitdon
+
+Moves to Hvitdon
+Arrived at Hvitdon
+Army IV [Power: 563 - P:68, S:47, A:22, SW:33, C:7, H:12]
+Action: Moves
+Target: Whitchester
+
+Moves to Whitchester
+Arrived at Whitchester
+Economy: Region economy actions: upgrade_castle (Fossfjell)
+
+Economy: Build Castle Eval: Hellawich (Strategic: 61.2, Regions: 25.0, Distance: False) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Fossfjell (Recruits: 125, RScore: 100.0, DScore: 28.6, Dist: 7, Next: Castle, Total: 64.3), Greenford (Recruits: 120, RScore: 96.0, DScore: 28.6, Dist: 7, Next: Stronghold, Total: 62.3), Hellaley (Recruits: 29, RScore: 23.2, DScore: 100.0, Dist: 2, Next: Keep, Total: 61.6)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Whitchester (Next: County, Score: 11.0), Blackley (Next: Duchy, Score: 10.0), Greenford (Next: County, Score: 9.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 14]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1072
+Food: 0
+Wood: 536
+Iron: 3
+Stone: 58
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.250
+castle_spacing: 5.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Woodchester, Kingdal, Eydon, Osthorpe, Vatnvik, Hafnfjell, Westford, Eychester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eydon.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army @Sprite2D@6848 could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Redham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Akrfjord (reason: not_at_castle)
+
+Recruitment: Army Army IV could not recruit at Fosshavn (reason: not_needed)
+
+@Sprite2D@6848 [Power: 243 - A:17, SW:29, C:4, H:8, K:2]
+Action: Moves
+Target: Hvitholme
+
+Moves to Woodchester
+Moves to Northnes
+Moves to Hvitholme
+Arrived at Hvitholme
+Recruitment: Army @Sprite2D@6848 raised 26 peasants at Hvitholme
+
+Recruitment: Army Army III could not recruit at Akrfjord (reason: not_at_castle)
+
+Army III [Power: 70 - K:7]
+Action: Goes to Castle
+Target: Woodchester
+
+Moves to Blackbury
+Moves to Tormere
+Moves to Woodchester
+Fight at Woodchester
+Lost at Woodchester
+Army IV [Power: 489 - P:26, S:46, A:28, SW:36, C:9, H:7]
+Action: Moves
+Target: Northnes
+
+Moves to Redham
+Moves to Northnes
+Arrived at Northnes
+Recruitment: Army Army IV raised 6 peasants at Northnes
+
+Army II [Power: 800 - P:41, S:63, A:19, SW:47, C:6, H:6, K:23]
+Action: Moves
+Target: Akrdal
+
+Moves to Ashhaug
+Moves to Westford
+Moves to Akrdal
+Army II makes camp
+Army II makes camp
+Out of movement points before reaching Akrdal
+Economy: Region economy actions: upgrade_castle (Eydon)
+
+Economy: Build Castle Eval: Westford (Strategic: 31.7, Regions: 40.0, Distance: False) | Blackbury (Strategic: 87.9, Regions: -40.0, Distance: False) | Eychester (Strategic: 9.1, Regions: 5.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eydon (Recruits: 63, RScore: 100.0, DScore: 100.0, Dist: 4, Next: Stronghold, Total: 100.0)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Northnes (Next: March, Score: 11.0), Redham (Next: Duchy, Score: 8.0), Fosshavn (Next: March, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 14]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 1694
+Food: 0
+Wood: 306
+Iron: 2
+Stone: 62
+
+Signals:
+frontier_pressure: 0.234
+underpowered_ratio: 0.000
+castle_spacing: 9.400
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Hafnhavn, Akrfjord, Hafnmere, Westham, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Akrdal, Hvitoy, Eastbury, Vatnley, Northham, Kirkchester, Sandfjell, Southberg, Whitbury, Hvitdon, Kirkstadir, Hafnthwaite, Reykfjell, Akrstadir, Westton, Ashley, Whitdal
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Ashley (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Westham (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Whitdal (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Westton (reason: not_needed)
+
+Army IV [Power: 1250 - P:66, S:142, A:63, SW:83, C:14, H:23]
+Action: Moves
+Target: Kingbury
+
+Moves to Southfjord
+Moves to Eastthorpe
+Moves to Kingbury
+Arrived at Kingbury
+Recruitment: Army Army IV raised 16 peasants at Kingbury
+
+Army II [Power: 850 - P:240, S:57, A:10, SW:15, C:6, H:11, K:3]
+Action: Moves
+Target: Northdal
+
+Moves to Northdal
+Army II makes camp
+Army II makes camp
+Fight at Northdal
+Lost at Northdal
+Army III [Power: 1025 - P:278, S:70, A:8, SW:18, C:2, H:25, K:3]
+Action: Moves
+Target: Northdal
+
+Moves to Northham
+Moves to Eastbury
+Moves to Kirkchester
+Moves to Hafnfjord
+Moves to Osberg
+Moves to Westmere
+Moves to Redmere
+Moves to Hvitthorpe
+Moves to Eastthorpe
+Moves to Southfjord
+Moves to Westham
+Moves to Northdal
+Out of movement points before reaching Northdal
+Army I [Power: 327 - P:86, S:25, A:4, SW:11, C:1, H:2, K:1]
+Action: Moves
+Target: Northdal
+
+Moves to Whitbury
+Moves to Eastbury
+Moves to Kirkchester
+Moves to Hafnfjord
+Moves to Osberg
+Moves to Westmere
+Moves to Redmere
+Moves to Hvitthorpe
+Moves to Eastthorpe
+Moves to Southfjord
+Moves to Westham
+Moves to Northdal
+Out of movement points before reaching Northdal
+Army V [Power: 287 - P:35, S:27, A:12, SW:16, C:4, H:4]
+Action: Moves
+Target: Westford
+
+Moves to Southberg
+Moves to Westford
+Fight at Westford
+Lost at Westford
+Economy: Region economy actions: upgrade_castle (Eastbury)
+
+Economy: Build Castle Eval: Akrstadir (Strategic: 15.9, Regions: 75.0, Distance: True) | Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Akrfjord (Strategic: 6.9, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eastbury (Recruits: 114, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Keep, Total: 75.0), Westham (Recruits: 14, RScore: 12.3, DScore: 100.0, Dist: 2, Next: Keep, Total: 56.1)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Torhavn (Next: Duchy, Score: 11.0), Osberg (Next: March, Score: 10.0), Vatnfjell (Next: County, Score: 9.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army V makes camp
+-------
+[Turn 14]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 1398
+Food: 0
+Wood: 467
+Iron: 2
+Stone: 89
+
+Signals:
+frontier_pressure: 1.042
+underpowered_ratio: 0.000
+castle_spacing: 24.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Saintdon, Northnes, Redstadir, Tormere, Akrdon, Vatnwich, Eastworth, Kingthwaite, Oakvik, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Akrfjord, Reykley, Woodfjord, Westhaug, Eastholme, Eyley, Hellanes
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eyley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Tormere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Akrfjord (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Hellanes (reason: not_needed)
+
+Army II [Power: 639 - P:88, S:59, A:9, SW:35, C:1, H:13, K:5]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Arrived at Blackbury
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Army I [Power: 508 - P:69, S:64, A:10, SW:21, C:1, H:4, K:4]
+Action: Moves
+Target: Woodchester
+
+Moves to Woodchester
+Arrived at Woodchester
+Army IV [Power: 906 - P:112, S:86, A:34, SW:50, C:13, H:14]
+Action: Moves
+Target: Vatnfell
+
+Moves to Vatnfell
+Arrived at Vatnfell
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 60.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 65.0, Distance: False) | Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Eyley (Next: March, Score: 11.0), Woodchester (Next: County, Score: 10.0), Westhaug (Next: County, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 15]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 1967
+Food: 0
+Wood: 837
+Iron: 2
+Stone: 102
+
+Signals:
+frontier_pressure: 0.698
+underpowered_ratio: 0.000
+castle_spacing: 6.143
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Eastthorpe, Saintdon, Westthorpe, Ashton, Stoneberg, Fossthorpe, Eythwaite, Southham, Greenwich, Torford, Hvitdon, Vatnley, Oakworth, Kirkworth, Whitchester, Sandworth, Southfjord, Blackby, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe, Torham, Hellawich
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Hvitdon (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Whitchester (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hvitby (reason: not_needed)
+
+Army III [Power: 405 - P:67, S:42, A:6, SW:12, C:1, H:11, K:2]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+@Sprite2D@6026 [Power: 965 - P:179, S:99, A:16, SW:40, C:13, H:6, K:2]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army V [Power: 674 - P:43, S:67, A:34, SW:45, C:15, H:9]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hellaley
+Moves to Hafnhavn
+Arrived at Hafnhavn
+Army IV [Power: 565 - P:69, S:47, A:22, SW:33, C:7, H:12]
+Action: Moves
+Target: Oakvik
+
+Moves to Oakvik
+Arrived at Oakvik
+Army I [Power: 297 - P:82, S:19, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Northnes
+
+Moves to Northnes
+Arrived at Northnes
+Economy: Region economy actions: upgrade_castle (Greenford)
+
+Economy: Build Castle Eval: Hellawich (Strategic: 61.2, Regions: 25.0, Distance: False) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False) | Kirkworth (Strategic: 2.5, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Greenford (Recruits: 123, RScore: 100.0, DScore: 28.6, Dist: 7, Next: Stronghold, Total: 64.3), Hellaley (Recruits: 31, RScore: 25.2, DScore: 100.0, Dist: 2, Next: Keep, Total: 62.6)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Blackley (Next: Duchy, Score: 10.0), Whitchester (Next: County, Score: 9.0), Eastthorpe (Next: Province, Score: 9.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 15]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1151
+Food: 0
+Wood: 584
+Iron: 2
+Stone: 63
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.250
+castle_spacing: 7.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Kingdal, Eydon, Osthorpe, Vatnvik, Hafnfjell, Westford, Eychester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army @Sprite2D@6848 could not recruit at Hvitholme (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Westford (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Blackbury (reason: not_at_castle)
+
+Recruitment: Army Army IV could not recruit at Northnes (reason: not_needed)
+
+Army III [Power: 40 - K:4]
+Action: Goes to Castle
+Target: Redham
+
+Moves to Tormere
+Moves to Woodchester
+Moves to Northnes
+Moves to Redham
+Fight at Redham
+Lost at Redham
+Army II [Power: 902 - P:50, S:76, A:20, SW:49, C:7, H:6, K:26]
+Action: Moves
+Target: Akrdal
+
+Moves to Akrdal
+Fight at Akrdal
+Lost at Akrdal
+Army IV [Power: 504 - P:32, S:46, A:29, SW:36, C:9, H:7]
+Action: Moves
+Target: Westhaug
+
+Moves to Woodchester
+Moves to Westhaug
+Fight at Westhaug
+Lost at Westhaug
+@Sprite2D@6848 [Power: 295 - P:26, A:17, SW:29, C:4, H:8, K:2]
+Action: Moves
+Target: Woodchester
+
+Moves to Northnes
+Moves to Woodchester
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+Movement blocked near Woodchester
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Westford (Strategic: 31.7, Regions: 65.0, Distance: False) | Eychester (Strategic: 9.1, Regions: 30.0, Distance: True) | Akrdal (Strategic: 20.7, Regions: -10.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Eydon (Next: County, Score: 10.0), Fosshavn (Next: March, Score: 9.0), Redham (Next: Duchy, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+@Sprite2D@6848 makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 15]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 1954
+Food: 0
+Wood: 356
+Iron: 1
+Stone: 69
+
+Signals:
+frontier_pressure: 0.267
+underpowered_ratio: 0.000
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Akrfjord, Hafnmere, Westham, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Hvitoy, Eastbury, Vatnley, Northham, Kirkchester, Sandfjell, Southberg, Whitbury, Hvitdon, Kirkstadir, Hafnthwaite, Reykfjell, Akrstadir, Westton, Ashley, Whitdal
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Recruitment: Army Army II could not recruit at Westham (reason: not_needed)
+
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Recruitment: Army Army IV could not recruit at Kingbury (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Southberg (reason: not_needed)
+
+Army II [Power: 1131 - P:263, S:92, A:13, SW:22, C:8, H:20, K:7]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army IV [Power: 1282 - P:82, S:142, A:63, SW:83, C:14, H:23]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Eastthorpe
+Moves to Southfjord
+Moves to Hafnhavn
+Army IV makes camp
+Army IV makes camp
+Out of movement points before reaching Hafnhavn
+Army V [Power: 343 - P:38, S:33, A:16, SW:21, C:4, H:4]
+Action: Moves
+Target: Akrdal
+
+Moves to Akrdal
+Fight at Akrdal
+Lost at Akrdal
+Economy: Region economy actions: upgrade_castle (Eastbury)
+
+Economy: Build Castle Eval: Ashoy (Strategic: 13.5, Regions: 60.0, Distance: False) | Akrfjord (Strategic: 6.9, Regions: 60.0, Distance: False) | Akrstadir (Strategic: 15.9, Regions: 50.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Eastbury (Recruits: 116, RScore: 100.0, DScore: 50.0, Dist: 4, Next: Castle, Total: 75.0), Westham (Recruits: 13, RScore: 11.2, DScore: 100.0, Dist: 2, Next: Keep, Total: 55.6)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Osberg (Next: March, Score: 10.0), Vatnfjell (Next: County, Score: 9.0), Kingbury (Next: Province, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 15]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 1505
+Food: 0
+Wood: 500
+Iron: 2
+Stone: 93
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Saintdon, Redstadir, Woodchester, Akrdon, Vatnwich, Eastworth, Blackbury, Kingthwaite, Vatnstadir, Riverholme, Torhavn, Kingfjell, Souththorpe, Redberg, Torfjell, Wooddon, Akrfjord, Reykley, Woodfjord, Westhaug, Eastholme, Eyley, Hellanes, Vatnfell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eyley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Woodchester (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Blackbury (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Redley (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Vatnfell (reason: not_needed)
+
+Army I [Power: 531 - P:74, S:65, A:10, SW:21, C:1, H:4, K:5]
+Action: Moves
+Target: Northnes
+
+Moves to Northnes
+Fight at Northnes
+Lost at Northnes
+Army III [Power: 294 - P:76, S:24, A:4, SW:6, C:1, H:2, K:2]
+Action: Moves
+Target: Redley
+
+Arrived at Redley
+Army II [Power: 544 - P:33, S:60, A:10, SW:36, C:1, H:14, K:5]
+Action: Moves
+Target: Tormere
+
+Moves to Tormere
+Arrived at Tormere
+Army IV [Power: 914 - P:113, S:88, A:34, SW:50, C:13, H:14]
+Action: Moves
+Target: Fossstadir
+
+Moves to Fossstadir
+Arrived at Fossstadir
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackbury (Strategic: 87.9, Regions: 60.0, Distance: False) | Torhavn (Strategic: 54.1, Regions: 65.0, Distance: False) | Eastworth (Strategic: 23.9, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Woodchester (Next: County, Score: 9.0), Eyley (Next: March, Score: 8.0), Westhaug (Next: County, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 16]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 2238
+Food: 0
+Wood: 939
+Iron: 1
+Stone: 117
+
+Signals:
+frontier_pressure: 0.711
+underpowered_ratio: 0.000
+castle_spacing: 6.429
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Blackley, Redholme, Bergvik, Blackley, Saintbury, Riverhaug, Saintvik, Reykthwaite, Eastthorpe, Saintdon, Northnes, Westthorpe, Ashton, Stoneberg, Fossthorpe, Eythwaite, Southham, Greenwich, Torford, Hvitdon, Vatnley, Oakworth, Kirkworth, Whitchester, Sandworth, Southfjord, Blackby, Oakvik, Hellaley, Riverfjell, Greenford, Reykfjord, Bergwich, Eyoy, Fossfjell, Redton, Redley, Northdal, Hvitby, Bergthorpe, Hafnthwaite, Southley, Hvitthorpe, Torham, Hellawich
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Southfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Northnes (reason: not_needed)
+
+Recruitment: Army @Sprite2D@6026 could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Northdal (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Oakvik (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Hellaley (reason: not_needed)
+
+@Sprite2D@6026 [Power: 962 - P:67, S:135, A:22, SW:54, C:19, H:7, K:3]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Arrived at Westham
+Army V [Power: 731 - P:48, S:72, A:36, SW:47, C:17, H:11]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army III [Power: 424 - P:27, S:55, A:9, SW:16, C:1, H:16, K:3]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Westham
+Moves to Hafnhavn
+Fight at Hafnhavn
+Lost at Hafnhavn
+Army IV [Power: 567 - P:70, S:47, A:22, SW:33, C:7, H:12]
+Action: Moves
+Target: Riveroy
+
+Moves to Riveroy
+Arrived at Riveroy
+Army I [Power: 304 - P:84, S:20, A:5, SW:7, C:2, H:1, K:2]
+Action: Moves
+Target: Redstadir
+
+Moves to Redstadir
+Arrived at Redstadir
+Economy: Region economy actions: upgrade_castle (Southfjord)
+
+Economy: Build Castle Eval: Hellawich (Strategic: 61.2, Regions: 25.0, Distance: False) | Riveroy (Strategic: 49.9, Regions: 25.0, Distance: False) | Oakworth (Strategic: 11.0, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Southfjord (Recruits: 158, RScore: 100.0, DScore: 50.0, Dist: 6, Next: Stronghold, Total: 75.0), Hellaley (Recruits: 27, RScore: 17.1, DScore: 100.0, Dist: 3, Next: Keep, Total: 58.5), Westham (Recruits: 1, RScore: 0.6, DScore: 100.0, Dist: 3, Next: Keep, Total: 50.3)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Greenford (Next: County, Score: 11.0), Blackley (Next: Duchy, Score: 10.0), Southfjord (Next: County, Score: 10.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+@Sprite2D@6026 makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 16]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1221
+Food: 0
+Wood: 633
+Iron: 2
+Stone: 69
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.250
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Redham, Hvitholme, Fosshavn, Ashfjord, Northnes, Ashhaug, Torfell, Saintthwaite, Kingdal, Eydon, Osthorpe, Vatnvik, Hafnfjell, Westford, Akrdal, Eychester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Recruitment: Army @Sprite2D@6848 could not recruit at Northnes (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Akrdal (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kingdal (reason: not_at_castle)
+
+Recruitment: Army Army IV could not recruit at Northnes (reason: not_needed)
+
+Army II [Power: 609 - S:1, A:22, SW:53, C:7, H:6, K:27]
+Action: Moves
+Target: Ashhaug
+
+Moves to Westford
+Moves to Ashhaug
+Arrived at Ashhaug
+Recruitment: Army Army II raised 25 peasants at Ashhaug
+
+Recruitment: Army Army III could not recruit at Kingdal (reason: not_at_castle)
+
+Army III [Power: 40 - K:4]
+Action: Goes to Castle
+Target: Redham
+
+Moves to Northnes
+Moves to Redham
+Arrived at Redham
+Army IV [Power: 625 - P:37, S:58, A:37, SW:43, C:11, H:10]
+Action: Moves
+Target: Eydon
+
+Moves to Hvitholme
+Moves to Ashfjord
+Moves to Eydon
+Arrived at Eydon
+Recruitment: Army Army IV raised 3 peasants at Eydon
+
+@Sprite2D@6848 [Power: 440 - P:33, S:1, A:23, SW:43, C:5, H:14, K:4]
+Action: Moves
+Target: Woodchester
+
+Moves to Woodchester
+Fight at Woodchester
+Lost at Woodchester
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Westford (Strategic: 31.7, Regions: 65.0, Distance: False) | Eychester (Strategic: 9.1, Regions: 30.0, Distance: True) | Akrdal (Strategic: 20.7, Regions: -10.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Eval: Eydon (Next: County, Score: 10.0), Fosshavn (Next: March, Score: 9.0), Redham (Next: Duchy, Score: 8.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+@Sprite2D@6848 makes camp
+@Sprite2D@6848 makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 16]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 2203
+Food: 0
+Wood: 406
+Iron: 0
+Stone: 76
+
+Signals:
+frontier_pressure: 0.267
+underpowered_ratio: 0.000
+castle_spacing: 11.250
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Kingbury, Eastthorpe, Redmere, Hvitthorpe, Saintdal, Hafnfjord, Kirkdon, Westford, Westmere, Vatnfjell, Osberg, Weststadir, Saintbury, Torhavn, Hvitfell, Redwich, Akrmere, Ashoy, Hvithavn, Greenford, Hafnhavn, Akrfjord, Hafnmere, Kirkberg, Hafnfjord, Southfjord, Riverchester, Torworth, Hafnbury, Hvitoy, Eastbury, Vatnley, Northham, Kirkchester, Sandfjell, Southberg, Whitbury, Hvitdon, Kirkstadir, Hafnthwaite, Reykfjell, Akrstadir, Westton, Ashley, Whitdal
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Torhavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Kirkchester (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Hafnhavn (reason: not_needed)
+
+Recruitment: Army Army III could not recruit at Kirkchester (reason: not_needed)
+
+Recruitment: Army Army IV could not recruit at Southfjord (reason: not_needed)
+
+Recruitment: Army Army V could not recruit at Vatnley (reason: not_needed)
+
+Army V [Power: 384 - P:1, S:50, A:21, SW:31, C:5, H:5]
+Action: Moves
+Target: Eastbury
+
+Moves to Reykfjell
+Moves to Eastbury
+Arrived at Eastbury
+Recruitment: Army Army V raised 26 peasants at Eastbury
+
+Army II [Power: 1339 - P:220, S:139, A:19, SW:30, C:10, H:33, K:10]
+Action: Moves
+Target: Westham
+
+Moves to Westham
+Fight at Westham
+Lost at Westham
+Army IV [Power: 1320 - P:88, S:145, A:63, SW:86, C:14, H:24]
+Action: Moves
+Target: Westham
+
+Moves to Westham

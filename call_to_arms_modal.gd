@@ -256,6 +256,8 @@ func _on_continue_pressed() -> void:
 	
 	# Hide modal
 	hide_modal()
+	if ui_manager:
+		ui_manager.restore_select_context()
 
 func _apply_call_to_arms() -> void:
 	"""Apply the call to arms - move recruits from neighboring regions to target region"""

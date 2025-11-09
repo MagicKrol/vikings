@@ -1,0 +1,296 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 1.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Saintfjell, Eyley, Hvitholme, Bergfjell, Akrdal, Southberg, Woodbury
+
+Economy: Recruitment candidates: Army I (Saintfjell), Army II (Saintfjell), Army III (Saintfjell)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Saintfjell
+
+Castle Saintfjell - recruits:119, distance:0, level:2, score: 166.6
+Recruitment: Army Army I recruited 37 at Saintfjell (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Saintfjell
+
+Castle Saintfjell - recruits:82, distance:0, level:2, score: 114.8
+Recruitment: Army Army II recruited 37 at Saintfjell (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Saintfjell
+
+Castle Saintfjell - recruits:45, distance:0, level:2, score: 63.0
+Recruitment: Army Army III recruited 37 at Saintfjell (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eastton
+
+Moves to Southberg
+Moves to Eastton
+Fight at Eastton
+Battle started
+Attacker: Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 141 - P:34, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Westmere
+
+Moves to Akrdal
+Moves to Westmere
+Fight at Westmere
+Battle started
+Attacker: Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 140 - P:35, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Ashford
+
+Moves to Akrdal
+Moves to Westmere
+Moves to Ashford
+Fight at Ashford
+Battle started
+Attacker: Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 107 - P:24, S:8, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Ashford (Strategic: 20.0, Regions: 40.0, Distance: True) | Eastton (Strategic: 5.2, Regions: 45.0, Distance: True) | Westmere (Strategic: 2.5, Regions: 35.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Saintfjell (Recruits: 45, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Saintfjell (Next: Duchy, Score: 5.0), Hvitholme (Next: March, Score: 5.0), Eyley (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 65
+Food: 78
+Wood: 15
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Saintfjell, Eyley, Hvitholme, Bergfjell, Akrdal, Southberg, Woodbury, Eastton, Westmere, Ashford
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army II [Power: 144 - P:37, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Westdon
+
+Moves to Ashford
+Moves to Westdon
+Fight at Westdon
+Battle started
+Attacker: Army II [Power: 144 - P:37, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army II [Power: 124 - P:32, S:8, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 141 - P:34, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Blackchester
+
+Moves to Blackchester
+Fight at Blackchester
+Battle started
+Attacker: Army III [Power: 141 - P:34, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 93 - P:23, S:4, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 110 - P:24, S:9, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Saintholme
+
+Moves to Saintholme
+Army I makes camp
+Fight at Saintholme
+Battle started
+Attacker: Army I [Power: 112 - P:25, S:9, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army I [Power: 80 - P:17, S:5, A:3, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Saintfjell)
+
+Economy: Build Castle Eval: Blackchester (Strategic: 28.7, Regions: 85.0, Distance: True) | Ashford (Strategic: 20.0, Regions: 70.0, Distance: True) | Eastton (Strategic: 5.2, Regions: 55.0, Distance: True)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Saintfjell (Recruits: 67, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Saintfjell (Next: Province, Score: 5.0), Hvitholme (Next: March, Score: 5.0), Bergfjell (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Saintfjell to Duchy (score: 6.0)
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 127
+Food: 91
+Wood: 16
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.538
+underpowered_ratio: 0.333
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Saintfjell, Eyley, Hvitholme, Bergfjell, Akrdal, Southberg, Woodbury, Eastton, Westmere, Ashford, Westdon, Blackchester, Saintholme
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army III [Power: 106 - P:25, S:7, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Saintham
+
+Moves to Ashford
+Moves to Saintham
+Fight at Saintham
+Battle started
+Attacker: Army III [Power: 106 - P:25, S:7, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 15 - P:1, S:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 136 - P:35, S:10, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Redfell
+
+Moves to Redfell
+Fight at Redfell
+Battle started
+Attacker: Army II [Power: 136 - P:35, S:10, A:3, SW:2, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army II [Power: 107 - P:29, S:6, A:3, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 89 - P:18, S:6, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Fossstadir
+
+Moves to Ashford
+Moves to Westmere
+Moves to Akrdal
+Moves to Saintfjell
+Moves to Eyley
+Moves to Fossstadir
+Movement blocked near Fossstadir
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackchester (Strategic: 28.7, Regions: 95.0, Distance: True) | Ashford (Strategic: 20.0, Regions: 90.0, Distance: True) | Redfell (Strategic: 37.0, Regions: 60.0, Distance: True)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Saintfjell (Recruits: 90, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Saintfjell (Next: Province, Score: 5.0), Hvitholme (Next: March, Score: 5.0), Bergfjell (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp

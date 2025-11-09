@@ -1,0 +1,118 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.714
+underpowered_ratio: 1.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Kirkmere, Oakberg, Southby, Akroy, Fossstadir, Northholme, Riverfell
+
+Economy: Recruitment candidates: Army I (Kirkmere), Army II (Kirkmere), Army III (Kirkmere)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kirkmere
+
+Recruitment: Army Army I recruited 37 at Kirkmere (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kirkmere
+
+Recruitment: Army Army II recruited 37 at Kirkmere (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50 - P:20, K:1]
+Action: Recruits
+Target: Kirkmere
+
+Recruitment: Army Army III recruited 37 at Kirkmere (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossthorpe
+
+Moves to Fossstadir
+Moves to Fossthorpe
+Fight at Fossthorpe
+Won at Fossthorpe
+Battle started
+Attacker: Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army III [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 32 - P:16]
+
+Recruitment: Army Army I could not recruit at Kirkmere (reason: not_needed)
+
+Recruitment: Army Army II could not recruit at Kirkmere (reason: not_needed)
+
+Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnfell
+
+Moves to Northholme
+Moves to Vatnfell
+Fight at Vatnfell
+Won at Vatnfell
+Battle started
+Attacker: Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 40 - P:20]
+
+Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitthorpe
+
+Moves to Fossstadir
+Moves to Fossthorpe
+Moves to Hvitthorpe
+Fight at Hvitthorpe
+Won at Hvitthorpe
+Battle started
+Attacker: Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 40 - P:20]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitthorpe (Strategic: 44.6, Regions: 45.0, Distance: True) | Fossthorpe (Strategic: 26.1, Regions: 60.0, Distance: True) | Vatnfell (Strategic: 2.5, Regions: 35.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kirkmere (Recruits: 46, RScore: 100.0, DScore: 100.0, Dist: 10, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kirkmere (Next: Duchy, Score: 7.0), Southby (Next: March, Score: 5.0), Oakberg (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army III makes camp

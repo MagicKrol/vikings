@@ -45,6 +45,7 @@ func show_region_actions(region: Region) -> void:
 		return
 	
 	current_region = region
+	ui_manager.remember_region_select(current_region)
 	_create_action_buttons()
 	visible = true
 	
@@ -264,6 +265,7 @@ func _on_promote_region_pressed() -> void:
 func _on_recruit_soldiers_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
+	ui_manager.remember_region_select(current_region)
 	
 	var region_to_recruit = current_region
 	hide_modal()
@@ -324,6 +326,7 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 func _on_call_to_arms_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
+	ui_manager.remember_region_select(current_region)
 	
 	var region_for_call_to_arms = current_region
 	hide_modal()

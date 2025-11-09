@@ -44,6 +44,16 @@ var _info_modal: InfoModal
 var _move_modal: MoveModal
 var _message_modal: MessageModal
 
+enum SelectContextType {
+	NONE,
+	REGION,
+	ARMY
+}
+
+var _select_context_type: int = SelectContextType.NONE
+var _select_context_region_id: int = -1
+var _select_context_army_number: String = ""
+
 func _ready():
 	# Ensure UI is on top but doesn't block input
 	z_index = 1000
@@ -270,3 +280,52 @@ func get_player_status_modal2() -> PlayerStatusModal2:
 func get_turn_modal() -> TurnModal:
 	"""Get the TurnModal instance"""
 	return _turn_modal
+
+func remember_region_select(region: Region) -> void:
+	_select_context_type = SelectContextType.REGION
+	_select_context_region_id = region.get_region_id()
+	_select_context_army_number = ""
+
+func remember_army_select(army: Army, region: Region) -> void:
+	_select_context_type = SelectContextType.ARMY
+	_select_context_region_id = region.get_region_id()
+	_select_context_army_number = army.number
+
+func clear_select_context() -> void:
+	_select_context_type = SelectContextType.NONE
+	_select_context_region_id = -1
+	_select_context_army_number = ""
+
+func restore_select_context() -> void:
+	match _select_context_type:
+		SelectContextType.REGION:
+			_restore_region_select()
+		SelectContextType.ARMY:
+			if not _restore_army_select():
+				_restore_region_select()
+		_:
+			pass
+
+func _restore_region_select() -> void:
+	if _select_context_region_id == -1:
+		return
+	var region = map_generator.get_region_container_by_id(_select_context_region_id) as Region
+	_region_select_modal.show_region_actions(region)
+
+func _restore_army_select() -> bool:
+	if _select_context_region_id == -1 or _select_context_army_number == "":
+		return false
+	var region = map_generator.get_region_container_by_id(_select_context_region_id) as Region
+	var army = _find_army_in_region(region, _select_context_army_number)
+	if army == null:
+		return false
+	_army_select_modal.show_army_actions(army, region)
+	return true
+
+func _find_army_in_region(region: Region, army_number: String) -> Army:
+	for child in region.get_children():
+		if child is Army:
+			var army = child as Army
+			if army.number == army_number:
+				return army
+	return null

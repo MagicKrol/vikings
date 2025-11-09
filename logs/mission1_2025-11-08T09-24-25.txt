@@ -1,0 +1,182 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.429
+underpowered_ratio: 1.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Reykoy, Osholme, Southham, Greenthwaite, Reyknes, Saintfjell, Saintvik
+
+Army Army I [Power: 150]: Recruits
+Target: Reykoy
+
+Recruitment: Army Army I recruited 39 at Reykoy (gold: 34, wood: 6, iron: 0)
+
+Army Army II [Power: 147]: Recruits
+Target: Reykoy
+
+Recruitment: Army Army II recruited 38 at Reykoy (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 147]: Recruits
+Target: Reykoy
+
+Recruitment: Army Army III recruited 38 at Reykoy (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 147]: Moves
+Target: Fossdal
+
+Army Army I [Power: 150]: Moves
+Target: Westfjell
+
+Army Army II [Power: 147]: Moves
+Target: Oakchester
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 66
+Food: 51
+Wood: 25
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.200
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Reykoy, Osholme, Southham, Greenthwaite, Reyknes, Saintfjell, Saintvik, Fossdal, Westfjell, Oakchester
+
+Army Army III [Power: 149]: Moves
+Target: Redwich
+
+Army Army II [Power: 147]: Moves
+Target: Hellafjell
+
+Army Army I [Power: 150]: Moves
+Target: Eybury
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 147
+Food: 51
+Wood: 60
+Iron: 10
+Stone: 13
+
+Signals:
+frontier_pressure: 1.231
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Reykoy, Osholme, Southham, Greenthwaite, Reyknes, Saintfjell, Saintvik, Fossdal, Westfjell, Oakchester, Redwich, Hellafjell, Eybury
+
+Army Army I [Power: 158]: Moves
+Target: Sandton
+
+Army Army III [Power: 149]: Moves
+Target: Oakham
+
+Army Army II [Power: 165]: Moves
+Target: Kirkton
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 240
+Food: 56
+Wood: 100
+Iron: 10
+Stone: 16
+
+Signals:
+frontier_pressure: 1.400
+underpowered_ratio: 0.000
+castle_spacing: 15.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Reykoy, Osholme, Southham, Greenthwaite, Reyknes, Saintfjell, Saintvik, Fossdal, Westfjell, Oakchester, Redwich, Hellafjell, Eybury, Sandton, Kirkton
+
+Army Army I [Power: 172]: Moves
+Target: Ashmere
+
+Army Army III [Power: 151]: Moves
+Target: Oakham
+
+Army Army II [Power: 175]: Moves
+Target: Akrvik
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 349
+Food: 66
+Wood: 144
+Iron: 10
+Stone: 22
+
+Signals:
+frontier_pressure: 1.167
+underpowered_ratio: 0.000
+castle_spacing: 18.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Reykoy, Osholme, Southham, Greenthwaite, Reyknes, Saintfjell, Saintvik, Fossdal, Westfjell, Oakchester, Redwich, Hellafjell, Eybury, Sandton, Kirkton, Ashmere, Oakham, Akrvik
+
+Army Army III [Power: 163]: Moves
+Target: Ashfjord
+
+Army Army I [Power: 174]: Moves
+Target: Vatnworth
+
+Army Army II [Power: 182]: Moves
+Target: Kingdon
+
+Economy: No region economy changes (reason: no_region_actions)
+

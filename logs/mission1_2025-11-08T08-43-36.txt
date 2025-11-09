@@ -1,0 +1,146 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Eychester, Kirkstadir, Hvitbury, Whitdon, Westdon, Osdal, Kirkfjord, Oakchester
+
+Army Army I [Power: 154]: Recruits
+Target: Eychester
+
+Recruitment: Army Army I recruited 41 at Eychester (gold: 34, wood: 6, iron: 0)
+
+Army Army II [Power: 151]: Recruits
+Target: Eychester
+
+Recruitment: Army Army II recruited 40 at Eychester (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 151]: Recruits
+Target: Eychester
+
+Recruitment: Army Army III recruited 40 at Eychester (gold: 33, wood: 6, iron: 0)
+
+Army Army III [Power: 151]: Moves
+Target: Kirkberg
+
+Army Army II [Power: 151]: Moves
+Target: Hafnnes
+
+Army Army I [Power: 154]: Moves
+Target: Eastthorpe
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 175
+Food: 66
+Wood: 30
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.909
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Eychester, Kirkstadir, Hvitbury, Whitdon, Westdon, Osdal, Kirkfjord, Oakchester, Kirkberg, Hafnnes, Eastthorpe
+
+Army Army III [Power: 157]: Moves
+Target: Hvitbury
+
+Army Army II [Power: 160]: Moves
+Target: Blackvik
+
+Army Army I [Power: 158]: Moves
+Target: Saintbury
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 265
+Food: 90
+Wood: 40
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Eychester, Kirkstadir, Hvitbury, Whitdon, Westdon, Osdal, Kirkfjord, Oakchester, Kirkberg, Hafnnes, Eastthorpe, Hvitbury, Blackvik, Saintbury
+
+Army Army III [Power: 161]: Moves
+Target: Greendon
+
+Army Army I [Power: 158]: Moves
+Target: Northwich
+
+Army Army II [Power: 172]: Moves
+Target: Northwich
+
+Economy: No region economy changes (reason: no_region_actions)
+
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 364
+Food: 113
+Wood: 53
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.600
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Eychester, Kirkstadir, Hvitbury, Whitdon, Westdon, Osdal, Kirkfjord, Oakchester, Kirkberg, Hafnnes, Eastthorpe, Hvitbury, Blackvik, Saintbury, Greendon
+
+Army Army III [Power: 176]: Moves
+Target: Northwich
+
+Army Army II [Power: 174]: Moves
+Target: Osberg
+
+Economy: No region economy changes (reason: no_region_actions)
+

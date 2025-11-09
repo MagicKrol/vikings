@@ -493,34 +493,66 @@ func get_castle_level(region_id: int) -> int:
 		_:
 			return 0
 
-func find_nearest_owned_castle_region_id(from_region_id: int, owner_id: int) -> int:
-	"""Find the nearest owned castle region using BFS on region graph"""
-	# BFS to find shortest path to closest castle with level >= 1 owned by owner_id
+func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_origin: bool = false) -> Dictionary:
+	"""Find owned castles scored by (recruits / distance) * (1 + 0.2 * level).
+	Returns {"best_region_id": int, "candidates": Array[Dictionary]}.
+	Set include_origin=true to consider the starting castle (distance clamped to >=1).
+	"""
 	var visited: Dictionary = {}
-	var queue: Array = [[from_region_id, 0]]  # [region_id, distance]
+	var queue: Array = [[from_region_id, 0]]
 	visited[from_region_id] = true
+	var best_castle_id := -1
+	var best_score: float = -1.0
+	var candidates: Array = []
 	
 	while not queue.is_empty():
 		var current = queue.pop_front()
 		var current_id: int = current[0]
 		var distance: int = current[1]
 		
-		# Check if this region has a castle level >= 1 and is owned by owner_id
-		if current_id != from_region_id:  # Don't return starting region
+		var consider_region := include_origin or current_id != from_region_id
+		if consider_region:
 			var region_owner = get_region_owner(current_id)
 			if region_owner == owner_id:
 				var castle_level = get_castle_level(current_id)
-				if castle_level >= 1:  # Found a castle that can reinforce
-					return current_id
+				if castle_level >= 1:
+					var recruit_sources = get_available_recruits_from_region_and_neighbors(current_id, owner_id)
+					var total_recruits := 0
+					for source in recruit_sources:
+						total_recruits += int(source.get("amount", 0))
+					if total_recruits > 0:
+						var distance_for_score := float(max(1, distance))
+						var distance_score := float(total_recruits) / distance_for_score
+						var level_bonus := 1.0 + (0.2 * float(castle_level))
+						var total_score := distance_score * level_bonus
+						var region_node = map_generator.get_region_container_by_id(current_id) as Region
+						var region_name := region_node.get_region_name() if region_node else "Region %d" % current_id
+						var candidate_info := {
+							"region_id": current_id,
+							"region_name": region_name,
+							"distance": distance,
+							"recruits": total_recruits,
+							"castle_level": castle_level,
+							"score": total_score
+						}
+						candidates.append(candidate_info)
+						if total_score > best_score:
+							best_score = total_score
+							best_castle_id = current_id
 		
-		# Add unvisited neighbors to queue
 		var neighbors = get_neighbor_regions(current_id)
 		for neighbor_id in neighbors:
 			if not visited.has(neighbor_id):
 				visited[neighbor_id] = true
 				queue.append([neighbor_id, distance + 1])
 	
-	return -1  # No castle found
+	if candidates.size() > 1:
+		candidates.sort_custom(func(a, b): return float(a.get("score", 0.0)) > float(b.get("score", 0.0)))
+	
+	return {
+		"best_region_id": best_castle_id,
+		"candidates": candidates
+	}
 
 func get_available_recruits_from_region_and_neighbors(region_id: int, player_id: int) -> Array:
 	"""Get available recruits from a region and all owned neighboring regions. Returns array of {region_id: int, amount: int}"""

@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cuk4cfsmlpk23"]
+[gd_scene load_steps=5 format=3 uid="uid://cuk4cfsmlpk23"]
 
 [ext_resource type="Script" path="res://next_player_modal.gd" id="1_nextplayerscript"]
+[ext_resource type="Texture2D" uid="uid://dlo764bowoxd8" path="res://images/MessageModal.png" id="2_ed50s"]
 [ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_headertheme"]
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_standardtheme"]
 
@@ -19,6 +20,12 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nextplayerscript")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 200.0
+texture = ExtResource("2_ed50s")
 
 [node name="ContentContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -43,10 +50,11 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="PlayerLabel" type="RichTextLabel" parent="ContentContainer"]
+[node name="PlayerLabel" type="Label" parent="ContentContainer"]
 layout_mode = 2
 theme = ExtResource("3_standardtheme")
-theme_override_font_sizes/normal_font_size = 36
-bbcode_enabled = true
-text = "[center]Player 1's Turn[/center]"
-fit_content = true
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 36
+text = "Player 1's Turn"
+horizontal_alignment = 1

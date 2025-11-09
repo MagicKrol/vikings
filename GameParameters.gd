@@ -527,36 +527,34 @@ const REGION_PROMOTION_COSTS = {
 const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.OUTPOST: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 1,
-			ResourcesEnum.Type.WOOD: 1,
-			ResourcesEnum.Type.STONE: 1
+			ResourcesEnum.Type.GOLD: 50,
+			ResourcesEnum.Type.WOOD: 40
 		},
 		"build_time": 1  # 2 turns to complete
 	},
 	CastleTypeEnum.Type.KEEP: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 1,
-			ResourcesEnum.Type.WOOD: 1,
-			ResourcesEnum.Type.STONE: 1,
-			ResourcesEnum.Type.IRON: 1
+			ResourcesEnum.Type.GOLD: 75,
+			ResourcesEnum.Type.WOOD: 30,
+			ResourcesEnum.Type.STONE: 30
 		},
 		"build_time": 1  # 3 turns to complete
 	},
 	CastleTypeEnum.Type.CASTLE: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 1,
-			ResourcesEnum.Type.WOOD: 1,
-			ResourcesEnum.Type.STONE: 1,
-			ResourcesEnum.Type.IRON: 1
+			ResourcesEnum.Type.GOLD: 100,
+			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.STONE: 50,
+			ResourcesEnum.Type.IRON: 10
 		},
 		"build_time": 4  # 4 turns to complete
 	},
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 1,
-			ResourcesEnum.Type.WOOD: 1,
-			ResourcesEnum.Type.STONE: 1,
-			ResourcesEnum.Type.IRON: 1
+			ResourcesEnum.Type.GOLD: 150,
+			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.STONE: 70,
+			ResourcesEnum.Type.IRON: 20
 		},
 		"build_time": 1  # 6 turns to complete
 	}
