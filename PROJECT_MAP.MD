@@ -23,6 +23,7 @@ Start Flow
 Main (Node2D) [place_armies.gd]
 ├ Map (Node2D) [map_generator.gd]
 │	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4.png` and sync shape from noisy borders; mountain clusters use hidden noisy lines; ocean polygons hidden by default)
+│	│	└ Borders: `_draw_region_borders()` lays down the seam segments and offsets, then `_ensure_region_outline_line()` rebuilds a closed outline from each polygon so every region keeps a neutral border even when ownership colors refresh.
 │	├ Ocean (Node2D) – metadata-only ocean polygons (hidden visuals)
 │	└ Frame (Node2D)
 ├ Background (Sprite2D)
@@ -263,6 +264,8 @@ editor_start.tscn (Editor Start)
 - Attacker (human/AI): May withdraw during battle; human path uses animated withdrawal rounds then returns to the previous region (ArmyManager.retreat_army_to_previous_region). AI attacker uses power-ratio chance (threshold `AI_WITHDRAW_POWER_THRESHOLD`).
 - Defender (AI): Before battle starts, performs a power-ratio withdrawal chance check. If successful AND the region has no military building (castle/outpost/keep/stronghold) AND there is at least one owned neighboring region, all defending armies retreat to a random owned neighbor. Garrison stays; battle proceeds versus garrison.
 - Defender (human): Withdraw button is disabled when the region has a military building or there are no owned neighboring regions. Current UX retreats defending armies to a random owned neighbor; arrow-based region selection can be added later.
+- `BattleManager.get_attacker_withdrawal_context()` exposes the shared AI withdrawal delegate. `BattleSimulator` and `AnimatedBattleSimulator` consume it each combat round, ensuring AI vs AI, AI vs Human, and Human vs Human battles all honor the same withdrawal odds even when the battle modal is skipped.
+- `BattleManager.await_finalize_complete()` lets GameManager pause turn processing until asynchronous battle finalization (camera focus, withdrawals, conquer delays) finishes, so the camera never jumps to the next action mid-animation.
 
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there. Mouse motion feeds `VisualManager` both move-target hover and neutral land hover via the new `set_map_hover_region()`.

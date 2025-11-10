@@ -29,6 +29,7 @@ class_name BattleManager
 # Battle completion signal
 signal battle_started(attacker: Army, target_region_id: int)
 signal battle_finished(result: String)
+signal battle_finalization_complete
 
 # Conquest tracking
 var pending_conquest_army: Army = null
@@ -47,6 +48,10 @@ var _army_manager: ArmyManager
 var _battle_modal: BattleModal
 var _sound_manager: SoundManager
 var _game_manager
+
+# Track battle finalization queue so callers can await camera/tween completion
+var _finalization_queue: Array = []
+var _finalization_in_progress: bool = false
 
 # Unified battle report storage (works for modal and background)
 var _last_battle_report: BattleSimulator.BattleReport = null
@@ -143,6 +148,7 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 			if _game_manager.is_player_human(d.get_player_id()):
 				defender_is_human = true
 				break
+	var withdrawal_context := get_attacker_withdrawal_context()
 	if _game_manager.debug_disable_battle_modal and attacker_is_ai and not defender_is_human:
 		var atk_comps = _compositions_from_armies([attacker])
 		var def_comps = _compositions_from_armies(defender_armies)
@@ -156,13 +162,13 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 		var terrain_type = target_region.get_region_type()
 		var castle_type = target_region.get_castle_type()
 		var sim = BattleSimulator.new()
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type)
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, withdrawal_context)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
 		_last_battle_report = report
 		var winner = report.winner
-		var result = "victory" if winner == "Attackers" else "defeat"
+		var result = "victory" if winner == "Attackers" else "withdrawal" if winner == "Withdrawal" else "defeat"
 		# Finalize through GameManager and signal completion
 		var result_data = {
 			"result": result,
@@ -175,7 +181,8 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 			"defending_recruits_region": _pending_recruits_region,
 			"defending_recruits_count": _pending_recruits_count
 		}
-		_game_manager.finalize_battle_result(result_data)
+		_queue_battle_finalization(result_data)
+		_clear_pending_conquest_state()
 		# Re-select fighting army for human players after instant battle
 		call_deferred("_reselect_fighting_army_after_battle")
 		call_deferred("_emit_battle_finished", result)
@@ -207,6 +214,10 @@ func set_pending_conquest(army: Army, region: Region) -> void:
 		_pending_recruits_count = 0
 		_pending_recruits_region = null
 		DebugLogger.log("BattleSystem", "[BattleManager] Set pending conquest: Army " + str(army.name) + " vs Region " + str(region.get_region_name()))
+
+func _clear_pending_conquest_state() -> void:
+	pending_conquest_army = null
+	pending_conquest_region = null
 
 func prepare_human_battle(attacker: Army, region: Region) -> void:
 	"""Prepare defender participants for a human-initiated battle while keeping pending conquest logic."""
@@ -250,11 +261,10 @@ func handle_battle_modal_closed() -> void:
 		
 		# Use GameManager's unified finalization
 		if _game_manager:
-			_game_manager.finalize_battle_result(result_data)
+			_queue_battle_finalization(result_data)
 		
 		# Clear pending conquest
-		pending_conquest_army = null
-		pending_conquest_region = null
+		_clear_pending_conquest_state()
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] No pending conquest found")
 	
@@ -526,6 +536,34 @@ func get_pending_garrison() -> ArmyComposition:
 
 func get_last_battle_report() -> BattleSimulator.BattleReport:
 	return _last_battle_report
+	
+func await_finalize_complete() -> void:
+	if not _finalization_in_progress:
+		return
+	await battle_finalization_complete
+
+func _queue_battle_finalization(result_data: Dictionary) -> void:
+	_finalization_queue.append(result_data)
+	if _finalization_in_progress:
+		return
+	_process_finalization_queue()
+
+func _process_finalization_queue() -> void:
+	if _finalization_queue.is_empty():
+		if _finalization_in_progress:
+			_finalization_in_progress = false
+			emit_signal("battle_finalization_complete")
+		return
+	_finalization_in_progress = true
+	var next_data: Dictionary = _finalization_queue.pop_front()
+	call_deferred("_run_battle_finalization_async", next_data)
+
+func _run_battle_finalization_async(result_data: Dictionary) -> void:
+	if _game_manager == null:
+		_process_finalization_queue()
+		return
+	await _game_manager.finalize_battle_result(result_data)
+	_process_finalization_queue()
 
 func _emit_battle_finished(result: String) -> void:
 	emit_signal("battle_finished", result)
@@ -584,6 +622,13 @@ func _reselect_fighting_army_after_battle() -> void:
 	
 	# Clear the stored army reference
 	_fighting_army_for_reselection = null
+
+func get_attacker_withdrawal_context() -> Dictionary:
+	"""Expose attacker withdrawal evaluation context for simulators/UI."""
+	return {
+		"check_callable": Callable(self, "evaluate_ai_attacker_withdrawal"),
+		"recruits_peasants": _pending_recruits_count
+	}
 
 # --- AI withdrawal evaluation (attacker-side only) ---
 func evaluate_ai_attacker_withdrawal(current_atk: Dictionary = {}, current_def: Dictionary = {}, garrison: ArmyComposition = null, recruits_peasants: int = 0) -> bool:

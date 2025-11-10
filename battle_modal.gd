@@ -79,6 +79,7 @@ func _ready():
 	animated_simulator = AnimatedBattleSimulator.new()
 	animated_simulator.round_completed.connect(_on_battle_round_completed)
 	animated_simulator.battle_finished.connect(_on_battle_finished)
+	animated_simulator.ai_withdrawal_started.connect(_on_ai_withdrawal_started)
 	add_child(animated_simulator)
 	
 	# Initially hidden
@@ -477,6 +478,10 @@ func _run_battle_simulation() -> void:
 		var recruits_comp := ArmyComposition.new()
 		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, available_recruits)
 		defending_compositions.append(recruits_comp)
+	var withdrawal_context = bm.get_attacker_withdrawal_context()
+	var withdraw_delegate: Callable = withdrawal_context.get("check_callable", Callable())
+	var withdraw_recruits: int = int(withdrawal_context.get("recruits_peasants", available_recruits))
+	animated_simulator.set_withdrawal_delegate(withdraw_delegate, withdraw_recruits)
 	
 	# Start the animated battle with attacker efficiency
 	var attacker_efficiency = attacking_army.get_efficiency()
@@ -495,24 +500,18 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	# Update display with current round data
 	_update_display()
 	
-	# AI withdraw check (attacker-side only)
+	# Optional notice for defender AI (not yet supported)
 	var gm = get_node("../../GameManager") as GameManager
 	var bm = gm.get_battle_manager()
-	if bm and animated_simulator and not animated_simulator.is_withdrawing:
-		if bm.evaluate_ai_attacker_withdrawal(current_attacker_composition, current_defender_composition, defending_region.get_garrison(), _defender_start_recruits):
-			_set_message("Enemy is withdrawing")
-			animated_simulator.start_withdrawal_round()
-		else:
-			# Optional notice for defender AI (not yet supported)
-			if not _def_ai_withdraw_notice_logged:
-				var any_def_ai := false
-				for d in bm._pending_defenders:
-					if gm.is_player_computer(d.get_player_id()):
-						any_def_ai = true
-						break
-				if any_def_ai:
-					DebugLogger.log("BattleAI", "Defender AI withdrawal is not implemented in the current simulator (attacker-only).")
-					_def_ai_withdraw_notice_logged = true
+	if not _def_ai_withdraw_notice_logged:
+		var any_def_ai := false
+		for d in bm._pending_defenders:
+			if gm.is_player_computer(d.get_player_id()):
+				any_def_ai = true
+				break
+		if any_def_ai:
+			DebugLogger.log("BattleAI", "Defender AI withdrawal is not implemented in the current simulator (attacker-only).")
+			_def_ai_withdraw_notice_logged = true
 	
 	DebugLogger.log("UISystem", "Round " + str(current_round) + " completed - Attackers: " + str(round_data["attacker_size"]) + ", Defenders: " + str(round_data["defender_size"]))
 
@@ -543,6 +542,10 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	_update_display()
 	
 	DebugLogger.log("UISystem", "Battle finished! Winner: " + str(report.winner))
+
+func _on_ai_withdrawal_started() -> void:
+	"""Display notice when AI attacker begins withdrawal."""
+	_set_message("Enemy is withdrawing")
 
 func _on_button_pressed() -> void:
 	"""Handle button press - either Continue or Withdraw based on battle state"""

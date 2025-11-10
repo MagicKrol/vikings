@@ -4,6 +4,7 @@ class_name AnimatedBattleSimulator
 # Signals for battle events
 signal round_completed(round_data: Dictionary)
 signal battle_finished(report: BattleSimulator.BattleReport)
+signal ai_withdrawal_started
 
 # Battle state
 var battle_simulator: BattleSimulator
@@ -12,6 +13,8 @@ var is_battle_running: bool = false
 var is_withdrawing: bool = false
 var withdrawal_rounds_remaining: int = 0
 var mobility_withdrawal_rounds_remaining: int = 0
+var withdrawal_delegate: Callable = Callable()
+var withdrawal_recruits: int = 0
 
 # Current battle data
 var current_attackers: Dictionary
@@ -36,6 +39,11 @@ func _ready():
 	battle_timer.one_shot = true
 	add_child(battle_timer)
 
+func set_withdrawal_delegate(delegate: Callable, recruits_peasants: int) -> void:
+	"""Store withdrawal evaluation delegate for AI attackers."""
+	withdrawal_delegate = delegate
+	withdrawal_recruits = recruits_peasants
+
 func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> void:
 	"""Start an animated battle with round-by-round updates"""
 	if is_battle_running:
@@ -44,6 +52,9 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	
 	is_battle_running = true
 	current_round = 0
+	is_withdrawing = false
+	withdrawal_rounds_remaining = 0
+	mobility_withdrawal_rounds_remaining = 0
 	
 	# Store efficiency values and garrison reference
 	self.attacker_efficiency = attacker_efficiency
@@ -165,6 +176,13 @@ func _process_next_round() -> void:
 	round_completed.emit(round_data)
 	
 	DebugLogger.log("BattleAnimation", "Round " + str(current_round) + " - Attacker hits: " + str(attacker_hits) + ", Defender hits: " + str(defender_hits))
+	
+	# Withdrawal check for AI attackers (delegate provided by BattleManager)
+	if not is_withdrawing and withdrawal_delegate.is_valid():
+		if withdrawal_delegate.call(current_attackers.duplicate(), current_defenders.duplicate(), region_garrison, withdrawal_recruits):
+			ai_withdrawal_started.emit()
+			start_withdrawal_round()
+			return
 	
 	# Schedule next round
 	battle_timer.start()
@@ -425,6 +443,8 @@ func stop_battle() -> void:
 		mobility_withdrawal_rounds_remaining = 0
 		battle_timer.stop()
 		DebugLogger.log("BattleAnimation", "Battle stopped")
+	withdrawal_delegate = Callable()
+	withdrawal_recruits = 0
 
 func is_running() -> bool:
 	"""Check if a battle is currently running"""

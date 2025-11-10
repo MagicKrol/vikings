@@ -1315,13 +1315,15 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
 	var defender_is_human := (defender_owner_id != -1 and is_player_human(defender_owner_id))
 	if debug_disable_battle_modal and is_player_computer(army.get_player_id()) and not defender_is_human:
+		await _battle_manager.await_finalize_complete()
 		var report = _battle_manager.get_last_battle_report()
-		var res = "victory" if report and report.winner == "Attackers" else "defeat"
+		var res := _derive_battle_result_from_report(report)
 		return res
 
 	# Otherwise wait for the modal-driven signal
 	var result: String = await _battle_manager.battle_finished
 	DebugLogger.log("TurnProcessing", "Battle completed with result: " + result)
+	await _battle_manager.await_finalize_complete()
 	
 	# For AI battles (modal path), finalize immediately using last battle report after signal
 	if is_player_computer(army.get_player_id()) and not debug_disable_battle_modal:
@@ -1339,6 +1341,17 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 		finalize_battle_result(result_data)
 	
 	return result
+
+func _derive_battle_result_from_report(report: BattleSimulator.BattleReport) -> String:
+	if report == null:
+		return "defeat"
+	match report.winner:
+		"Attackers":
+			return "victory"
+		"Withdrawal":
+			return "withdrawal"
+		_:
+			return "defeat"
 
 func _on_battle_started(attacker: Army, target_region_id: int) -> void:
 	_active_battles += 1
@@ -1367,11 +1380,26 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var defending_garrison = result_data.get("defending_garrison")
 	var defending_recruits_region: Region = result_data.get("defending_recruits_region")
 	var defending_recruits_count: int = result_data.get("defending_recruits_count", 0)
+	var normalized_result := result
+	if battle_report != null and battle_report.winner != null:
+		match battle_report.winner:
+			"Attackers":
+				if result != "victory":
+					DebugLogger.log("TurnProcessing", "Result mismatch (reported " + result + ", report Attackers). Normalizing to victory.")
+				normalized_result = "victory"
+			"Withdrawal":
+				if result != "withdrawal":
+					DebugLogger.log("TurnProcessing", "Result mismatch (reported " + result + ", report Withdrawal). Normalizing to withdrawal.")
+				normalized_result = "withdrawal"
+			_:
+				if result != "defeat":
+					DebugLogger.log("TurnProcessing", "Result mismatch (reported " + result + ", report " + battle_report.winner + "). Normalizing to defeat.")
+				normalized_result = "defeat"
 	
 	var army_name = "unknown army"
 	if army != null:
 		army_name = army.name
-	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + result + " for " + army_name)
+	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + normalized_result + " for " + army_name)
 	var should_queue_battle_log := army != null and is_player_computer(army.get_player_id()) and battle_report != null
 	var battle_log_lines: Array[String] = []
 	var defender_entries: Array = []
@@ -1455,14 +1483,14 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	if battle_report and _battle_manager:
 		_battle_manager._apply_battle_losses()
 		if should_queue_battle_log:
-			var post_lines := _build_battle_post_log_lines(army, defender_entries, result)
+			var post_lines := _build_battle_post_log_lines(army, defender_entries, normalized_result)
 			var combined := battle_log_lines.duplicate()
 			combined.append_array(post_lines)
 			combined.append("")
 			_enqueue_ai_battle_log(army, combined)
 	
 	# Handle battle outcome
-	if result == "victory":
+	if normalized_result == "victory":
 		# Attackers won - handle conquest
 		if army and is_instance_valid(army) and target_region_id != -1:
 			var player_id = army.get_player_id()
@@ -1480,7 +1508,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			# Reduce efficiency for conquest
 			army.reduce_efficiency(5)
 			DebugLogger.log("TurnProcessing", "Reduced " + army.name + " efficiency to " + str(army.get_efficiency()) + "% after conquest")
-	elif result == "withdrawal":
+	elif normalized_result == "withdrawal":
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
 			var is_ai_withdraw := is_player_computer(army.get_player_id())

@@ -228,11 +228,15 @@ func get_army_composition_string() -> String:
 func animate_move_to(target_pos: Vector2, duration: float, use_global: bool = false) -> Tween:
 	"""Animate the army icon moving smoothly to target_pos over duration seconds.
 	If use_global is true, animates global_position instead of local position."""
+	DebugLogger.log("Animation", "Animating army %s to %s (duration=%.2f, global=%s)" % [name, str(target_pos), duration, str(use_global)])
 	var tween := create_tween()
 	if use_global:
 		tween.tween_property(self, "global_position", target_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	else:
 		tween.tween_property(self, "position", target_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.finished.connect(func():
+		DebugLogger.log("Animation", "Animation finished for army %s" % name, 1)
+	)
 	return tween
 
 func _set_warrior_texture(player_number: int) -> void:

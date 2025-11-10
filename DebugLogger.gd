@@ -26,11 +26,11 @@ static var _instance: DebugLogger = null
 var debug_categories: Dictionary = {
 	# AI Systems
 	"AIMovement": false,           # Army movement and pathfinding
-	"AIPathfinding": true,        # Detailed pathfinding calculations
+	"AIPathfinding": false,        # Detailed pathfinding calculations
 	"AIScoring": false,            # Target scoring and evaluation
 	"AIPlanning": false,           # Strategic planning decisions
 	"AITurnManager": false,        # High-level AI turn processing
-	"AIEconomy": true,            # AI economy decisions and raise army
+	"AIEconomy": false,            # AI economy decisions and raise army
 	"AIRecruitment": false,        # AI recruitment and budget allocation
 	
 	# Resource Systems
@@ -38,9 +38,9 @@ var debug_categories: Dictionary = {
 	"ResourceCalculation": false,  # Detailed resource calculations
 	
 	# Battle Systems
-	"BattleAI": true, 
+	"BattleAI": false, 
 	"BattleSystem": true,         # Combat and battle resolution
-	"BattleCalculation": true,    # Detailed battle calculations
+	"BattleCalculation": false,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
@@ -57,14 +57,16 @@ var debug_categories: Dictionary = {
 	"ArmyComposition": false,      # Army composition and units
 	
 	# General Systems
-	"TurnProcessing": false,       # Turn advancement and processing
+	"TurnProcessing": true,       # Turn advancement and processing
 	"PlayerManagement": false,     # Player state and management
 	"UISystem": false,             # UI interactions and modals
 	"InputSystem": false,          # Input handling and processing
 	"GameInit": false,             # Game initialization and setup
 	"SaveLoad": false,             # Save and load operations
 	"Testing": false,                # Test framework output
-	"UIManager": true
+	"UIManager": false,
+	"AICamera": true,             # AI camera focus / delays
+	"Animation": true             # Generic node/tween animations
 }
 
 # Color coding for different log levels
