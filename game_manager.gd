@@ -63,7 +63,7 @@ var _battle_manager: BattleManager
 var _visual_manager: VisualManager
 var _ui_manager: UIManager
 var _ai_camera_director: AICameraDirector
-var ai_step_requires_shift: bool = false
+var ai_step_requires_shift: bool = true
 
 # AI system references
 var _ai_region_scorer: RegionScorer
@@ -1512,16 +1512,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		# Army withdrew - handle retreat and efficiency reduction
 		if army and is_instance_valid(army) and _battle_manager:
 			var is_ai_withdraw := is_player_computer(army.get_player_id())
-			var focused_before_retreat := false
-			if is_ai_withdraw and _ai_camera_director and _army_manager:
-				var retreat_region := _army_manager.get_previous_region_for_army(army)
-				if retreat_region != null:
-					await _ai_camera_director.await_focus_on_region(retreat_region)
-					focused_before_retreat = true
 			await _battle_manager._handle_army_withdrawal(army)
 			if is_ai_withdraw and _ai_camera_director:
-				if not focused_before_retreat:
-					await _ai_camera_director.await_focus_on_army(army)
+				await _ai_camera_director.await_focus_on_army(army)
 				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 		# No post-battle healing here; healing only occurs during make_camp()
 	else:

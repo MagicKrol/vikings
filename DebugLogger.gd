@@ -39,8 +39,8 @@ var debug_categories: Dictionary = {
 	
 	# Battle Systems
 	"BattleAI": false, 
-	"BattleSystem": true,         # Combat and battle resolution
-	"BattleCalculation": false,    # Detailed battle calculations
+	"BattleSystem": false,         # Combat and battle resolution
+	"BattleCalculation": true,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
@@ -57,7 +57,7 @@ var debug_categories: Dictionary = {
 	"ArmyComposition": false,      # Army composition and units
 	
 	# General Systems
-	"TurnProcessing": true,       # Turn advancement and processing
+	"TurnProcessing": false,       # Turn advancement and processing
 	"PlayerManagement": false,     # Player state and management
 	"UISystem": false,             # UI interactions and modals
 	"InputSystem": false,          # Input handling and processing
@@ -65,8 +65,8 @@ var debug_categories: Dictionary = {
 	"SaveLoad": false,             # Save and load operations
 	"Testing": false,                # Test framework output
 	"UIManager": false,
-	"AICamera": true,             # AI camera focus / delays
-	"Animation": true             # Generic node/tween animations
+	"AICamera": false,             # AI camera focus / delays
+	"Animation": false             # Generic node/tween animations
 }
 
 # Color coding for different log levels
@@ -103,6 +103,9 @@ static func log(category: String, message: String, detail_level: int = 0) -> voi
 	var formatted_message = "[%s] %s%s" % [category, indent, message]
 	
 	print(formatted_message)
+
+static func is_category_enabled(category: String) -> bool:
+	return _get_instance().debug_categories.get(category, false)
 
 static func log_calculation(category: String, label: String, value, extra: String = "") -> void:
 	"""

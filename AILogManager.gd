@@ -46,9 +46,9 @@ func log_turn_intro(turn_number: int, player_label: String, resources: Dictionar
 	lines.append("")
 	_append_lines(lines)
 
-func log_army_action(army_name: String, power: int, action: String, target_region: String, composition_suffix: String = "") -> void:
+func log_army_action(army_name: String, power: int, efficiency: int, action: String, target_region: String, composition_suffix: String = "") -> void:
 	var lines: Array[String] = []
-	var label = "%s [Power: %d" % [army_name, power]
+	var label = "%s [Power: %d, E: %d" % [army_name, power, efficiency]
 	if composition_suffix != "":
 		label += " - %s" % composition_suffix
 	label += "]"

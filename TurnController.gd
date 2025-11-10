@@ -156,7 +156,12 @@ func _process_turn(player_id: int) -> void:
 				var assigned_budget := army.get_assigned_budget()
 				if assigned_budget == null:
 					_log_recruitment_status_once(army, region_id, "no_budget_assigned")
-					army.clear_recruitment_request()
+					var reinforce_move := _build_reinforce_move_candidate(army, region_id)
+					if reinforce_move.is_empty():
+						_log_recruitment_skip(army, region_id, "no_castle_available")
+						army.clear_recruitment_request()
+					else:
+						candidates.append(reinforce_move)
 					continue
 				if on_castle:
 					var allow_recruit := army.get_movement_points() >= 1
@@ -179,28 +184,12 @@ func _process_turn(player_id: int) -> void:
 						_log_recruitment_skip(army, region_id, "no_movement_points")
 				else:
 					_log_recruitment_skip(army, region_id, "not_at_castle")
-					# Not on castle → override target: go to best owned castle
-					var castle_pick := region_manager.find_best_recruitment_castle(region_id, army.get_player_id())
-					var castle_id := int(castle_pick.get("best_region_id", -1))
-					if castle_id != -1:
-						var castle_log := _build_castle_log_lines(castle_pick.get("candidates", []))
-						# Build a "go to castle" candidate
-						var pf := pathfinder.find_path_to_target(region_id, castle_id, army.get_player_id())
-						if pf["success"]:
-							candidates.append({
-								"army": army,
-								"target_id": castle_id,
-								"path": pf["path"],
-								"mp_cost": pf["cost"],
-								"final_score": INF,
-								"goal": "reinforce",
-								"current_region_id": region_id,
-								"can_reach_now": int(pf["cost"]) <= army.get_movement_points(),
-								"castle_log": castle_log
-							})
-							continue  # Skip normal frontier evaluation
-					else:
+					var reinforce_move2 := _build_reinforce_move_candidate(army, region_id)
+					if reinforce_move2.is_empty():
 						_log_recruitment_skip(army, region_id, "no_castle_available")
+					else:
+						candidates.append(reinforce_move2)
+						continue  # Skip normal frontier evaluation
 			else:
 				if needs_recruitment:
 					_log_recruitment_status_once(army, region_id, "no_budget_assigned")
@@ -519,6 +508,26 @@ func _find_best_owned_region_for_peasants(army: Army) -> int:
 
 	return candidates[0]["region_id"]
 
+func _build_reinforce_move_candidate(army: Army, current_region_id: int, include_origin: bool = false) -> Dictionary:
+	var castle_pick := region_manager.find_best_recruitment_castle(current_region_id, army.get_player_id(), include_origin)
+	var castle_id := int(castle_pick.get("best_region_id", -1))
+	if castle_id == -1:
+		return {}
+	var pf := pathfinder.find_path_to_target(current_region_id, castle_id, army.get_player_id())
+	if not pf["success"]:
+		return {}
+	return {
+		"army": army,
+		"target_id": castle_id,
+		"path": pf["path"],
+		"mp_cost": pf["cost"],
+		"final_score": INF,
+		"goal": "reinforce",
+		"current_region_id": current_region_id,
+		"can_reach_now": int(pf["cost"]) <= army.get_movement_points(),
+		"castle_log": _build_castle_log_lines(castle_pick.get("candidates", []))
+	}
+
 func _build_castle_log_lines(candidates: Array) -> Array[String]:
 	if candidates.is_empty():
 		return []
@@ -718,7 +727,8 @@ func _log_army_summary(army: Army, action: String, target_region: String, compos
 		return
 	var comp = composition_override if composition_override != "" else _get_army_composition_suffix(army)
 	var power_value = power_override if power_override >= 0 else army.get_army_power()
-	game_manager.get_ai_log_manager().log_army_action(army.name, power_value, action, target_region, comp)
+	var eff_value = army.get_efficiency()
+	game_manager.get_ai_log_manager().log_army_action(army.name, power_value, eff_value, action, target_region, comp)
 
 func _log_army_detail_line(text: String) -> void:
 	if not _log_active_turn or text == "":

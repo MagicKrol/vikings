@@ -28,6 +28,7 @@ var defender_efficiency: int = 100
 var region_garrison: ArmyComposition = null
 var terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
+var current_garrison_composition: Dictionary = {}
 
 func _ready():
 	battle_simulator = BattleSimulator.new()
@@ -71,6 +72,7 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	if region_garrison != null and not region_garrison.is_empty():
 		all_defenders.append(region_garrison)
 	current_defenders = battle_simulator._merge_compositions(all_defenders)
+	current_garrison_composition = battle_simulator._create_garrison_composition(region_garrison)
 	
 	# Store original compositions for loss calculation
 	original_attackers = battle_simulator._copy_composition_dict(current_attackers)
@@ -109,6 +111,8 @@ func _process_next_round() -> void:
 		_process_withdrawal_round(rng)
 		return
 	
+	var defender_snapshot = current_defenders.duplicate()
+	
 	# Attack phases - unit-by-unit with trait-based targeting
 	var attacker_kills = battle_simulator._process_unit_attacks(current_attackers, current_defenders, rng, attacker_efficiency, terrain_type, castle_type)
 	
@@ -116,9 +120,8 @@ func _process_next_round() -> void:
 	var defender_kills = {}
 	
 	# Process garrison attacks at 100% efficiency if garrison exists
-	if region_garrison != null and not region_garrison.is_empty():
-		var garrison_dict = battle_simulator._merge_compositions([region_garrison])
-		var garrison_kills = battle_simulator._process_unit_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, castle_type)
+	if not current_garrison_composition.is_empty():
+		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type)
 		battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 	
 	# Process defending army attacks at their efficiency if any defending armies exist
@@ -150,6 +153,8 @@ func _process_next_round() -> void:
 			current_attackers.erase(unit_type)
 		if actual_kills > 0:
 			attacker_casualties[unit_type] = actual_kills
+	
+	_deduct_garrison_losses_from_snapshot(attacker_kills, defender_snapshot)
 	
 	# Calculate total hits for display (sum of all kills)
 	var attacker_hits = 0
@@ -223,25 +228,37 @@ func _finish_battle() -> void:
 
 func _get_armies_from_defenders() -> Dictionary:
 	"""Get the army composition portion of defenders (excluding garrison)"""
-	# If there's no garrison, all defenders are armies
-	if region_garrison == null or region_garrison.is_empty():
-		return current_defenders
-	
-	# If there is a garrison, we need to subtract garrison composition from current defenders
-	# This is an approximation since we merged compositions at start
-	var garrison_dict = battle_simulator._merge_compositions([region_garrison])
-	var armies_only = {}
-	
-	# For each unit type in current defenders, subtract garrison amounts
+	if current_garrison_composition.is_empty():
+		return current_defenders.duplicate()
+	var armies_only := {}
 	for unit_type in current_defenders:
-		var total_count = current_defenders[unit_type]
-		var garrison_count = garrison_dict.get(unit_type, 0)
-		var army_count = max(0, total_count - garrison_count)
-		
+		var total_count = int(current_defenders[unit_type])
+		var garrison_count = int(current_garrison_composition.get(unit_type, 0))
+		var army_count = total_count - garrison_count
 		if army_count > 0:
 			armies_only[unit_type] = army_count
-	
 	return armies_only
+
+func _deduct_garrison_losses_from_snapshot(attacker_kills: Dictionary, defender_snapshot: Dictionary) -> void:
+	if current_garrison_composition.is_empty():
+		return
+	for unit_type in attacker_kills:
+		var kills = int(attacker_kills[unit_type])
+		if kills <= 0:
+			continue
+		var garrison_before = int(current_garrison_composition.get(unit_type, 0))
+		if garrison_before <= 0:
+			continue
+		var total_before = int(defender_snapshot.get(unit_type, 0))
+		if total_before <= 0:
+			continue
+		var garrison_loss = int(round(float(kills) * float(garrison_before) / float(total_before)))
+		garrison_loss = clampi(garrison_loss, 0, garrison_before)
+		var remaining = garrison_before - garrison_loss
+		if remaining > 0:
+			current_garrison_composition[unit_type] = remaining
+		else:
+			current_garrison_composition.erase(unit_type)
 
 func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100) -> Dictionary:
 	"""Process attacks from only mobility trait units during mobility withdrawal rounds"""
@@ -459,6 +476,7 @@ func start_withdrawal_round() -> void:
 	withdrawal_rounds_remaining = GameParameters.WITHDRAWAL_FREE_HIT_ROUNDS
 	mobility_withdrawal_rounds_remaining = GameParameters.MOBILITY_EXTRA_WITHDRAWAL_ROUNDS
 	DebugLogger.log("BattleAnimation", "Starting withdrawal with " + str(withdrawal_rounds_remaining) + " free hit rounds and " + str(mobility_withdrawal_rounds_remaining) + " mobility rounds...")
+	battle_timer.start()
 
 func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	"""Process a withdrawal round where only defenders attack"""
@@ -475,9 +493,8 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	
 	if is_mobility_round:
 		# Only units with mobility trait can attack during these extra rounds
-		if region_garrison != null and not region_garrison.is_empty():
-			var garrison_dict = battle_simulator._merge_compositions([region_garrison])
-			var mobility_garrison_kills = _process_mobility_attacks(garrison_dict, current_attackers, rng, 100)
+		if not current_garrison_composition.is_empty():
+			var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100)
 			battle_simulator._merge_kill_results(defender_kills, mobility_garrison_kills)
 		
 		var armies_composition = _get_armies_from_defenders()
@@ -486,9 +503,8 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 			battle_simulator._merge_kill_results(defender_kills, mobility_army_kills)
 	else:
 		# Standard withdrawal rounds - all defender units can attack
-		if region_garrison != null and not region_garrison.is_empty():
-			var garrison_dict = battle_simulator._merge_compositions([region_garrison])
-			var garrison_kills = battle_simulator._process_unit_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, castle_type)
+		if not current_garrison_composition.is_empty():
+			var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type)
 			battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 		
 		var armies_composition = _get_armies_from_defenders()

@@ -135,6 +135,7 @@ editor_start.tscn (Editor Start)
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
 - Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
+- Reinforcement routing: Armies that need recruitment but have no assigned budget now queue a `goal: reinforce` move toward the best owned castle before chasing frontier targets, so low-power stacks travel home for resupply.
 - Resting Logic (AI):
   - Start-of-evaluation: if an army's efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
   - Pre-attack: if an army can reach a target now and a battle is expected, and efficiency < 90%, it calls `make_camp()` up to 2 times (bounded by MPs) before moving.
@@ -145,6 +146,7 @@ editor_start.tscn (Editor Start)
   - Moves to best reachable owned region with highest available recruits to hire peasants (free cost)
   - Uses pathfinding to find optimal region within current movement points
 - AI Logging: During AI turns `TurnController` calls `AILogManager` to write the requested log format — each turn header includes resources, signals, decision, and owned regions, while every army action logs as `Recruits`, `Goes to Castle`, or `Moves` with its target plus recruitment/economy success or failure reasons.
+- AI log entries now show efficiency inline (`Power: 67, E: 95 - P:...`) so it’s easy to see when armies act below full effectiveness.
 
 ### BattleManager.gd (BattleManager)
 - Purpose: Battle UI coordination and post-battle processing via signals.
@@ -253,6 +255,8 @@ editor_start.tscn (Editor Start)
 
 ## Battle Simulation
 - BattleSimulator.gd: Statistical resolution with efficiency and proportional loss distribution.
+- BattleSimulator.gd: When the `BattleCalculation` debug tag is enabled, each auto-resolved round logs hits and losses per unit type with running totals for both sides.
+- BattleSimulator.gd: Finalizes each battle with attacker/defender effectiveness stats (hit % per unit type) whenever `BattleCalculation` logging is enabled.
 - AnimatedBattleSimulator.gd: Round-based animated presentation and reporting for the BattleModal.
 - BattleModal.gd: Action button switches Withdraw/Continue automatically; message label surfaces withdraw/start/end notices.
 - BattleManager.gd: Re-selects victorious human armies automatically, but skips re-selection after withdrawal outcomes.
@@ -266,6 +270,7 @@ editor_start.tscn (Editor Start)
 - Defender (human): Withdraw button is disabled when the region has a military building or there are no owned neighboring regions. Current UX retreats defending armies to a random owned neighbor; arrow-based region selection can be added later.
 - `BattleManager.get_attacker_withdrawal_context()` exposes the shared AI withdrawal delegate. `BattleSimulator` and `AnimatedBattleSimulator` consume it each combat round, ensuring AI vs AI, AI vs Human, and Human vs Human battles all honor the same withdrawal odds even when the battle modal is skipped.
 - `BattleManager.await_finalize_complete()` lets GameManager pause turn processing until asynchronous battle finalization (camera focus, withdrawals, conquer delays) finishes, so the camera never jumps to the next action mid-animation.
+- Withdrawal camera pacing: `GameManager.finalize_battle_result()` now waits for `BattleManager._handle_army_withdrawal()`/`ArmyManager.retreat_army_to_previous_region()` to finish, then the AI camera tracks the retreating army itself instead of the destination region, preventing the extra camera hop reported in logs.
 
 ## Input & UI
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there. Mouse motion feeds `VisualManager` both move-target hover and neutral land hover via the new `set_map_hover_region()`.

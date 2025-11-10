@@ -162,7 +162,9 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 		var terrain_type = target_region.get_region_type()
 		var castle_type = target_region.get_castle_type()
 		var sim = BattleSimulator.new()
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, withdrawal_context)
+		var attacker_label = "Attacker " + str(attacker.name)
+		var defender_label = "Defender " + str(target_region.get_region_name())
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, withdrawal_context, attacker_label, defender_label)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
@@ -376,7 +378,7 @@ func _handle_army_withdrawal(withdrawing_army: Army) -> void:
 	
 	# Move army back to previous region using ArmyManager
 	if _army_manager != null:
-		_army_manager.retreat_army_to_previous_region(withdrawing_army)
+		await _army_manager.retreat_army_to_previous_region(withdrawing_army)
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] Warning: ArmyManager not available for army retreat")
 
