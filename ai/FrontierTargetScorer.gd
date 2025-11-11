@@ -25,6 +25,12 @@ func _init(region_mgr: RegionManager, map_gen: MapGenerator):
 	map_generator = map_gen
 	DebugLogger.log("AIScoring", "Initialized with region and map manager references")
 	army_target_scorer = ArmyTargetScorer.new(region_mgr, map_gen)
+	if map_generator != null:
+		var parent := map_generator.get_parent()
+		if parent != null:
+			var pm := parent.get_node_or_null("PlayerManager") as PlayerManagerNode
+			var gm := parent.get_node_or_null("GameManager") as GameManager
+			army_target_scorer.set_runtime_references(pm, gm)
 
 func get_frontier_targets(player_id: int) -> Array[int]:
 	"""Get all enemy/neutral regions adjacent to player's owned regions"""
@@ -99,4 +105,3 @@ func score_frontier_targets(player_id: int) -> Array:
 	scored_targets.sort_custom(func(a, b): return a.base_score > b.base_score)
 	
 	return scored_targets
-

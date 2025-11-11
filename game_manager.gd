@@ -63,7 +63,7 @@ var _battle_manager: BattleManager
 var _visual_manager: VisualManager
 var _ui_manager: UIManager
 var _ai_camera_director: AICameraDirector
-var ai_step_requires_shift: bool = true
+var ai_step_requires_shift: bool = false
 
 # AI system references
 var _ai_region_scorer: RegionScorer

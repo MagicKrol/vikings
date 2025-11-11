@@ -50,16 +50,46 @@ var map_generator: MapGenerator
 var player_manager: PlayerManagerNode = null
 var game_manager: GameManager = null
 
-func _init(region_mgr: RegionManager, map_gen: MapGenerator):
+func _init(region_mgr: RegionManager, map_gen: MapGenerator, player_mgr: PlayerManagerNode = null, game_mgr: GameManager = null):
 	region_manager = region_mgr
 	map_generator = map_gen
-	# Try to find PlayerManager in the scene via MapGenerator's parent
-	if map_generator != null:
-		var main_node = map_generator.get_parent()
-		if main_node != null:
-			player_manager = main_node.get_node_or_null("PlayerManager") as PlayerManagerNode
-			game_manager = main_node.get_node_or_null("GameManager") as GameManager
+	player_manager = player_mgr
+	game_manager = game_mgr
+	_ensure_runtime_references()
 	DebugLogger.log("AIScoring", "Initialized with region and map manager references")
+
+func set_runtime_references(player_mgr: PlayerManagerNode, game_mgr: GameManager) -> void:
+	if player_mgr != null:
+		player_manager = player_mgr
+	if game_mgr != null:
+		game_manager = game_mgr
+	_ensure_runtime_references()
+
+func _ensure_runtime_references() -> void:
+	if map_generator == null:
+		return
+	var have_player := player_manager != null
+	var have_game := game_manager != null
+	if have_player and have_game:
+		return
+	var current: Node = map_generator
+	while current != null:
+		var parent := current.get_parent()
+		if parent == null:
+			break
+		if not have_player:
+			var pm_node = parent.get_node_or_null("PlayerManager")
+			if pm_node != null and pm_node is PlayerManagerNode:
+				player_manager = pm_node
+				have_player = true
+		if not have_game:
+			var gm_node = parent.get_node_or_null("GameManager")
+			if gm_node != null and gm_node is GameManager:
+				game_manager = gm_node
+				have_game = true
+		if have_player and have_game:
+			break
+		current = parent
 
 func score_target_regions(target_region_ids: Array[int], player_id: int) -> Array:
 	"""Score an array of target regions for army movement decisions"""
@@ -145,6 +175,7 @@ func _get_resource_weight(rt: ResourcesEnum.Type) -> float:
 
 func _get_player_income_by_resource(player_id: int) -> Dictionary:
 	"""Get player's per-turn resource income from owned regions"""
+	_ensure_runtime_references()
 	var income = {
 		ResourcesEnum.Type.FOOD: 0.0,
 		ResourcesEnum.Type.WOOD: 0.0,
@@ -166,6 +197,7 @@ func _get_player_income_by_resource(player_id: int) -> Dictionary:
 
 func _get_player_stockpile_by_resource(player_id: int) -> Dictionary:
 	"""Get player's current resource stockpile"""
+	_ensure_runtime_references()
 	var stockpile = {
 		ResourcesEnum.Type.FOOD: 0.0,
 		ResourcesEnum.Type.WOOD: 0.0,
@@ -184,6 +216,7 @@ func _get_player_stockpile_by_resource(player_id: int) -> Dictionary:
 
 func _get_player_net_food_change(player_id: int) -> float:
 	"""Get player's net food change (income - upkeep)"""
+	_ensure_runtime_references()
 	var income = _get_player_income_by_resource(player_id)
 	var food_income = income.get(ResourcesEnum.Type.FOOD, 0.0)
 	
@@ -239,6 +272,7 @@ func _calculate_population_score(region: Region) -> float:
 
 func score_region_base(region_id: int) -> float:
 	"""Calculate base region value (population/resources/level/ownership)"""
+	_ensure_runtime_references()
 	var region_container = map_generator.get_region_container_by_id(region_id)
 	if not region_container:
 		return 0.0
@@ -303,6 +337,7 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 	}
 
 func _calculate_enemy_army_adjustment(army: Army, region_id: int) -> Dictionary:
+	_ensure_runtime_references()
 	if army == null or not is_instance_valid(army):
 		return {"delta": 0.0, "nullify": false}
 	if game_manager == null or player_manager == null:

@@ -14,6 +14,9 @@ func await_focus_on_army(army: Army) -> void:
 	DebugLogger.log("AICamera", "Focusing camera on army %s at %s" % [army.name, str(army.global_position)])
 	_camera.center_on_army(army)
 	await _camera.await_target_reached()
+	if army == null or not is_instance_valid(army):
+		DebugLogger.log("AICamera", "Camera reached army (freed object)", 1)
+		return
 	DebugLogger.log("AICamera", "Camera reached army %s" % army.name, 1)
 
 func await_focus_on_region(region: Region) -> void:

@@ -63,7 +63,7 @@ func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: Pl
 	
 	# Create supporting systems
 	pathfinder = ArmyPathfinder.new(region_manager, army_manager)
-	target_scorer = ArmyTargetScorer.new(region_manager, region_manager.map_generator)
+	target_scorer = ArmyTargetScorer.new(region_manager, region_manager.map_generator, player_manager, null)
 	
 	# Create debug step gate
 	debug_step_gate = DebugStepGate.new()
@@ -77,6 +77,8 @@ func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: Pl
 	var parent = get_parent()
 	if parent and parent.has_method("get_current_turn"):
 		game_manager = parent
+	if target_scorer != null:
+		target_scorer.set_runtime_references(player_manager, game_manager)
 	
 	DebugLogger.log("AITurnManager", "[TurnController] Initialized with all managers")
 
