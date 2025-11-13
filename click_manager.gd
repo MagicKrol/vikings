@@ -56,6 +56,7 @@ func _unhandled_input(event: InputEvent) -> void:
 # Legacy manager references for backward compatibility during transition
 @onready var _region_manager: RegionManager
 @onready var _army_manager: ArmyManager
+@onready var _move_tooltip: MoveTooltip = get_node("../UI/MoveTooltip") as MoveTooltip
 
 # Editor quick-ownership mode state
 var _editor_ownership_mode: bool = false
@@ -185,9 +186,17 @@ func _handle_region_click(region_container: Node) -> void:
 
 func _handle_mouse_motion() -> void:
 	if _game_manager == null:
+		_move_tooltip.hide_tooltip()
+		return
+	if _ui_manager and _ui_manager.is_modal_active:
+		var vm_modal := _game_manager.get_visual_manager()
+		if vm_modal:
+			vm_modal.clear_interaction_highlights()
+		_move_tooltip.hide_tooltip()
 		return
 	var visual_manager = _game_manager.get_visual_manager()
 	if visual_manager == null:
+		_move_tooltip.hide_tooltip()
 		return
 	var camera := get_node("../Camera2D") as Camera2D
 	var world_pos = camera.get_global_mouse_position()
@@ -195,10 +204,12 @@ func _handle_mouse_motion() -> void:
 	if regions_node == null:
 		visual_manager.clear_move_region_hover()
 		visual_manager.set_map_hover_region(-1)
+		_move_tooltip.hide_tooltip()
 		return
 	var highlighted_ids = visual_manager.get_move_region_highlight_ids()
 	var hovered_move_region_id = -1
 	var hovered_general_region_id = -1
+	var hovered_move_region: Region = null
 	for region_container in regions_node.get_children():
 		if not (region_container is Region):
 			continue
@@ -210,6 +221,7 @@ func _handle_mouse_motion() -> void:
 			var candidate_id = region_ref.get_region_id()
 			if visual_manager.has_move_region_highlights() and _army_manager != null and _army_manager.selected_army != null and highlighted_ids.has(candidate_id):
 				hovered_move_region_id = candidate_id
+				hovered_move_region = region_ref
 			elif _should_highlight_region_hover(region_ref) and not highlighted_ids.has(candidate_id):
 				hovered_general_region_id = candidate_id
 			break
@@ -217,10 +229,13 @@ func _handle_mouse_motion() -> void:
 		visual_manager.set_map_hover_region(-1)
 		if hovered_move_region_id != -1:
 			visual_manager.set_move_region_hover(hovered_move_region_id)
+			_show_move_tooltip(hovered_move_region)
 		else:
 			visual_manager.clear_move_region_hover()
+			_move_tooltip.hide_tooltip()
 	else:
 		visual_manager.clear_move_region_hover()
+		_move_tooltip.hide_tooltip()
 	if not visual_manager.has_move_region_highlights():
 		if hovered_general_region_id != -1:
 			visual_manager.set_map_hover_region(hovered_general_region_id)
@@ -228,6 +243,12 @@ func _handle_mouse_motion() -> void:
 		else:
 			visual_manager.clear_region_highlight_hover()
 			visual_manager.set_map_hover_region(-1)
+
+func _show_move_tooltip(region: Region) -> void:
+	var selected_army := _army_manager.selected_army
+	var terrain_cost := _army_manager.get_terrain_cost(region, selected_army.get_player_id())
+	var mouse_pos := get_viewport().get_mouse_position()
+	_move_tooltip.show_move_tooltip(terrain_cost, mouse_pos)
 
 func _is_mountain_region(region: Region) -> bool:
 	"""Check if a region is a mountain region (unclickable)"""

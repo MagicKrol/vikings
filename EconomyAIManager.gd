@@ -78,6 +78,18 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 		"raise": raise_res
 	}
 
+func ore_checks(player_id: int) -> void:
+	var player := player_manager.get_player(player_id)
+	var owned_regions := region_manager.get_player_regions(player_id)
+	var search_cost := GameParameters.get_ore_search_cost()
+	for region_id in owned_regions:
+		if player.get_resource_amount(ResourcesEnum.Type.GOLD) < search_cost:
+			return
+		var region := region_manager.map_generator.get_region_container_by_id(region_id) as Region
+		if region.can_search_for_ore():
+			region.search_for_ore()
+			player.remove_resources(ResourcesEnum.Type.GOLD, search_cost)
+
 # Signals summarize state. Extended for raise army decisions.
 func _compute_signals(player_id: int, turn_number: int) -> Dictionary:
 	var owned_regions = region_manager.get_player_regions(player_id)

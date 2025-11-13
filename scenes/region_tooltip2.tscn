@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cml12by6pyhyc"]
+[gd_scene load_steps=13 format=3 uid="uid://cml12by6pyhyc"]
 
 [ext_resource type="Script" path="res://region_tooltip_2.gd" id="1_65wef"]
 [ext_resource type="Texture2D" uid="uid://1mmetp84t5rh" path="res://images/SelectTooltipModal2.png" id="3_5k8rn"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="7_stone"]
 [ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/iron.png" id="8_iron"]
 [ext_resource type="Texture2D" uid="uid://tq0lrv702naa" path="res://images/icons/gold.png" id="9_gold"]
+[ext_resource type="Texture2D" uid="uid://6uf511ccj15f" path="res://images/icons/gold_iron.png" id="10_3875o"]
 
 [sub_resource type="Theme" id="Theme_86wrq"]
 default_font = ExtResource("3_owbma")
@@ -73,7 +74,6 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="Spacer" type="Control" parent="Panel/Army/ValuesSection/Images"]
-custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="PopulationIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
@@ -120,12 +120,19 @@ texture = ExtResource("9_gold")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="GoldIronIcon" type="TextureRect" parent="Panel/Army/ValuesSection/Images"]
+visible = false
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("10_3875o")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="Values" type="HBoxContainer" parent="Panel/Army/ValuesSection"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="Spacer" type="Control" parent="Panel/Army/ValuesSection/Values"]
-custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="PopulationValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
@@ -164,4 +171,11 @@ visible = false
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 text = "99"
+horizontal_alignment = 1
+
+[node name="GoldIronValue" type="Label" parent="Panel/Army/ValuesSection/Values"]
+visible = false
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "?"
 horizontal_alignment = 1

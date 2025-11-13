@@ -176,8 +176,9 @@ func _calculate_region_income(player_id: int, initial_turn: bool = false) -> Dic
 		var region_node = _find_region_by_id(regions_node, region_id)
 		if region_node != null:
 			for resource_type in income.keys():
-				var region_resource_amount = region_node.get_resource_amount(resource_type)
-				income[resource_type] += region_resource_amount
+				if region_node.can_collect_resource(resource_type):
+					var region_resource_amount = region_node.get_resource_amount(resource_type)
+					income[resource_type] += region_resource_amount
 			
 			# Add population-based gold income
 			var pop_gold_income = region_node.get_income()

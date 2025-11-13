@@ -1,7 +1,7 @@
 extends Control
 class_name RegionTooltip2
 
-const MOUSE_OFFSET = Vector2(20, 20)
+const MOUSE_OFFSET = Vector2(20, 30)
 
 # UI element references
 @onready var region_name_label: Label = $Panel/Army/HeaderSection/RegionName
@@ -13,6 +13,7 @@ const MOUSE_OFFSET = Vector2(20, 20)
 @onready var stone_icon: TextureRect = $Panel/Army/ValuesSection/Images/StoneIcon
 @onready var iron_icon: TextureRect = $Panel/Army/ValuesSection/Images/IronIcon
 @onready var gold_icon: TextureRect = $Panel/Army/ValuesSection/Images/GoldIcon
+@onready var gold_iron_icon: TextureRect = $Panel/Army/ValuesSection/Images/GoldIronIcon
 
 # Value label references
 @onready var population_value: Label = $Panel/Army/ValuesSection/Values/PopulationValue
@@ -21,6 +22,7 @@ const MOUSE_OFFSET = Vector2(20, 20)
 @onready var stone_value: Label = $Panel/Army/ValuesSection/Values/StoneValue
 @onready var iron_value: Label = $Panel/Army/ValuesSection/Values/IronValue
 @onready var gold_value: Label = $Panel/Army/ValuesSection/Values/GoldValue
+@onready var gold_iron_value: Label = $Panel/Army/ValuesSection/Values/GoldIronValue
 
 @onready var texture_rect: TextureRect = $TextureRect
 @onready var panel: Panel = $Panel
@@ -127,6 +129,12 @@ func _update_resource_displays(region: Region):
 	else:
 		gold_icon.visible = false
 		gold_value.visible = false
+	
+	var show_ore_hint := _should_show_ore_hint(region)
+	gold_iron_icon.visible = show_ore_hint
+	gold_iron_value.visible = show_ore_hint
+	if show_ore_hint:
+		gold_iron_value.text = "?"
 
 func _clamp_to_screen():
 	"""Keep tooltip within screen bounds"""
@@ -161,3 +169,10 @@ func _disable_mouse_input(node: Node) -> void:
 		(node as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for child in node.get_children():
 		_disable_mouse_input(child)
+
+func _should_show_ore_hint(region: Region) -> bool:
+	if not GameParameters.can_search_for_ore_in_region(region.get_region_type()):
+		return false
+	if not region.get_discovered_ores().is_empty():
+		return false
+	return region.get_ore_search_attempts_remaining() > 0

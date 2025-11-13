@@ -359,9 +359,9 @@ func _on_ore_search_pressed() -> void:
 		var message: String
 		
 		if remaining_attempts > 0:
-			message = "No luck this time. " + str(remaining_attempts) + " search attempts remaining."
+			message = "No luck this time."
 		else:
-			message = "Ore searches exhausted. This region contains no accessible ore deposits."
+			message = "Ore searches exhausted."
 		
 		visible = false
 		if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):

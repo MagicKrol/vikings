@@ -62,6 +62,7 @@ var map_node_frame: Node2D
 # Region node lookup: region_id -> Node2D container
 var region_container_by_id: Dictionary = {}
 
+@onready var border_manager: BorderManager = get_node("BorderManager") as BorderManager
 
 func _ready() -> void:
 	generate_map()
@@ -312,8 +313,8 @@ func _render_from_json() -> void:
 
 	DebugLogger.log("MapGeneration", "Ocean polygons added=" + str(ocean_count))
 
-	# Draw noisy borders from edge data with correct quadrilateral constraints
-	_draw_region_borders()
+	# Draw and register borders via dedicated manager
+	border_manager.setup(self)
 
 	# Sync land polygons with the generated noisy borders
 	_rebuild_region_polygons_from_borders()
@@ -533,36 +534,6 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 
 	return pg
 
-func _draw_region_borders() -> void:
-	"""Draw borders for each region - each region gets its complete border perimeter"""
-	var rng := RandomNumberGenerator.new()
-	rng.seed = noisy_edge_seed
-	var borders_created := 0
-	
-	# For each non-ocean region, create its complete border set
-	for region_data in regions:
-		var region_id := int(region_data.get("id", -1))
-		var is_ocean := bool(region_data.get("ocean", false))
-		
-		if is_ocean or region_id == -1:
-			continue
-			
-		# Get this region's container
-		var region_container = region_container_by_id.get(region_id)
-		if region_container == null:
-			continue
-			
-		var borders_node = region_container.get_node_or_null("Borders")
-		if borders_node == null:
-			continue
-			
-		# Find ALL edges that involve this region and create borders
-		var region_borders_created = _create_borders_for_region(region_id, region_data, borders_node, rng)
-		borders_created += region_borders_created
-	
-	DebugLogger.log("MapGeneration", "Created " + str(borders_created) + " border lines total (region-centric)")
-
-
 func _rebuild_region_polygons_from_borders() -> void:
 	for region_data in regions:
 		if bool(region_data.get("ocean", false)):
@@ -589,265 +560,11 @@ func _ensure_neutral_overlays_for_all_regions() -> void:
 			overlay.color = _get_neutral_overlay_color()
 
 
-func _create_borders_for_region(region_id: int, region_data: Dictionary, borders_container: Node2D, rng: RandomNumberGenerator) -> int:
-	"""Create all border lines for a specific region"""
-	var borders_created := 0
-	
-	# Find all edges where this region is involved
-	for edge in edges:
-		var r0 := int(edge.get("region1", -1))
-		var r1 := int(edge.get("region2", -1))
-		
-		# Skip if this region is not involved in this edge
-		if r0 != region_id and r1 != region_id:
-			continue
-			
-		# Skip invalid edges
-		if r0 == -1 or r1 == -1:
-			continue
-			
-		# Get the OTHER region
-		var other_region_id = r0 if r1 == region_id else r1
-		var other_region_data = region_by_id.get(other_region_id, {})
-		if other_region_data.is_empty():
-			continue
-			
-		# Check if we should draw this border (skip ocean-ocean and mountain-mountain)
-		var this_is_ocean = bool(region_data.get("ocean", false))
-		var other_is_ocean = bool(other_region_data.get("ocean", false))
-		var this_is_mountain = _is_mountain_region(region_data)
-		var other_is_mountain = _is_mountain_region(other_region_data)
-		
-		if this_is_ocean and other_is_ocean:
-			continue
-		if this_is_mountain and other_is_mountain:
-			if _create_hidden_mountain_border_line(edge, region_id, other_region_id, borders_container, rng):
-				borders_created += 1
-			continue
-		
-		# Create the border line for THIS region
-		if _create_border_line_for_region(edge, region_id, other_region_id, borders_container, rng):
-			borders_created += 1
-	
-	return borders_created
-
-func _create_border_line_for_region(edge: Dictionary, region_id: int, other_region_id: int, borders_container: Node2D, rng: RandomNumberGenerator) -> bool:
-	"""Create a single border line for a region"""
-	# Extract edge data (same as current system)
-	var a_arr: Array = edge.get("start", [])
-	var b_arr: Array = edge.get("end", [])
-	var c0_arr: Array = edge.get("region1_center", [])
-	var c1_arr: Array = edge.get("region2_center", [])
-	
-	if a_arr.size() != 2 or b_arr.size() != 2 or c0_arr.size() != 2 or c1_arr.size() != 2:
-		return false
-		
-	var a := Vector2(a_arr[0], a_arr[1])
-	var b := Vector2(b_arr[0], b_arr[1])
-	var p := Vector2(c0_arr[0], c0_arr[1])
-	var q := Vector2(c1_arr[0], c1_arr[1])
-	
-	# Create consistent seed for this specific edge to ensure identical noise patterns
-	var edge_seed = _generate_edge_seed(edge)
-	rng.seed = edge_seed
-	
-	# Create noisy subdivision (identical to current system)
-	var seg := PackedVector2Array()
-	seg.append(a)
-	var mid_points := NoisyEdges.recursive_subdivision(a, b, p, q, rng, noisy_edge_length, noisy_edge_amplitude)
-	for mp in mid_points:
-		seg.append(mp)
-	seg.append(b)
-	
-	# Check ownership and apply colored border logic
-	var region_owner = _get_region_owner(region_id)
-	var other_owner = _get_region_owner(other_region_id)
-	var is_external_border = _is_external_border_for_region(region_id, other_region_id)
-	var is_mountain_border = _is_mountain_border_for_region(region_id, other_region_id)
-	
-	# Determine border type and styling based on ownership
-	# COMMENTED OUT: Mountain border special handling - using standard borders instead
-	#if is_mountain_border:
-		## Mountain border: Solid black border
-		#var line := Line2D.new()
-		#line.points = seg
-		#line.closed = false
-		#line.width = 3.0 * polygon_scale
-		#line.default_color = Color.BLACK  # Solid black for mountain borders
-		#borders_container.add_child(line)
-	if is_external_border:
-		# Ocean border: Double border system
-		if region_owner != -1:
-			# Owned region vs ocean: Create offset colored border for land side
-			_create_land_ocean_offset_border_line(seg, region_owner, region_id, borders_container)
-			# Create offset black border for ocean side (simulated)
-			_create_ocean_offset_border_line(seg, region_id, borders_container)
-		else:
-			# Unowned region vs ocean: Standard brown border
-			var line := Line2D.new()
-			line.points = seg
-			line.closed = false
-			# Scale border width by map size (TINY=1.0 baseline)
-			var map_size_scale := Utils.get_map_size_icon_scale(map_size)
-			line.width = 6.0 * polygon_scale * map_size_scale
-			line.default_color = Color8(0x41, 0x2c, 0x16, 255)  # Brown for external (ocean)
-			borders_container.add_child(line)
-	elif region_owner != -1 and other_owner != -1 and region_owner != other_owner:
-		# Different owners (enemy border): Create offset colored border
-		_create_offset_border_line(seg, region_owner, other_region_id, region_id, borders_container)
-	elif region_owner != -1 and other_owner == -1:
-		# My region vs neutral: Use fading ownership border
-		_create_offset_border_line(seg, region_owner, other_region_id, region_id, borders_container)
-	else:
-		# Same owner or unowned: Default style
-		var line := Line2D.new()
-		line.points = seg
-		line.closed = false
-		# Scale border width by map size (TINY=1.0 baseline)
-		var map_size_scale3 := Utils.get_map_size_icon_scale(map_size)
-		line.width = 1.5 * polygon_scale * map_size_scale3
-		line.default_color = Color8(0x00, 0x00, 0x00, 50)   # Thin black for internal
-		borders_container.add_child(line)
-	
-	return true
-
-
-func _create_hidden_mountain_border_line(edge: Dictionary, region_id: int, other_region_id: int, borders_container: Node2D, rng: RandomNumberGenerator) -> bool:
-	var a_arr: Array = edge.get("start", [])
-	var b_arr: Array = edge.get("end", [])
-	var c0_arr: Array = edge.get("region1_center", [])
-	var c1_arr: Array = edge.get("region2_center", [])
-	if a_arr.size() != 2 or b_arr.size() != 2 or c0_arr.size() != 2 or c1_arr.size() != 2:
-		return false
-	var a := Vector2(a_arr[0], a_arr[1])
-	var b := Vector2(b_arr[0], b_arr[1])
-	var p := Vector2(c0_arr[0], c0_arr[1])
-	var q := Vector2(c1_arr[0], c1_arr[1])
-	var edge_seed = _generate_edge_seed(edge)
-	rng.seed = edge_seed
-	var seg := PackedVector2Array()
-	seg.append(a)
-	var mid_points := NoisyEdges.recursive_subdivision(a, b, p, q, rng, noisy_edge_length, noisy_edge_amplitude)
-	for mp in mid_points:
-		seg.append(mp)
-	seg.append(b)
-	var line := Line2D.new()
-	line.points = seg
-	line.closed = false
-	line.width = 0.1
-	line.default_color = Color(0, 0, 0, 0)
-	line.visible = false
-	borders_container.add_child(line)
-	return true
-
-func _is_external_border_for_region(region_id: int, other_region_id: int) -> bool:
-	"""Determine if a border is external (touches ocean) for a specific region"""
-	var other_region_data = region_by_id.get(other_region_id, {})
-	if other_region_data.is_empty():
-		return true  # Unknown region = external
-		
-	var other_is_ocean = bool(other_region_data.get("ocean", false))
-	return other_is_ocean  # External if touching ocean
-
-func _is_mountain_border_for_region(region_id: int, other_region_id: int) -> bool:
-	"""Determine if a border touches a mountain region"""
-	var other_region_data = region_by_id.get(other_region_id, {})
-	if other_region_data.is_empty():
-		return false  # Unknown region = not mountain
-		
-	return _is_mountain_region(other_region_data)  # Mountain if other region is mountain
-
-func _generate_edge_seed(edge: Dictionary) -> int:
-	"""Generate a consistent seed for an edge based on its coordinates"""
-	# Use edge start/end coordinates to create a unique, consistent seed
-	var a_arr: Array = edge.get("start", [])
-	var b_arr: Array = edge.get("end", [])
-	
-	if a_arr.size() != 2 or b_arr.size() != 2:
-		return noisy_edge_seed  # Fallback to global seed
-	
-	# Create a hash based on the edge coordinates (order-independent)
-	var x1 = float(a_arr[0])
-	var y1 = float(a_arr[1])
-	var x2 = float(b_arr[0])
-	var y2 = float(b_arr[1])
-	
-	# Ensure consistent ordering regardless of which region processes the edge first
-	if x1 > x2 or (x1 == x2 and y1 > y2):
-		var temp_x = x1
-		var temp_y = y1
-		x1 = x2
-		y1 = y2
-		x2 = temp_x
-		y2 = temp_y
-	
-	# Create a unique hash for this edge
-	var hash_value = int(x1 * 1000 + y1 * 1000000 + x2 * 1000000000 + y2 * 1000000000000)
-	return noisy_edge_seed + hash_value
-
-func _generate_edge_seed_from_points(point_a: Vector2, point_b: Vector2) -> int:
-	"""Generate consistent seed for edge between two Vector2 points"""
-	var x1 = point_a.x
-	var y1 = point_a.y
-	var x2 = point_b.x
-	var y2 = point_b.y
-	
-	# Ensure consistent ordering regardless of which region processes the edge first
-	if x1 > x2 or (x1 == x2 and y1 > y2):
-		var temp_x = x1
-		var temp_y = y1
-		x1 = x2
-		y1 = y2
-		x2 = temp_x
-		y2 = temp_y
-	
-	# Create a unique hash for this edge
-	var hash_value = int(x1 * 1000 + y1 * 1000000 + x2 * 1000000000 + y2 * 1000000000000)
-	return noisy_edge_seed + hash_value
-
-func _get_region_owner(region_id: int) -> int:
-	"""Get the owner of a region, returns -1 if unowned"""
-	# Try to find RegionManager in the click manager
-	var click_manager = get_node_or_null("../ClickManager")
-	if click_manager and click_manager.has_method("get_region_manager"):
-		var region_manager = click_manager.get_region_manager()
-		if region_manager and region_manager.has_method("get_region_owner"):
-			return region_manager.get_region_owner(region_id)
-	
-	return -1  # Unowned if RegionManager not found
-
-
 func _get_player_color(player_id: int) -> Color:
 	"""Get the color for a specific player"""
 	var color = GameParameters.get_player_color(player_id)
 	color.a = 0.5  # 50% transparency
 	return color
-
-func _get_player_border_color(player_id: int) -> Color:
-	"""Get enhanced color for player borders - more saturated and darker"""
-	var base_color = GameParameters.get_player_color(player_id)
-	
-	# Special handling for white color (Player 5) to avoid pink/violet tints
-	if player_id == 5:  # Player 5 is white
-		# For white, simply darken without changing saturation to create grey
-		var grey_value = max(GameParameters.BORDER_MIN_VALUE, base_color.v - GameParameters.BORDER_VALUE_REDUCTION)
-		var border_color = Color(grey_value, grey_value, grey_value, GameParameters.BORDER_OPACITY)
-		return border_color
-	
-	# For colored players, enhance saturation and darken
-	var hue = base_color.h
-	var saturation = base_color.s
-	var value = base_color.v
-	
-	# Apply enhancement parameters from GameParameters
-	var enhanced_saturation = min(1.0, saturation + GameParameters.BORDER_SATURATION_BOOST)
-	var enhanced_value = max(GameParameters.BORDER_MIN_VALUE, value - GameParameters.BORDER_VALUE_REDUCTION)
-	
-	# Create the enhanced border color
-	var border_color = Color.from_hsv(hue, enhanced_saturation, enhanced_value)
-	border_color.a = GameParameters.BORDER_OPACITY
-	
-	return border_color
 
 func create_ownership_overlay(region_id: int, player_id: int) -> void:
 	"""Create or recolor the ownership overlay for this region."""
@@ -872,40 +589,26 @@ func _create_noisy_polygon_for_region(region_id: int) -> PackedVector2Array:
 	if region_container == null:
 		return PackedVector2Array()
 	
-	# Get the borders container which has all the Line2D objects
-	var borders_container = region_container.get_node_or_null("Borders")
-	if borders_container == null:
-		DebugLogger.log("MapGeneration", "No borders found for region " + str(region_id))
-		# Fallback to original polygon
+	var border_segments := border_manager.get_region_border_points(region_id)
+	if border_segments.is_empty():
 		var original_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
 		if original_polygon:
 			return original_polygon.polygon
 		return PackedVector2Array()
 	
-	# Collect all Line2D objects
-	var line2d_objects: Array[Line2D] = []
-	for child in borders_container.get_children():
-		if child is Line2D:
-			line2d_objects.append(child as Line2D)
+	var polygon_points := _reconstruct_polygon_from_segments(border_segments)
+	if polygon_points.size() >= 3:
+		return polygon_points
 	
-	if line2d_objects.is_empty():
-		DebugLogger.log("MapGeneration", "No Line2D borders found for region " + str(region_id))
-		return PackedVector2Array()
-	
-	# Extract all points from all Line2D objects
 	var all_border_points := PackedVector2Array()
-	for line2d in line2d_objects:
-		for point in line2d.points:
+	for segment in border_segments:
+		for point in segment:
 			all_border_points.append(point)
 	
 	if all_border_points.size() < 3:
 		return PackedVector2Array()
 	
-	# Create a polygon from these points using convex hull or similar
-	# For now, use a simple approach: get the boundary points
-	var polygon_points = _create_polygon_from_border_points(all_border_points)
-	
-	return polygon_points
+	return _create_polygon_from_border_points(all_border_points)
 
 func _create_polygon_from_border_points(border_points: PackedVector2Array) -> PackedVector2Array:
 	"""Create a polygon from scattered border points"""
@@ -951,6 +654,47 @@ func _create_polygon_from_border_points(border_points: PackedVector2Array) -> Pa
 	
 	return simplified_points
 
+func _reconstruct_polygon_from_segments(segments: Array[PackedVector2Array]) -> PackedVector2Array:
+	if segments.is_empty():
+		return PackedVector2Array()
+	var remaining: Array = segments.duplicate(true)
+	var polygon_points := PackedVector2Array()
+	var first_segment: PackedVector2Array = remaining.pop_back()
+	for point in first_segment:
+		polygon_points.append(point)
+	var epsilon := 0.1 * polygon_scale
+	while not remaining.is_empty():
+		var extended := false
+		var tail := polygon_points[polygon_points.size() - 1]
+		for i in range(remaining.size()):
+			var segment: PackedVector2Array = remaining[i]
+			if segment.size() < 2:
+				remaining.remove_at(i)
+				extended = true
+				break
+			var seg_start := segment[0]
+			var seg_end := segment[segment.size() - 1]
+			if tail.distance_to(seg_start) <= epsilon:
+				for j in range(1, segment.size()):
+					polygon_points.append(segment[j])
+				remaining.remove_at(i)
+				extended = true
+				break
+			elif tail.distance_to(seg_end) <= epsilon:
+				for j in range(segment.size() - 2, -1, -1):
+					polygon_points.append(segment[j])
+				remaining.remove_at(i)
+				extended = true
+				break
+		if not extended:
+			return PackedVector2Array()
+	if polygon_points.size() >= 2:
+		var first_point := polygon_points[0]
+		var last_point := polygon_points[polygon_points.size() - 1]
+		if last_point.distance_to(first_point) <= epsilon:
+			polygon_points.remove_at(polygon_points.size() - 1)
+	return polygon_points
+
 func remove_ownership_overlay(region_id: int) -> void:
 	"""Reset the ownership overlay for a region back to neutral."""
 	var overlay = _get_or_create_ownership_overlay(region_id)
@@ -988,199 +732,6 @@ func _get_or_create_ownership_overlay(region_id: int) -> Polygon2D:
 
 func _get_neutral_overlay_color() -> Color:
 	return Color(0.0, 0.0, 0.0, 0.0)
-
-func _create_offset_border_line(original_points: PackedVector2Array, player_id: int, other_region_id: int, current_region_id: int, borders_container: Node2D) -> void:
-	"""Create an offset border line for ownership-based borders"""
-	if original_points.size() < 2:
-		return
-
-	# Scale offset distance with map size to keep proportional spacing
-	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
-	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Offset distance in pixels
-
-	# Determine offset direction based on region geometry so offsets remain continuous
-	var offset_direction := _get_land_side_offset_direction(original_points, current_region_id)
-
-	var offset_points := PackedVector2Array()
-
-	# Calculate offset for each point
-	for i in range(original_points.size()):
-		var current_point = original_points[i]
-		var offset_vector = Vector2.ZERO
-		
-		if i == 0:
-			# First point: use direction to next point
-			var next_point = original_points[i + 1]
-			var direction = (next_point - current_point).normalized()
-			offset_vector = Vector2(-direction.y, direction.x) * offset_distance * offset_direction
-		elif i == original_points.size() - 1:
-			# Last point: use direction from previous point
-			var prev_point = original_points[i - 1]
-			var direction = (current_point - prev_point).normalized()
-			offset_vector = Vector2(-direction.y, direction.x) * offset_distance * offset_direction
-		else:
-			# Middle points: average of both directions for smooth curves
-			var prev_point = original_points[i - 1]
-			var next_point = original_points[i + 1]
-			var dir1 = (current_point - prev_point).normalized()
-			var dir2 = (next_point - current_point).normalized()
-			var avg_direction = (dir1 + dir2).normalized()
-			offset_vector = Vector2(-avg_direction.y, avg_direction.x) * offset_distance * offset_direction
-		
-		offset_points.append(current_point + offset_vector)
-
-	var base_color := _get_player_border_color(player_id)
-	var line := Line2D.new()
-	line.points = offset_points
-	line.closed = false
-	# Scale border width by map size (TINY=1.0 baseline)
-	var map_size_scale2 := Utils.get_map_size_icon_scale(map_size)
-	line.width = 2.0 * polygon_scale * map_size_scale2
-	line.default_color = base_color
-
-	borders_container.add_child(line)
-
-func _create_land_ocean_offset_border_line(original_points: PackedVector2Array, player_id: int, current_region_id: int, borders_container: Node2D) -> void:
-	"""Create an offset colored border line for land side of ocean border"""
-	if original_points.size() < 2:
-		return
-
-	# Scale offset distance with map size (TINY baseline)
-	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
-	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Same offset distance as enemy borders
-	
-	# Determine which side is land by checking region center position
-	var land_offset_direction = _get_land_side_offset_direction(original_points, current_region_id)
-	
-	var offset_points := PackedVector2Array()
-	
-	# Calculate offset for each point (same logic as colored borders)
-	for i in range(original_points.size()):
-		var current_point = original_points[i]
-		var offset_vector = Vector2.ZERO
-		
-		if i == 0:
-			# First point: use direction to next point
-			var next_point = original_points[i + 1]
-			var direction = (next_point - current_point).normalized()
-			offset_vector = Vector2(-direction.y, direction.x) * offset_distance * land_offset_direction
-		elif i == original_points.size() - 1:
-			# Last point: use direction from previous point
-			var prev_point = original_points[i - 1]
-			var direction = (current_point - prev_point).normalized()
-			offset_vector = Vector2(-direction.y, direction.x) * offset_distance * land_offset_direction
-		else:
-			# Middle points: average of both directions for smooth curves
-			var prev_point = original_points[i - 1]
-			var next_point = original_points[i + 1]
-			var dir1 = (current_point - prev_point).normalized()
-			var dir2 = (next_point - current_point).normalized()
-			var avg_direction = (dir1 + dir2).normalized()
-			offset_vector = Vector2(-avg_direction.y, avg_direction.x) * offset_distance * land_offset_direction
-		
-		offset_points.append(current_point + offset_vector)
-	
-	var base_color := _get_player_border_color(player_id)
-	var line := Line2D.new()
-	line.points = offset_points
-	line.closed = false
-	# Scale border width by map size (TINY=1.0 baseline)
-	line.width = 2.0 * polygon_scale * map_size_scale
-	line.default_color = base_color
-
-	borders_container.add_child(line)
-
-func _create_ocean_offset_border_line(original_points: PackedVector2Array, current_region_id: int, borders_container: Node2D) -> void:
-	"""Create an offset black border line for ocean side"""
-	if original_points.size() < 2:
-		return
-
-	# Scale offset distance with map size (TINY baseline)
-	var map_size_scale := Utils.get_map_size_icon_scale(map_size)
-	var offset_distance = 1.0 * polygon_scale * map_size_scale  # Same offset distance as enemy borders
-	
-	# Ocean gets the opposite offset direction from the land region
-	var land_offset_direction = _get_land_side_offset_direction(original_points, current_region_id)
-	var ocean_offset_direction = -land_offset_direction  # Always opposite
-
-	var offset_points := PackedVector2Array()
-	
-	# Calculate offset for each point (same logic as colored borders)
-	for i in range(original_points.size()):
-		var current_point = original_points[i]
-		var offset_vector = Vector2.ZERO
-		
-		if i == 0:
-			# First point: use direction to next point
-			var next_point = original_points[i + 1]
-			var direction = (next_point - current_point).normalized()
-			offset_vector = Vector2(-direction.y, direction.x) * offset_distance * ocean_offset_direction
-		elif i == original_points.size() - 1:
-			# Last point: use direction from previous point
-			var prev_point = original_points[i - 1]
-			var direction = (current_point - prev_point).normalized()
-			offset_vector = Vector2(-direction.y, direction.x) * offset_distance * ocean_offset_direction
-		else:
-			# Middle points: average of both directions for smooth curves
-			var prev_point = original_points[i - 1]
-			var next_point = original_points[i + 1]
-			var dir1 = (current_point - prev_point).normalized()
-			var dir2 = (next_point - current_point).normalized()
-			var avg_direction = (dir1 + dir2).normalized()
-			offset_vector = Vector2(-avg_direction.y, avg_direction.x) * offset_distance * ocean_offset_direction
-		
-		offset_points.append(current_point + offset_vector)
-	
-	# Create the offset border line with fading black band
-	var line := Line2D.new()
-	line.points = offset_points
-	line.closed = false
-	line.width = 2.0 * polygon_scale * map_size_scale
-	line.default_color = Color.BLACK
-
-	borders_container.add_child(line)
-
-func _get_land_side_offset_direction(edge_points: PackedVector2Array, region_id: int) -> float:
-	"""Determine which side of the edge is land by checking region center position"""
-	if edge_points.size() < 2:
-		return 1.0
-	
-	# Get region center
-	var region_container = region_container_by_id.get(region_id)
-	if region_container == null:
-		return 1.0
-	
-	var region = region_container as Region
-	if region == null:
-		return 1.0
-	
-	# Get region center from the region data
-	var center_data = []
-	for region_data in regions:
-		if int(region_data.get("id", -1)) == region_id:
-			center_data = region_data.get("center", [])
-			break
-	
-	if center_data.size() != 2:
-		return 1.0
-	
-	var region_center = Vector2(center_data[0], center_data[1])
-	
-	# Calculate edge midpoint and direction
-	var edge_start = edge_points[0]
-	var edge_end = edge_points[edge_points.size() - 1]
-	var edge_midpoint = (edge_start + edge_end) * 0.5
-	var edge_direction = (edge_end - edge_start).normalized()
-	
-	# Calculate perpendicular vector (both directions)
-	var perp_vector = Vector2(-edge_direction.y, edge_direction.x)
-	
-	# Test which direction points toward the region center
-	var to_center = (region_center - edge_midpoint).normalized()
-	var dot_product = perp_vector.dot(to_center)
-	
-	# Return +1 if perpendicular points toward center, -1 if away
-	return 1.0 if dot_product > 0 else -1.0
 
 
 func _build_and_draw_region_graph_overlay() -> void:
@@ -1319,11 +870,6 @@ func _create_ocean_frame() -> void:
 
 
 
-func _is_mountain_region(region_data: Dictionary) -> bool:
-	"""Check if a region is a mountain region (non-interactive terrain like ocean)"""
-	var biome_name := String(region_data.get("biome", "")).to_lower()
-	return biome_name == "mountains"
-
 func _is_ocean_region_coastal(ocean_region_id: int) -> bool:
 	# Check if this ocean region has any land neighbors by examining edges
 	for edge in edges:
@@ -1443,88 +989,12 @@ func _assign_region_name_if_available(region: Region) -> void:
 	region.set_region_name(fallback_name)
 
 func regenerate_borders() -> void:
-	"""Regenerate all region borders when ownership changes"""
-	# Clear existing borders
-	var regions_node = get_node("Regions")
-		
-	for region_container in regions_node.get_children():
-		var borders_node = region_container.get_node_or_null("Borders")
-		if borders_node:
-			for border in borders_node.get_children():
-				border.queue_free()
-	
-	# Regenerate borders
-	_draw_region_borders()
+	"""Refresh existing border visuals for the full map"""
+	border_manager.refresh_all_borders()
 
 func regenerate_borders_for_region(region_id: int) -> void:
-	"""Regenerate borders for a specific region and its neighbors (more efficient)"""
-	var click_manager = get_node_or_null("../ClickManager")
-	if not click_manager or not click_manager.has_method("get_region_manager"):
-		# Fallback to full regeneration
-		regenerate_borders()
-		return
-	
-	var region_manager = click_manager.get_region_manager()
-	if not region_manager or not region_manager.has_method("get_neighbor_regions"):
-		# Fallback to full regeneration
-		regenerate_borders()
-		return
-	
-	# Get all regions that need border updates (the region + its neighbors)
-	var regions_to_update = [region_id]
-	var neighbors = region_manager.get_neighbor_regions(region_id)
-	for neighbor_id in neighbors:
-		regions_to_update.append(neighbor_id)
-	
-	# Clear borders for affected regions
-	var regions_node = get_node("Regions")
-	
-	for region_container in regions_node.get_children():
-		if region_container.has_method("get_region_id"):
-			var container_region_id = region_container.get_region_id()
-			if container_region_id in regions_to_update:
-				var borders_node = region_container.get_node_or_null("Borders")
-				if borders_node:
-					for border in borders_node.get_children():
-						border.queue_free()
-	
-	# Regenerate borders only for affected regions
-	# We need to process edges that connect any of the affected regions
-	var rng = RandomNumberGenerator.new()
-	rng.seed = noisy_edge_seed
-	
-	for edge in edges:
-		var region1_id = int(edge.get("region1", -1))
-		var region2_id = int(edge.get("region2", -1))
-		
-		# Check if this edge involves any of our updated regions
-		if region1_id in regions_to_update or region2_id in regions_to_update:
-			# Process the edge for both regions
-			if region1_id != -1 and region1_id in regions_to_update:
-				# Skip drawing for ocean regions
-				var r1_data: Dictionary = region_by_id.get(region1_id, {})
-				var region1_container = null
-				if bool(r1_data.get("ocean", false)):
-					pass
-				else:
-					region1_container = get_region_container_by_id(region1_id)
-				if region1_container:
-					var borders_container = region1_container.get_node_or_null("Borders")
-					if borders_container:
-						_create_border_line_for_region(edge, region1_id, region2_id, borders_container, rng)
-			
-			if region2_id != -1 and region2_id in regions_to_update:
-				# Skip drawing for ocean regions
-				var r2_data: Dictionary = region_by_id.get(region2_id, {})
-				var region2_container = null
-				if bool(r2_data.get("ocean", false)):
-					pass
-				else:
-					region2_container = get_region_container_by_id(region2_id)
-				if region2_container:
-					var borders_container = region2_container.get_node_or_null("Borders")
-					if borders_container:
-						_create_border_line_for_region(edge, region2_id, region1_id, borders_container, rng)
+	"""Refresh borders for a single region plus its neighbors"""
+	border_manager.refresh_region_and_neighbors(region_id)
 	
 
 func refresh_region_visual(region_id: int) -> void:

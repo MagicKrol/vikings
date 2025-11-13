@@ -118,7 +118,7 @@ const AI_MAX_EXPECTED_DISTANCE = 10            # Expected max distance for norma
 ## Mining System Constants
 const ORE_SEARCH_COST = 5                      # Gold cost to perform ore search
 const ORE_SEARCH_CHANCES_PER_REGION = 3        # Number of ore search attempts per region
-const ORE_DISCOVERY_CHANCE = 0.20               # 20% chance to find ore per search
+const ORE_DISCOVERY_CHANCE = 0.25               # 20% chance to find ore per search
 const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for gold
 
 ## Army Management Constants
@@ -393,6 +393,7 @@ const REGION_RESOURCES = {
 		ResourcesEnum.Type.WOOD: {"min": 2, "max": 4},
 		ResourcesEnum.Type.STONE: {"min": 0, "max": 3},
 		ResourcesEnum.Type.IRON: {"min": 1, "max": 3},
+		ResourcesEnum.Type.GOLD: {"min": 3, "max": 9}
 	},
 	RegionTypeEnum.Type.MOUNTAINS: {
 		# No resources - impassable terrain
@@ -455,6 +456,64 @@ const IDEAL_ARMY_COMPOSITIONS = {
 		"knights": 7,
 		"mounted_knights": 4,
 		"royal_guard": 1
+	}
+}
+
+const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
+	"None": {
+		"peasants": 100,
+		"spearmen": 0,
+		"archers": 0,
+		"swordsmen": 0,
+		"crossbowmen": 0,
+		"horsemen": 0,
+		"knights": 0,
+		"mounted_knights": 0,
+		"royal_guard": 0
+	},
+	"Outpost": {
+		"peasants": 40,
+		"spearmen": 30,
+		"archers": 20,
+		"swordsmen": 10,
+		"crossbowmen": 0,
+		"horsemen": 0,
+		"knights": 0,
+		"mounted_knights": 0,
+		"royal_guard": 0
+	},
+	"Keep": {
+		"peasants": 35,
+		"spearmen": 25,
+		"archers": 15,
+		"swordsmen": 15,
+		"crossbowmen": 10,
+		"horsemen": 0,
+		"knights": 0,
+		"mounted_knights": 0,
+		"royal_guard": 0
+	},
+	"Castle": {
+		"peasants": 24,
+		"spearmen": 22,
+		"archers": 20,
+		"swordsmen": 16,
+		"crossbowmen": 10,
+		"horsemen": 0,
+		"knights": 8,
+		"mounted_knights": 0,
+		"royal_guard": 0
+	},
+	"Stronghold": {
+		"peasants": 20,
+		"spearmen": 20,
+		"archers": 19,
+		"swordsmen": 16,
+		"crossbowmen": 12,
+		"horsemen": 0,
+		"knights": 10,
+		"mounted_knights": 0,
+		"royal_guard": 3
 	}
 }
 

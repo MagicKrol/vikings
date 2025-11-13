@@ -1,7 +1,8 @@
-[gd_scene load_steps=31 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=33 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
+[ext_resource type="Script" path="res://border_manager.gd" id="2_border"]
 [ext_resource type="Script" path="res://camera_controller.gd" id="3_camera"]
 [ext_resource type="Script" path="res://place_armies.gd" id="5_place"]
 [ext_resource type="Script" path="res://click_manager.gd" id="6_click"]
@@ -30,6 +31,7 @@
 [ext_resource type="PackedScene" uid="uid://7iyyajasdhd3" path="res://scenes/turn_modal.tscn" id="27_o7y1n"]
 [ext_resource type="Script" path="res://map_editor.gd" id="28_mapeditor"]
 [ext_resource type="PackedScene" uid="uid://dq1rsdkl0qiwb" path="res://scenes/map_editor_panel.tscn" id="29_mapeditorpanel"]
+[ext_resource type="PackedScene" uid="uid://d2htmt4abnn8i" path="res://scenes/move_tooltip.tscn" id="30_move_tooltip"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -42,6 +44,9 @@ script = ExtResource("1_m7t5v")
 [node name="Ocean" type="Node2D" parent="Map"]
 
 [node name="Frame" type="Node2D" parent="Map"]
+
+[node name="BorderManager" type="Node" parent="Map"]
+script = ExtResource("2_border")
 
 [node name="Background" type="Sprite2D" parent="."]
 visible = false
@@ -101,6 +106,9 @@ script = ExtResource("8_ui")
 visible = false
 
 [node name="RegionTooltip" parent="UI" instance=ExtResource("15_d3ude")]
+visible = false
+
+[node name="MoveTooltip" parent="UI" instance=ExtResource("30_move_tooltip")]
 visible = false
 
 [node name="BattleModal" parent="UI" instance=ExtResource("16_dtrwa")]

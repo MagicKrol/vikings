@@ -143,6 +143,7 @@ func remove_castle_visual(region_container: Node) -> void:
 		DebugLogger.log("UISystem", "Removed castle visual from region")
 
 func animate_region_highlight_on(region_id: int, params: Dictionary = {}) -> void:
+	DebugLogger.log("Animation", "animate_region_highlight_on: " + str(region_id))
 	if _region_highlight_tweens.has(region_id):
 		animate_region_highlight_off(region_id)
 	var overlay_setup: Dictionary = _ensure_region_highlight_overlay(region_id)
@@ -206,6 +207,7 @@ func animate_region_highlight_on(region_id: int, params: Dictionary = {}) -> voi
 			_region_highlight_tweens.erase(region_id)
 
 func animate_region_highlight_off(region_id: int) -> void:
+	DebugLogger.log("Animation", "animate_region_highlight_off: " + str(region_id))
 	if _region_highlight_tweens.has(region_id):
 		var tween = _region_highlight_tweens[region_id]
 		if tween:
@@ -318,6 +320,7 @@ func _begin_looping_highlight(region_id: int, overlay: Polygon2D, base_color: Co
 	_region_highlight_tweens[region_id] = loop_tween
 
 func _resume_ready_highlights_if_needed() -> void:
+	DebugLogger.log("Animation", "resume_ready_highlights_if_needed")
 	if not _ready_highlights_suspended:
 		return
 	_ready_highlights_suspended = false
@@ -333,6 +336,7 @@ func _resume_ready_highlights_if_needed() -> void:
 		animate_region_highlight_on(region_id)
 
 func animate_move_region_highlights(region_ids: Array) -> void:
+	DebugLogger.log("Animation", "animate_move_region_highlights: " + str(region_ids))
 	clear_move_region_highlights()
 	if region_ids.is_empty():
 		_resume_ready_highlights_if_needed()
@@ -355,6 +359,7 @@ func animate_move_region_highlights(region_ids: Array) -> void:
 	}
 	for region_id in region_ids:
 		animate_region_highlight_on(region_id, params)
+		DebugLogger.log("Animation", "Highlight region: " + str(region_id))
 	_move_highlight_ids = region_ids.duplicate()
 
 func clear_move_region_highlights() -> void:
@@ -367,11 +372,19 @@ func clear_move_region_highlights() -> void:
 		if _ready_highlight_regions.has(region_id):
 			to_restore.append(region_id)
 		animate_region_highlight_off(region_id)
+		DebugLogger.log("Animation", "Unhighlight region: " + str(region_id))
 	_move_highlight_ids.clear()
 	if not _ready_highlights_suspended:
 		for region_id in to_restore:
 			animate_region_highlight_on(region_id)
+			DebugLogger.log("Animation", "Highlight suspended region: " + str(region_id))
 	_resume_ready_highlights_if_needed()
+
+func clear_interaction_highlights() -> void:
+	"""Clear all move targets and map-hover overlays (used when UI modals block interaction)."""
+	clear_move_region_highlights()
+	if _map_hover_region_id != -1:
+		set_map_hover_region(-1)
 
 func has_move_region_highlights() -> bool:
 	return not _move_highlight_ids.is_empty()
@@ -472,6 +485,7 @@ func _clear_region_highlight_hover(region_id: int) -> void:
 	overlay.visible = true
 
 func set_map_hover_region(region_id: int) -> void:
+	DebugLogger.log("Animation", "set_map_hover_region: " + str(region_id))
 	if region_id == _map_hover_region_id:
 		return
 	var previous_hover := _map_hover_region_id
@@ -488,6 +502,7 @@ func set_map_hover_region(region_id: int) -> void:
 	_map_hover_region_id = region_id
 
 func update_ready_army_highlights(player_id: int, region_ids: Array) -> void:
+	DebugLogger.log("Animation", "update_ready_army_highlights: " + str(player_id) + ", " + str(region_ids))
 	if player_id == -1:
 		clear_ready_army_highlights()
 		return

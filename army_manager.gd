@@ -206,7 +206,7 @@ func update_ready_highlights_for_player(player_id: int) -> void:
 			var region = army.get_parent()
 			if region is Region:
 				var region_id = (region as Region).get_region_id()
-				if region_id != -1 and not ready_regions.has(region_id):
+				if region_id != -1 and not ready_regions.has(region_id) and region.current_owner_id == army.get_player_id():
 					ready_regions.append(region_id)
 	visual_manager.update_ready_army_highlights(player_id, ready_regions)
 
@@ -628,7 +628,7 @@ func _clear_move_arrows() -> void:
 				arrow.queue_free()
 		move_arrows.clear()
 	if visual_manager:
-		visual_manager.clear_move_region_highlights()
+		visual_manager.clear_interaction_highlights()
 
 
 func reset_all_army_movement_points() -> void:
@@ -852,6 +852,10 @@ func remove_destroyed_armies() -> void:
 			
 			# Check if army has no soldiers left
 			if army.get_total_soldiers() <= 0:
+				# Skip freshly raised AI armies that still need recruits
+				if army.just_raised:
+					i += 1
+					continue
 				DebugLogger.log("ArmyManagement", "Removing destroyed army: " + army.name)
 				# Remove from scene
 				if army.get_parent() != null:
@@ -935,6 +939,8 @@ func retreat_army_to_previous_region(army: Army) -> void:
 	
 	# Clear the previous region tracking since army is back there
 	army_previous_regions.erase(army)
+	update_ready_highlights_for_player(_ready_highlight_player_id)
+
 
 func _should_show_human_arrows() -> bool:
 	"""Check if human path arrows should be shown (only for human players)"""

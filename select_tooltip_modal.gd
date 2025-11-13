@@ -41,7 +41,7 @@ const TOOLTIP_TEXTS = {
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
 	"promote_region": "Promote region to the next administrative level, increase growth and production.",
 	"call_to_arms": "Gather recruits from neighboring regions.",
-	"ore_search": "Search for Gold or Iron ores in this region.",
+	"ore_search": "Search for Gold or Iron ores.",
 	
 	# Generic army tooltip (for army buttons in SelectModal)
 	"army": "Select this army to view available actions: movement, recruitment, transfers."
@@ -193,24 +193,23 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 			var cost_dict = {ResourcesEnum.Type.GOLD: search_cost}
 			_display_cost(cost_dict)
 			
-			tooltip_text += "\n\nSuccess Chance: " + str(discovery_chance) + "%"
+			tooltip_text += "\nSuccess Chance: " + str(discovery_chance) + "%"
 			
 			# Show search status
 			if GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
 				var attempts_remaining = current_region.get_ore_search_attempts_remaining()
-				if attempts_remaining > 0:
+				var discovered_ores = current_region.get_discovered_ores()
+				# Show discovered ores
+				if not discovered_ores.is_empty():
+					tooltip_text += "\n\nDiscovered: "
+					for ore_type in discovered_ores:
+						tooltip_text += "" + ResourcesEnum.type_to_string(ore_type)
+				elif attempts_remaining > 0:
 					tooltip_text += "\nAttempts Remaining: " + str(attempts_remaining)
 					if current_region.ore_search_used_this_turn:
-						tooltip_text += " (used this turn)"
+						tooltip_text += ""
 				else:
 					tooltip_text += "\nNo search attempts remaining"
-				
-				# Show discovered ores
-				var discovered_ores = current_region.get_discovered_ores()
-				if not discovered_ores.is_empty():
-					tooltip_text += "\n\nDiscovered Ores:"
-					for ore_type in discovered_ores:
-						tooltip_text += "\n• " + ResourcesEnum.type_to_string(ore_type)
 			else:
 				tooltip_text += "\n\nThis region type cannot contain ores"
 	

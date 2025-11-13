@@ -113,6 +113,8 @@ func start_turn(player_id: int) -> void:
 	DebugLogger.log("AITurnManager", "[TurnController] Starting turn for Player " + str(player_id))
 	
 	await _process_turn(player_id)
+	if _log_active_turn:
+		econ.ore_checks(player_id)
 	
 	emit_signal("turn_finished", player_id)
 	DebugLogger.log("AITurnManager", "[TurnController] Completed turn for Player " + str(player_id))
@@ -175,7 +177,8 @@ func _process_turn(player_id: int) -> void:
 						var comp_before = _get_army_composition_suffix(army)
 						var power_before = army.get_army_power()
 						var result = recruitment_manager.hire_soldiers(army, true)
-						army.just_raised = false
+						if army.get_total_soldiers() > 0:
+							army.just_raised = false
 						if result.has("error"):
 							DebugLogger.log("AITurnManager", "[TurnController] RecruitmentManager error: " + str(result.get("error", "unknown")))
 							_log_recruitment_skip(army, region_id, String(result.get("error", "unknown")))

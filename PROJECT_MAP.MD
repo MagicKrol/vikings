@@ -22,10 +22,11 @@ Start Flow
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
 ├ Map (Node2D) [map_generator.gd]
-│	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4.png` and sync shape from noisy borders; mountain clusters use hidden noisy lines; ocean polygons hidden by default)
-│	│	└ Borders: `_draw_region_borders()` lays down the seam segments and offsets, then `_ensure_region_outline_line()` rebuilds a closed outline from each polygon so every region keeps a neutral border even when ownership colors refresh.
+│	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4.png` and still rebuild from the stored noisy border points; ocean polygons remain hidden by default)
+│	│	└ Borders: `BorderManager` instantiates named Line2D nodes (`OceanBorder@id`, `OwnershipBorder@id`, `InternalBorder@id`) and only adjusts width/color/offset when ownership changes so counts always match adjacency.
 │	├ Ocean (Node2D) – metadata-only ocean polygons (hidden visuals)
-│	└ Frame (Node2D)
+│	├ Frame (Node2D)
+│	└ BorderManager (Node) [border_manager.gd] – centralizes noisy border creation, caches per-edge geometries, preserves ocean strokes (5.2px black) and exposes refresh helpers consumed by MapGenerator/RegionManager.
 ├ Background (Sprite2D)
 ├ Camera2D [camera_controller.gd]
 ├ ClickManager (Node) [click_manager.gd]
@@ -43,6 +44,8 @@ Main (Node2D) [place_armies.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
 │	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
+│	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
+│	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
@@ -176,6 +179,7 @@ editor_start.tscn (Editor Start)
 
 ### VisualManager.gd (VisualManager)
 - Purpose: Place/update/remove castle visuals; create army visuals via ArmyManager; trigger region visual updates. Region highlights reuse `animate_region_highlight_on(region_id, params)` / `animate_region_highlight_off(region_id)` for move targets and global hover; movement uses `GameParameters.REGION_ANIM_*` alpha pairs (owned 0.5↔0.75, neutral 0.35↔0.55) with hover alphas (owned 0.85, neutral 0.55). Passing `animated=false` applies map-hover values from `GameParameters.REGION_MAP_HOVER_*` (owned base 0.6→0.7 hover, neutral base 0.2→0.3 hover). `set_map_hover_region()` uses those toned-down values on non-ocean, non-mountain land; movement highlighting remains animated while `_ready_highlight_regions` restores turn-start highlights after hover/move overrides, all animated overlays share a synced tween cycle so new ready regions match existing pulses, and ready-army highlights suspend whenever move-target overlays are shown so only legal destinations animate.
+- `clear_interaction_highlights()` drops both move-target pulses and map-hover overlays when UI modals take over (ArmyManager/GameManager/ClickManager call it so contested neutral regions don't keep pulsing after retreats/withdrawals).
 
 ### map_editor.gd (MapEditor)
 - Purpose: Map editor mode controller for toggling editor UI.
@@ -203,8 +207,9 @@ editor_start.tscn (Editor Start)
   - `pick_best_raise_region(player_id)`: Selects optimal castle for new army based on recruits and frontier proximity
   - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring
   - `execute_raise_army(player_id, region_id)`: Creates army and deducts cost
+  - `ore_checks(player_id)`: Walks all owned regions once per AI turn and spends gold on `Region.search_for_ore()` whenever the region still has attempts and the player can afford the flat ore search cost
 - Signals computed: frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm
-- Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and calls `plan_turn()` at turn start. After movement, `TurnController` calls `plan_post_movement()` to spend any leftover budget on region economy.
+- Integration: `TurnController.start_turn()` constructs `EconomyAIManager`, calls `plan_turn()` at turn start, and triggers `ore_checks()` after AI movement resolves. After movement, `TurnController` calls `plan_post_movement()` to spend any leftover budget on region economy.
 
 - Priority Flow:
   - If any armies at castles need recruitment this turn → allocate recruitment budgets and skip raising/building.

@@ -568,9 +568,7 @@ func get_ore_search_status_string() -> String:
 		return "All ore search attempts exhausted"
 	
 	var status = str(ore_search_attempts_remaining) + " search attempts remaining"
-	if ore_search_used_this_turn:
-		status += " (used this turn)"
-	
+
 	if not discovered_ores.is_empty():
 		status += "\nDiscovered ores: "
 		var ore_names: Array[String] = []

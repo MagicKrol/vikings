@@ -61,6 +61,7 @@ var _army_manager: ArmyManager
 var _active_battles: int = 0
 var _battle_manager: BattleManager
 var _visual_manager: VisualManager
+var _border_manager: BorderManager
 var _ui_manager: UIManager
 var _ai_camera_director: AICameraDirector
 var ai_step_requires_shift: bool = false
@@ -181,6 +182,8 @@ func initialize_managers(is_scenario: bool = false):
 	"""Initialize all game managers and establish dependencies"""
 	# Get core components - these are required
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	_border_manager = map_generator.border_manager
+	_border_manager.refresh_all_borders()
 	
 	# Initialize core managers directly
 	_region_manager = RegionManager.new(map_generator)
@@ -1527,6 +1530,11 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 					if defeated_region != null:
 						await _ai_camera_director.await_focus_on_region(defeated_region)
 				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+
+	if _visual_manager:
+		_visual_manager.clear_interaction_highlights()
+		if target_region_id != -1:
+			_visual_manager.clear_region_highlight_state(target_region_id)
 
 # Manager accessors for external systems
 func get_battle_manager() -> BattleManager:
