@@ -1,0 +1,1747 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 80
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.239
+underpowered_ratio: 0.000
+castle_spacing: 15.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Oswich, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Ashmere, Fossmere, Vatnchester, Woodberg, Akroy, Blackfjell, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Reykthwaite, Oakfjord, Akrfell, Eastberg, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Eydon, Oakham, Whitholme, Rednes
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Oswich.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army III [Power: 195 - P:20, S:10, A:10, SW:5, C:5, H:5, K:3]
+Action: Moves
+Target: Kirkfjell
+
+Moves to Redton
+Moves to Redhavn
+Moves to Kirkfjell
+Movement blocked near Kirkfjell
+Army II [Power: 215 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Action: Moves
+Target: Whithavn
+
+Moves to Whithavn
+Fight at Whithavn
+Battle started
+Attacker: Army II [Power: 215 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 194 - P:28, S:14, A:5, SW:4, H:5, K:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 260 - P:30, S:25, A:10, SW:10, H:5, K:3]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth
+Fight at Vatnworth
+Battle started
+Attacker: Army I [Power: 260 - P:30, S:25, A:10, SW:10, H:5, K:3]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 237 - P:26, S:23, A:10, SW:9, H:4, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Oswich), upgrade_region (Akroy), upgrade_region (Vatnworth), upgrade_region (Whithavn)
+
+Economy: Build Castle Eval: Hellanes (Strategic: 0.0, Regions: 90.0, Distance: False) | Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Blackdal (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Oswich (Recruits: 89, RScore: 87.3, DScore: 100.0, Dist: 3, Next: Castle, Total: 93.6), Kingley (Recruits: 102, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Keep, Total: 87.5), Akroy (Recruits: 88, RScore: 86.3, DScore: 60.0, Dist: 5, Next: Castle, Total: 73.1)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Akroy (Next: March, Score: 2.0), Oswich (Next: March, Score: 2.0), Vatnworth (Next: March, Score: 1.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Oswich to County (score: 3.0)
+
+Economy: Upgrading Akroy to County (score: 3.0)
+
+Economy: Upgrading Vatnworth to County (score: 2.0)
+
+Economy: Upgrading Whithavn to County (score: 2.0)
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+-------
+[Turn 1]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 80
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.244
+underpowered_ratio: 0.000
+castle_spacing: 13.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Woodhavn, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Eyfjord, Ashton, Eyford, Northfell, Woodvik, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Vatnhaug, Oakfell, Eythorpe, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Eastberg.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army I [Power: 310 - P:30, S:20, A:10, SW:10, C:5, H:10, K:5]
+Action: Moves
+Target: Rednes
+
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army I [Power: 310 - P:30, S:20, A:10, SW:10, C:5, H:10, K:5]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 308 - P:29, S:20, A:10, SW:10, C:5, H:10, K:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 300 - P:30, S:20, A:15, SW:10, C:5, H:5, K:5]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth
+Fight at Vatnworth
+Battle started
+Attacker: Army III [Power: 300 - P:30, S:20, A:15, SW:10, C:5, H:5, K:5]
+Defender Army I [Power: 241 - P:28, S:23, A:10, SW:9, H:4, K:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 33 - A:5, SW:1, C:1, K:1]
+Defender After: Army I [Power: 79 - P:7, S:8, A:6, SW:2, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 260 - P:25, S:15, A:10, SW:10, C:5, H:5, K:5]
+Action: Moves
+Target: Oakfjord
+
+Moves to Whithavn
+Moves to Oakfjord
+Fight at Oakfjord
+Battle started
+Attacker: @Sprite2D@4612 [Power: 260 - P:25, S:15, A:10, SW:10, C:5, H:5, K:5]
+Defender Army II [Power: 204 - P:28, S:14, A:5, SW:4, H:5, K:5]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@4612 [Power: 4 - C:1]
+Defender After: Army II [Power: 74 - P:3, S:3, A:5, SW:1, H:2, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Eastberg), upgrade_region (Rednes), upgrade_region (Eastberg)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitbury (Recruits: 78, RScore: 69.0, DScore: 100.0, Dist: 3, Next: Keep, Total: 84.5), Eastberg (Recruits: 113, RScore: 100.0, DScore: 50.0, Dist: 6, Next: Castle, Total: 75.0), Hafnford (Recruits: 61, RScore: 54.0, DScore: 75.0, Dist: 4, Next: Keep, Total: 64.5)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Rednes (Next: March, Score: 1.0), Ashoy (Next: County, Score: 1.0), Oswich (Next: County, Score: 1.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Eastberg to County (score: 3.0)
+
+Economy: Upgrading Rednes to County (score: 2.0)
+
+Economy: Upgrading Eastberg to March (score: 2.0)
+
+Army III makes camp
+Army III makes camp
+Army III makes camp
+@Sprite2D@4612 makes camp
+@Sprite2D@4612 makes camp
+@Sprite2D@4612 makes camp
+Army I makes camp
+Army I makes camp
+-------
+[Turn 1]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 239
+Food: 80
+Wood: 112
+Iron: 10
+Stone: 21
+
+Signals:
+frontier_pressure: 0.340
+underpowered_ratio: 0.750
+castle_spacing: 15.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Oswich, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Vatnworth, Ashmere, Fossmere, Vatnchester, Woodberg, Akroy, Blackfjell, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Reykthwaite, Whithavn, Oakfjord, Akrfell, Eastberg, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Eydon, Oakham, Whitholme
+
+Economy: Recruitment candidates: Army IV (Oswich)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army II could not recruit at Whithavn (reason: no_budget_assigned)
+
+Recruitment: Army Army I could not recruit at Vatnworth (reason: no_budget_assigned)
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Oswich
+
+Castle Akroy - recruits:91, distance:5, level:2, score: 25.5
+Castle Kingley - recruits:106, distance:7, level:1, score: 18.2
+Castle Oswich - recruits:1, distance:0, level:2, score: 1.4
+Recruitment: Army Army IV recruited 92 at Oswich (gold: 119, wood: 16, iron: 0)
+
+Army IV [Power: 271 - P:32, S:25, A:12, SW:15, C:4, H:4]
+Army III [Power: 195 - P:20, S:10, A:10, SW:5, C:5, H:5, K:3]
+Action: Moves
+Target: Rednes
+
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army III [Power: 195 - P:20, S:10, A:10, SW:5, C:5, H:5, K:3]
+Defender Army I [Power: 308 - P:29, S:20, A:10, SW:10, C:5, H:10, K:5]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 118 - P:11, S:7, A:7, SW:2, C:4, K:3]
+Defender After: Army I [Power: 264 - P:28, S:17, A:10, SW:8, C:5, H:7, K:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 74 - P:3, S:3, A:5, SW:1, H:2, K:3]
+Action: Moves
+Target: Eythorpe
+
+Moves to Eythorpe
+Fight at Eythorpe
+Battle started
+Attacker: Army II [Power: 74 - P:3, S:3, A:5, SW:1, H:2, K:3]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 13 - A:1, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 271 - P:32, S:25, A:12, SW:15, C:4, H:4]
+Action: Moves
+Target: Woodvik
+
+Moves to Ashmere
+Moves to Woodvik
+Fight at Woodvik
+Battle started
+Attacker: Army IV [Power: 271 - P:32, S:25, A:12, SW:15, C:4, H:4]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army IV [Power: 253 - P:29, S:24, A:12, SW:14, C:4, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 79 - P:7, S:8, A:6, SW:2, H:1, K:1]
+Action: Moves
+Target: Woodhavn
+
+Moves to Woodhavn
+Fight at Woodhavn
+Battle started
+Attacker: Army I [Power: 79 - P:7, S:8, A:6, SW:2, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 30 - P:2, S:1, A:6, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Oswich), upgrade_region (Woodfell), upgrade_region (Hafnvik), upgrade_region (Eybury), upgrade_region (Oswich)
+
+Economy: Build Castle Eval: Hellanes (Strategic: 0.0, Regions: 90.0, Distance: False) | Blackdal (Strategic: 0.0, Regions: 90.0, Distance: False) | Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingley (Recruits: 106, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Keep, Total: 87.5), Akroy (Recruits: 91, RScore: 85.8, DScore: 60.0, Dist: 5, Next: Castle, Total: 72.9), Oswich (Recruits: 1, RScore: 0.9, DScore: 100.0, Dist: 3, Next: Castle, Total: 50.5)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Woodfell (Next: March, Score: 4.0), Fossmere (Next: County, Score: 4.0), Ashmere (Next: County, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Oswich to March (score: 6.0)
+
+Economy: Upgrading Woodfell to County (score: 5.0)
+
+Economy: Upgrading Hafnvik to County (score: 5.0)
+
+Economy: Upgrading Eybury to County (score: 5.0)
+
+Economy: Upgrading Oswich to Duchy (score: 5.0)
+
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army IV makes camp
+-------
+[Turn 2]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 206
+Food: 64
+Wood: 89
+Iron: 10
+Stone: 25
+
+Signals:
+frontier_pressure: 0.256
+underpowered_ratio: 0.250
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Eyfjord, Ashton, Eyford, Northfell, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Vatnhaug, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Rednes
+
+Economy: Recruitment candidates: Army IV (Eastberg)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army IV [Power: 0 - none]
+Action: Recruits
+Target: Eastberg
+
+Castle Whitbury - recruits:68, distance:3, level:1, score: 27.2
+Castle Hafnford - recruits:62, distance:5, level:1, score: 14.9
+Castle Eastberg - recruits:2, distance:0, level:2, score: 2.8
+Recruitment: Army Army IV recruited 117 at Eastberg (gold: 157, wood: 24, iron: 0)
+
+Army IV [Power: 345 - P:40, S:30, A:18, SW:18, C:6, H:5]
+Army III [Power: 138 - P:10, S:9, A:7, SW:4, C:1, H:2, K:4]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth
+Fight at Vatnworth
+Battle started
+Attacker: Army III [Power: 138 - P:10, S:9, A:7, SW:4, C:1, H:2, K:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 138 - P:10, S:9, A:7, SW:4, C:1, H:2, K:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 264 - P:28, S:17, A:10, SW:8, C:5, H:7, K:4]
+Action: Moves
+Target: Eydon
+
+Moves to Eydon
+Fight at Eydon
+Battle started
+Attacker: Army I [Power: 264 - P:28, S:17, A:10, SW:8, C:5, H:7, K:4]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army I [Power: 247 - P:26, S:14, A:10, SW:7, C:5, H:7, K:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@4612 [Power: 103 - P:7, S:10, A:6, SW:2, C:2, H:3, K:1]
+Action: Moves
+Target: Oakfjord
+
+Moves to Whithavn
+Moves to Oakfjord
+Fight at Oakfjord
+Battle started
+Attacker: @Sprite2D@4612 [Power: 103 - P:7, S:10, A:6, SW:2, C:2, H:3, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@4612 [Power: 103 - P:7, S:10, A:6, SW:2, C:2, H:3, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 345 - P:40, S:30, A:18, SW:18, C:6, H:5]
+Action: Moves
+Target: Oakfjord
+
+Moves to Eyfjord
+Moves to Vatnhaug
+Moves to Whitbury
+Moves to Whithavn
+Moves to Oakfjord
+Out of movement points before reaching Oakfjord
+Economy: Region economy actions: upgrade_region (Ashoy), upgrade_region (Woodbury), upgrade_region (Eastberg)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitbury (Recruits: 68, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Keep, Total: 100.0), Hafnford (Recruits: 62, RScore: 91.2, DScore: 75.0, Dist: 4, Next: Keep, Total: 83.1), Eastberg (Recruits: 2, RScore: 2.9, DScore: 50.0, Dist: 6, Next: Castle, Total: 26.5)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Ashoy (Next: March, Score: 4.0), Oswich (Next: County, Score: 4.0), Ashfjell (Next: County, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Ashoy to County (score: 5.0)
+
+Economy: Upgrading Woodbury to County (score: 5.0)
+
+Economy: Upgrading Eastberg to Duchy (score: 5.0)
+
+Army III makes camp
+Army III makes camp
+Army III makes camp
+@Sprite2D@4612 makes camp
+@Sprite2D@4612 makes camp
+@Sprite2D@4612 makes camp
+Army I makes camp
+-------
+[Turn 2]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 239
+Food: 65
+Wood: 177
+Iron: 10
+Stone: 24
+
+Signals:
+frontier_pressure: 0.340
+underpowered_ratio: 0.250
+castle_spacing: 15.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Oswich, Woodhavn, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Ashmere, Fossmere, Vatnchester, Woodberg, Akroy, Blackfjell, Woodvik, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Reykthwaite, Oakfjord, Akrfell, Eastberg, Eythorpe, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Oakham, Whitholme
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Akroy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army II could not recruit at Eythorpe (reason: no_budget_assigned)
+
+Army III [Power: 135 - P:12, S:8, A:8, SW:3, C:4, H:1, K:3]
+Action: Moves
+Target: Rednes
+
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army III [Power: 135 - P:12, S:8, A:8, SW:3, C:4, H:1, K:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 131 - P:10, S:8, A:8, SW:3, C:4, H:1, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 106 - P:7, S:5, A:9, SW:5, H:2, K:2]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth
+Fight at Vatnworth
+Battle started
+Attacker: Army I [Power: 106 - P:7, S:5, A:9, SW:5, H:2, K:2]
+Defender Army III [Power: 138 - P:10, S:9, A:7, SW:4, C:1, H:2, K:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army I [Power: 84 - P:4, S:4, A:9, SW:3, H:1, K:2]
+Defender After: Army III [Power: 135 - P:10, S:9, A:6, SW:4, C:1, H:2, K:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 253 - P:29, S:24, A:12, SW:14, C:4, H:3]
+Action: Moves
+Target: Whithavn
+
+Moves to Whithavn
+Army IV makes camp
+Fight at Whithavn
+Battle started
+Attacker: Army IV [Power: 253 - P:29, S:24, A:12, SW:14, C:4, H:3]
+Defender @Sprite2D@4612 [Power: 109 - P:8, S:10, A:6, SW:2, C:3, H:3, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 188 - P:13, S:18, A:11, SW:12, C:3, H:3]
+Defender After: @Sprite2D@4612 [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 59 - P:8, A:1, H:4, K:2]
+Action: Moves
+Target: Vatnhaug
+
+Moves to Vatnhaug
+Fight at Vatnhaug
+Battle started
+Attacker: Army II [Power: 59 - P:8, A:1, H:4, K:2]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Defeated
+Attacker After: Army II [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 22 - P:11]
+
+Economy: Region economy actions: upgrade_region (Fossmere), upgrade_region (Woodfell), upgrade_region (Hafnvik), upgrade_region (Ashmere)
+
+Economy: Build Castle Eval: Blackdal (Strategic: 0.0, Regions: 90.0, Distance: False) | Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Hellanes (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingley (Recruits: 95, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Keep, Total: 87.5), Akroy (Recruits: 95, RScore: 100.0, DScore: 60.0, Dist: 5, Next: Castle, Total: 80.0), Oswich (Recruits: 13, RScore: 13.7, DScore: 100.0, Dist: 3, Next: Castle, Total: 56.8)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Fossmere (Next: March, Score: 3.0), Eybury (Next: March, Score: 3.0), Akroy (Next: March, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Fossmere to County (score: 4.0)
+
+Economy: Upgrading Woodfell to March (score: 3.0)
+
+Economy: Upgrading Hafnvik to March (score: 3.0)
+
+Economy: Upgrading Ashmere to County (score: 3.0)
+
+Army III makes camp
+Army III makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 3]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 177
+Food: 68
+Wood: 131
+Iron: 10
+Stone: 33
+
+Signals:
+frontier_pressure: 0.300
+underpowered_ratio: 0.000
+castle_spacing: 13.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Vatnworth, Eyfjord, Ashton, Eyford, Northfell, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Vatnhaug, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Eydon
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army I [Power: 256 - P:26, S:17, A:10, SW:7, C:5, H:7, K:4]
+Action: Moves
+Target: Rednes
+
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army I [Power: 256 - P:26, S:17, A:10, SW:7, C:5, H:7, K:4]
+Defender Army III [Power: 137 - P:11, S:8, A:8, SW:4, C:4, H:1, K:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 155 - P:15, S:10, A:4, SW:4, C:3, H:5, K:3]
+Defender After: Army III [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 345 - P:40, S:30, A:18, SW:18, C:6, H:5]
+Action: Moves
+Target: Oakfjord
+
+Moves to Whithavn
+Moves to Oakfjord
+Army IV makes camp
+Army IV makes camp
+Fight at Oakfjord
+Army III [Power: 135 - P:10, S:9, A:6, SW:4, C:1, H:2, K:4]
+Action: Moves
+Target: Reykthwaite
+
+Moves to Reykthwaite
+Fight at Reykthwaite
+Battle started
+Attacker: Army III [Power: 135 - P:10, S:9, A:6, SW:4, C:1, H:2, K:4]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 108 - P:5, S:8, A:6, SW:3, C:1, H:2, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_castle (Whitbury), upgrade_region (Oswich), upgrade_region (Ashfjell), upgrade_region (Vatnhaug), upgrade_region (Ashoy)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitbury (Recruits: 65, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Keep, Total: 100.0), Hafnford (Recruits: 62, RScore: 95.4, DScore: 75.0, Dist: 4, Next: Keep, Total: 85.2), Eastberg (Recruits: 15, RScore: 23.1, DScore: 50.0, Dist: 6, Next: Castle, Total: 36.5)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Oswich (Next: March, Score: 3.0), Reykthwaite (Next: County, Score: 3.0), Ashfjell (Next: March, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Oswich to County (score: 4.0)
+
+Economy: Upgrading Ashfjell to County (score: 4.0)
+
+Economy: Upgrading Vatnhaug to County (score: 4.0)
+
+Economy: Upgrading Ashoy to March (score: 3.0)
+
+Army III makes camp
+Army III makes camp
+Army I makes camp
+Army I makes camp
+@Sprite2D@5693 makes camp
+-------
+[Turn 3]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 373
+Food: 85
+Wood: 259
+Iron: 10
+Stone: 32
+
+Signals:
+frontier_pressure: 0.370
+underpowered_ratio: 0.000
+castle_spacing: 15.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Oswich, Woodhavn, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Ashmere, Fossmere, Vatnchester, Woodberg, Akroy, Blackfjell, Woodvik, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Oakfjord, Akrfell, Eastberg, Eythorpe, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Oakham, Whitholme
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Akroy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army I [Power: 105 - P:6, S:8, A:9, SW:3, H:2, K:2]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth
+Fight at Vatnworth
+Battle started
+Attacker: Army I [Power: 105 - P:6, S:8, A:9, SW:3, H:2, K:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 105 - P:6, S:8, A:9, SW:3, H:2, K:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 206 - P:19, S:19, A:12, SW:12, C:3, H:3]
+Action: Moves
+Target: Whithavn
+
+Moves to Whithavn
+Fight at Whithavn
+Battle started
+Attacker: Army IV [Power: 206 - P:19, S:19, A:12, SW:12, C:3, H:3]
+Defender @Sprite2D@5693 [Power: 345 - P:40, S:30, A:18, SW:18, C:6, H:5]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army IV [Power: 87 - P:7, S:7, A:8, SW:5, C:2]
+Defender After: @Sprite2D@5693 [Power: 325 - P:38, S:26, A:18, SW:17, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_castle (Kingley), upgrade_region (Fossmere), upgrade_region (Eybury), upgrade_region (Akroy), upgrade_region (Oston)
+
+Economy: Build Castle Eval: Blackdal (Strategic: 0.0, Regions: 90.0, Distance: False) | Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Hellanes (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingley (Recruits: 98, RScore: 99.0, DScore: 75.0, Dist: 4, Next: Keep, Total: 87.0), Akroy (Recruits: 99, RScore: 100.0, DScore: 60.0, Dist: 5, Next: Castle, Total: 80.0), Oswich (Recruits: 25, RScore: 25.3, DScore: 100.0, Dist: 3, Next: Castle, Total: 62.6)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Oswich (Next: Province, Score: 3.0), Woodfell (Next: Duchy, Score: 2.0), Fossmere (Next: Duchy, Score: 2.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Fossmere to March (score: 3.0)
+
+Economy: Upgrading Eybury to March (score: 3.0)
+
+Economy: Upgrading Akroy to March (score: 3.0)
+
+Economy: Upgrading Oston to County (score: 3.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 4]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 224
+Food: 76
+Wood: 179
+Iron: 10
+Stone: 21
+
+Signals:
+frontier_pressure: 0.310
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Eyfjord, Ashton, Eyford, Northfell, Ashthorpe, Reykthwaite, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Vatnhaug, Whithavn, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Eydon, Rednes
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitbury.
+
+Economy: Decision outcome: Raised then recruited.
+
+@Sprite2D@5693 [Power: 325 - P:38, S:26, A:18, SW:17, C:6, H:5]
+Action: Moves
+Target: Fossmere
+
+Moves to Fossmere
+Fight at Fossmere
+Battle started
+Attacker: @Sprite2D@5693 [Power: 345 - P:40, S:30, A:18, SW:18, C:6, H:5]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@5693 [Power: 345 - P:40, S:30, A:18, SW:18, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 112 - P:7, S:8, A:6, SW:3, C:1, H:2, K:3]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth
+Fight at Vatnworth
+Battle started
+Attacker: Army III [Power: 112 - P:7, S:8, A:6, SW:3, C:1, H:2, K:3]
+Defender Army I [Power: 105 - P:6, S:8, A:9, SW:3, H:2, K:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Defeated
+Attacker After: Army III [Power: 0 - none]
+Defender After: Army I [Power: 31 - S:1, A:6, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 192 - P:18, S:13, A:6, SW:7, C:4, H:5, K:3]
+Action: Moves
+Target: Whitholme
+
+Moves to Whitholme
+Fight at Whitholme
+Battle started
+Attacker: Army I [Power: 192 - P:18, S:13, A:6, SW:7, C:4, H:5, K:3]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army I [Power: 140 - P:11, S:6, A:6, SW:4, C:4, H:4, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Whitbury), upgrade_region (Whitbury), upgrade_region (Whitholme), upgrade_region (Vatnhaug)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitbury (Recruits: 69, RScore: 100.0, DScore: 100.0, Dist: 3, Next: Castle, Total: 100.0), Hafnford (Recruits: 66, RScore: 95.7, DScore: 75.0, Dist: 4, Next: Keep, Total: 85.3), Eastberg (Recruits: 28, RScore: 40.6, DScore: 50.0, Dist: 6, Next: Castle, Total: 45.3)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Whitbury (Next: Duchy, Score: 4.0), Whitholme (Next: March, Score: 3.0), Oswich (Next: March, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Whitbury to County (score: 6.0)
+
+Economy: Upgrading Whitbury to March (score: 5.0)
+
+Economy: Upgrading Whitholme to County (score: 4.0)
+
+Economy: Upgrading Vatnhaug to March (score: 4.0)
+
+Army I makes camp
+Army I makes camp
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+-------
+[Turn 4]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 430
+Food: 116
+Wood: 297
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.400
+underpowered_ratio: 0.500
+castle_spacing: 15.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Oswich, Woodhavn, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Vatnworth, Ashmere, Vatnchester, Woodberg, Akroy, Blackfjell, Woodvik, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Oakfjord, Akrfell, Eastberg, Eythorpe, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Oakham
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Kingley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Vatnworth (reason: no_budget_assigned)
+
+Army IV [Power: 129 - P:10, S:14, A:9, SW:8, C:2]
+Action: Moves
+Target: Vatnhaug
+
+Moves to Eythorpe
+Moves to Vatnhaug
+Fight at Vatnhaug
+Battle started
+Attacker: Army IV [Power: 129 - P:10, S:14, A:9, SW:8, C:2]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army IV [Power: 100 - P:7, S:13, A:9, SW:3, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 31 - S:1, A:6, K:1]
+Action: Moves
+Target: Reykthwaite
+
+Moves to Reykthwaite
+Fight at Reykthwaite
+Battle started
+Attacker: Army I [Power: 31 - S:1, A:6, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 28 - S:1, A:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Kingley), upgrade_region (Kingley), upgrade_region (Kingley), upgrade_region (Reykthwaite)
+
+Economy: Build Castle Eval: Blackdal (Strategic: 0.0, Regions: 90.0, Distance: False) | Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Hellaoy (Strategic: 0.0, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingley (Recruits: 103, RScore: 99.0, DScore: 75.0, Dist: 4, Next: Castle, Total: 87.0), Akroy (Recruits: 104, RScore: 100.0, DScore: 60.0, Dist: 5, Next: Castle, Total: 80.0), Oswich (Recruits: 30, RScore: 28.8, DScore: 100.0, Dist: 3, Next: Castle, Total: 64.4)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kingley (Next: Province, Score: 3.0), Oswich (Next: Province, Score: 3.0), Reykthwaite (Next: March, Score: 2.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Kingley to County (score: 6.0)
+
+Economy: Upgrading Kingley to March (score: 5.0)
+
+Economy: Upgrading Kingley to Duchy (score: 4.0)
+
+Economy: Upgrading Reykthwaite to County (score: 3.0)
+
+Army I makes camp
+Army I makes camp
+-------
+[Turn 5]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 349
+Food: 81
+Wood: 258
+Iron: 10
+Stone: 39
+
+Signals:
+frontier_pressure: 0.381
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Eyfjord, Fossmere, Ashton, Eyford, Northfell, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Whithavn, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Eydon, Whitholme, Rednes
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitbury.
+
+Economy: Decision outcome: Raised then recruited.
+
+@Sprite2D@5693 [Power: 318 - P:37, S:26, A:18, SW:17, C:6, H:4]
+Action: Moves
+Target: Ashmere
+
+Moves to Ashmere
+Fight at Ashmere
+Battle started
+Attacker: @Sprite2D@5693 [Power: 325 - P:38, S:26, A:18, SW:17, C:6, H:5]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: @Sprite2D@5693 [Power: 315 - P:37, S:25, A:18, SW:17, C:6, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 151 - P:13, S:6, A:7, SW:5, C:4, H:4, K:3]
+Action: Moves
+Target: Oakfjord
+
+Moves to Greenvik
+Moves to Oakfjord
+Fight at Oakfjord
+Battle started
+Attacker: Army I [Power: 151 - P:13, S:6, A:7, SW:5, C:4, H:4, K:3]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 124 - P:12, S:5, A:7, SW:2, C:4, H:2, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Whitbury), upgrade_region (Eyfjord), upgrade_region (Oswich), upgrade_region (Riverbury)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Whitbury (Recruits: 59, RScore: 88.1, DScore: 100.0, Dist: 3, Next: Castle, Total: 94.0), Hafnford (Recruits: 67, RScore: 100.0, DScore: 75.0, Dist: 4, Next: Keep, Total: 87.5), Eastberg (Recruits: 41, RScore: 61.2, DScore: 50.0, Dist: 6, Next: Castle, Total: 55.6)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Eastberg (Next: Province, Score: 3.0), Ashfjell (Next: March, Score: 3.0), Woodbury (Next: March, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Whitbury to Duchy (score: 4.0)
+
+Economy: Upgrading Eyfjord to County (score: 3.0)
+
+Economy: Upgrading Oswich to March (score: 3.0)
+
+Economy: Upgrading Riverbury to County (score: 3.0)
+
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+-------
+[Turn 5]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 574
+Food: 144
+Wood: 377
+Iron: 10
+Stone: 13
+
+Signals:
+frontier_pressure: 0.467
+underpowered_ratio: 0.500
+castle_spacing: 15.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Oswich, Woodhavn, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Vatnworth, Vatnchester, Woodberg, Akroy, Blackfjell, Woodvik, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Reykthwaite, Vatnhaug, Akrfell, Eastberg, Eythorpe, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Oakham
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Kingley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Reykthwaite (reason: no_budget_assigned)
+
+Army IV [Power: 100 - P:7, S:13, A:9, SW:3, C:2]
+Action: Moves
+Target: Eyfjord
+
+Moves to Eyfjord
+Army IV makes camp
+Army IV makes camp
+Fight at Eyfjord
+Battle started
+Attacker: Army IV [Power: 104 - P:7, S:13, A:9, SW:4, C:2]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army IV [Power: 79 - P:5, S:6, A:9, SW:4, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 56 - P:1, S:4, A:6, SW:1, K:2]
+Action: Moves
+Target: Rednes
+
+Moves to Redhavn
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army I [Power: 56 - P:1, S:4, A:6, SW:1, K:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 53 - P:1, S:3, A:6, SW:1, K:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Akroy)
+
+Economy: Build Castle Eval: Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Blackvik (Strategic: 0.0, Regions: 75.0, Distance: False) | Saintwich (Strategic: 0.0, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingley (Recruits: 106, RScore: 96.4, DScore: 75.0, Dist: 4, Next: Castle, Total: 85.7), Akroy (Recruits: 110, RScore: 100.0, DScore: 60.0, Dist: 5, Next: Castle, Total: 80.0), Oswich (Recruits: 36, RScore: 32.7, DScore: 100.0, Dist: 3, Next: Castle, Total: 66.4)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kingley (Next: Province, Score: 3.0), Oswich (Next: Province, Score: 3.0), Hafnvik (Next: Duchy, Score: 2.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Akroy to Duchy (score: 3.0)
+
+Army IV makes camp
+-------
+[Turn 6]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 480
+Food: 86
+Wood: 338
+Iron: 10
+Stone: 47
+
+Signals:
+frontier_pressure: 0.429
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Ashmere, Fossmere, Ashton, Eyford, Northfell, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Whithavn, Oakfjord, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Eydon, Whitholme
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Whitbury.
+
+Economy: Decision outcome: Raised then recruited.
+
+@Sprite2D@5693 [Power: 321 - P:36, S:26, A:18, SW:17, C:6, H:5]
+Action: Moves
+Target: Oswich
+
+Moves to Oswich
+Fight at Oswich
+Battle started
+Attacker: @Sprite2D@5693 [Power: 318 - P:37, S:26, A:18, SW:17, C:6, H:4]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: @Sprite2D@5693 [Power: 314 - P:35, S:26, A:18, SW:17, C:6, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 124 - P:12, S:5, A:7, SW:2, C:4, H:2, K:3]
+Action: Moves
+Target: Woodfell
+
+Moves to Fossmere
+Moves to Oswich
+Moves to Woodfell
+Army I makes camp
+Army I makes camp
+Out of movement points before reaching Woodfell
+Economy: Region economy actions: upgrade_castle (Hafnford), upgrade_region (Oswich), upgrade_region (Ashmere), upgrade_region (Ashfjell)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hafnford (Recruits: 68, RScore: 100.0, DScore: 100.0, Dist: 4, Next: Keep, Total: 100.0), Whitbury (Recruits: 63, RScore: 92.6, DScore: 80.0, Dist: 5, Next: Castle, Total: 86.3), Eastberg (Recruits: 50, RScore: 73.5, DScore: 57.1, Dist: 7, Next: Castle, Total: 65.3)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Eastberg (Next: Province, Score: 3.0), Woodbury (Next: March, Score: 3.0), Redfell (Next: County, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Oswich to Province (score: 4.0)
+
+Economy: Upgrading Ashmere to March (score: 3.0)
+
+Economy: Upgrading Ashfjell to March (score: 3.0)
+
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+-------
+[Turn 6]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 7]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 772
+Food: 219
+Wood: 461
+Iron: 10
+Stone: 21
+
+Signals:
+frontier_pressure: 0.522
+underpowered_ratio: 1.000
+castle_spacing: 23.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Reykthwaite, Woodfell, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Eybury, Reykhavn, Oston, Woodhavn, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Vatnworth, Eyfjord, Vatnchester, Woodberg, Akroy, Blackfjell, Woodvik, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Reykthwaite, Vatnhaug, Akrfell, Eastberg, Eythorpe, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Oakham, Rednes
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Kingley.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Rednes (reason: no_budget_assigned)
+
+Recruitment: Army Army IV could not recruit at Eyfjord (reason: no_budget_assigned)
+
+Economy: Region economy actions: upgrade_region (Kingley), upgrade_region (Rednes), upgrade_region (Redton), upgrade_region (Eastberg), upgrade_region (Torthwaite), upgrade_region (Fossdon), upgrade_region (Woodvik), upgrade_region (Akroy), upgrade_region (Woodberg), upgrade_region (Blackfjell)
+
+Economy: Build Castle Eval: Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Blackvik (Strategic: 0.0, Regions: 75.0, Distance: True) | Saintwich (Strategic: 0.0, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Kingley (Recruits: 112, RScore: 97.4, DScore: 100.0, Dist: 4, Next: Castle, Total: 98.7), Akroy (Recruits: 115, RScore: 100.0, DScore: 80.0, Dist: 5, Next: Castle, Total: 90.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Rednes (Next: Duchy, Score: 1.0), Vatnoy (Next: County, Score: 1.0), Redton (Next: March, Score: 1.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Kingley to Province (score: 3.0)
+
+Economy: Upgrading Rednes to March (score: 2.0)
+
+Economy: Upgrading Redton to County (score: 2.0)
+
+Economy: Upgrading Eastberg to County (score: 2.0)
+
+Economy: Upgrading Torthwaite to County (score: 2.0)
+
+Economy: Upgrading Fossdon to County (score: 2.0)
+
+Economy: Upgrading Woodvik to County (score: 2.0)
+
+Economy: Upgrading Akroy to Province (score: 2.0)
+
+Economy: Upgrading Woodberg to County (score: 2.0)
+
+Economy: Upgrading Blackfjell to County (score: 2.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 7]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 555
+Food: 98
+Wood: 378
+Iron: 5
+Stone: 20
+
+Signals:
+frontier_pressure: 0.442
+underpowered_ratio: 0.000
+castle_spacing: 10.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Redmere, Stonewich, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Oswich, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Ashmere, Fossmere, Ashton, Eyford, Northfell, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Whithavn, Oakfjord, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Eydon, Whitholme
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Hafnford.
+
+Economy: Decision outcome: Raised then recruited.
+
+@Sprite2D@5693 [Power: 317 - P:36, S:26, A:18, SW:16, C:6, H:5]
+Action: Moves
+Target: Woodfell
+
+Moves to Woodfell
+Fight at Woodfell
+Battle started
+Attacker: @Sprite2D@5693 [Power: 321 - P:36, S:26, A:18, SW:17, C:6, H:5]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: @Sprite2D@5693 [Power: 313 - P:34, S:26, A:18, SW:16, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 138 - P:13, S:6, A:7, SW:3, C:4, H:3, K:3]
+Action: Moves
+Target: Eybury
+
+Moves to Eybury
+Army I makes camp
+Fight at Eybury
+Battle started
+Attacker: Army I [Power: 146 - P:13, S:7, A:7, SW:3, C:4, H:4, K:3]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 126 - P:11, S:5, A:7, SW:3, C:4, H:2, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Hafnford), upgrade_region (Hafnford), upgrade_region (Hafnford)
+
+Economy: Build Castle Eval: Ashthorpe (Strategic: 0.0, Regions: 105.0, Distance: False) | Sanddon (Strategic: 0.0, Regions: 90.0, Distance: False) | Whitchester (Strategic: 0.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hafnford (Recruits: 71, RScore: 100.0, DScore: 100.0, Dist: 4, Next: Castle, Total: 100.0), Whitbury (Recruits: 68, RScore: 95.8, DScore: 80.0, Dist: 5, Next: Castle, Total: 87.9), Eastberg (Recruits: 63, RScore: 88.7, DScore: 57.1, Dist: 7, Next: Castle, Total: 72.9)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Eastberg (Next: Province, Score: 4.0), Woodfell (Next: Duchy, Score: 3.0), Whitbury (Next: Province, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Hafnford to County (score: 6.0)
+
+Economy: Upgrading Hafnford to March (score: 5.0)
+
+Economy: Upgrading Hafnford to Duchy (score: 4.0)
+
+Army I makes camp
+Army I makes camp
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+@Sprite2D@5693 makes camp
+-------
+[Turn 7]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: None
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: none
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Result: no_upgrade_candidates
+
+Economy: Upgrade Region Result: no_candidate
+
+-------
+[Turn 8]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 885
+Food: 139
+Wood: 528
+Iron: 0
+Stone: 17
+
+Signals:
+frontier_pressure: 0.591
+underpowered_ratio: 1.000
+castle_spacing: 22.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Reykthwaite, Torthorpe, Hvitfell, Blackfjell, Whitvik, Reddal, Bergvik, Reykhavn, Oston, Woodhavn, Hvitby, Vatnberg, Eastnes, Saintwich, Fossberg, Blackfjell, Reykley, Hafnvik, Blackvik, Vatnworth, Eyfjord, Vatnchester, Woodberg, Akroy, Blackfjell, Woodvik, Fossdon, Blackvik, Hellaoy, Kingley, Torthwaite, Hellanes, Reykthwaite, Vatnhaug, Akrfell, Eastberg, Eythorpe, Redton, Blackdal, Vatnoy, Bergfjell, Redhavn, Oakham, Rednes
+
+Economy: Recruitment candidates: Army III (Kingley)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Recruitment: Army Army I could not recruit at Rednes (reason: no_budget_assigned)
+
+Recruitment: Army Army IV could not recruit at Eyfjord (reason: no_budget_assigned)
+
+Army III [Power: 0 - none]
+Action: Recruits
+Target: Kingley
+
+Castle Akroy - recruits:123, distance:4, level:2, score: 43.0
+Recruitment: Army Army III recruited 121 at Kingley (gold: 163, wood: 24, iron: 0)
+
+Army III [Power: 357 - P:42, S:31, A:18, SW:18, C:6, H:6]
+Army III [Power: 357 - P:42, S:31, A:18, SW:18, C:6, H:6]
+Action: Moves
+Target: Eydon
+
+Moves to Eydon
+Fight at Eydon
+Battle started
+Attacker: Army III [Power: 357 - P:42, S:31, A:18, SW:18, C:6, H:6]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 350 - P:42, S:30, A:18, SW:17, C:6, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 92 - P:5, S:8, A:10, SW:5, C:2]
+Action: Moves
+Target: Whitbury
+
+Moves to Vatnhaug
+Moves to Whitbury
+Fight at Whitbury
+Battle started
+Attacker: Army IV [Power: 92 - P:5, S:8, A:10, SW:5, C:2]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Defeated
+Attacker After: Army IV [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 4 - P:2]
+
+Army I [Power: 56 - P:1, S:3, A:7, SW:1, K:2]
+Action: Moves
+Target: Kirkfjell
+
+Moves to Kirkfjell
+Fight at Kirkfjell
+Battle started
+Attacker: Army I [Power: 56 - P:1, S:3, A:7, SW:1, K:2]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Defeated
+Attacker After: Army I [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 24 - P:12]
+
+Economy: Region economy actions: upgrade_region (Eydon), upgrade_region (Vatnoy), upgrade_region (Redton), upgrade_region (Torthwaite), upgrade_region (Blackfjell), upgrade_region (Fossdon), upgrade_region (Eydon)
+
+Economy: Build Castle Eval: Fossberg (Strategic: 0.0, Regions: 90.0, Distance: False) | Blackvik (Strategic: 0.0, Regions: 75.0, Distance: True) | Hellaoy (Strategic: 0.0, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Akroy (Recruits: 123, RScore: 100.0, DScore: 80.0, Dist: 5, Next: Castle, Total: 90.0), Kingley (Recruits: 0, RScore: 0.0, DScore: 100.0, Dist: 4, Next: Castle, Total: 50.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Vatnoy (Next: March, Score: 4.0), Redton (Next: Duchy, Score: 4.0), Torthwaite (Next: Duchy, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Eydon to County (score: 5.0)
+
+Economy: Upgrading Vatnoy to County (score: 5.0)
+
+Economy: Upgrading Redton to March (score: 5.0)
+
+Economy: Upgrading Torthwaite to March (score: 5.0)
+
+Economy: Upgrading Blackfjell to March (score: 5.0)
+
+Economy: Upgrading Fossdon to March (score: 5.0)
+
+Economy: Upgrading Eydon to March (score: 4.0)
+
+Army III makes camp
+-------
+[Turn 8]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 746
+Food: 153
+Wood: 458
+Iron: 5
+Stone: 25
+
+Signals:
+frontier_pressure: 0.318
+underpowered_ratio: 0.333
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Woodfell, Redmere, Stonewich, Eybury, Oswich, Blackley, Ashfjell, Woodbury, Redfell, Oswich, Saintberg, Saintwich, Vatnvik, Akrfjord, Sandhavn, Whitfjell, Whitchester, Eastberg, Riverbury, Eastthwaite, Ashmere, Fossmere, Ashton, Eyford, Northfell, Ashthorpe, Fossoy, Ashoy, Sanddon, Southham, Northnes, Oakby, Hafnford, Sanddal, Whithavn, Oakfjord, Oakfell, Whitbury, Eydon, Woodford, Greenvik, Torhavn, Kirkfjell, Whitholme
+
+Economy: Recruitment candidates: Army III (Hafnford)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army III [Power: 0 - none]
+Action: Recruits
+Target: Hafnford
+
+Castle Eastberg - recruits:78, distance:5, level:2, score: 21.8
+Castle Whitbury - recruits:62, distance:5, level:2, score: 17.4
+Castle Oswich - recruits:13, distance:8, level:2, score: 2.3
+Recruitment: Army Army III recruited 74 at Hafnford (gold: 98, wood: 14, iron: 0)
+
+Army III [Power: 218 - P:25, S:20, A:11, SW:12, C:3, H:3]
+Army III [Power: 218 - P:25, S:20, A:11, SW:12, C:3, H:3]
+Action: Moves
+Target: Vatnworth
+
+Moves to Vatnworth

@@ -94,13 +94,14 @@ func start_turn(player_id: int) -> void:
 	moved_armies.clear()
 	
 	var turn_number := _get_current_turn()
-	_log_active_turn = game_manager.is_player_ai(player_id)
+	var is_ai_player := game_manager.is_player_ai(player_id)
+	_log_active_turn = is_ai_player
 	if _log_active_turn:
 		game_manager.ensure_ai_log_started()
 		_recruitment_status_cache.clear()
 	
 	# Step 1: Use EconomyAIManager to plan economy and allocate budgets (recruitment wired-in)
-	var econ := EconomyAIManager.new(region_manager, army_manager, player_manager)
+	var econ := EconomyAIManager.new(region_manager, army_manager, player_manager, game_manager)
 	var econ_result = econ.plan_turn(player_id, turn_number)
 	_log_turn_intro(player_id, turn_number, econ_result)
 	var assigned_count = int(econ_result.get("recruit_assigned", 0))
@@ -108,12 +109,23 @@ func start_turn(player_id: int) -> void:
 	DebugLogger.log("AITurnManager", "[TurnController] EconomyAIManager assigned recruitment budgets to " + str(assigned_count) + " armies at castles")
 	if raise_result.get("raised", false):
 		DebugLogger.log("AITurnManager", "[TurnController] EconomyAIManager raised new army at region " + str(raise_result.get("region_id", -1)))
+	if is_ai_player:
+		var garrison_exec = econ.execute_garrison_recruitment(player_id)
+		if int(garrison_exec.get("processed", 0)) > 0:
+			DebugLogger.log("AITurnManager", "[TurnController] Garrison recruitment reinforced " + str(garrison_exec.get("processed", 0)) + " castle(s) (" + str(garrison_exec.get("recruited", 0)) + " soldiers)")
+		var defense_reason = "no castles in danger" if econ.get_garrison_request_count() == 0 else "no resources available"
+		_log_castle_recruitment_summary("Castle Defense Recruitment", garrison_exec.get("entries", []), defense_reason)
 	
 	emit_signal("turn_started", player_id)
 	DebugLogger.log("AITurnManager", "[TurnController] Starting turn for Player " + str(player_id))
 	
 	await _process_turn(player_id)
-	if _log_active_turn:
+	if is_ai_player:
+		var trickle_result = econ.perform_garrison_trickle(player_id)
+		if int(trickle_result.get("processed", 0)) > 0:
+			DebugLogger.log("AITurnManager", "[TurnController] End-of-turn garrison upkeep hired " + str(trickle_result.get("recruited", 0)) + " soldier(s) across " + str(trickle_result.get("processed", 0)) + " castle(s)")
+		var trickle_reason = _describe_trickle_reason(String(trickle_result.get("reason", "success")))
+		_log_castle_recruitment_summary("Additional Castle Recruitment", trickle_result.get("entries", []), trickle_reason)
 		econ.ore_checks(player_id)
 	
 	emit_signal("turn_finished", player_id)
@@ -259,7 +271,7 @@ func _process_turn(player_id: int) -> void:
 			DebugLogger.log("AITurnManager", "[TurnController] No ownership change - continuing with remaining armies")
 
 	# After all moves, run a post-movement economy pass to spend leftovers on region economy
-	var econ_post := EconomyAIManager.new(region_manager, army_manager, player_manager)
+	var econ_post := EconomyAIManager.new(region_manager, army_manager, player_manager, game_manager)
 	var turn_idx := _get_current_turn()
 	var econ_post_result := econ_post.plan_post_movement(player_id, turn_idx)
 	DebugLogger.log("AITurnManager", "[TurnController] Post-movement economy result: " + str(econ_post_result))
@@ -894,3 +906,29 @@ func _join_strings(items: Array) -> String:
 		if i < items.size() - 1:
 			result += ", "
 	return result
+
+func _log_castle_recruitment_summary(header: String, entries_variant: Variant, fallback_reason: String) -> void:
+	if not _log_active_turn:
+		return
+	if game_manager == null or not game_manager.has_method("get_ai_log_manager"):
+		return
+	var log_manager = game_manager.get_ai_log_manager()
+	if log_manager == null:
+		return
+	var entries: Array = []
+	if entries_variant is Array:
+		entries = entries_variant
+	log_manager.log_castle_recruitment_summary(header, entries, fallback_reason)
+
+func _describe_trickle_reason(code: String) -> String:
+	match code:
+		"success":
+			return "success"
+		"no_food_surplus":
+			return "no food surplus"
+		"no_castles":
+			return "no castles available"
+		"no_recruitment_manager":
+			return "recruitment unavailable"
+		_:
+			return code

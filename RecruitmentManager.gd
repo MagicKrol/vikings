@@ -35,7 +35,7 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var unit0_share = ideal.get(SoldierTypeEnum.Type.PEASANTS, 0.0)
 
 	var result = _allocate_with_unit0_gd(
-		army, budget, total_units, ideal, unit0_share, {}, debug
+		army.get_composition(), budget, total_units, ideal, unit0_share, {}, debug
 	)
 
 	if result.get("total_recruited", 0) > 0:
@@ -61,6 +61,52 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 		"budget_left": budget.to_dict(),
 		"recruits_left": recruits_remaining
 	}
+
+func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, debug: bool = false) -> Dictionary:
+	if region == null or budget == null:
+		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0}
+	var recruit_sources = _gather_recruit_sources(region, player_id)
+	var available_from_sources = _sum_sources(recruit_sources)
+	if available_from_sources <= 0:
+		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0}
+	var total_units = available_from_sources
+	if budget.available_recruits > 0:
+		total_units = min(total_units, budget.available_recruits)
+	
+	var ideal_raw = GameParameters.get_ideal_castle_garrison(region.get_castle_type())
+	if ideal_raw.is_empty():
+		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0}
+	var ideal_counts = _map_ideal_keys_to_types(ideal_raw)
+	var garrison_comp = region.get_garrison()
+	var special_caps: Dictionary = {}
+	var total_deficit = 0
+	for t in ideal_counts.keys():
+		var target = int(ideal_counts[t])
+		var current = garrison_comp.get_soldier_count(t)
+		var deficit = max(0, target - current)
+		special_caps[t] = deficit
+		total_deficit += deficit
+	if total_deficit <= 0:
+		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0}
+	total_units = min(total_units, total_deficit)
+	if total_units <= 0:
+		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0}
+	
+	var ideal = _normalize_ideal(ideal_counts)
+	var unit0_share = ideal.get(SoldierTypeEnum.Type.PEASANTS, 0.0)
+	var result = _allocate_with_unit0_gd(
+		garrison_comp, budget, total_units, ideal, unit0_share, special_caps, debug
+	)
+	var total_recruited = int(result.get("total_recruited", 0))
+	if total_recruited > 0:
+		_deduct_recruits_proportionally(total_recruited, recruit_sources)
+		_deduct_player_resources(
+			player_id,
+			int(result.get("spent_gold", 0)),
+			int(result.get("spent_wood", 0)),
+			int(result.get("spent_iron", 0))
+		)
+	return result
 
 
 # Helpers ------------------------------------------------------------------
@@ -247,7 +293,7 @@ func _get_unit_costs_map(types: Array) -> Dictionary:
 
 # Core units.py allocation algorithm -----------------------------------------
 func _allocate_with_unit0_gd(
-	army: Army,
+	target_comp: ArmyComposition,
 	budget: BudgetComposition, 
 	total_units: int, 
 	ideal: Dictionary, 
@@ -259,6 +305,8 @@ func _allocate_with_unit0_gd(
 	
 	# 1) Unit 0 (peasants - free)
 	var unit0 = int(floor(unit0_share * float(total_units)))
+	if special_caps.has(SoldierTypeEnum.Type.PEASANTS):
+		unit0 = min(unit0, int(special_caps[SoldierTypeEnum.Type.PEASANTS]))
 	var paid_units_cap = max(0, total_units - unit0)
 	
 	# 2) Build non-peasant props (integer ratios)
@@ -274,7 +322,7 @@ func _allocate_with_unit0_gd(
 	
 	if non_peasant_types.is_empty():
 		# No paid units - just add peasants
-		army.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
+		target_comp.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
 		return {
 			"hired": {SoldierTypeEnum.Type.PEASANTS: unit0},
 			"spent_gold": 0, "spent_wood": 0, "spent_iron": 0,
@@ -350,11 +398,11 @@ func _allocate_with_unit0_gd(
 	
 	# 7) Apply to army
 	if unit0 > 0:
-		army.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
+		target_comp.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
 	for t in non_peasant_types:
 		var count = x_paid.get(t, 0)
 		if count > 0:
-			army.add_soldiers(t, count)
+			target_comp.add_soldiers(t, count)
 	
 	# 8) Calculate spending
 	var hired: Dictionary = {}

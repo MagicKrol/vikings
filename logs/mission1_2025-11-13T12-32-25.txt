@@ -1,0 +1,602 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Sandfjord, Osberg, Akrfell, Kingholme, Eastberg, Redworth, Redchester, Hafnwich
+
+Economy: Recruitment candidates: Army I (Sandfjord), Army II (Sandfjord), Army III (Sandfjord)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Sandfjord
+
+Castle Sandfjord - recruits:133, distance:0, level:2, score: 186.2
+Recruitment: Army Army I recruited 39 at Sandfjord (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Sandfjord
+
+Castle Sandfjord - recruits:95, distance:0, level:2, score: 133.0
+Recruitment: Army Army II recruited 38 at Sandfjord (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Sandfjord
+
+Castle Sandfjord - recruits:57, distance:0, level:2, score: 79.8
+Recruitment: Army Army III recruited 38 at Sandfjord (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitstadir
+
+Moves to Eastberg
+Moves to Hvitstadir
+Fight at Hvitstadir
+Battle started
+Attacker: Army III [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 140 - P:35, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Woodford
+
+Moves to Hafnwich
+Moves to Woodford
+Fight at Woodford
+Battle started
+Attacker: Army II [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 141 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 154, E: 100 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Reykchester
+
+Moves to Eastberg
+Moves to Hvitstadir
+Moves to Reykchester
+Fight at Reykchester
+Battle started
+Attacker: Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 138 - P:32, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitstadir (Strategic: 20.7, Regions: 60.0, Distance: True) | Reykchester (Strategic: 2.6, Regions: 25.0, Distance: True) | Woodford (Strategic: 0.1, Regions: 25.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Sandfjord (Recruits: 57, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Sandfjord (Next: Duchy, Score: 6.0), Hafnwich (Next: March, Score: 5.0), Redworth (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 70
+Food: 73
+Wood: 21
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.909
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Sandfjord, Osberg, Akrfell, Kingholme, Eastberg, Redworth, Redchester, Hafnwich, Hvitstadir, Woodford, Reykchester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army II [Power: 141, E: 100 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Reykstadir
+
+Moves to Reykstadir
+Fight at Reykstadir
+Battle started
+Attacker: Army II [Power: 141 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army II [Power: 112 - P:29, S:8, A:3, SW:3, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 147, E: 100 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverby
+
+Moves to Redworth
+Moves to Redchester
+Moves to Hafnwich
+Moves to Riverby
+Fight at Riverby
+Battle started
+Attacker: Army III [Power: 147 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army III [Power: 139 - P:33, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 140, E: 90 - P:33, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Stonefell
+
+Moves to Stonefell
+Army I makes camp
+Fight at Stonefell
+Battle started
+Attacker: Army I [Power: 146 - P:36, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 146 - P:36, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Sandfjord)
+
+Economy: Build Castle Eval: Hvitstadir (Strategic: 20.7, Regions: 70.0, Distance: True) | Reykstadir (Strategic: 3.0, Regions: 45.0, Distance: False) | Stonefell (Strategic: 0.9, Regions: 45.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Sandfjord (Recruits: 80, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Sandfjord (Next: Province, Score: 5.0), Hafnwich (Next: March, Score: 5.0), Akrfell (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Sandfjord to Duchy (score: 6.0)
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 118
+Food: 81
+Wood: 26
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Sandfjord, Osberg, Akrfell, Kingholme, Eastberg, Redworth, Redchester, Hafnwich, Hvitstadir, Woodford, Reykchester, Reykstadir, Riverby, Stonefell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Sandfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army III [Power: 139, E: 75 - P:33, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverley
+
+Moves to Hafnwich
+Moves to Akrfell
+Moves to Kingholme
+Moves to Riverley
+Out of movement points before reaching Riverley
+Army II [Power: 133, E: 100 - P:33, S:9, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hellanes
+
+Moves to Akrfell
+Moves to Hellanes
+Fight at Hellanes
+Battle started
+Attacker: Army II [Power: 133 - P:33, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 120 - P:30, S:8, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 148, E: 100 - P:37, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Redworth
+
+Moves to Reykchester
+Moves to Redworth
+Fight at Redworth
+Battle started
+Attacker: Army I [Power: 148 - P:37, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 133 - P:31, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitstadir (Strategic: 20.7, Regions: 80.0, Distance: True) | Redworth (Strategic: 31.7, Regions: 50.0, Distance: True) | Hellanes (Strategic: 25.9, Regions: 50.0, Distance: True)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Sandfjord (Recruits: 105, RScore: 100.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Sandfjord (Next: Province, Score: 5.0), Redchester (Next: March, Score: 5.0), Hafnwich (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 218
+Food: 123
+Wood: 47
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.625
+underpowered_ratio: 0.250
+castle_spacing: 16.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Sandfjord, Osberg, Akrfell, Kingholme, Eastberg, Redworth, Redchester, Hafnwich, Hvitstadir, Woodford, Reykchester, Reykstadir, Riverby, Stonefell, Hellanes, Redworth
+
+Economy: Recruitment candidates: Army IV (Sandfjord)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV [Power: 0, E: 100 - none]
+Action: Recruits
+Target: Sandfjord
+
+Recruitment: Army Army IV recruited 132 at Sandfjord (gold: 173, wood: 24, iron: 0)
+
+Army IV [Power: 389 - P:46, S:35, A:18, SW:21, C:6, H:6]
+Army II [Power: 120, E: 85 - P:30, S:8, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Whitton
+
+Moves to Whitton
+Army II makes camp
+Army II makes camp
+Fight at Whitton
+Battle started
+Attacker: Army II [Power: 131 - P:32, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 118 - P:31, S:8, A:3, SW:1, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 133, E: 95 - P:31, S:9, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Oakdon
+
+Moves to Oakdon
+Army I makes camp
+Fight at Oakdon
+Battle started
+Attacker: Army I [Power: 133 - P:31, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 98 - P:23, S:7, A:3, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 389, E: 100 - P:46, S:35, A:18, SW:21, C:6, H:6]
+Action: Moves
+Target: Southham
+
+Moves to Kingholme
+Moves to Southham
+Fight at Southham
+Battle started
+Attacker: Army IV [Power: 389 - P:46, S:35, A:18, SW:21, C:6, H:6]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army IV [Power: 378 - P:42, S:34, A:18, SW:21, C:6, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitstadir (Strategic: 20.7, Regions: 80.0, Distance: True) | Hellanes (Strategic: 25.9, Regions: 70.0, Distance: True) | Redworth (Strategic: 31.7, Regions: 60.0, Distance: True)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Sandfjord (Recruits: 0, RScore: 0.0, DScore: 100.0, Dist: 11, Next: Castle, Total: 50.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Sandfjord (Next: Province, Score: 6.0), Redchester (Next: March, Score: 6.0), Hafnwich (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 154
+Food: 166
+Wood: 47
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.737
+underpowered_ratio: 0.000
+castle_spacing: 19.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Sandfjord, Osberg, Akrfell, Kingholme, Eastberg, Redworth, Redchester, Hafnwich, Hvitstadir, Woodford, Reykchester, Reykstadir, Riverby, Stonefell, Hellanes, Redworth, Whitton, Oakdon, Southham
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army II [Power: 121, E: 100 - P:31, S:9, A:3, SW:1, C:1, H:1, K:1]
+Action: Moves
+Target: Woodstadir
+
+Moves to Woodstadir
+Fight at Woodstadir
+Battle started
+Attacker: Army II [Power: 121 - P:31, S:9, A:3, SW:1, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 103 - P:25, S:7, A:3, SW:1, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 143, E: 100 - P:35, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Oakworth
+
+Moves to Hellanes
+Moves to Whitton
+Moves to Oakworth
+Fight at Oakworth
+Battle started
+Attacker: Army III [Power: 143 - P:35, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army III [Power: 119 - P:31, S:9, A:3, SW:3, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 105, E: 100 - P:25, S:8, A:3, SW:2, C:1, K:1]
+Action: Moves
+Target: Kingwich
+
+Moves to Kingwich
+Fight at Kingwich
+Battle started
+Attacker: Army I [Power: 105 - P:25, S:8, A:3, SW:2, C:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 99 - P:22, S:8, A:3, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 378, E: 85 - P:42, S:34, A:18, SW:21, C:6, H:6]
+Action: Moves
+Target: Blackwich
+
+Moves to Riverfjell
+Moves to Blackwich
+Army IV makes camp
+Army IV makes camp
+Fight at Blackwich
+Battle started
+Attacker: Army IV [Power: 382 - P:44, S:34, A:18, SW:21, C:6, H:6]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army IV [Power: 376 - P:41, S:34, A:18, SW:21, C:6, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: build_castle (Kingwich)
+
+Economy: Build Castle Eval: Kingwich (Strategic: 73.3, Regions: 45.0, Distance: True) | Hellanes (Strategic: 25.9, Regions: 80.0, Distance: True) | Hvitstadir (Strategic: 20.7, Regions: 80.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 213
+Food: 226
+Wood: 39
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.739
+underpowered_ratio: 0.000
+castle_spacing: 11.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Sandfjord, Osberg, Akrfell, Kingholme, Eastberg, Redworth, Redchester, Hafnwich, Hvitstadir, Woodford, Reykchester, Reykstadir, Riverby, Stonefell, Hellanes, Redworth, Whitton, Oakdon, Southham, Woodstadir, Oakworth, Kingwich, Riverfjell
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Sandfjord.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army I [Power: 109, E: 100 - P:25, S:8, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Bergdal
+
+Moves to Bergdal
+Fight at Bergdal
+Battle started
+Attacker: Army I [Power: 109 - P:25, S:8, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 84 - P:17, S:5, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 119, E: 80 - P:31, S:9, A:3, SW:3, C:1, H:1]
+Action: Moves
+Target: Blackwich
+
+Moves to Blackwich
+Army III makes camp
+Army III makes camp
+Fight at Blackwich
+Battle started
+Attacker: Army III [Power: 131 - P:32, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army III [Power: 131 - P:32, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 376, E: 90 - P:41, S:34, A:18, SW:21, C:6, H:6]
+Action: Moves
+Target: Kingdal
+
+Moves to Blackwich
+Moves to Kingdal
+Army IV makes camp
+Fight at Kingdal
+Battle started
+Attacker: Army IV [Power: 380 - P:43, S:34, A:18, SW:21, C:6, H:6]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army IV [Power: 380 - P:43, S:34, A:18, SW:21, C:6, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 112, E: 100 - P:26, S:8, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Woodfell
+
+Moves to Oakworth
+Moves to Blackwich
+Moves to Kingdal
+Moves to Woodfell
+Fight at Woodfell
+Battle started
+Attacker: Army II [Power: 112 - P:26, S:8, A:3, SW:2, C:1, H:1, K:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 84 - P:15, S:6, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackwich (Strategic: 44.6, Regions: 75.0, Distance: False) | Whitton (Strategic: 26.1, Regions: 80.0, Distance: False) | Hellanes (Strategic: 25.9, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Sandfjord (Recruits: 50, RScore: 100.0, DScore: 54.5, Dist: 11, Next: Castle, Total: 77.3), Kingwich (Recruits: 4, RScore: 8.0, DScore: 100.0, Dist: 6, Next: Keep, Total: 54.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Sandfjord (Next: Province, Score: 5.0), Redchester (Next: March, Score: 5.0), Hafnwich (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army IV makes camp

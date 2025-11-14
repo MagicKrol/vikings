@@ -1,0 +1,451 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.857
+underpowered_ratio: 1.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Riverstadir, Akrfell, Kirkworth, Whitholme, Fossstadir, Kingwich, Akrberg
+
+Economy: Recruitment candidates: Army I (Riverstadir), Army II (Riverstadir), Army III (Riverstadir)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Riverstadir
+
+Castle Riverstadir - recruits:133, distance:0, level:2, score: 186.2
+Recruitment: Army Army I recruited 38 at Riverstadir (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 152 - P:39, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Riverstadir
+
+Castle Riverstadir - recruits:95, distance:0, level:2, score: 133.0
+Recruitment: Army Army II recruited 38 at Riverstadir (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Riverstadir
+
+Castle Riverstadir - recruits:57, distance:0, level:2, score: 79.8
+Recruitment: Army Army III recruited 38 at Riverstadir (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverfjell
+
+Moves to Whitholme
+Moves to Riverfjell
+Fight at Riverfjell
+Battle started
+Attacker: Army III [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 134 - P:32, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Redworth
+
+Moves to Whitholme
+Moves to Riverfjell
+Moves to Redworth
+Fight at Redworth
+Battle started
+Attacker: Army II [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 146 - P:39, S:11, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 152, E: 100 - P:39, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Oaknes
+
+Moves to Whitholme
+Moves to Riverfjell
+Moves to Oaknes
+Fight at Oaknes
+Battle started
+Attacker: Army I [Power: 152 - P:39, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 142 - P:34, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Riverfjell (Strategic: 15.9, Regions: 65.0, Distance: True) | Redworth (Strategic: 20.7, Regions: 50.0, Distance: True) | Oaknes (Strategic: 0.9, Regions: 35.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Riverstadir (Recruits: 57, RScore: 100.0, DScore: 100.0, Dist: 6, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Riverstadir (Next: Duchy, Score: 6.0), Akrfell (Next: March, Score: 4.0), Kirkworth (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 1.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvitfjord, Northdon, Eastdal, Reykfjord, Westdal, Ashfjell
+
+Economy: Recruitment candidates: Army I (Hvitfjord), Army II (Hvitfjord), Army III (Hvitfjord)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Hvitfjord
+
+Castle Hvitfjord - recruits:103, distance:0, level:2, score: 144.2
+Recruitment: Army Army I recruited 35 at Hvitfjord (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 146 - P:36, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Hvitfjord
+
+Castle Hvitfjord - recruits:68, distance:0, level:2, score: 95.2
+Recruitment: Army Army II recruited 35 at Hvitfjord (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 145 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Hvitfjord
+
+Castle Hvitfjord - recruits:33, distance:0, level:2, score: 46.2
+Recruitment: Army Army III recruited 35 at Hvitfjord (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 145 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army II [Power: 145, E: 100 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Northham
+
+Moves to Northdon
+Moves to Northham
+Fight at Northham
+Battle started
+Attacker: Army II [Power: 145 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 139 - P:33, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 145, E: 100 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hafnoy
+
+Moves to Northdon
+Moves to Northham
+Moves to Hafnoy
+Fight at Hafnoy
+Battle started
+Attacker: Army III [Power: 145 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 133 - P:33, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 146, E: 100 - P:36, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Northwich
+
+Moves to Northdon
+Moves to Northham
+Moves to Northwich
+Fight at Northwich
+Battle started
+Attacker: Army I [Power: 146 - P:36, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army I [Power: 122 - P:30, S:9, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Northham (Strategic: 87.9, Regions: 50.0, Distance: True) | Hafnoy (Strategic: 54.1, Regions: 40.0, Distance: True) | Northwich (Strategic: 43.3, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Hvitfjord (Recruits: 33, RScore: 100.0, DScore: 100.0, Dist: 6, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Hvitfjord (Next: Duchy, Score: 6.0), Ashfjell (Next: March, Score: 5.0), Northdon (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Greenfjell, Hafnfjord, Kingdal, Oaknes, Northnes, Hellaley, Northfjord, Woodford
+
+Economy: Recruitment candidates: Army I (Greenfjell), Army II (Greenfjell), Army III (Greenfjell)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Greenfjell
+
+Castle Greenfjell - recruits:138, distance:0, level:2, score: 193.2
+Recruitment: Army Army I recruited 39 at Greenfjell (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Greenfjell
+
+Castle Greenfjell - recruits:99, distance:0, level:2, score: 138.6
+Recruitment: Army Army II recruited 39 at Greenfjell (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Greenfjell
+
+Castle Greenfjell - recruits:60, distance:0, level:2, score: 84.0
+Recruitment: Army Army III recruited 39 at Greenfjell (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitnes
+
+Moves to Hafnfjord
+Moves to Hvitnes
+Fight at Hvitnes
+Battle started
+Attacker: Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 128 - P:29, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossbury
+
+Moves to Woodford
+Moves to Fossbury
+Fight at Fossbury
+Battle started
+Attacker: Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army II [Power: 140 - P:35, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 154, E: 100 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Redberg
+
+Moves to Northnes
+Moves to Redberg
+Fight at Redberg
+Battle started
+Attacker: Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 139 - P:37, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Hvitnes (Strategic: 4.1, Regions: 50.0, Distance: False) | Fossbury (Strategic: 0.5, Regions: 45.0, Distance: False) | Redberg (Strategic: 0.9, Regions: 25.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Greenfjell (Recruits: 60, RScore: 100.0, DScore: 100.0, Dist: 6, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Greenfjell (Next: Duchy, Score: 5.0), Hafnfjord (Next: March, Score: 4.0), Kingdal (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 6 (#6)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Sandworth, Vatnvik, Whithavn, Tormere, Hvitchester, Fossberg, Westthwaite, Eybury
+
+Economy: Recruitment candidates: Army I (Sandworth), Army II (Sandworth), Army III (Sandworth)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Sandworth
+
+Castle Sandworth - recruits:145, distance:0, level:2, score: 203.0
+Recruitment: Army Army I recruited 40 at Sandworth (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Sandworth
+
+Castle Sandworth - recruits:105, distance:0, level:2, score: 147.0
+Recruitment: Army Army II recruited 40 at Sandworth (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Sandworth
+
+Castle Sandworth - recruits:65, distance:0, level:2, score: 91.0
+Recruitment: Army Army III recruited 40 at Sandworth (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army II [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Westhavn
+
+Moves to Hvitchester
+Moves to Westhavn
+Fight at Westhavn
+Battle started
+Attacker: Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 129 - P:33, S:9, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 156, E: 100 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Eyfjord
+
+Moves to Hvitchester
+Moves to Eyfjord
+Fight at Eyfjord
+Battle started
+Attacker: Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 142 - P:36, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Woodmere
+
+Moves to Whithavn
+Moves to Woodmere
+Fight at Woodmere
+Battle started
+Attacker: Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 139 - P:35, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Eyfjord (Strategic: 69.1, Regions: 30.0, Distance: True) | Westhavn (Strategic: 38.9, Regions: 55.0, Distance: True) | Woodmere (Strategic: 24.7, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Sandworth (Recruits: 65, RScore: 100.0, DScore: 100.0, Dist: 6, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Sandworth (Next: Duchy, Score: 6.0), Tormere (Next: March, Score: 5.0), Eybury (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+

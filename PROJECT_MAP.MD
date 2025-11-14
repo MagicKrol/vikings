@@ -136,6 +136,7 @@ editor_start.tscn (Editor Start)
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
+- AI castle upkeep: immediately after `plan_turn()` the AI consumes garrison budgets via `EconomyAIManager.execute_garrison_recruitment()` (which funnels through `RecruitmentManager.hire_garrison()`), and once all moves resolve it calls `perform_garrison_trickle()` followed by `ore_checks()` so danger castles get priority hires and any leftover gold trickles into every owned castle (only when the player's food trend is positive).
 - Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Reinforcement routing: Armies that need recruitment but have no assigned budget now queue a `goal: reinforce` move toward the best owned castle before chasing frontier targets, so low-power stacks travel home for resupply.
@@ -208,8 +209,11 @@ editor_start.tscn (Editor Start)
   - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring
   - `execute_raise_army(player_id, region_id)`: Creates army and deducts cost
   - `ore_checks(player_id)`: Walks all owned regions once per AI turn and spends gold on `Region.search_for_ore()` whenever the region still has attempts and the player can afford the flat ore search cost
+  - `execute_garrison_recruitment(player_id)` / `perform_garrison_trickle(player_id)`: Reuse `RecruitmentManager` so danger-listed castles and end-of-turn upkeep both hire with the same composition logic as armies, feeding `IDEAL_CASTLE_GARRISON_COMPOSITIONS` and respecting leftover gold (only when net food growth is positive)
 - Signals computed: frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm
 - Integration: `TurnController.start_turn()` constructs `EconomyAIManager`, calls `plan_turn()` at turn start, and triggers `ore_checks()` after AI movement resolves. After movement, `TurnController` calls `plan_post_movement()` to spend any leftover budget on region economy.
+- Castle garrison protection: During budget allocation, castles that fall below `SAFE_GARRISON_POWER_PER_LEVEL` and have enemy armies within two hops receive the same BudgetComposition treatment as armies, then pass those budgets to `RecruitmentManager.hire_garrison()` so regions fill toward their `IDEAL_CASTLE_GARRISON_COMPOSITIONS`.
+- Garrison upkeep: After AI movement resolves, any surplus gold is split among all owned castles with weights tied to castle tier (outpost..stronghold). Each castle spends its share through the same recruiter as long as the player's projected food change stays positive.
 
 - Priority Flow:
   - If any armies at castles need recruitment this turn → allocate recruitment budgets and skip raising/building.

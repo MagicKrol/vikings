@@ -65,6 +65,17 @@ func log_recruitment(message: String) -> void:
 func log_economy(message: String) -> void:
 	_append_lines(["Economy: %s" % message, ""])
 
+func log_castle_recruitment_summary(header: String, entries: Array, fallback_reason: String) -> void:
+	var lines: Array[String] = []
+	if entries.size() > 0:
+		lines.append("%s:" % header)
+		for entry in entries:
+			lines.append("- %s" % String(entry))
+	else:
+		lines.append("No %s (%s)" % [header, fallback_reason])
+	lines.append("")
+	_append_lines(lines)
+
 func log_army_detail(detail: String) -> void:
 	_append_lines([detail])
 

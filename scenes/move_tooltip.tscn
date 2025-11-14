@@ -1,0 +1,173 @@
+[gd_scene load_steps=10 format=3 uid="uid://d2htmt4abnn8i"]
+
+[ext_resource type="Script" path="res://move_tooltip.gd" id="1_kdwtb"]
+[ext_resource type="Texture2D" uid="uid://dgj6254a3foyr" path="res://images/tooltipmoda.png" id="3_a2o5j"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_font"]
+[ext_resource type="Texture2D" uid="uid://bcslq74w1j147" path="res://images/icons/move_green.png" id="4_1t0j4"]
+[ext_resource type="Texture2D" uid="uid://cv3ugnuhtk8bb" path="res://images/icons/move_empty2.png" id="4_ris0o"]
+[ext_resource type="Texture2D" uid="uid://dhrhbt653pe2q" path="res://images/icons/move_yellow.png" id="5_nwumc"]
+[ext_resource type="Texture2D" uid="uid://d2ac4rxydq4s" path="res://images/icons/move_red.png" id="6_5ds1a"]
+
+[sub_resource type="Theme" id="Theme_vvz22"]
+default_font = ExtResource("3_font")
+default_font_size = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dhi0w"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
+
+[node name="MoveTooltip" type="Control"]
+custom_minimum_size = Vector2(240, 110)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 240.0
+offset_bottom = 110.0
+mouse_filter = 2
+theme = SubResource("Theme_vvz22")
+script = ExtResource("1_kdwtb")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 155.0
+offset_bottom = 35.0
+texture = ExtResource("3_a2o5j")
+expand_mode = 2
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 155.0
+offset_bottom = 35.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dhi0w")
+
+[node name="MoveContainer1" type="HBoxContainer" parent="Panel"]
+visible = false
+offset_left = 10.0
+offset_top = 2.0
+offset_right = 155.0
+offset_bottom = 33.0
+theme_override_constants/separation = 4
+
+[node name="Move1" type="TextureRect" parent="Panel/MoveContainer1"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_1t0j4")
+stretch_mode = 2
+
+[node name="Move2" type="TextureRect" parent="Panel/MoveContainer1"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_ris0o")
+stretch_mode = 2
+
+[node name="Move3" type="TextureRect" parent="Panel/MoveContainer1"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_ris0o")
+stretch_mode = 2
+
+[node name="Move4" type="TextureRect" parent="Panel/MoveContainer1"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_ris0o")
+stretch_mode = 2
+
+[node name="MoveContainer2" type="HBoxContainer" parent="Panel"]
+visible = false
+offset_left = 10.0
+offset_top = 2.0
+offset_right = 155.0
+offset_bottom = 33.0
+theme_override_constants/separation = 4
+
+[node name="Move1" type="TextureRect" parent="Panel/MoveContainer2"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_1t0j4")
+stretch_mode = 2
+
+[node name="Move2" type="TextureRect" parent="Panel/MoveContainer2"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_1t0j4")
+stretch_mode = 2
+
+[node name="Move3" type="TextureRect" parent="Panel/MoveContainer2"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_ris0o")
+stretch_mode = 2
+
+[node name="Move4" type="TextureRect" parent="Panel/MoveContainer2"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_ris0o")
+stretch_mode = 2
+
+[node name="MoveContainer3" type="HBoxContainer" parent="Panel"]
+visible = false
+offset_left = 10.0
+offset_top = 2.0
+offset_right = 155.0
+offset_bottom = 33.0
+theme_override_constants/separation = 4
+
+[node name="Move1" type="TextureRect" parent="Panel/MoveContainer3"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_nwumc")
+stretch_mode = 2
+
+[node name="Move2" type="TextureRect" parent="Panel/MoveContainer3"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_nwumc")
+stretch_mode = 2
+
+[node name="Move3" type="TextureRect" parent="Panel/MoveContainer3"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_nwumc")
+stretch_mode = 2
+
+[node name="Move4" type="TextureRect" parent="Panel/MoveContainer3"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("4_ris0o")
+stretch_mode = 2
+
+[node name="MoveContainer4" type="HBoxContainer" parent="Panel"]
+visible = false
+offset_left = 10.0
+offset_top = 2.0
+offset_right = 155.0
+offset_bottom = 33.0
+theme_override_constants/separation = 4
+
+[node name="Move1" type="TextureRect" parent="Panel/MoveContainer4"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("6_5ds1a")
+stretch_mode = 2
+
+[node name="Move2" type="TextureRect" parent="Panel/MoveContainer4"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("6_5ds1a")
+stretch_mode = 2
+
+[node name="Move3" type="TextureRect" parent="Panel/MoveContainer4"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("6_5ds1a")
+stretch_mode = 2
+
+[node name="Move4" type="TextureRect" parent="Panel/MoveContainer4"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("6_5ds1a")
+stretch_mode = 2

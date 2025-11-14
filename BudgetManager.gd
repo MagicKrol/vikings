@@ -5,9 +5,9 @@ class_name BudgetManager
 # Only armies positioned at castles can receive budgets since they can immediately use them
 # Assigns budgets directly to armies' assigned_budget field
 # Returns number of armies that received budgets
-func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, region_manager: RegionManager, turn_number: int = 1) -> int:
-	if all_armies.is_empty():
-		DebugLogger.log("AIRecruitment", "No armies provided")
+func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, region_manager: RegionManager, turn_number: int = 1, castle_requests: Array = []) -> int:
+	if all_armies.is_empty() and castle_requests.is_empty():
+		DebugLogger.log("AIRecruitment", "No armies or castles require recruitment budgets")
 		return 0
 	
 	if not player:
@@ -24,22 +24,18 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	for army in all_armies:
 		if army.needs_recruitment(turn_number):
 			army.request_recruitment()
-			# Check if army is positioned at a castle
 			var army_region = army.get_parent() as Region
 			if army_region:
 				var region_id := army_region.get_region_id()
 				var castle_level := region_manager.get_castle_level(region_id)
 				if castle_level >= 1:
-					# Group armies by castle region
 					if not armies_by_castle.has(region_id):
 						armies_by_castle[region_id] = []
 					armies_by_castle[region_id].append(army)
 					DebugLogger.log("AIRecruitment", "Army " + army.name + " at castle (level " + str(castle_level) + ") flagged for recruitment")
 				else:
-					# Army needs recruitment but not at castle - still flag for movement toward castle
 					DebugLogger.log("AIRecruitment", "Army " + army.name + " needs recruitment but not at castle - flagged but no budget allocated")
 	
-	# Create a stable global order for resource distribution
 	var ordered_region_ids: Array = armies_by_castle.keys()
 	ordered_region_ids.sort()
 	var ordered_armies: Array[Army] = []
@@ -54,47 +50,63 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	
 	if ordered_armies.is_empty():
 		DebugLogger.log("AIRecruitment", "No armies at castles need recruitment")
+	
+	var sorted_castle_requests: Array = castle_requests.duplicate()
+	if not sorted_castle_requests.is_empty():
+		sorted_castle_requests.sort_custom(func(a, b): return int(a.get("region_id", -1)) < int(b.get("region_id", -1)))
+	
+	var combined_size := ordered_armies.size() + sorted_castle_requests.size()
+	if combined_size == 0:
 		return 0
 	
-	# Get available resources from player (gold, wood, iron only - used for recruitment)
 	var total_gold := player.get_resource_amount(ResourcesEnum.Type.GOLD)
 	var total_wood := player.get_resource_amount(ResourcesEnum.Type.WOOD) 
 	var total_iron := player.get_resource_amount(ResourcesEnum.Type.IRON)
 	
 	DebugLogger.log("AIRecruitment", "Player " + str(player.get_player_id()) + " has: " + str(total_gold) + " gold, " + str(total_wood) + " wood, " + str(total_iron) + " iron")
-	DebugLogger.log("AIRecruitment", "Allocating resources to " + str(ordered_armies.size()) + " armies that need reinforcement")
+	DebugLogger.log("AIRecruitment", "Allocating resources across " + str(ordered_armies.size()) + " armies and " + str(sorted_castle_requests.size()) + " castle garrisons")
 	
-	# Split resources once using the exact global order
-	var num_armies := ordered_armies.size()
-	var gold_per_army := _distribute_equally(total_gold, num_armies)
-	var wood_per_army := _distribute_equally(total_wood, num_armies)  
-	var iron_per_army := _distribute_equally(total_iron, num_armies)
+	var gold_split := _distribute_equally(total_gold, combined_size)
+	var wood_split := _distribute_equally(total_wood, combined_size)
+	var iron_split := _distribute_equally(total_iron, combined_size)
+	var entry_budgets: Array = []
+	for idx in range(combined_size):
+		entry_budgets.append(BudgetComposition.new(gold_split[idx], wood_split[idx], iron_split[idx], 0))
+	
+	var current_index := 0
+	for army in ordered_armies:
+		army_to_index[army] = current_index
+		current_index += 1
+	
+	for request in sorted_castle_requests:
+		request["combined_index"] = current_index
+		current_index += 1
 	
 	# Assign budgets per castle with deterministic recruits split
 	for region_id in ordered_region_ids:
 		var castle_armies = armies_by_castle[region_id]
 		castle_armies.sort_custom(func(a, b): return a.get_instance_id() < b.get_instance_id())
 		
-		# Get total available recruits for this castle region and neighbors
 		var sources := region_manager.get_available_recruits_from_region_and_neighbors(region_id, player.get_player_id())
 		var total_recruits := 0
-		for s in sources: total_recruits += int(s.amount)
+		for s in sources:
+			total_recruits += int(s.amount)
 		
-		# Distribute recruits equally among armies at this castle
 		var recruits_per_army := _distribute_equally(total_recruits, castle_armies.size())
 		
-		# Assign budgets to armies at this castle
 		for local_idx in range(castle_armies.size()):
 			var army = castle_armies[local_idx]
 			var idx = int(army_to_index[army])
-			var budget = BudgetComposition.new(
-				gold_per_army[idx],
-				wood_per_army[idx], 
-				iron_per_army[idx],
-				recruits_per_army[local_idx]
-			)
+			var budget: BudgetComposition = entry_budgets[idx]
+			budget.available_recruits = recruits_per_army[local_idx]
 			army.assigned_budget = budget
 			DebugLogger.log("AIRecruitment", "Assigned budget to army " + army.name + ": " + str(budget.to_dict()))
+	
+	for request in sorted_castle_requests:
+		var idx = int(request.get("combined_index", -1))
+		if idx >= 0 and idx < entry_budgets.size():
+			request["assigned_budget"] = entry_budgets[idx]
+		request.erase("combined_index")
 	
 	return ordered_armies.size()
 

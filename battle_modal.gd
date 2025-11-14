@@ -598,11 +598,11 @@ func _on_withdraw_pressed() -> void:
 	# Role-specific withdrawal handling
 	var gm = get_node("../../GameManager") as GameManager
 	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
-	var current_player := gm.get_current_player_id()
-	var player_is_defender := (region_owner == current_player)
+	var human_controls_attacker := _player_controls_attacking_army()
+	var human_controls_defender := gm.is_player_human(region_owner) or _player_has_defending_army()
 	
 	# Defender (human): retreat not simulated with attacker-only withdrawal rounds
-	if player_is_defender:
+	if human_controls_defender and not human_controls_attacker:
 		# If not allowed, ignore
 		if not _is_withdraw_allowed_for_current_role():
 			return
@@ -639,7 +639,7 @@ func _on_withdraw_pressed() -> void:
 		if moved_any:
 			DebugLogger.log("UISystem", "Defender withdrew armies to neighbor; continuing battle vs garrison only")
 			return
-	else:
+	elif human_controls_attacker:
 		# Attacker withdrawal: use animated simulator flow (defender free hits), then finalize to previous region
 		withdrawal_in_progress = true
 		_set_message("Your army is withdrawing")
@@ -647,6 +647,9 @@ func _on_withdraw_pressed() -> void:
 		if animated_simulator:
 			animated_simulator.start_withdrawal_round()
 		DebugLogger.log("UISystem", "Starting withdrawal...")
+	else:
+		# No human-controlled side detected; ignore button
+		return
 
 func _is_withdraw_allowed_for_current_role() -> bool:
 	var gm = get_node("../../GameManager") as GameManager

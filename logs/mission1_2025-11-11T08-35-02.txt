@@ -1,0 +1,2422 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.750
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley
+
+Economy: Recruitment candidates: Army I (Hvithavn), Army II (Hvithavn), Army III (Hvithavn)
+
+Economy: Recruitment action: Budgets assigned to 3 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Hvithavn
+
+Castle Hvithavn - recruits:144, distance:0, level:2, score: 201.6
+Recruitment: Army Army I recruited 40 at Hvithavn (gold: 34, wood: 4, iron: 0)
+
+Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Army II [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Hvithavn
+
+Castle Hvithavn - recruits:104, distance:0, level:2, score: 145.6
+Recruitment: Army Army II recruited 40 at Hvithavn (gold: 33, wood: 4, iron: 0)
+
+Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army III [Power: 50, E: 100 - P:20, K:1]
+Action: Recruits
+Target: Hvithavn
+
+Castle Hvithavn - recruits:64, distance:0, level:2, score: 89.6
+Recruitment: Army Army III recruited 40 at Hvithavn (gold: 33, wood: 4, iron: 0)
+
+Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Army I [Power: 156, E: 100 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Woodstadir
+
+Moves to Southton
+Moves to Woodstadir
+Fight at Woodstadir
+Battle started
+Attacker: Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 136 - P:34, S:8, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Blackham
+
+Moves to Redley
+Moves to Blackham
+Fight at Blackham
+Battle started
+Attacker: Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 145 - P:39, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Woodberg
+
+Moves to Hafnbury
+Moves to Woodberg
+Fight at Woodberg
+Battle started
+Attacker: Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army III [Power: 136 - P:39, S:11, A:3, SW:3, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackham (Strategic: 20.0, Regions: 50.0, Distance: False) | Woodberg (Strategic: 26.3, Regions: 40.0, Distance: True) | Woodstadir (Strategic: 26.1, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 64, RScore: 100.0, DScore: 100.0, Dist: 10, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Hvithavn (Next: Duchy, Score: 6.0), Rivernes (Next: March, Score: 5.0), Hafnbury (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army II makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 77
+Food: 50
+Wood: 33
+Iron: 10
+Stone: 15
+
+Signals:
+frontier_pressure: 1.455
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - guards_failed.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army I [Power: 143, E: 95 - P:36, S:9, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Souththorpe
+
+Moves to Souththorpe
+Army I makes camp
+Fight at Souththorpe
+Battle started
+Attacker: Army I [Power: 143 - P:36, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army I [Power: 137 - P:33, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 151, E: 95 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverberg
+
+Moves to Riverberg
+Army II makes camp
+Fight at Riverberg
+Battle started
+Attacker: Army II [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 142 - P:36, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 136, E: 85 - P:39, S:11, A:3, SW:3, C:1]
+Action: Moves
+Target: Blackfell
+
+Moves to Blackfell
+Army III makes camp
+Army III makes camp
+Movement blocked near Blackfell
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Blackham (Strategic: 20.0, Regions: 60.0, Distance: False) | Woodstadir (Strategic: 26.1, Regions: 50.0, Distance: True) | Woodberg (Strategic: 26.3, Regions: 40.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 89, RScore: 100.0, DScore: 100.0, Dist: 10, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Hvithavn (Next: Duchy, Score: 6.0), Rivernes (Next: March, Score: 5.0), Hafnbury (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 144
+Food: 62
+Wood: 58
+Iron: 10
+Stone: 20
+
+Signals:
+frontier_pressure: 1.154
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Hvithavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army II [Power: 146, E: 100 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eastholme
+
+Moves to Blackham
+Moves to Westholme
+Moves to Eastholme
+Fight at Eastholme
+Battle started
+Attacker: Army II [Power: 146 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 127 - P:30, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 142, E: 100 - P:34, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Northnes
+
+Moves to Woodstadir
+Moves to Northnes
+Fight at Northnes
+Battle started
+Attacker: Army I [Power: 142 - P:34, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army I [Power: 113 - P:27, S:10, A:3, SW:4, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 138, E: 100 - P:40, S:11, A:3, SW:3, C:1]
+Action: Moves
+Target: Blackfell
+
+Moves to Blackfell
+Fight at Blackfell
+Battle started
+Attacker: Army III [Power: 138 - P:40, S:11, A:3, SW:3, C:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army III [Power: 120 - P:34, S:9, A:3, SW:3, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Hvithavn)
+
+Economy: Build Castle Eval: Northnes (Strategic: 44.6, Regions: 55.0, Distance: True) | Blackfell (Strategic: 40.8, Regions: 55.0, Distance: True) | Blackham (Strategic: 20.0, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 114, RScore: 100.0, DScore: 100.0, Dist: 10, Next: Castle, Total: 100.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Hvithavn (Next: Province, Score: 5.0), Rivernes (Next: March, Score: 5.0), Hafnbury (Next: March, Score: 5.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Hvithavn to Duchy (score: 6.0)
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 226
+Food: 56
+Wood: 77
+Iron: 10
+Stone: 20
+
+Signals:
+frontier_pressure: 0.938
+underpowered_ratio: 0.250
+castle_spacing: 16.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell
+
+Economy: Recruitment candidates: Army IV (Hvithavn)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army IV [Power: 0, E: 100 - none]
+Action: Recruits
+Target: Hvithavn
+
+Recruitment: Army Army IV recruited 143 at Hvithavn (gold: 191, wood: 28, iron: 0)
+
+Army IV [Power: 421 - P:50, S:37, A:21, SW:21, C:7, H:7]
+Army III [Power: 123, E: 100 - P:34, S:10, A:3, SW:3, C:1]
+Action: Moves
+Target: Hvitchester
+
+Moves to Hvitchester
+Fight at Hvitchester
+Battle started
+Attacker: Army III [Power: 123 - P:34, S:10, A:3, SW:3, C:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army III [Power: 97 - P:28, S:8, A:3, SW:1, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 120, E: 100 - P:28, S:10, A:3, SW:4, C:1, H:1]
+Action: Moves
+Target: Riverham
+
+Moves to Hvitchester
+Moves to Riverham
+Fight at Riverham
+Battle started
+Attacker: Army I [Power: 120 - P:28, S:10, A:3, SW:4, C:1, H:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 98 - P:22, S:8, A:3, SW:3, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 137, E: 100 - P:35, S:9, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eastholme
+
+Moves to Eastholme
+Fight at Eastholme
+Battle started
+Attacker: Army II [Power: 137 - P:35, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army II [Power: 122 - P:32, S:6, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 421, E: 100 - P:50, S:37, A:21, SW:21, C:7, H:7]
+Action: Moves
+Target: Akrley
+
+Moves to Redley
+Moves to Eastholme
+Moves to Akrley
+Fight at Akrley
+Battle started
+Attacker: Army IV [Power: 421 - P:50, S:37, A:21, SW:21, C:7, H:7]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army IV [Power: 412 - P:49, S:36, A:21, SW:20, C:7, H:7]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Hvithavn)
+
+Economy: Build Castle Eval: Northnes (Strategic: 44.6, Regions: 65.0, Distance: True) | Blackfell (Strategic: 40.8, Regions: 65.0, Distance: True) | Blackham (Strategic: 20.0, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 0, RScore: 0.0, DScore: 100.0, Dist: 10, Next: Castle, Total: 50.0)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Rivernes (Next: March, Score: 6.0), Hafnbury (Next: March, Score: 6.0), Kirkton (Next: March, Score: 6.0)
+
+Economy: Upgrade Region Result: food_safeguard
+
+Economy: Upgrading Hvithavn to Province (score: 6.0)
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 132
+Food: 49
+Wood: 64
+Iron: 5
+Stone: 15
+
+Signals:
+frontier_pressure: 0.950
+underpowered_ratio: 0.000
+castle_spacing: 20.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: defer_region_economy
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: No budgets assigned.
+
+Economy: Raise Army: NO - no_candidate.
+
+Economy: Decision outcome: Deferred region economy (no recruitment or raise).
+
+Army I [Power: 106, E: 100 - P:24, S:8, A:3, SW:4, C:1, H:1]
+Action: Moves
+Target: Fossoy
+
+Moves to Fossoy
+Fight at Fossoy
+Battle started
+Attacker: Army I [Power: 106 - P:24, S:8, A:3, SW:4, C:1, H:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army I [Power: 65 - P:12, S:5, A:3, SW:2, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 412, E: 80 - P:49, S:36, A:21, SW:20, C:7, H:7]
+Action: Moves
+Target: Riverfjell
+
+Moves to Riverfjell
+Army IV makes camp
+Army IV makes camp
+Fight at Riverfjell
+Battle started
+Attacker: Army IV [Power: 412 - P:49, S:36, A:21, SW:20, C:7, H:7]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army IV [Power: 404 - P:47, S:36, A:21, SW:19, C:7, H:7]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 110, E: 100 - P:31, S:9, A:3, SW:2, C:1]
+Action: Moves
+Target: Northfjord
+
+Moves to Riverham
+Moves to Fossoy
+Moves to Northfjord
+Fight at Northfjord
+Battle started
+Attacker: Army III [Power: 110 - P:31, S:9, A:3, SW:2, C:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 104 - P:28, S:9, A:3, SW:2, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 125, E: 100 - P:32, S:7, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kirkfjord
+
+Moves to Westholme
+Moves to Blackham
+Moves to Kirkfjord
+Fight at Kirkfjord
+Battle started
+Attacker: Army II [Power: 125 - P:32, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 110 - P:26, S:6, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: build_castle (Northnes)
+
+Economy: Build Castle Eval: Northnes (Strategic: 44.6, Regions: 65.0, Distance: True) | Blackfell (Strategic: 40.8, Regions: 65.0, Distance: True) | Blackham (Strategic: 20.0, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army IV makes camp
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 202
+Food: 107
+Wood: 54
+Iron: 5
+Stone: 20
+
+Signals:
+frontier_pressure: 0.833
+underpowered_ratio: 0.250
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Hvithavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Fossoy (reason: no_budget_assigned)
+
+Army I [Power: 83, E: 100 - P:17, S:5, A:3, SW:4, C:1, H:1]
+Action: Recruits
+Target: Northnes
+
+Moves to Oshavn
+Moves to Northnes
+Castle Northnes - recruits:28, distance:2, level:1, score: 16.8
+Castle Hvithavn - recruits:52, distance:5, level:2, score: 14.6
+Fight at Northnes
+Battle started
+Attacker: Army I [Power: 83 - P:17, S:5, A:3, SW:4, C:1, H:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 58 - P:8, S:4, A:3, SW:3, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 104, E: 90 - P:28, S:9, A:3, SW:2, C:1]
+Action: Moves
+Target: Osfjell
+
+Moves to Osfjell
+Army III makes camp
+Fight at Osfjell
+Battle started
+Attacker: Army III [Power: 104 - P:28, S:9, A:3, SW:2, C:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 91 - P:23, S:8, A:3, SW:2, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 408, E: 100 - P:47, S:36, A:21, SW:20, C:7, H:7]
+Action: Moves
+Target: Eyhaug
+
+Moves to Eyhaug
+Fight at Eyhaug
+Battle started
+Attacker: Army IV [Power: 408 - P:47, S:36, A:21, SW:20, C:7, H:7]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army IV [Power: 397 - P:47, S:35, A:21, SW:18, C:7, H:7]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 114, E: 90 - P:28, S:6, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverbury
+
+Moves to Blackham
+Moves to Westholme
+Moves to Eastholme
+Moves to Riverbury
+Army II makes camp
+Movement blocked near Riverbury
+Economy: Region economy actions: build_castle (Fossoy)
+
+Economy: Build Castle Eval: Fossoy (Strategic: 36.2, Regions: 75.0, Distance: True) | Blackham (Strategic: 20.0, Regions: 80.0, Distance: False) | Riverham (Strategic: 22.9, Regions: 60.0, Distance: True)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 7]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 289
+Food: 176
+Wood: 48
+Iron: 5
+Stone: 25
+
+Signals:
+frontier_pressure: 0.741
+underpowered_ratio: 0.500
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Hvithavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Oshavn (reason: no_budget_assigned)
+
+Recruitment: Army Army III could not recruit at Osfjell (reason: no_budget_assigned)
+
+Army I [Power: 70, E: 100 - P:11, S:6, A:3, SW:3, C:1, H:1]
+Action: Recruits
+Target: Northnes
+
+Moves to Northnes
+Castle Northnes - recruits:42, distance:1, level:1, score: 50.4
+Castle Hvithavn - recruits:79, distance:4, level:2, score: 27.6
+Castle Fossoy - recruits:13, distance:1, level:1, score: 15.6
+Arrived at Northnes
+Army III [Power: 91, E: 100 - P:23, S:8, A:3, SW:2, C:1]
+Action: Recruits
+Target: Northnes
+
+Moves to Northnes
+Castle Northnes - recruits:42, distance:1, level:1, score: 50.4
+Castle Hvithavn - recruits:79, distance:4, level:2, score: 27.6
+Castle Fossoy - recruits:13, distance:1, level:1, score: 15.6
+Arrived at Northnes
+Army IV [Power: 401, E: 100 - P:47, S:35, A:21, SW:19, C:7, H:7]
+Action: Moves
+Target: Northhaug
+
+Moves to Northhaug
+Fight at Northhaug
+Battle started
+Attacker: Army IV [Power: 401 - P:47, S:35, A:21, SW:19, C:7, H:7]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army IV [Power: 394 - P:47, S:34, A:21, SW:18, C:7, H:7]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 117, E: 95 - P:28, S:7, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverbury
+
+Moves to Riverbury
+Army II makes camp
+Fight at Riverbury
+Battle started
+Attacker: Army II [Power: 117 - P:28, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 105 - P:25, S:5, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Rivernes), upgrade_region (Hafnbury), upgrade_region (Kirkton), upgrade_region (Redley), upgrade_region (Rivernes), upgrade_region (Hafnbury), upgrade_region (Osfjell)
+
+Economy: Build Castle Eval: Blackham (Strategic: 20.0, Regions: 80.0, Distance: False) | Eyhaug (Strategic: 31.7, Regions: 60.0, Distance: False) | Riverbury (Strategic: 20.7, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 79, RScore: 100.0, DScore: 70.0, Dist: 10, Next: Castle, Total: 85.0), Northnes (Recruits: 42, RScore: 53.2, DScore: 87.5, Dist: 8, Next: Keep, Total: 70.3), Fossoy (Recruits: 13, RScore: 16.5, DScore: 100.0, Dist: 7, Next: Keep, Total: 58.2)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kirkton (Next: Duchy, Score: 4.0), Oshavn (Next: County, Score: 4.0), Southton (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Rivernes to March (score: 5.0)
+
+Economy: Upgrading Hafnbury to March (score: 5.0)
+
+Economy: Upgrading Kirkton to March (score: 5.0)
+
+Economy: Upgrading Redley to March (score: 5.0)
+
+Economy: Upgrading Rivernes to Duchy (score: 4.0)
+
+Economy: Upgrading Hafnbury to Duchy (score: 4.0)
+
+Economy: Upgrading Osfjell to County (score: 4.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 8]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 361
+Food: 110
+Wood: 51
+Iron: 5
+Stone: 24
+
+Signals:
+frontier_pressure: 0.690
+underpowered_ratio: 0.500
+castle_spacing: 9.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury
+
+Economy: Recruitment candidates: Army I (Northnes), Army III (Northnes)
+
+Economy: Recruitment action: Budgets assigned to 2 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 70, E: 100 - P:11, S:6, A:3, SW:3, C:1, H:1]
+Action: Recruits
+Target: Northnes
+
+Castle Hvithavn - recruits:108, distance:3, level:2, score: 50.4
+Castle Northnes - recruits:32, distance:0, level:1, score: 38.4
+Castle Fossoy - recruits:25, distance:2, level:1, score: 15.0
+Recruitment: Army Army I recruited 30 at Northnes (gold: 33, wood: 6, iron: 0)
+
+Army I [Power: 151 - P:23, S:15, A:9, SW:6, C:1, H:1]
+Army III [Power: 93, E: 100 - P:24, S:8, A:3, SW:2, C:1]
+Action: Recruits
+Target: Northnes
+
+Castle Hvithavn - recruits:108, distance:3, level:2, score: 50.4
+Castle Fossoy - recruits:24, distance:2, level:1, score: 14.4
+Castle Northnes - recruits:8, distance:0, level:1, score: 9.6
+Recruitment: Army Army III recruited 30 at Northnes (gold: 33, wood: 6, iron: 0)
+
+Army III [Power: 174 - P:36, S:17, A:9, SW:5, C:1]
+Army III [Power: 174, E: 100 - P:36, S:17, A:9, SW:5, C:1]
+Action: Moves
+Target: Reykthwaite
+
+Moves to Reykthwaite
+Fight at Reykthwaite
+Battle started
+Attacker: Army III [Power: 174 - P:36, S:17, A:9, SW:5, C:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 157 - P:32, S:14, A:9, SW:5, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 401, E: 100 - P:47, S:35, A:21, SW:19, C:7, H:7]
+Action: Moves
+Target: Reykley
+
+Moves to Reykley
+Fight at Reykley
+Battle started
+Attacker: Army IV [Power: 401 - P:47, S:35, A:21, SW:19, C:7, H:7]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army IV [Power: 398 - P:47, S:34, A:21, SW:19, C:7, H:7]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 151, E: 100 - P:23, S:15, A:9, SW:6, C:1, H:1]
+Action: Moves
+Target: Riverholme
+
+Moves to Osfjell
+Moves to Fossoy
+Moves to Riverholme
+Fight at Riverholme
+Battle started
+Attacker: Army I [Power: 151 - P:23, S:15, A:9, SW:6, C:1, H:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army I [Power: 121 - P:18, S:11, A:9, SW:4, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 107, E: 100 - P:26, S:5, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Westhaug
+
+Moves to Westhaug
+Fight at Westhaug
+Battle started
+Attacker: Army II [Power: 107 - P:26, S:5, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 94 - P:21, S:4, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Riverholme), upgrade_region (Reykthwaite), upgrade_region (Westhaug), upgrade_region (Northdal), upgrade_region (Riverholme), upgrade_region (Kirkton)
+
+Economy: Build Castle Eval: Reykley (Strategic: 73.3, Regions: 45.0, Distance: True) | Riverbury (Strategic: 20.7, Regions: 80.0, Distance: False) | Blackham (Strategic: 20.0, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: insufficient_resources
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 108, RScore: 100.0, DScore: 70.0, Dist: 10, Next: Castle, Total: 85.0), Fossoy (Recruits: 24, RScore: 22.2, DScore: 100.0, Dist: 7, Next: Keep, Total: 61.1), Northnes (Recruits: 8, RScore: 7.4, DScore: 87.5, Dist: 8, Next: Keep, Total: 47.5)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Reykthwaite (Next: March, Score: 4.0), Kingham (Next: March, Score: 4.0), Southton (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Riverholme to County (score: 5.0)
+
+Economy: Upgrading Reykthwaite to County (score: 5.0)
+
+Economy: Upgrading Westhaug to County (score: 4.0)
+
+Economy: Upgrading Northdal to March (score: 4.0)
+
+Economy: Upgrading Riverholme to March (score: 4.0)
+
+Economy: Upgrading Kirkton to Duchy (score: 4.0)
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 9]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 411
+Food: 113
+Wood: 68
+Iron: 5
+Stone: 29
+
+Signals:
+frontier_pressure: 0.636
+underpowered_ratio: 0.250
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Hvithavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army II could not recruit at Westhaug (reason: no_budget_assigned)
+
+Army II [Power: 98, E: 100 - P:23, S:4, A:3, SW:3, C:1, H:1, K:1]
+Action: Recruits
+Target: Hvithavn
+
+Moves to Kirkton
+Moves to Hvithavn
+Castle Hvithavn - recruits:139, distance:2, level:2, score: 97.3
+Castle Fossoy - recruits:41, distance:7, level:1, score: 7.0
+Castle Northnes - recruits:23, distance:5, level:1, score: 5.5
+Arrived at Hvithavn
+Army IV [Power: 398, E: 100 - P:47, S:34, A:21, SW:19, C:7, H:7]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army IV [Power: 398 - P:47, S:34, A:21, SW:19, C:7, H:7]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army IV [Power: 389 - P:45, S:34, A:21, SW:19, C:7, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 157, E: 100 - P:32, S:14, A:9, SW:5, C:1]
+Action: Moves
+Target: Blackbury
+
+Moves to Blackbury
+Fight at Blackbury
+Battle started
+Attacker: Army III [Power: 157 - P:32, S:14, A:9, SW:5, C:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 143 - P:29, S:14, A:9, SW:3, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 126, E: 90 - P:19, S:12, A:9, SW:4, C:1, H:1]
+Action: Moves
+Target: Redhavn
+
+Moves to Redhavn
+Army I makes camp
+Fight at Redhavn
+Battle started
+Attacker: Army I [Power: 132 - P:20, S:12, A:9, SW:5, C:1, H:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 117 - P:17, S:9, A:9, SW:5, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: build_castle (Reykley)
+
+Economy: Build Castle Eval: Reykley (Strategic: 73.3, Regions: 55.0, Distance: True) | Riverbury (Strategic: 20.7, Regions: 80.0, Distance: False) | Blackham (Strategic: 20.0, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 10]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 602
+Food: 227
+Wood: 80
+Iron: 5
+Stone: 39
+
+Signals:
+frontier_pressure: 0.556
+underpowered_ratio: 0.250
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn
+
+Economy: Recruitment candidates: Army II (Hvithavn)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army II [Power: 98, E: 100 - P:23, S:4, A:3, SW:3, C:1, H:1, K:1]
+Action: Recruits
+Target: Hvithavn
+
+Castle Northnes - recruits:43, distance:3, level:1, score: 17.2
+Castle Fossoy - recruits:62, distance:5, level:1, score: 14.9
+Castle Reykley - recruits:9, distance:4, level:1, score: 2.7
+Recruitment: Army Army II recruited 170 at Hvithavn (gold: 225, wood: 32, iron: 0)
+
+Army II [Power: 599 - P:82, S:49, A:27, SW:29, C:9, H:9, K:1]
+Army I [Power: 117, E: 100 - P:17, S:9, A:9, SW:5, C:1, H:1]
+Action: Moves
+Target: Saintham
+
+Moves to Saintham
+Fight at Saintham
+Battle started
+Attacker: Army I [Power: 117 - P:17, S:9, A:9, SW:5, C:1, H:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army I [Power: 73 - P:10, S:6, A:9, SW:1, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 391, E: 100 - P:46, S:34, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Bergvik
+
+Moves to Bergvik
+Fight at Bergvik
+Battle started
+Attacker: Army IV [Power: 391 - P:46, S:34, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army IV [Power: 379 - P:43, S:32, A:21, SW:19, C:7, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 147, E: 100 - P:29, S:14, A:9, SW:4, C:1]
+Action: Moves
+Target: Ashfjord
+
+Moves to Ashfjord
+Fight at Ashfjord
+Battle started
+Attacker: Army III [Power: 147 - P:29, S:14, A:9, SW:4, C:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 136 - P:25, S:13, A:9, SW:4, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 599, E: 100 - P:82, S:49, A:27, SW:29, C:9, H:9, K:1]
+Action: Moves
+Target: Riverchester
+
+Moves to Kingham
+Moves to Riverchester
+Fight at Riverchester
+Battle started
+Attacker: Army II [Power: 599 - P:82, S:49, A:27, SW:29, C:9, H:9, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army II [Power: 590 - P:81, S:48, A:27, SW:28, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_castle (Fossoy)
+
+Economy: Build Castle Eval: Riverbury (Strategic: 20.7, Regions: 80.0, Distance: False) | Blackham (Strategic: 20.0, Regions: 80.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 60.0, Distance: True)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Fossoy (Recruits: 62, RScore: 100.0, DScore: 85.7, Dist: 7, Next: Keep, Total: 92.9), Northnes (Recruits: 43, RScore: 69.4, DScore: 75.0, Dist: 8, Next: Keep, Total: 72.2), Reykley (Recruits: 9, RScore: 14.5, DScore: 100.0, Dist: 6, Next: Keep, Total: 57.3)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Rivernes (Next: Province, Score: 5.0), Hafnbury (Next: Province, Score: 5.0), Bergvik (Next: County, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 11]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 544
+Food: 331
+Wood: 76
+Iron: 5
+Stone: 21
+
+Signals:
+frontier_pressure: 0.525
+underpowered_ratio: 0.250
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army I could not recruit at Saintham (reason: no_budget_assigned)
+
+Army I [Power: 90, E: 100 - P:13, S:7, A:9, SW:3, C:1]
+Action: Recruits
+Target: Fossoy
+
+Moves to Redhavn
+Moves to Riverholme
+Moves to Fossoy
+Castle Fossoy - recruits:78, distance:3, level:2, score: 36.4
+Castle Northnes - recruits:63, distance:4, level:1, score: 18.9
+Castle Hvithavn - recruits:30, distance:6, level:2, score: 7.0
+Arrived at Fossoy
+Army IV [Power: 382, E: 100 - P:43, S:33, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Ashdal
+
+Moves to Ashdal
+Fight at Ashdal
+Battle started
+Attacker: Army IV [Power: 382 - P:43, S:33, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army IV [Power: 369 - P:41, S:30, A:21, SW:19, C:7, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 138, E: 100 - P:26, S:13, A:9, SW:4, C:1]
+Action: Moves
+Target: Ashnes
+
+Moves to Osfjell
+Moves to Northfjord
+Moves to Ashnes
+Fight at Ashnes
+Battle started
+Attacker: Army III [Power: 138 - P:26, S:13, A:9, SW:4, C:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army III [Power: 132 - P:23, S:13, A:9, SW:4, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 590, E: 85 - P:81, S:48, A:27, SW:28, C:9, H:9, K:1]
+Action: Moves
+Target: Eythorpe
+
+Moves to Kingham
+Moves to Kirkfjord
+Moves to Eythorpe
+Army II makes camp
+Army II makes camp
+Out of movement points before reaching Eythorpe
+Economy: Region economy actions: build_castle (Ashdal)
+
+Economy: Build Castle Eval: Ashdal (Strategic: 69.1, Regions: 35.0, Distance: True) | Riverbury (Strategic: 20.7, Regions: 80.0, Distance: False) | Blackham (Strategic: 20.0, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 12]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 775
+Food: 440
+Wood: 98
+Iron: 5
+Stone: 33
+
+Signals:
+frontier_pressure: 0.548
+underpowered_ratio: 0.250
+castle_spacing: 8.400
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes
+
+Economy: Recruitment candidates: Army I (Fossoy)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army I [Power: 96, E: 95 - P:14, S:7, A:9, SW:4, C:1]
+Action: Recruits
+Target: Fossoy
+
+Castle Northnes - recruits:54, distance:2, level:1, score: 32.4
+Castle Hvithavn - recruits:60, distance:5, level:2, score: 16.8
+Castle Reykley - recruits:32, distance:8, level:1, score: 4.8
+Recruitment: Army Army I recruited 92 at Fossoy (gold: 119, wood: 16, iron: 0)
+
+Army I [Power: 367 - P:46, S:32, A:21, SW:19, C:5, H:4]
+Army IV [Power: 369, E: 100 - P:41, S:30, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Greenthorpe
+
+Moves to Greenthorpe
+Fight at Greenthorpe
+Battle started
+Attacker: Army IV [Power: 369 - P:41, S:30, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army IV [Power: 362 - P:41, S:29, A:21, SW:18, C:7, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 367, E: 95 - P:46, S:32, A:21, SW:19, C:5, H:4]
+Action: Moves
+Target: Greendon
+
+Moves to Riverham
+Moves to Greendon
+Army I makes camp
+Fight at Greendon
+Battle started
+Attacker: Army I [Power: 367 - P:46, S:32, A:21, SW:19, C:5, H:4]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 361 - P:45, S:32, A:21, SW:18, C:5, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 134, E: 90 - P:24, S:13, A:9, SW:4, C:1]
+Action: Moves
+Target: Reddal
+
+Moves to Reddal
+Army III makes camp
+Fight at Reddal
+Battle started
+Attacker: Army III [Power: 134 - P:24, S:13, A:9, SW:4, C:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 116 - P:22, S:11, A:9, SW:2, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 590, E: 90 - P:81, S:48, A:27, SW:28, C:9, H:9, K:1]
+Action: Moves
+Target: Eythorpe
+
+Moves to Eythorpe
+Army II makes camp
+Fight at Eythorpe
+Battle started
+Attacker: Army II [Power: 590 - P:81, S:48, A:27, SW:28, C:9, H:9, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 584 - P:81, S:46, A:27, SW:28, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_castle (Northnes), upgrade_region (Fossoy), upgrade_region (Oshavn), upgrade_region (Fossoy), upgrade_region (Oshavn)
+
+Economy: Build Castle Eval: Blackham (Strategic: 20.0, Regions: 90.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 70.0, Distance: False) | Riverbury (Strategic: 20.7, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Northnes (Recruits: 54, RScore: 90.0, DScore: 62.5, Dist: 8, Next: Keep, Total: 76.3), Hvithavn (Recruits: 60, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Reykley (Recruits: 32, RScore: 53.3, DScore: 83.3, Dist: 6, Next: Keep, Total: 68.3)
+
+Economy: Upgrade Castle Result: upgrade_started
+
+Economy: Upgrade Region Eval: Fossoy (Next: Duchy, Score: 5.0), Osfjell (Next: March, Score: 5.0), Greenthorpe (Next: County, Score: 5.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Fossoy to County (score: 7.0)
+
+Economy: Upgrading Oshavn to County (score: 6.0)
+
+Economy: Upgrading Fossoy to March (score: 6.0)
+
+Economy: Upgrading Oshavn to March (score: 5.0)
+
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 13]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 812
+Food: 496
+Wood: 104
+Iron: 5
+Stone: 18
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 9.200
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Northnes.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army IV [Power: 373, E: 100 - P:43, S:30, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Northfjell
+
+Moves to Northfjell
+Fight at Northfjell
+Battle started
+Attacker: Army IV [Power: 373 - P:43, S:30, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army IV [Power: 359 - P:42, S:29, A:21, SW:18, C:7, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 120, E: 100 - P:22, S:11, A:9, SW:3, C:1]
+Action: Moves
+Target: Eastmere
+
+Moves to Eastmere
+Fight at Eastmere
+Battle started
+Attacker: Army III [Power: 120 - P:22, S:11, A:9, SW:3, C:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 86 - P:16, S:5, A:9, SW:2, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 587, E: 100 - P:81, S:47, A:27, SW:28, C:9, H:9, K:1]
+Action: Moves
+Target: Fossstadir
+
+Moves to Kirkfjord
+Moves to Kingham
+Moves to Southton
+Moves to Woodstadir
+Moves to Northnes
+Moves to Osfjell
+Moves to Northfjord
+Moves to Ashnes
+Moves to Reddal
+Moves to Eastmere
+Moves to Fossstadir
+Out of movement points before reaching Fossstadir
+Army I [Power: 361, E: 85 - P:45, S:32, A:21, SW:18, C:5, H:4]
+Action: Moves
+Target: Sandberg
+
+Moves to Redhavn
+Moves to Sandberg
+Army I makes camp
+Army I makes camp
+Movement blocked near Sandberg
+Economy: Region economy actions: upgrade_region (Northnes), upgrade_region (Ashdal), upgrade_region (Bergvik), upgrade_region (Osfjell), upgrade_region (Hvitchester), upgrade_region (Northnes), upgrade_region (Greenthorpe), upgrade_region (Ashdal), upgrade_region (Bergvik), upgrade_region (Reykley), upgrade_region (Osfjell), upgrade_region (Oshavn)
+
+Economy: Build Castle Eval: Northfjell (Strategic: 87.9, Regions: 30.0, Distance: False) | Blackham (Strategic: 20.0, Regions: 90.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 70.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 90, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Northnes (Recruits: 76, RScore: 84.4, DScore: 62.5, Dist: 8, Next: Castle, Total: 73.5), Reykley (Recruits: 44, RScore: 48.9, DScore: 83.3, Dist: 6, Next: Keep, Total: 66.1)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Rivernes (Next: Province, Score: 4.0), Hafnbury (Next: Province, Score: 4.0), Fossoy (Next: Duchy, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Northnes to County (score: 6.0)
+
+Economy: Upgrading Ashdal to County (score: 5.0)
+
+Economy: Upgrading Bergvik to County (score: 5.0)
+
+Economy: Upgrading Osfjell to March (score: 5.0)
+
+Economy: Upgrading Hvitchester to County (score: 5.0)
+
+Economy: Upgrading Northnes to March (score: 5.0)
+
+Economy: Upgrading Greenthorpe to County (score: 4.0)
+
+Economy: Upgrading Ashdal to March (score: 4.0)
+
+Economy: Upgrading Bergvik to March (score: 4.0)
+
+Economy: Upgrading Reykley to County (score: 4.0)
+
+Economy: Upgrading Osfjell to Duchy (score: 4.0)
+
+Economy: Upgrading Oshavn to Duchy (score: 4.0)
+
+Army I makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 14]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 964
+Food: 431
+Wood: 131
+Iron: 5
+Stone: 23
+
+Signals:
+frontier_pressure: 0.521
+underpowered_ratio: 0.250
+castle_spacing: 9.600
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Northnes.
+
+Economy: Decision outcome: Raised then recruited.
+
+Recruitment: Army Army III could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army III [Power: 98, E: 100 - P:19, S:7, A:9, SW:2, C:1]
+Action: Recruits
+Target: Northnes
+
+Moves to Reddal
+Moves to Ashnes
+Moves to Northfjord
+Moves to Osfjell
+Moves to Northnes
+Castle Northnes - recruits:89, distance:4, level:2, score: 31.1
+Castle Hvithavn - recruits:121, distance:7, level:2, score: 24.2
+Castle Fossoy - recruits:28, distance:2, level:2, score: 19.6
+Arrived at Northnes
+Army IV [Power: 368, E: 100 - P:42, S:29, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Eastdal
+
+Moves to Eastdal
+Fight at Eastdal
+Battle started
+Attacker: Army IV [Power: 368 - P:42, S:29, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army IV [Power: 363 - P:41, S:28, A:21, SW:19, C:7, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 365, E: 100 - P:45, S:32, A:21, SW:19, C:5, H:4]
+Action: Moves
+Target: Ashley
+
+Moves to Oakham
+Moves to Ashley
+Fight at Ashley
+Battle started
+Attacker: Army I [Power: 365 - P:45, S:32, A:21, SW:19, C:5, H:4]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army I [Power: 362 - P:45, S:31, A:21, SW:19, C:5, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 587, E: 85 - P:81, S:47, A:27, SW:28, C:9, H:9, K:1]
+Action: Moves
+Target: Redbury
+
+Moves to Redbury
+Army II makes camp
+Army II makes camp
+Fight at Redbury
+Battle started
+Attacker: Army II [Power: 587 - P:81, S:47, A:27, SW:28, C:9, H:9, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 579 - P:81, S:46, A:27, SW:28, C:9, H:8, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Redbury), upgrade_region (Redbury), upgrade_region (Riverham), upgrade_region (Hvitchester), upgrade_region (Rivernes)
+
+Economy: Build Castle Eval: Northfjell (Strategic: 87.9, Regions: 40.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 80.0, Distance: False) | Blackham (Strategic: 20.0, Regions: 90.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 121, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Northnes (Recruits: 89, RScore: 73.6, DScore: 62.5, Dist: 8, Next: Castle, Total: 68.0), Reykley (Recruits: 56, RScore: 46.3, DScore: 83.3, Dist: 6, Next: Keep, Total: 64.8)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Hafnbury (Next: Province, Score: 4.0), Kingham (Next: March, Score: 4.0), Southton (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Redbury to County (score: 5.0)
+
+Economy: Upgrading Redbury to March (score: 4.0)
+
+Economy: Upgrading Riverham to County (score: 4.0)
+
+Economy: Upgrading Hvitchester to March (score: 4.0)
+
+Economy: Upgrading Rivernes to Province (score: 4.0)
+
+Army I makes camp
+Army I makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 15]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1261
+Food: 482
+Wood: 180
+Iron: 0
+Stone: 29
+
+Signals:
+frontier_pressure: 0.490
+underpowered_ratio: 0.250
+castle_spacing: 10.200
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: recruit_only
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury
+
+Economy: Recruitment candidates: Army III (Northnes)
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Decision outcome: Recruit only (skipped raise/castle economy).
+
+Army III [Power: 98, E: 75 - P:19, S:7, A:9, SW:2, C:1]
+Action: Recruits
+Target: Northnes
+
+Castle Hvithavn - recruits:152, distance:3, level:2, score: 70.9
+Castle Fossoy - recruits:29, distance:2, level:2, score: 20.3
+Castle Reykley - recruits:69, distance:6, level:1, score: 13.8
+Recruitment: Army Army III recruited 105 at Northnes (gold: 139, wood: 20, iron: 0)
+
+Army III [Power: 407 - P:55, S:36, A:24, SW:17, C:6, H:5]
+Army IV [Power: 363, E: 100 - P:41, S:28, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Hellafjell
+
+Moves to Northfjell
+Moves to Hellafjell
+Fight at Hellafjell
+Battle started
+Attacker: Army IV [Power: 363 - P:41, S:28, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army IV [Power: 360 - P:41, S:27, A:21, SW:19, C:7, H:6]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 370, E: 100 - P:45, S:32, A:21, SW:19, C:5, H:5]
+Action: Moves
+Target: Fossstadir
+
+Moves to Ashley
+Moves to Fossstadir
+Fight at Fossstadir
+Battle started
+Attacker: Army I [Power: 370 - P:45, S:32, A:21, SW:19, C:5, H:5]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army I [Power: 367 - P:45, S:31, A:21, SW:19, C:5, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 579, E: 90 - P:81, S:46, A:27, SW:28, C:9, H:8, K:1]
+Action: Moves
+Target: Fossstadir
+
+Moves to Northnes
+Moves to Osfjell
+Moves to Northfjord
+Moves to Ashnes
+Moves to Reddal
+Moves to Eastmere
+Moves to Fossstadir
+Out of movement points before reaching Fossstadir
+Army III [Power: 407, E: 75 - P:55, S:36, A:24, SW:17, C:6, H:5]
+Action: Moves
+Target: Hvithaug
+
+Moves to Osfjell
+Moves to Northfjord
+Moves to Hvithaug
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Out of movement points before reaching Hvithaug
+Economy: Region economy actions: upgrade_region (Reykthwaite), upgrade_region (Reykthwaite), upgrade_region (Woodstadir), upgrade_region (Blackfell), upgrade_region (Northnes)
+
+Economy: Build Castle Eval: Northfjell (Strategic: 87.9, Regions: 50.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 80.0, Distance: False) | Ashley (Strategic: 56.1, Regions: 55.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 152, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 47, RScore: 30.9, DScore: 100.0, Dist: 5, Next: Keep, Total: 65.5), Reykley (Recruits: 69, RScore: 45.4, DScore: 83.3, Dist: 6, Next: Keep, Total: 64.4)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Oshavn (Next: Province, Score: 4.0), Osfjell (Next: Province, Score: 4.0), Fossoy (Next: Duchy, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Reykthwaite to March (score: 6.0)
+
+Economy: Upgrading Reykthwaite to Duchy (score: 5.0)
+
+Economy: Upgrading Woodstadir to County (score: 5.0)
+
+Economy: Upgrading Blackfell to County (score: 5.0)
+
+Economy: Upgrading Northnes to Duchy (score: 5.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 16]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1424
+Food: 529
+Wood: 211
+Iron: 0
+Stone: 38
+
+Signals:
+frontier_pressure: 0.472
+underpowered_ratio: 0.000
+castle_spacing: 10.600
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Hvithavn.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III [Power: 410, E: 90 - P:55, S:37, A:24, SW:17, C:6, H:5]
+Action: Moves
+Target: Fossstadir
+
+Moves to Ashnes
+Moves to Reddal
+Moves to Eastmere
+Moves to Fossstadir
+Army III makes camp
+Movement blocked near Fossstadir
+Army I [Power: 369, E: 100 - P:46, S:31, A:21, SW:19, C:5, H:5]
+Action: Moves
+Target: Fossstadir
+
+Moves to Fossstadir
+Fight at Fossstadir
+Battle started
+Attacker: Army I [Power: 369 - P:46, S:31, A:21, SW:19, C:5, H:5]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 354 - P:43, S:28, A:21, SW:19, C:5, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 360, E: 100 - P:41, S:27, A:21, SW:19, C:7, H:6]
+Action: Moves
+Target: Riverdal
+
+Moves to Riverdal
+Fight at Riverdal
+Battle started
+Attacker: Army IV [Power: 360 - P:41, S:27, A:21, SW:19, C:7, H:6]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army IV [Power: 326 - P:38, S:25, A:21, SW:16, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Fossoy), upgrade_region (Riverham), upgrade_region (Reykley), upgrade_region (Ashdal), upgrade_region (Greenthorpe), upgrade_region (Riverdal)
+
+Economy: Build Castle Eval: Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False) | Ashley (Strategic: 56.1, Regions: 65.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 184, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 65, RScore: 35.3, DScore: 100.0, Dist: 5, Next: Keep, Total: 67.7), Reykley (Recruits: 77, RScore: 41.8, DScore: 83.3, Dist: 6, Next: Keep, Total: 62.6)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Hafnbury (Next: Province, Score: 4.0), Kingham (Next: March, Score: 4.0), Southton (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Fossoy to Duchy (score: 4.0)
+
+Economy: Upgrading Riverham to March (score: 4.0)
+
+Economy: Upgrading Reykley to March (score: 4.0)
+
+Economy: Upgrading Ashdal to Duchy (score: 4.0)
+
+Economy: Upgrading Greenthorpe to March (score: 4.0)
+
+Economy: Upgrading Riverdal to County (score: 4.0)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 17]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 1737
+Food: 562
+Wood: 256
+Iron: 0
+Stone: 47
+
+Signals:
+frontier_pressure: 0.473
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley, Fossstadir, Riverdal
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army IV [Power: 328, E: 100 - P:39, S:25, A:21, SW:16, C:7, H:4]
+Action: Moves
+Target: Northton
+
+Moves to Northton
+Fight at Northton
+Battle started
+Attacker: Army IV [Power: 328 - P:39, S:25, A:21, SW:16, C:7, H:4]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army IV [Power: 306 - P:38, S:21, A:21, SW:14, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 359, E: 100 - P:44, S:29, A:21, SW:19, C:5, H:5]
+Action: Moves
+Target: Southdon
+
+Moves to Eastmere
+Moves to Southdon
+Fight at Southdon
+Battle started
+Attacker: Army I [Power: 359 - P:44, S:29, A:21, SW:19, C:5, H:5]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 338 - P:43, S:27, A:21, SW:17, C:5, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 410, E: 95 - P:55, S:37, A:24, SW:17, C:6, H:5]
+Action: Moves
+Target: Hellastadir
+
+Moves to Fossstadir
+Moves to Hellastadir
+Army III makes camp
+Fight at Hellastadir
+Battle started
+Attacker: Army III [Power: 410 - P:55, S:37, A:24, SW:17, C:6, H:5]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army III [Power: 402 - P:53, S:37, A:24, SW:16, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 584, E: 100 - P:81, S:46, A:27, SW:28, C:9, H:9, K:1]
+Action: Moves
+Target: Hvithaug
+
+Moves to Hvithaug
+Fight at Hvithaug
+Battle started
+Attacker: Army II [Power: 584 - P:81, S:46, A:27, SW:28, C:9, H:9, K:1]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army II [Power: 584 - P:81, S:46, A:27, SW:28, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Hvithaug), upgrade_region (Hellastadir), upgrade_region (Southton), upgrade_region (Northton), upgrade_region (Hvithaug), upgrade_region (Hellastadir)
+
+Economy: Build Castle Eval: Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False) | Ashley (Strategic: 56.1, Regions: 75.0, Distance: False) | Redhavn (Strategic: 33.0, Regions: 80.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 217, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 78, RScore: 35.9, DScore: 100.0, Dist: 5, Next: Keep, Total: 68.0), Reykley (Recruits: 83, RScore: 38.2, DScore: 83.3, Dist: 6, Next: Keep, Total: 60.8)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Kirkton (Next: Province, Score: 4.0), Kingham (Next: March, Score: 4.0), Southton (Next: Duchy, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Hvithaug to County (score: 5.0)
+
+Economy: Upgrading Hellastadir to County (score: 5.0)
+
+Economy: Upgrading Southton to March (score: 5.0)
+
+Economy: Upgrading Northton to County (score: 5.0)
+
+Economy: Upgrading Hvithaug to March (score: 4.0)
+
+Economy: Upgrading Hellastadir to March (score: 4.0)
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 18]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 2117
+Food: 657
+Wood: 330
+Iron: 0
+Stone: 66
+
+Signals:
+frontier_pressure: 0.407
+underpowered_ratio: 0.000
+castle_spacing: 11.800
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley, Fossstadir, Riverdal, Northton, Southdon, Hellastadir, Hvithaug
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army IV [Power: 313, E: 100 - P:38, S:22, A:21, SW:15, C:7, H:4]
+Action: Moves
+Target: Greenfjell
+
+Moves to Greenfjell
+Fight at Greenfjell
+Battle started
+Attacker: Army IV [Power: 313 - P:38, S:22, A:21, SW:15, C:7, H:4]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army IV [Power: 308 - P:37, S:21, A:21, SW:15, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 406, E: 95 - P:55, S:37, A:24, SW:16, C:6, H:5]
+Action: Moves
+Target: Weststadir
+
+Moves to Fossstadir
+Moves to Weststadir
+Army III makes camp
+Fight at Weststadir
+Battle started
+Attacker: Army III [Power: 406 - P:55, S:37, A:24, SW:16, C:6, H:5]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army III [Power: 395 - P:52, S:37, A:24, SW:16, C:6, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 584, E: 100 - P:81, S:46, A:27, SW:28, C:9, H:9, K:1]
+Action: Moves
+Target: Kirkstadir
+
+Moves to Ashley
+Moves to Weststadir
+Moves to Kirkstadir
+Fight at Kirkstadir
+Battle started
+Attacker: Army II [Power: 584 - P:81, S:46, A:27, SW:28, C:9, H:9, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 580 - P:81, S:46, A:27, SW:27, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 338, E: 100 - P:43, S:27, A:21, SW:17, C:5, H:4]
+Action: Moves
+Target: Vatnvik
+
+Moves to Eastmere
+Moves to Ashley
+Moves to Vatnvik
+Fight at Vatnvik
+Battle started
+Attacker: Army I [Power: 338 - P:43, S:27, A:21, SW:17, C:5, H:4]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 321 - P:39, S:24, A:21, SW:17, C:5, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Kirkstadir), upgrade_region (Weststadir), upgrade_region (Riverholme)
+
+Economy: Build Castle Eval: Ashley (Strategic: 56.1, Regions: 95.0, Distance: False) | Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False) | Kirkstadir (Strategic: 68.5, Regions: 45.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 235, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 88, RScore: 37.4, DScore: 100.0, Dist: 5, Next: Keep, Total: 68.7), Reykley (Recruits: 90, RScore: 38.3, DScore: 83.3, Dist: 6, Next: Keep, Total: 60.8)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Osfjell (Next: Province, Score: 4.0), Kirkstadir (Next: March, Score: 4.0), Weststadir (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Kirkstadir to County (score: 5.0)
+
+Economy: Upgrading Weststadir to County (score: 5.0)
+
+Economy: Upgrading Riverholme to Duchy (score: 4.0)
+
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 19]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 2583
+Food: 808
+Wood: 418
+Iron: 0
+Stone: 80
+
+Signals:
+frontier_pressure: 0.381
+underpowered_ratio: 0.000
+castle_spacing: 12.600
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley, Fossstadir, Riverdal, Northton, Southdon, Hellastadir, Hvithaug, Greenfjell, Weststadir, Kirkstadir, Vatnvik
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army II [Power: 580, E: 80 - P:81, S:46, A:27, SW:27, C:9, H:9, K:1]
+Action: Moves
+Target: Greenhaug
+
+Moves to Greenhaug
+Army II makes camp
+Army II makes camp
+Fight at Greenhaug
+Battle started
+Attacker: Army II [Power: 580 - P:81, S:46, A:27, SW:27, C:9, H:9, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 577 - P:81, S:45, A:27, SW:27, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 321, E: 80 - P:39, S:24, A:21, SW:17, C:5, H:4]
+Action: Moves
+Target: Torworth
+
+Moves to Kirkstadir
+Moves to Greenhaug
+Moves to Torworth
+Army I makes camp
+Army I makes camp
+Movement blocked near Torworth
+Army III [Power: 395, E: 85 - P:52, S:37, A:24, SW:16, C:6, H:4]
+Action: Moves
+Target: Torworth
+
+Moves to Greenhaug
+Moves to Torworth
+Army III makes camp
+Army III makes camp
+Movement blocked near Torworth
+Army IV [Power: 317, E: 100 - P:38, S:22, A:21, SW:16, C:7, H:4]
+Action: Moves
+Target: Reykthwaite
+
+Moves to Northton
+Moves to Reykthwaite
+Fight at Reykthwaite
+Battle started
+Attacker: Army IV [Power: 317 - P:38, S:22, A:21, SW:16, C:7, H:4]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army IV [Power: 305 - P:37, S:20, A:21, SW:15, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: No region economy changes (reason: no_region_actions)
+
+Economy: Build Castle Eval: Ashley (Strategic: 56.1, Regions: 95.0, Distance: False) | Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False) | Kirkstadir (Strategic: 68.5, Regions: 55.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 249, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 97, RScore: 39.0, DScore: 100.0, Dist: 5, Next: Keep, Total: 69.5), Reykley (Recruits: 93, RScore: 37.3, DScore: 83.3, Dist: 6, Next: Keep, Total: 60.3)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Ashdal (Next: Province, Score: 4.0), Osfjell (Next: Province, Score: 4.0), Ashley (Next: County, Score: 3.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 20]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 3118
+Food: 1017
+Wood: 516
+Iron: 0
+Stone: 99
+
+Signals:
+frontier_pressure: 0.354
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley, Fossstadir, Riverdal, Northton, Southdon, Hellastadir, Hvithaug, Greenfjell, Weststadir, Kirkstadir, Vatnvik, Greenhaug, Reykthwaite
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army II [Power: 577, E: 100 - P:81, S:45, A:27, SW:27, C:9, H:9, K:1]
+Action: Moves
+Target: Torworth
+
+Moves to Torworth
+Fight at Torworth
+Battle started
+Attacker: Army II [Power: 577 - P:81, S:45, A:27, SW:27, C:9, H:9, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 575 - P:80, S:45, A:27, SW:27, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 402, E: 100 - P:53, S:37, A:24, SW:16, C:6, H:5]
+Action: Moves
+Target: Blackberg
+
+Moves to Torworth
+Moves to Blackberg
+Fight at Blackberg
+Battle started
+Attacker: Army III [Power: 402 - P:53, S:37, A:24, SW:16, C:6, H:5]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 397 - P:52, S:36, A:24, SW:16, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 325, E: 100 - P:41, S:24, A:21, SW:17, C:5, H:4]
+Action: Moves
+Target: Hafnhavn
+
+Moves to Kirkstadir
+Moves to Hafnhavn
+Fight at Hafnhavn
+Battle started
+Attacker: Army I [Power: 325 - P:41, S:24, A:21, SW:17, C:5, H:4]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army I [Power: 308 - P:37, S:21, A:21, SW:17, C:5, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 309, E: 100 - P:37, S:20, A:21, SW:16, C:7, H:4]
+Action: Moves
+Target: Kingley
+
+Moves to Northton
+Moves to Kingley
+Fight at Kingley
+Battle started
+Attacker: Army IV [Power: 309 - P:37, S:20, A:21, SW:16, C:7, H:4]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army IV [Power: 297 - P:33, S:20, A:21, SW:15, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Kingley), upgrade_region (Hafnhavn)
+
+Economy: Build Castle Eval: Ashley (Strategic: 56.1, Regions: 95.0, Distance: False) | Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False) | Kirkstadir (Strategic: 68.5, Regions: 65.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 261, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 104, RScore: 39.8, DScore: 100.0, Dist: 5, Next: Keep, Total: 69.9), Reykley (Recruits: 98, RScore: 37.5, DScore: 83.3, Dist: 6, Next: Keep, Total: 60.4)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Osfjell (Next: Province, Score: 4.0), Torworth (Next: County, Score: 4.0), Hafnhavn (Next: March, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Kingley to County (score: 5.0)
+
+Economy: Upgrading Hafnhavn to County (score: 5.0)
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 21]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 3682
+Food: 1213
+Wood: 620
+Iron: 0
+Stone: 125
+
+Signals:
+frontier_pressure: 0.362
+underpowered_ratio: 0.000
+castle_spacing: 13.800
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley, Fossstadir, Riverdal, Northton, Southdon, Hellastadir, Hvithaug, Greenfjell, Weststadir, Kirkstadir, Vatnvik, Greenhaug, Reykthwaite, Torworth, Blackberg, Hafnhavn, Kingley
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army III [Power: 397, E: 85 - P:52, S:36, A:24, SW:16, C:6, H:5]
+Action: Moves
+Target: Whitoy
+
+Moves to Whitoy
+Army III makes camp
+Army III makes camp
+Fight at Whitoy
+Battle started
+Attacker: Army III [Power: 397 - P:52, S:36, A:24, SW:16, C:6, H:5]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 391 - P:49, S:36, A:24, SW:16, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 575, E: 100 - P:80, S:45, A:27, SW:27, C:9, H:9, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Blackberg
+Moves to Kingthwaite
+Fight at Kingthwaite
+Battle started
+Attacker: Army II [Power: 575 - P:80, S:45, A:27, SW:27, C:9, H:9, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army II [Power: 568 - P:78, S:44, A:27, SW:27, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 299, E: 100 - P:34, S:20, A:21, SW:15, C:7, H:4]
+Action: Moves
+Target: Sainthavn
+
+Moves to Sainthavn
+Fight at Sainthavn
+Battle started
+Attacker: Army IV [Power: 299 - P:34, S:20, A:21, SW:15, C:7, H:4]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army IV [Power: 281 - P:30, S:18, A:21, SW:14, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 319, E: 95 - P:37, S:23, A:21, SW:17, C:5, H:5]
+Action: Moves
+Target: Kirkholme
+
+Moves to Kirkholme
+Army I makes camp
+Fight at Kirkholme
+Battle started
+Attacker: Army I [Power: 322 - P:37, S:24, A:21, SW:17, C:5, H:5]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 315 - P:35, S:23, A:21, SW:17, C:5, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: upgrade_region (Sainthavn), upgrade_region (Whitoy), upgrade_region (Kirkholme), upgrade_region (Sainthavn), upgrade_region (Kingthwaite), upgrade_region (Whitoy)
+
+Economy: Build Castle Eval: Ashley (Strategic: 56.1, Regions: 95.0, Distance: False) | Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False) | Kirkstadir (Strategic: 68.5, Regions: 75.0, Distance: False)
+
+Economy: Build Castle Result: no_viable_candidate
+
+Economy: Upgrade Castle Eval: Hvithavn (Recruits: 270, RScore: 100.0, DScore: 50.0, Dist: 10, Next: Castle, Total: 75.0), Ashdal (Recruits: 110, RScore: 40.7, DScore: 100.0, Dist: 5, Next: Keep, Total: 70.4), Reykley (Recruits: 102, RScore: 37.8, DScore: 83.3, Dist: 6, Next: Keep, Total: 60.6)
+
+Economy: Upgrade Castle Result: insufficient_resources
+
+Economy: Upgrade Region Eval: Osfjell (Next: Province, Score: 4.0), Northfjord (Next: County, Score: 4.0), Fossoy (Next: Province, Score: 4.0)
+
+Economy: Upgrade Region Result: insufficient_resources
+
+Economy: Upgrading Sainthavn to County (score: 5.0)
+
+Economy: Upgrading Whitoy to County (score: 5.0)
+
+Economy: Upgrading Kirkholme to County (score: 4.0)
+
+Economy: Upgrading Sainthavn to March (score: 4.0)
+
+Economy: Upgrading Kingthwaite to County (score: 4.0)
+
+Economy: Upgrading Whitoy to March (score: 4.0)
+
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 22]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 4255
+Food: 1372
+Wood: 720
+Iron: 0
+Stone: 151
+
+Signals:
+frontier_pressure: 0.315
+underpowered_ratio: 0.000
+castle_spacing: 14.600
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Decision: raised_then_recruit
+
+Regions: Hvithavn, Rivernes, Northdal, Hafnbury, Kirkton, Kingham, Southton, Redley, Woodstadir, Blackham, Woodberg, Souththorpe, Riverberg, Westholme, Northnes, Blackfell, Hvitchester, Riverham, Eastholme, Akrley, Fossoy, Riverfjell, Northfjord, Kirkfjord, Oshavn, Osfjell, Eyhaug, Northhaug, Riverbury, Reykthwaite, Reykley, Riverholme, Westhaug, Northvik, Blackbury, Redhavn, Saintham, Bergvik, Ashfjord, Riverchester, Ashdal, Ashnes, Greenthorpe, Greendon, Reddal, Eythorpe, Northfjell, Eastmere, Eastdal, Oakham, Redbury, Hellafjell, Ashley, Fossstadir, Riverdal, Northton, Southdon, Hellastadir, Hvithaug, Greenfjell, Weststadir, Kirkstadir, Vatnvik, Greenhaug, Reykthwaite, Torworth, Blackberg, Hafnhavn, Kingley, Whitoy, Kingthwaite, Sainthavn, Kirkholme
+
+Economy: Recruitment candidates: none (no armies at castles).
+
+Economy: Recruitment action: Budgets assigned to 1 armies at castles.
+
+Economy: Raise Army: success at Fossoy.
+
+Economy: Decision outcome: Raised then recruited.
+
+Army IV [Power: 293, E: 100 - P:31, S:20, A:21, SW:15, C:7, H:4]
+Action: Moves
+Target: Bergdal
+
+Moves to Kingley
+Moves to Bergdal
+Fight at Bergdal
+Battle started
+Attacker: Army IV [Power: 293 - P:31, S:20, A:21, SW:15, C:7, H:4]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army IV [Power: 280 - P:26, S:19, A:21, SW:15, C:7, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 394, E: 100 - P:49, S:37, A:24, SW:16, C:6, H:5]
+Action: Moves
+Target: Torworth
+
+Moves to Torworth
+Fight at Torworth
+Battle started
+Attacker: Army III [Power: 394 - P:49, S:37, A:24, SW:16, C:6, H:5]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 383 - P:47, S:36, A:24, SW:15, C:6, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 570, E: 95 - P:79, S:44, A:27, SW:27, C:9, H:9, K:1]
+Action: Moves
+Target: Hellachester
+
+Moves to Torworth
+Moves to Hellachester
+Army II makes camp
+Fight at Hellachester
+Battle started
+Attacker: Army II [Power: 570 - P:79, S:44, A:27, SW:27, C:9, H:9, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army II [Power: 565 - P:78, S:43, A:27, SW:27, C:9, H:9, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 315, E: 100 - P:35, S:23, A:21, SW:17, C:5, H:5]
+Action: Moves
+Target: Sandberg
+
+Moves to Sandberg
+Fight at Sandberg
+Battle started
+Attacker: Army I [Power: 315 - P:35, S:23, A:21, SW:17, C:5, H:5]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army I [Power: 307 - P:33, S:23, A:21, SW:16, C:5, H:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Economy: Region economy actions: build_castle (Sandberg)
+
+Economy: Build Castle Eval: Sandberg (Strategic: 74.3, Regions: 85.0, Distance: True) | Ashley (Strategic: 56.1, Regions: 95.0, Distance: False) | Northfjell (Strategic: 87.9, Regions: 60.0, Distance: False)
+
+Economy: Build Castle Result: built
+
+Economy: Upgrade Castle Result: not_evaluated
+
+Economy: Upgrade Region Result: not_evaluated
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp

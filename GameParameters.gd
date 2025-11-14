@@ -517,6 +517,13 @@ const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
 	}
 }
 
+const SAFE_GARRISON_POWER_PER_LEVEL = {
+	CastleTypeEnum.Type.OUTPOST: 30,
+	CastleTypeEnum.Type.KEEP: 60,
+	CastleTypeEnum.Type.CASTLE: 100,
+	CastleTypeEnum.Type.STRONGHOLD: 150
+}
+
 ## Player Colors for Multi-Player Support
 const PLAYER_COLORS = {
 	1: Color('#ab3c16'), # Dark red
@@ -650,6 +657,15 @@ static func get_unit_total_recruitment_cost(unit_type: SoldierTypeEnum.Type) -> 
 		"wood": get_unit_wood_cost(unit_type),
 		"iron": get_unit_iron_cost(unit_type)
 	}
+
+static func get_safe_garrison_power(castle_type: CastleTypeEnum.Type) -> int:
+	"""Minimum desirable garrison strength per castle tier"""
+	return SAFE_GARRISON_POWER_PER_LEVEL.get(castle_type, 0)
+
+static func get_ideal_castle_garrison(castle_type: CastleTypeEnum.Type) -> Dictionary:
+	"""Ideal garrison composition for a castle tier"""
+	var key = CastleTypeEnum.type_to_string(castle_type)
+	return IDEAL_CASTLE_GARRISON_COMPOSITIONS.get(key, {})
 
 static func get_movement_cost(region_type: RegionTypeEnum.Type) -> int:
 	"""Get movement cost for terrain type"""
