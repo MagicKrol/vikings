@@ -30,7 +30,8 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var total_units = min(available_from_sources, budget.available_recruits) if budget.available_recruits > 0 else available_from_sources
 
 	var need_key: String = CastleTypeEnum.type_to_string(region.get_castle_type())
-	var ideal_raw: Dictionary = GameParameters.get_ideal_composition(need_key)
+	var wealth_level = _get_player_wealth_level(player_id)
+	var ideal_raw: Dictionary = GameParameters.get_ideal_composition_for_wealth(need_key, wealth_level)
 	var ideal = _normalize_ideal(_map_ideal_keys_to_types(ideal_raw))
 	var unit0_share = ideal.get(SoldierTypeEnum.Type.PEASANTS, 0.0)
 
@@ -58,6 +59,7 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 		"spent_gold": result["spent_gold"],
 		"spent_wood": result["spent_wood"],
 		"spent_iron": result["spent_iron"],
+		"total_recruited": int(result.get("total_recruited", 0)),
 		"budget_left": budget.to_dict(),
 		"recruits_left": recruits_remaining
 	}
@@ -73,7 +75,8 @@ func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, de
 	if budget.available_recruits > 0:
 		total_units = min(total_units, budget.available_recruits)
 	
-	var ideal_raw = GameParameters.get_ideal_castle_garrison(region.get_castle_type())
+	var wealth_level = _get_player_wealth_level(player_id)
+	var ideal_raw = GameParameters.get_ideal_castle_garrison_for_wealth(region.get_castle_type(), wealth_level)
 	if ideal_raw.is_empty():
 		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0}
 	var ideal_counts = _map_ideal_keys_to_types(ideal_raw)
@@ -106,6 +109,7 @@ func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, de
 			int(result.get("spent_wood", 0)),
 			int(result.get("spent_iron", 0))
 		)
+	result["recruits_left"] = _count_recruits_remaining(recruit_sources)
 	return result
 
 
@@ -545,3 +549,15 @@ func _deduct_player_resources(player_id: int, gold: int, wood: int, iron: int) -
 		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.WOOD, wood)
 	if iron > 0:
 		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.IRON, iron)
+
+func _get_player_wealth_level(player_id: int) -> int:
+	if game_manager == null:
+		return GameParameters.WealthLevel.POOR
+	if not game_manager.has_method("get_player_manager"):
+		return GameParameters.WealthLevel.POOR
+	var pm: PlayerManagerNode = game_manager.get_player_manager()
+	if pm == null:
+		return GameParameters.WealthLevel.POOR
+	if pm.has_method("get_player_wealth_level"):
+		return pm.get_player_wealth_level(player_id)
+	return GameParameters.WealthLevel.POOR

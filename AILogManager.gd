@@ -16,12 +16,14 @@ func start_new_game_log(raw_label: String) -> void:
 	header_file.store_string("AI Log File: %s\n\n" % current_game_label)
 	header_file.close()
 
-func log_turn_intro(turn_number: int, player_label: String, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array) -> void:
+func log_turn_intro(turn_number: int, player_label: String, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "") -> void:
 	var lines: Array[String] = []
 	lines.append("-------")
 	lines.append("[Turn %d]" % turn_number)
 	lines.append("-------")
 	lines.append("[Player %s]" % player_label)
+	if wealth_label != "":
+		lines.append("Wealth: %s" % wealth_label)
 	lines.append("Resources:")
 	for resource_type in ResourcesEnum.get_all_types():
 		lines.append("%s: %d" % [ResourcesEnum.type_to_string(resource_type), int(resources.get(resource_type, 0))])
@@ -33,16 +35,14 @@ func log_turn_intro(turn_number: int, player_label: String, resources: Dictionar
 	lines.append("bank_ratio: %.3f" % float(signals.get("bank_ratio", 0.0)))
 	lines.append("power_gap_norm: %.3f" % float(signals.get("power_gap_norm", 0.0)))
 	lines.append("")
-	lines.append("Decision: %s" % decision)
-	lines.append("")
-	var regions_text = "None"
-	if region_names.size() > 0:
-		regions_text = ""
-		for i in range(region_names.size()):
-			regions_text += str(region_names[i])
-			if i < region_names.size() - 1:
-				regions_text += ", "
-	lines.append("Regions: %s" % regions_text)
+	lines.append("______ ECONOMY ______")
+	_append_lines(lines)
+
+func log_turn_outro(resources: Dictionary) -> void:
+	var lines: Array[String] = []
+	lines.append("Resources (end):")
+	for resource_type in ResourcesEnum.get_all_types():
+		lines.append("%s: %d" % [ResourcesEnum.type_to_string(resource_type), int(resources.get(resource_type, 0))])
 	lines.append("")
 	_append_lines(lines)
 
@@ -57,6 +57,11 @@ func log_army_action(army_name: String, power: int, efficiency: int, action: Str
 	if target_region != "":
 		lines.append("Target: %s" % target_region)
 	lines.append("")
+	_append_lines(lines)
+
+func log_army_movemement() -> void:
+	var lines: Array[String] = []
+	lines.append("______ ARMY ACTIONS ______")
 	_append_lines(lines)
 
 func log_recruitment(message: String) -> void:

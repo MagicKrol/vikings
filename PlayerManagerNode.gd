@@ -78,6 +78,20 @@ func get_all_players() -> Array[Player]:
 		result.append(players[player_id])
 	return result
 
+func get_player_wealth_level(player_id: int) -> int:
+	var player = get_player(player_id)
+	if player == null:
+		return GameParameters.WealthLevel.POOR
+	return player.get_wealth_level()
+
+func update_player_wealth_status(player_id: int) -> void:
+	var player = get_player(player_id)
+	if player == null:
+		return
+	var gold = player.get_resource_amount(ResourcesEnum.Type.GOLD)
+	var level = GameParameters.get_wealth_level_for_gold(gold)
+	player.set_wealth_level(level)
+
 func set_current_player(player_id: int) -> void:
 	"""Set the active player"""
 	if players.has(player_id):

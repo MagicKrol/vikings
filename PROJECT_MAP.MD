@@ -136,7 +136,8 @@ editor_start.tscn (Editor Start)
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
-- AI castle upkeep: immediately after `plan_turn()` the AI consumes garrison budgets via `EconomyAIManager.execute_garrison_recruitment()` (which funnels through `RecruitmentManager.hire_garrison()`), and once all moves resolve it calls `perform_garrison_trickle()` followed by `ore_checks()` so danger castles get priority hires and any leftover gold trickles into every owned castle (only when the player's food trend is positive).
+- AI castle upkeep: `plan_turn()` handles both emergency garrison hires and the final “additional recruitment” pass (threat-weighted) before army movement, so TurnController no longer runs ore searches or garrison spending after movement.
+- Wealth tracking: caches start-of-turn resources for AI log headers, writes the final totals after movement, and calls `PlayerManagerNode.update_player_wealth_status()` so every player ends their turn tagged as poor/normal/rich (thresholds in `GameParameters`).
 - Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Reinforcement routing: Armies that need recruitment but have no assigned budget now queue a `goal: reinforce` move toward the best owned castle before chasing frontier targets, so low-power stacks travel home for resupply.
@@ -191,27 +192,28 @@ editor_start.tscn (Editor Start)
 - Purpose: Player storage and per-player economy as a scene node.
 - Key: initialize players; `current_player_changed` signal; add/remove/afford/pay; per-player income `process_resource_income_for_player()`; total army+garrison food cost; `set_player_resources()` for scenario starts; save/load.
 - Exposes `get_player_food_growth()` and `meets_food_upgrade_safeguard()` so UI/AI can gate promotions on the required post-upgrade food buffer from `GameParameters.AI_MIN_FOOD_AFTER_UPGRADE`.
+- Wealth helpers: `get_player_wealth_level()` / `update_player_wealth_status()` wrap the new gold thresholds so other systems can react to poor/normal/rich states without reimplementing the math.
 - Used by GameManager and TurnController.
 
 ### Economy & Recruitment
 - BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
-- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources.
+- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources. Composition lookups route through `GameParameters.get_ideal_*_for_wealth()` so poor/normal/rich players field different mixes automatically.
 
 ### EconomyAIManager.gd
 - Purpose: Central, deterministic planner for AI economy decisions each turn.
 - Current Scope: Recruitment budgeting and raise army decisions (integrated with existing flow).
 - Future Hooks: region_upgrade, castle_upgrade (stubs in place).
 - Key Functions:
-  - `plan_turn(player_id, turn_number)`: Computes signals, allocates recruitment budgets, decides on raising armies
+  - `plan_turn(player_id, turn_number)`: Computes signals, allocates recruitment budgets (and immediately hires armies/garrison defenders), then runs the sequential economy pass (raise → build → upgrade → ore → extra castle recruitment)
   - `decide_and_raise_army(player_id, turn_number)`: Orchestrates the raise army decision and execution
   - `pick_best_raise_region(player_id)`: Selects optimal castle for new army based on recruits and frontier proximity
   - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring
   - `execute_raise_army(player_id, region_id)`: Creates army and deducts cost
   - `ore_checks(player_id)`: Walks all owned regions once per AI turn and spends gold on `Region.search_for_ore()` whenever the region still has attempts and the player can afford the flat ore search cost
-  - `execute_garrison_recruitment(player_id)` / `perform_garrison_trickle(player_id)`: Reuse `RecruitmentManager` so danger-listed castles and end-of-turn upkeep both hire with the same composition logic as armies, feeding `IDEAL_CASTLE_GARRISON_COMPOSITIONS` and respecting leftover gold (only when net food growth is positive)
+  - `execute_garrison_recruitment(player_id)` / `perform_garrison_trickle(player_id)`: Reuse `RecruitmentManager` so danger-listed castles (step 1) and the final “additional castle recruitment” pass both hire with the same composition logic as armies, feeding `IDEAL_CASTLE_GARRISON_COMPOSITIONS` and respecting leftover gold (only when net food growth is positive)
 - Signals computed: frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm
-- Integration: `TurnController.start_turn()` constructs `EconomyAIManager`, calls `plan_turn()` at turn start, and triggers `ore_checks()` after AI movement resolves. After movement, `TurnController` calls `plan_post_movement()` to spend any leftover budget on region economy.
+- Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and runs `plan_turn()` once per AI turn. The plan now executes a fixed sequence: (1) split all available gold/wood/iron across armies (plus danger castles) for recruitment, (2) attempt to raise armies, (3) build castles, (4) upgrade castles, (5) upgrade regions, (6) perform ore searches, and (7) spend any leftover resources on additional castle recruitment. After this economy pass completes, TurnController proceeds directly to army movement (no separate post-movement budget phase).
 - Castle garrison protection: During budget allocation, castles that fall below `SAFE_GARRISON_POWER_PER_LEVEL` and have enemy armies within two hops receive the same BudgetComposition treatment as armies, then pass those budgets to `RecruitmentManager.hire_garrison()` so regions fill toward their `IDEAL_CASTLE_GARRISON_COMPOSITIONS`.
 - Garrison upkeep: After AI movement resolves, any surplus gold is split among all owned castles with weights tied to castle tier (outpost..stronghold). Each castle spends its share through the same recruiter as long as the player's projected food change stays positive.
 
@@ -296,9 +298,9 @@ editor_start.tscn (Editor Start)
 - Camera Centering: Auto-centers on armies/assets. `CameraController.await_target_reached()` replaces arbitrary delays; `GameManager.ai_travel_to()` awaits camera arrival instead of timers. For human players: `GameManager._on_current_player_changed()` centers on first army or castle, but skips recentering while any battle is active to prevent mid-battle camera jumps.
 
 ## Data & Parameters
-- Player.gd: resources, name/color/id, afford/pay helpers, serialization.
+- Player.gd: resources, name/color/id, afford/pay helpers, serialization, plus a per-player `wealth_level` flag (poor/normal/rich) that TurnController updates at the end of each turn so recruitment logic can read each player's current tier.
 - ResourceComposition.gd / ArmyComposition.gd: storage and math helpers; food cost, power.
-- GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*), camera timing constants (CAMERA_*).
+- GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*), camera timing constants (CAMERA_*), and the new wealth thresholds + composition tables used to pick poor/normal/rich army and garrison mixes.
 - Enums (Enums/*.gd): Regions, Levels, Soldiers, Players, Resources, Unit traits, Castle types.
 
 ## Static vs Dynamic

@@ -11,6 +11,7 @@ var budget_manager: BudgetManager
 var recruitment_manager: RecruitmentManager
 var signals: Dictionary
 var garrison_requests: Array = []
+var garrison_skip_logs: Array = []
 
 const BUILD_CASTLE_TYPE := CastleTypeEnum.Type.OUTPOST
 const STRATEGIC_SCORE_SCALE := 10.0
@@ -19,6 +20,28 @@ const NEUTRAL_NEIGHBOR_VALUE := 5.0
 const ENEMY_NEIGHBOR_PENALTY := 10.0
 const CASTLE_SCORE_THRESHOLD := 100.0
 const MAX_DISTANCE := 9999
+const UNIT_LOG_ORDER := [
+	SoldierTypeEnum.Type.PEASANTS,
+	SoldierTypeEnum.Type.SPEARMEN,
+	SoldierTypeEnum.Type.ARCHERS,
+	SoldierTypeEnum.Type.SWORDSMEN,
+	SoldierTypeEnum.Type.CROSSBOWMEN,
+	SoldierTypeEnum.Type.HORSEMEN,
+	SoldierTypeEnum.Type.KNIGHTS,
+	SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
+	SoldierTypeEnum.Type.ROYAL_GUARD
+]
+const UNIT_LOG_CODES := {
+	SoldierTypeEnum.Type.PEASANTS: "P",
+	SoldierTypeEnum.Type.SPEARMEN: "S",
+	SoldierTypeEnum.Type.ARCHERS: "A",
+	SoldierTypeEnum.Type.SWORDSMEN: "SW",
+	SoldierTypeEnum.Type.CROSSBOWMEN: "C",
+	SoldierTypeEnum.Type.HORSEMEN: "H",
+	SoldierTypeEnum.Type.KNIGHTS: "K",
+	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: "MK",
+	SoldierTypeEnum.Type.ROYAL_GUARD: "RG"
+}
 
 static var _region_distance_cache: Dictionary = {}
 static var _cached_region_count: int = 0
@@ -31,84 +54,100 @@ func _init(_region_manager: RegionManager, _army_manager: ArmyManager, _player_m
 	budget_manager = BudgetManager.new()
 	recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
 
-# Public entry: plan and allocate budgets for this player's turn.
-# Currently only recruitment is executed; other categories are stubs.
 func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	DebugLogger.log("AIEconomy", "\n=== AI ECONOMY TURN PLANNING (Player %d, Turn %d) ===" % [player_id, turn_number])
 	
-	# Snapshot signals once
+	# Snapshot signals once and rebuild garrison queue
 	signals = _compute_signals(player_id, turn_number)
+	garrison_skip_logs = []
 	garrison_requests = _build_garrison_requests(player_id)
-	var garrison_count := garrison_requests.size()
-	if garrison_count > 0:
-		DebugLogger.log("AIEconomy", ">> GARISSON ALERT: " + str(garrison_count) + " castle(s) flagged for defensive recruitment")
-	var allocation_done := false
-	var assigned_budgets := 0
-
-	# 1) If any armies at castles need recruitment → allocate budgets and stop (skip raise/builds)
+	var summary: Dictionary = {
+		"decision": "sequential",
+		"signals": signals
+	}
+	
+	# Step 1: Army recruitment budgets (armies + dangerous castles)
 	var armies_need = _find_recruitment_armies_at_castles(player_id, turn_number)
 	var recruitment_candidates_desc = _describe_recruitment_candidates(armies_need)
-	if armies_need.size() > 0:
-		DebugLogger.log("AIEconomy", ">> PRIORITY: RECRUITMENT — " + str(armies_need.size()) + " army(ies) at castles need units")
-		assigned_budgets = _allocate_recruitment(player_id, turn_number, garrison_requests)
-		allocation_done = true
-		DebugLogger.log("AIEconomy", ">> RECRUITMENT: Assigned budgets to " + str(assigned_budgets) + " armies; skipping raise/builds this turn")
-		DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
-		return {
-			"decision": "recruit_only",
-			"recruit_assigned": assigned_budgets,
-			"signals": signals,
-			"recruitment_candidates": recruitment_candidates_desc,
-			"raise": {"raised": false, "reason": "skipped_due_to_recruitment"},
-			"garrison_targets": garrison_count
-		}
-
-	# 2) Otherwise try to raise an army; if raised → allocate recruitment for it and stop
-	DebugLogger.log("AIEconomy", ">> PRIORITY: RAISE ARMY — no armies need recruitment")
-	var raise_res = decide_and_raise_army(player_id, turn_number)
-	if raise_res.get("raised", false):
-		assigned_budgets = _allocate_recruitment(player_id, turn_number, garrison_requests)
-		allocation_done = true
-		DebugLogger.log("AIEconomy", ">> RAISE ARMY: Raised at region " + str(raise_res.get("region_id", -1)) + "; post-raise recruitment assigned to " + str(assigned_budgets) + " armies")
-		DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
-		return {
-			"decision": "raised_then_recruit",
-			"raise": raise_res,
-			"recruit_assigned": assigned_budgets,
-			"signals": signals,
-			"recruitment_candidates": recruitment_candidates_desc,
-			"garrison_targets": garrison_count
-		}
-	else:
-		DebugLogger.log("AIEconomy", ">> RAISE ARMY: Skipped — " + str(raise_res.get("reason", "unknown")))
-	
-	if not allocation_done and garrison_count > 0:
-		assigned_budgets = _allocate_recruitment(player_id, turn_number, garrison_requests)
-		allocation_done = true
-
-# 3) No recruitment needs and no raise → defer region economy to post-movement phase
-	DebugLogger.log("AIEconomy", ">> PRIORITY: NONE — deferring region economy to post-movement phase")
-	DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
-	return {
-		"decision": "defer_region_economy",
-		"signals": signals,
-		"recruit_assigned": assigned_budgets,
-		"recruitment_candidates": recruitment_candidates_desc,
-		"raise": raise_res,
-		"garrison_targets": garrison_count
+	var army_recruitment: Dictionary = {
+		"needs": armies_need.size(),
+		"candidates": recruitment_candidates_desc,
+		"garrison_danger": garrison_requests.size(),
+		"garrison_skip_logs": garrison_skip_logs.duplicate()
 	}
+	var assigned_budgets = _allocate_recruitment(player_id, turn_number, garrison_requests)
+	army_recruitment["budgets_assigned"] = assigned_budgets
+	var army_hires = _execute_army_recruitment(player_id, armies_need)
+	army_recruitment["army_hires"] = army_hires
+	var garrison_defense = execute_garrison_recruitment(player_id)
+	var defense_entries: Array = garrison_defense.get("entries", [])
+	var defense_reason = "no castles in danger"
+	if garrison_requests.size() > 0:
+		defense_reason = "success" if defense_entries.size() > 0 else "no resources available"
+	army_recruitment["garrison_defense_entries"] = defense_entries
+	army_recruitment["garrison_defense_reason"] = defense_reason
+	summary["army_recruitment"] = army_recruitment
+	
+	# Step 2: Raise armies when allowed
+	var raise_res = decide_and_raise_army(player_id, turn_number)
+	summary["raise"] = raise_res
+	
+	# Step 3: Build castles
+	var build_castle = _evaluate_build_castle(player_id, turn_number)
+	summary["build_castle"] = build_castle
+	
+	# Step 4: Upgrade castles
+	var upgrade_castle = _evaluate_upgrade_castle(player_id, turn_number)
+	summary["upgrade_castle"] = upgrade_castle
+	
+	# Step 5: Upgrade regions
+	var upgrade_region = _evaluate_upgrade_region(player_id, turn_number)
+	summary["upgrade_region"] = upgrade_region
+	
+	# Step 6: Ore searches
+	var ore_result = ore_checks(player_id)
+	summary["ore"] = ore_result
+	
+	# Step 7: Additional castle recruitment (threat-weighted)
+	var garrison_trickle = perform_garrison_trickle(player_id)
+	summary["garrison_trickle"] = garrison_trickle
+	
+	summary["recruitment_candidates"] = recruitment_candidates_desc
+	DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
+	return summary
 
-func ore_checks(player_id: int) -> void:
+func ore_checks(player_id: int) -> Dictionary:
 	var player := player_manager.get_player(player_id)
 	var owned_regions := region_manager.get_player_regions(player_id)
 	var search_cost := GameParameters.get_ore_search_cost()
+	var attempts := 0
+	var successes := 0
+	var gold_spent := 0
+	var discovered_regions: Array[String] = []
+	var had_candidates := false
 	for region_id in owned_regions:
 		if player.get_resource_amount(ResourcesEnum.Type.GOLD) < search_cost:
-			return
+			break
 		var region := region_manager.map_generator.get_region_container_by_id(region_id) as Region
 		if region.can_search_for_ore():
-			region.search_for_ore()
+			had_candidates = true
+			var result = region.search_for_ore()
 			player.remove_resources(ResourcesEnum.Type.GOLD, search_cost)
+			attempts += 1
+			gold_spent += search_cost
+			if result.get("success", false):
+				successes += 1
+				discovered_regions.append(region.get_region_name())
+	var reason = "none"
+	if attempts == 0:
+		reason = "no_gold" if had_candidates else "no_regions"
+	return {
+		"attempts": attempts,
+		"discoveries": successes,
+		"gold_spent": gold_spent,
+		"discovered_regions": discovered_regions,
+		"reason": reason
+	}
 
 # Signals summarize state. Extended for raise army decisions.
 func _compute_signals(player_id: int, turn_number: int) -> Dictionary:
@@ -194,6 +233,26 @@ func _allocate_recruitment(player_id: int, turn_number: int, castle_garrison_req
 	var player = player_manager.get_player(player_id)
 	var armies: Array[Army] = army_manager.get_player_armies(player_id)
 	return budget_manager.allocate_recruitment_budgets(armies, player, region_manager, turn_number, castle_garrison_requests)
+
+func _execute_army_recruitment(player_id: int, armies: Array[Army]) -> Array[String]:
+	var entries: Array[String] = []
+	if recruitment_manager == null:
+		return entries
+	for army in armies:
+		if army == null or not is_instance_valid(army):
+			continue
+		var location := army.get_parent() as Region
+		if location == null:
+			continue
+		var budget = army.assigned_budget
+		if budget == null:
+			continue
+		var result = recruitment_manager.hire_soldiers(army)
+		var total := int(result.get("total_recruited", 0))
+		if total > 0:
+			var entry = _format_army_hire_entry(army, location, result)
+			entries.append(entry)
+	return entries
 
 # Find armies at castles that need recruitment
 func _find_recruitment_armies_at_castles(player_id: int, turn_number: int) -> Array[Army]:
@@ -387,67 +446,6 @@ func execute_raise_army(player_id: int, region_id: int) -> bool:
 	return true
 
 # Post-movement economy pass: spend leftovers on region economy only
-func plan_post_movement(player_id: int, turn_number: int) -> Dictionary:
-	DebugLogger.log("AIEconomy", "\n=== AI ECONOMY POST-MOVEMENT (Player %d, Turn %d) ===" % [player_id, turn_number])
-	# Recompute snapshot (cheap) to base any simple heuristics on fresh state
-	signals = _compute_signals(player_id, turn_number)
-	var reg_actions = _process_region_economy(player_id, turn_number)
-	DebugLogger.log("AIEconomy", ">> REGION ECONOMY (post-move): " + str(reg_actions))
-	DebugLogger.log("AIEconomy", "=== END AI ECONOMY POST-MOVEMENT ===\n")
-	return {"decision": "region_economy_post", "region_actions": reg_actions, "signals": signals}
-
-func _process_region_economy(player_id: int, turn_number: int) -> Dictionary:
-	# Try to build a castle before moving on to other upgrades
-	var build_result = _evaluate_build_castle(player_id, turn_number)
-	var build_details = build_result.get("details", [])
-	var base_reason = build_result.get("reason", "no_build")
-	var executed_actions: Array = []
-	if build_result.get("executed", false):
-		var executed = [{
-			"action": "build_castle",
-			"region_id": build_result.get("region_id", -1),
-			"details": build_details
-		}]
-		return {
-			"executed": executed,
-			"build_castle_details": build_details,
-			"build_castle_reason": base_reason,
-			"upgrade_castle_details": [],
-			"upgrade_castle_reason": "not_evaluated",
-			"upgrade_region_details": [],
-			"upgrade_region_reason": "not_evaluated",
-			"upgrade_region_actions": []
-		}
-	var result := {
-		"executed": executed_actions,
-		"reason": "no_region_actions",
-		"build_castle_details": build_details,
-		"build_castle_reason": base_reason,
-		"upgrade_castle_details": [],
-		"upgrade_castle_reason": "not_evaluated",
-		"upgrade_region_details": [],
-		"upgrade_region_reason": "not_evaluated",
-		"upgrade_region_actions": []
-	}
-	var upgrade_castle = _evaluate_upgrade_castle(player_id, turn_number)
-	result["upgrade_castle_reason"] = upgrade_castle.get("reason", "not_evaluated")
-	result["upgrade_castle_details"] = upgrade_castle.get("details", [])
-	if upgrade_castle.get("executed", false):
-		result["executed"].append({
-			"action": "upgrade_castle",
-			"region_id": upgrade_castle.get("region_id", -1),
-			"details": upgrade_castle.get("details", [])
-		})
-	var upgrade_region = _evaluate_upgrade_region(player_id, turn_number)
-	result["upgrade_region_reason"] = upgrade_region.get("reason", "not_evaluated")
-	result["upgrade_region_details"] = upgrade_region.get("details", [])
-	result["upgrade_region_actions"] = upgrade_region.get("actions", [])
-	if upgrade_region.get("executed", false):
-		var region_entries: Array = upgrade_region.get("action_entries", [])
-		for entry in region_entries:
-			result["executed"].append(entry)
-	return result
-
 func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	if player == null:
@@ -880,6 +878,13 @@ func _evaluate_upgrade_region(player_id: int, turn_number: int) -> Dictionary:
 		if cost.is_empty():
 			reason = "no_cost_data"
 			break
+		var region = region_manager.map_generator.get_region_container_by_id(best_region_id) as Region
+		if region == null:
+			reason = "region_missing"
+			break
+		if region.get_promotion_cooldown() > 0:
+			reason = "cooldown_active"
+			break
 		var food_cost = int(cost.get(ResourcesEnum.Type.FOOD, 0))
 		if not player_manager.meets_food_upgrade_safeguard(player_id, food_cost):
 			reason = "food_safeguard"
@@ -890,12 +895,9 @@ func _evaluate_upgrade_region(player_id: int, turn_number: int) -> Dictionary:
 		if not player.pay_cost(cost):
 			reason = "deduction_failed"
 			break
-		var region = region_manager.map_generator.get_region_container_by_id(best_region_id) as Region
-		if region == null:
-			reason = "region_missing"
-			break
 		region.set_region_level(next_level)
 		region_manager.generate_region_resources(region)
+		region.set_promotion_cooldown(3)
 		var level_name = RegionLevelEnum.level_to_string(next_level)
 		var msg = "Upgrading %s to %s (score: %.1f)" % [region.get_region_name(), level_name, score]
 		upgrades.append(msg)
@@ -933,7 +935,7 @@ func execute_garrison_recruitment(player_id: int) -> Dictionary:
 		if hired > 0:
 			processed += 1
 			recruited += hired
-			entries.append("%s: %d units" % [region.get_region_name(), hired])
+			entries.append(_format_castle_hire_entry(region.get_region_name(), result))
 		request["hired"] = hired
 	return {"processed": processed, "recruited": recruited, "entries": entries}
 
@@ -980,20 +982,18 @@ func perform_garrison_trickle(player_id: int) -> Dictionary:
 		if hired > 0:
 			processed += 1
 			recruited += hired
-			entries.append("%s: %d units" % [region.get_region_name(), hired])
+			entries.append(_format_castle_hire_entry(region.get_region_name(), result))
 	return {"processed": processed, "recruited": recruited, "reason": "success", "entries": entries}
 	
-func get_garrison_request_count() -> int:
-	return garrison_requests.size()
-
 func _build_garrison_requests(player_id: int) -> Array:
 	var requests: Array = []
 	var owned_regions = region_manager.get_player_regions(player_id)
+	var enemy_presence = _build_enemy_army_presence(player_id)
 	for region_id in owned_regions:
 		var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
 		if not region.has_castle():
 			continue
-		if _castle_needs_garrison(region, player_id):
+		if _castle_needs_garrison(region, enemy_presence):
 			requests.append({
 				"region_id": region_id,
 				"region": region,
@@ -1001,24 +1001,47 @@ func _build_garrison_requests(player_id: int) -> Array:
 			})
 	return requests
 
-func _castle_needs_garrison(region: Region, player_id: int) -> bool:
+func _castle_needs_garrison(region: Region, enemy_presence: Dictionary) -> bool:
 	var castle_type = region.get_castle_type()
 	if castle_type == CastleTypeEnum.Type.NONE:
 		return false
-	var safe_power = GameParameters.get_safe_garrison_power(castle_type)
-	if region.get_garrison_strength() >= safe_power:
+	if not _has_enemy_threat(region.get_region_id(), enemy_presence):
 		return false
-	return _has_enemy_threat(region.get_region_id(), player_id)
+	var safe_power = GameParameters.get_safe_garrison_power(castle_type)
+	var current_power = region.get_garrison_strength()
+	if current_power >= safe_power:
+		var note = "%s: in danger but has minimal garrison power (Power: %d / %d)" % [
+			region.get_region_name(),
+			current_power,
+			safe_power
+		]
+		garrison_skip_logs.append(note)
+		return false
+	return true
 
-func _has_enemy_threat(region_id: int, player_id: int) -> bool:
-	var threat_regions = _collect_regions_within_steps(region_id, 2)
-	var enemy_armies = army_manager.get_all_armies()
-	for army in enemy_armies:
+func _build_enemy_army_presence(player_id: int) -> Dictionary:
+	var presence: Dictionary = {}
+	var armies = army_manager.get_all_armies()
+	for army in armies:
+		if army == null or not is_instance_valid(army):
+			continue
 		if army.get_player_id() == player_id:
 			continue
-		var on_region = army.get_parent() as Region
-		var rid = on_region.get_region_id()
-		if rid == region_id or threat_regions.has(rid):
+		var location := army.get_parent() as Region
+		if location == null:
+			continue
+		var rid := location.get_region_id()
+		if rid < 0:
+			continue
+		presence[rid] = true
+	return presence
+
+func _has_enemy_threat(region_id: int, enemy_presence: Dictionary) -> bool:
+	if enemy_presence.has(region_id):
+		return true
+	var threat_regions = _collect_regions_within_steps(region_id, 2)
+	for rid in threat_regions.keys():
+		if enemy_presence.has(rid):
 			return true
 	return false
 
@@ -1040,6 +1063,37 @@ func _collect_regions_within_steps(region_id: int, steps: int) -> Dictionary:
 		if frontier.is_empty():
 			break
 	return visited
+
+func _format_unit_breakdown(hired: Dictionary) -> String:
+	if hired == null:
+		return "none"
+	var parts: Array[String] = []
+	for unit_type in UNIT_LOG_ORDER:
+		var count = int(hired.get(unit_type, 0))
+		if count > 0:
+			var label = UNIT_LOG_CODES.get(unit_type, "?")
+			parts.append("%s: %d" % [label, count])
+	return ", ".join(parts) if parts.size() > 0 else "none"
+
+func _format_castle_hire_entry(region_name: String, result: Dictionary) -> String:
+	var total = int(result.get("total_recruited", 0))
+	var breakdown = _format_unit_breakdown(result.get("hired", {}))
+	var spent_gold = int(result.get("spent_gold", 0))
+	var recruits_left = int(result.get("recruits_left", -1))
+	var entry = "%s: %d units (%s) - gold spent: %d" % [region_name, total, breakdown, spent_gold]
+	if recruits_left >= 0:
+		entry += ", recruits left: %d" % recruits_left
+	return entry
+
+func _format_army_hire_entry(army: Army, location: Region, result: Dictionary) -> String:
+	var total = int(result.get("total_recruited", 0))
+	var breakdown = _format_unit_breakdown(result.get("hired", {}))
+	var spent_gold = int(result.get("spent_gold", 0))
+	var recruits_left = int(result.get("recruits_left", -1))
+	var entry = "%s at %s: %d units (%s) - gold spent: %d" % [army.name, location.get_region_name(), total, breakdown, spent_gold]
+	if recruits_left >= 0:
+		entry += ", recruits left: %d" % recruits_left
+	return entry
 
 func _get_castle_weight(castle_type: CastleTypeEnum.Type) -> float:
 	match castle_type:

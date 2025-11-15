@@ -232,6 +232,16 @@ func heal_wounded_for_player(player_id: int) -> void:
 		var region = region_container as Region
 		region.heal_all_wounded()
 
+func decrement_promotion_cooldowns_for_player(player_id: int) -> void:
+	"""Reduce promotion cooldown for all regions owned by player."""
+	var owned = get_player_regions(player_id)
+	for region_id in owned:
+		var region_container = map_generator.get_region_container_by_id(region_id)
+		if region_container != null:
+			var region = region_container as Region
+			if region != null:
+				region.decrement_promotion_cooldown()
+
 func increment_all_ownership_counters() -> void:
 	"""Increment ownership counters for all owned regions (called each turn)"""
 	for region_id in region_ownership:

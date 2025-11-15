@@ -32,6 +32,7 @@ var player_color: Color = Color.WHITE
 
 # Resource storage - maps ResourcesEnum.Type -> int (amount)
 var resources: Dictionary = {}
+var wealth_level: int = GameParameters.WealthLevel.POOR
 
 # Player statistics
 var regions_owned: Array[int] = []
@@ -121,6 +122,12 @@ func pay_cost(cost: Dictionary) -> bool:
 func get_all_resources() -> Dictionary:
 	"""Get a copy of all player resources"""
 	return resources.duplicate()
+
+func get_wealth_level() -> int:
+	return wealth_level
+
+func set_wealth_level(level: int) -> void:
+	wealth_level = level
 
 func set_resource_amount(resource_type: ResourcesEnum.Type, amount: int) -> void:
 	"""Set a specific resource to an exact amount (for debugging/testing)"""

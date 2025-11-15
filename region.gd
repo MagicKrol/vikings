@@ -82,6 +82,7 @@ var ai_scoring_valid: bool = false             # Whether stored scores are still
 
 # Strategic points heatmap score (computed pre-castle placement)
 var strategic_point_score: float = 0.0
+var promotion_cooldown_turns: int = 0
 
 func setup_region(region_data: Dictionary) -> void:
 	"""Setup the region with data from the map generator"""
@@ -183,6 +184,16 @@ func set_region_level(level: RegionLevelEnum.Level) -> void:
 func start_promotion_growth_bonus() -> void:
 	"""Start the promotion growth bonus for this region"""
 	promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
+
+func get_promotion_cooldown() -> int:
+	return promotion_cooldown_turns
+
+func set_promotion_cooldown(turns: int) -> void:
+	promotion_cooldown_turns = max(0, int(turns))
+
+func decrement_promotion_cooldown() -> void:
+	if promotion_cooldown_turns > 0:
+		promotion_cooldown_turns -= 1
 
 func get_region_level_string() -> String:
 	"""Get the region level as a string"""
@@ -692,7 +703,7 @@ func get_income() -> int:
 	
 	var level_int = _region_level_to_int(region_level)
 	
-	# Formula: floor(Population / (56 - 6 * region_level))
+	# Formula: floor(Population / (64 - 4 * region_level))
 	var divisor = GameParameters.POPULATION_INCOME_BASE_DIVISOR - (GameParameters.POPULATION_INCOME_LEVEL_MULTIPLIER * level_int)
 	
 	# Prevent division by zero or negative divisors

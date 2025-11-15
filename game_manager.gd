@@ -647,6 +647,7 @@ func _process_player_turn_start(player_id: int):
 		player_manager.decay_enemy_memory_for_player(player_id)
 	if _region_manager:
 		_region_manager.heal_wounded_for_player(player_id)
+		_region_manager.decrement_promotion_cooldowns_for_player(player_id)
 	if _army_manager:
 		_army_manager.set_ready_highlight_player(player_id)
 	var initial_turn := not _player_initial_turn_completed.has(player_id)
@@ -1192,24 +1193,28 @@ func handle_castle_placement(region: Region) -> void:
 		DebugLogger.log("GameInit", "Starting first turn of normal gameplay...")
 		await get_tree().create_timer(0.5).timeout  # Brief delay for UI updates
 		_start_first_turn()
-	else:
-		# Move to next active player for castle placement
-		current_player = _get_next_active_player()
-		player_manager.set_current_player(current_player)
-		DebugLogger.log("GameInit", "Next player to place castle: Player " + str(current_player) + " (" + PlayerTypeEnum.type_to_string(get_player_type(current_player)) + ")")
-		
-		# Handle different player types
-		if is_player_human(current_player):
-			# Show next player modal for human player
-			if _next_player_modal:
-				_next_player_modal.show_next_player(current_player, true)
-		elif is_player_computer(current_player):
-			# AI player - automatically place castle using AI system
-			DebugLogger.log("GameInit", "AI Player " + str(current_player) + " placing castle automatically...")
-			# Use a short delay to allow visuals to update
-			await get_tree().create_timer(0.5).timeout
-			await _handle_ai_castle_placement(current_player)
-		# OFF players are skipped by _get_next_active_player()
+		return
+	
+	await _advance_castle_placement_turn()
+
+func _advance_castle_placement_turn() -> void:
+	# Move to next active player for castle placement
+	current_player = _get_next_active_player()
+	player_manager.set_current_player(current_player)
+	DebugLogger.log("GameInit", "Next player to place castle: Player " + str(current_player) + " (" + PlayerTypeEnum.type_to_string(get_player_type(current_player)) + ")")
+	
+	# Handle different player types
+	if is_player_human(current_player):
+		# Show next player modal for human player
+		if _next_player_modal:
+			_next_player_modal.show_next_player(current_player, true)
+	elif is_player_computer(current_player):
+		# AI player - automatically place castle using AI system
+		DebugLogger.log("GameInit", "AI Player " + str(current_player) + " placing castle automatically...")
+		# Use a short delay to allow visuals to update
+		await get_tree().create_timer(0.5).timeout
+		await _handle_ai_castle_placement(current_player)
+	# OFF players are skipped by _get_next_active_player()
 	
 	# Show player status modals with current state
 	var ui_node = get_node("../UI")
@@ -1234,7 +1239,6 @@ func handle_castle_placement(region: Region) -> void:
 	# Play sound
 	if _sound_manager:
 		_sound_manager.click_sound()
-
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	"""
 	Centralized pure helper to determine if a battle is required.
@@ -1407,7 +1411,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var battle_log_lines: Array[String] = []
 	var defender_entries: Array = []
 	if should_queue_battle_log:
-		defender_entries = _collect_defender_log_entries(defending_armies, defending_garrison)
+		defender_entries = _collect_defender_log_entries(defending_armies, defending_garrison, defending_recruits_region, defending_recruits_count)
 		battle_log_lines = _build_battle_pre_log_lines(army, defender_entries)
 	
 	# Wounded must be precomputed by the battle flow (modal/background) before finalization
@@ -1711,7 +1715,7 @@ func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
 func _get_ai_battle_log_key(army: Army) -> String:
 	return str(army.get_instance_id())
 
-func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition) -> Array:
+func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int) -> Array:
 	var entries: Array = []
 	for defender in defending_armies:
 		if defender == null:
@@ -1726,6 +1730,12 @@ func _collect_defender_log_entries(defending_armies: Array, defending_garrison: 
 			"type": "garrison",
 			"ref": defending_garrison,
 			"name": "Garrison"
+		})
+	if defending_recruits_region != null:
+		entries.append({
+			"type": "recruits",
+			"region": defending_recruits_region,
+			"initial_count": max(0, defending_recruits_count)
 		})
 	return entries
 
@@ -1768,6 +1778,18 @@ func _format_defender_pre_line(entry: Dictionary) -> String:
 			_calculate_composition_power(garrison_comp),
 			_format_composition_suffix(garrison_comp)
 		]
+	if entry.get("type", "") == "recruits":
+		var region: Region = entry.get("region")
+		var initial_count := int(entry.get("initial_count", 0))
+		var label := "Defender Recruits"
+		if region != null:
+			label += " (%s)" % region.get_region_name()
+		var comp := _build_peasant_composition(initial_count)
+		return "%s [Power: %d - %s]" % [
+			label,
+			_calculate_composition_power(comp),
+			_format_composition_suffix(comp)
+		]
 	var defender: Army = entry.get("ref")
 	var label := "Defender %s" % entry.get("name", "Army")
 	if defender != null and is_instance_valid(defender):
@@ -1781,6 +1803,19 @@ func _format_defender_after_line(entry: Dictionary) -> String:
 			entry.get("name", "Garrison"),
 			_calculate_composition_power(garrison_comp),
 			_format_composition_suffix(garrison_comp)
+		]
+	if entry.get("type", "") == "recruits":
+		var region: Region = entry.get("region")
+		var label := "Defender After (Recruits)"
+		var remaining := 0
+		if region != null:
+			label += ": %s" % region.get_region_name()
+			remaining = max(0, region.get_base_available_recruits())
+		var comp := _build_peasant_composition(remaining)
+		return "%s [Power: %d - %s]" % [
+			label,
+			_calculate_composition_power(comp),
+			_format_composition_suffix(comp)
 		]
 	var defender: Army = entry.get("ref")
 	var label := "Defender After: %s" % entry.get("name", "Army")
@@ -1834,6 +1869,12 @@ func _calculate_composition_power(comp: ArmyComposition) -> int:
 		var unit_power: int = int(GameParameters.get_unit_stat(unit_type, "power"))
 		total += unit_power * qty
 	return total
+
+func _build_peasant_composition(count: int) -> ArmyComposition:
+	var comp := ArmyComposition.new()
+	if count > 0:
+		comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, count)
+	return comp
 
 func get_loaded_scenario_name() -> String:
 	"""Get the name of the loaded scenario (for map editor)"""
