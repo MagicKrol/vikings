@@ -22,11 +22,11 @@ Start Flow
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
 ├ Map (Node2D) [map_generator.gd]
-│	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4.png` and still rebuild from the stored noisy border points; ocean polygons remain hidden by default)
+│	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] (land polygons tile `background4grass.png` and still rebuild from the stored noisy border points; ocean polygons remain hidden by default)
 │	│	└ Borders: `BorderManager` instantiates named Line2D nodes (`OceanBorder@id`, `OwnershipBorder@id`, `InternalBorder@id`) and only adjusts width/color/offset when ownership changes so counts always match adjacency.
 │	├ Ocean (Node2D) – metadata-only ocean polygons (hidden visuals)
 │	├ Frame (Node2D)
-│	└ BorderManager (Node) [border_manager.gd] – centralizes noisy border creation, caches per-edge geometries, preserves ocean strokes (5.2px black) and exposes refresh helpers consumed by MapGenerator/RegionManager.
+│	└ BorderManager (Node) [border_manager.gd] – centralizes noisy border creation, caches per-edge geometries, preserves ocean strokes (5.2px black) and exposes refresh helpers consumed by MapGenerator/RegionManager; MapEditor now reruns `BorderManager.setup()` (plus the noisy polygon rebuild/overlay sync) whenever a region toggles between land and ocean so the new coastline/borders appear immediately.
 ├ Background (Sprite2D)
 ├ Camera2D [camera_controller.gd]
 ├ ClickManager (Node) [click_manager.gd]
@@ -98,7 +98,8 @@ editor_start.tscn (Editor Start)
 - Map Data: lists `mapdata-*.json` under `res://mapdata/`; code always reads map files from this folder. `MapGenerator.data_file_path` expects a bare filename (no `res://` or folder). Supported sizes: xtiny, tiny, small, medium, large, huge.
 - Scenario: lists `res://scenarios/*.json`; loader always resolves scenarios from `res://scenarios/` and accepts bare filenames or full paths. Scenario `map_file` field should be a bare filename; loader resolves from `res://mapdata/`.
 - Scenario: during load, GameManager infers `map_size` from the scenario `map_file` suffix (e.g., `mapdata-208-medium.json` → `medium`) and applies `_map_set_size_from_string()` before generating the map.
- - Launch: EditorStart sets `SceneTree` meta `editor_start_payload` and switches to `main.tscn`. `GameManager._ready()` force-enables editor mode when this payload is present and calls `_initialize_map_editor()` to show `MapEditorPanel`.
+- Launch: EditorStart sets `SceneTree` meta `editor_start_payload` and switches to `main.tscn`. `GameManager._ready()` force-enables editor mode when this payload is present and calls `_initialize_map_editor()` to show `MapEditorPanel`.
+- EditorStart payloads now tag the session as `game_mode="custom"` for raw map editing (clearing any previous scenario names) or `game_mode="scenario"` for scenario editing, so screenshots/previews automatically save under the selected map data or scenario name.
 
 ## Core Managers & Flow
 
@@ -186,7 +187,11 @@ editor_start.tscn (Editor Start)
 ### map_editor.gd (MapEditor)
 - Purpose: Map editor mode controller for toggling editor UI.
 - Key: `initialize()` — shows MapEditorPanel, hides player/turn UI.
-- Note: Empty panel for now, based on info_modal.tscn (25% width left side).
+- Region edits: `region_type_changed` updates both the in-memory `Region` node and `MapGenerator`'s region dictionaries, then calls `refresh_region_visual()` and reruns `BorderManager.setup()` + the noisy polygon/overlay rebuild helpers so switching between grassland/ocean/forest immediately rebuilds coastlines and removes stale borders without touching `map_generator.gd`.
+
+### map_editor_panel.gd (MapEditorPanel)
+- Purpose: Left-hand editor UI for per-region edits, player settings, and persistence.
+- Key: `Save Map Data` now resolves the active `MapGenerator.data_file_path` through `_resolve_mapdata_path()` before reading/writing so edits always update `res://mapdata/<file>.json` (modification timestamps change as soon as the button is pressed).
 
 ### PlayerManagerNode.gd (PlayerManagerNode)
 - Purpose: Player storage and per-player economy as a scene node.
@@ -247,8 +252,8 @@ editor_start.tscn (Editor Start)
 ## Logging
 ### AILogManager.gd (AILogManager)
 - Purpose: Writes AI-only log files under `logs/<scenario>_<timestamp>.txt` in the project root so each game session has its own text file distinct from standard debug logs.
-- API: `start_new_game_log(label)`, `log_turn_intro(turn, player_label, resources, signals, decision, region_names)`, `log_army_action(name, power, action, target)`, plus helpers for recruitment/economy notes.
-- Format: Matches the requested block — `-------`, `[Turn X]`, `[Player Y]`, full resource list, `Signals:` (frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm), `Decision: ...`, `Regions: ...`, followed by `Army N [Power: Z]: Recruits|Goes to Castle|Moves` with `Target: ...` and recruitment/economy rationales.
+- API: `start_new_game_log(label)`, `log_turn_intro(turn, player_label, player_id, resources, signals, decision, region_names)`, `log_army_action(name, power, action, target)`, plus helpers for recruitment/economy notes.
+- Format: Turn headers (dashes + `[Turn X]` + ASCII digits) are emitted once per turn, then `[Player Y]` with matching ASCII art, full resource list, `Signals:` (frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm), `Decision: ...`, `Regions: ...`, followed by `Army N [Power: Z]: Recruits|Goes to Castle|Moves` with `Target: ...` and recruitment/economy rationales.
 - Integration: GameManager creates the logger once per session and exposes it; TurnController logs each AI turn header, army action, recruitment success/failure, peasant hires, and the post-movement economy summary through this manager.
 
 ## AI & Scoring

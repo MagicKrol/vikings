@@ -66,7 +66,8 @@ var debug_categories: Dictionary = {
 	"Testing": false,                # Test framework output
 	"UIManager": false,
 	"AICamera": false,             # AI camera focus / delays
-	"Animation": true             # Generic node/tween animations
+	"Animation": false,             # Generic node/tween animations
+	"MapEditorPanel": true
 }
 
 # Color coding for different log levels

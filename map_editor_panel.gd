@@ -623,11 +623,12 @@ func _on_save_map_pressed() -> void:
 	if not mg or not mg.data_file_path:
 		DebugLogger.log("MapEditorPanel", "No map data file to save")
 		return
+	var map_path := mg._resolve_mapdata_path(mg.data_file_path)
 	
 	# Load the original map data
-	var file := FileAccess.open(mg.data_file_path, FileAccess.READ)
+	var file := FileAccess.open(map_path, FileAccess.READ)
 	if not file:
-		DebugLogger.log("MapEditorPanel", "Failed to open map file: " + mg.data_file_path)
+		DebugLogger.log("MapEditorPanel", "Failed to open map file: " + map_path)
 		return
 	
 	var json_text := file.get_as_text()
@@ -667,16 +668,16 @@ func _on_save_map_pressed() -> void:
 					break
 	
 	# Save the updated data back to the file
-	var save_file := FileAccess.open(mg.data_file_path, FileAccess.WRITE)
+	var save_file := FileAccess.open(map_path, FileAccess.WRITE)
 	if not save_file:
-		DebugLogger.log("MapEditorPanel", "Failed to open map file for writing: " + mg.data_file_path)
+		DebugLogger.log("MapEditorPanel", "Failed to open map file for writing: " + map_path)
 		return
 	
 	var updated_json := JSON.stringify(data, "\t")
 	save_file.store_string(updated_json)
 	save_file.close()
 	
-	DebugLogger.log("MapEditorPanel", "Map saved to " + mg.data_file_path + " (" + str(updated_count) + " regions updated)")
+	DebugLogger.log("MapEditorPanel", "Map saved to " + map_path + " (" + str(updated_count) + " regions updated)")
 
 func _populate_army_panel() -> void:
 	_region_id_value_army.text = str(_current_region_id)

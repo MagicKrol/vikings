@@ -1014,8 +1014,8 @@ func refresh_region_visual(region_id: int) -> void:
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
 	else:
 		# Restore land grass texture
-		polygon.texture = load("res://images/grass.png")
-		polygon.texture_scale = Vector2(1.0 / polygon_scale * 5.0, 1.0 / polygon_scale * 5.0)
+		polygon.texture = load("res://images/background4grass.png")
+		polygon.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 		polygon.visible = true
 		# Re-add biome icon

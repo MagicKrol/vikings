@@ -4,10 +4,13 @@ class_name AILogManager
 var logs_dir: String = "res://logs"
 var current_file_path: String = ""
 var current_game_label: String = ""
+var ascii = preload("res://ascii_utils.gd")
+var last_logged_turn: int = -1
 
 func start_new_game_log(raw_label: String) -> void:
 	current_game_label = _sanitize_label(raw_label)
 	_prepare_logs_directory()
+	last_logged_turn = -1
 	var timestamp = Time.get_datetime_string_from_system(true)
 	timestamp = timestamp.replace(":", "-").replace(" ", "_")
 	var file_name = "%s_%s.txt" % [current_game_label, timestamp]
@@ -16,12 +19,15 @@ func start_new_game_log(raw_label: String) -> void:
 	header_file.store_string("AI Log File: %s\n\n" % current_game_label)
 	header_file.close()
 
-func log_turn_intro(turn_number: int, player_label: String, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "") -> void:
+func log_turn_intro(turn_number: int, player_label: String, player_id: int, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "") -> void:
+	if turn_number != last_logged_turn:
+		last_logged_turn = turn_number
+		_append_turn_header(turn_number)
 	var lines: Array[String] = []
-	lines.append("-------")
-	lines.append("[Turn %d]" % turn_number)
-	lines.append("-------")
 	lines.append("[Player %s]" % player_label)
+	var player_ascii := ascii.get_player_ascii(str(player_id))
+	if player_ascii != "":
+		lines.append(player_ascii)
 	if wealth_label != "":
 		lines.append("Wealth: %s" % wealth_label)
 	lines.append("Resources:")
@@ -83,6 +89,17 @@ func log_castle_recruitment_summary(header: String, entries: Array, fallback_rea
 
 func log_army_detail(detail: String) -> void:
 	_append_lines([detail])
+
+func _append_turn_header(turn_number: int) -> void:
+	var lines: Array[String] = []
+	lines.append("--------------------------------------------------------")
+	lines.append("[Turn %d]" % turn_number)
+	var ascii_turn := ascii.get_ascii_number(turn_number)
+	if ascii_turn != "":
+		lines.append(ascii_turn)
+	lines.append("--------------------------------------------------------")
+	lines.append("")
+	_append_lines(lines)
 
 func _append_lines(lines: Array[String]) -> void:
 	var file := _open_file(current_file_path, FileAccess.READ_WRITE)

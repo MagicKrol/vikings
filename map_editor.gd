@@ -21,6 +21,25 @@ var initialized: bool = false
 var map_editor_panel: Control = null
 var _last_region_id: int = -1
 
+func _apply_region_data_updates(mg: MapGenerator, region_id: int, updates: Dictionary) -> void:
+	var region_data = mg.region_by_id.get(region_id, null)
+	if region_data:
+		for key in updates.keys():
+			region_data[key] = updates[key]
+	for i in range(mg.regions.size()):
+		var entry: Dictionary = mg.regions[i]
+		if int(entry.get("id", -1)) == region_id:
+			for key in updates.keys():
+				entry[key] = updates[key]
+			mg.regions[i] = entry
+			break
+
+func _rebuild_border_geometry(mg: MapGenerator) -> void:
+	var border_mgr: BorderManager = mg.border_manager
+	border_mgr.setup(mg)
+	mg._rebuild_region_polygons_from_borders()
+	mg._ensure_neutral_overlays_for_all_regions()
+
 func initialize() -> void:
 	"""Initialize map editor controller"""
 	if initialized:
@@ -98,9 +117,12 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		return
 	if selection == "Ocean":
 		region.set_ocean(true)
-		mg.region_by_id[region_id]["ocean"] = true
-		mg.region_by_id[region_id]["biome"] = "ocean"
+		_apply_region_data_updates(mg, region_id, {
+			"ocean": true,
+			"biome": "ocean"
+		})
 		mg.refresh_region_visual(region_id)
+		_rebuild_border_geometry(mg)
 		return
 	# Land selection
 	if selection.begins_with("LEVEL:"):
@@ -157,11 +179,15 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		return
 	# Region type change (land)
 	region.set_ocean(false)
-	mg.region_by_id[region_id]["ocean"] = false
 	var t := _display_to_enum(selection)
+	var biome_str := RegionTypeEnum.type_to_string(t).to_lower()
+	_apply_region_data_updates(mg, region_id, {
+		"ocean": false,
+		"biome": biome_str
+	})
 	region.set_region_type(t)
-	mg.region_by_id[region_id]["biome"] = RegionTypeEnum.type_to_string(t).to_lower()
 	mg.refresh_region_visual(region_id)
+	_rebuild_border_geometry(mg)
 
 func _display_to_enum(txt: String) -> RegionTypeEnum.Type:
 	match txt:

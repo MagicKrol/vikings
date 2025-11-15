@@ -584,7 +584,7 @@ func _log_turn_intro(player_id: int, turn_number: int, econ_result: Dictionary) 
 	var signals: Dictionary = econ_result.get("signals", {})
 	var decision = String(econ_result.get("decision", ""))
 	var player_label = "%s (#%d)" % [player.get_player_name(), player_id]
-	game_manager.get_ai_log_manager().log_turn_intro(turn_number, player_label, resources, signals, decision, region_names, wealth_label)
+	game_manager.get_ai_log_manager().log_turn_intro(turn_number, player_label, player_id, resources, signals, decision, region_names, wealth_label)
 
 func _log_turn_outro(player_id: int) -> void:
 	if not _log_active_turn:

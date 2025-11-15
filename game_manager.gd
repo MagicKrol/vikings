@@ -412,12 +412,17 @@ func _initialize_map_editor() -> void:
 		var payload = get_tree().get_meta("editor_start_payload")
 		var kind := String(payload.get("type", ""))
 		if kind == "map":
+			game_mode = "custom"
+			scenario_path = ""
+			loaded_scenario_name = ""
 			# Expect bare filename; normalize if path included
 			map_generator.data_file_path = String(payload.get("map_file")).get_file()
 			_map_set_size_from_string(map_generator, String(payload.get("map_size", "small")))
 			map_generator.generate_map()
 		elif kind == "scenario":
+			game_mode = "scenario"
 			var scen_path := String(payload.get("scenario_path"))
+			scenario_path = scen_path
 			var scen_mgr := ScenarioManager.new()
 			# Normalize scenario path to res://scenarios/<file>
 			var scen_full := "res://scenarios/" + scen_path.get_file()
