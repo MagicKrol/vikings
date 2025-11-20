@@ -233,7 +233,7 @@ static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region
 	# Position second icon below and slightly to the right of first icon (scaled)
 	icon2.position = center + Vector2(20 * map_size_scale, 10 * map_size_scale)
 	
-	parent_pg.add_child(icon2)
+	# parent_pg.add_child(icon2)
 
 static func take_screenshot(filename: String = "res://screenshots/screenshot.png") -> void:
 	var tree := Engine.get_main_loop() as SceneTree

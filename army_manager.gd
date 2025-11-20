@@ -828,6 +828,27 @@ func _int_to_roman(num: int) -> String:
 	
 	return result
 
+func transfer_all_soldiers(donor: Army, receiver: Army) -> bool:
+	"""Move all active and wounded soldiers from donor to receiver"""
+	if donor == null or receiver == null or donor == receiver:
+		return false
+	var moved := false
+	for soldier_type in SoldierTypeEnum.get_all_types():
+		var count = donor.get_soldier_count(soldier_type)
+		if count > 0:
+			receiver.add_soldiers(soldier_type, count)
+			donor.composition.set_soldier_count(soldier_type, 0)
+			moved = true
+	if donor.get_wounded_composition() != null:
+		var receiver_wounded = receiver.get_wounded_composition()
+		if receiver_wounded != null:
+			for soldier_type in SoldierTypeEnum.get_all_types():
+				var wounded = donor.get_wounded_composition().get_soldier_count(soldier_type)
+				if wounded > 0:
+					receiver_wounded.add_soldiers(soldier_type, wounded)
+					donor.get_wounded_composition().set_soldier_count(soldier_type, 0)
+	return moved
+
 func calc_reinforcement_threshold(turn_number: int) -> float:
 	"""Calculate the power threshold below which an army needs reinforcement"""
 	# L1 max = 20; +3% per turn (linear scaling)

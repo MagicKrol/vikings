@@ -82,6 +82,7 @@ var _battle_modal: BattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
+@export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
 # Map editor mode state
@@ -168,6 +169,7 @@ func _ready():
 	# Initialize all game systems
 	initialize_managers(game_mode == "scenario")
 	_apply_initial_camera_zoom()
+	_apply_center_marker_setting()
 	
 	# Start the game audio sequence after a brief delay to ensure sound manager is ready
 	await get_tree().process_frame
@@ -182,6 +184,8 @@ func initialize_managers(is_scenario: bool = false):
 	"""Initialize all game managers and establish dependencies"""
 	# Get core components - these are required
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	if not map_generator.map_generated.is_connected(_on_map_generated):
+		map_generator.map_generated.connect(_on_map_generated)
 	_border_manager = map_generator.border_manager
 	_border_manager.refresh_all_borders()
 	
@@ -566,6 +570,19 @@ func _convert_new_size_to_old(new_size: String) -> String:
 			return "medium" # New Huge maps to old Medium
 		_:
 			return new_size  # Return as-is for old names or unknown
+
+func _on_map_generated() -> void:
+	_apply_center_marker_setting()
+
+func _apply_center_marker_setting() -> void:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	map_generator.set_center_markers_enabled(show_region_center_markers)
+
+func set_region_center_markers_enabled(value: bool) -> void:
+	if show_region_center_markers == value:
+		return
+	show_region_center_markers = value
+	_apply_center_marker_setting()
 
 func _get_next_player() -> int:
 	"""Get the next player in the turn sequence"""

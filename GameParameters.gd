@@ -31,8 +31,8 @@ class_name GameParameters
 ## Single-line Configuration Constants
 const MOVEMENT_POINTS_PER_TURN = 5          # Army movement points per turn
 const BATTLE_ROUND_TIME = 0.55               # Seconds between animated battle rounds
-const BIOME_ICON_SCALE = 0.15                # Map generation icon scale
-const FOREST_ICON_SCALE = 0.15               # Forest icon scale (customizable size)
+const BIOME_ICON_SCALE = 0.25                # Map generation icon scale
+const FOREST_ICON_SCALE = 0.35               # Forest icon scale (customizable size)
 const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
 const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
 const POPULATION_GROWTH_RATE = 0.03            # Base population growth rate (%)
@@ -130,7 +130,7 @@ const POPULATION_INCOME_LEVEL_MULTIPLIER = 4   # Level multiplier for population
 
 ## AI Raise Army Decision Parameters
 # Cost/Reserves
-const AI_RESERVE_GOLD_MIN = 40                 # Minimum gold to keep after raising army
+const AI_RESERVE_GOLD_MIN = 30                 # Minimum gold to keep after raising army
 # Eligibility
 const AI_MIN_RECRUITS_FOR_RAISING = 40         # Minimum recruits at castle+neighbors to consider raising
 # Global Guards
@@ -184,7 +184,14 @@ const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per reso
 
 ## AI Peasants-Only Recruitment Parameters
 # Minimum peasant share threshold
+enum WealthLevel {
+	POOR,
+	NORMAL,
+	RICH
+}
+
 const AI_PEA_MIN_PROP_BASE = 0.20               # Minimum acceptable peasant share trigger (20%)
+const AI_PEA_MIN_PROP_BASE_NORMAL = 0.10        # Minimum acceptable peasant share trigger for normal wealth (10%)
 # Army power thresholds for target peasant share
 const AI_PEA_POWER_LOW_MAX = 150                # Upper bound for "low power" armies
 const AI_PEA_POWER_HIGH_MIN = 300               # Lower bound for "high power" armies
@@ -401,16 +408,7 @@ const REGION_RESOURCES = {
 }
 
 ## Ideal Army Compositions for Different Scenarios
-enum WealthLevel {
-	POOR,
-	NORMAL,
-	RICH
-}
-
-const WEALTH_THRESHOLD_NORMAL = 50
-const WEALTH_THRESHOLD_RICH = 150
-
-const IDEAL_ARMY_COMPOSITIONS_POOR = {
+const IDEAL_ARMY_COMPOSITIONS = {
 	"None": {
 		"peasants": 100,
 		"spearmen": 0,
@@ -468,123 +466,7 @@ const IDEAL_ARMY_COMPOSITIONS_POOR = {
 	}
 }
 
-const IDEAL_ARMY_COMPOSITIONS_NORMAL = {
-	"None": {
-		"peasants": 100,
-		"spearmen": 0,
-		"archers": 0,
-		"swordsmen": 0,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Outpost": {
-		"peasants": 20,
-		"spearmen": 25,
-		"archers": 25,
-		"swordsmen": 30,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Keep": {
-		"peasants": 10,
-		"spearmen": 37,
-		"archers": 17,
-		"swordsmen": 30,
-		"crossbowmen": 8,
-		"horsemen": 8,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Castle": {
-		"peasants": 5,
-		"spearmen": 15,
-		"archers": 15,
-		"swordsmen": 20,
-		"crossbowmen": 15,
-		"horsemen": 10,
-		"knights": 15,
-		"mounted_knights": 5,
-		"royal_guard": 0
-	},
-	"Stronghold": {
-		"peasants": 0,
-		"spearmen": 19,
-		"archers": 15,
-		"swordsmen": 20,
-		"crossbowmen": 15,
-		"horsemen": 9,
-		"knights": 13,
-		"mounted_knights": 6,
-		"royal_guard": 3
-	}
-}
-
-const IDEAL_ARMY_COMPOSITIONS_RICH = {
-	"None": {
-		"peasants": 100,
-		"spearmen": 0,
-		"archers": 0,
-		"swordsmen": 0,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Outpost": {
-		"peasants": 10,
-		"spearmen": 20,
-		"archers": 25,
-		"swordsmen": 35,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Keep": {
-		"peasants": 0,
-		"spearmen": 30,
-		"archers": 17,
-		"swordsmen": 35,
-		"crossbowmen": 8,
-		"horsemen": 10,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Castle": {
-		"peasants": 0,
-		"spearmen": 10,
-		"archers": 15,
-		"swordsmen": 20,
-		"crossbowmen": 15,
-		"horsemen": 14,
-		"knights": 20,
-		"mounted_knights": 6,
-		"royal_guard": 0
-	},
-	"Stronghold": {
-		"peasants": 0,
-		"spearmen": 10,
-		"archers": 15,
-		"swordsmen": 15,
-		"crossbowmen": 15,
-		"horsemen": 12,
-		"knights": 20,
-		"mounted_knights": 8,
-		"royal_guard": 5
-	}
-}
-
-const IDEAL_CASTLE_GARRISON_COMPOSITIONS_POOR = {
+const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
 	"None": {
 		"peasants": 100,
 		"spearmen": 0,
@@ -642,140 +524,11 @@ const IDEAL_CASTLE_GARRISON_COMPOSITIONS_POOR = {
 	}
 }
 
-
-const IDEAL_CASTLE_GARRISON_COMPOSITIONS_NORMAL = {
-	"None": {
-		"peasants": 100,
-		"spearmen": 0,
-		"archers": 0,
-		"swordsmen": 0,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Outpost": {
-		"peasants": 20,
-		"spearmen": 25,
-		"archers": 25,
-		"swordsmen": 30,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Keep": {
-		"peasants": 15,
-		"spearmen": 40,
-		"archers": 17,
-		"swordsmen": 30,
-		"crossbowmen": 8,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Castle": {
-		"peasants": 5,
-		"spearmen": 25,
-		"archers": 15,
-		"swordsmen": 25,
-		"crossbowmen": 15,
-		"horsemen": 0,
-		"knights": 15,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Stronghold": {
-		"peasants": 0,
-		"spearmen": 20,
-		"archers": 15,
-		"swordsmen": 30,
-		"crossbowmen": 15,
-		"horsemen": 0,
-		"knights": 15,
-		"mounted_knights": 0,
-		"royal_guard": 5
-	}
-}
-
-const IDEAL_CASTLE_GARRISON_COMPOSITIONS_RICH = {
-	"None": {
-		"peasants": 100,
-		"spearmen": 0,
-		"archers": 0,
-		"swordsmen": 0,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Outpost": {
-		"peasants": 10,
-		"spearmen": 20,
-		"archers": 25,
-		"swordsmen": 35,
-		"crossbowmen": 0,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Keep": {
-		"peasants": 0,
-		"spearmen": 30,
-		"archers": 18,
-		"swordsmen": 40,
-		"crossbowmen": 12,
-		"horsemen": 0,
-		"knights": 0,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Castle": {
-		"peasants": 0,
-		"spearmen": 10,
-		"archers": 18,
-		"swordsmen": 30,
-		"crossbowmen": 17,
-		"horsemen": 0,
-		"knights": 25,
-		"mounted_knights": 0,
-		"royal_guard": 0
-	},
-	"Stronghold": {
-		"peasants": 0,
-		"spearmen": 5,
-		"archers": 18,
-		"swordsmen": 22,
-		"crossbowmen": 17,
-		"horsemen": 0,
-		"knights": 30,
-		"mounted_knights": 0,
-		"royal_guard": 8
-	}
-}
-
 const SAFE_GARRISON_POWER_PER_LEVEL = {
 	CastleTypeEnum.Type.OUTPOST: 30,
 	CastleTypeEnum.Type.KEEP: 60,
 	CastleTypeEnum.Type.CASTLE: 100,
 	CastleTypeEnum.Type.STRONGHOLD: 150
-}
-
-const IDEAL_ARMY_COMPOSITION_TABLES = {
-	WealthLevel.POOR: IDEAL_ARMY_COMPOSITIONS_POOR,
-	WealthLevel.NORMAL: IDEAL_ARMY_COMPOSITIONS_NORMAL,
-	WealthLevel.RICH: IDEAL_ARMY_COMPOSITIONS_RICH
-}
-
-const IDEAL_CASTLE_GARRISON_COMPOSITION_TABLES = {
-	WealthLevel.POOR: IDEAL_CASTLE_GARRISON_COMPOSITIONS_POOR,
-	WealthLevel.NORMAL: IDEAL_CASTLE_GARRISON_COMPOSITIONS_NORMAL,
-	WealthLevel.RICH: IDEAL_CASTLE_GARRISON_COMPOSITIONS_RICH
 }
 
 ## Player Colors for Multi-Player Support
@@ -787,6 +540,9 @@ const PLAYER_COLORS = {
 	5: Color('#ffffff'), # White
 	6: Color('#604250')  # Dark purple
 }
+
+const WEALTH_NORMAL_THRESHOLD_GOLD = 200
+const WEALTH_RICH_THRESHOLD_GOLD = 400
 
 ## Initial Player Resources
 const STARTING_RESOURCES = {
@@ -819,22 +575,22 @@ const POPULATION_BY_LEVEL = {
 # Costs required to promote a region to the specified level
 const REGION_PROMOTION_COSTS = {
 	RegionLevelEnum.Level.L2: {  # Cost to promote from L1 to L2
-		ResourcesEnum.Type.GOLD: 15,
+		ResourcesEnum.Type.GOLD: 10,
 		ResourcesEnum.Type.FOOD: 15
 	},
 	RegionLevelEnum.Level.L3: {  # Cost to promote from L2 to L3
-		ResourcesEnum.Type.GOLD: 25,
+		ResourcesEnum.Type.GOLD: 15,
 		ResourcesEnum.Type.FOOD: 25,
 		ResourcesEnum.Type.WOOD: 10,
 	},
 	RegionLevelEnum.Level.L4: {  # Cost to promote from L3 to L4
-		ResourcesEnum.Type.GOLD: 35,
+		ResourcesEnum.Type.GOLD: 20,
 		ResourcesEnum.Type.FOOD: 35,
 		ResourcesEnum.Type.WOOD: 20,
 		ResourcesEnum.Type.STONE: 0,
 	},
 	RegionLevelEnum.Level.L5: {  # Cost to promote from L4 to L5
-		ResourcesEnum.Type.GOLD: 50,
+		ResourcesEnum.Type.GOLD: 25,
 		ResourcesEnum.Type.FOOD: 50,
 		ResourcesEnum.Type.WOOD: 25,
 		ResourcesEnum.Type.STONE: 5,
@@ -856,7 +612,7 @@ const CASTLE_BUILDING_COSTS = {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 75,
 			ResourcesEnum.Type.WOOD: 30,
-			ResourcesEnum.Type.STONE: 30
+			ResourcesEnum.Type.STONE: 15
 		},
 		"build_time": 1  # 3 turns to complete
 	},
@@ -864,7 +620,7 @@ const CASTLE_BUILDING_COSTS = {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 100,
 			ResourcesEnum.Type.WOOD: 20,
-			ResourcesEnum.Type.STONE: 50,
+			ResourcesEnum.Type.STONE: 35,
 			ResourcesEnum.Type.IRON: 10
 		},
 		"build_time": 4  # 4 turns to complete
@@ -873,7 +629,7 @@ const CASTLE_BUILDING_COSTS = {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 150,
 			ResourcesEnum.Type.WOOD: 20,
-			ResourcesEnum.Type.STONE: 70,
+			ResourcesEnum.Type.STONE: 50,
 			ResourcesEnum.Type.IRON: 20
 		},
 		"build_time": 1  # 6 turns to complete
@@ -918,7 +674,8 @@ static func get_safe_garrison_power(castle_type: CastleTypeEnum.Type) -> int:
 
 static func get_ideal_castle_garrison(castle_type: CastleTypeEnum.Type) -> Dictionary:
 	"""Ideal garrison composition for a castle tier"""
-	return get_ideal_castle_garrison_for_wealth(castle_type, WealthLevel.NORMAL)
+	var key = CastleTypeEnum.type_to_string(castle_type)
+	return IDEAL_CASTLE_GARRISON_COMPOSITIONS.get(key, {})
 
 static func get_movement_cost(region_type: RegionTypeEnum.Type) -> int:
 	"""Get movement cost for terrain type"""
@@ -943,30 +700,6 @@ static func generate_resource_amount(region_type: RegionTypeEnum.Type, resource_
 static func get_starting_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 	"""Get starting amount for a resource type"""
 	return STARTING_RESOURCES.get(resource_type, 0)
-
-static func get_wealth_level_for_gold(gold_amount: int) -> WealthLevel:
-	if gold_amount > WEALTH_THRESHOLD_RICH:
-		return WealthLevel.RICH
-	if gold_amount > WEALTH_THRESHOLD_NORMAL:
-		return WealthLevel.NORMAL
-	return WealthLevel.POOR
-
-static func _resolve_army_composition_table(wealth_level: WealthLevel) -> Dictionary:
-	var default_table = IDEAL_ARMY_COMPOSITION_TABLES.get(WealthLevel.NORMAL, {})
-	return IDEAL_ARMY_COMPOSITION_TABLES.get(wealth_level, default_table)
-
-static func _resolve_garrison_composition_table(wealth_level: WealthLevel) -> Dictionary:
-	var default_table = IDEAL_CASTLE_GARRISON_COMPOSITION_TABLES.get(WealthLevel.NORMAL, {})
-	return IDEAL_CASTLE_GARRISON_COMPOSITION_TABLES.get(wealth_level, default_table)
-
-static func get_ideal_composition_for_wealth(need_key: String, wealth_level: WealthLevel) -> Dictionary:
-	var table = _resolve_army_composition_table(wealth_level)
-	return table.get(need_key, {})
-
-static func get_ideal_castle_garrison_for_wealth(castle_type: CastleTypeEnum.Type, wealth_level: WealthLevel) -> Dictionary:
-	var key = CastleTypeEnum.type_to_string(castle_type)
-	var table = _resolve_garrison_composition_table(wealth_level)
-	return table.get(key, {})
 
 static func generate_garrison_size(region_level: RegionLevelEnum.Level) -> int:
 	"""Generate random garrison size based on region level"""
@@ -1105,7 +838,19 @@ static func get_player_color(player_id: int) -> Color:
 
 static func get_ideal_composition(need_key: String) -> Dictionary:
 	"""Get ideal army composition for a specific scenario"""
-	return get_ideal_composition_for_wealth(need_key, WealthLevel.NORMAL)
+	if not IDEAL_ARMY_COMPOSITIONS.has(need_key):
+		# Return empty dictionary for invalid keys - caller should handle this
+		return {}
+	return IDEAL_ARMY_COMPOSITIONS.get(need_key, {})
+
+static func get_ideal_composition_for_wealth(need_key: String, wealth_level: int) -> Dictionary:
+	"""Return an ideal composition adjusted for the player's wealth tier (currently passthrough)."""
+	var base = get_ideal_composition(need_key)
+	return base.duplicate()
+
+static func get_ideal_castle_garrison_for_wealth(castle_type: CastleTypeEnum.Type, wealth_level: int) -> Dictionary:
+	var base = get_ideal_castle_garrison(castle_type)
+	return base.duplicate()
 
 static func get_unit_power(unit_type: SoldierTypeEnum.Type) -> int:
 	"""Get power value for a unit type"""
@@ -1114,3 +859,10 @@ static func get_unit_power(unit_type: SoldierTypeEnum.Type) -> int:
 static func get_unit_recruit_cost(unit_type: SoldierTypeEnum.Type) -> int:
 	"""Get recruitment cost for a unit type (alias for gold cost)"""
 	return get_unit_gold_cost(unit_type)
+
+static func get_wealth_level_for_gold(gold: int) -> int:
+	if gold >= WEALTH_RICH_THRESHOLD_GOLD:
+		return WealthLevel.RICH
+	if gold >= WEALTH_NORMAL_THRESHOLD_GOLD:
+		return WealthLevel.NORMAL
+	return WealthLevel.POOR

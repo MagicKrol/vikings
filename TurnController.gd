@@ -122,6 +122,8 @@ func start_turn(player_id: int) -> void:
 	
 	emit_signal("turn_started", player_id)
 	DebugLogger.log("AITurnManager", "[TurnController] Starting turn for Player " + str(player_id))
+	if is_ai_player and turn_number > 1:
+		_army_transfers_check(player_id)
 	
 	await _process_turn(player_id)
 	if player_manager != null and player_manager.has_method("update_player_wealth_status"):
@@ -215,7 +217,7 @@ func _process_turn(player_id: int) -> void:
 			# Check peasants-only recruitment (only if normal recruitment not needed)
 			var peasant_plan = _needs_recruitment_peasants(army, turn_number)
 			if peasant_plan["needed"]:
-				var best_peasant_region = _find_best_owned_region_for_peasants(army)
+				var best_peasant_region = _find_best_owned_region_for_peasants(army, int(peasant_plan["ideal_needed"]))
 				if best_peasant_region != -1:
 					if best_peasant_region == region_id:
 						# Current region is best - hire peasants immediately
@@ -239,7 +241,9 @@ func _process_turn(player_id: int) -> void:
 								"can_reach_now": int(pf["cost"]) <= army.get_movement_points(),
 								"peasant_plan": peasant_plan
 							})
-							continue  # Skip normal frontier evaluation
+				else:
+					army.request_recruitment()
+					_log_recruitment_status_once(army, region_id, "peasants_insufficient")
 			
 			# Normal frontier scoring for armies not needing reinforcement
 			var best_move := _find_best_move_for_army(army, frontier)
@@ -445,16 +449,27 @@ func _on_battle_finished(result: String) -> void:
 # Peasants-only recruitment helpers
 func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 	"""Check if army needs peasants-only recruitment"""
-	# Early gate: if normal recruitment is needed, skip peasants-only
 	if army.needs_recruitment(turn_number):
 		return {"needed": false}
 	
-	# Check current peasant ratio
-	var current_ratio = army.get_peasant_ratio()
-	if current_ratio >= GameParameters.AI_PEA_MIN_PROP_BASE:
+	var player_id = army.get_player_id()
+	var player = player_manager.get_player(player_id)
+	var wealth_level = player.get_wealth_level()
+	if wealth_level == GameParameters.WealthLevel.RICH:
 		return {"needed": false}
 	
-	# Determine target proportion based on army power
+	var min_ratio = GameParameters.AI_PEA_MIN_PROP_BASE
+	if wealth_level == GameParameters.WealthLevel.NORMAL:
+		min_ratio = GameParameters.AI_PEA_MIN_PROP_BASE_NORMAL
+	
+	var food_growth = player_manager.get_player_food_growth(player_id)
+	if food_growth <= 0.0:
+		return {"needed": false}
+	
+	var current_ratio = army.get_peasant_ratio()
+	if current_ratio >= min_ratio:
+		return {"needed": false}
+	
 	var army_power = army.get_army_power()
 	var target_prop = 0.0
 	if army_power < GameParameters.AI_PEA_POWER_LOW_MAX:
@@ -465,8 +480,10 @@ func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 		target_prop = GameParameters.AI_PEA_TARGET_PROP_MID
 	
 	var ideal_needed = army.compute_peasant_need(target_prop)
-	
-	DebugLogger.log("AIRecruitment", "Army " + str(army.name) + " peasant need: current=" + str(current_ratio) + ", target=" + str(target_prop) + ", need=" + str(ideal_needed))
+	DebugLogger.log(
+		"AIRecruitment",
+		"Army " + str(army.name) + " peasant need: current=" + str(current_ratio) + ", target=" + str(target_prop) + ", need=" + str(ideal_needed)
+	)
 	
 	return {
 		"needed": true,
@@ -474,7 +491,7 @@ func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 		"ideal_needed": ideal_needed
 	}
 
-func _find_best_owned_region_for_peasants(army: Army) -> int:
+func _find_best_owned_region_for_peasants(army: Army, min_required: int) -> int:
 	"""Find the best owned region reachable this turn for peasant recruitment"""
 	var player_id = army.get_player_id()
 	var current_region = army.get_parent() as Region
@@ -484,6 +501,7 @@ func _find_best_owned_region_for_peasants(army: Army) -> int:
 	var current_region_id = current_region.get_region_id()
 	var owned_regions = region_manager.get_player_regions(player_id)
 	var candidates = []
+	var min_recruits = max(1, min_required)
 	
 	for region_id in owned_regions:
 		var path_result = pathfinder.find_path_to_target(current_region_id, region_id, player_id)
@@ -496,26 +514,125 @@ func _find_best_owned_region_for_peasants(army: Army) -> int:
 		
 		var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
 		var available_recruits = region_container.get_available_recruits()
+		if available_recruits < min_recruits:
+			continue
 		
+		var adjusted_distance = cost + 1
+		var score = float(available_recruits) / float(adjusted_distance)
 		candidates.append({
 			"region_id": region_id,
 			"available_recruits": available_recruits,
-			"cost": cost
+			"cost": cost,
+			"score": score
 		})
 	
 	if candidates.is_empty():
 		return -1
 	
-	# Sort by available recruits (highest first), then by region_id for deterministic tie-break
 	candidates.sort_custom(func(a, b):
-		if a["available_recruits"] == b["available_recruits"]:
+		if a["score"] == b["score"]:
 			return a["region_id"] < b["region_id"]
-		return a["available_recruits"] > b["available_recruits"]
+		return a["score"] > b["score"]
 	)
 	
-	DebugLogger.log("AIRecruitment", "Best peasant region: " + str(candidates[0]["region_id"]) + " with " + str(candidates[0]["available_recruits"]) + " recruits")
+	var best = candidates[0]
+	DebugLogger.log(
+		"AIRecruitment",
+		"Best peasant region: " + str(best["region_id"]) + " score=" + str(best["score"]) + " recruits=" + str(best["available_recruits"]) + " cost=" + str(best["cost"])
+	)
 
-	return candidates[0]["region_id"]
+	return best["region_id"]
+
+func _army_transfers_check(player_id: int) -> void:
+	"""Merge armies sharing a border-front region before movement"""
+	if army_manager == null or region_manager == null:
+		return
+	var current_turn = _get_current_turn()
+	if current_turn <= 1:
+		return
+	var armies := army_manager.get_player_armies(player_id)
+	if armies.size() < 2:
+		return
+	var grouped: Dictionary = {}
+	for army in armies:
+		if army == null or not is_instance_valid(army):
+			continue
+		if army.is_recruitment_requested():
+			continue
+		var region = army.get_parent()
+		if not (region is Region):
+			continue
+		var region_id = (region as Region).get_region_id()
+		if region_id == -1:
+			continue
+		if not grouped.has(region_id):
+			grouped[region_id] = []
+		grouped[region_id].append(army)
+	for region_id in grouped.keys():
+		var group: Array = grouped[region_id]
+		if group.size() < 2:
+			continue
+		if not _region_borders_enemy(int(region_id), player_id):
+			continue
+		group.sort_custom(func(a, b): return _army_number_value(a) < _army_number_value(b))
+		var receiver: Army = group[0]
+		for i in range(1, group.size()):
+			var donor: Army = group[i]
+			if donor == null or not is_instance_valid(donor):
+				continue
+			var moved = army_manager.transfer_all_soldiers(donor, receiver)
+			if moved:
+				donor.spawn_minimal_peasant_token()
+
+func _region_borders_enemy(region_id: int, player_id: int) -> bool:
+	var neighbors = region_manager.get_neighbor_regions(region_id)
+	for neighbor_id in neighbors:
+		var owner = region_manager.get_region_owner(neighbor_id)
+		if owner != -1 and owner != player_id:
+			return true
+	return false
+
+func _army_number_value(army: Army) -> int:
+	if army == null:
+		return INF
+	var roman = army.number
+	if roman == "":
+		return army.get_instance_id()
+	var value = _roman_to_int(roman)
+	if value <= 0:
+		return army.get_instance_id()
+	return value
+
+func _roman_to_int(roman: String) -> int:
+	var mapping = {
+		"I": 1,
+		"V": 5,
+		"X": 10,
+		"L": 50,
+		"C": 100,
+		"D": 500,
+		"M": 1000
+	}
+	var upper = roman.to_upper()
+	var total = 0
+	var i = 0
+	while i < upper.length():
+		var curr_char = upper[i]
+		var curr = mapping.get(curr_char, 0)
+		if curr == 0:
+			i += 1
+			continue
+		var next = 0
+		if i + 1 < upper.length():
+			var next_char = upper[i + 1]
+			next = mapping.get(next_char, 0)
+		if curr < next:
+			total += next - curr
+			i += 2
+		else:
+			total += curr
+			i += 1
+	return total
 
 func _build_reinforce_move_candidate(army: Army, current_region_id: int, include_origin: bool = false) -> Dictionary:
 	var castle_pick := region_manager.find_best_recruitment_castle(current_region_id, army.get_player_id(), include_origin)

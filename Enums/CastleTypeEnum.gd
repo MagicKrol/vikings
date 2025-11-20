@@ -85,7 +85,7 @@ static func get_icon_path(castle_type: Type) -> String:
 	"""Get icon file path for castle type"""
 	match castle_type:
 		Type.OUTPOST:
-			return "res://images/icons/outpost3.png"
+			return "res://images/icons/outpost.png"
 		Type.KEEP:
 			return "res://images/icons/keep.png"
 		Type.CASTLE:

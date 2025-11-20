@@ -116,6 +116,7 @@ editor_start.tscn (Editor Start)
 - AI Logging: Owns `AILogManager`; `ensure_ai_log_started()` names the log `<scenario>_<timestamp>.txt` the first time any AI player takes a turn so all later TurnController events can append to the same file inside the root `logs/` directory.
 - Battle Log Queue: `finalize_battle_result()` snapshots attacker/defender forces before and after `_battle_manager._apply_battle_losses()`, converts the result into readable lines (`Battle started`, attacker/defender power/composition, `Battle Result`, post-battle status) and queues them per attacking army via `consume_ai_battle_log_for_army()` so TurnController can append them immediately after its movement logs.
 - Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
+- Debug overlay: `show_region_center_markers` draws a small red square at each land region center by calling `MapGenerator.set_center_markers_enabled()` after startup and whenever the map regenerates.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
  - Modes:
    - Custom: current behavior (castle placement → gameplay).
@@ -142,15 +143,16 @@ editor_start.tscn (Editor Start)
 - Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Reinforcement routing: Armies that need recruitment but have no assigned budget now queue a `goal: reinforce` move toward the best owned castle before chasing frontier targets, so low-power stacks travel home for resupply.
+- Army transfers: On AI turns after turn one, `_army_transfers_check()` merges non-recruit-requested armies that start in the same frontline region (neighbors an enemy) by funneling their soldiers into the lowest-numbered army and leaving behind a single peasant token per donor so the primary stack moves first.
 - Resting Logic (AI):
   - Start-of-evaluation: if an army's efficiency < 75%, it spends all remaining MPs on `make_camp()` and skips movement that loop.
   - Pre-attack: if an army can reach a target now and a battle is expected, and efficiency < 90%, it calls `make_camp()` up to 2 times (bounded by MPs) before moving.
   - End-of-turn: after post-movement economy, any army with leftover MPs spends all on `make_camp()`.
 - Peasants-Only Recruitment:
-  - Runs only when standard recruitment is not needed and peasant ratio < AI_PEA_MIN_PROP_BASE
+  - Runs only when standard recruitment is not needed, the player has positive net food growth, and the army belongs to a Poor (20%) or Normal (10%) wealth player; Rich players skip peasants entirely.
   - Targets peasant share based on army power thresholds (low/mid/high power → 40%/30%/20% peasants)
-  - Moves to best reachable owned region with highest available recruits to hire peasants (free cost)
-  - Uses pathfinding to find optimal region within current movement points
+  - Filters candidate regions to those with enough recruits to meet the calculated need, then picks the best recruits-per-(distance+1) ratio so nearby pools are favored.
+  - If no region can meet the minimum, the army flags for normal castle recruitment; otherwise it moves/hire peasants for free using standard pathfinding within current MPs.
 - AI Logging: During AI turns `TurnController` calls `AILogManager` to write the requested log format — each turn header includes resources, signals, decision, and owned regions, while every army action logs as `Recruits`, `Goes to Castle`, or `Moves` with its target plus recruitment/economy success or failure reasons.
 - AI log entries now show efficiency inline (`Power: 67, E: 95 - P:...`) so it’s easy to see when armies act below full effectiveness.
 
@@ -173,6 +175,7 @@ editor_start.tscn (Editor Start)
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
 - army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Emits `movement_points_changed(army, new_points)` whenever points reset/spent/camped so ArmyManager can refresh highlights. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use).
+- ArmyManager exposes `transfer_all_soldiers(donor, receiver)` for bulk transfers, and armies keep `spawn_minimal_peasant_token()` so TurnController can leave placeholder peasants after merging stacks.
 - ArmyPathfinder.gd: pathfinding within MP horizon, multi-turn pathfinding with MP constraints.
 - **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
   - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
@@ -315,6 +318,7 @@ editor_start.tscn (Editor Start)
 - Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains intentionally ignore map-size scale and use polygon scale only.
  - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
+- Center markers: `MapGenerator.set_center_markers_enabled(true)` adds a `CenterMarkers` Node2D full of small red Polygon2D squares at each non-ocean region center (used by the GameManager debug toggle).
 
 ## Notable Relationships
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.

@@ -6,7 +6,7 @@ class_name BiomeManager
 const BIOME_ICON_RULES := [
 	{"match": "FOREST",       "path": "res://images/icons/forest.png"},
 	{"match": "FOREST2",       "path": "res://images/icons/forest.png"},
-	{"match": "HILL_FOREST", "path": "res://images/icons/hill_forest8.png"},
+	{"match": "HILL_FOREST", "path": "res://images/icons/hill_forest.png"},
 	{"match": "HILLS",        "path": "res://images/icons/hill.png"},
 	{"match": "MOUNTAINS",    "path": "res://images/icons/mountain.png"},
 ]

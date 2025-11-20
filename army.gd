@@ -200,6 +200,17 @@ func remove_soldiers(soldier_type: SoldierTypeEnum.Type, count: int) -> void:
 	"""Remove soldiers from the army"""
 	composition.remove_soldiers(soldier_type, count)
 
+func spawn_minimal_peasant_token() -> void:
+	"""Leave a single peasant behind after transferring troops"""
+	for soldier_type in SoldierTypeEnum.get_all_types():
+		if soldier_type == SoldierTypeEnum.Type.PEASANTS:
+			composition.set_soldier_count(soldier_type, 1)
+		else:
+			composition.set_soldier_count(soldier_type, 0)
+	if wounded_composition != null:
+		for soldier_type in SoldierTypeEnum.get_all_types():
+			wounded_composition.set_soldier_count(soldier_type, 0)
+
 func get_total_soldiers() -> int:
 	"""Get total number of soldiers in the army"""
 	return composition.get_total_soldiers()

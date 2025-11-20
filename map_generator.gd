@@ -61,6 +61,8 @@ var map_node_frame: Node2D
 
 # Region node lookup: region_id -> Node2D container
 var region_container_by_id: Dictionary = {}
+var center_markers_enabled: bool = false
+var center_marker_container: Node2D = null
 
 @onready var border_manager: BorderManager = get_node("BorderManager") as BorderManager
 
@@ -322,6 +324,7 @@ func _render_from_json() -> void:
 
 	# Build adjacency graph for non-ocean regions and draw overlay
 	_build_and_draw_region_graph_overlay()
+	_refresh_center_markers()
 
 
 	DebugLogger.log("MapGeneration", "Rendered edges: " + str(edges.size()) + ", land regions created=" + str(_region_count))
@@ -509,8 +512,8 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	pg.polygon = poly
 
 	# Apply grass texture to all non-ocean regions
-	pg.texture = load("res://images/background4grass.png")
-	pg.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
+	pg.texture = load("res://images/background4grass4.png")
+	# pg.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
 	pg.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	pg.z_index = 0  # Land on same level as ocean
 	if parent_container != null:
@@ -528,7 +531,7 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 		
 		# Check if this is a mountain biome and use special handling
 		if biome_name.to_lower() == "mountains":
-			Utils.create_mountain_icon_with_size_modifier(pg, region_data, icon_path, BIOME_ICON_SCALE, polygon_scale, map_size_scale)
+			Utils.create_mountain_icon_with_size_modifier(pg, region_data, icon_path, BIOME_ICON_SCALE * 2, polygon_scale, map_size_scale)
 		else:
 			_add_icon_at_region_center(pg, region_data, icon_path, biome_name)
 
@@ -910,7 +913,7 @@ func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, i
 	if biome_name.to_lower().contains("hill"):
 		icon.position = center
 	else:
-		icon.position = center + Vector2(0, -30 * map_size_scale)
+		icon.position = center + Vector2(0, -15 * map_size_scale)
 	
 	# Use forest-specific scale for forest biomes, otherwise use general biome scale
 	var icon_scale: float
@@ -955,6 +958,42 @@ func _create_region_points_for_all_regions() -> void:
 	region_points_container.z_index = 200  # High z-index to ensure visibility
 
 	add_child(region_points_container)
+
+func set_center_markers_enabled(enabled: bool) -> void:
+	center_markers_enabled = enabled
+	_refresh_center_markers()
+
+func _refresh_center_markers() -> void:
+	_clear_center_markers()
+	if not center_markers_enabled:
+		return
+	_ensure_map_nodes()
+	center_marker_container = Node2D.new()
+	center_marker_container.name = "CenterMarkers"
+	map_node_regions.add_child(center_marker_container)
+	var half := 2.0 * polygon_scale
+	var square := PackedVector2Array([
+		Vector2(-half, -half),
+		Vector2(half, -half),
+		Vector2(half, half),
+		Vector2(-half, half)
+	])
+	for region_id in region_container_by_id.keys():
+		var region_node: Region = region_container_by_id[region_id]
+		if region_node.is_ocean_region():
+			continue
+		var center := region_node.center
+		var marker := Polygon2D.new()
+		marker.polygon = square
+		marker.color = Color(1, 0, 0, 0.9)
+		marker.position = center
+		marker.z_index = 2000
+		center_marker_container.add_child(marker)
+
+func _clear_center_markers() -> void:
+	if center_marker_container != null:
+		center_marker_container.queue_free()
+		center_marker_container = null
 
 
 func get_region_container_by_id(region_id: int) -> Node:
@@ -1014,7 +1053,7 @@ func refresh_region_visual(region_id: int) -> void:
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
 	else:
 		# Restore land grass texture
-		polygon.texture = load("res://images/background4grass.png")
+		polygon.texture = load("res://images/background4grass4.png")
 		polygon.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 		polygon.visible = true

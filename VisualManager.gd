@@ -90,7 +90,7 @@ func place_castle_visual(region_container: Node) -> void:
 		return
 	
 	# Scale castle appropriately - 20% smaller than biome icons
-	var castle_scale := 0.12  # 0.15 * 0.8 = 0.12 (20% smaller)
+	var castle_scale := 0.22  # 0.15 * 0.8 = 0.12 (20% smaller)
 	var map_size_scale := 1.0
 	if _map_generator != null:
 		# Apply both polygon scale and map size scale
@@ -103,12 +103,12 @@ func place_castle_visual(region_container: Node) -> void:
 		var center_meta = polygon.get_meta("center")
 		if center_meta != null:
 			var center := center_meta as Vector2
-			castle.position = center + Vector2(-5 * map_size_scale, -5 * map_size_scale)  # Scaled offset
+			castle.position = center + Vector2(0 * map_size_scale, -20 * map_size_scale)  # Scaled offset
 	
 	castle.scale = Vector2(castle_scale, castle_scale)
 	
 	# Set z-index to appear above other elements
-	castle.z_index = 100
+	castle.z_index = 151
 	
 	# Add castle to region container
 	region_container.add_child(castle)
