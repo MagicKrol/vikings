@@ -172,69 +172,6 @@ static func get_map_size_icon_scale(map_size: int) -> float:
 	
 	return size * 1.3
 
-static func create_mountain_icon_with_size_modifier(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, base_scale: float, polygon_scale: float, map_size_scale: float = 1.0) -> void:
-	"""
-	Create mountain icon with size and shape modifiers based on region characteristics.
-	- Larger regions get larger icons
-	- Narrow regions get two icons stacked vertically
-	- Wide regions get two icons side by side
-	"""
-	if icon_path == "":
-		return
-	
-	var center_data = region_data.get("center", [500, 500])
-	if center_data.size() != 2:
-		return
-	
-	var center := Vector2(center_data[0], center_data[1])
-	
-	# Get polygon points for analysis
-	var polygon_points := parent_pg.polygon
-	if polygon_points.size() < 3:
-		return
-	
-	# Analyze region shape
-	var analysis: Dictionary = analyze_polygon_shape(polygon_points)
-	var area: float = analysis.get("area", 0.0)
-	var shape_type: String = analysis.get("shape_type", "normal")
-	
-	# Debug output for mountain regions
-	var region_id: int = region_data.get("id", -1)
-	
-	# Calculate size modifier based on area (less aggressive scaling for better visibility)
-	# Based on debug output, areas are around 6000-9000, so we'll use 8000 as baseline
-	var area_scale_factor: float = 1.0
-	if area > 0:
-		# Normalize area to a reasonable scale factor (0.9 to 1.3) for subtle size differences
-		var normalized_area: float = area / 8000.0  # 8000 as baseline based on actual data
-		area_scale_factor = clamp(normalized_area, 0.9, 1.3)
-
-	# Create first mountain icon
-	var icon1 := Sprite2D.new()
-	icon1.texture = load(icon_path)
-	if icon1.texture == null:
-		return
-	
-	# Apply scaled position offset
-	icon1.position = center + Vector2(0, -20 * map_size_scale)
-	# Maintain same ratio with other biomes by not applying map_size_scale to mountains
-	var final_scale: float = base_scale * polygon_scale * area_scale_factor
-	icon1.scale = Vector2(final_scale, final_scale)
-	icon1.z_index = parent_pg.z_index + 10
-	parent_pg.add_child(icon1)
-	
-	# Add second icon below and slightly to the right, 20% smaller
-	var icon2 := Sprite2D.new()
-	icon2.texture = load(icon_path)
-	var second_icon_scale: float = final_scale * 0.8  # 20% smaller than first icon
-	icon2.scale = Vector2(second_icon_scale, second_icon_scale)
-	icon2.z_index = parent_pg.z_index + 11  # Higher z-index for second icon
-	
-	# Position second icon below and slightly to the right of first icon (scaled)
-	icon2.position = center + Vector2(20 * map_size_scale, 10 * map_size_scale)
-	
-	# parent_pg.add_child(icon2)
-
 static func take_screenshot(filename: String = "res://screenshots/screenshot.png") -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	var scene := tree.current_scene

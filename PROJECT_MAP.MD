@@ -316,6 +316,7 @@ editor_start.tscn (Editor Start)
 - Dynamic nodes: `Region` instances under `Map/Regions` (land + ocean; ocean `Polygon` hidden, visuals from `Map/Ocean`), `Army` nodes parented to regions, `Castle` sprites under regions, border/overlay visuals.
 - Border widths: In `MapGenerator`, all Line2D borders scale by map size using `Utils.get_map_size_icon_scale()`.
 - Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains intentionally ignore map-size scale and use polygon scale only.
+- RegionIconManager.gd: MapGenerator delegates all biome icon placement here; it randomizes hill/forest/hill_forest variants (`<biome>_1..3.png`), computes offsets/scales, and uses polygon aspect ratios to pick wide (`mountain_2/3`) vs narrow (`mountain_1/4`) mountain textures while keeping mountain size tied to polygon area.
  - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
 - Center markers: `MapGenerator.set_center_markers_enabled(true)` adds a `CenterMarkers` Node2D full of small red Polygon2D squares at each non-ocean region center (used by the GameManager debug toggle).

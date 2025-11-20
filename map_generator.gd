@@ -37,9 +37,6 @@ const MAP_SIZE_SCALES := {
 	MapSize.XTINY: 55.0/26.0     # ~2.115385
 }
 
-# Global icon sizing (tune this to adjust biome icon sizes)
-const BIOME_ICON_SCALE: float = 0.15
-
 # Noisy edge parameters (matching JS defaults)
 @export var noisy_edge_amplitude: float = 0.15
 @export var noisy_edge_length: float = 6.0
@@ -524,16 +521,8 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 
 	# Add biome icons based on mapping rules
 	var biome_name := String(region_data.get("biome", ""))
-	var icon_path := BiomeManager.get_icon_path_for_biome(biome_name)
-	if icon_path != "":
-		# Get map size scaling factor
-		var map_size_scale = Utils.get_map_size_icon_scale(map_size)
-		
-		# Check if this is a mountain biome and use special handling
-		if biome_name.to_lower() == "mountains":
-			Utils.create_mountain_icon_with_size_modifier(pg, region_data, icon_path, BIOME_ICON_SCALE * 2, polygon_scale, map_size_scale)
-		else:
-			_add_icon_at_region_center(pg, region_data, icon_path, biome_name)
+	if biome_name != "":
+		RegionIconManager.place_region_icon(pg, region_data, polygon_scale, map_size)
 
 	return pg
 
@@ -895,38 +884,6 @@ func _is_ocean_region_coastal(ocean_region_id: int) -> bool:
 	
 	return false  # No land neighbors found
 
-func _add_icon_at_region_center(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, biome_name: String = "") -> void:
-	if icon_path == "":
-		return
-	var center_data = region_data.get("center", [500, 500])
-	if center_data.size() != 2:
-		return
-	var center := Vector2(center_data[0], center_data[1])
-	var icon := Sprite2D.new()
-	icon.texture = load(icon_path)
-	if icon.texture == null:
-		return
-	# Get map size scaling factor
-	var map_size_scale = Utils.get_map_size_icon_scale(map_size)
-	
-	# Apply scaled position offset (no offset for hill biomes)
-	if biome_name.to_lower().contains("hill"):
-		icon.position = center
-	else:
-		icon.position = center + Vector2(0, -15 * map_size_scale)
-	
-	# Use forest-specific scale for forest biomes, otherwise use general biome scale
-	var icon_scale: float
-	if biome_name.to_lower() == "forest":
-		icon_scale = GameParameters.FOREST_ICON_SCALE
-	else:
-		icon_scale = GameParameters.BIOME_ICON_SCALE
-	
-	icon.scale = Vector2(icon_scale * polygon_scale * map_size_scale, icon_scale * polygon_scale * map_size_scale)
-	icon.z_index = parent_pg.z_index + 10
-	icon.modulate.a = 0.85  # High transparency (15%)
-	parent_pg.add_child(icon)
-
 func _create_region_points_for_all_regions() -> void:
 	"""
 	Creates region points for NON-OCEAN regions using the dedicated RegionPoints script.
@@ -1061,8 +1018,6 @@ func refresh_region_visual(region_id: int) -> void:
 		var rdata: Dictionary = region_by_id.get(region_id, {})
 		rdata["biome"] = region.get_biome()
 		region_by_id[region_id] = rdata
-		var icon_path := BiomeManager.get_icon_path_for_biome(region.get_biome())
-		if icon_path != "":
-			_add_icon_at_region_center(polygon, rdata, icon_path, region.get_biome())
+		RegionIconManager.place_region_icon(polygon, rdata, polygon_scale, map_size)
 	# Regenerate borders for region and neighbors
 	regenerate_borders_for_region(region_id)
