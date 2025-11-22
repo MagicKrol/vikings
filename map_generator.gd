@@ -207,6 +207,7 @@ func _render_from_json() -> void:
 	_clear_children(map_node_ocean)
 	_clear_children(map_node_frame)
 	region_container_by_id.clear()
+	_recompute_region_centers()
 
 	# Add background image
 	var background := Sprite2D.new()
@@ -322,6 +323,7 @@ func _render_from_json() -> void:
 	# Build adjacency graph for non-ocean regions and draw overlay
 	_build_and_draw_region_graph_overlay()
 	_refresh_center_markers()
+	_sort_mountain_icon_z_indices()
 
 
 	DebugLogger.log("MapGeneration", "Rendered edges: " + str(edges.size()) + ", land regions created=" + str(_region_count))
@@ -479,6 +481,28 @@ func _build_region_polygon_points(region_data: Dictionary) -> PackedVector2Array
 		return deduped
 	return polygon_fallback if polygon_fallback.size() >= 3 else deduped
 
+func _recompute_region_centers() -> void:
+	for region_data in regions:
+		var region_id := int(region_data.get("id", -1))
+		if region_id < 0:
+			continue
+		var polygon_points := _build_region_polygon_points(region_data)
+		if polygon_points.size() >= 3:
+			_update_region_center_from_polygon(region_id, region_data, polygon_points)
+
+func _update_region_center_from_polygon(region_id: int, region_data: Dictionary, polygon_points: PackedVector2Array, region_container: Node = null, polygon_node: Polygon2D = null) -> Vector2:
+	if polygon_points.size() < 1 or region_data.is_empty():
+		return Vector2.ZERO
+	var center := Utils.compute_polygon_centroid(polygon_points)
+	region_data["center"] = [center.x, center.y]
+	region_by_id[region_id] = region_data
+	if polygon_node != null:
+		polygon_node.set_meta("center", center)
+	if region_container != null and region_container is Region:
+		var region := region_container as Region
+		region.center = center
+	return center
+
 func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name: String = "", parent_container: Node = null) -> Polygon2D:
 	var poly := _build_region_polygon_points(region_data)
 	if poly.size() < 3:
@@ -495,11 +519,6 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	rng.seed = noisy_edge_seed + rid
 	# Tag polygon with region metadata for click handling
 	pg.set_meta("region_id", rid)
-	var cmeta: Array = region_data.get("center", [])
-	if cmeta.size() == 2:
-		var cx := float(cmeta[0])
-		var cy := float(cmeta[1])
-		pg.set_meta("center", Vector2(cx, cy))
 	# Only set color for debug modes or explicit color override
 	if (polygon_color != null):
 		pg.color = polygon_color
@@ -507,6 +526,7 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 		pg.color = Color(rng.randf(), rng.randf(), rng.randf(), 1.0)  # Random colors for verification
 	# Otherwise don't set pg.color at all - let it default to white like ocean polygons
 	pg.polygon = poly
+	_update_region_center_from_polygon(rid, region_data, pg.polygon, parent_container, pg)
 
 	# Apply grass texture to all non-ocean regions
 	pg.texture = load("res://images/background4grass4.png")
@@ -538,6 +558,35 @@ func _rebuild_region_polygons_from_borders() -> void:
 		var updated_polygon := _create_noisy_polygon_for_region(region_id)
 		if updated_polygon.size() >= 3:
 			polygon_node.polygon = updated_polygon
+			_update_region_center_from_polygon(region_id, region_data, updated_polygon, region_container, polygon_node)
+
+func _sort_mountain_icon_z_indices() -> void:
+	var mountain_icons: Array = []
+	for region_id in region_container_by_id.keys():
+		var region_container = region_container_by_id.get(region_id, null)
+		if region_container == null or not (region_container is Region):
+			continue
+		var region := region_container as Region
+		var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
+		if polygon == null:
+			continue
+		for child in polygon.get_children():
+			if child is Sprite2D and child.has_meta("mountain_icon") and child.get_meta("mountain_icon"):
+				mountain_icons.append({
+					"sprite": child,
+					"center_y": region.center.y
+				})
+	if mountain_icons.is_empty():
+		return
+	mountain_icons.sort_custom(func(a, b):
+		return a.center_y < b.center_y
+	)
+	var base_z := 10
+	for i in range(mountain_icons.size()):
+		var sprite := mountain_icons[i].sprite as Sprite2D
+		if sprite == null:
+			continue
+		sprite.z_index = base_z + i
 
 func _ensure_neutral_overlays_for_all_regions() -> void:
 	for region_id in region_container_by_id.keys():
@@ -565,7 +614,7 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 		DebugLogger.log("MapGeneration", "Error: Could not create ownership overlay for region: " + str(region_id))
 		return
 	var player_color = _get_player_color(player_id)
-	player_color.a = 0.4
+	player_color.a = 0.3
 	overlay_polygon.color = player_color
 
 func update_ownership_overlay(region_id: int, player_id: int) -> void:
@@ -1021,3 +1070,4 @@ func refresh_region_visual(region_id: int) -> void:
 		RegionIconManager.place_region_icon(polygon, rdata, polygon_scale, map_size)
 	# Regenerate borders for region and neighbors
 	regenerate_borders_for_region(region_id)
+	_sort_mountain_icon_z_indices()

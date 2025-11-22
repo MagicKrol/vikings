@@ -320,6 +320,9 @@ editor_start.tscn (Editor Start)
  - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
 - Center markers: `MapGenerator.set_center_markers_enabled(true)` adds a `CenterMarkers` Node2D full of small red Polygon2D squares at each non-ocean region center (used by the GameManager debug toggle).
+- Polygon centroids: Every time MapGenerator loads JSON or BorderManager rebuilds noisy polygons it recomputes the centroid for each region polygon (shoelace method with degenerate average fallback), stores it back into `region_by_id`, pushes it into `Region.center`, and writes it to each Polygon2D’s `center` metadata so castles/armies/icons/debug dots always anchor to the real geometric center instead of stale JSON values.
+- Mountain adjacency: BorderManager skips drawing internal borders when both touching regions are mountains so mountain ranges remain uninterrupted visual blobs.
+- Mountain icon layering: After every icon pass MapGenerator reorders all mountain sprites (marked via `mountain_icon` metadata) by their region center Y and assigns strictly increasing z-indexes so upper mountains render behind lower ones.
 
 ## Notable Relationships
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.

@@ -131,6 +131,33 @@ static func analyze_polygon_shape(polygon_points: PackedVector2Array) -> Diction
 	
 	return result
 
+static func compute_polygon_centroid(polygon_points: PackedVector2Array) -> Vector2:
+	if polygon_points.is_empty():
+		return Vector2.ZERO
+	if polygon_points.size() == 1:
+		return polygon_points[0]
+	var twice_area: float = 0.0
+	var cx: float = 0.0
+	var cy: float = 0.0
+	for i in range(polygon_points.size()):
+		var j := (i + 1) % polygon_points.size()
+		var x1 := polygon_points[i].x
+		var y1 := polygon_points[i].y
+		var x2 := polygon_points[j].x
+		var y2 := polygon_points[j].y
+		var cross := x1 * y2 - x2 * y1
+		twice_area += cross
+		cx += (x1 + x2) * cross
+		cy += (y1 + y2) * cross
+	var area := twice_area * 0.5
+	if area == 0.0:
+		var sum := Vector2.ZERO
+		for point in polygon_points:
+			sum += point
+		return sum / float(polygon_points.size())
+	var inv := 1.0 / (6.0 * area)
+	return Vector2(cx * inv, cy * inv)
+
 static func get_region_shape_analysis(region_data: Dictionary) -> Dictionary:
 	"""
 	Get shape analysis for a region from its data.

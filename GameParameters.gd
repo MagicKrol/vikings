@@ -31,8 +31,8 @@ class_name GameParameters
 ## Single-line Configuration Constants
 const MOVEMENT_POINTS_PER_TURN = 5          # Army movement points per turn
 const BATTLE_ROUND_TIME = 0.55               # Seconds between animated battle rounds
-const BIOME_ICON_SCALE = 0.25                # Map generation icon scale
-const FOREST_ICON_SCALE = 0.25               # Forest icon scale (customizable size)
+const BIOME_ICON_SCALE = 0.2                # Map generation icon scale
+const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable size)
 const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
 const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
 const POPULATION_GROWTH_RATE = 0.03            # Base population growth rate (%)

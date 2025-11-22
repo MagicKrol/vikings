@@ -90,7 +90,7 @@ func place_castle_visual(region_container: Node) -> void:
 		return
 	
 	# Scale castle appropriately - 20% smaller than biome icons
-	var castle_scale := 0.22  # 0.15 * 0.8 = 0.12 (20% smaller)
+	var castle_scale := 0.18  # 0.15 * 0.8 = 0.12 (20% smaller)
 	var map_size_scale := 1.0
 	if _map_generator != null:
 		# Apply both polygon scale and map size scale

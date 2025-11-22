@@ -21,6 +21,7 @@ class BorderRecord extends RefCounted:
 	var offset_direction: float = 1.0
 	var line: Line2D
 	var type: int = BorderType.INTERNAL
+	var draw_line: bool = true
 
 var _map_generator: MapGenerator
 var _border_records: Dictionary = {}
@@ -62,6 +63,7 @@ func _build_initial_borders() -> void:
 		var region_id := int(region_data.get("id", -1))
 		if region_id == -1 or bool(region_data.get("ocean", false)):
 			continue
+		var region_is_mountain := _is_mountain_region(region_data)
 		var borders_node: Node2D = _get_borders_node(region_id)
 		for edge in _map_generator.edges:
 			var region1 := int(edge.get("region1", -1))
@@ -74,25 +76,27 @@ func _build_initial_borders() -> void:
 			var neighbor_data: Dictionary = _map_generator.region_by_id.get(neighbor_id, {})
 			if neighbor_data.is_empty():
 				continue
+			var skip_line := region_is_mountain and _is_mountain_region(neighbor_data)
 			if bool(region_data.get("ocean", false)) and bool(neighbor_data.get("ocean", false)):
 				continue
 			var base_points := _create_noisy_segment(edge)
 			if base_points.size() < 2:
 				continue
-			var record := _create_border_record(region_id, neighbor_id, edge, base_points)
-			var line := _build_line(record)
-			record.line = line
-			_apply_border_state(record)
-			borders_node.add_child(line)
+			var record := _create_border_record(region_id, neighbor_id, edge, base_points, not skip_line)
+			if record.draw_line:
+				var line := _build_line(record)
+				record.line = line
+				_apply_border_state(record)
+				borders_node.add_child(line)
+				borders_created += 1
 			_store_record(record)
-			borders_created += 1
 	DebugLogger.log("MapGeneration", "Created " + str(borders_created) + " border lines via BorderManager")
 
 func _get_borders_node(region_id: int) -> Node2D:
 	var region_container: Node2D = _map_generator.region_container_by_id[region_id]
 	return region_container.get_node("Borders") as Node2D
 
-func _create_border_record(region_id: int, neighbor_id: int, edge: Dictionary, base_points: PackedVector2Array) -> BorderRecord:
+func _create_border_record(region_id: int, neighbor_id: int, edge: Dictionary, base_points: PackedVector2Array, draw_line: bool) -> BorderRecord:
 	var record := BorderRecord.new()
 	record.region_id = region_id
 	record.neighbor_id = neighbor_id
@@ -105,6 +109,7 @@ func _create_border_record(region_id: int, neighbor_id: int, edge: Dictionary, b
 	record.key = str(region_id) + ":" + str(edge_id)
 	var neighbor_data: Dictionary = _map_generator.region_by_id.get(neighbor_id, {})
 	record.is_ocean = bool(neighbor_data.get("ocean", false))
+	record.draw_line = draw_line
 	return record
 
 func _build_line(record: BorderRecord) -> Line2D:
@@ -123,7 +128,7 @@ func _refresh_region(region_id: int) -> void:
 	var keys: Array = _region_keys.get(region_id, [])
 	for key in keys:
 		var record: BorderRecord = _border_records[key]
-		if record.is_ocean:
+		if record.is_ocean or record.line == null:
 			continue
 		_apply_border_state(record)
 
@@ -141,6 +146,8 @@ func _collect_neighbor_ids(region_id: int) -> Array[int]:
 	return neighbors
 
 func _apply_border_state(record: BorderRecord) -> void:
+	if record.line == null:
+		return
 	var new_type := _resolve_border_type(record)
 	record.type = new_type
 	record.line.name = _build_line_name(new_type, record.edge_id)
@@ -294,3 +301,7 @@ func _get_player_border_color(player_id: int) -> Color:
 	var border_color := Color.from_hsv(base_color.h, enhanced_saturation, enhanced_value)
 	border_color.a = GameParameters.BORDER_OPACITY
 	return border_color
+
+func _is_mountain_region(region_data: Dictionary) -> bool:
+	var biome_name := String(region_data.get("biome", "")).to_lower()
+	return biome_name == "mountains"
