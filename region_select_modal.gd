@@ -359,7 +359,7 @@ func _on_ore_search_pressed() -> void:
 		var message: String
 		
 		if remaining_attempts > 0:
-			message = "No luck this time."
+			message = "No luck this turn."
 		else:
 			message = "Ore searches exhausted."
 		

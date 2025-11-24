@@ -163,7 +163,7 @@ func _get_army_position_offset(region_container: Node) -> Vector2:
 	# Check if there's a castle in the region
 	var castle = region_container.get_node_or_null("Castle")
 	if castle != null:
-		return Vector2(15 * map_size_scale, 0)  # Army positioned to the right of castle (scaled)
+		return Vector2(15 * map_size_scale, -10 * map_size_scale)  # Army positioned to the right of castle (scaled)
 	
 	# Default positioning when no castle is present (scaled)
 	return Vector2(0, -5 * map_size_scale)  # Army positioned slightly above center

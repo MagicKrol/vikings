@@ -153,8 +153,8 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
   - Pre-attack: if an army can reach a target now and a battle is expected, and efficiency < 90%, it calls `make_camp()` up to 2 times (bounded by MPs) before moving.
   - End-of-turn: after post-movement economy, any army with leftover MPs spends all on `make_camp()`.
 - Peasants-Only Recruitment:
-  - Runs only when standard recruitment is not needed, the player has positive net food growth, and the army belongs to a Poor (20%) or Normal (10%) wealth player; Rich players skip peasants entirely.
-  - Targets peasant share based on army power thresholds (low/mid/high power → 40%/30%/20% peasants)
+  - Runs only when standard recruitment is not needed, the player has positive net food growth, and the army is below its wealth-adjusted peasant floor (Poor uses the base 20% minimum, Normal halves to 10%, Rich players skip peasants entirely).
+  - Targets peasant share based on army power thresholds, scaled by wealth (Poor uses 40%/30%/20%, Normal halves those shares, Rich uses 0%).
   - Filters candidate regions to those with enough recruits to meet the calculated need, then picks the best recruits-per-(distance+1) ratio so nearby pools are favored.
   - If no region can meet the minimum, the army flags for normal castle recruitment; otherwise it moves/hire peasants for free using standard pathfinding within current MPs.
 - AI Logging: During AI turns `TurnController` calls `AILogManager` to write the requested log format — each turn header includes resources, signals, decision, and owned regions, while every army action logs as `Recruits`, `Goes to Castle`, or `Moves` with its target plus recruitment/economy success or failure reasons.
@@ -210,7 +210,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### Economy & Recruitment
 - BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
-- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources. Composition lookups route through `GameParameters.get_ideal_*_for_wealth()` so poor/normal/rich players field different mixes automatically.
+- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources. Composition lookups route through `GameParameters.get_ideal_*_for_wealth()` so poor/normal/rich players field different mixes automatically (Normal halves peasant targets, Rich zeros them in favor of pricier units).
 
 ### EconomyAIManager.gd
 - Purpose: Central, deterministic planner for AI economy decisions each turn.
@@ -314,6 +314,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - ResourceComposition.gd / ArmyComposition.gd: storage and math helpers; food cost, power.
 - GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*), camera timing constants (CAMERA_*), and the new wealth thresholds + composition tables used to pick poor/normal/rich army and garrison mixes.
 - Enums (Enums/*.gd): Regions, Levels, Soldiers, Players, Resources, Unit traits, Castle types.
+- Wealth scaling: GameParameters’ peasant ratios shrink by wealth tier (Normal halves, Rich zeroes) across army/garrison ideal compositions and the AI peasants-only min/target proportions so richer players favor pricier units automatically.
 
 ## Static vs Dynamic
 - Static nodes: `Map/Regions`, `Map/Ocean`, `Map/Frame`, all UI nodes under `UI`, and `Players/Player1..6` containers.

@@ -458,9 +458,7 @@ func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 	if wealth_level == GameParameters.WealthLevel.RICH:
 		return {"needed": false}
 	
-	var min_ratio = GameParameters.AI_PEA_MIN_PROP_BASE
-	if wealth_level == GameParameters.WealthLevel.NORMAL:
-		min_ratio = GameParameters.AI_PEA_MIN_PROP_BASE_NORMAL
+	var min_ratio = GameParameters.get_ai_peasant_min_prop_for_wealth(wealth_level)
 	
 	var food_growth = player_manager.get_player_food_growth(player_id)
 	if food_growth <= 0.0:
@@ -473,11 +471,11 @@ func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 	var army_power = army.get_army_power()
 	var target_prop = 0.0
 	if army_power < GameParameters.AI_PEA_POWER_LOW_MAX:
-		target_prop = GameParameters.AI_PEA_TARGET_PROP_LOW
+		target_prop = GameParameters.get_ai_peasant_target_prop_low_for_wealth(wealth_level)
 	elif army_power >= GameParameters.AI_PEA_POWER_HIGH_MIN:
-		target_prop = GameParameters.AI_PEA_TARGET_PROP_HIGH
+		target_prop = GameParameters.get_ai_peasant_target_prop_high_for_wealth(wealth_level)
 	else:
-		target_prop = GameParameters.AI_PEA_TARGET_PROP_MID
+		target_prop = GameParameters.get_ai_peasant_target_prop_mid_for_wealth(wealth_level)
 	
 	var ideal_needed = army.compute_peasant_need(target_prop)
 	DebugLogger.log(

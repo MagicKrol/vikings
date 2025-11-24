@@ -1334,6 +1334,7 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	Unified battle handling for both Human and AI players
 	Returns: 'victory', 'defeat', or 'withdrawal'
 	"""
+	var attacker_owner_id := army.get_player_id()
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.name + " vs region " + str(target_region_id))
 
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
@@ -1343,7 +1344,7 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	# the result is ready immediately and signal will be emitted deferred
 	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
 	var defender_is_human := (defender_owner_id != -1 and is_player_human(defender_owner_id))
-	if debug_disable_battle_modal and is_player_computer(army.get_player_id()) and not defender_is_human:
+	if debug_disable_battle_modal and is_player_computer(attacker_owner_id) and not defender_is_human:
 		await _battle_manager.await_finalize_complete()
 		var report = _battle_manager.get_last_battle_report()
 		var res := _derive_battle_result_from_report(report)
@@ -1355,7 +1356,7 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	await _battle_manager.await_finalize_complete()
 	
 	# For AI battles (modal path), finalize immediately using last battle report after signal
-	if is_player_computer(army.get_player_id()) and not debug_disable_battle_modal:
+	if is_player_computer(attacker_owner_id) and not debug_disable_battle_modal:
 		var result_data = {
 			"result": result,
 			"army": army,

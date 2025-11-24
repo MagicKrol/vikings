@@ -547,7 +547,7 @@ func search_for_ore() -> Dictionary:
 		return {"success": true, "ore_type": ore_type, "message": "Discovered " + ResourcesEnum.type_to_string(ore_type) + " ore!"}
 	else:
 		DebugLogger.log("RegionManagement", "No ore found in " + region_name + " (" + str(ore_search_attempts_remaining) + " attempts remaining)")
-		return {"success": false, "ore_type": ResourcesEnum.Type.GOLD, "message": "No ore found this time"}
+		return {"success": false, "ore_type": ResourcesEnum.Type.GOLD, "message": "No ore found "}
 
 func has_discovered_ore(ore_type: ResourcesEnum.Type) -> bool:
 	"""Check if a specific ore type has been discovered in this region"""

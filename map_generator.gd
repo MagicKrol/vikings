@@ -652,7 +652,7 @@ func create_ownership_overlay(region_id: int, player_id: int) -> void:
 		DebugLogger.log("MapGeneration", "Error: Could not create ownership overlay for region: " + str(region_id))
 		return
 	var player_color = _get_player_color(player_id)
-	player_color.a = 0.3
+	player_color.a = 0.4
 	overlay_polygon.color = player_color
 
 func update_ownership_overlay(region_id: int, player_id: int) -> void:

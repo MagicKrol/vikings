@@ -191,7 +191,6 @@ enum WealthLevel {
 }
 
 const AI_PEA_MIN_PROP_BASE = 0.20               # Minimum acceptable peasant share trigger (20%)
-const AI_PEA_MIN_PROP_BASE_NORMAL = 0.10        # Minimum acceptable peasant share trigger for normal wealth (10%)
 # Army power thresholds for target peasant share
 const AI_PEA_POWER_LOW_MAX = 150                # Upper bound for "low power" armies
 const AI_PEA_POWER_HIGH_MIN = 300               # Lower bound for "high power" armies
@@ -208,7 +207,7 @@ const ARMY_MOVEMENT_MIN_WANTED = 5             # Minimum desired score (0-100) t
 
 ## Power-Ratio Based Danger System
 const ARMY_DANGER_PR_MULTIPLIER = 0.15         # Multiplier for power ratio penalty (k in formula)
-const ARMY_DANGER_MAX_PENALTY = 0.25           # Maximum danger penalty (25% cap)
+const ARMY_DANGER_MAX_PENALTY = 0.4           # Maximum danger penalty (25% cap)
 const ARMY_DANGER_GARRISON_POWER = 50          # Power value assigned to garrison units
 
 ## Terrain Combat Bonuses
@@ -294,7 +293,7 @@ const UNIT_STATS = {
 		"attack": 12,     # 30% hit chance per unit
 		"defense": 30,    # 40% chance to deflect hits
 		"cost": 2,        # Recruitment cost
-		"gold_cost": 2,
+		"gold_cost": 3,
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
@@ -305,7 +304,7 @@ const UNIT_STATS = {
 		"attack": 10,     # 25% hit chance per unit
 		"defense": 15,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
-		"gold_cost": 3,
+		"gold_cost": 4,
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
@@ -316,7 +315,7 @@ const UNIT_STATS = {
 		"attack": 8,     # 20% hit chance per unit
 		"defense": 15,    # 15% chance to deflect hits
 		"cost": 2,        # Recruitment cost
-		"gold_cost": 2,
+		"gold_cost": 4,
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
@@ -606,7 +605,7 @@ const CASTLE_BUILDING_COSTS = {
 			ResourcesEnum.Type.GOLD: 50,
 			ResourcesEnum.Type.WOOD: 40
 		},
-		"build_time": 1  # 2 turns to complete
+		"build_time": 2  # 2 turns to complete
 	},
 	CastleTypeEnum.Type.KEEP: {
 		"cost": {
@@ -614,7 +613,7 @@ const CASTLE_BUILDING_COSTS = {
 			ResourcesEnum.Type.WOOD: 30,
 			ResourcesEnum.Type.STONE: 15
 		},
-		"build_time": 1  # 3 turns to complete
+		"build_time": 2  # 3 turns to complete
 	},
 	CastleTypeEnum.Type.CASTLE: {
 		"cost": {
@@ -623,7 +622,7 @@ const CASTLE_BUILDING_COSTS = {
 			ResourcesEnum.Type.STONE: 35,
 			ResourcesEnum.Type.IRON: 10
 		},
-		"build_time": 4  # 4 turns to complete
+		"build_time": 2  # 4 turns to complete
 	},
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"cost": {
@@ -632,7 +631,7 @@ const CASTLE_BUILDING_COSTS = {
 			ResourcesEnum.Type.STONE: 50,
 			ResourcesEnum.Type.IRON: 20
 		},
-		"build_time": 1  # 6 turns to complete
+		"build_time": 2  # 6 turns to complete
 	}
 }
 
@@ -844,13 +843,13 @@ static func get_ideal_composition(need_key: String) -> Dictionary:
 	return IDEAL_ARMY_COMPOSITIONS.get(need_key, {})
 
 static func get_ideal_composition_for_wealth(need_key: String, wealth_level: int) -> Dictionary:
-	"""Return an ideal composition adjusted for the player's wealth tier (currently passthrough)."""
+	"""Return an ideal composition adjusted for the player's wealth tier."""
 	var base = get_ideal_composition(need_key)
-	return base.duplicate()
+	return _adjust_peasant_share_for_wealth(base, wealth_level)
 
 static func get_ideal_castle_garrison_for_wealth(castle_type: CastleTypeEnum.Type, wealth_level: int) -> Dictionary:
 	var base = get_ideal_castle_garrison(castle_type)
-	return base.duplicate()
+	return _adjust_peasant_share_for_wealth(base, wealth_level)
 
 static func get_unit_power(unit_type: SoldierTypeEnum.Type) -> int:
 	"""Get power value for a unit type"""
@@ -866,3 +865,54 @@ static func get_wealth_level_for_gold(gold: int) -> int:
 	if gold >= WEALTH_NORMAL_THRESHOLD_GOLD:
 		return WealthLevel.NORMAL
 	return WealthLevel.POOR
+
+static func get_peasant_ratio_multiplier_for_wealth(wealth_level: int) -> float:
+	if wealth_level == WealthLevel.NORMAL:
+		return 0.5
+	if wealth_level == WealthLevel.RICH:
+		return 0.0
+	return 1.0
+
+static func adjust_peasant_prop_for_wealth(base_prop: float, wealth_level: int) -> float:
+	return base_prop * get_peasant_ratio_multiplier_for_wealth(wealth_level)
+
+static func get_ai_peasant_min_prop_for_wealth(wealth_level: int) -> float:
+	return adjust_peasant_prop_for_wealth(AI_PEA_MIN_PROP_BASE, wealth_level)
+
+static func get_ai_peasant_target_prop_low_for_wealth(wealth_level: int) -> float:
+	return adjust_peasant_prop_for_wealth(AI_PEA_TARGET_PROP_LOW, wealth_level)
+
+static func get_ai_peasant_target_prop_mid_for_wealth(wealth_level: int) -> float:
+	return adjust_peasant_prop_for_wealth(AI_PEA_TARGET_PROP_MID, wealth_level)
+
+static func get_ai_peasant_target_prop_high_for_wealth(wealth_level: int) -> float:
+	return adjust_peasant_prop_for_wealth(AI_PEA_TARGET_PROP_HIGH, wealth_level)
+
+static func _adjust_peasant_share_for_wealth(base: Dictionary, wealth_level: int) -> Dictionary:
+	var adjusted = base.duplicate()
+	if adjusted.is_empty():
+		return adjusted
+	var multiplier = get_peasant_ratio_multiplier_for_wealth(wealth_level)
+	if multiplier >= 1.0:
+		return adjusted
+	var peasants_key = "peasants"
+	var peasants_value: float = float(adjusted.get(peasants_key, 0.0))
+	if peasants_value <= 0.0:
+		return adjusted
+	var non_peasant_total = 0.0
+	for key in adjusted.keys():
+		if key == peasants_key:
+			continue
+		non_peasant_total += float(adjusted[key])
+	if non_peasant_total <= 0.0:
+		adjusted[peasants_key] = peasants_value * multiplier
+		return adjusted
+	var new_peasants = peasants_value * multiplier
+	var freed_share = peasants_value - new_peasants
+	adjusted[peasants_key] = new_peasants
+	var scale = (non_peasant_total + freed_share) / non_peasant_total
+	for key in adjusted.keys():
+		if key == peasants_key:
+			continue
+		adjusted[key] = float(adjusted[key]) * scale
+	return adjusted
