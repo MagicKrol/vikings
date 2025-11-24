@@ -68,6 +68,7 @@ func _ready() -> void:
 
 func generate_map() -> void:
 	_load_json_data()
+	_tag_mountain_neighbor_info()
 	_render_from_json()
 
 	# Center camera to the middle of the map if a Camera2D exists
@@ -144,6 +145,43 @@ func _load_json_data() -> void:
 	# Scale all coordinates if polygon_scale != 1.0
 	if polygon_scale != 1.0:
 		_scale_map_data()
+
+func _tag_mountain_neighbor_info() -> void:
+	for region in regions:
+		var biome := String(region.get("biome", "")).to_lower()
+		if biome != "mountains":
+			continue
+		var region_id := int(region.get("id", -1))
+		if region_id == -1:
+			continue
+		var edges_list: Array = region.get("edges", [])
+		if edges_list.is_empty():
+			region["internal_mountain"] = false
+			continue
+		var is_internal := true
+		for edge_id in edges_list:
+			if edge_id < 0 or edge_id >= edges.size():
+				is_internal = false
+				break
+			var edge: Dictionary = edges[edge_id]
+			var r1 := int(edge.get("region1", -1))
+			var r2 := int(edge.get("region2", -1))
+			var neighbor_id := r2 if r1 == region_id else r1
+			if neighbor_id == -1:
+				is_internal = false
+				break
+			var neighbor_data: Dictionary = region_by_id.get(neighbor_id, {})
+			if neighbor_data.is_empty():
+				is_internal = false
+				break
+			if bool(neighbor_data.get("ocean", false)):
+				is_internal = false
+				break
+			var neighbor_biome := String(neighbor_data.get("biome", "")).to_lower()
+			if neighbor_biome != "mountains":
+				is_internal = false
+				break
+		region["internal_mountain"] = is_internal
 
 func _resolve_mapdata_path(name: String) -> String:
 	# Always read from res://mapdata/. Accept bare filenames or full paths; normalize to folder.

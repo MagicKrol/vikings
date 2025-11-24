@@ -101,6 +101,10 @@ editor_start.tscn (Editor Start)
 - Launch: EditorStart sets `SceneTree` meta `editor_start_payload` and switches to `main.tscn`. `GameManager._ready()` force-enables editor mode when this payload is present and calls `_initialize_map_editor()` to show `MapEditorPanel`.
 - EditorStart payloads now tag the session as `game_mode="custom"` for raw map editing (clearing any previous scenario names) or `game_mode="scenario"` for scenario editing, so screenshots/previews automatically save under the selected map data or scenario name.
 
+scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
+- Editor tool scene that previews a random Voronoi layout without running the game. Exported slider params: `seed`, `random_seed`, `size`, `noise_frequency`, `noise_octaves`, `noise_gain`, `water_level`, `edge_clear_level`, `elevation_profile`, `hill_split`, and `save_map` (trigger save); changing any triggers auto-regeneration. Save writes `res://mapdata/mapdata-<seed>-medium.json` compatible with `map_generator.gd`.
+- Builds color-coded terrain (green flats, brown hills, gray mountains, blue water) inside a 1024x1024 bounds with red site markers; per-site noise tags regions as water vs land, elevation slider shifts mountain heights, hill split controls grass vs hill coverage, and optional edge clearing forces edge-touching regions to water.
+
 ## Core Managers & Flow
 
 ### game_manager.gd (GameManager)
@@ -315,8 +319,8 @@ editor_start.tscn (Editor Start)
 - Static nodes: `Map/Regions`, `Map/Ocean`, `Map/Frame`, all UI nodes under `UI`, and `Players/Player1..6` containers.
 - Dynamic nodes: `Region` instances under `Map/Regions` (land + ocean; ocean `Polygon` hidden, visuals from `Map/Ocean`), `Army` nodes parented to regions, `Castle` sprites under regions, border/overlay visuals.
 - Border widths: In `MapGenerator`, all Line2D borders scale by map size using `Utils.get_map_size_icon_scale()`.
-- Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains intentionally ignore map-size scale and use polygon scale only.
-- RegionIconManager.gd: MapGenerator delegates all biome icon placement here; it randomizes hill/forest/hill_forest variants (`<biome>_1..3.png`), computes offsets/scales, and uses polygon aspect ratios to pick wide (`mountain_2/3`) vs narrow (`mountain_1/4`) mountain textures while keeping mountain size tied to polygon area.
+- Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains ignore map-size scale, match the closest aspect-ratio variant, and fit their dominant dimension to the region bounds while clamping to the smaller dimension.
+- RegionIconManager.gd: MapGenerator delegates all biome icon placement here; it randomizes hill/forest/hill_forest variants (`<biome>_1..3.png`), offsets standard icons, and picks the mountain sprite with the nearest proportions before fitting it inside the region; internal-mountain detection from `MapGenerator` is kept for potential scaling adjustments but currently applies a neutral 1.0 multiplier.
  - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
 - Center markers: `MapGenerator.set_center_markers_enabled(true)` adds a `CenterMarkers` Node2D full of small red Polygon2D squares at each non-ocean region center (used by the GameManager debug toggle).

@@ -1,0 +1,98 @@
+AI Log File: mission1
+
+[Player Player 2 (#2)]
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Riverley: 39 units (P: 20, S: 10, A: 3, SW: 4, C: 1, H: 1) - gold spent: 34, recruits left: 134, Army II at Riverley: 39 units (P: 20, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 95, Army III at Riverley: 38 units (P: 19, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 57
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army II [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnholme
+
+Moves to Riverbury
+Moves to Vatnholme
+Fight at Vatnholme
+Battle started
+Attacker: Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Defender Recruits (Vatnholme) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 134 - P:32, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Vatnholme [Power: 0 - none]
+
+Army III [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Sainthavn
+
+Moves to Whitthwaite
+Moves to Sainthavn
+Fight at Sainthavn
+Battle started
+Attacker: Army III [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Defender Recruits (Sainthavn) [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army III [Power: 140 - P:37, S:10, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Sainthavn [Power: 0 - none]
+
+Army I [Power: 154, E: 100 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Riverchester
+
+Moves to Whitthwaite
+Moves to Riverchester
+Fight at Riverchester
+Battle started
+Attacker: Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Defender Recruits (Riverchester) [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army I [Power: 135 - P:35, S:10, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverchester [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+

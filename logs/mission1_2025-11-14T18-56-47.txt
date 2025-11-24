@@ -1,0 +1,149 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.125
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Whitbury: 39 units (P: 20, S: 10, A: 3, SW: 4, C: 1, H: 1) - gold spent: 34, recruits left: 136, Army II at Whitbury: 39 units (P: 20, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 97, Army III at Whitbury: 39 units (P: 20, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 58
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Whitbury: 4 units (P: 4) - gold spent: 0, recruits left: 57
+
+______ ARMY ACTIONS ______
+Army II [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Osford
+
+Moves to Westfjell
+Moves to Osford
+Fight at Osford
+Battle started
+Attacker: Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Defender Recruits (Osford) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 140 - P:37, S:10, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Osford [Power: 0 - none]
+
+Army III [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossthorpe
+
+Moves to Vatnfjell
+Moves to Fossthorpe
+Fight at Fossthorpe
+Battle started
+Attacker: Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Defender Recruits (Fossthorpe) [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 147 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Fossthorpe [Power: 0 - none]
+
+Army I [Power: 154, E: 100 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Eastton
+
+Moves to Oakfjell
+Moves to Eastton
+Fight at Eastton
+Battle started
+Attacker: Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Defender Recruits (Eastton) [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army I [Power: 141 - P:36, S:10, A:3, SW:4, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Eastton [Power: 0 - none]
+
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
+-------
+[Turn 2]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 75
+Food: 61
+Wood: 20
+Iron: 10
+Stone: 14
+
+Signals:
+frontier_pressure: 1.091
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=5.
+
+Additional Castle Recruitment:
+- Whitbury: 16 units (P: 5, S: 5, A: 3, SW: 3) - gold spent: 20, recruits left: 67
+
+______ ARMY ACTIONS ______
+Army II [Power: 140, E: 95 - P:37, S:10, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Kingwich
+
+Moves to Kingwich
+Army II makes camp
+Fight at Kingwich
+Battle started
+Attacker: Army II [Power: 144 - P:37, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Defender Recruits (Kingwich) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 144 - P:37, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Kingwich [Power: 0 - none]
+

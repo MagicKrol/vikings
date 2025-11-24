@@ -1,0 +1,100 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Reyknes: 41 units (P: 22, S: 10, A: 3, SW: 4, C: 1, H: 1) - gold spent: 34, recruits left: 148, Army II at Reyknes: 41 units (P: 22, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 107, Army III at Reyknes: 41 units (P: 22, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 67
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army I [Power: 158, E: 100 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Torstadir
+
+Moves to Hafnwich
+Moves to Torstadir
+Fight at Torstadir
+Battle started
+Attacker: Army I [Power: 158 - P:42, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Defender Recruits (Torstadir) [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army I [Power: 140 - P:36, S:8, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torstadir [Power: 0 - none]
+
+Army II [Power: 157, E: 100 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hellawich
+
+Moves to Akrhavn
+Moves to Hellawich
+Fight at Hellawich
+Battle started
+Attacker: Army II [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Defender Recruits (Hellawich) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Hellawich [Power: 0 - none]
+
+Army III [Power: 157, E: 100 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverhavn
+
+Moves to Torhavn
+Moves to Riverhavn
+Fight at Riverhavn
+Battle started
+Attacker: Army III [Power: 157 - P:42, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Defender Recruits (Riverhavn) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 138 - P:34, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverhavn [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+

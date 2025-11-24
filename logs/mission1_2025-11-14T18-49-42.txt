@@ -1,0 +1,204 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Oakthorpe: 40 units (P: 21, S: 10, A: 3, SW: 4, C: 1, H: 1) - gold spent: 34, recruits left: 140, Army II at Oakthorpe: 40 units (P: 21, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 100, Army III at Oakthorpe: 40 units (P: 21, S: 11, A: 3, SW: 3, C: 1, H: 1) - gold spent: 33, recruits left: 60
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army I [Power: 156, E: 100 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Greenhavn
+
+Moves to Southford
+Moves to Greenhavn
+Fight at Greenhavn
+Battle started
+Attacker: Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 34 - P:17]
+Defender Recruits (Greenhavn) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 132 - P:32, S:8, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Greenhavn [Power: 0 - none]
+
+Army III [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Oakvik
+
+Moves to Southford
+Moves to Greenhavn
+Moves to Oakvik
+Fight at Oakvik
+Battle started
+Attacker: Army III [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Defender Recruits (Oakvik) [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 141 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Oakvik [Power: 0 - none]
+
+Army II [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Torstadir
+
+Moves to Southford
+Moves to Greenhavn
+Moves to Torstadir
+Fight at Torstadir
+Battle started
+Attacker: Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Defender Recruits (Torstadir) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 146 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torstadir [Power: 0 - none]
+
+Army I makes camp
+-------
+[Turn 2]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 57
+Food: 49
+Wood: 32
+Iron: 10
+Stone: 17
+
+Signals:
+frontier_pressure: 0.818
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=3, discoveries=0, gold_spent=15.
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army III [Power: 141, E: 80 - P:37, S:9, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eastham
+
+Moves to Torstadir
+Moves to Eastham
+Army III makes camp
+Army III makes camp
+Fight at Eastham
+Battle started
+Attacker: Army III [Power: 145 - P:39, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 36 - P:18]
+Defender Recruits (Eastham) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 119 - P:29, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Eastham [Power: 0 - none]
+
+Army I [Power: 134, E: 95 - P:33, S:8, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northby
+Moves to Northvik
+Army I makes camp
+Movement blocked near Northvik
+Army II [Power: 146, E: 80 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kingthwaite
+
+Moves to Eastham
+Moves to Kingthwaite
+Army II makes camp
+Army II makes camp
+Movement blocked near Kingthwaite
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 3]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 49
+Food: 54
+Wood: 11
+Iron: 10
+Stone: 24
+
+Signals:
+frontier_pressure: 0.833
+underpowered_ratio: 0.000
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: Started construction at Greenhavn.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=3, discoveries=1, gold_spent=15.
+
+Economy: Ore discoveries: Saintthwaite
+
+Additional Castle Recruitment:
+- Oakthorpe: 20 units (P: 7, S: 5, A: 3, SW: 3, C: 2) - gold spent: 24, recruits left: 91
+
+______ ARMY ACTIONS ______
+Army II [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Vatnfjell
+
+Moves to Vatnfjell

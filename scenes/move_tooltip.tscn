@@ -46,6 +46,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_dhi0w")
 
 [node name="MoveContainer1" type="HBoxContainer" parent="Panel"]
 visible = false
+layout_mode = 0
 offset_left = 10.0
 offset_top = 2.0
 offset_right = 155.0
@@ -78,6 +79,7 @@ stretch_mode = 2
 
 [node name="MoveContainer2" type="HBoxContainer" parent="Panel"]
 visible = false
+layout_mode = 0
 offset_left = 10.0
 offset_top = 2.0
 offset_right = 155.0
@@ -110,6 +112,7 @@ stretch_mode = 2
 
 [node name="MoveContainer3" type="HBoxContainer" parent="Panel"]
 visible = false
+layout_mode = 0
 offset_left = 10.0
 offset_top = 2.0
 offset_right = 155.0
@@ -142,6 +145,7 @@ stretch_mode = 2
 
 [node name="MoveContainer4" type="HBoxContainer" parent="Panel"]
 visible = false
+layout_mode = 0
 offset_left = 10.0
 offset_top = 2.0
 offset_right = 155.0

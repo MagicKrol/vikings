@@ -1,0 +1,6364 @@
+AI Log File: mission1
+
+-------
+[Turn 1]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Eyoy: 40 units, Army II at Eyoy: 40 units, Army III at Eyoy: 39 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army II [Power: 155, E: 100 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kirkford
+
+Moves to Greenley
+Moves to Kirkford
+Fight at Kirkford
+Battle started
+Attacker: Army II [Power: 155 - P:41, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 136 - P:38, S:8, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Akrnes
+
+Moves to Hafnford
+Moves to Akrnes
+Fight at Akrnes
+Battle started
+Attacker: Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 146 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 156, E: 100 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Eyberg
+
+Moves to Greenley
+Moves to Eyberg
+Fight at Eyberg
+Battle started
+Attacker: Army I [Power: 156 - P:41, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army I [Power: 143 - P:36, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Northham: 39 units, Army II at Northham: 39 units, Army III at Northham: 39 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army III [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Woodnes
+
+Moves to Bergthorpe
+Moves to Woodnes
+Fight at Woodnes
+Battle started
+Attacker: Army III [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 145 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 154, E: 100 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitholme
+
+Moves to Bergthorpe
+Moves to Hvitholme
+Fight at Hvitholme
+Battle started
+Attacker: Army I [Power: 154 - P:40, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army I [Power: 139 - P:34, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 153, E: 100 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitford
+
+Moves to Bergthorpe
+Moves to Hvitholme
+Moves to Hvitford
+Fight at Hvitford
+Battle started
+Attacker: Army II [Power: 153 - P:40, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army II [Power: 143 - P:37, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.429
+underpowered_ratio: 1.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Redham: 37 units, Army II at Redham: 37 units, Army III at Redham: 36 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army III [Power: 147, E: 100 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Whitstadir
+
+Moves to Reykoy
+Moves to Whitstadir
+Fight at Whitstadir
+Battle started
+Attacker: Army III [Power: 147 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 139 - P:33, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 149, E: 100 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Hellaley
+
+Moves to Reykoy
+Moves to Hellaley
+Fight at Hellaley
+Battle started
+Attacker: Army II [Power: 149 - P:38, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army II [Power: 138 - P:34, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 150, E: 100 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Hvitford
+
+Moves to Osholme
+Moves to Hvitford
+Fight at Hvitford
+Battle started
+Attacker: Army I [Power: 150 - P:38, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Army II [Power: 145 - P:38, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 56 - P:13, S:2, A:2, SW:2, K:1]
+Defender After: Army II [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 1]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.250
+underpowered_ratio: 1.000
+castle_spacing: 4.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodthorpe: 30 units, Army II at Woodthorpe: 30 units, Army III at Woodthorpe: 30 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 1 units
+
+______ ARMY ACTIONS ______
+Army I [Power: 136, E: 100 - P:31, S:10, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Whitthwaite
+
+Moves to Torfjell
+Moves to Whitthwaite
+Fight at Whitthwaite
+Battle started
+Attacker: Army I [Power: 136 - P:31, S:10, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 118 - P:26, S:9, A:3, SW:4, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 135, E: 100 - P:31, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Eastmere
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Fight at Eastmere
+Battle started
+Attacker: Army III [Power: 135 - P:31, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 116 - P:25, S:10, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 135, E: 100 - P:31, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army II [Power: 135 - P:31, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 126 - P:28, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 39
+Food: 52
+Wood: 22
+Iron: 10
+Stone: 16
+
+Signals:
+frontier_pressure: 0.909
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=3, discoveries=1, gold_spent=15.
+
+Economy: Ore discoveries: Redham
+
+Additional Castle Recruitment:
+- Eyoy: 17 units
+
+______ ARMY ACTIONS ______
+Army I [Power: 145, E: 95 - P:37, S:9, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Akrthorpe
+
+Moves to Akrthorpe
+Army I makes camp
+Fight at Akrthorpe
+Battle started
+Attacker: Army I [Power: 145 - P:37, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 121 - P:32, S:7, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 136, E: 85 - P:38, S:8, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Whitoy
+
+Moves to Whitoy
+Army II makes camp
+Army II makes camp
+Movement blocked near Whitoy
+Army III [Power: 146, E: 100 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Northford
+
+Moves to Northford
+Fight at Northford
+Battle started
+Attacker: Army III [Power: 146 - P:38, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 137 - P:35, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 49
+Food: 64
+Wood: 17
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.900
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 17 units
+
+______ ARMY ACTIONS ______
+Army I [Power: 139, E: 100 - P:34, S:9, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: Army I [Power: 139 - P:34, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army I [Power: 121 - P:28, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 147, E: 100 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossfell
+
+Moves to Fossfell
+Fight at Fossfell
+Battle started
+Attacker: Army III [Power: 147 - P:37, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army III [Power: 135 - P:33, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 2]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 44
+Food: 56
+Wood: 33
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.333
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 14 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Hvitford (reason: no_budget_assigned)
+
+Army I [Power: 78, E: 95 - P:21, S:3, A:3, SW:2, K:1]
+Action: Recruits
+Target: Redham
+
+Moves to Osholme
+Moves to Redham
+Castle Redham - recruits:52, distance:2, level:2, score: 36.4
+Arrived at Redham
+Army II [Power: 140, E: 100 - P:35, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Fossfell
+
+Moves to Reykoy
+Moves to Fossfell
+Fight at Fossfell
+Battle started
+Attacker: Army II [Power: 140 - P:35, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Army III [Power: 139 - P:35, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 83 - P:20, S:5, A:3, SW:1, H:1, K:1]
+Defender After: Army III [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 143, E: 100 - P:35, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Woodnes
+
+Moves to Reykoy
+Moves to Fossfell
+Moves to Woodnes
+Fight at Woodnes
+Battle started
+Attacker: Army III [Power: 143 - P:35, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 143 - P:35, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army II makes camp
+-------
+[Turn 2]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 40
+Food: 66
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.857
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 0.900
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 7 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 126, E: 75 - P:28, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Whitoy
+
+Moves to Whitoy
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Movement blocked near Whitoy
+Army III [Power: 121, E: 90 - P:26, S:11, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Whitoy
+
+Moves to Northvik
+Moves to Whitoy
+Army III makes camp
+Movement blocked near Whitoy
+Army I [Power: 127, E: 100 - P:28, S:9, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Whitley
+
+Moves to Eastmere
+Moves to Whitley
+Fight at Whitley
+Battle started
+Attacker: Army I [Power: 127 - P:28, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army I [Power: 110 - P:23, S:8, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 22
+Food: 64
+Wood: 0
+Iron: 11
+Stone: 22
+
+Signals:
+frontier_pressure: 0.846
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: Started construction at Eyberg.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=3, discoveries=1, gold_spent=15.
+
+Economy: Ore discoveries: Blackworth
+
+Additional Castle Recruitment:
+- Eyoy: 18 units
+
+______ ARMY ACTIONS ______
+Army III [Power: 144, E: 100 - P:37, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Whitoy
+
+Moves to Whitoy
+Fight at Whitoy
+Battle started
+Attacker: Army III [Power: 144 - P:37, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army III [Power: 121 - P:30, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 151, E: 100 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Whitoy
+
+Moves to Whitoy
+Fight at Whitoy
+Battle started
+Attacker: Army II [Power: 151 - P:39, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army II [Power: 129 - P:30, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 127, E: 100 - P:33, S:7, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Akrdon
+
+Moves to Eyberg
+Moves to Akrdon
+Fight at Akrdon
+Battle started
+Attacker: Army I [Power: 127 - P:33, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army I [Power: 97 - P:23, S:5, A:3, SW:2, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 54
+Food: 41
+Wood: 6
+Iron: 10
+Stone: 12
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Northham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Northham to Duchy (score: 6.0)
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=5.
+
+Additional Castle Recruitment:
+- Northham: 18 units
+
+______ ARMY ACTIONS ______
+Army I [Power: 129, E: 100 - P:32, S:7, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Akroy
+
+Moves to Akroy
+Fight at Akroy
+Battle started
+Attacker: Army I [Power: 129 - P:32, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 121 - P:28, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+-------
+[Turn 3]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 18
+Food: 70
+Wood: 51
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.333
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Redham: 74 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Army III [Power: 143, E: 80 - P:35, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Hvitford
+Moves to Reykby
+Army III makes camp
+Army III makes camp
+Movement blocked near Reykby
+Army II [Power: 101, E: 95 - P:24, S:7, A:3, SW:2, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Hvitford
+Moves to Reykby
+Army II makes camp
+Fight at Reykby
+Battle started
+Attacker: Army II [Power: 107 - P:25, S:7, A:3, SW:3, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 107 - P:25, S:7, A:3, SW:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 301, E: 95 - P:47, S:24, A:14, SW:14, C:3, H:3, K:1]
+Action: Moves
+Target: Hvitholme
+
+Moves to Osholme
+Moves to Hvitford
+Moves to Hvitholme
+Army I makes camp
+Movement blocked near Hvitholme
+Army I makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 3]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 81
+Food: 83
+Wood: 11
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 8 units
+
+______ ARMY ACTIONS ______
+Army III [Power: 123, E: 100 - P:27, S:11, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Akrdon
+
+Moves to Akrdon
+Fight at Akrdon
+Battle started
+Attacker: Army III [Power: 123 - P:27, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender Army I [Power: 101 - P:25, S:5, A:3, SW:2, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 64 - P:14, S:4, A:2, SW:1, C:1, K:1]
+Defender After: Army I [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 126, E: 100 - P:28, S:10, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kirkford
+
+Moves to Akrdon
+Moves to Kirkford
+Fight at Kirkford
+Battle started
+Attacker: Army II [Power: 126 - P:28, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 122 - P:26, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 114, E: 95 - P:25, S:8, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Ashhavn
+
+Moves to Ashhavn
+Army I makes camp
+Fight at Ashhavn
+Battle started
+Attacker: Army I [Power: 119 - P:26, S:9, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army I [Power: 93 - P:16, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 30
+Food: 81
+Wood: 18
+Iron: 15
+Stone: 24
+
+Signals:
+frontier_pressure: 1.143
+underpowered_ratio: 0.333
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Eyoy: 63 units
+
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Eyberg: 3 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: attempts=3, discoveries=1, gold_spent=15.
+
+Economy: Ore discoveries: Redham
+
+Additional Castle Recruitment:
+- Eyoy: 8 units
+- Eyberg: 3 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 139, E: 100 - P:35, S:11, A:3, SW:2, C:1, H:1, K:1]
+Action: Moves
+Target: Kirkford
+
+Moves to Kirkford
+Fight at Kirkford
+Battle started
+Attacker: @Sprite2D@356 [Power: 139 - P:35, S:11, A:3, SW:2, C:1, H:1, K:1]
+Defender Army II [Power: 122 - P:26, S:10, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@356 [Power: 22 - P:3, S:1, A:1, K:1]
+Defender After: Army II [Power: 52 - P:6, S:3, A:3, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 166, E: 100 - P:35, S:12, A:6, SW:6, C:2, H:2]
+Action: Moves
+Target: Kirkford
+
+Moves to Greenley
+Moves to Kirkford
+Fight at Kirkford
+Army III [Power: 125, E: 100 - P:32, S:7, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Riverchester
+
+Moves to Riverchester
+Fight at Riverchester
+Battle started
+Attacker: Army III [Power: 125 - P:32, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 115 - P:27, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army III makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 4]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 0
+Food: 53
+Wood: 7
+Iron: 10
+Stone: 15
+
+Signals:
+frontier_pressure: 1.200
+underpowered_ratio: 0.500
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Northham: 100 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Army II [Power: 293, E: 100 - P:35, S:26, A:15, SW:15, C:5, H:4]
+Action: Moves
+Target: Reykby
+
+Moves to Bergthorpe
+Moves to Hvitholme
+Moves to Reykby
+Fight at Reykby
+Army I [Power: 121, E: 100 - P:28, S:7, A:3, SW:4, C:1, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Arrived at Reykby
+Army I makes camp
+Army I makes camp
+Army I makes camp
+-------
+[Turn 4]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 34
+Food: 76
+Wood: 43
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: Started construction at Fossfell.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 4 units
+
+______ ARMY ACTIONS ______
+Army III [Power: 145, E: 100 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: Army III [Power: 145 - P:36, S:11, A:3, SW:3, C:1, H:1, K:1]
+Defender @Sprite2D@357 [Power: 293 - P:35, S:26, A:15, SW:15, C:5, H:4]
+Defender Army I [Power: 121 - P:28, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 0 - none]
+Defender After: @Sprite2D@357 [Power: 268 - P:32, S:24, A:15, SW:14, C:4, H:3]
+Defender After: Army I [Power: 117 - P:26, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 308, E: 100 - P:49, S:25, A:14, SW:14, C:3, H:3, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: @Sprite2D@358 [Power: 308 - P:49, S:25, A:14, SW:14, C:3, H:3, K:1]
+Defender @Sprite2D@357 [Power: 268 - P:32, S:24, A:15, SW:14, C:4, H:3]
+Defender Army I [Power: 117 - P:26, S:7, A:3, SW:4, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@358 [Power: 122 - P:10, S:9, A:11, SW:5, C:3, K:1]
+Defender After: @Sprite2D@357 [Power: 159 - P:18, S:9, A:13, SW:10, C:3, H:1]
+Defender After: Army I [Power: 74 - P:14, S:2, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 107, E: 85 - P:25, S:7, A:3, SW:3, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Army II makes camp
+Army II makes camp
+Fight at Reykby
+Battle started
+Attacker: Army II [Power: 107 - P:25, S:7, A:3, SW:3, H:1, K:1]
+Defender @Sprite2D@357 [Power: 159 - P:18, S:9, A:13, SW:10, C:3, H:1]
+Defender Army I [Power: 74 - P:14, S:2, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 60 - P:18, S:3, A:1, SW:3]
+Defender After: @Sprite2D@357 [Power: 159 - P:18, S:9, A:13, SW:10, C:3, H:1]
+Defender After: Army I [Power: 74 - P:14, S:2, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@358 makes camp
+@Sprite2D@358 makes camp
+-------
+[Turn 4]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 108
+Food: 72
+Wood: 1
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.667
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Woodthorpe to Duchy (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 10 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army II could not recruit at Akrdon (reason: no_budget_assigned)
+
+Recruitment: Army Army III could not recruit at Akrdon (reason: no_budget_assigned)
+
+Army II [Power: 52, E: 85 - P:6, S:3, A:3, SW:2, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Northvik
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:24, distance:5, level:2, score: 6.7
+Arrived at Woodthorpe
+Army III [Power: 76, E: 100 - P:14, S:7, A:3, SW:1, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Northvik
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:24, distance:5, level:2, score: 6.7
+Arrived at Woodthorpe
+Army I [Power: 104, E: 100 - P:20, S:8, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kingdal
+
+Moves to Kingdal
+Fight at Kingdal
+Battle started
+Attacker: Army I [Power: 104 - P:20, S:8, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 81 - P:17, S:5, A:3, SW:1, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+-------
+[Turn 5]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 31
+Food: 99
+Wood: 3
+Iron: 19
+Stone: 30
+
+Signals:
+frontier_pressure: 1.062
+underpowered_ratio: 0.333
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: Started construction at Whitoy.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: attempts=2, discoveries=1, gold_spent=10.
+
+Economy: Ore discoveries: Kirkford
+
+Additional Castle Recruitment:
+- Eyoy: 11 units
+- Eyberg: 4 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Whitoy (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 49, E: 100 - P:12, S:3, A:2, K:1]
+Action: Recruits
+Target: Eyoy
+
+Moves to Kirkford
+Moves to Greenley
+Moves to Eyoy
+Castle Eyoy - recruits:43, distance:3, level:2, score: 20.1
+Castle Eyberg - recruits:19, distance:2, level:1, score: 11.4
+Movement blocked near Eyoy
+Army III [Power: 121, E: 100 - P:30, S:7, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Kingworth
+
+Moves to Kingworth
+Fight at Kingworth
+Battle started
+Attacker: Army III [Power: 121 - P:30, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender Garrison [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army III [Power: 121 - P:30, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 166, E: 85 - P:35, S:12, A:6, SW:6, C:2, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Whitoy
+Moves to Northvik
+Army IV makes camp
+Army IV makes camp
+Out of movement points before reaching Northvik
+@Sprite2D@356 makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 5]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 65
+Food: 59
+Wood: 28
+Iron: 10
+Stone: 20
+
+Signals:
+frontier_pressure: 1.182
+underpowered_ratio: 0.500
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: attempts=2, discoveries=1, gold_spent=10.
+
+Economy: Ore discoveries: Reykby
+
+Additional Castle Recruitment:
+- Northham: 4 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Reykby (reason: no_budget_assigned)
+
+Army I [Power: 74, E: 100 - P:14, S:2, A:3, SW:3, C:1, H:1, K:1]
+Action: Recruits
+Target: Northham
+
+Moves to Hvitholme
+Moves to Bergthorpe
+Moves to Northham
+Castle Northham - recruits:22, distance:3, level:2, score: 10.3
+Arrived at Northham
+@Sprite2D@357 [Power: 159, E: 80 - P:18, S:9, A:13, SW:10, C:3, H:1]
+Action: Moves
+Target: Woodnes
+
+Moves to Hvitholme
+Moves to Woodnes
+@Sprite2D@357 makes camp
+@Sprite2D@357 makes camp
+Fight at Woodnes
+Battle started
+Attacker: @Sprite2D@357 [Power: 293 - P:35, S:26, A:15, SW:15, C:5, H:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@357 [Power: 293 - P:35, S:26, A:15, SW:15, C:5, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+-------
+[Turn 5]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 61
+Food: 51
+Wood: 50
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.500
+castle_spacing: 5.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Fossfell: 5 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Redham to Duchy (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 8 units
+- Fossfell: 4 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army II could not recruit at Hvitford (reason: no_budget_assigned)
+
+Army II [Power: 60, E: 90 - P:18, S:3, A:1, SW:3]
+Action: Recruits
+Target: Redham
+
+Moves to Osholme
+Moves to Redham
+Castle Redham - recruits:23, distance:2, level:2, score: 16.1
+Castle Fossfell - recruits:8, distance:1, level:1, score: 9.6
+Arrived at Redham
+@Sprite2D@358 [Power: 189, E: 100 - P:21, S:16, A:12, SW:9, C:3, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: @Sprite2D@358 [Power: 189 - P:21, S:16, A:12, SW:9, C:3, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@358 [Power: 189 - P:21, S:16, A:12, SW:9, C:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@358 makes camp
+@Sprite2D@358 makes camp
+Army II makes camp
+-------
+[Turn 5]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 117
+Food: 96
+Wood: 8
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.091
+underpowered_ratio: 1.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Woodthorpe: 19 units, Army III at Woodthorpe: 19 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Kingdal (reason: no_budget_assigned)
+
+Recruitment: Army Army I could not recruit at Kingdal (reason: no_castle_available)
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III [Power: 133, E: 75 - P:20, S:12, A:6, SW:4, C:2, H:1, K:1]
+Action: Moves
+Target: Torchester
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Torchester
+Army III makes camp
+Army III makes camp
+Army III makes camp
+Out of movement points before reaching Torchester
+Army I [Power: 89, E: 100 - P:18, S:7, A:3, SW:1, C:1, H:1, K:1]
+Action: Moves
+Target: Reddon
+
+Moves to Reddon
+Fight at Reddon
+Battle started
+Attacker: Army I [Power: 89 - P:18, S:7, A:3, SW:1, C:1, H:1, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 43 - P:7, S:2, A:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+-------
+[Turn 6]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 15
+Food: 82
+Wood: 2
+Iron: 28
+Stone: 36
+
+Signals:
+frontier_pressure: 1.059
+underpowered_ratio: 0.500
+castle_spacing: 5.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Eyoy: 69 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Eyoy to Duchy (score: 7.0)
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=5.
+
+Economy: Ore discoveries: Whitoy
+
+Additional Castle Recruitment:
+- Eyberg: 6 units
+- Whitoy: 6 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Greenley (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 51, E: 100 - P:13, S:3, A:2, K:1]
+Action: Recruits
+Target: Eyberg
+
+Moves to Eyberg
+Castle Eyberg - recruits:10, distance:1, level:1, score: 12.0
+Castle Whitoy - recruits:14, distance:4, level:1, score: 4.2
+Arrived at Eyberg
+Army III [Power: 121, E: 100 - P:30, S:7, A:3, SW:3, C:1, H:1, K:1]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Fight at Redham
+Battle started
+Attacker: Army III [Power: 121 - P:30, S:7, A:3, SW:3, C:1, H:1, K:1]
+Defender Army II [Power: 69 - P:21, S:3, A:2, SW:3]
+Defender Garrison [Power: 107 - P:23, S:13, A:2, SW:4]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 4 - SW:1]
+Defender After: Army II [Power: 55 - P:16, S:3, A:2, SW:2]
+Defender After (Garrison): Garrison [Power: 90 - P:18, S:12, A:2, SW:3]
+
+Army IV [Power: 166, E: 95 - P:35, S:12, A:6, SW:6, C:2, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Army IV makes camp
+Fight at Northvik
+Battle started
+Attacker: Army IV [Power: 166 - P:35, S:12, A:6, SW:6, C:2, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 166 - P:35, S:12, A:6, SW:6, C:2, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 202, E: 100 - P:24, S:20, A:9, SW:10, C:3, H:3]
+Action: Moves
+Target: Northnes
+
+Moves to Hafnford
+Moves to Akrnes
+Moves to Northford
+Moves to Northnes
+Fight at Northnes
+Battle started
+Attacker: Army IV [Power: 202 - P:24, S:20, A:9, SW:10, C:3, H:3]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army IV [Power: 174 - P:19, S:17, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army III makes camp
+Army III makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 6]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 78
+Food: 71
+Wood: 41
+Iron: 10
+Stone: 23
+
+Signals:
+frontier_pressure: 1.182
+underpowered_ratio: 0.500
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Northham: 47 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=5.
+
+Additional Castle Recruitment:
+- Northham: 6 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@357 [Power: 198, E: 85 - P:24, S:13, A:14, SW:13, C:3, H:1]
+Action: Moves
+Target: Reykby
+
+Moves to Hvitholme
+Moves to Reykby
+@Sprite2D@357 makes camp
+@Sprite2D@357 makes camp
+Movement blocked near Reykby
+Army I [Power: 217, E: 95 - P:33, S:17, A:9, SW:9, C:3, H:3, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Bergthorpe
+Moves to Hvitholme
+Moves to Reykby
+Army I makes camp
+Movement blocked near Reykby
+Army I makes camp
+Army I makes camp
+@Sprite2D@357 makes camp
+@Sprite2D@357 makes camp
+-------
+[Turn 6]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 60
+Food: 60
+Wood: 73
+Iron: 13
+Stone: 12
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.500
+castle_spacing: 5.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Redham: 41 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=5.
+
+Additional Castle Recruitment:
+- Fossfell: 7 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 176, E: 90 - P:30, S:14, A:8, SW:8, C:2, H:2]
+Action: Moves
+Target: Kingworth
+
+Moves to Kingworth
+Army II makes camp
+Fight at Kingworth
+Battle started
+Attacker: Army II [Power: 193 - P:32, S:15, A:8, SW:8, C:2, H:2, K:1]
+Defender Army III [Power: 56 - P:13, S:2, A:2, SW:2, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 174 - P:28, S:14, A:8, SW:6, C:2, H:2, K:1]
+Defender After: Army III [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@358 [Power: 200, E: 100 - P:23, S:17, A:12, SW:10, C:3, H:1, K:1]
+Action: Moves
+Target: Akroy
+
+Moves to Akroy
+Fight at Akroy
+Battle started
+Attacker: @Sprite2D@358 [Power: 200 - P:23, S:17, A:12, SW:10, C:3, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@358 [Power: 200 - P:23, S:17, A:12, SW:10, C:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@358 makes camp
+Army II makes camp
+-------
+[Turn 6]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 179
+Food: 113
+Wood: 23
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.455
+underpowered_ratio: 0.333
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Reddon (reason: no_budget_assigned)
+
+Army I [Power: 61, E: 100 - P:11, S:4, A:3, SW:1, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Kingdal
+Moves to Ashhavn
+Moves to Whitley
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:7, level:2, score: 1.8
+Movement blocked near Woodthorpe
+Army III [Power: 136, E: 90 - P:20, S:13, A:6, SW:4, C:2, H:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Eastmere
+Moves to Northvik
+Army III makes camp
+Fight at Northvik
+Battle started
+Attacker: Army III [Power: 136 - P:20, S:13, A:6, SW:4, C:2, H:1, K:1]
+Defender Army IV [Power: 162 - P:33, S:12, A:6, SW:6, C:2, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 39 - P:5, S:3, A:1, SW:2, C:1, H:1]
+Defender After: Army IV [Power: 124 - P:26, S:10, A:6, SW:4, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 144, E: 100 - P:21, S:12, A:6, SW:5, C:2, H:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army II [Power: 144 - P:21, S:12, A:6, SW:5, C:2, H:2, K:1]
+Defender Army IV [Power: 124 - P:26, S:10, A:6, SW:4, C:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 76 - P:9, S:5, A:3, SW:4, C:2, K:1]
+Defender After: Army IV [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army III makes camp
+-------
+[Turn 7]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 48
+Food: 61
+Wood: 7
+Iron: 39
+Stone: 42
+
+Signals:
+frontier_pressure: 1.059
+underpowered_ratio: 0.500
+castle_spacing: 5.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: @Sprite2D@356 at Eyberg: 25 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Greenley to March (score: 7.0), Upgrading Westhaug to March (score: 7.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyoy: 4 units
+- Eyberg: 2 units
+- Whitoy: 9 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@356 [Power: 130, E: 100 - P:25, S:12, A:6, SW:3, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Akrdon
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@356 [Power: 130 - P:25, S:12, A:6, SW:3, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 130 - P:25, S:12, A:6, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 174, E: 75 - P:19, S:17, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Sandberg
+
+Moves to Sandberg
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Fight at Sandberg
+Battle started
+Attacker: Army IV [Power: 179 - P:19, S:17, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army IV [Power: 174 - P:18, S:16, A:9, SW:9, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+-------
+[Turn 7]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 149
+Food: 78
+Wood: 58
+Iron: 10
+Stone: 23
+
+Signals:
+frontier_pressure: 0.900
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 4 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@357 [Power: 206, E: 100 - P:25, S:15, A:14, SW:13, C:3, H:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: @Sprite2D@357 [Power: 201 - P:24, S:14, A:14, SW:13, C:3, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@357 [Power: 198 - P:24, S:13, A:14, SW:13, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 234, E: 100 - P:35, S:20, A:9, SW:10, C:3, H:3, K:1]
+Action: Moves
+Target: Osholme
+
+Moves to Hvitford
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army I [Power: 234 - P:35, S:20, A:9, SW:10, C:3, H:3, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 234 - P:35, S:20, A:9, SW:10, C:3, H:3, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+@Sprite2D@357 makes camp
+@Sprite2D@357 makes camp
+-------
+[Turn 7]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 112
+Food: 60
+Wood: 113
+Iron: 13
+Stone: 15
+
+Signals:
+frontier_pressure: 1.273
+underpowered_ratio: 0.000
+castle_spacing: 5.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=5.
+
+Economy: Ore discoveries: Akroy
+
+Additional Castle Recruitment:
+- Redham: 4 units
+- Fossfell: 8 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@358 [Power: 200, E: 100 - P:23, S:17, A:12, SW:10, C:3, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: @Sprite2D@358 [Power: 200 - P:23, S:17, A:12, SW:10, C:3, H:1, K:1]
+Defender @Sprite2D@357 [Power: 206 - P:25, S:15, A:14, SW:13, C:3, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@358 [Power: 53 - P:3, S:4, A:3, SW:2, C:2, K:1]
+Defender After: @Sprite2D@357 [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 178, E: 100 - P:30, S:14, A:8, SW:6, C:2, H:2, K:1]
+Action: Moves
+Target: Vatnholme
+
+Moves to Woodholme
+Moves to Vatnholme
+Fight at Vatnholme
+Battle started
+Attacker: Army II [Power: 178 - P:30, S:14, A:8, SW:6, C:2, H:2, K:1]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army II [Power: 147 - P:19, S:14, A:8, SW:5, C:2, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@358 makes camp
+@Sprite2D@358 makes camp
+-------
+[Turn 7]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 199
+Food: 64
+Wood: 0
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.182
+underpowered_ratio: 1.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Woodthorpe to Province (score: 5.0), Upgrading Hafnley to March (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 7 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Ashhavn (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army Army III could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army I [Power: 63, E: 100 - P:12, S:4, A:3, SW:1, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitley
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:15, distance:5, level:2, score: 4.2
+Out of movement points before reaching Woodthorpe
+Army II [Power: 76, E: 75 - P:9, S:5, A:3, SW:4, C:2, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:15, distance:4, level:2, score: 5.2
+Arrived at Woodthorpe
+Army III [Power: 50, E: 95 - P:7, S:3, A:2, SW:3, C:1, H:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:15, distance:3, level:2, score: 7.0
+Arrived at Woodthorpe
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 8]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 39
+Food: 97
+Wood: 10
+Iron: 50
+Stone: 18
+
+Signals:
+frontier_pressure: 0.895
+underpowered_ratio: 0.000
+castle_spacing: 6.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: Upgraded Whitoy.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyoy: 8 units
+- Eyberg: 1 units
+- Whitoy: 12 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@356 [Power: 130, E: 100 - P:25, S:12, A:6, SW:3, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@356 [Power: 130 - P:25, S:12, A:6, SW:3, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 124 - P:25, S:10, A:6, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 174, E: 90 - P:18, S:16, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Northham
+
+Moves to Northham
+Army IV makes camp
+Fight at Northham
+Battle started
+Attacker: Army IV [Power: 174 - P:18, S:16, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army IV [Power: 149 - P:12, S:13, A:9, SW:8, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 8]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 174
+Food: 48
+Wood: 50
+Iron: 10
+Stone: 18
+
+Signals:
+frontier_pressure: 0.818
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Northham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Northham to Province (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 8 units
+
+______ ARMY ACTIONS ______
+Army I [Power: 236, E: 100 - P:36, S:20, A:9, SW:10, C:3, H:3, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: Army I [Power: 236 - P:36, S:20, A:9, SW:10, C:3, H:3, K:1]
+Defender @Sprite2D@358 [Power: 104 - P:8, S:7, A:7, SW:7, C:2, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 182 - P:26, S:14, A:9, SW:6, C:3, H:3, K:1]
+Defender After: @Sprite2D@358 [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+-------
+[Turn 8]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 160
+Food: 44
+Wood: 148
+Iron: 14
+Stone: 18
+
+Signals:
+frontier_pressure: 1.083
+underpowered_ratio: 0.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Osholme to March (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 8 units
+- Fossfell: 5 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 147, E: 85 - P:19, S:14, A:8, SW:5, C:2, H:1, K:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Army II makes camp
+Army II makes camp
+Fight at Reykby
+Battle started
+Attacker: Army II [Power: 167 - P:24, S:14, A:8, SW:5, C:2, H:3, K:1]
+Defender Army I [Power: 193 - P:28, S:15, A:9, SW:7, C:3, H:3, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 102 - P:15, S:7, A:5, SW:2, C:2, H:2, K:1]
+Defender After: Army I [Power: 178 - P:25, S:12, A:9, SW:7, C:3, H:3, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+-------
+[Turn 8]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 230
+Food: 92
+Wood: 8
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.667
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army III at Woodthorpe: 29 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Torfjell (reason: no_budget_assigned)
+
+Recruitment: Army Army I could not recruit at Torfjell (reason: no_castle_available)
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III [Power: 149, E: 100 - P:20, S:16, A:5, SW:7, C:2, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army III [Power: 149 - P:20, S:16, A:5, SW:7, C:2, H:2]
+Defender @Sprite2D@356 [Power: 127 - P:25, S:11, A:6, SW:3, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 12 - P:1, A:2, C:1]
+Defender After: @Sprite2D@356 [Power: 53 - P:9, S:4, A:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 63, E: 80 - P:12, S:4, A:3, SW:1, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Army I makes camp
+Army I makes camp
+Movement blocked near Northvik
+Army I makes camp
+-------
+[Turn 9]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 41
+Food: 81
+Wood: 14
+Iron: 61
+Stone: 19
+
+Signals:
+frontier_pressure: 0.810
+underpowered_ratio: 0.667
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army III at Eyoy: 60 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Whitoy to County (score: 7.0), Upgrading Eyoy to Province (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyberg: 2 units
+- Whitoy: 11 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Northvik (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 53, E: 100 - P:9, S:4, A:3, C:1, K:1]
+Action: Recruits
+Target: Eyberg
+
+Moves to Akrdon
+Moves to Eyberg
+Castle Eyberg - recruits:13, distance:2, level:1, score: 7.8
+Castle Whitoy - recruits:25, distance:7, level:2, score: 5.0
+Arrived at Eyberg
+Army III [Power: 177, E: 100 - P:21, S:15, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Riverford
+
+Moves to Northholme
+Moves to Riverford
+Fight at Riverford
+Battle started
+Attacker: Army III [Power: 177 - P:21, S:15, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 159 - P:16, S:14, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 154, E: 100 - P:13, S:14, A:9, SW:8, C:3, H:3]
+Action: Moves
+Target: Kirkfell
+
+Moves to Northnes
+Moves to Northford
+Moves to Kirkfell
+Fight at Kirkfell
+Battle started
+Attacker: Army IV [Power: 154 - P:13, S:14, A:9, SW:8, C:3, H:3]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army IV [Power: 118 - P:7, S:10, A:9, SW:5, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army III makes camp
+-------
+[Turn 9]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 110
+Food: 43
+Wood: 4
+Iron: 13
+Stone: 20
+
+Signals:
+frontier_pressure: 0.917
+underpowered_ratio: 0.500
+castle_spacing: 12.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Northham: 64 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: Started construction at Hvitholme.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Oakby to March (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Army I [Power: 178, E: 100 - P:25, S:12, A:9, SW:7, C:3, H:3, K:1]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army I [Power: 178 - P:25, S:12, A:9, SW:7, C:3, H:3, K:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army I [Power: 178 - P:25, S:12, A:9, SW:7, C:3, H:3, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 188, E: 100 - P:22, S:18, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Fossfell
+
+Moves to Bergthorpe
+Moves to Woodnes
+Moves to Fossfell
+Fight at Fossfell
+Battle started
+Attacker: Army II [Power: 188 - P:22, S:18, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 79 - P:10, S:15, A:2, SW:2]
+Battle Result: Won
+Attacker After: Army II [Power: 168 - P:18, S:14, A:9, SW:9, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+-------
+[Turn 9]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 192
+Food: 55
+Wood: 184
+Iron: 15
+Stone: 21
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Redham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 11 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 102, E: 90 - P:15, S:7, A:5, SW:2, C:2, H:2, K:1]
+Action: Moves
+Target: Osholme
+
+Moves to Northvik
+Moves to Osholme
+Army II makes camp
+Movement blocked near Osholme
+Army II makes camp
+Army II makes camp
+-------
+[Turn 9]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 262
+Food: 70
+Wood: 0
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.667
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Westmere to March (score: 4.0), Upgrading Torfjell to March (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Woodthorpe (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Woodthorpe (reason: no_castle_available)
+
+Recruitment: Army Army III could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army I [Power: 69, E: 100 - P:12, S:6, A:3, SW:1, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army III [Power: 12, E: 75 - P:1, A:2, C:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army II [Power: 114, E: 100 - P:17, S:8, A:6, SW:5, C:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army II [Power: 114 - P:17, S:8, A:6, SW:5, C:2, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 114 - P:17, S:8, A:6, SW:5, C:2, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 10]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 109
+Food: 82
+Wood: 33
+Iron: 72
+Stone: 25
+
+Signals:
+frontier_pressure: 0.636
+underpowered_ratio: 0.333
+castle_spacing: 7.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: @Sprite2D@356 at Eyberg: 28 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Greenley to Duchy (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyoy: 4 units
+- Eyberg: 3 units
+- Whitoy: 11 units
+
+______ ARMY ACTIONS ______
+Army IV [Power: 118, E: 80 - P:7, S:10, A:9, SW:5, C:3, H:3]
+Action: Moves
+Target: Akrnes
+
+Moves to Akrnes
+Arrived at Akrnes
+Recruitment: Army Army IV raised 13 peasants at Akrnes
+
+Army III [Power: 159, E: 95 - P:16, S:14, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Kingworth
+
+Moves to Riverchester
+Moves to Kingworth
+Army III makes camp
+Fight at Kingworth
+Battle started
+Attacker: Army III [Power: 159 - P:16, S:14, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 156 - P:16, S:13, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 146, E: 100 - P:22, S:15, A:9, SW:4, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Akrdon
+Moves to Northvik
+Fight at Northvik
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 10]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 156
+Food: 35
+Wood: 18
+Iron: 16
+Stone: 22
+
+Signals:
+frontier_pressure: 0.929
+underpowered_ratio: 0.000
+castle_spacing: 4.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Danger castles checked: 2.
+
+Castle Defense Recruitment:
+- Hvitholme: 16 units
+- Fossfell: 6 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Bergthorpe to March (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 4 units
+- Hvitholme: 9 units
+- Fossfell: 1 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 168, E: 80 - P:18, S:14, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Redham
+
+Moves to Osholme
+Moves to Redham
+Army II makes camp
+Army II makes camp
+Movement blocked near Redham
+Army I [Power: 192, E: 100 - P:29, S:14, A:9, SW:7, C:3, H:3, K:1]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Fight at Redham
+Battle started
+Attacker: Army I [Power: 192 - P:29, S:14, A:9, SW:7, C:3, H:3, K:1]
+Defender Army II [Power: 0 - none]
+Defender Garrison [Power: 161 - P:26, S:25, A:2, SW:7]
+Battle Result: Defeated
+Attacker After: Army I [Power: 0 - none]
+Defender After: Army II [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 84 - P:11, S:13, A:1, SW:5]
+
+Army II makes camp
+-------
+[Turn 10]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 222
+Food: 66
+Wood: 215
+Iron: 16
+Stone: 24
+
+Signals:
+frontier_pressure: 1.222
+underpowered_ratio: 0.000
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Redham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 9 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 130, E: 100 - P:19, S:9, A:7, SW:4, C:2, H:2, K:1]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: @Sprite2D@359 [Power: 130 - P:19, S:9, A:7, SW:4, C:2, H:2, K:1]
+Defender Army II [Power: 174 - P:18, S:16, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@359 [Power: 82 - P:10, S:6, A:6, SW:2, C:2, K:1]
+Defender After: Army II [Power: 172 - P:17, S:16, A:9, SW:9, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 10]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 307
+Food: 100
+Wood: 12
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.667
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodthorpe: 11 units, Army III at Woodthorpe: 11 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Woodthorpe (reason: no_budget_assigned)
+
+Recruitment: Army Army III could not recruit at Woodthorpe (reason: no_budget_assigned)
+
+Army II [Power: 114, E: 75 - P:17, S:8, A:6, SW:5, C:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Fight at Northvik
+Battle started
+Attacker: Army II [Power: 114 - P:17, S:8, A:6, SW:5, C:2, K:1]
+Defender @Sprite2D@356 [Power: 153 - P:24, S:16, A:9, SW:4, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 75 - P:8, S:5, A:6, SW:2, C:2, K:1]
+Defender After: @Sprite2D@356 [Power: 132 - P:20, S:13, A:9, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 102, E: 100 - P:15, S:11, A:3, SW:4, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army I [Power: 102 - P:15, S:11, A:3, SW:4, C:1, K:1]
+Defender @Sprite2D@356 [Power: 132 - P:20, S:13, A:9, SW:3, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army I [Power: 46 - P:4, S:5, A:3, C:1, K:1]
+Defender After: @Sprite2D@356 [Power: 117 - P:14, S:12, A:9, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 81, E: 80 - P:7, S:9, A:5, SW:4, C:1, H:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Army III makes camp
+Army III makes camp
+Out of movement points before reaching Northvik
+-------
+[Turn 11]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 208
+Food: 123
+Wood: 81
+Iron: 83
+Stone: 31
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Whitoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyoy: 8 units
+- Eyberg: 1 units
+- Whitoy: 11 units
+
+______ ARMY ACTIONS ______
+Army III [Power: 156, E: 85 - P:16, S:13, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Army III makes camp
+Army III makes camp
+Fight at Redham
+Battle started
+Attacker: Army III [Power: 156 - P:16, S:13, A:9, SW:9, C:3, H:2]
+Defender Army II [Power: 0 - none]
+Defender Garrison [Power: 135 - P:21, S:22, A:1, SW:6]
+Battle Result: Won
+Attacker After: Army III [Power: 19 - A:5, C:1]
+Defender After: Army II [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 117, E: 95 - P:14, S:12, A:9, SW:3, C:1, K:1]
+Action: Moves
+Target: Eastmere
+
+Moves to Eastmere
+@Sprite2D@356 makes camp
+Fight at Eastmere
+Battle started
+Attacker: @Sprite2D@356 [Power: 153 - P:24, S:16, A:9, SW:4, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 153 - P:24, S:16, A:9, SW:4, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 163, E: 100 - P:21, S:13, A:9, SW:7, C:3, H:3]
+Action: Moves
+Target: Greenthorpe
+
+Moves to Hafnford
+Moves to Northholme
+Moves to Greenthorpe
+Fight at Greenthorpe
+Battle started
+Attacker: Army IV [Power: 163 - P:21, S:13, A:9, SW:7, C:3, H:3]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army IV [Power: 142 - P:17, S:12, A:9, SW:7, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+-------
+[Turn 11]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 201
+Food: 36
+Wood: 33
+Iron: 19
+Stone: 24
+
+Signals:
+frontier_pressure: 0.929
+underpowered_ratio: 0.000
+castle_spacing: 4.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Northham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Eastbury to March (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 8 units
+- Hvitholme: 6 units
+- Fossfell: 2 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 172, E: 100 - P:17, S:16, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Fight at Redham
+Battle started
+Attacker: Army II [Power: 172 - P:17, S:16, A:9, SW:9, C:3, H:3]
+Defender Army III [Power: 19 - A:5, C:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 172 - P:17, S:16, A:9, SW:9, C:3, H:3]
+Defender After: Army III [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+-------
+[Turn 11]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 243
+Food: 41
+Wood: 227
+Iron: 17
+Stone: 27
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region actions: Upgrading Northvik to March (score: 3.0), Upgrading Vatnholme to County (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 11]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 351
+Food: 95
+Wood: 4
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 1.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Hafnley to Duchy (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army III could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army I [Power: 44, E: 75 - P:3, S:5, A:3, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army II [Power: 73, E: 90 - P:7, S:5, A:6, SW:2, C:2, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army III [Power: 83, E: 85 - P:8, S:9, A:5, SW:4, C:1, H:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 12]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 244
+Food: 131
+Wood: 120
+Iron: 94
+Stone: 37
+
+Signals:
+frontier_pressure: 0.640
+underpowered_ratio: 0.667
+castle_spacing: 8.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Whitoy: 52 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Whitoy to March (score: 7.0), Upgrading Northnes to County (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyoy: 2 units
+- Eyberg: 2 units
+- Whitoy: 6 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Northvik (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 90, E: 100 - P:12, S:10, A:6, SW:1, C:1, K:1]
+Action: Recruits
+Target: Eyoy
+
+Moves to Akrdon
+Moves to Eyberg
+Moves to Westhaug
+Moves to Eyoy
+Castle Eyoy - recruits:56, distance:4, level:2, score: 19.6
+Castle Eyberg - recruits:27, distance:2, level:1, score: 16.2
+Castle Whitoy - recruits:2, distance:7, level:2, score: 0.4
+Out of movement points before reaching Eyoy
+Army IV [Power: 153, E: 100 - P:18, S:15, A:6, SW:9, C:2, H:2]
+Action: Moves
+Target: Woodholme
+
+Moves to Riverchester
+Moves to Woodholme
+Fight at Woodholme
+Battle started
+Attacker: Army IV [Power: 153 - P:18, S:15, A:6, SW:9, C:2, H:2]
+Defender Garrison [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army IV [Power: 138 - P:16, S:14, A:6, SW:7, C:2, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 142, E: 80 - P:17, S:12, A:9, SW:7, C:3, H:1]
+Action: Moves
+Target: Eastvik
+
+Moves to Eastvik
+Army IV makes camp
+Army IV makes camp
+Fight at Eastvik
+Battle started
+Attacker: Army IV [Power: 145 - P:17, S:13, A:9, SW:7, C:3, H:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army IV [Power: 139 - P:16, S:13, A:9, SW:6, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV makes camp
+-------
+[Turn 12]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 227
+Food: 62
+Wood: 59
+Iron: 22
+Stone: 26
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.500
+castle_spacing: 3.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Northham: 57 units
+
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Redham: 1 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 1 units
+- Hvitholme: 7 units
+- Fossfell: 4 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 174, E: 100 - P:18, S:16, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Reykoy
+
+Moves to Reykoy
+Fight at Reykoy
+Battle started
+Attacker: Army II [Power: 174 - P:18, S:16, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army II [Power: 165 - P:18, S:16, A:9, SW:8, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 168, E: 100 - P:19, S:15, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Fossfjell
+
+Moves to Woodfjord
+Moves to Fossfjell
+Fight at Fossfjell
+Battle started
+Attacker: Army II [Power: 168 - P:19, S:15, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army II [Power: 140 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 12]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 279
+Food: 52
+Wood: 248
+Iron: 18
+Stone: 30
+
+Signals:
+frontier_pressure: 2.000
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 12]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 407
+Food: 121
+Wood: 16
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 1.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodthorpe: 7 units, Army II at Woodthorpe: 7 units, Army III at Woodthorpe: 7 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Woodthorpe (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Woodthorpe (reason: no_budget_assigned)
+
+Army I [Power: 74, E: 80 - P:7, S:11, A:3, SW:1, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Army I makes camp
+Army I makes camp
+Out of movement points before reaching Northvik
+Army III [Power: 112, E: 90 - P:13, S:14, A:5, SW:5, C:1, H:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Army III makes camp
+Movement blocked near Northvik
+Army II [Power: 98, E: 95 - P:12, S:10, A:6, SW:2, C:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Army II makes camp
+Movement blocked near Northvik
+Army II makes camp
+Army III makes camp
+-------
+[Turn 13]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 213
+Food: 19
+Wood: 98
+Iron: 105
+Stone: 38
+
+Signals:
+frontier_pressure: 0.704
+underpowered_ratio: 0.500
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Eyoy: 82 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Northholme to March (score: 5.0), Upgrading Greenley to Province (score: 5.0), Upgrading Blackworth to March (score: 5.0), Upgrading Redham to March (score: 5.0), Upgrading Westhaug to Duchy (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyberg: 3 units
+- Whitoy: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Westhaug (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 90, E: 85 - P:12, S:10, A:6, SW:1, C:1, K:1]
+Action: Recruits
+Target: Eyberg
+
+Moves to Eyberg
+Castle Eyberg - recruits:17, distance:1, level:1, score: 20.4
+Castle Whitoy - recruits:15, distance:4, level:2, score: 5.2
+Arrived at Eyberg
+Army IV [Power: 138, E: 95 - P:16, S:14, A:6, SW:7, C:2, H:2]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Army IV makes camp
+Fight at Redham
+Battle started
+Attacker: Army IV [Power: 141 - P:16, S:15, A:6, SW:7, C:2, H:2]
+Defender Garrison [Power: 6 - S:2]
+Battle Result: Won
+Attacker After: Army IV [Power: 137 - P:16, S:15, A:6, SW:6, C:2, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 139, E: 90 - P:16, S:13, A:9, SW:6, C:3, H:1]
+Action: Moves
+Target: Akroy
+
+Moves to Akroy
+Army IV makes camp
+Fight at Akroy
+Battle started
+Attacker: Army IV [Power: 143 - P:16, S:13, A:9, SW:7, C:3, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 132 - P:14, S:12, A:9, SW:6, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 242, E: 100 - P:28, S:22, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Riverberg
+
+Moves to Hafnford
+Moves to Akrnes
+Moves to Northford
+Moves to Riverberg
+Fight at Riverberg
+Battle started
+Attacker: Army IV [Power: 242 - P:28, S:22, A:12, SW:12, C:4, H:4]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army IV [Power: 235 - P:28, S:21, A:12, SW:11, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army IV makes camp
+-------
+[Turn 13]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 281
+Food: 26
+Wood: 60
+Iron: 25
+Stone: 28
+
+Signals:
+frontier_pressure: 1.062
+underpowered_ratio: 0.000
+castle_spacing: 5.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Bergthorpe to Duchy (score: 4.0), Upgrading Woodfjord to March (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 4 units
+- Hvitholme: 7 units
+- Fossfell: 7 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 169, E: 100 - P:18, S:16, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Fight at Redham
+Battle started
+Attacker: Army II [Power: 169 - P:18, S:16, A:9, SW:9, C:3, H:2]
+Defender Army IV [Power: 141 - P:16, S:15, A:6, SW:7, C:2, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 95 - P:7, S:8, A:8, SW:4, C:3, H:1]
+Defender After: Army IV [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 140, E: 85 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Reddon
+
+Moves to Reddon
+Army II makes camp
+Army II makes camp
+Fight at Reddon
+Battle started
+Attacker: Army II [Power: 143 - P:11, S:12, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 140 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 13]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 313
+Food: 63
+Wood: 265
+Iron: 18
+Stone: 30
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 13]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 447
+Food: 107
+Wood: 8
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.889
+underpowered_ratio: 0.333
+castle_spacing: 9.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Westmere to Duchy (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army I [Power: 87, E: 85 - P:10, S:12, A:3, SW:2, C:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army II [Power: 106, E: 95 - P:14, S:10, A:6, SW:3, C:2, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army III [Power: 112, E: 95 - P:13, S:14, A:5, SW:5, C:1, H:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Army III makes camp
+Fight at Northvik
+Battle started
+Attacker: Army III [Power: 112 - P:13, S:14, A:5, SW:5, C:1, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 112 - P:13, S:14, A:5, SW:5, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+-------
+[Turn 14]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 236
+Food: 30
+Wood: 144
+Iron: 110
+Stone: 0
+
+Signals:
+frontier_pressure: 0.643
+underpowered_ratio: 0.000
+castle_spacing: 9.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: @Sprite2D@356 at Eyberg: 31 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: Upgraded Whitoy.
+
+Economy: Upgrade Region actions: Upgrading Kirkfell to County (score: 5.0), Upgrading Riverford to County (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Whitoy: 6 units
+
+______ ARMY ACTIONS ______
+Army IV [Power: 132, E: 90 - P:14, S:12, A:9, SW:6, C:3, H:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Army IV makes camp
+Fight at Reykby
+Battle started
+Attacker: Army IV [Power: 132 - P:14, S:12, A:9, SW:6, C:3, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 128 - P:14, S:12, A:9, SW:5, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 184, E: 100 - P:25, S:20, A:12, SW:6, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Akrdon
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@356 [Power: 126 - P:17, S:13, A:9, SW:3, C:1, K:1]
+Defender Army II [Power: 75 - P:8, S:5, A:6, SW:2, C:2, K:1]
+Defender Army I [Power: 46 - P:4, S:5, A:3, C:1, K:1]
+Defender Army III [Power: 85 - P:9, S:9, A:5, SW:4, C:1, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@356 [Power: 67 - P:7, S:8, A:5, C:1, K:1]
+Defender After: Army II [Power: 73 - P:7, S:5, A:6, SW:2, C:2, K:1]
+Defender After: Army I [Power: 44 - P:3, S:5, A:3, C:1, K:1]
+Defender After: Army III [Power: 83 - P:8, S:9, A:5, SW:4, C:1, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 235, E: 75 - P:28, S:21, A:12, SW:11, C:4, H:4]
+Action: Moves
+Target: Ashfjord
+
+Moves to Northnes
+Moves to Ashfjord
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Movement blocked near Ashfjord
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 14]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 317
+Food: 25
+Wood: 77
+Iron: 25
+Stone: 28
+
+Signals:
+frontier_pressure: 1.059
+underpowered_ratio: 0.000
+castle_spacing: 4.250
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Redham: 12 units
+
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Redham: 1 units
+
+Economy: Raise Army: Raised at Northham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Osholme to Duchy (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 8 units
+- Redham: 1 units
+- Hvitholme: 8 units
+- Fossfell: 9 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 143, E: 100 - P:13, S:16, A:8, SW:7, C:3, H:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army II [Power: 143 - P:13, S:16, A:8, SW:7, C:3, H:1]
+Defender @Sprite2D@359 [Power: 96 - P:13, S:6, A:7, SW:2, C:2, H:1, K:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 20 - A:4, SW:2]
+Defender After: @Sprite2D@359 [Power: 68 - P:8, S:5, A:7, SW:2, C:2]
+Defender After (Garrison): Garrison [Power: 22 - P:11]
+
+Army II [Power: 140, E: 100 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Kingdal
+
+Moves to Kingdal
+Fight at Kingdal
+Battle started
+Attacker: Army II [Power: 140 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 140 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 14]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 328
+Food: 40
+Wood: 262
+Iron: 18
+Stone: 30
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region actions: Upgrading Northvik to Duchy (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 14]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 493
+Food: 128
+Wood: 15
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.750
+underpowered_ratio: 0.500
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodthorpe: 11 units, Army II at Woodthorpe: 10 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Army I [Power: 120, E: 90 - P:13, S:17, A:3, SW:5, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Army I makes camp
+Movement blocked near Northvik
+Army II [Power: 138, E: 100 - P:17, S:16, A:6, SW:5, C:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army II [Power: 138 - P:17, S:16, A:6, SW:5, C:2, K:1]
+Defender @Sprite2D@356 [Power: 148 - P:20, S:14, A:12, SW:4, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 56 - P:3, S:4, A:4, SW:2, C:2, K:1]
+Defender After: @Sprite2D@356 [Power: 110 - P:14, S:9, A:11, SW:2, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+-------
+[Turn 15]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 378
+Food: 43
+Wood: 197
+Iron: 128
+Stone: 14
+
+Signals:
+frontier_pressure: 0.700
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Whitoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Whitoy to Duchy (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyberg: 1 units
+- Whitoy: 8 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Northvik (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 110, E: 95 - P:14, S:9, A:11, SW:2, C:1, K:1]
+Action: Recruits
+Target: Eyoy
+
+Moves to Akrdon
+Moves to Eyberg
+Moves to Westhaug
+Moves to Eyoy
+Castle Eyoy - recruits:43, distance:4, level:2, score: 15.0
+Castle Eyberg - recruits:13, distance:2, level:1, score: 7.8
+Castle Whitoy - recruits:37, distance:7, level:2, score: 7.4
+Out of movement points before reaching Eyoy
+Army IV [Power: 134, E: 100 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army IV [Power: 134 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 134 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 235, E: 100 - P:28, S:21, A:12, SW:11, C:4, H:4]
+Action: Moves
+Target: Ashfjord
+
+Moves to Ashfjord
+Fight at Ashfjord
+Battle started
+Attacker: Army IV [Power: 235 - P:28, S:21, A:12, SW:11, C:4, H:4]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army IV [Power: 222 - P:27, S:19, A:12, SW:11, C:4, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 15]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 277
+Food: 32
+Wood: 61
+Iron: 25
+Stone: 28
+
+Signals:
+frontier_pressure: 1.235
+underpowered_ratio: 0.667
+castle_spacing: 4.250
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Redham: 4 units, Army III at Northham: 59 units
+
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Redham: 2 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: Started construction at Reddon.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Blackwich to March (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 1 units
+- Hvitholme: 8 units
+- Fossfell: 4 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army II could not recruit at Redham (reason: no_budget_assigned)
+
+Army II [Power: 72, E: 100 - P:5, S:9, A:5, SW:3, C:2]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army II [Power: 72 - P:5, S:9, A:5, SW:3, C:2]
+Defender Army IV [Power: 134 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 30 - P:1, S:3, A:1, SW:2, C:2]
+Defender After: Army IV [Power: 134 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 175, E: 100 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Reykby
+
+Moves to Bergthorpe
+Moves to Hvitholme
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: Army III [Power: 175 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 175 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 142, E: 100 - P:12, S:11, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Ashhavn
+
+Moves to Ashhavn
+Fight at Ashhavn
+Battle started
+Attacker: Army II [Power: 142 - P:12, S:11, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 139 - P:12, S:10, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 15]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 368
+Food: 52
+Wood: 278
+Iron: 18
+Stone: 30
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 15]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 548
+Food: 148
+Wood: 18
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.714
+underpowered_ratio: 0.500
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army II [Power: 56, E: 75 - P:3, S:4, A:4, SW:2, C:2, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army I [Power: 120, E: 95 - P:13, S:17, A:3, SW:5, C:1, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Army I makes camp
+Fight at Northvik
+Battle started
+Attacker: Army I [Power: 120 - P:13, S:17, A:3, SW:5, C:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 120 - P:13, S:17, A:3, SW:5, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 16]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 491
+Food: 76
+Wood: 275
+Iron: 143
+Stone: 26
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 0.250
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Whitoy: 53 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Ashfjord to County (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Eyberg: 2 units
+- Whitoy: 1 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@356 could not recruit at Westhaug (reason: no_budget_assigned)
+
+@Sprite2D@356 [Power: 110, E: 80 - P:14, S:9, A:11, SW:2, C:1, K:1]
+Action: Recruits
+Target: Eyoy
+
+Moves to Eyoy
+Castle Eyoy - recruits:68, distance:1, level:2, score: 95.2
+Castle Eyberg - recruits:25, distance:1, level:1, score: 30.0
+Castle Whitoy - recruits:1, distance:4, level:2, score: 0.3
+Arrived at Eyoy
+Army IV [Power: 134, E: 100 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+Fight at Redham
+Battle started
+Attacker: Army IV [Power: 134 - P:15, S:12, A:9, SW:6, C:3, H:1]
+Defender Army II [Power: 49 - P:4, S:4, A:3, SW:3, C:2]
+Defender Garrison [Power: 15 - S:5]
+Battle Result: Won
+Attacker After: Army IV [Power: 125 - P:12, S:11, A:9, SW:6, C:3, H:1]
+Defender After: Army II [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 227, E: 100 - P:27, S:19, A:12, SW:11, C:4, H:4]
+Action: Moves
+Target: Rednes
+
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army IV [Power: 227 - P:27, S:19, A:12, SW:11, C:4, H:4]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army IV [Power: 222 - P:26, S:18, A:12, SW:11, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 156, E: 100 - P:18, S:15, A:7, SW:9, C:2, H:2]
+Action: Moves
+Target: Vatnley
+
+Moves to Riverchester
+Moves to Vatnley
+Fight at Vatnley
+Battle started
+Attacker: Army IV [Power: 156 - P:18, S:15, A:7, SW:9, C:2, H:2]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army IV [Power: 129 - P:14, S:14, A:7, SW:5, C:2, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+-------
+[Turn 16]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 276
+Food: 29
+Wood: 67
+Iron: 28
+Stone: 0
+
+Signals:
+frontier_pressure: 1.222
+underpowered_ratio: 0.000
+castle_spacing: 4.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: Upgraded Reddon.
+
+Economy: Upgrade Region actions: Upgrading Reddon to County (score: 5.0), Upgrading Fossfjell to County (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 4 units
+- Hvitholme: 5 units
+- Fossfell: 3 units
+- Reddon: 9 units
+
+______ ARMY ACTIONS ______
+Army III [Power: 175, E: 80 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Army III makes camp
+Army III makes camp
+Fight at Osholme
+Battle started
+Attacker: Army III [Power: 175 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army III [Power: 175 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 139, E: 100 - P:12, S:10, A:9, SW:9, C:3, H:2]
+Action: Moves
+Target: Whitley
+
+Moves to Whitley
+Fight at Whitley
+Battle started
+Attacker: Army II [Power: 139 - P:12, S:10, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 137 - P:11, S:10, A:9, SW:9, C:3, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+-------
+[Turn 16]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 409
+Food: 64
+Wood: 294
+Iron: 18
+Stone: 30
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 16]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 580
+Food: 173
+Wood: 14
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.857
+underpowered_ratio: 0.500
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Woodthorpe: 21 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Army I [Power: 120, E: 100 - P:13, S:17, A:3, SW:5, C:1, K:1]
+Action: Moves
+Target: Whitley
+
+Moves to Eastmere
+Moves to Whitley
+Fight at Whitley
+Battle started
+Attacker: Army I [Power: 120 - P:13, S:17, A:3, SW:5, C:1, K:1]
+Defender Army II [Power: 140 - P:11, S:11, A:9, SW:9, C:3, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army I [Power: 54 - P:3, S:9, A:1, SW:2, K:1]
+Defender After: Army II [Power: 91 - P:5, S:6, A:9, SW:6, C:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 143, E: 80 - P:15, S:14, A:8, SW:5, C:3, H:1, K:1]
+Action: Moves
+Target: Torchester
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Torchester
+Army II makes camp
+Army II makes camp
+Out of movement points before reaching Torchester
+Army I makes camp
+-------
+[Turn 17]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 505
+Food: 53
+Wood: 297
+Iron: 158
+Stone: 38
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.200
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: @Sprite2D@356 at Eyoy: 47 units, Army V at Eyoy: 47 units
+
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Redham: 1 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: Started construction at Vatnley.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Rednes to County (score: 5.0), Upgrading Hafnchester to March (score: 5.0), Upgrading Riverford to March (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 1 units
+- Eyberg: 3 units
+- Whitoy: 3 units
+
+______ ARMY ACTIONS ______
+Army IV [Power: 128, E: 100 - P:12, S:12, A:9, SW:6, C:3, H:1]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army IV [Power: 128 - P:12, S:12, A:9, SW:6, C:3, H:1]
+Defender Army III [Power: 175 - P:20, S:15, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army IV [Power: 52 - P:3, S:3, A:7, SW:3, C:1]
+Defender After: Army III [Power: 119 - P:14, S:12, A:9, SW:5, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 135, E: 95 - P:15, S:14, A:7, SW:6, C:2, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Woodholme
+Moves to Northvik
+Army IV makes camp
+Movement blocked near Northvik
+Army IV [Power: 225, E: 100 - P:26, S:19, A:12, SW:11, C:4, H:4]
+Action: Moves
+Target: Kingford
+
+Moves to Kingworth
+Moves to Kingford
+Fight at Kingford
+Battle started
+Attacker: Army IV [Power: 225 - P:26, S:19, A:12, SW:11, C:4, H:4]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army IV [Power: 208 - P:21, S:18, A:12, SW:10, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 257, E: 100 - P:32, S:26, A:17, SW:8, C:3, H:2, K:1]
+Action: Moves
+Target: Riverford
+
+Moves to Greenley
+Moves to Eyberg
+Moves to Riverford
+Fight at Riverford
+Battle started
+Attacker: @Sprite2D@356 [Power: 184 - P:25, S:20, A:12, SW:6, C:1, K:1]
+Defender Army III [Power: 112 - P:13, S:14, A:5, SW:5, C:1, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 148 - P:20, S:14, A:12, SW:4, C:1, K:1]
+Defender After: Army III [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army V [Power: 137, E: 100 - P:16, S:15, A:6, SW:6, C:2, H:2]
+Action: Moves
+Target: Hafnchester
+
+Moves to Westhaug
+Moves to Hafnchester
+Fight at Hafnchester
+Battle started
+Attacker: Army V [Power: 137 - P:16, S:15, A:6, SW:6, C:2, H:2]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army V [Power: 83 - P:8, S:7, A:6, SW:5, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+-------
+[Turn 17]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 372
+Food: 64
+Wood: 117
+Iron: 31
+Stone: 2
+
+Signals:
+frontier_pressure: 1.100
+underpowered_ratio: 0.500
+castle_spacing: 5.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Northham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Northham: 1 units
+- Hvitholme: 6 units
+- Fossfell: 3 units
+- Reddon: 12 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army II could not recruit at Whitley (reason: no_budget_assigned)
+
+Recruitment: Army Army III could not recruit at Osholme (reason: no_budget_assigned)
+
+Army II [Power: 91, E: 100 - P:5, S:6, A:9, SW:6, C:3]
+Action: Recruits
+Target: Reddon
+
+Moves to Ashhavn
+Moves to Kingdal
+Moves to Reddon
+Castle Reddon - recruits:23, distance:3, level:2, score: 10.7
+Castle Northham - recruits:41, distance:6, level:2, score: 9.6
+Castle Hvitholme - recruits:16, distance:6, level:1, score: 3.2
+Arrived at Reddon
+Army III [Power: 119, E: 90 - P:14, S:12, A:9, SW:5, C:2]
+Action: Recruits
+Target: Northham
+
+Moves to Hvitford
+Moves to Woodnes
+Moves to Bergthorpe
+Moves to Northham
+Castle Northham - recruits:41, distance:4, level:2, score: 14.3
+Castle Hvitholme - recruits:16, distance:2, level:1, score: 9.6
+Castle Reddon - recruits:23, distance:5, level:2, score: 6.4
+Arrived at Northham
+-------
+[Turn 17]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 446
+Food: 77
+Wood: 305
+Iron: 18
+Stone: 30
+
+Signals:
+frontier_pressure: 2.750
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 17]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 636
+Food: 198
+Wood: 14
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.857
+underpowered_ratio: 0.500
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_budget_assigned)
+
+Army I [Power: 66, E: 95 - P:4, S:11, A:1, SW:3, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:3, level:2, score: 4.2
+Arrived at Woodthorpe
+Army II [Power: 143, E: 85 - P:15, S:14, A:8, SW:5, C:3, H:1, K:1]
+Action: Moves
+Target: Whitley
+
+Moves to Whitley
+Army II makes camp
+Army II makes camp
+Fight at Whitley
+Battle started
+Attacker: Army II [Power: 143 - P:15, S:14, A:8, SW:5, C:3, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 143 - P:15, S:14, A:8, SW:5, C:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+-------
+[Turn 18]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 550
+Food: 9
+Wood: 331
+Iron: 173
+Stone: 15
+
+Signals:
+frontier_pressure: 0.400
+underpowered_ratio: 0.400
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Redham: 45 units
+
+Economy: Danger castles checked: 2.
+
+Castle Defense Recruitment:
+- Redham: 2 units
+- Vatnley: 3 units
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: Upgraded Vatnley.
+
+Economy: Upgrade Region actions: Upgrading Riverchester to County (score: 6.0), Upgrading Whitoy to Province (score: 6.0), Upgrading Woodholme to March (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 1 units
+- Eyberg: 4 units
+- Whitoy: 6 units
+- Vatnley: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army V could not recruit at Hafnchester (reason: no_budget_assigned)
+
+Army V [Power: 94, E: 95 - P:10, S:8, A:6, SW:6, C:2]
+Action: Recruits
+Target: Eyberg
+
+Moves to Eyberg
+Castle Eyberg - recruits:30, distance:1, level:1, score: 36.0
+Castle Eyoy - recruits:25, distance:2, level:2, score: 17.5
+Castle Vatnley - recruits:46, distance:5, level:1, score: 11.0
+Arrived at Eyberg
+Army IV [Power: 205, E: 100 - P:22, S:19, A:14, SW:9, C:4, H:2]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army IV [Power: 205 - P:22, S:19, A:14, SW:9, C:4, H:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 205 - P:22, S:19, A:14, SW:9, C:4, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 142, E: 100 - P:15, S:15, A:7, SW:7, C:2, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: Army IV [Power: 142 - P:15, S:15, A:7, SW:7, C:2, H:2]
+Defender @Sprite2D@359 [Power: 70 - P:9, S:5, A:7, SW:2, C:2]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Withdrew
+Attacker After: Army IV [Power: 0 - none]
+Defender After: @Sprite2D@359 [Power: 58 - P:6, S:4, A:6, SW:2, C:2]
+Defender After (Garrison): Garrison [Power: 16 - P:8]
+
+Army IV [Power: 208, E: 85 - P:21, S:18, A:12, SW:10, C:4, H:4]
+Action: Moves
+Target: Northvik
+
+Moves to Redham
+Moves to Northvik
+Army IV makes camp
+Army IV makes camp
+Movement blocked near Northvik
+@Sprite2D@356 [Power: 240, E: 80 - P:30, S:23, A:17, SW:7, C:3, H:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Torthorpe
+Moves to Northvik
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@356 [Power: 257 - P:32, S:26, A:17, SW:8, C:3, H:2, K:1]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 240 - P:30, S:23, A:17, SW:7, C:3, H:2, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+Army IV makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+-------
+[Turn 18]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 354
+Food: 91
+Wood: 141
+Iron: 34
+Stone: 4
+
+Signals:
+frontier_pressure: 1.222
+underpowered_ratio: 0.667
+castle_spacing: 4.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army II at Reddon: 35 units, @Sprite2D@371 at Northham: 33 units, Army III at Northham: 32 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Hvitholme: 7 units
+- Fossfell: 3 units
+- Reddon: 1 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@371 makes camp
+@Sprite2D@371 makes camp
+@Sprite2D@371 makes camp
+@Sprite2D@371 makes camp
+@Sprite2D@371 makes camp
+Recruitment: Army Army III could not recruit at Northham (reason: no_budget_assigned)
+
+Army III [Power: 94, E: 100 - P:11, S:10, A:3, SW:6, C:1, H:1]
+Action: Moves
+Target: Saintfjell
+
+Moves to Bergthorpe
+Moves to Saintfjell
+Fight at Saintfjell
+Battle started
+Attacker: Army III [Power: 94 - P:11, S:10, A:3, SW:6, C:1, H:1]
+Defender Garrison [Power: 20 - P:10]
+Battle Result: Defeated
+Attacker After: Army III [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 10 - P:5]
+
+Army II [Power: 193, E: 85 - P:17, S:16, A:14, SW:12, C:4, H:1]
+Action: Moves
+Target: Reykfjell
+
+Moves to Reykfjell
+Army II makes camp
+Army II makes camp
+Fight at Reykfjell
+Battle started
+Attacker: Army II [Power: 209 - P:19, S:17, A:14, SW:13, C:4, H:2]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army II [Power: 198 - P:19, S:16, A:14, SW:11, C:4, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+-------
+[Turn 18]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 461
+Food: 41
+Wood: 291
+Iron: 18
+Stone: 25
+
+Signals:
+frontier_pressure: 2.750
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region actions: Upgrading Northvik to Province (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Northvik (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 18]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 672
+Food: 224
+Wood: 13
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 0.500
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodthorpe: 21 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (success)
+
+______ ARMY ACTIONS ______
+Army II [Power: 143, E: 90 - P:15, S:14, A:8, SW:5, C:3, H:1, K:1]
+Action: Moves
+Target: Ashhavn
+
+Moves to Ashhavn
+Army II makes camp
+Fight at Ashhavn
+Battle started
+Attacker: Army II [Power: 145 - P:16, S:14, A:8, SW:5, C:3, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 142 - P:16, S:13, A:8, SW:5, C:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I [Power: 131, E: 100 - P:11, S:18, A:4, SW:6, C:1, H:1, K:1]
+Action: Moves
+Target: Torchester
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Moves to Torchester
+Fight at Torchester
+Battle started
+Attacker: Army I [Power: 131 - P:11, S:18, A:4, SW:6, C:1, H:1, K:1]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army I [Power: 110 - P:7, S:15, A:4, SW:5, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+-------
+[Turn 19]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 669
+Food: 69
+Wood: 431
+Iron: 183
+Stone: 27
+
+Signals:
+frontier_pressure: 0.432
+underpowered_ratio: 0.250
+castle_spacing: 7.400
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army V at Eyberg: 51 units
+
+Economy: Danger castles checked: 2.
+
+Castle Defense Recruitment:
+- Redham: 3 units
+- Vatnley: 6 units
+
+Economy: Raise Army: Raised at Vatnley.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 3 units
+- Eyberg: 7 units
+- Whitoy: 9 units
+- Vatnley: 6 units
+
+______ ARMY ACTIONS ______
+Army IV [Power: 205, E: 100 - P:22, S:19, A:14, SW:9, C:4, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Fight at Northvik
+Army IV [Power: 210, E: 100 - P:22, S:18, A:12, SW:10, C:4, H:4]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Arrived at Northvik
+@Sprite2D@356 [Power: 245, E: 100 - P:29, S:23, A:18, SW:8, C:3, H:2, K:1]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@356 [Power: 246 - P:30, S:24, A:18, SW:7, C:3, H:2, K:1]
+Defender Garrison [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 241 - P:29, S:23, A:18, SW:7, C:3, H:2, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army V [Power: 237, E: 100 - P:31, S:25, A:16, SW:11, C:2]
+Action: Moves
+Target: Eastmere
+
+Moves to Akrdon
+Moves to Northvik
+Moves to Eastmere
+Fight at Eastmere
+Battle started
+Attacker: Army V [Power: 237 - P:31, S:25, A:16, SW:11, C:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army V [Power: 237 - P:31, S:25, A:16, SW:11, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+@Sprite2D@402 makes camp
+@Sprite2D@402 makes camp
+@Sprite2D@402 makes camp
+-------
+[Turn 19]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 439
+Food: 87
+Wood: 165
+Iron: 37
+Stone: 6
+
+Signals:
+frontier_pressure: 1.111
+underpowered_ratio: 0.000
+castle_spacing: 4.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Reddon to March (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Hvitholme: 7 units
+- Fossfell: 3 units
+- Reddon: 3 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@371 [Power: 248, E: 100 - P:26, S:23, A:13, SW:13, C:4, H:4]
+Action: Moves
+Target: Saintfjell
+
+Moves to Bergthorpe
+Moves to Saintfjell
+Fight at Saintfjell
+Battle started
+Attacker: @Sprite2D@371 [Power: 248 - P:26, S:23, A:13, SW:13, C:4, H:4]
+Defender Garrison [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: @Sprite2D@371 [Power: 246 - P:25, S:23, A:13, SW:13, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 198, E: 100 - P:19, S:16, A:14, SW:11, C:4, H:2]
+Action: Moves
+Target: Kingfjell
+
+Moves to Kingfjell
+Fight at Kingfjell
+Battle started
+Attacker: Army II [Power: 198 - P:19, S:16, A:14, SW:11, C:4, H:2]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army II [Power: 194 - P:17, S:16, A:14, SW:11, C:4, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+@Sprite2D@371 makes camp
+@Sprite2D@371 makes camp
+-------
+[Turn 19]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 481
+Food: 53
+Wood: 295
+Iron: 18
+Stone: 25
+
+Signals:
+frontier_pressure: 3.333
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: low_score.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 19]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 710
+Food: 208
+Wood: 0
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Torfjell to Duchy (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 3 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Torchester (reason: no_budget_assigned)
+
+Army I [Power: 110, E: 75 - P:7, S:15, A:4, SW:5, C:1, H:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:9, distance:4, level:2, score: 3.1
+Fight at Woodthorpe
+Battle started
+Attacker: Army I [Power: 110 - P:7, S:15, A:4, SW:5, C:1, H:1, K:1]
+Defender Army V [Power: 237 - P:31, S:25, A:16, SW:11, C:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army I [Power: 81 - P:5, S:9, A:3, SW:4, C:1, H:1, K:1]
+Defender After: Army V [Power: 231 - P:30, S:25, A:16, SW:10, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 142, E: 100 - P:16, S:13, A:8, SW:5, C:3, H:1, K:1]
+Action: Moves
+Target: Eastmere
+
+Moves to Whitley
+Moves to Eastmere
+Fight at Eastmere
+Battle started
+Attacker: Army II [Power: 142 - P:16, S:13, A:8, SW:5, C:3, H:1, K:1]
+Defender Army V [Power: 231 - P:30, S:25, A:16, SW:10, C:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 92 - P:5, S:8, A:8, SW:3, C:3, K:1]
+Defender After: Army V [Power: 231 - P:30, S:25, A:16, SW:10, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+-------
+[Turn 20]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 841
+Food: 135
+Wood: 546
+Iron: 195
+Stone: 39
+
+Signals:
+frontier_pressure: 0.400
+underpowered_ratio: 0.200
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army V at Vatnley: 63 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Redham: 7 units
+- Eyberg: 1 units
+- Whitoy: 3 units
+- Vatnley: 2 units
+
+______ ARMY ACTIONS ______
+Army IV [Power: 178, E: 100 - P:17, S:15, A:14, SW:9, C:4, H:1]
+Action: Moves
+Target: Reykby
+
+Moves to Reykby
+Fight at Reykby
+Battle started
+Attacker: Army IV [Power: 205 - P:22, S:19, A:14, SW:9, C:4, H:2]
+Defender Garrison [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army IV [Power: 169 - P:16, S:14, A:14, SW:8, C:4, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 245, E: 100 - P:29, S:23, A:18, SW:8, C:3, H:2, K:1]
+Action: Moves
+Target: Whitthwaite
+
+Moves to Eastmere
+Moves to Whitthwaite
+Fight at Whitthwaite
+Battle started
+Attacker: @Sprite2D@356 [Power: 245 - P:29, S:23, A:18, SW:8, C:3, H:2, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 245 - P:29, S:23, A:18, SW:8, C:3, H:2, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army V [Power: 231, E: 80 - P:30, S:25, A:16, SW:10, C:2]
+Action: Moves
+Target: Torfjell
+
+Moves to Whitthwaite
+Moves to Torfjell
+Army V makes camp
+Army V makes camp
+Fight at Torfjell
+Battle started
+Attacker: Army V [Power: 233 - P:31, S:25, A:16, SW:10, C:2]
+Defender Garrison [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army V [Power: 231 - P:30, S:25, A:16, SW:10, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army V [Power: 185, E: 100 - P:22, S:17, A:9, SW:9, C:3, H:3]
+Action: Moves
+Target: Kingdon
+
+Moves to Eastvik
+Moves to Kingdon
+Fight at Kingdon
+Battle started
+Attacker: Army V [Power: 185 - P:22, S:17, A:9, SW:9, C:3, H:3]
+Defender Garrison [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army V [Power: 162 - P:19, S:14, A:9, SW:7, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@402 [Power: 210, E: 100 - P:22, S:18, A:12, SW:10, C:4, H:4]
+Action: Moves
+Target: Reykoy
+
+Moves to Osholme
+Moves to Reykoy
+Fight at Reykoy
+Battle started
+Attacker: @Sprite2D@402 [Power: 210 - P:22, S:18, A:12, SW:10, C:4, H:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@402 [Power: 210 - P:22, S:18, A:12, SW:10, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+@Sprite2D@402 makes camp
+-------
+[Turn 20]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 529
+Food: 113
+Wood: 201
+Iron: 37
+Stone: 6
+
+Signals:
+frontier_pressure: 0.722
+underpowered_ratio: 0.000
+castle_spacing: 4.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Northham.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Hvitholme: 6 units
+- Fossfell: 3 units
+- Reddon: 5 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@371 [Power: 253, E: 100 - P:25, S:24, A:13, SW:14, C:4, H:4]
+Action: Moves
+Target: Osholme
+
+Moves to Woodnes
+Moves to Hvitford
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: @Sprite2D@371 [Power: 253 - P:25, S:24, A:13, SW:14, C:4, H:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@371 [Power: 253 - P:25, S:24, A:13, SW:14, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 207, E: 100 - P:18, S:17, A:14, SW:13, C:4, H:2]
+Action: Moves
+Target: Greendal
+
+Moves to Reddon
+Moves to Greendal
+Fight at Greendal
+Battle started
+Attacker: Army II [Power: 207 - P:18, S:17, A:14, SW:13, C:4, H:2]
+Defender Garrison [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 199 - P:14, S:17, A:14, SW:13, C:4, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+-------
+[Turn 20]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 501
+Food: 65
+Wood: 299
+Iron: 18
+Stone: 25
+
+Signals:
+frontier_pressure: 3.333
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: low_score.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 20]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 749
+Food: 220
+Wood: 6
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 1.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: insufficient_resources.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Woodthorpe: 6 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Torchester (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Whitley (reason: no_budget_assigned)
+
+Army I [Power: 93, E: 95 - P:6, S:11, A:3, SW:5, C:1, H:1, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:12, distance:4, level:2, score: 4.2
+Fight at Woodthorpe
+Battle started
+Attacker: Army I [Power: 93 - P:6, S:11, A:3, SW:5, C:1, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 87 - P:5, S:11, A:3, SW:4, C:1, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II [Power: 94, E: 95 - P:6, S:8, A:8, SW:3, C:3, K:1]
+Action: Recruits
+Target: Woodthorpe
+
+Moves to Eastmere
+Moves to Whitthwaite
+Moves to Torfjell
+Moves to Woodthorpe
+Castle Woodthorpe - recruits:12, distance:4, level:2, score: 4.2
+Fight at Woodthorpe
+Battle started
+Attacker: Army II [Power: 94 - P:6, S:8, A:8, SW:3, C:3, K:1]
+Defender @Sprite2D@356 [Power: 240 - P:29, S:23, A:18, SW:8, C:3, H:1, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 29 - P:1, S:1, A:4, SW:1, C:2]
+Defender After: @Sprite2D@356 [Power: 225 - P:25, S:22, A:18, SW:7, C:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 21]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 847
+Food: 78
+Wood: 581
+Iron: 203
+Stone: 5
+
+Signals:
+frontier_pressure: 0.465
+underpowered_ratio: 0.167
+castle_spacing: 8.600
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army VI at Eyoy: 86 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Whitoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: Upgraded Redham.
+
+Economy: Upgrade Region actions: Upgrading Riverchester to March (score: 6.0), Upgrading Riverford to Duchy (score: 6.0), Upgrading Ashfjord to March (score: 6.0), Upgrading Rednes to March (score: 6.0), Upgrading Vatnley to County (score: 6.0)
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=5.
+
+Economy: Ore discoveries: Kingdon
+
+Additional Castle Recruitment:
+- Redham: 10 units
+- Eyberg: 2 units
+- Vatnley: 3 units
+
+______ ARMY ACTIONS ______
+Army V [Power: 231, E: 85 - P:30, S:25, A:16, SW:10, C:2]
+Action: Moves
+Target: Woodthorpe
+
+Moves to Woodthorpe
+Army V makes camp
+Army V makes camp
+Fight at Woodthorpe
+Battle started
+Attacker: Army V [Power: 231 - P:30, S:25, A:16, SW:10, C:2]
+Defender Garrison [Power: 196 - P:29, S:25, A:1, SW:15]
+Battle Result: Won
+Attacker After: Army V [Power: 101 - P:6, S:9, A:14, SW:3, C:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army IV [Power: 181, E: 100 - P:17, S:16, A:14, SW:9, C:4, H:1]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army IV [Power: 178 - P:17, S:15, A:14, SW:9, C:4, H:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army IV [Power: 178 - P:17, S:15, A:14, SW:9, C:4, H:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@402 [Power: 210, E: 95 - P:22, S:18, A:12, SW:10, C:4, H:4]
+Action: Moves
+Target: Osholme
+
+Moves to Osholme
+@Sprite2D@402 makes camp
+Fight at Osholme
+Battle started
+Attacker: @Sprite2D@402 [Power: 210 - P:22, S:18, A:12, SW:10, C:4, H:4]
+Defender @Sprite2D@371 [Power: 235 - P:21, S:23, A:12, SW:13, C:4, H:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@402 [Power: 123 - P:10, S:10, A:8, SW:8, C:3, H:1]
+Defender After: @Sprite2D@371 [Power: 228 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 225, E: 100 - P:25, S:22, A:18, SW:7, C:3, H:1, K:1]
+Action: Moves
+Target: Hafnley
+
+Moves to Torfjell
+Moves to Woodthorpe
+Moves to Hafnley
+Fight at Hafnley
+Battle started
+Attacker: @Sprite2D@356 [Power: 245 - P:29, S:23, A:18, SW:8, C:3, H:2, K:1]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@356 [Power: 240 - P:29, S:23, A:18, SW:8, C:3, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army V [Power: 162, E: 85 - P:19, S:14, A:9, SW:7, C:3, H:3]
+Action: Moves
+Target: Redhavn
+
+Moves to Redhavn
+Army V makes camp
+Army V makes camp
+Movement blocked near Redhavn
+Army VI [Power: 252, E: 100 - P:30, S:24, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Oschester
+
+Moves to Hafnchester
+Moves to Oschester
+Fight at Oschester
+Battle started
+Attacker: Army VI [Power: 252 - P:30, S:24, A:12, SW:12, C:4, H:4]
+Defender Garrison [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army VI [Power: 246 - P:29, S:24, A:12, SW:11, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+Army IV makes camp
+Army IV makes camp
+@Sprite2D@402 makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army V makes camp
+Army VI makes camp
+-------
+[Turn 21]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 548
+Food: 104
+Wood: 227
+Iron: 37
+Stone: 6
+
+Signals:
+frontier_pressure: 0.650
+underpowered_ratio: 0.333
+castle_spacing: 5.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army III at Northham: 72 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Greendal to County (score: 5.0), Upgrading Fossfjell to March (score: 5.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Hvitholme: 3 units
+- Fossfell: 3 units
+- Reddon: 7 units
+
+______ ARMY ACTIONS ______
+@Sprite2D@371 [Power: 228, E: 80 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Action: Moves
+Target: Northvik
+
+Moves to Northvik
+@Sprite2D@371 makes camp
+@Sprite2D@371 makes camp
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@371 [Power: 232 - P:19, S:22, A:12, SW:14, C:4, H:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Won
+Attacker After: @Sprite2D@371 [Power: 228 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army III [Power: 212, E: 100 - P:25, S:20, A:9, SW:12, C:3, H:3]
+Action: Moves
+Target: Reykby
+
+Moves to Bergthorpe
+Moves to Hvitholme
+Moves to Reykby
+Fight at Reykby
+Army II [Power: 201, E: 95 - P:15, S:17, A:14, SW:13, C:4, H:2]
+Action: Moves
+Target: Hellaley
+
+Moves to Hellaley
+Army II makes camp
+Fight at Hellaley
+Battle started
+Attacker: Army II [Power: 201 - P:15, S:17, A:14, SW:13, C:4, H:2]
+Defender Garrison [Power: 40 - P:20]
+Battle Result: Won
+Attacker After: Army II [Power: 172 - P:10, S:16, A:14, SW:9, C:4, H:2]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+-------
+[Turn 21]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 522
+Food: 77
+Wood: 303
+Iron: 18
+Stone: 25
+
+Signals:
+frontier_pressure: 3.333
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: low_score.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 21]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 748
+Food: 184
+Wood: 13
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region actions: Upgrading Eastmere to County (score: 2.0), Upgrading Ashhavn to County (score: 2.0), Upgrading Torchester to County (score: 2.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_castle_available)
+
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_castle_available)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 22]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 903
+Food: 149
+Wood: 671
+Iron: 212
+Stone: 19
+
+Signals:
+frontier_pressure: 0.409
+underpowered_ratio: 0.143
+castle_spacing: 7.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army V at Woodthorpe: 3 units, Army VII at Whitoy: 104 units
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Northford to County (score: 6.0)
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=5.
+
+Economy: Ore discoveries: Kingdon
+
+Additional Castle Recruitment:
+- Redham: 11 units
+- Woodthorpe: 1 units
+- Eyberg: 3 units
+- Vatnley: 5 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army IV could not recruit at Akroy (reason: no_budget_assigned)
+
+Army IV [Power: 108, E: 100 - P:5, S:6, A:13, SW:5, C:4, H:1]
+Action: Recruits
+Target: Eyberg
+
+Moves to Eastvik
+Moves to Greenthorpe
+Moves to Northholme
+Moves to Eyoy
+Moves to Westhaug
+Moves to Eyberg
+Castle Eyberg - recruits:56, distance:6, level:1, score: 11.2
+Castle Redham - recruits:23, distance:3, level:2, score: 10.7
+Castle Vatnley - recruits:15, distance:2, level:2, score: 10.5
+Out of movement points before reaching Eyberg
+@Sprite2D@402 [Power: 143, E: 100 - P:10, S:13, A:10, SW:8, C:3, H:2]
+Action: Moves
+Target: Northvik
+
+Moves to Redham
+Moves to Northvik
+Fight at Northvik
+Battle started
+Attacker: @Sprite2D@402 [Power: 143 - P:10, S:13, A:10, SW:8, C:3, H:2]
+Defender @Sprite2D@371 [Power: 228 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@402 [Power: 62 - P:2, S:6, A:5, SW:3, C:2, H:1]
+Defender After: @Sprite2D@371 [Power: 228 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army VII [Power: 391, E: 100 - P:24, S:26, A:15, SW:16, C:8, H:7, K:5, M:3]
+Action: Moves
+Target: Northvik
+
+Moves to Riverchester
+Moves to Woodholme
+Moves to Northvik
+Movement blocked near Northvik
+Army VI [Power: 250, E: 95 - P:29, S:24, A:12, SW:12, C:4, H:4]
+Action: Moves
+Target: Northvik
+
+Moves to Akrnes
+Moves to Northford
+Moves to Whitoy
+Moves to Riverchester
+Moves to Woodholme
+Moves to Northvik
+Out of movement points before reaching Northvik
+Army V [Power: 137, E: 100 - P:11, S:15, A:14, SW:5, C:2]
+Action: Moves
+Target: Eastmere
+
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+Fight at Eastmere
+Battle started
+Attacker: Army V [Power: 137 - P:11, S:15, A:14, SW:5, C:2]
+Defender Army I [Power: 96 - P:6, S:12, A:3, SW:5, C:1, H:1, K:1]
+Defender Army II [Power: 45 - P:4, S:3, A:4, SW:2, C:2]
+Defender Garrison [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army V [Power: 31 - P:2, S:1, A:8]
+Defender After: Army I [Power: 69 - P:3, S:10, A:2, SW:3, H:1, K:1]
+Defender After: Army II [Power: 24 - P:2, S:2, A:2, SW:1, C:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 [Power: 222, E: 90 - P:25, S:21, A:18, SW:7, C:3, H:1, K:1]
+Action: Moves
+Target: Eastmere
+
+Moves to Woodthorpe
+Moves to Torfjell
+Moves to Whitthwaite
+Moves to Eastmere
+@Sprite2D@356 makes camp
+Movement blocked near Eastmere
+Army V [Power: 162, E: 100 - P:19, S:14, A:9, SW:7, C:3, H:3]
+Action: Moves
+Target: Westmere
+
+Moves to Westmere
+Fight at Westmere
+Battle started
+Attacker: Army V [Power: 162 - P:19, S:14, A:9, SW:7, C:3, H:3]
+Defender Garrison [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army V [Power: 160 - P:18, S:14, A:9, SW:7, C:3, H:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+@Sprite2D@356 makes camp
+Army V makes camp
+Army V makes camp
+Army VII makes camp
+Army VII makes camp
+-------
+[Turn 22]
+-------
+[Player Player 2 (#2)]
+Resources:
+Gold: 687
+Food: 84
+Wood: 271
+Iron: 40
+Stone: 8
+
+Signals:
+frontier_pressure: 0.609
+underpowered_ratio: 0.000
+castle_spacing: 5.750
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Reddon to Duchy (score: 5.0), Upgrading Hellaley to County (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Hvitholme: 2 units
+- Fossfell: 3 units
+- Reddon: 9 units
+
+______ ARMY ACTIONS ______
+Army II [Power: 178, E: 100 - P:11, S:16, A:14, SW:10, C:4, H:2]
+Action: Moves
+Target: Fossfjell
+
+Moves to Fossfjell
+Arrived at Fossfjell
+Recruitment: Army Army II raised 8 peasants at Fossfjell
+
+Army III [Power: 210, E: 80 - P:24, S:20, A:9, SW:12, C:3, H:3]
+Action: Moves
+Target: Redham
+
+Moves to Osholme
+Moves to Redham
+Army III makes camp
+Army III makes camp
+Movement blocked near Redham
+@Sprite2D@371 [Power: 228, E: 90 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Action: Moves
+Target: Redham
+
+Moves to Redham
+@Sprite2D@371 makes camp
+Fight at Redham
+Battle started
+Attacker: @Sprite2D@371 [Power: 228 - P:19, S:22, A:12, SW:13, C:4, H:4]
+Defender @Sprite2D@402 [Power: 62 - P:2, S:6, A:5, SW:3, C:2, H:1]
+Defender Garrison [Power: 112 - P:10, S:24, SW:5]
+Battle Result: Won
+Attacker After: @Sprite2D@371 [Power: 133 - P:6, S:7, A:11, SW:10, C:3, H:3]
+Defender After: @Sprite2D@402 [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+@Sprite2D@371 makes camp
+Army III makes camp
+-------
+[Turn 22]
+-------
+[Player Player 3 (#3)]
+Resources:
+Gold: 528
+Food: 64
+Wood: 297
+Iron: 18
+Stone: 25
+
+Signals:
+frontier_pressure: 3.333
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region actions: Upgrading Vatnholme to March (score: 1.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_budget_assigned)
+
+Recruitment: Army @Sprite2D@359 could not recruit at Vatnholme (reason: no_castle_available)
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+-------
+[Turn 22]
+-------
+[Player Player 4 (#4)]
+Resources:
+Gold: 781
+Food: 209
+Wood: 20
+Iron: 10
+Stone: 5
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 1.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: insufficient_resources.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: cooldown_active.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no castles available)
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army I could not recruit at Eastmere (reason: no_castle_available)
+
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Eastmere (reason: no_castle_available)
+
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army II makes camp
+-------
+[Turn 23]
+-------
+[Player Player 1 (#1)]
+Resources:
+Gold: 1186
+Food: 214
+Wood: 776
+Iron: 229
+Stone: 36
+
+Signals:
+frontier_pressure: 0.455
+underpowered_ratio: 0.167
+castle_spacing: 8.800
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: Raised at Eyoy.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Hafnchester to County (score: 5.0)
+
+Economy: Ore search: attempts=2, discoveries=0, gold_spent=10.
+
+Additional Castle Recruitment:
+- Woodthorpe: 2 units
+- Eyberg: 4 units
+- Vatnley: 6 units
+
+______ ARMY ACTIONS ______
+Recruitment: Army Army IV could not recruit at Northholme (reason: no_budget_assigned)
+
+Recruitment: Army Army V could not recruit at Whitthwaite (reason: no_budget_assigned)
+
+Army IV [Power: 108, E: 85 - P:5, S:6, A:13, SW:5, C:4, H:1]
+Action: Recruits
+Target: Eyoy
+
+Moves to Eyoy
+Castle Eyoy - recruits:50, distance:1, level:2, score: 70.0
+Castle Eyberg - recruits:73, distance:3, level:1, score: 29.2
+Castle Whitoy - recruits:21, distance:2, level:3, score: 16.8
