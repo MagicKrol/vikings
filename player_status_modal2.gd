@@ -116,30 +116,21 @@ func _update_display_from_game_state() -> void:
 	# Get current player
 	var current_player = game_manager.player_manager.get_current_player()
 	
-	var is_initial_turn := false
-	if game_manager:
-		is_initial_turn = not game_manager.has_completed_initial_turn(current_player.get_player_id())
-
-	# Calculate actual income from owned regions
-	var region_income = _calculate_region_income(current_player.get_player_id(), is_initial_turn)
-	
-	# Calculate population data
-	var population_data = _calculate_population_data(current_player.get_player_id())
-	current_population = population_data
-	if is_initial_turn:
-		current_population.income = 0
+	var projection = game_manager.player_manager.get_projected_economy_for_player(current_player.get_player_id())
+	var projected_income: Dictionary = projection.get("income", {})
+	var population_data: Dictionary = projection.get("population", {})
+	current_population.amount = int(population_data.get("amount", 0))
+	current_population.income = int(population_data.get("growth", 0))
 	
 	# Update resource data from current player
 	for resource_type in current_resources:
 		var amount = current_player.get_resource_amount(resource_type)
-		var income = region_income.get(resource_type, 0)
-		if is_initial_turn:
-			income = 0
+		var income = int(projected_income.get(resource_type, 0))
 		current_resources[resource_type] = {"amount": amount, "income": income}
 	
 	# Update the display
 	_update_display()
-	initial_economy_processed = not is_initial_turn
+	initial_economy_processed = true
 
 func refresh_from_game_state() -> void:
 	"""Refresh resource display from current game state (public method)"""
@@ -150,81 +141,3 @@ func show_and_update() -> void:
 	visible = true
 	_update_display_from_game_state()
 	update_all_resources(current_resources)
-
-func _calculate_region_income(player_id: int, initial_turn: bool = false) -> Dictionary:
-	"""Calculate net income from regions owned by the player (production - costs)"""
-	var income = {
-		ResourcesEnum.Type.GOLD: 0,
-		ResourcesEnum.Type.FOOD: 0,
-		ResourcesEnum.Type.WOOD: 0,
-		ResourcesEnum.Type.IRON: 0,
-		ResourcesEnum.Type.STONE: 0
-	}
-	
-	# Get region manager and map generator from game manager
-	var region_manager = game_manager.click_manager.get_region_manager()
-	var map_generator = game_manager.get_node("../Map") as MapGenerator
-	
-	# Get all regions owned by this player
-	var owned_regions = region_manager.get_player_regions(player_id)
-	
-	# Get regions node from map generator
-	var regions_node = map_generator.get_node("Regions")
-	
-	# Sum up resources from all owned regions
-	for region_id in owned_regions:
-		var region_node = _find_region_by_id(regions_node, region_id)
-		if region_node != null:
-			for resource_type in income.keys():
-				if region_node.can_collect_resource(resource_type):
-					var region_resource_amount = region_node.get_resource_amount(resource_type)
-					income[resource_type] += region_resource_amount
-			
-			# Add population-based gold income
-			var pop_gold_income = region_node.get_income()
-			income[ResourcesEnum.Type.GOLD] += pop_gold_income
-	
-	if initial_turn:
-		for key in income.keys():
-			income[key] = 0
-		return income
-
-	# Subtract army food costs from food income to show net food income
-	var total_army_food_cost = game_manager.player_manager.calculate_total_army_food_cost(player_id)
-	var food_cost_int = int(ceil(total_army_food_cost))
-	income[ResourcesEnum.Type.FOOD] -= food_cost_int
-
-	return income
-
-func _find_region_by_id(regions_node: Node, region_id: int) -> Region:
-	"""Find a region node by its ID"""
-	for child in regions_node.get_children():
-		if child is Region and child.get_region_id() == region_id:
-			return child
-	return null
-
-func _calculate_population_data(player_id: int) -> Dictionary:
-	"""Calculate total population and last turn growth for the player"""
-	var population_data = {"amount": 0, "income": 0}
-	
-	# Get region manager and map generator from game manager
-	var region_manager = game_manager.click_manager.get_region_manager()
-	var map_generator = game_manager.get_node("../Map") as MapGenerator
-	
-	# Get all regions owned by this player
-	var owned_regions = region_manager.get_player_regions(player_id)
-	
-	# Get regions node from map generator
-	var regions_node = map_generator.get_node("Regions")
-	
-	# Calculate total population and last turn growth from all owned regions
-	for region_id in owned_regions:
-		var region_node = _find_region_by_id(regions_node, region_id)
-		if region_node != null:
-			# Add population
-			population_data.amount += region_node.get_population()
-			
-			# Add last turn's population growth
-			population_data.income += region_node.last_population_growth
-	
-	return population_data

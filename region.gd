@@ -350,20 +350,19 @@ func grow_population() -> void:
 		promotion_bonus = GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
 		promotion_growth_bonus_turns_remaining -= 1
 	
-	# Total growth rate with promotion bonus
-	var total_base_growth_rate = base_growth_rate + promotion_bonus
-	
 	# Calculate current recruit ratio (available / max) but cap at 1.0 to prevent Call to Arms from boosting growth above base rate
 	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
 	var recruit_ratio = 0.0
 	if max_recruits > 0:
 		recruit_ratio = min(1.0, float(available_recruits) / float(max_recruits))
 	
-	# Growth rate is modified by recruit availability: total_base_rate * (available_recruits / max_recruits), capped at total_base_rate
-	var actual_growth_rate = total_base_growth_rate * recruit_ratio
+	# Growth rate is modified by recruit availability: base_rate * (available_recruits / max_recruits)
+	var standard_growth_rate = base_growth_rate * recruit_ratio
 	
-	# Calculate population growth (rounded down)
-	var population_growth = int(population * actual_growth_rate)
+	# Calculate population growth from standard growth and promotion bonus separately
+	var standard_growth = int(population * standard_growth_rate)
+	var promotion_growth = int(population * promotion_bonus)
+	var population_growth = standard_growth + promotion_growth
 	
 	# Track the growth for UI display
 	last_population_growth = population_growth
@@ -374,6 +373,8 @@ func grow_population() -> void:
 		
 		# Recalculate max recruits based on new population, but don't change available recruits
 		# (the available recruits will be updated in the next recruit replenishment phase)
+		var actual_growth_rate = float(population_growth) / float(old_population)
+		
 		var growth_info = " (+" + str(population_growth) + ", rate: " + str(snappedf(actual_growth_rate * 100, 0.1)) + "%"
 		if promotion_bonus > 0.0:
 			growth_info += ", promotion bonus: +" + str(snappedf(promotion_bonus * 100, 0.1)) + "%"

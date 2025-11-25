@@ -258,6 +258,7 @@ func _on_continue_pressed() -> void:
 	hide_modal()
 	if ui_manager:
 		ui_manager.restore_select_context()
+	_request_player_status_refresh()
 
 func _apply_call_to_arms() -> void:
 	"""Apply the call to arms - move recruits from neighboring regions to target region"""
@@ -286,3 +287,6 @@ func _apply_call_to_arms() -> void:
 				
 				DebugLogger.log("UISystem", "Moved " + str(actual_moved) + " recruits from " + source_region.get_region_name() + " to " + target_region.get_region_name())
 				DebugLogger.log("UISystem", target_region.get_region_name() + " now has " + str(target_region.get_available_recruits()) + "/" + str(target_region.get_max_recruits()) + " recruits")
+
+func _request_player_status_refresh() -> void:
+	GlobalSignals.emit_signal("player_status_refresh_requested")

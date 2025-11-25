@@ -1,6 +1,8 @@
 extends Node
 class_name GameManager
 
+signal player_status_refresh_requested
+
 # ============================================================================
 # GAME MANAGER
 # ============================================================================
@@ -910,16 +912,20 @@ func _apply_army_starvation(armies: Array, casualties: int) -> int:
 func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
 	DebugLogger.log("TurnProcessing", "Updating player status display...")
-	
+
+	_emit_player_status_refresh()
 	var ui_node = get_node("../UI")
-	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
 	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
-	
-	DebugLogger.log("TurnProcessing", "Calling resource and turn modal updates")
-	if player_status_modal2:
-		player_status_modal2.refresh_from_game_state()
+
+	DebugLogger.log("TurnProcessing", "Calling turn modal update")
 	if turn_modal:
 		turn_modal.refresh_from_game_state()
+
+func request_player_status_refresh() -> void:
+	_emit_player_status_refresh()
+
+func _emit_player_status_refresh() -> void:
+	GlobalSignals.emit_signal("player_status_refresh_requested")
 
 func _on_current_player_changed(player_id: int) -> void:
 	"""Handle player change signal by refreshing UI and showing next player modal"""
@@ -1556,7 +1562,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 					var defeated_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 					if defeated_region != null:
 						await _ai_camera_director.await_focus_on_region(defeated_region)
-				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+
+	_update_player_status_display()
 
 	if _visual_manager:
 		_visual_manager.clear_interaction_highlights()

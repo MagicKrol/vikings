@@ -83,22 +83,22 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
 [node name="AttackerName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(210, 0)
 layout_mode = 2
-text = "Army III"
+text = "Army III (Player 1)"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(185, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 
 [node name="DefenderName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(210, 0)
 layout_mode = 2
-text = "ARMY IV"
+text = "ARMY IV (Player 2)"
 
 [node name="Status" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
 layout_mode = 2
@@ -113,7 +113,7 @@ layout_mode = 2
 text = "Vigor: 90%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(133, 0)
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
 [node name="DefenderVigor" type="Label" parent="Panel/Army/HeaderSection/Status"]
@@ -129,8 +129,8 @@ custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
 [node name="AttackerRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+custom_minimum_size = Vector2(78, 0)
 layout_mode = 2
-text = "Remain"
 horizontal_alignment = 1
 
 [node name="MarginContainer6" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -144,13 +144,17 @@ text = "Unit"
 horizontal_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(25, 0)
+custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="DefenderRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+[node name="DefenderDefense" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 layout_mode = 2
-text = "Remain
-"
+text = "Defense: "
+horizontal_alignment = 1
+
+[node name="DefenderDefenseValue" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+layout_mode = 2
+text = "0%"
 horizontal_alignment = 1
 
 [node name="UnitsSection" type="VBoxContainer" parent="Panel/Army"]

@@ -19,6 +19,7 @@ var defender_units_container: VBoxContainer
 var continue_button: Button
 var withdraw_button: Button
 var message_label: Label
+var defender_defense_value: Label
 
 # Battle data
 var attacking_army: Army = null
@@ -64,6 +65,7 @@ func _ready():
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	withdraw_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	message_label = get_node("Panel/Army/MessageSection/HBoxContainer/Message")
+	defender_defense_value = get_node("Panel/Army/HeaderSection/HBoxContainer2/DefenderDefenseValue")
 
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
@@ -151,6 +153,8 @@ func _update_display() -> void:
 		hide_modal()
 		return
 	
+	_update_defense_bonus_display()
+
 	if showing_battle_report:
 		# Show battle report screen
 		_display_battle_report()
@@ -161,11 +165,8 @@ func _update_display() -> void:
 		battle_title_label.text = "Battle for " + region_name
 		
 		# Set appropriate headers for normal battle
-		if attacking_army != null:
-			attacker_header.text = "Army " + str(attacking_army.number)
-		else:
-			attacker_header.text = "Attacker"
-		defender_header.text = defending_region.get_region_name()
+		_update_attacker_header()
+		_update_defender_header()
 		attacker_effectiveness.visible = true
 		defender_effectiveness.visible = true
 		
@@ -206,7 +207,9 @@ func _display_battle_report() -> void:
 	
 	# Change column headers
 	attacker_header.text = "Your Losses"
+	attacker_header.remove_theme_color_override("font_color")
 	defender_header.text = "Enemy Losses"
+	defender_header.remove_theme_color_override("font_color")
 	
 	# Display losses if we have battle report
 	if battle_report != null:
@@ -695,6 +698,28 @@ func _update_action_button() -> void:
 
 func _set_message(text: String) -> void:
 	message_label.text = text
+
+func _update_attacker_header() -> void:
+	var player_id = attacking_army.get_player_id()
+	var player_name = "Player " + str(player_id)
+	attacker_header.text = "Army " + str(attacking_army.number) + " (" + player_name + ")"
+	var player_color = GameParameters.get_player_color(player_id)
+	attacker_header.add_theme_color_override("font_color", player_color)
+
+func _update_defense_bonus_display() -> void:
+	var defense_bonus = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())
+	defender_defense_value.text = str(defense_bonus) + "%"
+
+func _update_defender_header() -> void:
+	var region_name = defending_region.get_region_name()
+	var gm = get_node("../../GameManager") as GameManager
+	var owner_id = gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	defender_header.text = region_name + "' defenders"
+	if owner_id == -1:
+		defender_header.remove_theme_color_override("font_color")
+	else:
+		var owner_color = GameParameters.get_player_color(owner_id)
+		defender_header.add_theme_color_override("font_color", owner_color)
 
 func _player_controls_attacking_army() -> bool:
 	var gm = get_node("../../GameManager") as GameManager

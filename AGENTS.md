@@ -17,12 +17,6 @@ ALWAYS check the file you are changing for any syntax errors, old unused code, l
 Implement Single Responsibility Principle for functions. Extract extended logic to subfunctions, instead of doing god functions. 
 Always Keep functions in appropiate classes based on their role, and use existing managers and their functions if possible. 
 
-If you need to test a solution with existing tests you can run tests:
-./Users/magic/vikings/run_tests.sh                   # Run all tests
-./Users/magic/vikingsrun_tests.sh TestDummy          # Run specific test class
-All available test classes can be found in /tests folder
-Do not create, do not modify tests unless explicitly asked, or approved. 
-
 PROJECT structure and roles are defined in PROJECT_MAP.MD
 
 You MUST use tab indentation instead of space.

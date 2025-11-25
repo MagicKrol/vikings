@@ -261,6 +261,8 @@ func _on_promote_region_pressed() -> void:
 	
 	if info_modal != null and info_modal.visible:
 		info_modal.show_region_info(current_region, false)
+	
+	_request_player_status_refresh()
 
 func _on_recruit_soldiers_pressed() -> void:
 	if sound_manager:
@@ -322,6 +324,7 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 		info_modal.show_region_info(current_region, false)
 	
 	_create_action_buttons()
+	_request_player_status_refresh()
 
 func _on_call_to_arms_pressed() -> void:
 	if sound_manager:
@@ -371,6 +374,8 @@ func _on_ore_search_pressed() -> void:
 	if info_modal != null and info_modal.visible:
 		info_modal.show_region_info(current_region, false)
 	
+	_request_player_status_refresh()
+	
 	_create_action_buttons()
 
 func _on_raise_army_pressed() -> void:
@@ -401,6 +406,7 @@ func _on_raise_army_pressed() -> void:
 			info_modal.show_region_info(current_region, false)
 		
 		_create_action_buttons()
+		_request_player_status_refresh()
 	else:
 		current_player.add_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
 
@@ -475,6 +481,9 @@ func _passes_food_upgrade_safeguard(player_id: int, promotion_cost: Dictionary) 
 		return false
 	var food_cost = int(promotion_cost.get(ResourcesEnum.Type.FOOD, 0))
 	return player_manager.meets_food_upgrade_safeguard(player_id, food_cost)
+
+func _request_player_status_refresh() -> void:
+	GlobalSignals.emit_signal("player_status_refresh_requested")
 
 func _can_player_afford_castle(castle_type: CastleTypeEnum.Type) -> bool:
 	if player_manager == null:

@@ -128,6 +128,15 @@ func _update_army_display() -> void:
 	# Update total men count
 	var men_value = get_node("Panel/Army/PopulationSection/Men/Value")
 	men_value.text = str(current_army.get_total_soldiers())
+
+	# Update Wounded label for total men
+	var wounded_label_node = get_node("Panel/Army/PopulationSection/Men/Wounded") as Label
+	var wounded_total_soldiers = current_army.get_wounded_composition().get_total_soldiers()
+	if wounded_total_soldiers > 0:
+		wounded_label_node.visible = true
+		wounded_label_node.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+	else:
+		wounded_label_node.visible = false
 	
 	# Update unit composition
 	_update_army_unit_values()

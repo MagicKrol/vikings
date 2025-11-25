@@ -40,6 +40,7 @@ const WITHDRAWAL_FREE_HIT_ROUNDS = 3           # Number of free hit rounds enemy
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 3    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
 const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
+const AI_WITHDRAW_MAX_POWER_DIFFERENCE = 0.20	# Power gap (20%) that forces withdrawal once reached
 
 ## Border Enhancement Constants
 const BORDER_SATURATION_BOOST = 0.1           # Increase saturation by 20% for colored borders
@@ -69,11 +70,11 @@ const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion grow
 
 ## Promotion Growth Bonus by Turn (added to base growth rate)
 const PROMOTION_GROWTH_BONUS_BY_TURN = {
-	1: 0.07,  # 1st turn: +7% growth (3% base + 7% = 10% total)
-	2: 0.06,  # 2nd turn: +6% growth
-	3: 0.05,  # 3rd turn: +5% growth
-	4: 0.04,  # 4th turn: +4% growth
-	5: 0.03   # 5th turn: +3% growth
+	1: 0.04,  # 1st turn: 
+	2: 0.035,  # 2nd turn: 
+	3: 0.03,  # 3rd turn: 
+	4: 0.025,  # 4th turn: 
+	5: 0.02   # 5th turn: 
 }
 
 ## Castle Recruitment Bonuses (percentage of population becomes recruits)
@@ -536,7 +537,7 @@ const PLAYER_COLORS = {
 	2: Color('#6c817f'), # Custom blue-gray
 	3: Color('#40481a'), # Dark green
 	4: Color('#ff8000'), # Orange	
-	5: Color('#ffffff'), # White
+	5: Color('#e8e8d4'), # White
 	6: Color('#604250')  # Dark purple
 }
 
@@ -563,11 +564,11 @@ const GARRISON_BY_LEVEL = {
 
 ## Population Generation by Region Level
 const POPULATION_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 150, "max": 300},
-	RegionLevelEnum.Level.L2: {"min": 250, "max": 450},
-	RegionLevelEnum.Level.L3: {"min": 400, "max": 600},
-	RegionLevelEnum.Level.L4: {"min": 550, "max": 750},
-	RegionLevelEnum.Level.L5: {"min": 700, "max": 900}
+	RegionLevelEnum.Level.L1: {"min": 100, "max": 200},
+	RegionLevelEnum.Level.L2: {"min": 200, "max": 300},
+	RegionLevelEnum.Level.L3: {"min": 300, "max": 400},
+	RegionLevelEnum.Level.L4: {"min": 400, "max": 500},
+	RegionLevelEnum.Level.L5: {"min": 500, "max": 600}
 }
 
 ## Region Promotion Costs by Target Level

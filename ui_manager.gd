@@ -92,6 +92,7 @@ func _ready():
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
+	GlobalSignals.player_status_refresh_requested.connect(_on_player_status_refresh_requested)
 	
 
 func display_message(text: String) -> void:
@@ -177,6 +178,10 @@ func _convert_screen_to_world_pos(screen_pos: Vector2) -> Vector2:
 	var world_pos = camera.get_global_mouse_position()
 	
 	return world_pos
+
+func _on_player_status_refresh_requested() -> void:
+	if _player_status_modal2:
+		_player_status_modal2.refresh_from_game_state()
 
 func _get_region_under_mouse(mouse_pos: Vector2) -> Region:
 	"""Find the region under the mouse cursor"""

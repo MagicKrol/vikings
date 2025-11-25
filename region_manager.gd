@@ -307,18 +307,19 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population, CastleTypeEnum.Type.KEEP)
 	
 	# Get neighboring regions and upgrade them to L2
-	var neighbor_ids = get_neighbor_regions(castle_region.get_region_id())
-	var regions_node = map_generator.get_node("Regions")
-	for neighbor_id in neighbor_ids:
-		for child in regions_node.get_children():
-			if child is Region and child.get_region_id() == neighbor_id:
-				var neighbor_region = child as Region
-				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
-				var neighbor_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
-				neighbor_region.set_population(neighbor_population)
-				# Initialize recruits for neighbor region (no castle)
-				neighbor_region.available_recruits = GameParameters.calculate_max_recruits(neighbor_population, CastleTypeEnum.Type.NONE)
-				break
+	# DO NOT UNCOMMENT THIS CODE - PROMOTING NEIGHBOUR REGIONS IS NOW TURNED OFF
+	# var neighbor_ids = get_neighbor_regions(castle_region.get_region_id())
+	# var regions_node = map_generator.get_node("Regions")
+	# for neighbor_id in neighbor_ids:
+	# 	for child in regions_node.get_children():
+	# 		if child is Region and child.get_region_id() == neighbor_id:
+	# 			var neighbor_region = child as Region
+	# 			neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
+	# 			var neighbor_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
+	# 			neighbor_region.set_population(neighbor_population)
+	# 			# Initialize recruits for neighbor region (no castle)
+	# 			neighbor_region.available_recruits = GameParameters.calculate_max_recruits(neighbor_population, CastleTypeEnum.Type.NONE)
+	# 			break
 
 func _generate_all_region_resources() -> void:
 	"""Generate resources for all regions when the RegionManager is initialized"""

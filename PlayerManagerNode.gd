@@ -265,6 +265,54 @@ func _calculate_population_gold_income(region: Region) -> int:
 	var gold_income = int(population / divisor)
 	return max(0, gold_income)
 
+func get_projected_economy_for_player(player_id: int) -> Dictionary:
+	"""Return next-turn resource income and population growth snapshot without mutating state."""
+	var income := {
+		ResourcesEnum.Type.GOLD: 0,
+		ResourcesEnum.Type.FOOD: 0,
+		ResourcesEnum.Type.WOOD: 0,
+		ResourcesEnum.Type.IRON: 0,
+		ResourcesEnum.Type.STONE: 0
+	}
+	var population_amount := 0
+	var population_growth := 0
+	var owned_regions = region_manager.get_player_regions(player_id)
+	var regions_node = map_generator.get_node_or_null("Regions")
+	for region_id in owned_regions:
+		var region_node = _find_region_by_id(regions_node, region_id)
+		if region_node != null:
+			for resource_type in income.keys():
+				if region_node.can_collect_resource(resource_type):
+					income[resource_type] += region_node.get_resource_amount(resource_type)
+			income[ResourcesEnum.Type.GOLD] += _calculate_population_gold_income(region_node)
+			population_amount += region_node.get_population()
+			if not region_node.is_ocean:
+				population_growth += _calculate_projected_population_growth(region_node)
+	var food_upkeep := calculate_total_army_food_cost(player_id)
+	income[ResourcesEnum.Type.FOOD] -= int(ceil(food_upkeep))
+	return {
+		"income": income,
+		"population": {
+			"amount": population_amount,
+			"growth": population_growth
+		}
+	}
+
+func _calculate_projected_population_growth(region: Region) -> int:
+	"""Mirror Region.gd growth formula without mutating region state."""
+	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
+	var promotion_bonus = 0.0
+	if region.promotion_growth_bonus_turns_remaining > 0:
+		var bonus_turn = GameParameters.PROMOTION_GROWTH_BONUS_TURNS - region.promotion_growth_bonus_turns_remaining + 1
+		promotion_bonus = GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
+	var total_base_growth_rate = base_growth_rate + promotion_bonus
+	var max_recruits = GameParameters.calculate_max_recruits(region.population, region.castle_type)
+	var recruit_ratio = 0.0
+	if max_recruits > 0:
+		recruit_ratio = min(1.0, float(region.available_recruits) / float(max_recruits))
+	var actual_growth_rate = total_base_growth_rate * recruit_ratio
+	return int(region.population * actual_growth_rate)
+
 func _region_level_to_int(region_level: RegionLevelEnum.Level) -> int:
 	"""Convert region level enum to integer"""
 	match region_level:
