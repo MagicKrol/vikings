@@ -962,6 +962,23 @@ func retreat_army_to_previous_region(army: Army) -> void:
 	army_previous_regions.erase(army)
 	update_ready_highlights_for_player(_ready_highlight_player_id)
 
+func reposition_army_in_region_with_animation(army: Army) -> void:
+	"""Re-apply offsets in the current region and animate the given army to its slot."""
+	if army == null or not is_instance_valid(army):
+		DebugLogger.log("ArmyManagement", "Cannot reposition: invalid army")
+		return
+	var region := army.get_parent() as Region
+	if region == null:
+		DebugLogger.log("ArmyManagement", "Cannot reposition: army has no region parent")
+		return
+	# Place other armies instantly, compute target for this one, then animate it
+	var target_local := _compute_army_target_position(region, army)
+	_apply_army_offsets_for_region(region, army)
+	var target_global: Vector2 = region.to_global(target_local)
+	var tween := army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	await tween.finished
+	_apply_army_offsets_for_region(region)
+
 
 func _should_show_human_arrows() -> bool:
 	"""Check if human path arrows should be shown (only for human players)"""

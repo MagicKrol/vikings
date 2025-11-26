@@ -319,8 +319,8 @@ func _try_start_withdrawal(rng: RandomNumberGenerator) -> bool:
 	var ratio := float(weaker) / float(stronger)
 	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
 		return false
-	var forced_ratio := GameParameters.AI_WITHDRAW_POWER_THRESHOLD - GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE
-	if ratio <= forced_ratio:
+
+	if ratio <= GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE:
 		DebugLogger.log("BattleAnimation", "Forced withdrawal triggered. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
 		ai_withdrawal_started.emit()
 		start_withdrawal_round(withdrawing)

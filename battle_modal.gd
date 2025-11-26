@@ -532,6 +532,8 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 func _on_ai_withdrawal_started() -> void:
 	"""Display notice when AI attacker begins withdrawal."""
 	_set_message("Enemy is withdrawing")
+	withdrawal_in_progress = true
+	_update_action_button()
 
 func _on_button_pressed() -> void:
 	"""Handle button press - either Continue or Withdraw based on battle state"""

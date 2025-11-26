@@ -41,7 +41,7 @@ var debug_categories: Dictionary = {
 	"BattleAI": false, 
 	"BattleSystem": true,         # Combat and battle resolution
 	"BattleCalculation": false,    # Detailed battle calculations
-	"BattleAnimation": false,      # Battle animation and rounds
+	"BattleAnimation": true,      # Battle animation and rounds
 	
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management

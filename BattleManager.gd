@@ -108,6 +108,7 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	for nid in _region_manager.get_neighbor_regions(target_region_id):
 		if _region_manager.get_region_owner(nid) == owner_id:
 			owned_neighbors.append(nid)
+	#Human need to manually click "Withdraw" while AI need to make a decision based on the power ratio
 	_attacker_withdraw_allowed = _game_manager != null and _game_manager.is_player_computer(attacker.get_player_id())
 	_defender_withdraw_allowed = false
 	if owner_id != -1 and _game_manager and _game_manager.is_player_computer(owner_id) and defender_armies.size() > 0 and target_region.get_castle_type() == CastleTypeEnum.Type.NONE and owned_neighbors.size() > 0:
