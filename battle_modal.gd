@@ -27,7 +27,6 @@ var defending_region: Region = null
 var battle_report: BattleSimulator.BattleReport = null
 var animated_simulator: AnimatedBattleSimulator = null
 var battle_in_progress: bool = false
-var _def_ai_withdraw_notice_logged: bool = false
 
 # Real-time battle display data
 var current_round: int = 0
@@ -481,16 +480,13 @@ func _run_battle_simulation() -> void:
 		var recruits_comp := ArmyComposition.new()
 		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, available_recruits)
 		defending_compositions.append(recruits_comp)
-	var withdrawal_context = bm.get_attacker_withdrawal_context()
-	var withdraw_delegate: Callable = withdrawal_context.get("check_callable", Callable())
-	var withdraw_recruits: int = int(withdrawal_context.get("recruits_peasants", available_recruits))
-	animated_simulator.set_withdrawal_delegate(withdraw_delegate, withdraw_recruits)
-	
 	# Start the animated battle with attacker efficiency
 	var attacker_efficiency = attacking_army.get_efficiency()
 	var terrain_type = defending_region.get_region_type()
 	var castle_type = defending_region.get_castle_type()
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type)
+	var attacker_withdraw_allowed = bm.get_attacker_withdraw_allowed()
+	var defender_withdraw_allowed = bm.get_defender_withdraw_allowed()
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed)
 	
 	DebugLogger.log("UISystem", "Starting animated battle simulation...")
 
@@ -502,19 +498,6 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	
 	# Update display with current round data
 	_update_display()
-	
-	# Optional notice for defender AI (not yet supported)
-	var gm = get_node("../../GameManager") as GameManager
-	var bm = gm.get_battle_manager()
-	if not _def_ai_withdraw_notice_logged:
-		var any_def_ai := false
-		for d in bm._pending_defenders:
-			if gm.is_player_computer(d.get_player_id()):
-				any_def_ai = true
-				break
-		if any_def_ai:
-			DebugLogger.log("BattleAI", "Defender AI withdrawal is not implemented in the current simulator (attacker-only).")
-			_def_ai_withdraw_notice_logged = true
 	
 	DebugLogger.log("UISystem", "Round " + str(current_round) + " completed - Attackers: " + str(round_data["attacker_size"]) + ", Defenders: " + str(round_data["defender_size"]))
 
@@ -648,7 +631,7 @@ func _on_withdraw_pressed() -> void:
 		_set_message("Your army is withdrawing")
 		_update_action_button()
 		if animated_simulator:
-			animated_simulator.start_withdrawal_round()
+			animated_simulator.start_withdrawal_round(1)
 		DebugLogger.log("UISystem", "Starting withdrawal...")
 	else:
 		# No human-controlled side detected; ignore button

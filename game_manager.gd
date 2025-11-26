@@ -1436,6 +1436,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	if army != null:
 		army_name = army.name
 	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + normalized_result + " for " + army_name)
+	var withdrawing_side := 0
 	var should_queue_battle_log := army != null and is_player_computer(army.get_player_id()) and battle_report != null
 	var battle_log_lines: Array[String] = []
 	var defender_entries: Array = []
@@ -1527,6 +1528,14 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	
 	# Handle battle outcome
 	if normalized_result == "victory":
+		if withdrawing_side == 2 and _battle_manager:
+			await _battle_manager.retreat_defender_armies(defending_armies, defending_recruits_region)
+		if _battle_manager:
+			for defender in defending_armies:
+				if defender != null and is_instance_valid(defender):
+					var parent_region := defender.get_parent() as Region
+					if parent_region != null:
+						_battle_manager._apply_army_offsets_for_region(parent_region)
 		# Attackers won - handle conquest
 		if army and is_instance_valid(army) and target_region_id != -1:
 			var player_id = army.get_player_id()
@@ -1546,12 +1555,37 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			DebugLogger.log("TurnProcessing", "Reduced " + army.name + " efficiency to " + str(army.get_efficiency()) + "% after conquest")
 	elif normalized_result == "withdrawal":
 		# Army withdrew - handle retreat and efficiency reduction
-		if army and is_instance_valid(army) and _battle_manager:
-			var is_ai_withdraw := is_player_computer(army.get_player_id())
-			await _battle_manager._handle_army_withdrawal(army)
-			if is_ai_withdraw and _ai_camera_director:
-				await _ai_camera_director.await_focus_on_army(army)
-				await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+		withdrawing_side = int(result_data.get("withdrawing_side", 0))
+		var attacker_can_withdraw_flag := bool(result_data.get("attacker_can_withdraw", false))
+		var defender_can_withdraw_flag := bool(result_data.get("defender_can_withdraw", false))
+		DebugLogger.log("BattleSystem", "Withdrawal finalization: side=" + str(withdrawing_side) + ", attacker_can=" + str(attacker_can_withdraw_flag) + ", defender_can=" + str(defender_can_withdraw_flag))
+		if withdrawing_side == 0 and battle_report != null:
+			withdrawing_side = int(battle_report.withdrawing_side)
+		if withdrawing_side == 0:
+			if defender_can_withdraw_flag and not attacker_can_withdraw_flag:
+				withdrawing_side = 2
+			elif attacker_can_withdraw_flag and not defender_can_withdraw_flag:
+				withdrawing_side = 1
+		DebugLogger.log("BattleSystem", "Resolved withdrawing_side=" + str(withdrawing_side))
+		if withdrawing_side == 1:
+			if army and is_instance_valid(army) and _battle_manager:
+				var is_ai_withdraw := is_player_computer(army.get_player_id())
+				DebugLogger.log("BattleSystem", "Applying attacker withdrawal for army " + army.name)
+				await _battle_manager._handle_army_withdrawal(army)
+				if is_ai_withdraw and _ai_camera_director:
+					await _ai_camera_director.await_focus_on_army(army)
+					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
+		elif withdrawing_side == 2:
+			if _battle_manager:
+				DebugLogger.log("BattleSystem", "Applying defender withdrawal retreat for defenders: " + str(defending_armies.size()))
+				await _battle_manager.retreat_defender_armies(defending_armies, defending_recruits_region)
+			if army and is_instance_valid(army) and target_region_id != -1:
+				DebugLogger.log("BattleSystem", "Setting ownership after defender withdrawal to player " + str(army.get_player_id()) + " for region " + str(target_region_id))
+				_region_manager.set_region_ownership(target_region_id, army.get_player_id())
+				var conquered_region2 = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+				if conquered_region2 != null:
+					conquered_region2.kill_wounded_garrison()
+				refresh_ai_debug_scores()
 		# No post-battle healing here; healing only occurs during make_camp()
 	else:
 		# Attackers lost - remove the army

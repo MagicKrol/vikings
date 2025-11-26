@@ -82,6 +82,22 @@
 		},
 		{
 			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 20,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"name": "Army V",
+			"player_id": 2,
+			"region_id": 339
+		},
+		{
+			"composition": {
 				"Archers": 30,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
@@ -111,6 +127,38 @@
 			"name": "Army V",
 			"player_id": 1,
 			"region_id": 373
+		},
+		{
+			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 100,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"name": "Army IV",
+			"player_id": 2,
+			"region_id": 389
+		},
+		{
+			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 0,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 150
+			},
+			"name": "Army VII",
+			"player_id": 1,
+			"region_id": 390
 		},
 		{
 			"composition": {
@@ -5330,7 +5378,7 @@
 			"level": "Shire",
 			"name": "Kirkley",
 			"ocean": false,
-			"owner": 0,
+			"owner": 2,
 			"population": 220,
 			"resources": {
 				"Food": 4,
@@ -6968,7 +7016,7 @@
 			"level": "Shire",
 			"name": "Ashby",
 			"ocean": false,
-			"owner": 0,
+			"owner": 2,
 			"population": 268,
 			"resources": {
 				"Food": 4,
@@ -8264,7 +8312,7 @@
 			"level": "Shire",
 			"name": "Torholme",
 			"ocean": false,
-			"owner": 0,
+			"owner": 2,
 			"population": 281,
 			"resources": {
 				"Food": 1,
@@ -8294,7 +8342,7 @@
 			"level": "Shire",
 			"name": "Redstadir",
 			"ocean": false,
-			"owner": 0,
+			"owner": 1,
 			"population": 222,
 			"resources": {
 				"Food": 1,

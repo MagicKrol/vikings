@@ -165,6 +165,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Key: `start_battle()`, `handle_battle_modal_closed()`, emits `battle_finished`; tracks pending conquest; proportional loss application; removes only battle-participant armies reduced to zero (no global scan).
 - Integrates: BattleModal UI, RegionManager (read), ArmyManager (remove/retreat), GameManager (finalization).
 - Behavior: If `GameManager.debug_disable_battle_modal` is enabled for AI, `start_battle()` simulates instantly via `BattleSimulator` and emits `battle_finished` without showing a modal. AI withdrawal checks include all defenders (armies + garrison + recruits), scale chance from `AI_WITHDRAW_POWER_THRESHOLD` down to forced retreats at `AI_WITHDRAW_MAX_POWER_DIFFERENCE`, and defender armies can retreat pre-battle (each picks a random owned neighbor) which ends the battle immediately.
+ - Withdrawal: `BattleSimulator`/`AnimatedBattleSimulator` carry `withdrawing_side` in the BattleReport; `GameManager.finalize_battle_result()` applies retreats based on that. If missing, it falls back to attacker withdrawal.
 - Post-battle reselection now mirrors `ArmySelectModal -> Move Army` by clearing `UIManager` modal state so the next region click moves immediately.
 
 ### Region systems
@@ -289,10 +290,9 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - ArmyTargetScorer.gd: Combines stored army and garrison intel; requires known power for every defending army before applying bonuses.
 - ArmyTargetScorer.gd: Adds configurable +5 bonus for enemy-owned regions (`GameParameters.AI_ENEMY_REGION_SCORE_BONUS`).
 - Withdrawal Rules:
-- Attacker (human/AI): May withdraw during battle; human path uses animated withdrawal rounds then returns to the previous region (ArmyManager.retreat_army_to_previous_region). AI attacker uses power-ratio chance (threshold `AI_WITHDRAW_POWER_THRESHOLD`).
-- Defender (AI): Before battle starts, performs a power-ratio withdrawal chance check. If successful AND the region has no military building (castle/outpost/keep/stronghold) AND there is at least one owned neighboring region, all defending armies retreat to a random owned neighbor. Garrison stays; battle proceeds versus garrison.
-- Defender (human): Withdraw button is disabled when the region has a military building or there are no owned neighboring regions. Current UX retreats defending armies to a random owned neighbor; arrow-based region selection can be added later.
-- `BattleManager.get_attacker_withdrawal_context()` exposes the shared AI withdrawal delegate. `BattleSimulator` and `AnimatedBattleSimulator` consume it each combat round, ensuring AI vs AI, AI vs Human, and Human vs Human battles all honor the same withdrawal odds even when the battle modal is skipped.
+- Power check runs inside the simulators each round (and after ranged volley): compare total attacker vs total defender power (armies + garrison + recruits). The weaker side may withdraw when `weaker/stronger <= AI_WITHDRAW_POWER_THRESHOLD`; if the gap reaches `AI_WITHDRAW_MAX_POWER_DIFFERENCE` it is forced.
+- Eligibility: attacker auto-withdraw is AI-only; defender auto-withdraw is AI-only, castle must be `NONE`, and there must be at least one defending army and an owned neighboring region (garrison/recruits never withdraw). Human attacker can still click Withdraw in the modal; defenders have no button.
+- Withdrawal resolution: free-hit rounds run in-battle (AnimatedBattleSimulator/BattleSimulator). If attackers withdraw, defenders (armies + garrison) hit them; if defenders withdraw, attackers hit only defender armies (garrison stays). Outcome is reported as `Withdrawal` and ends the battle even if garrison/recruits remain.
 - `BattleManager.await_finalize_complete()` lets GameManager pause turn processing until asynchronous battle finalization (camera focus, withdrawals, conquer delays) finishes, so the camera never jumps to the next action mid-animation.
 - Withdrawal camera pacing: `GameManager.finalize_battle_result()` now waits for `BattleManager._handle_army_withdrawal()`/`ArmyManager.retreat_army_to_previous_region()` to finish, then the AI camera tracks the retreating army itself instead of the destination region, preventing the extra camera hop reported in logs.
 

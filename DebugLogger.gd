@@ -39,8 +39,8 @@ var debug_categories: Dictionary = {
 	
 	# Battle Systems
 	"BattleAI": false, 
-	"BattleSystem": false,         # Combat and battle resolution
-	"BattleCalculation": true,    # Detailed battle calculations
+	"BattleSystem": true,         # Combat and battle resolution
+	"BattleCalculation": false,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
@@ -67,7 +67,7 @@ var debug_categories: Dictionary = {
 	"UIManager": false,
 	"AICamera": false,             # AI camera focus / delays
 	"Animation": false,             # Generic node/tween animations
-	"MapEditorPanel": true
+	"MapEditorPanel": false
 }
 
 # Color coding for different log levels

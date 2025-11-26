@@ -58,6 +58,8 @@ var _last_battle_report: BattleSimulator.BattleReport = null
 
 # Store the fighting army for re-selection after battle (human players only)
 var _fighting_army_for_reselection: Army = null
+var _attacker_withdraw_allowed: bool = false
+var _defender_withdraw_allowed: bool = false
 
 func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_modal: BattleModal, sound_manager: SoundManager):
 	_region_manager = region_manager
@@ -72,6 +74,16 @@ func set_game_manager(game_manager) -> void:
 func start_battle(attacker: Army, target_region_id: int) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+
+	# Ensure attacker has a stored previous region for potential withdrawal fallback
+	if _army_manager and attacker and is_instance_valid(attacker):
+		if not _army_manager.army_previous_regions.has(attacker):
+			var prev_region := attacker.get_parent() as Region
+			if prev_region != null:
+				_army_manager.army_previous_regions[attacker] = prev_region
+				DebugLogger.log("BattleSystem", "Stored previous region for attacker " + attacker.name + ": " + prev_region.name)
+			else:
+				DebugLogger.log("BattleSystem", "No parent region to store for attacker " + attacker.name)
 
 	# Store the fighting army for potential re-selection after battle (only for human players)
 	if _game_manager and _game_manager.is_player_human(attacker.get_player_id()):
@@ -92,25 +104,14 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 		if child is Army and child.get_player_id() == owner_id and child != attacker:
 			defender_armies.append(child)
 	var garrison := target_region.get_garrison()
-	var defender_withdrew := false
-
-	# AI defender pre-battle withdrawal check (retreat armies to owned neighbor; garrison stays)
-	# Rules:
-	# - Only when defender owner is AI
-	# - Only if region has no military building (castle/outpost/etc.)
-	# - Only if there exists at least one owned neighboring region
-	# - Chance uses the same model as attacker withdrawal (power ratio based)
-	if owner_id != -1 and _game_manager.is_player_computer(owner_id) and defender_armies.size() > 0:
-		if target_region.get_castle_type() == CastleTypeEnum.Type.NONE:
-			var owned_neighbors: Array = []
-			for nid in _region_manager.get_neighbor_regions(target_region_id):
-				if _region_manager.get_region_owner(nid) == owner_id:
-					owned_neighbors.append(nid)
-			if owned_neighbors.size() > 0:
-				if _evaluate_ai_defender_withdrawal(attacker, defender_armies, garrison, target_region):
-					defender_withdrew = await _withdraw_defender_armies(defender_armies, target_region, owned_neighbors)
-					if defender_withdrew:
-						DebugLogger.log("BattleAI", "Defender AI retreated armies from region " + str(target_region_id) + " before battle")
+	var owned_neighbors: Array = []
+	for nid in _region_manager.get_neighbor_regions(target_region_id):
+		if _region_manager.get_region_owner(nid) == owner_id:
+			owned_neighbors.append(nid)
+	_attacker_withdraw_allowed = _game_manager != null and _game_manager.is_player_computer(attacker.get_player_id())
+	_defender_withdraw_allowed = false
+	if owner_id != -1 and _game_manager and _game_manager.is_player_computer(owner_id) and defender_armies.size() > 0 and target_region.get_castle_type() == CastleTypeEnum.Type.NONE and owned_neighbors.size() > 0:
+		_defender_withdraw_allowed = true
 
 	# Persist the pending contributors so we can apply proportional losses later
 	_pending_attackers = [attacker]
@@ -118,16 +119,6 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 	_pending_garrison = garrison
 	_pending_recruits_count = target_region.get_base_available_recruits()
 	_pending_recruits_region = target_region
-
-	if defender_withdrew:
-		_pending_attackers = []
-		_pending_defenders = []
-		_pending_garrison = null
-		_pending_recruits_count = 0
-		_pending_recruits_region = null
-		_clear_pending_conquest_state()
-		_emit_battle_finished("withdrawal")
-		return
 	
 	# Emit battle started signal
 	emit_signal("battle_started", attacker, target_region_id)
@@ -144,7 +135,6 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 			if _game_manager.is_player_human(d.get_player_id()):
 				defender_is_human = true
 				break
-	var withdrawal_context := get_attacker_withdrawal_context()
 	if _game_manager.debug_disable_battle_modal and attacker_is_ai and not defender_is_human:
 		var atk_comps = _compositions_from_armies([attacker])
 		var def_comps = _compositions_from_armies(defender_armies)
@@ -160,7 +150,7 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 		var sim = BattleSimulator.new()
 		var attacker_label = "Attacker " + str(attacker.name)
 		var defender_label = "Defender " + str(target_region.get_region_name())
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, withdrawal_context, attacker_label, defender_label)
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
@@ -173,6 +163,9 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 			"army": attacker,
 			"target_region_id": target_region_id,
 			"battle_report": report,
+			"withdrawing_side": report.withdrawing_side,
+			"attacker_can_withdraw": _attacker_withdraw_allowed,
+			"defender_can_withdraw": _defender_withdraw_allowed,
 			"attacking_armies": _pending_attackers,
 			"defending_armies": _pending_defenders,
 			"defending_garrison": _pending_garrison,
@@ -213,6 +206,20 @@ func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region
 		await tw.finished
 		moved_any = true
 	return moved_any
+
+func retreat_defender_armies(defender_armies: Array[Army], from_region: Region) -> void:
+	if defender_armies.is_empty():
+		return
+	if from_region == null:
+		return
+	var owner_id := _region_manager.get_region_owner(from_region.get_region_id())
+	var owned_neighbors: Array = []
+	for nid in _region_manager.get_neighbor_regions(from_region.get_region_id()):
+		if _region_manager.get_region_owner(nid) == owner_id:
+			owned_neighbors.append(nid)
+	if owned_neighbors.is_empty():
+		return
+	await _withdraw_defender_armies(defender_armies, from_region, owned_neighbors)
 
 func set_pending_conquest(army: Army, region: Region) -> void:
 	"""Set or extend the pending conquest context for battle resolution (multi-army join)."""
@@ -271,6 +278,9 @@ func handle_battle_modal_closed() -> void:
 			"army": pending_conquest_army,
 			"target_region_id": pending_conquest_region.get_region_id(),
 			"battle_report": _last_battle_report,
+			"withdrawing_side": _last_battle_report.withdrawing_side if _last_battle_report != null else 0,
+			"attacker_can_withdraw": _attacker_withdraw_allowed,
+			"defender_can_withdraw": _defender_withdraw_allowed,
 			"attacking_armies": _pending_attackers,
 			"defending_armies": _pending_defenders,
 			"defending_garrison": _pending_garrison,
@@ -395,6 +405,11 @@ func _handle_army_withdrawal(withdrawing_army: Army) -> void:
 	
 	# Move army back to previous region using ArmyManager
 	if _army_manager != null:
+		var prev_region := _army_manager.get_previous_region_for_army(withdrawing_army)
+		if prev_region:
+			DebugLogger.log("BattleSystem", "Retreating " + withdrawing_army.name + " to previous region " + prev_region.name)
+		else:
+			DebugLogger.log("BattleSystem", "No previous region stored for " + withdrawing_army.name + " - cannot retreat")
 		await _army_manager.retreat_army_to_previous_region(withdrawing_army)
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] Warning: ArmyManager not available for army retreat")
@@ -553,6 +568,12 @@ func get_pending_defending_compositions() -> Array:
 func get_pending_garrison() -> ArmyComposition:
 	return _pending_garrison
 
+func get_attacker_withdraw_allowed() -> bool:
+	return _attacker_withdraw_allowed
+
+func get_defender_withdraw_allowed() -> bool:
+	return _defender_withdraw_allowed
+
 func get_last_battle_report() -> BattleSimulator.BattleReport:
 	return _last_battle_report
 	
@@ -641,118 +662,6 @@ func _reselect_fighting_army_after_battle() -> void:
 	
 	# Clear the stored army reference
 	_fighting_army_for_reselection = null
-
-func get_attacker_withdrawal_context() -> Dictionary:
-	"""Expose attacker withdrawal evaluation context for simulators/UI."""
-	return {
-		"check_callable": Callable(self, "evaluate_ai_attacker_withdrawal"),
-		"recruits_peasants": _pending_recruits_count
-	}
-
-func _compute_power_from_dict(comp_dict: Dictionary) -> int:
-	var total := 0
-	for ut in comp_dict.keys():
-		var qty: int = int(comp_dict[ut])
-		if qty <= 0:
-			continue
-		total += GameParameters.get_unit_stat(ut, "power") * qty
-	return total
-
-func _sum_armies_power(armies: Array[Army]) -> int:
-	var total := 0
-	for a in armies:
-		if is_instance_valid(a):
-			total += a.get_army_power()
-	return total
-
-func _compute_recruit_power(recruits_peasants: int) -> int:
-	if recruits_peasants <= 0:
-		return 0
-	return recruits_peasants * GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
-
-func _is_forced_withdrawal(ratio: float) -> bool:
-	var forced_ratio := GameParameters.AI_WITHDRAW_POWER_THRESHOLD - GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE
-	return ratio <= forced_ratio
-
-# --- AI withdrawal evaluation (attacker-side only) ---
-func evaluate_ai_attacker_withdrawal(current_atk: Dictionary = {}, current_def: Dictionary = {}, garrison: ArmyComposition = null, recruits_peasants: int = 0) -> bool:
-	"""Check if the attacking AI should withdraw based on power ratio.
-	Uses dynamic round compositions when provided; otherwise falls back to army nodes.
-	Includes all defending forces (armies, garrison, recruits)."""
-	if _pending_attackers.is_empty():
-		return false
-	if _game_manager == null:
-		return false
-	# Only attackers can withdraw with current simulator
-	var attacker_owner := _pending_attackers[0].get_player_id()
-	if not _game_manager.is_player_computer(attacker_owner):
-		return false
-	var atk_power := 0
-	var def_power := 0
-	if current_atk.is_empty() or current_def.is_empty():
-		atk_power = _sum_armies_power(_pending_attackers)
-		def_power = _sum_armies_power(_pending_defenders)
-		def_power += _calculate_composition_power(_pending_garrison)
-		def_power += _compute_recruit_power(_pending_recruits_count)
-	else:
-		# Compute from compositions
-		atk_power = _compute_power_from_dict(current_atk)
-		def_power = _compute_power_from_dict(current_def)
-		def_power += _calculate_composition_power(garrison)
-		def_power += _compute_recruit_power(recruits_peasants)
-	if def_power <= 0 or atk_power <= 0:
-		return false
-	# Check threshold
-	var ratio := float(atk_power) / float(def_power)
-	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
-		DebugLogger.log("BattleAI", "AI withdraw check (attacker): atk=" + str(atk_power) + ", def=" + str(def_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", threshold=" + str(GameParameters.AI_WITHDRAW_POWER_THRESHOLD) + " -> no attempt")
-		return false
-	if _is_forced_withdrawal(ratio):
-		DebugLogger.log("BattleAI", "AI withdraw forced (attacker): atk=" + str(atk_power) + ", def=" + str(def_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", gap=" + str(snappedf(1.0 - ratio, 0.001)))
-		return true
-	# Chance = (def - atk)/def = 1 - ratio
-	var chance: float = clampf(1.0 - ratio, 0.0, 1.0)
-	var rng := RandomNumberGenerator.new()
-	rng.randomize()
-	var roll := rng.randf()
-	var will_withdraw := roll < chance
-	DebugLogger.log("BattleAI", "AI withdraw attempt (attacker): atk=" + str(atk_power) + ", def=" + str(def_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", chance=" + str(snappedf(chance, 0.001)) + ", roll=" + str(snappedf(roll, 0.001)) + ", result=" + ("WITHDRAW" if will_withdraw else "CONTINUE"))
-	return will_withdraw
-
-# --- AI withdrawal evaluation (defender-side, pre-battle) ---
-func _evaluate_ai_defender_withdrawal(attacker: Army, defender_armies: Array[Army], garrison: ArmyComposition, region: Region) -> bool:
-	"""Check if the defending AI should retreat armies before the battle starts.
-	Uses attacker vs all defending forces (armies + garrison + recruits)."""
-	if defender_armies.is_empty():
-		return false
-	var atk_power := 0
-	var def_power := 0
-	# Attacker power
-	if is_instance_valid(attacker):
-		atk_power = attacker.get_army_power()
-	# Defending armies power (include garrison and recruits)
-	def_power = _sum_armies_power(defender_armies)
-	def_power += _calculate_composition_power(garrison)
-	def_power += _compute_recruit_power(region.get_base_available_recruits())
-	if def_power <= 0 or atk_power <= 0:
-		return false
-	var ratio := float(def_power) / float(atk_power if atk_power > 0 else 1)
-	# Mirror attacker logic: retreat attempt when outpowered (own/enemy <= threshold) → here (def/atk <= threshold)
-	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
-		DebugLogger.log("BattleAI", "AI withdraw check (defender): def=" + str(def_power) + ", atk=" + str(atk_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", threshold=" + str(GameParameters.AI_WITHDRAW_POWER_THRESHOLD) + " -> no attempt")
-		return false
-	if _is_forced_withdrawal(ratio):
-		DebugLogger.log("BattleAI", "AI withdraw forced (defender): def=" + str(def_power) + ", atk=" + str(atk_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", gap=" + str(snappedf(1.0 - ratio, 0.001)))
-		return true
-	# Chance = (atk - def)/atk = 1 - (def/atk) with atk>0
-	var chance: float = 1.0 - min(1.0, float(def_power) / float(atk_power if atk_power > 0 else 1))
-	chance = clampf(chance, 0.0, 1.0)
-	var rng := RandomNumberGenerator.new()
-	rng.randomize()
-	var roll := rng.randf()
-	var will_withdraw := roll < chance
-	DebugLogger.log("BattleAI", "AI withdraw attempt (defender): def=" + str(def_power) + ", atk=" + str(atk_power) + ", ratio=" + str(snappedf(ratio, 0.001)) + ", chance=" + str(snappedf(chance, 0.001)) + ", roll=" + str(snappedf(roll, 0.001)) + ", result=" + ("RETREAT" if will_withdraw else "HOLD"))
-	return will_withdraw
 
 # --- Proportional loss distribution across an array of Army nodes (and optional garrison) ---
 func _apply_losses_proportionally(losses: Dictionary, armies: Array[Army], garrison: ArmyComposition) -> void:

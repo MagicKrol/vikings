@@ -13,8 +13,9 @@ var is_battle_running: bool = false
 var is_withdrawing: bool = false
 var withdrawal_rounds_remaining: int = 0
 var mobility_withdrawal_rounds_remaining: int = 0
-var withdrawal_delegate: Callable = Callable()
-var withdrawal_recruits: int = 0
+var attacker_can_withdraw: bool = false
+var defender_can_withdraw: bool = false
+var withdrawing_side: int = 0 # 0 none, 1 attacker, 2 defender
 
 # Current battle data
 var current_attackers: Dictionary
@@ -40,12 +41,7 @@ func _ready():
 	battle_timer.one_shot = true
 	add_child(battle_timer)
 
-func set_withdrawal_delegate(delegate: Callable, recruits_peasants: int) -> void:
-	"""Store withdrawal evaluation delegate for AI attackers."""
-	withdrawal_delegate = delegate
-	withdrawal_recruits = recruits_peasants
-
-func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> void:
+func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false) -> void:
 	"""Start an animated battle with round-by-round updates"""
 	if is_battle_running:
 		DebugLogger.log("BattleAnimation", "Battle already running!")
@@ -56,6 +52,9 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	is_withdrawing = false
 	withdrawal_rounds_remaining = 0
 	mobility_withdrawal_rounds_remaining = 0
+	withdrawing_side = 0
+	self.attacker_can_withdraw = attacker_can_withdraw
+	self.defender_can_withdraw = defender_can_withdraw
 	
 	# Store efficiency values and garrison reference
 	self.attacker_efficiency = attacker_efficiency
@@ -63,6 +62,9 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	self.region_garrison = region_garrison
 	self.terrain_type = terrain_type
 	self.castle_type = castle_type
+	self.attacker_can_withdraw = attacker_can_withdraw
+	self.defender_can_withdraw = defender_can_withdraw
+	DebugLogger.log("BattleAnimation", "Battle start flags: attacker_can_withdraw=" + str(attacker_can_withdraw) + ", defender_can_withdraw=" + str(defender_can_withdraw))
 	
 	# Merge all attacking forces
 	current_attackers = battle_simulator._merge_compositions(attacking_armies)
@@ -109,6 +111,9 @@ func _process_next_round() -> void:
 	# Handle withdrawal round differently
 	if is_withdrawing:
 		_process_withdrawal_round(rng)
+		return
+	
+	if _try_start_withdrawal(rng):
 		return
 	
 	var defender_snapshot = current_defenders.duplicate()
@@ -182,13 +187,6 @@ func _process_next_round() -> void:
 	
 	DebugLogger.log("BattleAnimation", "Round " + str(current_round) + " - Attacker hits: " + str(attacker_hits) + ", Defender hits: " + str(defender_hits))
 	
-	# Withdrawal check for AI attackers (delegate provided by BattleManager)
-	if not is_withdrawing and withdrawal_delegate.is_valid():
-		if withdrawal_delegate.call(current_attackers.duplicate(), current_defenders.duplicate(), region_garrison, withdrawal_recruits):
-			ai_withdrawal_started.emit()
-			start_withdrawal_round()
-			return
-	
 	# Schedule next round
 	battle_timer.start()
 
@@ -214,12 +212,18 @@ func _finish_battle() -> void:
 	
 	# Create final report
 	var report = BattleSimulator.BattleReport.new()
-	report.winner = winner
+	if withdrawing_side == 1:
+		report.winner = "Withdrawal"
+	elif withdrawing_side == 2:
+		report.winner = "Attackers"
+	else:
+		report.winner = winner
 	report.rounds = current_round
 	report.attacker_losses = attacker_losses
 	report.defender_losses = defender_losses
 	report.final_attacker = current_attackers
 	report.final_defender = current_defenders
+	report.withdrawing_side = withdrawing_side
 	
 	DebugLogger.log("BattleAnimation", "Battle finished! Winner: " + winner + " in " + str(current_round) + " rounds")
 	
@@ -259,6 +263,77 @@ func _deduct_garrison_losses_from_snapshot(attacker_kills: Dictionary, defender_
 			current_garrison_composition[unit_type] = remaining
 		else:
 			current_garrison_composition.erase(unit_type)
+
+func _compute_power(comp_dict: Dictionary) -> int:
+	var total := 0
+	for ut in comp_dict.keys():
+		var qty: int = int(comp_dict[ut])
+		if qty > 0:
+			total += GameParameters.get_unit_stat(ut, "power") * qty
+	return total
+
+func _apply_withdrawal_casualties_to_defenders(kills: Dictionary, defender_casualties: Dictionary) -> void:
+	for unit_type in kills:
+		var kill_count = int(kills[unit_type])
+		if kill_count <= 0:
+			continue
+		var total_def = int(current_defenders.get(unit_type, 0))
+		var garrison_count = int(current_garrison_composition.get(unit_type, 0))
+		var army_available = max(0, total_def - garrison_count)
+		if army_available <= 0:
+			continue
+		var actual_kills = min(kill_count, army_available)
+		current_defenders[unit_type] = total_def - actual_kills
+		if current_defenders[unit_type] <= 0:
+			current_defenders.erase(unit_type)
+		if actual_kills > 0:
+			defender_casualties[unit_type] = actual_kills
+
+func _try_start_withdrawal(rng: RandomNumberGenerator) -> bool:
+	if is_withdrawing:
+		return false
+	var atk_power: int = _compute_power(current_attackers)
+	var def_power: int = _compute_power(current_defenders)
+	if atk_power <= 0 or def_power <= 0:
+		return false
+	var withdrawing: int = 0
+	var weaker: int = atk_power
+	var stronger: int = def_power
+	if atk_power < def_power:
+		withdrawing = 1
+		weaker = atk_power
+		stronger = def_power
+	elif def_power < atk_power:
+		withdrawing = 2
+		weaker = def_power
+		stronger = atk_power
+	else:
+		return false
+	if withdrawing == 1 and not attacker_can_withdraw:
+		return false
+	if withdrawing == 2:
+		if not defender_can_withdraw:
+			return false
+		if _get_armies_from_defenders().is_empty():
+			return false
+	var ratio := float(weaker) / float(stronger)
+	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
+		return false
+	var forced_ratio := GameParameters.AI_WITHDRAW_POWER_THRESHOLD - GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE
+	if ratio <= forced_ratio:
+		DebugLogger.log("BattleAnimation", "Forced withdrawal triggered. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
+		ai_withdrawal_started.emit()
+		start_withdrawal_round(withdrawing)
+		return true
+	var gap := 1.0 - ratio
+	var chance: float = clampf(gap, 0.0, 1.0)
+	var roll := rng.randf()
+	if roll < chance:
+		DebugLogger.log("BattleAnimation", "Withdrawal roll passed. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)) + " roll=" + str(snappedf(roll, 0.003)) + " chance=" + str(snappedf(chance, 0.003)))
+		ai_withdrawal_started.emit()
+		start_withdrawal_round(withdrawing)
+		return true
+	return false
 
 func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100) -> Dictionary:
 	"""Process attacks from only mobility trait units during mobility withdrawal rounds"""
@@ -458,86 +533,85 @@ func stop_battle() -> void:
 		is_withdrawing = false
 		withdrawal_rounds_remaining = 0
 		mobility_withdrawal_rounds_remaining = 0
+		withdrawing_side = 0
 		battle_timer.stop()
 		DebugLogger.log("BattleAnimation", "Battle stopped")
-	withdrawal_delegate = Callable()
-	withdrawal_recruits = 0
 
 func is_running() -> bool:
 	"""Check if a battle is currently running"""
 	return is_battle_running
 
-func start_withdrawal_round() -> void:
-	"""Start withdrawal rounds where only defenders can attack"""
-	if not is_battle_running or is_withdrawing:
+func start_withdrawal_round(side: int) -> void:
+	"""Start withdrawal rounds where the opposing side gets free hits"""
+	if not is_battle_running or is_withdrawing or side == 0:
 		return
 	
 	is_withdrawing = true
+	withdrawing_side = side
 	withdrawal_rounds_remaining = GameParameters.WITHDRAWAL_FREE_HIT_ROUNDS
 	mobility_withdrawal_rounds_remaining = GameParameters.MOBILITY_EXTRA_WITHDRAWAL_ROUNDS
 	DebugLogger.log("BattleAnimation", "Starting withdrawal with " + str(withdrawal_rounds_remaining) + " free hit rounds and " + str(mobility_withdrawal_rounds_remaining) + " mobility rounds...")
 	battle_timer.start()
 
 func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
-	"""Process a withdrawal round where only defenders attack"""
+	"""Process a withdrawal round where only the non-withdrawing side attacks"""
 	var is_mobility_round = withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining > 0
 	var round_type = "mobility" if is_mobility_round else "standard"
 	DebugLogger.log("BattleAnimation", "Processing " + round_type + " withdrawal round " + str(current_round) + " (" + str(withdrawal_rounds_remaining) + " standard, " + str(mobility_withdrawal_rounds_remaining) + " mobility remaining)")
 	
-	# During withdrawal, attackers cannot attack (they get 0 hits)
 	var attacker_hits = 0
+	var defender_hits = 0
 	var attacker_kills = {}
-	
-	# Defenders get their normal attack using trait-based system
 	var defender_kills = {}
 	
-	if is_mobility_round:
-		# Only units with mobility trait can attack during these extra rounds
-		if not current_garrison_composition.is_empty():
-			var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100)
-			battle_simulator._merge_kill_results(defender_kills, mobility_garrison_kills)
-		
-		var armies_composition = _get_armies_from_defenders()
-		if not armies_composition.is_empty():
-			var mobility_army_kills = _process_mobility_attacks(armies_composition, current_attackers, rng, defender_efficiency)
-			battle_simulator._merge_kill_results(defender_kills, mobility_army_kills)
+	if withdrawing_side == 1:
+		if is_mobility_round:
+			if not current_garrison_composition.is_empty():
+				var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100)
+				battle_simulator._merge_kill_results(defender_kills, mobility_garrison_kills)
+			var armies_comp = _get_armies_from_defenders()
+			if not armies_comp.is_empty():
+				var mobility_army_kills = _process_mobility_attacks(armies_comp, current_attackers, rng, defender_efficiency)
+				battle_simulator._merge_kill_results(defender_kills, mobility_army_kills)
+		else:
+			if not current_garrison_composition.is_empty():
+				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type)
+				battle_simulator._merge_kill_results(defender_kills, garrison_kills)
+			var armies_standard = _get_armies_from_defenders()
+			if not armies_standard.is_empty():
+				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, castle_type)
+				battle_simulator._merge_kill_results(defender_kills, army_kills)
 	else:
-		# Standard withdrawal rounds - all defender units can attack
-		if not current_garrison_composition.is_empty():
-			var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type)
-			battle_simulator._merge_kill_results(defender_kills, garrison_kills)
-		
-		var armies_composition = _get_armies_from_defenders()
-		if not armies_composition.is_empty():
-			var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, castle_type)
-			battle_simulator._merge_kill_results(defender_kills, army_kills)
+		var armies_only = _get_armies_from_defenders()
+		if not armies_only.is_empty():
+			if is_mobility_round:
+				attacker_kills = _process_mobility_attacks(current_attackers, armies_only, rng, attacker_efficiency)
+			else:
+				attacker_kills = battle_simulator._process_unit_attacks(current_attackers, armies_only, rng, attacker_efficiency, terrain_type, castle_type)
 	
-	# Apply only defender kills (attackers don't get to attack during withdrawal)
 	var attacker_casualties = {}
-	var defender_casualties = {}  # No defender casualties during withdrawal
-	
-	for unit_type in defender_kills:
-		var kills = defender_kills[unit_type]
-		var available = current_attackers.get(unit_type, 0)
-		var actual_kills = min(kills, available)
-		current_attackers[unit_type] = available - actual_kills
-		if current_attackers[unit_type] <= 0:
-			current_attackers.erase(unit_type)
-		if actual_kills > 0:
-			attacker_casualties[unit_type] = actual_kills
-	
-	# Decrement appropriate withdrawal rounds counter
+	var defender_casualties = {}
+	if withdrawing_side == 1:
+		for unit_type in defender_kills:
+			var kills = defender_kills[unit_type]
+			var available = current_attackers.get(unit_type, 0)
+			var actual_kills = min(kills, available)
+			current_attackers[unit_type] = available - actual_kills
+			if current_attackers[unit_type] <= 0:
+				current_attackers.erase(unit_type)
+			if actual_kills > 0:
+				attacker_casualties[unit_type] = actual_kills
+			attacker_hits += actual_kills
+	else:
+		_apply_withdrawal_casualties_to_defenders(attacker_kills, defender_casualties)
+		for unit_type in attacker_kills:
+			defender_hits += attacker_kills[unit_type]
+
 	if is_mobility_round:
 		mobility_withdrawal_rounds_remaining -= 1
 	else:
 		withdrawal_rounds_remaining -= 1
 	
-	# Calculate total defender hits for display
-	var defender_hits = 0
-	for unit_type in defender_kills:
-		defender_hits += defender_kills[unit_type]
-	
-	# Create round data for UI updates
 	var round_data = {
 		"round": current_round,
 		"attacker_hits": attacker_hits,
@@ -551,26 +625,24 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 		"is_withdrawal": true,
 		"withdrawal_rounds_remaining": withdrawal_rounds_remaining,
 		"mobility_withdrawal_rounds_remaining": mobility_withdrawal_rounds_remaining,
-		"is_mobility_round": is_mobility_round
+		"is_ranged_volley": false
 	}
 	
-	# Emit round completion signal
 	round_completed.emit(round_data)
 	
-	DebugLogger.log("BattleAnimation", "Withdrawal round completed - Defenders get free hits: " + str(defender_hits))
-	
-	# Check if withdrawal is complete
-	if (withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining <= 0) or battle_simulator._army_size(current_attackers) <= 0:
-		# End battle after all withdrawal rounds (winner is always "Withdrawal")
+	var defenders_armies_size = battle_simulator._army_size(_get_armies_from_defenders())
+	if (withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining <= 0) or battle_simulator._army_size(current_attackers) <= 0 or defenders_armies_size <= 0:
 		_finish_withdrawal()
-	else:
-		# Schedule next withdrawal round
-		battle_timer.start()
+		return
+	
+	battle_timer.start()
 
 func _finish_withdrawal() -> void:
 	"""Complete a withdrawal and emit final results"""
+	var side := withdrawing_side
 	is_battle_running = false
 	is_withdrawing = false
+	withdrawing_side = 0
 	
 	# Calculate total losses during the battle (including withdrawal round)
 	var attacker_losses = battle_simulator._calculate_losses(original_attackers, current_attackers)
@@ -578,14 +650,15 @@ func _finish_withdrawal() -> void:
 	
 	# Create final report with withdrawal outcome
 	var report = BattleSimulator.BattleReport.new()
-	report.winner = "Withdrawal"  # Special case for withdrawal
+	report.winner = "Withdrawal"
 	report.rounds = current_round
 	report.attacker_losses = attacker_losses
 	report.defender_losses = defender_losses
 	report.final_attacker = current_attackers
 	report.final_defender = current_defenders
+	report.withdrawing_side = side
 	
-	DebugLogger.log("BattleAnimation", "Withdrawal completed! Attackers withdrawn after " + str(current_round) + " rounds")
+	DebugLogger.log("BattleAnimation", "Withdrawal completed! Side=" + str(side) + " after " + str(current_round) + " rounds")
 	
 	# Emit final results
 	battle_finished.emit(report)
