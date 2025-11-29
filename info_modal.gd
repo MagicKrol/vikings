@@ -222,16 +222,12 @@ func _update_region_display() -> void:
 	
 	# Update growth rate
 	var growth_value = get_node("Panel/Region/PopulationSection/Growth/Value")
-	var growth_change = current_region.last_population_growth
+	var growth_change = current_region.get_growth()
 	if growth_change > 0:
-		var previous_population = max(1, current_region.get_population() - growth_change)
-		var growth_rate = float(growth_change) / float(previous_population) * 100.0
-		growth_value.text = "+" + str(snappedf(growth_rate, 0.1)) + "%"
+		growth_value.text = "+" + str(snappedf(growth_change * 100, 0.1)) + "%"
 		growth_value.modulate = Color.html("#41b43e")
 	elif growth_change < 0:
-		var previous_population = max(1, current_region.get_population() + abs(growth_change))
-		var decline_rate = float(abs(growth_change)) / float(previous_population) * 100.0
-		growth_value.text = "-" + str(snappedf(decline_rate, 0.1)) + "%"
+		growth_value.text = "-" + str(snappedf(growth_change * 100, 0.1)) + "%"
 		growth_value.modulate = Color.html("#d13131")
 	else:
 		growth_value.text = "+0%"
@@ -241,6 +237,10 @@ func _update_region_display() -> void:
 	var income_value = get_node("Panel/Region/PopulationSection/Income/Value")
 	var gold_income = current_region.get_income()
 	income_value.text = str(gold_income)
+	
+	# Update region level
+	var level_value = get_node("Panel/Region/PopulationSection/Level/Value")
+	level_value.text = current_region.get_region_level_number()
 	
 	# Update castle/defenses
 	var castle_value = get_node("Panel/Region/GarisonSection/Castle/Value")
@@ -395,6 +395,6 @@ func _update_mine_status() -> void:
 			ore_names.append(ResourcesEnum.type_to_string(ore))
 		mine_label.text = ", ".join(ore_names) + " discovered"
 	elif current_region.get_ore_search_attempts_remaining() > 0:
-		mine_label.text = "ore search potential!"
+		mine_label.text = "Ore search potential!"
 	else:
 		mine_label.text = "Region has no ore"

@@ -778,7 +778,7 @@ func _score_region_for_upgrade(region: Region, player_id: int) -> Dictionary:
 	else:
 		recruit_status = "partial"
 		recruit_bonus = 1
-	var level_int = _region_level_to_int(region.get_region_level())
+	var level_int = RegionLevelEnum.level_to_number(region.get_region_level())
 	var score = float(castle_bonus + population_bonus + neighbor_bonus + recruit_bonus - level_int)
 	return {
 		"score": score,
@@ -798,21 +798,6 @@ func _compute_neighbor_castle_bonus(region_id: int, player_id: int) -> int:
 		if level > 0:
 			bonus += level
 	return bonus
-
-func _region_level_to_int(level: RegionLevelEnum.Level) -> int:
-	match level:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1
 
 func _evaluate_upgrade_castle(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)

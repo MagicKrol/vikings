@@ -151,7 +151,7 @@ func _calculate_cluster_metrics(region_id: int, enemy_region_ids: Array[int]) ->
 			resource_totals[resource_type] += cluster_region.get_resource_amount(resource_type)
 		
 		# Level (convert enum to int)
-		level_sum += _region_level_to_int(cluster_region.get_region_level())
+		level_sum += RegionLevelEnum.level_to_number(cluster_region.get_region_level())
 	
 	var level_avg = float(level_sum) / float(cluster_regions.size())
 	var owned_count = cluster_regions.size()
@@ -321,22 +321,6 @@ func _calculate_safety_score(distance_to_enemy: int) -> float:
 
 # Utility functions (percentile and median functions removed as they're no longer needed)
 
-func _region_level_to_int(level: RegionLevelEnum.Level) -> int:
-	"""Convert region level enum to integer"""
-	match level:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1
-
 func _get_region_by_id(region_id: int) -> Region:
 	"""Get region by ID from map generator"""
 	return map_generator.get_region_container_by_id(region_id) as Region
@@ -396,7 +380,7 @@ func calculate_individual_region_score(region: Region) -> float:
 	score += resource_score * WEIGHTS.res
 	
 	# Region level contribution (1-5 levels, normalized to 0-1)
-	var level_value = _region_level_to_int(region.get_region_level())
+	var level_value = RegionLevelEnum.level_to_number(region.get_region_level())
 	var level_norm = (level_value - 1.0) / (5.0 - 1.0)  # Normalize 1-5 to 0-1
 	score += level_norm * WEIGHTS.level
 	

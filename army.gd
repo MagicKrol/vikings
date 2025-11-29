@@ -57,7 +57,7 @@ func apply_map_size_scaling(map_generator: MapGenerator) -> void:
 		return
 	
 	var map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
-	var base_scale = 0.06
+	var base_scale = 0.05
 	scale = Vector2(base_scale * map_size_scale, base_scale * map_size_scale)
 
 func setup_army(new_player_id: int, roman_number: String) -> void:

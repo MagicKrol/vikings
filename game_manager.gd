@@ -656,8 +656,8 @@ func _process_round_start_actions():
 	if _region_manager:
 		_region_manager.process_all_castle_construction()
 	
-	# Reset ore search turn usage for all regions
-	DebugLogger.log("TurnProcessing", "Resetting ore search turn usage...")
+	# Reset per-turn region action usage for all regions
+	DebugLogger.log("TurnProcessing", "Resetting region turn usage flags...")
 	if _region_manager:
 		_region_manager.reset_all_ore_search_turn_usage()
 	
@@ -812,8 +812,6 @@ func famine_regions(player_id: int, missing_food: float) -> void:
 		var region: Region = entry.region
 		var actual_loss = region.apply_population_loss(pop_loss_target, FAMINE_MIN_POPULATION)
 		var leftover = pop_loss_target - actual_loss
-		if actual_loss <= 0 and pop_loss_target > 0 and region.last_population_growth >= 0:
-			region.last_population_growth = -pop_loss_target
 		var reached_minimum := region.get_population() <= FAMINE_MIN_POPULATION
 		if entry.owns_region and reached_minimum:
 			var garrison_comp: ArmyComposition = entry.garrison

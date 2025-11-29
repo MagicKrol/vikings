@@ -42,7 +42,7 @@ Main (Node2D) [place_armies.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
-│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling
+│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
@@ -127,7 +127,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
  - Scenario: set `game_mode="scenario"` and `scenario_path` before start; map is regenerated from scenario `map_file`, managers init, then `ScenarioManager.apply_to_runtime` is called. Skips castle placement and starts the first turn immediately.
  - Scenario resources: `ScenarioManager.apply_to_runtime()` pushes `player_resources` into `PlayerManagerNode.set_player_resources()` before the first turn.
 - First turn: `_process_player_turn_start()` skips economy/food for each player the first time it runs so HUD deltas stay `+0`; actual income/upkeep begins when that player starts turn two.
-- Famine: `_process_army_food_costs_for_player()` triggers `famine_regions()` when food falls short (1 food deficit = 10 population loss). Starvation reduces region population (floor 30), wipes garrisons at the minimum, and then removes army soldiers proportionally. UI growth indicators flip to red using the region's `last_population_growth`.
+- Famine: `_process_army_food_costs_for_player()` triggers `famine_regions()` when food falls short (1 food deficit = 10 population loss). Starvation reduces region population (floor 30), wipes garrisons at the minimum, and then removes army soldiers proportionally. UI growth indicators read from `Region.get_growth()`.
 
 ### scenario_manager.gd (ScenarioManager)
 - Purpose: Data-driven loader for premade scenarios (map + region overrides + ownership + castles + armies).
@@ -171,11 +171,12 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### Region systems
 - region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, recruit source aggregation, castle level lookup. Registers `VisualManager` via `set_visual_manager()` so ownership changes can clear any temporary hover highlights before recoloring overlays. `find_best_recruitment_castle()` returns both the best region id and the scored candidate list, using `(total available recruits from the castle + owned neighbors) / distance * (1 + 0.2 × castle level)` (distance is clamped to ≥1 so armies already on a castle can be evaluated too).
 - region.gd (Region): data container with population, resources, recruits, ownership counter, garrison, castle type/upgrade, ore search, movement/passability helpers.
-  - `apply_population_loss(loss, min_population)` clamps population, recalculates recruits, and forces `last_population_growth` negative for famine turns.
-  - `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
-  - `fill_recruits_to_maximum()` resets the recruit pool to the region's current cap (used during scenario setup).
+	- `apply_population_loss(loss, min_population)` clamps population and recalculates recruits.
+	- `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
+	- `fill_recruits_to_maximum()` resets the recruit pool to the region's current cap (used during scenario setup).
+	- Tracks per-turn action usage (ore search/raise army/promotion) cleared by `RegionManager.reset_all_ore_search_turn_usage()` at round start.
 - Info modal theme uses a `FontVariation` and theme shadow settings for Labels so region stats stay legible over busy backgrounds without outlines.
-  - `get_wounded_recruits_total()` exposes the wounded-peasant count for UI consistency.
+	- `get_wounded_recruits_total()` exposes the wounded-peasant count for UI consistency.
 
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.

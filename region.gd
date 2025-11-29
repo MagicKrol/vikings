@@ -46,15 +46,13 @@ var wounded_recruits: ArmyComposition
 
 # Resource composition available in this region
 var resources: ResourceComposition
+var base_resources: ResourceComposition
 
 # Population in this region
 var population: int = 0
 
 # Available recruits in this region
 var available_recruits: int = 0
-
-# Last turn's population growth (for UI display)
-var last_population_growth: int = 0
 
 # Promotion growth bonus tracking
 var promotion_growth_bonus_turns_remaining: int = 0
@@ -68,6 +66,8 @@ var castle_build_turns_remaining: int = 0
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
 var discovered_ores: Array[ResourcesEnum.Type] = []  # Which ores have been discovered
 var ore_search_used_this_turn: bool = false  # Track if ore search was used this turn
+var raise_army_used_this_turn: bool = false  # Track if raise army was used this turn
+var promotion_used_this_turn: bool = false  # Track if promotion was used this turn
 
 # Ownership tracking information
 var current_owner_id: int = 0  # Current owner player ID (0 = neutral)
@@ -96,6 +96,7 @@ func setup_region(region_data: Dictionary) -> void:
 	wounded_garrison = ArmyComposition.new()
 	wounded_recruits = ArmyComposition.new()
 	resources = ResourceComposition.new()
+	base_resources = ResourceComposition.new()
 	
 	# Set basic garrison composition and population for non-ocean regions
 	if not is_ocean:
@@ -173,17 +174,15 @@ func get_region_level() -> RegionLevelEnum.Level:
 
 func set_region_level(level: RegionLevelEnum.Level) -> void:
 	"""Set the region level"""
-	var old_level = region_level
 	region_level = level
-	
-	# If promoted (not initial setup), activate promotion growth bonus
-	if old_level != RegionLevelEnum.Level.L1 or level != RegionLevelEnum.Level.L1:
-		if level > old_level:
-			start_promotion_growth_bonus()
+	_update_resources_from_base()
 
-func start_promotion_growth_bonus() -> void:
-	"""Start the promotion growth bonus for this region"""
-	promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
+func promote_region() -> void:
+	"""Promote the region to the next level"""
+	if (region_level < 5):			
+		region_level = region_level + 1
+		promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
+		_update_resources_from_base()
 
 func get_promotion_cooldown() -> int:
 	return promotion_cooldown_turns
@@ -198,6 +197,10 @@ func decrement_promotion_cooldown() -> void:
 func get_region_level_string() -> String:
 	"""Get the region level as a string"""
 	return RegionLevelEnum.level_to_string(region_level)
+
+func get_region_level_number() -> String:
+	"""Get the region level as a string"""
+	return RegionLevelEnum.level_to_string_number(region_level)
 
 func get_region_type_display_string() -> String:
 	"""Get the simplified region type as a display string (grassland, forest, hills, forest hills, mountains)"""
@@ -243,7 +246,10 @@ func get_resources() -> ResourceComposition:
 
 func get_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 	"""Get amount of specific resource type"""
-	return resources.get_resource_amount(resource_type)
+	var base_amount = resources.get_resource_amount(resource_type)
+	if base_amount <= 0:
+		return 0
+	return base_amount
 
 func has_resources() -> bool:
 	"""Check if region has any resources"""
@@ -252,6 +258,35 @@ func has_resources() -> bool:
 func get_resource_composition_string() -> String:
 	"""Get resource composition as a readable string"""
 	return resources.get_composition_string()
+
+func set_base_resources(base_comp: ResourceComposition) -> void:
+	base_resources = ResourceComposition.new()
+	for rt in ResourcesEnum.get_all_types():
+		base_resources.set_resource_amount(rt, base_comp.get_resource_amount(rt))
+	_update_resources_from_base()
+
+func set_resources_from_dict(res_dict: Dictionary) -> void:
+	var base_comp := ResourceComposition.new()
+	for rt in ResourcesEnum.get_all_types():
+		var key_string := ResourcesEnum.type_to_string(rt)
+		var val = 0
+		if res_dict.has(rt):
+			val = res_dict.get(rt, 0)
+		elif res_dict.has(key_string):
+			val = res_dict.get(key_string, 0)
+		base_comp.set_resource_amount(rt, int(val))
+	set_base_resources(base_comp)
+
+func _update_resources_from_base() -> void:
+	var level_bonus := float(RegionLevelEnum.level_to_number(region_level) - 1) * GameParameters.REGION_RESOURCE_LEVEL_MULTIPLIER
+	var multiplier := 1.0 + level_bonus
+	resources = ResourceComposition.new()
+	for rt in ResourcesEnum.get_all_types():
+		var base_amt = base_resources.get_resource_amount(rt)
+		if base_amt <= 0:
+			continue
+		var scaled = int(round(float(base_amt) * multiplier))
+		resources.set_resource_amount(rt, scaled)
 
 # Population management methods
 func get_population() -> int:
@@ -276,10 +311,6 @@ func apply_population_loss(loss: int, min_population: int = 0) -> int:
 	if actual_loss <= 0:
 		return 0
 	set_population(target_population)
-	if last_population_growth <= 0:
-		last_population_growth -= actual_loss
-	else:
-		last_population_growth = -actual_loss
 	return actual_loss
 
 # Recruit management methods
@@ -335,47 +366,46 @@ func fill_recruits_to_maximum() -> void:
 	"""Set available recruits to the current maximum capacity."""
 	available_recruits = get_max_recruits()
 
+func get_growth() -> float:
+	if is_ocean:
+		return 0
+	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
+	var promotion_bonus = get_promotion_bonus()
+
+	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	var recruit_ratio = 0.0
+	if max_recruits > 0:
+		recruit_ratio = min(1.0, float(available_recruits) / float(max_recruits))
+	var standard_growth_rate = base_growth_rate * recruit_ratio
+
+	var food_bonus: float = float(resources.get_resource_amount(ResourcesEnum.Type.FOOD)) * 0.001
+
+	return standard_growth_rate + promotion_bonus + food_bonus
+
+
+func get_promotion_bonus() -> float:
+	if promotion_growth_bonus_turns_remaining > 0:
+		var bonus_turn = GameParameters.PROMOTION_GROWTH_BONUS_TURNS - promotion_growth_bonus_turns_remaining + 1
+		return GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
+	return 0.0
+
 func grow_population() -> void:
 	"""Grow population per turn based on recruitment impact and promotion bonuses (called each turn)"""
 	if is_ocean:
 		return  # Ocean regions don't have population
 	
-	# Base growth rate from GameParameters
-	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
-	
-	# Add promotion growth bonus if active
-	var promotion_bonus = 0.0
+	var growth = get_growth()
+	var population_growth = int(population * growth)
+
 	if promotion_growth_bonus_turns_remaining > 0:
-		var bonus_turn = GameParameters.PROMOTION_GROWTH_BONUS_TURNS - promotion_growth_bonus_turns_remaining + 1
-		promotion_bonus = GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
-		promotion_growth_bonus_turns_remaining -= 1
-	
-	# Calculate current recruit ratio (available / max) but cap at 1.0 to prevent Call to Arms from boosting growth above base rate
-	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
-	var recruit_ratio = 0.0
-	if max_recruits > 0:
-		recruit_ratio = min(1.0, float(available_recruits) / float(max_recruits))
-	
-	# Growth rate is modified by recruit availability: base_rate * (available_recruits / max_recruits)
-	var standard_growth_rate = base_growth_rate * recruit_ratio
-	
-	# Calculate population growth from standard growth and promotion bonus separately
-	var standard_growth = int(population * standard_growth_rate)
-	var promotion_growth = int(population * promotion_bonus)
-	var population_growth = standard_growth + promotion_growth
-	
-	# Track the growth for UI display
-	last_population_growth = population_growth
+		promotion_growth_bonus_turns_remaining = max(0, promotion_growth_bonus_turns_remaining - 1)
 	
 	if population_growth > 0:
 		var old_population = population
 		population += population_growth
 		
-		# Recalculate max recruits based on new population, but don't change available recruits
-		# (the available recruits will be updated in the next recruit replenishment phase)
-		var actual_growth_rate = float(population_growth) / float(old_population)
-		
-		var growth_info = " (+" + str(population_growth) + ", rate: " + str(snappedf(actual_growth_rate * 100, 0.1)) + "%"
+		var growth_info = " (+" + str(population_growth) + ", rate: " + str(snappedf(growth * 100, 0.1)) + "%"
+		var promotion_bonus = get_promotion_bonus()
 		if promotion_bonus > 0.0:
 			growth_info += ", promotion bonus: +" + str(snappedf(promotion_bonus * 100, 0.1)) + "%"
 			growth_info += ", " + str(promotion_growth_bonus_turns_remaining) + " turns remaining"
@@ -571,6 +601,24 @@ func reset_ore_search_turn_usage() -> void:
 	"""Reset the ore search usage flag for the new turn"""
 	ore_search_used_this_turn = false
 
+func reset_turn_actions_usage() -> void:
+	"""Reset per-turn action usage flags"""
+	reset_ore_search_turn_usage()
+	raise_army_used_this_turn = false
+	promotion_used_this_turn = false
+
+func has_raised_army_this_turn() -> bool:
+	return raise_army_used_this_turn
+
+func mark_raise_army_used() -> void:
+	raise_army_used_this_turn = true
+
+func has_promoted_this_turn() -> bool:
+	return promotion_used_this_turn
+
+func mark_promoted_this_turn() -> void:
+	promotion_used_this_turn = true
+
 func get_ore_search_status_string() -> String:
 	"""Get a human-readable string describing ore search status"""
 	if not GameParameters.can_search_for_ore_in_region(region_type):
@@ -702,7 +750,7 @@ func get_income() -> int:
 	if is_ocean:
 		return 0  # Ocean regions don't generate income
 	
-	var level_int = _region_level_to_int(region_level)
+	var level_int = RegionLevelEnum.level_to_number(region_level)
 	
 	# Formula: floor(Population / (64 - 4 * region_level))
 	var divisor = GameParameters.POPULATION_INCOME_BASE_DIVISOR - (GameParameters.POPULATION_INCOME_LEVEL_MULTIPLIER * level_int)
@@ -713,19 +761,3 @@ func get_income() -> int:
 	
 	var gold_income = int(population / divisor)
 	return max(0, gold_income)
-
-func _region_level_to_int(region_level_param: RegionLevelEnum.Level) -> int:
-	"""Convert region level enum to integer"""
-	match region_level_param:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1  # Default to level 1

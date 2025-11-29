@@ -25,6 +25,36 @@ static func level_to_string(level: Level) -> String:
 		_:
 			return "Unknown"
 
+static func level_to_number(level: Level) -> int:
+	"""Convert region level enum to Int"""
+	match level:
+		Level.L1:
+			return 1
+		Level.L2:
+			return 2
+		Level.L3:
+			return 3
+		Level.L4:
+			return 4
+		Level.L5:
+			return 5
+	return 0
+
+static func level_to_string_number(level: Level) -> String:
+	"""Convert region level enum to String"""
+	match level:
+		Level.L1:
+			return "1"
+		Level.L2:
+			return "2"
+		Level.L3:
+			return "3"
+		Level.L4:
+			return "4"
+		Level.L5:
+			return "5"
+	return "0"
+
 static func string_to_level(level_string: String) -> Level:
 	"""Convert string to region level enum"""
 	match level_string.to_lower():

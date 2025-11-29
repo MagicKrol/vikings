@@ -268,34 +268,11 @@ func generate_region_resources(region: Region) -> void:
 	var biome_type = region.get_region_type()
 	var region_level = region.get_region_level()
 	
-	# Clear existing resources
-	region.resources = ResourceComposition.new()
-	
-	# Generate base resources based on region type using GameParameters
+	var base_comp = ResourceComposition.new()
 	for resource_type in ResourcesEnum.get_all_types():
 		var base_amount = GameParameters.generate_resource_amount(biome_type, resource_type)
-		if base_amount > 0:
-			# Apply region level bonus: base_amount * (1 + (region_level - 1) * REGION_RESOURCE_LEVEL_MULTIPLIER)
-			var level_int = _region_level_to_int(region_level)
-			var level_multiplier = 1.0 + (level_int - 1) * GameParameters.REGION_RESOURCE_LEVEL_MULTIPLIER
-			var final_amount = round(base_amount * level_multiplier)
-			region.resources.set_resource_amount(resource_type, int(final_amount))
-
-func _region_level_to_int(region_level: RegionLevelEnum.Level) -> int:
-	"""Convert region level enum to integer"""
-	match region_level:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1  # Default to level 1
+		base_comp.set_resource_amount(resource_type, int(base_amount))
+	region.set_base_resources(base_comp)
 
 func upgrade_castle_regions(castle_region: Region) -> void:
 	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
@@ -335,9 +312,15 @@ func _generate_all_region_resources() -> void:
 	# Generate resources for each region
 	var regions_generated = 0
 	for child in regions_node.get_children():
-		if child is Region:
-			generate_region_resources(child)
-			regions_generated += 1
+		if not (child is Region):
+			continue
+		var region := child as Region
+		if region.is_ocean:
+			continue
+		if region.get_region_type() == RegionTypeEnum.Type.MOUNTAINS:
+			continue
+		generate_region_resources(region)
+		regions_generated += 1
 
 func replenish_all_recruits() -> void:
 	"""Replenish recruits for all regions (called each turn)"""
@@ -404,7 +387,7 @@ func process_all_castle_construction() -> void:
 	DebugLogger.log("RegionManagement", "Processed castle construction for " + str(regions_processed) + " regions")
 
 func reset_all_ore_search_turn_usage() -> void:
-	"""Reset ore search turn usage for all regions (called each turn)"""
+	"""Reset per-turn usage flags for all regions (ore search, raise army, promotion)"""
 	if map_generator == null:
 		return
 	
@@ -418,10 +401,10 @@ func reset_all_ore_search_turn_usage() -> void:
 	var regions_reset = 0
 	for child in regions_node.get_children():
 		if child is Region:
-			child.reset_ore_search_turn_usage()
+			child.reset_turn_actions_usage()
 			regions_reset += 1
 	
-	DebugLogger.log("RegionManagement", "Reset ore search turn usage for " + str(regions_reset) + " regions")
+	DebugLogger.log("RegionManagement", "Reset turn usage flags for " + str(regions_reset) + " regions")
 
 func calculate_terrain_cost(region_id: int, player_id: int) -> int:
 	"""

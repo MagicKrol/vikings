@@ -84,10 +84,7 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 		# Resources
 		if r.has("resources"):
 			var res: Dictionary = r.get("resources")
-			for rt in ResourcesEnum.get_all_types():
-				var key := ResourcesEnum.type_to_string(rt)
-				if res.has(key):
-					region.get_resources().set_resource_amount(rt, int(res.get(key)))
+			region.set_resources_from_dict(res)
 		# Discovered ores
 		if r.has("discovered_ores"):
 			var ores_arr: Array = r.get("discovered_ores")

@@ -82,9 +82,10 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	if current_region != null and current_region.get_region_level() < RegionLevelEnum.Level.L5:
 		var can_afford_promotion = _can_player_afford_promotion(current_region.get_region_level() + 1)
+		var promotion_available := not current_region.has_promoted_this_turn()
 		definitions.append({
 			"text": "Promote Region",
-			"enabled": can_afford_promotion,
+			"enabled": promotion_available and can_afford_promotion,
 			"action": "_on_promote_region_pressed",
 			"tooltip": Callable(self, "_on_promote_tooltip_hovered")
 		})
@@ -120,10 +121,10 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var castle_type := current_region.get_castle_type() if current_region != null else CastleTypeEnum.Type.NONE
 	var has_keep_or_higher := castle_type >= CastleTypeEnum.Type.KEEP
 	var can_afford_army := _can_player_afford_raise_army()
-	var current_player_id := game_manager.get_current_player() if game_manager != null else 1
+	var has_used_raise_army := current_region != null and current_region.has_raised_army_this_turn()
 	definitions.append({
 		"text": "Raise Army",
-		"enabled": has_keep_or_higher and can_afford_army,
+		"enabled": has_keep_or_higher and can_afford_army and not has_used_raise_army,
 		"action": "_on_raise_army_pressed",
 		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
 	})
@@ -243,12 +244,11 @@ func _on_promote_region_pressed() -> void:
 	var current_player = player_manager.get_player(1)
 	if current_player == null:
 		return
-	if not _passes_food_upgrade_safeguard(current_player.get_player_id(), promotion_cost):
-		return
 	if not current_player.pay_cost(promotion_cost):
 		return
 	
-	current_region.set_region_level(next_level)
+	current_region.promote_region()
+	current_region.mark_promoted_this_turn()
 	var level_name = RegionLevelEnum.level_to_string(next_level)
 	var promotion_message = "Region promoted to " + level_name + " (level " + str(int(next_level) + 1) + ")"
 	visible = false
@@ -256,12 +256,10 @@ func _on_promote_region_pressed() -> void:
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
 	message_modal.display_message(promotion_message)
 
-	if region_manager != null:
-		region_manager.generate_region_resources(current_region)
-	
 	if info_modal != null and info_modal.visible:
 		info_modal.show_region_info(current_region, false)
 	
+	_create_action_buttons()
 	_request_player_status_refresh()
 
 func _on_recruit_soldiers_pressed() -> void:
@@ -397,6 +395,7 @@ func _on_raise_army_pressed() -> void:
 	var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
 	
 	if new_army != null:
+		current_region.mark_raise_army_used()
 		var army_name = new_army.name if new_army.name else "New Army"
 		visible = false
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
@@ -474,7 +473,10 @@ func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 	if not GameParameters.can_afford_promotion(target_level, player_resources):
 		return false
 	
-	return _passes_food_upgrade_safeguard(current_player.get_player_id(), promotion_cost)
+	if (game_manager.is_player_computer(current_player.get_player_id())):
+		return _passes_food_upgrade_safeguard(current_player.get_player_id(), promotion_cost)
+	
+	return true
 
 func _passes_food_upgrade_safeguard(player_id: int, promotion_cost: Dictionary) -> bool:
 	if player_manager == null:

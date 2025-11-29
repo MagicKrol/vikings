@@ -253,7 +253,7 @@ func _calculate_population_gold_income(region: Region) -> int:
 	var region_level = region.get_region_level()
 	
 	# Convert region level enum to integer (assuming L1=1, L2=2, etc.)
-	var level_int = _region_level_to_int(region_level)
+	var level_int = RegionLevelEnum.level_to_number(region_level)
 	
 	# Formula: floor(Population / (56 - 6 * region_level))
 	var divisor = 56 - (6 * level_int)
@@ -312,22 +312,6 @@ func _calculate_projected_population_growth(region: Region) -> int:
 		recruit_ratio = min(1.0, float(region.available_recruits) / float(max_recruits))
 	var actual_growth_rate = total_base_growth_rate * recruit_ratio
 	return int(region.population * actual_growth_rate)
-
-func _region_level_to_int(region_level: RegionLevelEnum.Level) -> int:
-	"""Convert region level enum to integer"""
-	match region_level:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1  # Default to level 1
 
 # Player information
 func get_player_resource_summary() -> String:

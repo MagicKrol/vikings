@@ -100,7 +100,7 @@ func _score_resource(amount: int, weight: float) -> float:
 
 func _calculate_level_score(region: Region) -> float:
 	"""Score based on region administrative level"""
-	var level_int = _region_level_to_int(region.get_region_level())
+	var level_int = RegionLevelEnum.level_to_number(region.get_region_level())
 	return level_int * GameParameters.AI_REGION_LEVEL_WEIGHT
 
 func _calculate_castle_score(region: Region) -> float:
@@ -218,22 +218,6 @@ func _calculate_region_distance(from_region_id: int, to_region_id: int) -> int:
 	return -1  # No path found
 
 ## Helper Methods
-
-func _region_level_to_int(region_level: RegionLevelEnum.Level) -> int:
-	"""Convert region level enum to integer for scoring"""
-	match region_level:
-		RegionLevelEnum.Level.L1:
-			return 1
-		RegionLevelEnum.Level.L2:
-			return 2
-		RegionLevelEnum.Level.L3:
-			return 3
-		RegionLevelEnum.Level.L4:
-			return 4
-		RegionLevelEnum.Level.L5:
-			return 5
-		_:
-			return 1
 
 func _castle_type_to_int(castle_type: CastleTypeEnum.Type) -> int:
 	"""Convert castle type to integer level for scoring"""

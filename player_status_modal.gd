@@ -254,7 +254,7 @@ func _calculate_population_data(player_id: int) -> Dictionary:
 			population_data.amount += region_node.get_population()
 			
 			# Add last turn's population growth
-			population_data.income += region_node.last_population_growth
+			population_data.income += region_node.get_growth()
 	
 	return population_data
 
