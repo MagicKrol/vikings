@@ -248,7 +248,7 @@ func initialize_managers(is_scenario: bool = false):
 		player_manager.initialize_with_managers(_region_manager, map_generator)
 		player_manager.set_army_manager(_army_manager)
 		# Ensure players are initialized before any UI or scenario logic uses them
-		player_manager._initialize_players()
+		player_manager._initialize_players(player_types)
 		
 		# Connect to player change signal to refresh UI
 		player_manager.current_player_changed.connect(_on_current_player_changed)
@@ -961,14 +961,6 @@ func get_player_type(player_id: int) -> PlayerTypeEnum.Type:
 	if player_id >= 1 and player_id <= player_types.size():
 		return player_types[player_id - 1]  # Convert 1-based to 0-based index
 	return PlayerTypeEnum.Type.OFF
-
-func set_player_type(player_id: int, type: PlayerTypeEnum.Type) -> void:
-	"""Set the type of a specific player"""
-	if player_id >= 1 and player_id <= player_types.size():
-		player_types[player_id - 1] = type  # Convert 1-based to 0-based index
-		if player_manager:
-			player_manager.set_player_is_computer(player_id, type == PlayerTypeEnum.Type.COMPUTER)
-		DebugLogger.log("GameInit", "Player " + str(player_id) + " set to " + PlayerTypeEnum.type_to_string(type))
 
 func is_player_active(player_id: int) -> bool:
 	"""Check if a player is active (not OFF)"""

@@ -382,6 +382,8 @@ func get_growth() -> float:
 
 	return standard_growth_rate + promotion_bonus + food_bonus
 
+func get_population_increase() -> int:
+	return int(population * get_growth())
 
 func get_promotion_bonus() -> float:
 	if promotion_growth_bonus_turns_remaining > 0:

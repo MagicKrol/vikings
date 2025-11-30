@@ -46,7 +46,7 @@ var army_manager: ArmyManager = null
 func _ready():
 	# Initialize players immediately when not already prepared (editor mode)
 	if players.is_empty():
-		_initialize_players()
+		_initialize_players([])
 
 func initialize_with_managers(region_mgr: RegionManager, map_gen: MapGenerator):
 	"""Initialize with manager references from GameManager"""
@@ -57,10 +57,18 @@ func set_army_manager(army_mgr: ArmyManager) -> void:
 	"""Set the army manager reference"""
 	army_manager = army_mgr
 
-func _initialize_players() -> void:
+func _initialize_players(player_types: Array[PlayerTypeEnum.Type]) -> void:
 	"""Initialize all players with default settings"""
 	for i in range(1, total_players + 1):
 		var player = Player.new(i, "Player " + str(i))
+		#Check if player is computer or human and set a proper flag
+		if player_types.is_empty():
+			player.set_is_computer(false)
+		else:
+			if player_types[i-1] == PlayerTypeEnum.Type.COMPUTER:
+				player.set_is_computer(true)
+			else:
+				player.set_is_computer(false)
 		players[i] = player
 
 func get_player(player_id: int) -> Player:
@@ -113,12 +121,6 @@ func get_total_players() -> int:
 func player_exists(player_id: int) -> bool:
 	"""Check if a player exists"""
 	return players.has(player_id)
-
-func set_player_is_computer(player_id: int, enabled: bool) -> void:
-	var player = get_player(player_id)
-	if player == null:
-		return
-	player.set_is_computer(enabled)
 
 # Resource management for all players
 func add_resources_to_player(player_id: int, resource_type: ResourcesEnum.Type, amount: int) -> bool:
@@ -183,15 +185,6 @@ func process_resource_income_for_player(player_id: int) -> void:
 func _calculate_player_income(player: Player) -> void:
 	"""Calculate and apply resource income for a player based on owned regions"""
 	var player_id = player.get_player_id()
-
-	# Region manager and map generator are required - no fallbacks
-	if region_manager == null:
-		push_error("[PlayerManagerNode] CRITICAL: RegionManager is null - cannot calculate region-based income")
-		return
-	
-	if map_generator == null:
-		push_error("[PlayerManagerNode] CRITICAL: MapGenerator is null - cannot access region data")
-		return
 
 	# Get all regions owned by this player
 	var owned_regions = region_manager.get_player_regions(player_id)
@@ -284,7 +277,7 @@ func get_projected_economy_for_player(player_id: int) -> Dictionary:
 			income[ResourcesEnum.Type.GOLD] += _calculate_population_gold_income(region_node)
 			population_amount += region_node.get_population()
 			if not region_node.is_ocean:
-				population_growth += _calculate_projected_population_growth(region_node)
+				population_growth += region_node.get_population_increase()
 	var food_upkeep := calculate_total_army_food_cost(player_id)
 	income[ResourcesEnum.Type.FOOD] -= int(ceil(food_upkeep))
 	return {
@@ -294,21 +287,6 @@ func get_projected_economy_for_player(player_id: int) -> Dictionary:
 			"growth": population_growth
 		}
 	}
-
-func _calculate_projected_population_growth(region: Region) -> int:
-	"""Mirror Region.gd growth formula without mutating region state."""
-	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
-	var promotion_bonus = 0.0
-	if region.promotion_growth_bonus_turns_remaining > 0:
-		var bonus_turn = GameParameters.PROMOTION_GROWTH_BONUS_TURNS - region.promotion_growth_bonus_turns_remaining + 1
-		promotion_bonus = GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
-	var total_base_growth_rate = base_growth_rate + promotion_bonus
-	var max_recruits = GameParameters.calculate_max_recruits(region.population, region.castle_type)
-	var recruit_ratio = 0.0
-	if max_recruits > 0:
-		recruit_ratio = min(1.0, float(region.available_recruits) / float(max_recruits))
-	var actual_growth_rate = total_base_growth_rate * recruit_ratio
-	return int(region.population * actual_growth_rate)
 
 # Player information
 func get_player_resource_summary() -> String:
@@ -500,21 +478,23 @@ func meets_food_upgrade_safeguard(player_id: int, food_cost: int) -> bool:
 func calculate_total_army_food_cost(player_id: int) -> float:
 	"""Calculate total food cost for all armies and garrisons owned by a player"""
 	var total_food_cost = 0.0
+	var player = get_player(player_id)
+	var is_computer = player.is_computer()
 	
 	# Get all regions owned by this player and sum garrison food costs
-	if region_manager != null:
+	if not is_computer:
 		var owned_regions = region_manager.get_player_regions(player_id)
-		
-		if map_generator != null:
-			var regions_node = map_generator.get_node_or_null("Regions")
-			if regions_node != null:
-				for region_id in owned_regions:
-					var region_node = _find_region_by_id(regions_node, region_id)
-					if region_node != null:
-						var garrison = region_node.get_garrison()
-						if garrison != null:
-							var garrison_food_cost = garrison.get_total_food_cost()
-							total_food_cost += garrison_food_cost
+		var regions_node = map_generator.get_node_or_null("Regions")
+		for region_id in owned_regions:
+			var region_node = _find_region_by_id(regions_node, region_id)
+			var garrison = region_node.get_garrison()
+			if garrison != null:
+				var garrison_food_cost = garrison.get_total_food_cost()
+				total_food_cost += garrison_food_cost
+			var wounded_garrison = region_node.get_wounded_garrison()
+			if wounded_garrison != null:
+				var wounded_garrison_food_cost = wounded_garrison.get_total_food_cost()
+				total_food_cost += wounded_garrison_food_cost
 	
 	# Add standalone armies
 	if army_manager != null:
@@ -531,3 +511,14 @@ func calculate_total_army_food_cost(player_id: int) -> float:
 						total_food_cost += wounded_comp.get_total_food_cost()
 	
 	return total_food_cost
+
+func get_player_resource_growth(player_id: int, resource_type: ResourcesEnum.Type) -> float:
+	var owned_regions = region_manager.get_player_regions(player_id)
+	var total := 0.0
+	for region_id in owned_regions:
+		var region_node = map_generator.get_region_container_by_id(region_id) as Region
+		if region_node.can_collect_resource(resource_type):
+			total += float(region_node.get_resource_amount(resource_type))
+	if resource_type == ResourcesEnum.Type.FOOD:
+		return total - calculate_total_army_food_cost(player_id)
+	return total
