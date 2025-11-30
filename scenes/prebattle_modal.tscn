@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://u1futcpldqka"]
+[gd_scene load_steps=13 format=3 uid="uid://u1futcpldqka"]
 
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="1_4y05l"]
+[ext_resource type="Script" path="res://prebattle_modal.gd" id="2_f7hvi"]
 [ext_resource type="Texture2D" uid="uid://dcxj542ybccbq" path="res://images/battlemodal.png" id="3_lge61"]
 [ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="4_imd3y"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="5_vgjp2"]
@@ -59,6 +60,7 @@ offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_4y05l")
+script = ExtResource("2_f7hvi")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
@@ -90,7 +92,7 @@ offset_right = 627.5
 offset_bottom = 644.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 13
 
 [node name="Header" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -185,8 +187,22 @@ layout_mode = 2
 text = "0%"
 horizontal_alignment = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army"]
+[node name="TextSection2" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
+
+[node name="Total" type="HBoxContainer" parent="Panel/Army/TextSection2"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/TextSection2/Total"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="EstimateText" type="Label" parent="Panel/Army/TextSection2/Total"]
+custom_minimum_size = Vector2(530, 0)
+layout_mode = 2
+text = "Your scouts estimate enemy force to: Your scouts estimate enemy force to:"
+autowrap_mode = 2
 
 [node name="TextSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -199,7 +215,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
-[node name="AttackerRemaining" type="Label" parent="Panel/Army/TextSection/Total"]
+[node name="Text" type="Label" parent="Panel/Army/TextSection/Total"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "Your scouts estimate enemy force to:"
@@ -219,13 +235,8 @@ layout_mode = 2
 [node name="Estimate" type="Label" parent="Panel/Army/EstimateSection/Total"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-text = "Less than 20 "
-horizontal_alignment = 1
-
-[node name="Soldiers" type="Label" parent="Panel/Army/EstimateSection/Total"]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "soldiers"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Less than 20 soldiers"
 horizontal_alignment = 1
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/Army"]
@@ -247,161 +258,162 @@ custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Siege equipment:"
 
-[node name="SiegeEquipementAvailable" type="VBoxContainer" parent="Panel/Army/SiegeSection"]
+[node name="Available" type="VBoxContainer" parent="Panel/Army/SiegeSection"]
 visible = false
 layout_mode = 2
 
-[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable"]
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/SiegeSection/Available"]
 layout_mode = 2
 
-[node name="Ladders" type="HBoxContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable"]
+[node name="Ladders" type="HBoxContainer" parent="Panel/Army/SiegeSection/Available"]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="Label" type="Label" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Ladders"
 
-[node name="HiredRecruits" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="HiredRecruits" type="Label" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="Button1" type="Button" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="Button1" type="Button" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 focus_mode = 0
 theme = SubResource("Theme_2824w")
 text = "+1"
 
-[node name="Button1m" type="Button" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="Button1m" type="Button" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 focus_mode = 0
 theme = SubResource("Theme_2824w")
 text = "-1"
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="Cost" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Ladders"]
+[node name="Cost" type="Label" parent="Panel/Army/SiegeSection/Available/Ladders"]
 layout_mode = 2
 text = "Wood: 1"
 
-[node name="BatteringRams" type="HBoxContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable"]
+[node name="BatteringRams" type="HBoxContainer" parent="Panel/Army/SiegeSection/Available"]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="Label" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Battering rams"
 
-[node name="HiredRecruits" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="HiredRecruits" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "10"
 
-[node name="Button1" type="Button" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="Button1" type="Button" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 focus_mode = 0
 theme = SubResource("Theme_2824w")
 text = "+1"
 
-[node name="Button1m" type="Button" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="Button1m" type="Button" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 focus_mode = 0
 theme = SubResource("Theme_2824w")
 text = "-1"
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="Cost" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/BatteringRams"]
+[node name="Cost" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 layout_mode = 2
 text = "Wood: 2"
 
-[node name="Trebuchets" type="HBoxContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable"]
+[node name="Trebuchets" type="HBoxContainer" parent="Panel/Army/SiegeSection/Available"]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="Label" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Trebuchets"
 
-[node name="HiredRecruits" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="HiredRecruits" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "45"
 
-[node name="Button1" type="Button" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="Button1" type="Button" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 focus_mode = 0
 theme = SubResource("Theme_2824w")
 text = "+1"
 
-[node name="Button1m" type="Button" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="Button1m" type="Button" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 focus_mode = 0
 theme = SubResource("Theme_2824w")
 text = "-1"
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="Cost" type="Label" parent="Panel/Army/SiegeSection/SiegeEquipementAvailable/Trebuchets"]
+[node name="Cost" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 layout_mode = 2
 text = "Wood: 5     Stone: 1"
 
-[node name="SiegeEquiprementNotAvailable" type="HBoxContainer" parent="Panel/Army/SiegeSection"]
+[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army/SiegeSection/Available"]
+visible = false
+layout_mode = 2
+
+[node name="Notavailable" type="VBoxContainer" parent="Panel/Army/SiegeSection"]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Army/SiegeSection/SiegeEquiprementNotAvailable"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/SiegeSection/Notavailable"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/SiegeSection/SiegeEquiprementNotAvailable/VBoxContainer"]
-layout_mode = 2
-
-[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquiprementNotAvailable/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/SiegeSection/Notavailable/HBoxContainer"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/Army/SiegeSection/SiegeEquiprementNotAvailable/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Panel/Army/SiegeSection/Notavailable/HBoxContainer"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Not available"
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeEquiprementNotAvailable/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/Notavailable"]
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 
 [node name="MarginContainer4" type="MarginContainer" parent="Panel/Army"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="WithdrawSection" type="VBoxContainer" parent="Panel/Army"]
@@ -422,20 +434,20 @@ layout_mode = 2
 theme = ExtResource("6_qnd2b")
 text = "Withdraw"
 
-[node name="ButtonSection2" type="VBoxContainer" parent="Panel/Army"]
+[node name="AttackSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection2"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/AttackSection"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/AttackSection"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection2/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/AttackSection/HBoxContainer"]
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Panel/Army/ButtonSection2/HBoxContainer"]
+[node name="Button" type="Button" parent="Panel/Army/AttackSection/HBoxContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2

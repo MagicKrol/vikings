@@ -42,6 +42,7 @@ var _player_status_modal2: PlayerStatusModal2
 var _turn_modal: TurnModal
 var _info_modal: InfoModal
 var _move_modal: MoveModal
+var _prebattle_modal: PrebattleModal
 var _message_modal: MessageModal
 
 enum SelectContextType {
@@ -88,6 +89,7 @@ func _ready():
 	_turn_modal = get_parent().get_node("TurnModal") as TurnModal
 	_info_modal = get_parent().get_node("InfoModal") as InfoModal
 	_move_modal = get_parent().get_node("MoveModal") as MoveModal
+	_prebattle_modal = get_parent().get_node("PrebattleModal") as PrebattleModal
 	_message_modal = get_parent().get_node("MessageModal") as MessageModal
 	
 	# Map is under root (UI parent's parent)
@@ -242,6 +244,7 @@ func _is_blocking_control(control: Control) -> bool:
 		_player_status_modal2,
 		_info_modal,
 		_move_modal,
+		_prebattle_modal,
 		_select_modal,
 		_army_select_modal,
 		_region_select_modal,
@@ -269,10 +272,12 @@ func close_all_active_modals() -> void:
 		_info_modal.hide_modal()
 	if _move_modal and _move_modal.visible:
 		_move_modal.hide_move_modal()
+	if _prebattle_modal.visible:
+		_prebattle_modal.hide_prebattle()
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
-	var modals = [_select_modal, _army_select_modal, _region_select_modal, battle_modal, _info_modal, _move_modal]
+	var modals = [_select_modal, _army_select_modal, _region_select_modal, battle_modal, _info_modal, _move_modal, _prebattle_modal]
 	for modal in modals:
 		if modal and modal.visible:
 			return true

@@ -315,10 +315,7 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		# Conquest scenario (player already has army in unowned/enemy region)
 		var player_army_in_region = _army_manager.get_army_in_region(region_container, current_player_id)
 		if player_army_in_region != null and region_owner != current_player_id:
-			var battle_manager = _game_manager.get_battle_manager()
-			battle_manager.set_pending_conquest(player_army_in_region, region)
-			var battle_modal = get_node("../UI/BattleModal") as BattleModal
-			battle_modal.show_battle(player_army_in_region, region)
+			_game_manager.show_prebattle_modal(player_army_in_region, region)
 			return
 
 		# If the region has current player's armies, allow choosing one (no selected army case)

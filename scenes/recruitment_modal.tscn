@@ -14,16 +14,16 @@ draw_center = false
 border_color = Color(0, 0, 0, 1)
 shadow_size = 5
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_68w2c"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_earim"]
 content_margin_left = 5.0
 content_margin_top = 2.0
 content_margin_right = 5.0
 content_margin_bottom = 1.0
 texture = ExtResource("6_gu7nv")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r3pxw"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6x2g4"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pressed_number"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_508s8"]
 content_margin_left = 5.0
 content_margin_top = 2.0
 content_margin_right = 5.0
@@ -37,11 +37,11 @@ Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/constants/icon_max_width = 0
 Button/constants/outline_size = 0
-Button/styles/disabled = SubResource("StyleBoxTexture_68w2c")
-Button/styles/focus = SubResource("StyleBoxEmpty_r3pxw")
-Button/styles/hover = SubResource("StyleBoxTexture_68w2c")
-Button/styles/normal = SubResource("StyleBoxTexture_68w2c")
-Button/styles/pressed = SubResource("StyleBoxTexture_pressed_number")
+Button/styles/disabled = SubResource("StyleBoxTexture_earim")
+Button/styles/focus = SubResource("StyleBoxEmpty_6x2g4")
+Button/styles/hover = SubResource("StyleBoxTexture_earim")
+Button/styles/normal = SubResource("StyleBoxTexture_earim")
+Button/styles/pressed = SubResource("StyleBoxTexture_508s8")
 
 [node name="RecruitmentModal" type="Control"]
 layout_mode = 3

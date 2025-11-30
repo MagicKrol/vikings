@@ -52,6 +52,18 @@ const BORDER_MIN_VALUE = 0.2                  # Minimum darkness to prevent too-
 const UI_COLOR_DEAD = Color.RED                # Used for dead counts in summaries
 const UI_COLOR_WOUNDED = Color.YELLOW          # Used for wounded counts in summaries
 
+const SCOUT_ARMY_SIZE_THRESHOLDS: Array = [
+	{"min": 0, "max": 10, "description": "Your scouts believe the area is barely defended, with only isolated enemies present."},
+	{"min": 10, "max": 30, "description": "Your scouts observed a small enemy detachment guarding the area."},
+	{"min": 30, "max": 60, "description": "Your scouts report a sizable enemy force defending the region."},
+	{"min": 60, "max": 100, "description": "Your scouts observed a strong enemy contingent holding the position."},
+	{"min": 100, "max": 150, "description": "Your scouts detected a large concentration of enemy troops in the area."},
+	{"min": 150, "max": 250, "description": "Your scouts observed a major assembly of troops preparing for battle."},
+	{"min": 250, "max": 400, "description": "Your scouts detected a massive concentration of enemy troops across the battlefield."},
+	{"min": 400, "max": 800, "description": "Your scouts warn that an enormous host of soldiers holds this territory."},
+	{"min": 800, "max": -1, "description": "Your scouts report enemy numbers beyond reliable counting—an entire army stands before you."}
+]
+
 ## Region Highlight Transparency
 const REGION_ANIM_OWNED_ALPHA_FROM = 0.5
 const REGION_ANIM_OWNED_ALPHA_TO = 0.75
@@ -645,6 +657,17 @@ const CASTLE_BUILDING_COSTS = {
 
 
 ## Static Helper Functions
+
+static func get_scout_threshold_entry(total: int) -> Dictionary:
+	for entry in SCOUT_ARMY_SIZE_THRESHOLDS:
+		var min_val: int = entry["min"]
+		var max_val: int = entry["max"]
+		if max_val == -1:
+			if total >= min_val:
+				return entry
+		elif total >= min_val and total < max_val:
+			return entry
+	return SCOUT_ARMY_SIZE_THRESHOLDS.back()
 
 static func get_unit_stat(unit_type: SoldierTypeEnum.Type, stat_name: String):
 	"""Get a specific stat for a unit type"""

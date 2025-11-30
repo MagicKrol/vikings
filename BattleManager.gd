@@ -187,6 +187,10 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle started: " + str(attacker.name) + " vs " + str(target_region.get_region_name()))
 
+func withdraw_attacking_army(attacker: Army) -> void:
+	"""Withdraw the attacking army before battle starts using standard retreat handling."""
+	await _handle_army_withdrawal(attacker)
+
 func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region, owned_neighbors: Array) -> bool:
 	var moved_any := false
 	for d in defender_armies:

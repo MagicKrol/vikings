@@ -765,6 +765,10 @@ func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -
 		# Find GameManager and BattleManager
 		var game_manager = _get_game_manager()
 		if game_manager:
+			if game_manager.should_show_prebattle_for_army(attacking_army):
+				game_manager.show_prebattle_modal(attacking_army, defending_region)
+				deselect_army()
+				return
 			# If AI modal disabled, let GameManager.perform_region_entry handle battle; skip showing modal here
 			if game_manager.debug_disable_battle_modal and game_manager.is_player_computer(attacking_army.get_player_id()):
 				return

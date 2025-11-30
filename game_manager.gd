@@ -80,6 +80,7 @@ var _turn_controller: TurnController
 
 # Modal references  
 var _battle_modal: BattleModal
+var _prebattle_modal: PrebattleModal
 
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
@@ -211,6 +212,7 @@ func initialize_managers(is_scenario: bool = false):
 	# Get UI components
 	var ui_node = get_node("../UI")
 	_battle_modal = ui_node.get_node("BattleModal") as BattleModal
+	_prebattle_modal = ui_node.get_node("PrebattleModal") as PrebattleModal
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	
@@ -1281,6 +1283,20 @@ func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	
 	return false
 
+func should_show_prebattle_for_army(army: Army) -> bool:
+	return is_player_human(army.get_player_id())
+
+func show_prebattle_modal(army: Army, target_region: Region) -> void:
+	if _prebattle_modal.is_showing_for(army, target_region):
+		return
+	_prebattle_modal.show_prebattle(army, target_region)
+
+func handle_prebattle_attack(army: Army, target_region: Region) -> void:
+	_battle_manager.start_battle(army, target_region.get_region_id())
+
+func handle_prebattle_withdraw(army: Army) -> void:
+	await _battle_manager.withdraw_attacking_army(army)
+
 func perform_region_entry(army: Army, target_region_id: int, source: String) -> String:
 	"""
 	Shared orchestration function for Human and AI region entry flow.
@@ -1304,15 +1320,8 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 	
 	if battle_needed:
 		if source == "human":
-			# For Human: call existing battle UI path (pending conquest + modal)
-			var battle_manager = get_battle_manager()
-			if battle_manager:
-				battle_manager.set_pending_conquest(army, target_region)
-				
-				# Show battle modal for human interaction
-				var ui_node = get_node("../UI")
-				var battle_modal = ui_node.get_node("BattleModal") as BattleModal
-				battle_modal.show_battle(army, target_region)
+			if should_show_prebattle_for_army(army):
+				show_prebattle_modal(army, target_region)
 				return "battle_started"
 		elif source == "ai":
 			# For AI: use non-UI resolution (direct battle handling)
