@@ -57,8 +57,8 @@ func _ready():
 	battle_title_label = get_node("Panel/Army/Header/Region")
 	attacker_header = get_node("Panel/Army/HeaderSection/HBoxContainer/AttackerName")
 	defender_header = get_node("Panel/Army/HeaderSection/HBoxContainer/DefenderName")
-	attacker_effectiveness = get_node("Panel/Army/HeaderSection/Status/AttackerVigor")
-	defender_effectiveness = get_node("Panel/Army/HeaderSection/Status/DefenderVigor")
+	attacker_effectiveness = get_node("Panel/Army/HeaderSection/Status/AttackerVigorValue")
+	defender_effectiveness = get_node("Panel/Army/HeaderSection/Status/DefenderVigorValue")
 	attacker_units_container = get_node("Panel/Army/UnitsSection")
 	defender_units_container = get_node("Panel/Army/UnitsSection")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
@@ -188,11 +188,11 @@ func _update_effectiveness_displays() -> void:
 	
 	# Get attacking army vigor
 	var attacker_vigor = attacking_army.get_efficiency()
-	attacker_effectiveness.text = "Vigor: " + str(attacker_vigor) + "%"
+	attacker_effectiveness.text = str(attacker_vigor) + "%"
 	
 	# Defender vigor: garrison always 100%, armies use their efficiency
 	# For now, we're always fighting against garrison, so it's 100%
-	defender_effectiveness.text = "Vigor: 100%"
+	defender_effectiveness.text = "100%"
 
 
 func _display_battle_report() -> void:

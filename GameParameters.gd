@@ -246,11 +246,19 @@ const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army 
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
+	CastleTypeEnum.Type.NONE: 0,          # No castle
+	CastleTypeEnum.Type.OUTPOST: 40,      # Outpost 
+	CastleTypeEnum.Type.KEEP: 55,         # Keep
+	CastleTypeEnum.Type.CASTLE: 70,       # Castle 
+	CastleTypeEnum.Type.STRONGHOLD: 85    # Stronghold 
+}
+
+const CASTLE_DEFENSE_BONUSES_MIN = {
 	CastleTypeEnum.Type.NONE: 0,          # No castle - 0% hit avoidance
-	CastleTypeEnum.Type.OUTPOST: 50,      # Outpost - 20% hit avoidance  
-	CastleTypeEnum.Type.KEEP: 60,         # Keep - 40% hit avoidance
-	CastleTypeEnum.Type.CASTLE: 70,       # Castle - 60% hit avoidance
-	CastleTypeEnum.Type.STRONGHOLD: 85    # Stronghold - 75% hit avoidance
+	CastleTypeEnum.Type.OUTPOST: 10,      # Outpost - 20% hit avoidance  
+	CastleTypeEnum.Type.KEEP: 25,         # Keep - 40% hit avoidance
+	CastleTypeEnum.Type.CASTLE: 30,       # Castle - 60% hit avoidance
+	CastleTypeEnum.Type.STRONGHOLD: 40    # Stronghold - 75% hit avoidance
 }
 
 ## Unit Tier System

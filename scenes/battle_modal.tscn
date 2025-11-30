@@ -107,19 +107,31 @@ layout_mode = 2
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
-[node name="AttackerVigor" type="Label" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(200, 0)
+[node name="AttackerVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "Vigor: 90%"
+text = "Vigor:"
+
+[node name="AttackerVigorValue" type="Label" parent="Panel/Army/HeaderSection/Status"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "90%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
 
-[node name="DefenderVigor" type="Label" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(130, 0)
+[node name="DefenderVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "Vigor: 95%"
+text = "Vigor:"
+
+[node name="DefenderVigorValue" type="Label" parent="Panel/Army/HeaderSection/Status"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "95%"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
 layout_mode = 2
@@ -147,13 +159,14 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
-[node name="DefenderDefense" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+[node name="DefenderDefenseText" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 layout_mode = 2
-text = "Defense: "
+text = "Defense:"
 horizontal_alignment = 1
 
 [node name="DefenderDefenseValue" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0%"
 horizontal_alignment = 1
 
