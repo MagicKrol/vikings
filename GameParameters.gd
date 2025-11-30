@@ -524,6 +524,13 @@ const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
 	}
 }
 
+const GARRISON_TRICKLE_PER_CASTLE = {
+	CastleTypeEnum.Type.OUTPOST: 4,
+	CastleTypeEnum.Type.KEEP: 6,
+	CastleTypeEnum.Type.CASTLE: 8,
+	CastleTypeEnum.Type.STRONGHOLD: 10
+}
+
 const SAFE_GARRISON_POWER_PER_LEVEL = {
 	CastleTypeEnum.Type.OUTPOST: 30,
 	CastleTypeEnum.Type.KEEP: 60,
@@ -676,6 +683,9 @@ static func get_ideal_castle_garrison(castle_type: CastleTypeEnum.Type) -> Dicti
 	"""Ideal garrison composition for a castle tier"""
 	var key = CastleTypeEnum.type_to_string(castle_type)
 	return IDEAL_CASTLE_GARRISON_COMPOSITIONS.get(key, {})
+
+static func get_garrison_trickle_units(castle_type: CastleTypeEnum.Type) -> int:
+	return GARRISON_TRICKLE_PER_CASTLE.get(castle_type, 0)
 
 static func get_movement_cost(region_type: RegionTypeEnum.Type) -> int:
 	"""Get movement cost for terrain type"""

@@ -221,6 +221,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Future Hooks: region_upgrade, castle_upgrade (stubs in place).
 - Key Functions:
   - `plan_turn(player_id, turn_number)`: Computes signals, allocates recruitment budgets (and immediately hires armies/garrison defenders), then runs the sequential economy pass (raise → build → upgrade → ore → extra castle recruitment)
+  - `perform_garrison_trickle(player_id)`: Adds free garrison units each turn per castle tier (4/6/8/10) weighted by ideal compositions; archers/crossbowmen require positive wood growth, knights/royal guard require positive iron growth.
   - `decide_and_raise_army(player_id, turn_number)`: Orchestrates the raise army decision and execution
   - `pick_best_raise_region(player_id)`: Selects optimal castle for new army based on recruits and frontier proximity
   - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring

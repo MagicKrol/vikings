@@ -67,25 +67,7 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	}
 	
 	# Step 1: Army recruitment budgets (armies + dangerous castles)
-	var armies_need = _find_recruitment_armies_at_castles(player_id, turn_number)
-	var recruitment_candidates_desc = _describe_recruitment_candidates(armies_need)
-	var army_recruitment: Dictionary = {
-		"needs": armies_need.size(),
-		"candidates": recruitment_candidates_desc,
-		"garrison_danger": garrison_requests.size(),
-		"garrison_skip_logs": garrison_skip_logs.duplicate()
-	}
-	var assigned_budgets = _allocate_recruitment(player_id, turn_number, garrison_requests)
-	army_recruitment["budgets_assigned"] = assigned_budgets
-	var army_hires = _execute_army_recruitment(player_id, armies_need)
-	army_recruitment["army_hires"] = army_hires
-	var garrison_defense = execute_garrison_recruitment(player_id)
-	var defense_entries: Array = garrison_defense.get("entries", [])
-	var defense_reason = "no castles in danger"
-	if garrison_requests.size() > 0:
-		defense_reason = "success" if defense_entries.size() > 0 else "no resources available"
-	army_recruitment["garrison_defense_entries"] = defense_entries
-	army_recruitment["garrison_defense_reason"] = defense_reason
+	var army_recruitment = army_recruitments(player_id, turn_number)
 	summary["army_recruitment"] = army_recruitment
 	
 	# Step 2: Raise armies when allowed
@@ -112,9 +94,31 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	var garrison_trickle = perform_garrison_trickle(player_id)
 	summary["garrison_trickle"] = garrison_trickle
 	
-	summary["recruitment_candidates"] = recruitment_candidates_desc
+	summary["recruitment_candidates"] = army_recruitment["candidates"]
 	DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
 	return summary
+
+func army_recruitments(player_id, turn_number):
+	var armies_need = _find_recruitment_armies_at_castles(player_id, turn_number)
+	var recruitment_candidates_desc = _describe_recruitment_candidates(armies_need)
+	var army_recruitment: Dictionary = {
+		"needs": armies_need.size(),
+		"candidates": recruitment_candidates_desc,
+		"garrison_danger": garrison_requests.size(),
+		"garrison_skip_logs": garrison_skip_logs.duplicate()
+	}
+	var assigned_budgets = _allocate_recruitment(player_id, turn_number, garrison_requests)
+	army_recruitment["budgets_assigned"] = assigned_budgets
+	var army_hires = _execute_army_recruitment(player_id, armies_need)
+	army_recruitment["army_hires"] = army_hires
+	var garrison_defense = execute_garrison_recruitment(player_id)
+	var defense_entries: Array = garrison_defense.get("entries", [])
+	var defense_reason = "no castles in danger"
+	if garrison_requests.size() > 0:
+		defense_reason = "success" if defense_entries.size() > 0 else "no resources available"
+	army_recruitment["garrison_defense_entries"] = defense_entries
+	army_recruitment["garrison_defense_reason"] = defense_reason
+	return army_recruitment
 
 func ore_checks(player_id: int) -> Dictionary:
 	var player := player_manager.get_player(player_id)
@@ -925,50 +929,76 @@ func execute_garrison_recruitment(player_id: int) -> Dictionary:
 	return {"processed": processed, "recruited": recruited, "entries": entries}
 
 func perform_garrison_trickle(player_id: int) -> Dictionary:
-	if recruitment_manager == null:
-		return {"processed": 0, "recruited": 0, "reason": "no_recruitment_manager", "entries": []}
-	var food_growth = player_manager.get_player_food_growth(player_id)
-	if food_growth <= 0.0:
-		return {"processed": 0, "recruited": 0, "reason": "no_food_surplus", "entries": []}
+	var wood_positive := player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD) > 0.0
+	var iron_positive := player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.IRON) > 0.0
 	var owned_regions = region_manager.get_player_regions(player_id)
-	var weights: Dictionary = {}
-	var region_lookup: Dictionary = {}
-	var enemy_castles = _get_enemy_castle_regions(player_id)
+	var processed := 0
+	var added := 0
+	var entries: Array[String] = []
 	for region_id in owned_regions:
 		var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
 		if not region.has_castle():
 			continue
-		var weight = _get_castle_threat_weight(region, enemy_castles)
-		if weight <= 0.0:
+		var units_to_add = GameParameters.get_garrison_trickle_units(region.get_castle_type())
+		if units_to_add <= 0:
 			continue
-		weights[region_id] = weight
-		region_lookup[region_id] = region
-	if weights.is_empty():
-		return {"processed": 0, "recruited": 0, "reason": "no_castles", "entries": []}
-	var player = player_manager.get_player(player_id)
-	var total_budget = BudgetComposition.new(
-		player.get_resource_amount(ResourcesEnum.Type.GOLD),
-		player.get_resource_amount(ResourcesEnum.Type.WOOD),
-		player.get_resource_amount(ResourcesEnum.Type.IRON),
-		0
-	)
-	var split = budget_manager.split_by_weights(total_budget, weights)
-	var processed := 0
-	var recruited := 0
-	var entries: Array[String] = []
-	for region_id in split.keys():
-		var region = region_lookup[region_id]
-		var budget: BudgetComposition = split[region_id]
-		if budget.gold <= 0 and budget.wood <= 0 and budget.iron <= 0:
+		for i in range(units_to_add):
+			var unit_type = _pick_trickle_unit(region.get_castle_type(), wood_positive, iron_positive)
+			region.add_soldiers_to_garrison(unit_type, 1)
+			added += 1
+		processed += 1
+		entries.append(region.get_region_name() + ": +" + str(units_to_add))
+	var reason = "success" if processed > 0 else "no_castles"
+	return {"processed": processed, "recruited": added, "reason": reason, "entries": entries}
+
+func _pick_trickle_unit(castle_type: CastleTypeEnum.Type, wood_positive: bool, iron_positive: bool) -> SoldierTypeEnum.Type:
+	var composition = GameParameters.get_ideal_castle_garrison(castle_type)
+	var pool: Array = []
+	for key in composition.keys():
+		var weight = int(composition[key])
+		if weight <= 0:
 			continue
-		budget.available_recruits = region.get_available_recruits()
-		var result = recruitment_manager.hire_garrison(region, budget, player_id)
-		var hired = int(result.get("total_recruited", 0))
-		if hired > 0:
-			processed += 1
-			recruited += hired
-			entries.append(_format_castle_hire_entry(region.get_region_name(), result))
-	return {"processed": processed, "recruited": recruited, "reason": "success", "entries": entries}
+		var unit_type = _trickle_key_to_type(key)
+		if not wood_positive and (unit_type == SoldierTypeEnum.Type.ARCHERS or unit_type == SoldierTypeEnum.Type.CROSSBOWMEN):
+			continue
+		if not iron_positive and (unit_type == SoldierTypeEnum.Type.KNIGHTS or unit_type == SoldierTypeEnum.Type.ROYAL_GUARD):
+			continue
+		pool.append({"type": unit_type, "weight": weight})
+	if pool.is_empty():
+		return SoldierTypeEnum.Type.PEASANTS
+	var total_weight := 0
+	for entry in pool:
+		total_weight += entry["weight"]
+	var roll = randi_range(1, total_weight)
+	var running = 0
+	for entry in pool:
+		running += entry["weight"]
+		if roll <= running:
+			return entry["type"]
+	return pool[0]["type"]
+
+func _trickle_key_to_type(key: String) -> SoldierTypeEnum.Type:
+	match key:
+		"peasants":
+			return SoldierTypeEnum.Type.PEASANTS
+		"spearmen":
+			return SoldierTypeEnum.Type.SPEARMEN
+		"swordsmen":
+			return SoldierTypeEnum.Type.SWORDSMEN
+		"archers":
+			return SoldierTypeEnum.Type.ARCHERS
+		"crossbowmen":
+			return SoldierTypeEnum.Type.CROSSBOWMEN
+		"horsemen":
+			return SoldierTypeEnum.Type.HORSEMEN
+		"knights":
+			return SoldierTypeEnum.Type.KNIGHTS
+		"mounted_knights":
+			return SoldierTypeEnum.Type.MOUNTED_KNIGHTS
+		"royal_guard":
+			return SoldierTypeEnum.Type.ROYAL_GUARD
+		_:
+			return SoldierTypeEnum.Type.PEASANTS
 	
 func _build_garrison_requests(player_id: int) -> Array:
 	var requests: Array = []

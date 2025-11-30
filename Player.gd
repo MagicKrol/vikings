@@ -29,6 +29,7 @@ class_name Player
 var player_id: int = -1
 var player_name: String = ""
 var player_color: Color = Color.WHITE
+var computer_controlled: bool = false
 
 # Resource storage - maps ResourcesEnum.Type -> int (amount)
 var resources: Dictionary = {}
@@ -44,6 +45,7 @@ var enemy_garrison_memory: Dictionary = {}  # Tracks observed enemy garrisons: r
 func _init(id: int = -1, name: String = ""):
 	player_id = id
 	player_name = name if name != "" else "Player " + str(id)
+	computer_controlled = false
 	
 	# Initialize resources with starting amounts
 	_initialize_resources()
@@ -244,6 +246,7 @@ func to_dictionary() -> Dictionary:
 		"player_id": player_id,
 		"player_name": player_name,
 		"player_color": [player_color.r, player_color.g, player_color.b, player_color.a],
+		"is_computer": computer_controlled,
 		"resources": _resources_to_dict(),
 		"regions_owned": regions_owned,
 		"total_population": total_population
@@ -253,6 +256,7 @@ func from_dictionary(data: Dictionary) -> void:
 	"""Load player data from dictionary"""
 	player_id = data.get("player_id", -1)
 	player_name = data.get("player_name", "")
+	computer_controlled = bool(data.get("is_computer", false))
 	
 	var color_array = data.get("player_color", [1.0, 1.0, 1.0, 1.0])
 	player_color = Color(color_array[0], color_array[1], color_array[2], color_array[3])
@@ -260,6 +264,12 @@ func from_dictionary(data: Dictionary) -> void:
 	_resources_from_dict(data.get("resources", {}))
 	regions_owned = data.get("regions_owned", [])
 	total_population = data.get("total_population", 0)
+
+func set_is_computer(enabled: bool) -> void:
+	computer_controlled = enabled
+
+func is_computer() -> bool:
+	return computer_controlled
 
 func _resources_to_dict() -> Dictionary:
 	"""Convert resources enum keys to strings for saving"""

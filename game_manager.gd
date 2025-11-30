@@ -966,6 +966,8 @@ func set_player_type(player_id: int, type: PlayerTypeEnum.Type) -> void:
 	"""Set the type of a specific player"""
 	if player_id >= 1 and player_id <= player_types.size():
 		player_types[player_id - 1] = type  # Convert 1-based to 0-based index
+		if player_manager:
+			player_manager.set_player_is_computer(player_id, type == PlayerTypeEnum.Type.COMPUTER)
 		DebugLogger.log("GameInit", "Player " + str(player_id) + " set to " + PlayerTypeEnum.type_to_string(type))
 
 func is_player_active(player_id: int) -> bool:

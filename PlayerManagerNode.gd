@@ -114,6 +114,12 @@ func player_exists(player_id: int) -> bool:
 	"""Check if a player exists"""
 	return players.has(player_id)
 
+func set_player_is_computer(player_id: int, enabled: bool) -> void:
+	var player = get_player(player_id)
+	if player == null:
+		return
+	player.set_is_computer(enabled)
+
 # Resource management for all players
 func add_resources_to_player(player_id: int, resource_type: ResourcesEnum.Type, amount: int) -> bool:
 	"""Add resources to a specific player"""
@@ -164,15 +170,6 @@ func set_player_resources(player_id: int, resources_data: Dictionary) -> void:
 		var amount := int(resources_data.get(key, GameParameters.get_starting_resource_amount(resource_type)))
 		#player.set_resource_amount(resource_type, amount)
 
-# Resource income and management
-func process_resource_income() -> void:
-	
-	# Process income for all players
-	for player_id in players:
-		var player = players[player_id]
-		DebugLogger.log("PlayerManagement", "Processing income for " + player.get_player_name())
-		_calculate_player_income(player)
-
 func process_resource_income_for_player(player_id: int) -> void:
 	"""Process resource income for a specific player"""
 	
@@ -186,7 +183,7 @@ func process_resource_income_for_player(player_id: int) -> void:
 func _calculate_player_income(player: Player) -> void:
 	"""Calculate and apply resource income for a player based on owned regions"""
 	var player_id = player.get_player_id()
-	
+
 	# Region manager and map generator are required - no fallbacks
 	if region_manager == null:
 		push_error("[PlayerManagerNode] CRITICAL: RegionManager is null - cannot calculate region-based income")
@@ -195,7 +192,7 @@ func _calculate_player_income(player: Player) -> void:
 	if map_generator == null:
 		push_error("[PlayerManagerNode] CRITICAL: MapGenerator is null - cannot access region data")
 		return
-	
+
 	# Get all regions owned by this player
 	var owned_regions = region_manager.get_player_regions(player_id)
 
@@ -470,6 +467,15 @@ func give_test_resources(player_id: int) -> void:
 	player.add_resources(ResourcesEnum.Type.STONE, 250)
 	
 	DebugLogger.log("PlayerManagement", "Gave test resources to " + player.get_player_name())
+
+# Resource income and management
+func process_resource_income() -> void:
+	
+	# Process income for all players
+	for player_id in players:
+		var player = players[player_id]
+		DebugLogger.log("PlayerManagement", "Processing income for " + player.get_player_name())
+		_calculate_player_income(player)
 
 func get_player_food_growth(player_id: int) -> float:
 	"""Calculate net food change per turn (income - upkeep)"""

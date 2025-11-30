@@ -53,18 +53,18 @@ func show_next_player(player_id: int, is_castle_mode: bool = false) -> void:
 	# Update header based on mode
 	if is_castle_mode:
 		if header_label:
-			header_label.text = "Castle Placement"
+			header_label.text = "Plce your castle"
 	else:
 		if header_label:
-			header_label.text = "Next Turn"
+			header_label.text = "Your turn"
 	
 	# Update player label with color-coded text
 	if player_label:
 		player_label.add_theme_color_override("font_color", player_color)
 		if is_castle_mode:
-			player_label.text = "Player " + str(player_id) + "\nPlace Your Castle"
+			player_label.text = "Player " + str(player_id)
 		else:
-			player_label.text = "Player " + str(player_id) + "'s Turn"
+			player_label.text = "Player " + str(player_id)
 	
 	# Show modal
 	visible = true
