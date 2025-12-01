@@ -386,6 +386,20 @@ func process_all_castle_construction() -> void:
 		DebugLogger.log("RegionManagement", "Completed " + str(completed_constructions) + " castle constructions this turn")
 	DebugLogger.log("RegionManagement", "Processed castle construction for " + str(regions_processed) + " regions")
 
+func process_all_castle_repairs() -> void:
+	if map_generator == null:
+		return
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		return
+	var completed = 0
+	for child in regions_node.get_children():
+		if child is Region:
+			if child.process_castle_repair():
+				completed += 1
+	if completed > 0:
+		DebugLogger.log("RegionManagement", "Completed " + str(completed) + " castle repairs this turn")
+
 func reset_all_ore_search_turn_usage() -> void:
 	"""Reset per-turn usage flags for all regions (ore search, raise army, promotion)"""
 	if map_generator == null:

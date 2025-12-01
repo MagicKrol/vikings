@@ -63,6 +63,8 @@ var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_build_turns_remaining: int = 0
 var gate_damage: int = 0
 var wall_damage: int = 0
+var castle_repair_turns_remaining: int = 0
+var castle_repair_in_progress: bool = false
 
 # Mining system information
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
@@ -101,6 +103,8 @@ func setup_region(region_data: Dictionary) -> void:
 	base_resources = ResourceComposition.new()
 	gate_damage = 0
 	wall_damage = 0
+	castle_repair_turns_remaining = 0
+	castle_repair_in_progress = false
 	
 	# Set basic garrison composition and population for non-ocean regions
 	if not is_ocean:
@@ -436,6 +440,9 @@ func has_castle() -> bool:
 	"""Check if region has any castle"""
 	return castle_type != CastleTypeEnum.Type.NONE
 
+func has_castle_damage() -> bool:
+	return gate_damage > 0 or wall_damage > 0
+
 func get_castle_type_string() -> String:
 	"""Get the castle type as a string"""
 	return CastleTypeEnum.type_to_string(castle_type)
@@ -443,6 +450,9 @@ func get_castle_type_string() -> String:
 func is_castle_under_construction() -> bool:
 	"""Check if a castle is currently being built"""
 	return castle_under_construction != CastleTypeEnum.Type.NONE
+
+func is_castle_under_repair() -> bool:
+	return castle_repair_in_progress
 
 func get_castle_under_construction() -> CastleTypeEnum.Type:
 	"""Get the castle type being constructed"""
@@ -457,6 +467,25 @@ func start_castle_construction(castle_type_to_build: CastleTypeEnum.Type) -> voi
 	castle_under_construction = castle_type_to_build
 	castle_build_turns_remaining = GameParameters.get_castle_build_time(castle_type_to_build)
 	DebugLogger.log("RegionManagement", "Started construction of " + CastleTypeEnum.type_to_string(castle_type_to_build) + " in " + region_name + " (" + str(castle_build_turns_remaining) + " turns remaining)")
+
+func start_castle_repair() -> void:
+	castle_repair_in_progress = true
+	castle_repair_turns_remaining = 1
+	DebugLogger.log("RegionManagement", "Started castle repair in " + region_name + " (1 turn remaining)")
+
+func process_castle_repair() -> bool:
+	if not castle_repair_in_progress:
+		return false
+	castle_repair_turns_remaining -= 1
+	if castle_repair_turns_remaining <= 0:
+		gate_damage = 0
+		wall_damage = 0
+		castle_repair_turns_remaining = 0
+		castle_repair_in_progress = false
+		_update_castle_visual()
+		DebugLogger.log("RegionManagement", "Castle repair completed in " + region_name)
+		return true
+	return false
 
 func process_castle_construction() -> bool:
 	"""Process castle construction for one turn. Returns true if construction completed."""
@@ -530,6 +559,10 @@ func can_upgrade_castle() -> bool:
 	"""Check if the current castle can be upgraded"""
 	# Must have a castle and not be under construction
 	if not has_castle() or is_castle_under_construction():
+		return false
+	if is_castle_under_repair():
+		return false
+	if gate_damage > 0 or wall_damage > 0:
 		return false
 	
 	# Check if castle can be upgraded to next level

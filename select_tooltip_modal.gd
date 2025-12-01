@@ -39,6 +39,7 @@ const TOOLTIP_TEXTS = {
 	"upgrade_castle": "Upgrade the existing castle to the next level for improved defenses and capabilities.",
 	"castle_construction": "Castle construction is in progress. Wait for completion before building or upgrading.",
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
+	"repair_castle": "Repair the damaged walls and gates of your defenses.",
 	"promote_region": "Promote region to the next administrative level, increase growth and production.",
 	"call_to_arms": "Gather recruits from neighboring regions.",
 	"ore_search": "Search for Gold or Iron ores.",
@@ -128,7 +129,7 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 				tooltip_text += "\n\nRegion is already at maximum level."
 	
 	# Add dynamic cost information for castle-related tooltips
-	if (tooltip_key == "build_castle" or tooltip_key == "upgrade_castle") and context_data.has("current_region"):
+	if (tooltip_key == "build_castle" or tooltip_key == "upgrade_castle" or tooltip_key == "repair_castle") and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null:
 			var castle_type_to_build: CastleTypeEnum.Type
@@ -140,12 +141,27 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 				# Upgrading existing castle
 				var current_castle_type = current_region.get_castle_type()
 				castle_type_to_build = CastleTypeEnum.get_next_level(current_castle_type)
+			elif tooltip_key == "repair_castle":
+				castle_type_to_build = current_region.get_castle_type()
 			
 			if castle_type_to_build != CastleTypeEnum.Type.NONE:
-				var cost = GameParameters.get_castle_building_cost(castle_type_to_build)
-				
-				if not cost.is_empty():
-					_display_cost(cost)
+				if tooltip_key == "repair_castle":
+					var base_defense = GameParameters.get_castle_defense_bonus(castle_type_to_build)
+					var total_damage = current_region.gate_damage + current_region.wall_damage
+					if base_defense > 0 and total_damage > 0:
+						var fraction = float(total_damage) / float(base_defense)
+						var base_cost = GameParameters.get_castle_building_cost(castle_type_to_build)
+						var repair_cost: Dictionary = {}
+						for res_type in base_cost:
+							var val = base_cost[res_type]
+							if val > 0:
+								repair_cost[res_type] = int(ceil(float(val) * fraction))
+						_display_cost(repair_cost, 1)
+				else:
+					var cost = GameParameters.get_castle_building_cost(castle_type_to_build)
+					
+					if not cost.is_empty():
+						_display_cost(cost)
 	
 	# Add construction status for castle_construction tooltip
 	if tooltip_key == "castle_construction" and context_data.has("current_region"):

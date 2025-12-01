@@ -193,6 +193,8 @@ func _attach_tooltip(button_data: Dictionary, button: Button) -> void:
 func _get_castle_button_data() -> Dictionary:
 	var castle_type = current_region.get_castle_type()
 	var under_construction = current_region.is_castle_under_construction()
+	var needs_repair = _region_has_damage()
+	var under_repair = current_region.is_castle_under_repair()
 	
 	if under_construction:
 		var turns_remaining = current_region.get_castle_build_turns_remaining()
@@ -203,6 +205,15 @@ func _get_castle_button_data() -> Dictionary:
 			"text": "Build " + CastleTypeEnum.type_to_string(next_type),
 			"enabled": false,
 			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
+		}
+	if needs_repair or under_repair:
+		var can_repair = _can_player_afford_repair() and not under_repair and current_region.has_castle()
+		var label = "Repair " + CastleTypeEnum.type_to_string(castle_type)
+		return {
+			"text": label,
+			"enabled": can_repair,
+			"action": "_on_repair_castle_pressed",
+			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("repair_castle")
 		}
 	var next_castle_type: CastleTypeEnum.Type
 	var can_afford: bool
@@ -278,6 +289,43 @@ func _on_message_modal_continue() -> void:
 	if ui_manager:
 		ui_manager.call_deferred("set_modal_active", true)
 
+func _region_has_damage() -> bool:
+	if current_region == null:
+		return false
+	return current_region.has_castle_damage()
+
+func _calculate_repair_cost() -> Dictionary:
+	if current_region == null:
+		return {}
+	var castle_type = current_region.get_castle_type()
+	if castle_type == CastleTypeEnum.Type.NONE:
+		return {}
+	var base_defense = GameParameters.get_castle_defense_bonus(castle_type)
+	if base_defense <= 0:
+		return {}
+	var total_damage = current_region.gate_damage + current_region.wall_damage
+	if total_damage <= 0:
+		return {}
+	var fraction = float(total_damage) / float(base_defense)
+	var base_cost = GameParameters.get_castle_building_cost(castle_type)
+	var repair_cost: Dictionary = {}
+	for res_type in base_cost:
+		var val = base_cost[res_type]
+		if val > 0:
+			repair_cost[res_type] = int(ceil(float(val) * fraction))
+	return repair_cost
+
+func _can_player_afford_repair() -> bool:
+	if player_manager == null:
+		return false
+	var current_player = player_manager.get_player(1)
+	if current_player == null:
+		return false
+	var repair_cost = _calculate_repair_cost()
+	if repair_cost.is_empty():
+		return false
+	return current_player.can_afford_cost(repair_cost)
+
 
 func _on_build_castle_pressed() -> void:
 	if sound_manager:
@@ -300,6 +348,27 @@ func _on_upgrade_castle_pressed() -> void:
 	
 	if next_castle_type != CastleTypeEnum.Type.NONE:
 		_start_castle_construction(next_castle_type)
+
+func _on_repair_castle_pressed() -> void:
+	if sound_manager:
+		sound_manager.click_sound()
+	if current_region == null or current_region.is_castle_under_repair() or not current_region.has_castle_damage():
+		return
+	var repair_cost = _calculate_repair_cost()
+	if repair_cost.is_empty() or player_manager == null:
+		return
+	var current_player = player_manager.get_player(1)
+	if current_player == null or not current_player.pay_cost(repair_cost):
+		return
+	current_region.start_castle_repair()
+	visible = false
+	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
+		message_modal.continue_clicked.connect(_on_message_modal_continue)
+	message_modal.display_message("Repair started", "Repairs will finish in 1 turn.")
+	if info_modal != null and info_modal.visible:
+		info_modal.show_region_info(current_region, false)
+	_create_action_buttons()
+	_request_player_status_refresh()
 
 func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	var construction_cost = GameParameters.get_castle_building_cost(castle_type)

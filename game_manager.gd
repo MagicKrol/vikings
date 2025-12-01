@@ -657,6 +657,7 @@ func _process_round_start_actions():
 	DebugLogger.log("TurnProcessing", "Processing castle construction...")
 	if _region_manager:
 		_region_manager.process_all_castle_construction()
+		_region_manager.process_all_castle_repairs()
 	
 	# Reset per-turn region action usage for all regions
 	DebugLogger.log("TurnProcessing", "Resetting region turn usage flags...")

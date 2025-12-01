@@ -247,9 +247,18 @@ func _update_region_display() -> void:
 	castle_value.text = current_region.get_castle_type_string().to_upper()
 	
 	# Update defense score
-	var defense_value = get_node("Panel/Region/GarisonSection/Growth/Value")
+	var defense_value = get_node("Panel/Region/GarisonSection/Growth/Value") as Label
 	var defense_bonus = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
-	defense_value.text = str(defense_bonus) + "%"
+	var min_defense = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(current_region.get_castle_type(), 0)
+	var damage_total = current_region.gate_damage + current_region.wall_damage
+	var effective_defense = max(min_defense, defense_bonus - damage_total)
+	defense_value.text = str(effective_defense) + "%"
+	defense_value.remove_theme_color_override("font_color")
+	if defense_bonus > 0:
+		if min_defense > 0 and effective_defense <= min_defense:
+			defense_value.add_theme_color_override("font_color", Color.html("#d13131"))
+		elif effective_defense < defense_bonus:
+			defense_value.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
 
 	# Update local garrison total (exclude recruits; garrison is a separate composition)
 	var garrison_value = get_node("Panel/Region/GarisonSection/Garison/Value")
@@ -372,6 +381,8 @@ func _update_construction_status() -> void:
 		construction_label.text = "Building " + castle_name + " - " + str(turns_remaining) + " turn"
 		if turns_remaining > 1: 
 			construction_label.text = construction_label.text + "s"
+	elif current_region.is_castle_under_repair():
+		construction_label.text = "Repairing castle - 1 turn"
 	else:
 		construction_label.text = ""
 
