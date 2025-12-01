@@ -653,12 +653,6 @@ func _process_round_start_actions():
 	if _region_manager:
 		_region_manager.replenish_all_recruits()
 	
-	# Process castle construction for all regions
-	DebugLogger.log("TurnProcessing", "Processing castle construction...")
-	if _region_manager:
-		_region_manager.process_all_castle_construction()
-		_region_manager.process_all_castle_repairs()
-	
 	# Reset per-turn region action usage for all regions
 	DebugLogger.log("TurnProcessing", "Resetting region turn usage flags...")
 	if _region_manager:
@@ -673,6 +667,7 @@ func _process_player_turn_start(player_id: int):
 	if player_manager:
 		player_manager.decay_enemy_memory_for_player(player_id)
 	if _region_manager:
+		_region_manager.process_castle_progress_for_player(player_id)
 		_region_manager.heal_wounded_for_player(player_id)
 		_region_manager.decrement_promotion_cooldowns_for_player(player_id)
 	if _army_manager:

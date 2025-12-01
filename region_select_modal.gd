@@ -297,23 +297,7 @@ func _region_has_damage() -> bool:
 func _calculate_repair_cost() -> Dictionary:
 	if current_region == null:
 		return {}
-	var castle_type = current_region.get_castle_type()
-	if castle_type == CastleTypeEnum.Type.NONE:
-		return {}
-	var base_defense = GameParameters.get_castle_defense_bonus(castle_type)
-	if base_defense <= 0:
-		return {}
-	var total_damage = current_region.gate_damage + current_region.wall_damage
-	if total_damage <= 0:
-		return {}
-	var fraction = float(total_damage) / float(base_defense)
-	var base_cost = GameParameters.get_castle_building_cost(castle_type)
-	var repair_cost: Dictionary = {}
-	for res_type in base_cost:
-		var val = base_cost[res_type]
-		if val > 0:
-			repair_cost[res_type] = int(ceil(float(val) * fraction))
-	return repair_cost
+	return current_region.get_castle_repair_cost()
 
 func _can_player_afford_repair() -> bool:
 	if player_manager == null:
@@ -354,13 +338,13 @@ func _on_repair_castle_pressed() -> void:
 		sound_manager.click_sound()
 	if current_region == null or current_region.is_castle_under_repair() or not current_region.has_castle_damage():
 		return
-	var repair_cost = _calculate_repair_cost()
-	if repair_cost.is_empty() or player_manager == null:
+	if player_manager == null or region_manager == null:
 		return
 	var current_player = player_manager.get_player(1)
-	if current_player == null or not current_player.pay_cost(repair_cost):
+	if current_player == null:
 		return
-	current_region.start_castle_repair()
+	if not region_manager.try_repair_castle(current_region, current_player):
+		return
 	visible = false
 	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 		message_modal.continue_clicked.connect(_on_message_modal_continue)

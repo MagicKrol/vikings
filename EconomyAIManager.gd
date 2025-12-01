@@ -82,21 +82,45 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	var upgrade_castle = _evaluate_upgrade_castle(player_id, turn_number)
 	summary["upgrade_castle"] = upgrade_castle
 	
-	# Step 5: Upgrade regions
+	# Step 5: Repair damaged castles
+	var repair_castle = _evaluate_repair_castle(player_id)
+	summary["repair_castle"] = repair_castle
+	
+	# Step 6: Upgrade regions
 	var upgrade_region = _evaluate_upgrade_region(player_id, turn_number)
 	summary["upgrade_region"] = upgrade_region
 	
-	# Step 6: Ore searches
+	# Step 7: Ore searches
 	var ore_result = ore_checks(player_id)
 	summary["ore"] = ore_result
 	
-	# Step 7: Additional castle recruitment (threat-weighted)
+	# Step 8: Additional castle recruitment (threat-weighted)
 	var garrison_trickle = perform_garrison_trickle(player_id)
 	summary["garrison_trickle"] = garrison_trickle
 	
 	summary["recruitment_candidates"] = army_recruitment["candidates"]
 	DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
 	return summary
+
+func _evaluate_repair_castle(player_id: int) -> Dictionary:
+	var player = player_manager.get_player(player_id)
+	if player == null:
+		return {"executed": false, "reason": "no_player", "repairs": []}
+	var regions = region_manager.get_regions_with_castles(player_id)
+	var repairs: Array = []
+	for region in regions:
+		if region.has_castle_damage() and not region.is_castle_under_repair():
+			var cost = region.get_castle_repair_cost()
+			if cost.is_empty():
+				continue
+			if not player.can_afford_cost(cost):
+				repairs.append({"region_id": region.get_region_id(), "reason": "no_resources"})
+				continue
+			if region_manager.try_repair_castle(region, player):
+				repairs.append({"region_id": region.get_region_id(), "reason": "started"})
+				DebugLogger.log("AIEconomy", "   REPAIR CASTLE: Started repair at region %s" % [region.get_region_name()])
+				return {"executed": true, "repairs": repairs, "reason": "repair_started"}
+	return {"executed": false, "repairs": repairs, "reason": "no_repair_started"}
 
 func army_recruitments(player_id, turn_number):
 	var armies_need = _find_recruitment_armies_at_castles(player_id, turn_number)

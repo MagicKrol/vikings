@@ -487,6 +487,25 @@ func process_castle_repair() -> bool:
 		return true
 	return false
 
+func get_castle_repair_cost() -> Dictionary:
+	var castle_type = get_castle_type()
+	if castle_type == CastleTypeEnum.Type.NONE:
+		return {}
+	var base_defense = GameParameters.get_castle_defense_bonus(castle_type)
+	if base_defense <= 0:
+		return {}
+	var total_damage = gate_damage + wall_damage
+	if total_damage <= 0:
+		return {}
+	var fraction = float(total_damage) / float(base_defense)
+	var base_cost = GameParameters.get_castle_building_cost(castle_type)
+	var repair_cost: Dictionary = {}
+	for res_type in base_cost:
+		var val = base_cost[res_type]
+		if val > 0:
+			repair_cost[res_type] = int(ceil(float(val) * fraction))
+	return repair_cost
+
 func process_castle_construction() -> bool:
 	"""Process castle construction for one turn. Returns true if construction completed."""
 	if not is_castle_under_construction():

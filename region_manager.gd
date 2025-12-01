@@ -400,6 +400,54 @@ func process_all_castle_repairs() -> void:
 	if completed > 0:
 		DebugLogger.log("RegionManagement", "Completed " + str(completed) + " castle repairs this turn")
 
+func process_castle_progress_for_player(player_id: int) -> void:
+	if map_generator == null:
+		return
+	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		return
+	var completed_builds := 0
+	var completed_repairs := 0
+	for child in regions_node.get_children():
+		if child is Region:
+			var region := child as Region
+			if region.current_owner_id != player_id:
+				continue
+			if region.process_castle_construction():
+				completed_builds += 1
+			if region.process_castle_repair():
+				completed_repairs += 1
+	if completed_builds > 0:
+		DebugLogger.log("RegionManagement", "Completed " + str(completed_builds) + " castle constructions for player " + str(player_id))
+	if completed_repairs > 0:
+		DebugLogger.log("RegionManagement", "Completed " + str(completed_repairs) + " castle repairs for player " + str(player_id))
+
+func try_repair_castle(region: Region, player: Player) -> bool:
+	if region == null or player == null:
+		return false
+	if not region.has_castle_damage():
+		return false
+	if region.is_castle_under_repair():
+		return false
+	var cost = region.get_castle_repair_cost()
+	if cost.is_empty():
+		return false
+	if not player.can_afford_cost(cost):
+		return false
+	if not player.pay_cost(cost):
+		return false
+	region.start_castle_repair()
+	return true
+
+func get_regions_with_castles(player_id: int) -> Array[Region]:
+	var regions: Array[Region] = []
+	var region_ids = get_player_regions(player_id)
+	for rid in region_ids:
+		var r = map_generator.get_region_container_by_id(rid) as Region
+		if r != null and r.has_castle():
+			regions.append(r)
+	return regions
+
 func reset_all_ore_search_turn_usage() -> void:
 	"""Reset per-turn usage flags for all regions (ore search, raise army, promotion)"""
 	if map_generator == null:
