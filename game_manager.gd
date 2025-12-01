@@ -1291,8 +1291,9 @@ func show_prebattle_modal(army: Army, target_region: Region) -> void:
 		return
 	_prebattle_modal.show_prebattle(army, target_region)
 
-func handle_prebattle_attack(army: Army, target_region: Region) -> void:
-	_battle_manager.start_battle(army, target_region.get_region_id())
+func handle_prebattle_attack(army: Army, target_region: Region, siege_payload: Dictionary = {}) -> void:
+	var ladder_damage: int = int(siege_payload.get("ladder_damage", 0))
+	_battle_manager.start_battle(army, target_region.get_region_id(), ladder_damage)
 
 func handle_prebattle_withdraw(army: Army) -> void:
 	await _battle_manager.withdraw_attacking_army(army)

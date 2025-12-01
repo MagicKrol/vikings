@@ -484,9 +484,10 @@ func _run_battle_simulation() -> void:
 	var attacker_efficiency = attacking_army.get_efficiency()
 	var terrain_type = defending_region.get_region_type()
 	var castle_type = defending_region.get_castle_type()
+	var defense_override = bm.get_effective_defense_for_region(defending_region)
 	var attacker_withdraw_allowed = bm.get_attacker_withdraw_allowed()
 	var defender_withdraw_allowed = bm.get_defender_withdraw_allowed()
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed)
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override)
 	
 	DebugLogger.log("UISystem", "Starting animated battle simulation...")
 
@@ -692,8 +693,20 @@ func _update_attacker_header() -> void:
 	attacker_header.add_theme_color_override("font_color", player_color)
 
 func _update_defense_bonus_display() -> void:
-	var defense_bonus = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())
+	var gm = get_node("../../GameManager") as GameManager
+	var bm = gm.get_battle_manager()
+	var defense_bonus = bm.get_effective_defense_for_region(defending_region)
 	defender_defense_value.text = str(defense_bonus) + "%"
+	defender_defense_value.remove_theme_color_override("font_color")
+	var base_def = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())
+	var min_def = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(defending_region.get_castle_type(), 0)
+	if base_def > 0:
+		if min_def > 0 and defense_bonus <= min_def:
+			defender_defense_value.add_theme_color_override("font_color", Color.html("#d13131"))
+		elif defense_bonus < base_def:
+			defender_defense_value.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+	else:
+		defender_defense_value.add_theme_color_override("font_color", Color.WHITE)
 
 func _update_defender_header() -> void:
 	var region_name = defending_region.get_region_name()

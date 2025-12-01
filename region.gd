@@ -61,6 +61,8 @@ var promotion_growth_bonus_turns_remaining: int = 0
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_build_turns_remaining: int = 0
+var gate_damage: int = 0
+var wall_damage: int = 0
 
 # Mining system information
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
@@ -97,6 +99,8 @@ func setup_region(region_data: Dictionary) -> void:
 	wounded_recruits = ArmyComposition.new()
 	resources = ResourceComposition.new()
 	base_resources = ResourceComposition.new()
+	gate_damage = 0
+	wall_damage = 0
 	
 	# Set basic garrison composition and population for non-ocean regions
 	if not is_ocean:

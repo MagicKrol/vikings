@@ -46,7 +46,7 @@ Main (Node2D) [place_armies.gd]
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
-│	├ PrebattleModal [scenes/prebattle_modal.tscn] [prebattle_modal.gd] – human-only step after moving into enemy territory; Withdraw retreats the attacking army to its previous region via BattleManager, Attack proceeds to BattleModal
+│	├ PrebattleModal [scenes/prebattle_modal.tscn] [prebattle_modal.gd] – human-only step after moving into enemy territory; supports siege equipment buying (spends wood + siege points from defender count), applies gate/wall damage and ladder penalties to castle defense for the upcoming battle, Withdraw refunds purchases and retreats via BattleManager, Attack proceeds to BattleModal
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]

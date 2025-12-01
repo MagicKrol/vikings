@@ -29,6 +29,7 @@ var defender_efficiency: int = 100
 var region_garrison: ArmyComposition = null
 var terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
+var castle_defense_override: int = -1
 var current_garrison_composition: Dictionary = {}
 
 func _ready():
@@ -41,7 +42,7 @@ func _ready():
 	battle_timer.one_shot = true
 	add_child(battle_timer)
 
-func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false) -> void:
+func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1) -> void:
 	"""Start an animated battle with round-by-round updates"""
 	if is_battle_running:
 		DebugLogger.log("BattleAnimation", "Battle already running!")
@@ -64,6 +65,7 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	self.castle_type = castle_type
 	self.attacker_can_withdraw = attacker_can_withdraw
 	self.defender_can_withdraw = defender_can_withdraw
+	self.castle_defense_override = castle_defense_bonus_override
 	DebugLogger.log("BattleAnimation", "Battle start flags: attacker_can_withdraw=" + str(attacker_can_withdraw) + ", defender_can_withdraw=" + str(defender_can_withdraw))
 	
 	# Merge all attacking forces
@@ -119,20 +121,20 @@ func _process_next_round() -> void:
 	var defender_snapshot = current_defenders.duplicate()
 	
 	# Attack phases - unit-by-unit with trait-based targeting
-	var attacker_kills = battle_simulator._process_unit_attacks(current_attackers, current_defenders, rng, attacker_efficiency, terrain_type, castle_type)
+	var attacker_kills = battle_simulator._process_unit_attacks(current_attackers, current_defenders, rng, attacker_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
 	
 	# Defense phase - separate garrison and army processing for defenders
 	var defender_kills = {}
 	
 	# Process garrison attacks at 100% efficiency if garrison exists
 	if not current_garrison_composition.is_empty():
-		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type)
+		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type, null, null, castle_defense_override)
 		battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 	
 	# Process defending army attacks at their efficiency if any defending armies exist
 	var armies_composition = _get_armies_from_defenders()
 	if not armies_composition.is_empty():
-		var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, castle_type)
+		var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
 		battle_simulator._merge_kill_results(defender_kills, army_kills)
 	
 	# Apply kills simultaneously
@@ -386,7 +388,7 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 						rng
 					)
 		
-		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, CastleTypeEnum.Type.NONE)
+		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, castle_type, castle_defense_override)
 		
 		# Merge kills into total
 		battle_simulator._merge_kill_results(mobility_kills, target_kills)
@@ -444,7 +446,7 @@ func _process_ranged_attacks(attacking_army: Dictionary, defending_targets: Dict
 						rng
 					)
 		
-		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, attacker_unit_type, rng, CastleTypeEnum.Type.NONE)
+		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, attacker_unit_type, rng, castle_type, castle_defense_override)
 		
 		# Merge kills into total
 		battle_simulator._merge_kill_results(ranged_kills, target_kills)
@@ -575,11 +577,11 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 				battle_simulator._merge_kill_results(defender_kills, mobility_army_kills)
 		else:
 			if not current_garrison_composition.is_empty():
-				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type)
+				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type, null, null, castle_defense_override)
 				battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 			var armies_standard = _get_armies_from_defenders()
 			if not armies_standard.is_empty():
-				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, castle_type)
+				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
 				battle_simulator._merge_kill_results(defender_kills, army_kills)
 	else:
 		var armies_only = _get_armies_from_defenders()
@@ -587,7 +589,7 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 			if is_mobility_round:
 				attacker_kills = _process_mobility_attacks(current_attackers, armies_only, rng, attacker_efficiency)
 			else:
-				attacker_kills = battle_simulator._process_unit_attacks(current_attackers, armies_only, rng, attacker_efficiency, terrain_type, castle_type)
+				attacker_kills = battle_simulator._process_unit_attacks(current_attackers, armies_only, rng, attacker_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
 	
 	var attacker_casualties = {}
 	var defender_casualties = {}

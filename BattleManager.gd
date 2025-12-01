@@ -60,6 +60,7 @@ var _last_battle_report: BattleSimulator.BattleReport = null
 var _fighting_army_for_reselection: Army = null
 var _attacker_withdraw_allowed: bool = false
 var _defender_withdraw_allowed: bool = false
+var _current_ladder_damage: int = 0
 
 func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_modal: BattleModal, sound_manager: SoundManager):
 	_region_manager = region_manager
@@ -71,9 +72,10 @@ func set_game_manager(game_manager) -> void:
 	"""Set GameManager reference for AI turn resumption"""
 	_game_manager = game_manager
 
-func start_battle(attacker: Army, target_region_id: int) -> void:
+func start_battle(attacker: Army, target_region_id: int, ladder_damage: int = 0) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+	_current_ladder_damage = ladder_damage
 
 	# Ensure attacker has a stored previous region for potential withdrawal fallback
 	if _army_manager and attacker and is_instance_valid(attacker):
@@ -151,7 +153,8 @@ func start_battle(attacker: Army, target_region_id: int) -> void:
 		var sim = BattleSimulator.new()
 		var attacker_label = "Attacker " + str(attacker.name)
 		var defender_label = "Defender " + str(target_region.get_region_name())
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed)
+		var effective_defense = _get_effective_defense_bonus(target_region)
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
@@ -249,6 +252,16 @@ func set_pending_conquest(army: Army, region: Region) -> void:
 func _clear_pending_conquest_state() -> void:
 	pending_conquest_army = null
 	pending_conquest_region = null
+	_current_ladder_damage = 0
+
+func _get_effective_defense_bonus(region: Region) -> int:
+	var base_def := GameParameters.get_castle_defense_bonus(region.get_castle_type())
+	var min_def: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(region.get_castle_type(), 0)
+	var reduction := region.gate_damage + region.wall_damage + _current_ladder_damage
+	return max(min_def, base_def - reduction)
+
+func get_effective_defense_for_region(region: Region) -> int:
+	return _get_effective_defense_bonus(region)
 
 func prepare_human_battle(attacker: Army, region: Region) -> void:
 	"""Prepare defender participants for a human-initiated battle while keeping pending conquest logic."""
