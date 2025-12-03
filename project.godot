@@ -15,6 +15,10 @@ run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GlobalSignals="*res://GlobalSignals.gd"
+
 [display]
 
 window/size/viewport_width=1920
@@ -30,7 +34,3 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.1, 0.1, 0.1, 1)
-
-[autoload]
-
-GlobalSignals="*res://GlobalSignals.gd"

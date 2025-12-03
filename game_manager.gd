@@ -1339,10 +1339,15 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	Returns: 'victory', 'defeat', or 'withdrawal'
 	"""
 	var attacker_owner_id := army.get_player_id()
+	var target_region := _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.name + " vs region " + str(target_region_id))
+	var siege_payload := {}
+	if is_player_computer(attacker_owner_id):
+		siege_payload = _execute_ai_siege_preparation(army, target_region)
+	var ladder_damage := int(siege_payload.get("ladder_damage", 0))
 
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
-	_battle_manager.start_battle(army, target_region_id)
+	_battle_manager.start_battle(army, target_region_id, ladder_damage)
 
 	# If background mode is enabled for AI AND defender is not human,
 	# the result is ready immediately and signal will be emitted deferred
@@ -1375,6 +1380,60 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 		finalize_battle_result(result_data)
 	
 	return result
+
+func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dictionary:
+	var castle_defense := GameParameters.get_castle_defense_bonus(target_region.get_castle_type())
+	if castle_defense <= 0:
+		return {}
+	var siege_points_total: int = int(attacker.get_total_soldiers() / 10)
+	var player_id := attacker.get_player_id()
+	var player := player_manager.get_player(player_id)
+	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
+	var wood_growth: int = int(floor(player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD)))
+	var wood_limit: int = available_wood if available_wood > 50 else max(0, wood_growth)
+	var wood_budget: int = min(available_wood, wood_limit)
+	var remaining_points: int = siege_points_total
+	var remaining_wood: int = wood_budget
+	var siege_counts: Dictionary = {"trebuchets": 0, "rams": 0, "ladders": 0}
+	var siege_data: Dictionary = {
+		"trebuchets": PrebattleModal.TREB_DATA,
+		"rams": PrebattleModal.RAM_DATA,
+		"ladders": PrebattleModal.LADDER_DATA
+	}
+	for kind in ["trebuchets", "rams", "ladders"]:
+		var data: Dictionary = siege_data[kind]
+		var points_cost := int(data.get("points", 0))
+		var wood_cost := int(data.get("wood", 0))
+		if points_cost <= 0:
+			continue
+		var max_by_points := int(remaining_points / points_cost)
+		var max_by_wood := int(remaining_wood / wood_cost) if wood_cost > 0 else max_by_points
+		var max_allowed := int(data.get("max", 0))
+		var buyable := int(min(max_by_points, max_by_wood, max_allowed))
+		if buyable > 0:
+			siege_counts[kind] = buyable
+			remaining_points -= buyable * points_cost
+			if wood_cost > 0:
+				remaining_wood -= buyable * wood_cost
+	var spawned_free_ladder := false
+	if siege_counts["trebuchets"] == 0 and siege_counts["rams"] == 0 and siege_counts["ladders"] == 0:
+		siege_counts["ladders"] = 1
+		spawned_free_ladder = true
+	var wood_spent := 0
+	if not spawned_free_ladder:
+		wood_spent = siege_counts["ladders"] * int(PrebattleModal.LADDER_DATA["wood"])
+		wood_spent += siege_counts["rams"] * int(PrebattleModal.RAM_DATA["wood"])
+		wood_spent += siege_counts["trebuchets"] * int(PrebattleModal.TREB_DATA["wood"])
+		if wood_spent > 0:
+			player.remove_resources(ResourcesEnum.Type.WOOD, wood_spent)
+	var payload := target_region.apply_siege_damage(siege_counts, PrebattleModal.LADDER_DATA, PrebattleModal.RAM_DATA, PrebattleModal.TREB_DATA)
+	var limit_label := "no limit" if available_wood > 50 else "growth limit"
+	_log_ai_siege_preparation(siege_points_total, available_wood, limit_label, siege_counts)
+	return payload
+
+func _log_ai_siege_preparation(points: int, wood_available: int, wood_limit_label: String, siege_counts: Dictionary) -> void:
+	ensure_ai_log_started()
+	_ai_log_manager.log_siege_preparation(points, wood_available, wood_limit_label, siege_counts)
 
 func _derive_battle_result_from_report(report: BattleSimulator.BattleReport) -> String:
 	if report == null:

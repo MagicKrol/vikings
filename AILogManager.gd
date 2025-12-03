@@ -90,6 +90,19 @@ func log_castle_recruitment_summary(header: String, entries: Array, fallback_rea
 func log_army_detail(detail: String) -> void:
 	_append_lines([detail])
 
+func log_siege_preparation(points: int, wood_available: int, wood_limit_label: String, purchases: Dictionary) -> void:
+	var lines: Array[String] = []
+	lines.append("Siege equipement")
+	lines.append("Available points: %d" % points)
+	lines.append("Available wood: %d (%s)" % [wood_available, wood_limit_label])
+	lines.append("Bought: %d Trebuchets, %d Battling Rams, %d Ladders" % [
+		int(purchases.get("trebuchets", 0)),
+		int(purchases.get("rams", 0)),
+		int(purchases.get("ladders", 0))
+	])
+	lines.append("")
+	_append_lines(lines)
+
 func _append_turn_header(turn_number: int) -> void:
 	var lines: Array[String] = []
 	lines.append("--------------------------------------------------------")

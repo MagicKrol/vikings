@@ -302,22 +302,9 @@ func _refund_all_siege_purchases() -> void:
 	_reset_siege_state()
 
 func _apply_siege_damage_and_get_payload() -> Dictionary:
-	var ladder_damage = siege_counts.get("ladders", 0) * LADDER_DATA["defense"]
-	var gate_cap = 10
-	var ram_damage = siege_counts.get("rams", 0) * RAM_DATA["defense"]
-	var gate_room = max(0, gate_cap - defending_region.gate_damage)
-	var gate_applied = min(gate_room, ram_damage)
-	if gate_applied > 0:
-		defending_region.gate_damage += gate_applied
-	var base_defense = _get_base_defense()
-	var min_defense = _get_min_defense()
-	var wall_cap = max(0, base_defense - defending_region.gate_damage - min_defense)
-	var trebs_damage = siege_counts.get("trebuchets", 0) * TREB_DATA["defense"]
-	var wall_applied = min(wall_cap, trebs_damage)
-	if wall_applied > 0:
-		defending_region.wall_damage = min(wall_cap, defending_region.wall_damage + wall_applied)
-	_pending_ladder_damage = ladder_damage
-	return {"ladder_damage": ladder_damage}
+	var payload := defending_region.apply_siege_damage(siege_counts, LADDER_DATA, RAM_DATA, TREB_DATA)
+	_pending_ladder_damage = int(payload.get("ladder_damage", 0))
+	return payload
 
 func _update_player_status_modal() -> void:
 	GlobalSignals.emit_signal("player_status_refresh_requested")

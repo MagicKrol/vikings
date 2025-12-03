@@ -119,6 +119,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 - AI Step Gate: `ai_step_requires_shift` forwards to `DebugStepGate` — when true, AI waits for Shift to advance; false lets AI run automatically.
 - AI Logging: Owns `AILogManager`; `ensure_ai_log_started()` names the log `<scenario>_<timestamp>.txt` the first time any AI player takes a turn so all later TurnController events can append to the same file inside the root `logs/` directory.
+- AI Siege: `_execute_ai_siege_preparation()` auto-buys trebuchets → rams → ladders for castle assaults using siege points and a wood budget (no cap when wood > 50, otherwise capped to wood growth), charges wood, applies `Region.apply_siege_damage()` for gate/wall hits and ladder penalties, and logs the purchase summary through `AILogManager`.
 - Battle Log Queue: `finalize_battle_result()` snapshots attacker/defender forces before and after `_battle_manager._apply_battle_losses()`, converts the result into readable lines (`Battle started`, attacker/defender power/composition, `Battle Result`, post-battle status) and queues them per attacking army via `consume_ai_battle_log_for_army()` so TurnController can append them immediately after its movement logs.
 - Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
 - Debug overlay: `show_region_center_markers` draws a small red square at each land region center by calling `MapGenerator.set_center_markers_enabled()` after startup and whenever the map regenerates.
@@ -175,6 +176,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 	- `apply_population_loss(loss, min_population)` clamps population and recalculates recruits.
 	- `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
 	- `fill_recruits_to_maximum()` resets the recruit pool to the region's current cap (used during scenario setup).
+	- `apply_siege_damage()` handles gate/wall damage and returns ladder penalties using shared siege data (used by PrebattleModal and AI auto-siege prep).
 	- Tracks per-turn action usage (ore search/raise army/promotion) cleared by `RegionManager.reset_all_ore_search_turn_usage()` at round start.
 - Info modal theme uses a `FontVariation` and theme shadow settings for Labels so region stats stay legible over busy backgrounds without outlines.
 	- `get_wounded_recruits_total()` exposes the wounded-peasant count for UI consistency.

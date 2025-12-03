@@ -443,6 +443,23 @@ func has_castle() -> bool:
 func has_castle_damage() -> bool:
 	return gate_damage > 0 or wall_damage > 0
 
+func apply_siege_damage(siege_counts: Dictionary, ladder_data: Dictionary, ram_data: Dictionary, treb_data: Dictionary) -> Dictionary:
+	var ladder_damage: int = int(siege_counts.get("ladders", 0)) * int(ladder_data.get("defense", 0))
+	var gate_cap: int = 10
+	var ram_damage: int = int(siege_counts.get("rams", 0)) * int(ram_data.get("defense", 0))
+	var gate_room: int = max(0, gate_cap - gate_damage)
+	var gate_applied: int = min(gate_room, ram_damage)
+	if gate_applied > 0:
+		gate_damage += gate_applied
+	var base_defense: int = GameParameters.get_castle_defense_bonus(castle_type)
+	var min_defense: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(castle_type, 0)
+	var wall_cap: int = max(0, base_defense - gate_damage - min_defense)
+	var trebs_damage: int = int(siege_counts.get("trebuchets", 0)) * int(treb_data.get("defense", 0))
+	var wall_applied: int = min(wall_cap, trebs_damage)
+	if wall_applied > 0:
+		wall_damage = min(wall_cap, wall_damage + wall_applied)
+	return {"ladder_damage": ladder_damage}
+
 func get_castle_type_string() -> String:
 	"""Get the castle type as a string"""
 	return CastleTypeEnum.type_to_string(castle_type)
