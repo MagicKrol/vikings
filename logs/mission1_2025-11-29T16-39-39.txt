@@ -1,0 +1,291 @@
+AI Log File: mission1
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.261
+underpowered_ratio: 0.000
+castle_spacing: 15.333
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Castle Defense Recruitment skipped: Akroy: in danger but has minimal garrison power (Power: 65 / 60)
+
+Economy: Raise Army: Raised at Oswich.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Akroy to County (score: 3.0), Upgrading Oswich to County (score: 3.0)
+
+Economy: Ore search: attempts=7, discoveries=2, gold_spent=35.
+
+Economy: Ore discoveries: Vatnoy, Rednes
+
+Additional Castle Recruitment:
+- Oswich: 15 units (P: 6, S: 7, SW: 2) - gold spent: 13, recruits left: 74
+- Akroy: 14 units (P: 7, S: 7) - gold spent: 7, recruits left: 74
+- Kingley: 9 units (P: 4, S: 5) - gold spent: 5, recruits left: 93
+
+______ ARMY ACTIONS ______
+Army III [Power: 195, E: 100 - P:20, S:10, A:10, SW:5, C:5, H:5, K:3]
+Action: Moves
+Target: Kirkfjell
+
+Moves to Redton
+Moves to Redhavn
+Moves to Kirkfjell
+Movement blocked near Kirkfjell
+Army II [Power: 215, E: 100 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Action: Moves
+Target: Whithavn
+
+Moves to Whithavn
+Fight at Whithavn
+Battle started
+Attacker: Army II [Power: 215 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Defender Garrison [Power: 24 - P:12]
+Defender Recruits (Whithavn) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 210 - P:30, S:15, A:5, SW:5, H:4, K:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Whithavn [Power: 0 - none]
+
+Army I [Power: 260, E: 100 - P:30, S:25, A:10, SW:10, H:5, K:3]
+Action: Moves
+Target: Torhavn
+
+Moves to Redhavn
+Moves to Torhavn
+Fight at Torhavn
+Battle started
+Attacker: Army I [Power: 260 - P:30, S:25, A:10, SW:10, H:5, K:3]
+Defender Garrison [Power: 28 - P:14]
+Defender Recruits (Torhavn) [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army I [Power: 247 - P:30, S:22, A:10, SW:9, H:5, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torhavn [Power: 0 - none]
+
+Army II makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Resources (end):
+Gold: 0
+Food: 20
+Wood: 20
+Iron: 10
+Stone: 10
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.244
+underpowered_ratio: 0.000
+castle_spacing: 13.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Castle Defense Recruitment skipped: Hafnford: in danger but has minimal garrison power (Power: 80 / 30)
+
+Economy: Castle Defense Recruitment skipped: Whitbury: in danger but has minimal garrison power (Power: 90 / 30)
+
+Economy: Raise Army: Raised at Eastberg.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region actions: Upgrading Eastberg to County (score: 3.0)
+
+Economy: Ore search: attempts=3, discoveries=1, gold_spent=15.
+
+Economy: Ore discoveries: Kirkfjell
+
+Additional Castle Recruitment:
+- Eastberg: 18 units (P: 7, S: 7, A: 1, SW: 3) - gold spent: 20, recruits left: 95
+- Hafnford: 12 units (P: 5, S: 4, A: 2, SW: 1) - gold spent: 15, recruits left: 60
+- Whitbury: 13 units (P: 5, S: 5, A: 2, SW: 1) - gold spent: 16, recruits left: 65
+
+______ ARMY ACTIONS ______
+Army I [Power: 310, E: 100 - P:30, S:20, A:10, SW:10, C:5, H:10, K:5]
+Action: Moves
+Target: Rednes
+
+Moves to Rednes
+Fight at Rednes
+Battle started
+Attacker: Army I [Power: 310 - P:30, S:20, A:10, SW:10, C:5, H:10, K:5]
+Defender Garrison [Power: 38 - P:19]
+Defender Recruits (Rednes) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 302 - P:29, S:18, A:10, SW:10, C:5, H:10, K:5]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Rednes [Power: 0 - none]
+
+Army II [Power: 260, E: 100 - P:25, S:15, A:10, SW:10, C:5, H:5, K:5]
+Action: Moves
+Target: Whithavn
+
+Moves to Whithavn
+Fight at Whithavn
+Battle started
+Attacker: @Sprite2D@359 [Power: 260 - P:25, S:15, A:10, SW:10, C:5, H:5, K:5]
+Defender Army II [Power: 215 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Defender Garrison [Power: 0 - none]
+Defender Recruits (Whithavn) [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@359 [Power: 214 - P:20, S:9, A:10, SW:9, C:4, H:3, K:5]
+Defender After: Army II [Power: 81 - P:6, S:4, A:3, SW:2, H:2, K:3]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Whithavn [Power: 0 - none]
+
+Army III [Power: 300, E: 100 - P:30, S:20, A:15, SW:10, C:5, H:5, K:5]
+Action: Moves
+Target: Torhavn
+
+Moves to Northnes
+Moves to Torhavn
+Fight at Torhavn
+Battle started
+Attacker: Army III [Power: 300 - P:30, S:20, A:15, SW:10, C:5, H:5, K:5]
+Defender Army I [Power: 247 - P:30, S:22, A:10, SW:9, H:5, K:3]
+Defender Garrison [Power: 0 - none]
+Defender Recruits (Torhavn) [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: Army III [Power: 244 - P:21, S:16, A:14, SW:8, C:5, H:2, K:5]
+Defender After: Army I [Power: 103 - P:8, S:8, A:8, SW:6, H:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torhavn [Power: 0 - none]
+
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+@Sprite2D@359 makes camp
+Army I makes camp
+Army I makes camp
+Resources (end):
+Gold: 4
+Food: 35
+Wood: 15
+Iron: 10
+Stone: 10
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: no_candidate.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Resources (end):
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+

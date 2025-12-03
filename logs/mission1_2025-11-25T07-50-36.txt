@@ -1,0 +1,131 @@
+AI Log File: mission1
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 1.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodoy: 26 units (P: 10, S: 9, A: 3, SW: 3, C: 1) - gold spent: 34, recruits left: 62, Army II at Woodoy: 25 units (P: 10, S: 8, A: 3, SW: 3, C: 1) - gold spent: 33, recruits left: 38, Army III at Woodoy: 25 units (P: 10, S: 8, A: 3, SW: 3, C: 1) - gold spent: 33, recruits left: 15
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: food_safeguard.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (no food surplus)
+
+______ ARMY ACTIONS ______
+Army III [Power: 119, E: 100 - P:30, S:8, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Riverstadir
+
+Moves to Westham
+Moves to Riverstadir
+Fight at Riverstadir
+Battle started
+Attacker: Army III [Power: 119 - P:30, S:8, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 28 - P:14]
+Defender Recruits (Riverstadir) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army III [Power: 105 - P:26, S:6, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverstadir [Power: 0 - none]
+
+Army II [Power: 119, E: 100 - P:30, S:8, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Torchester
+
+Moves to Kingley
+Moves to Torchester
+Fight at Torchester
+Battle started
+Attacker: Army II [Power: 119 - P:30, S:8, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 36 - P:18]
+Defender Recruits (Torchester) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army II [Power: 109 - P:25, S:8, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torchester [Power: 0 - none]
+
+Army I [Power: 122, E: 100 - P:30, S:9, A:3, SW:3, C:1, K:1]
+Action: Moves
+Target: Akrton
+
+Moves to Kingley
+Moves to Akrton
+Fight at Akrton
+Battle started
+Attacker: Army I [Power: 122 - P:30, S:9, A:3, SW:3, C:1, K:1]
+Defender Garrison [Power: 32 - P:16]
+Defender Recruits (Akrton) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army I [Power: 116 - P:27, S:9, A:3, SW:3, C:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Akrton [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Army III makes camp
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 8
+Iron: 10
+Stone: 10
+
