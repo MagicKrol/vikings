@@ -79,6 +79,8 @@ func _create_action_buttons() -> void:
 
 func _build_button_definitions() -> Array[Dictionary]:
 	var definitions: Array[Dictionary] = []
+	var armies_in_region: Array[Army] = _get_armies_in_current_region()
+	var army_capacity_available := _region_has_army_capacity()
 
 	if current_region != null and current_region.get_region_level() < RegionLevelEnum.Level.L5:
 		var can_afford_promotion = _can_player_afford_promotion(current_region.get_region_level() + 1)
@@ -124,16 +126,10 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var has_used_raise_army := current_region != null and current_region.has_raised_army_this_turn()
 	definitions.append({
 		"text": "Raise Army",
-		"enabled": has_keep_or_higher and can_afford_army and not has_used_raise_army,
+		"enabled": has_keep_or_higher and can_afford_army and not has_used_raise_army and army_capacity_available,
 		"action": "_on_raise_army_pressed",
 		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
 	})
-
-	var armies_in_region: Array[Army] = []
-	if current_region != null:
-		for child in current_region.get_children():
-			if child is Army:
-				armies_in_region.append(child as Army)
 
 	if not armies_in_region.is_empty():
 		definitions.append({
@@ -435,6 +431,8 @@ func _on_raise_army_pressed() -> void:
 	
 	if player_manager == null or current_region == null or army_manager == null:
 		return
+	if not _region_has_army_capacity():
+		return
 	
 	var current_player = player_manager.get_player(game_manager.get_current_player())
 	if current_player == null:
@@ -467,12 +465,7 @@ func _on_back_pressed() -> void:
 		sound_manager.click_sound()
 	
 	var region_to_show = current_region
-	var armies_in_region: Array[Army] = []
-	
-	if region_to_show != null:
-		for child in region_to_show.get_children():
-			if child is Army:
-				armies_in_region.append(child as Army)
+	var armies_in_region: Array[Army] = _get_armies_in_current_region()
 	
 	hide_modal()
 	
@@ -497,6 +490,8 @@ func _on_call_to_arms_tooltip_hovered() -> void:
 func _on_raise_army_tooltip_hovered() -> void:
 	if current_region != null:
 		var context_data = {"current_region": current_region}
+		context_data["army_capacity_available"] = _region_has_army_capacity()
+		context_data["raise_used"] = current_region.has_raised_army_this_turn()
 		show_resource_tooltip("raise_army", context_data)
 
 func _on_ore_search_tooltip_hovered() -> void:
@@ -582,6 +577,20 @@ func _can_player_afford_raise_army() -> bool:
 	
 	var raise_army_cost = GameParameters.get_raise_army_cost()
 	return current_player.get_resource_amount(ResourcesEnum.Type.GOLD) >= raise_army_cost
+
+func _get_armies_in_current_region() -> Array[Army]:
+	if current_region == null:
+		return []
+	if army_manager != null:
+		return army_manager.get_armies_in_region(current_region)
+	var armies_in_region: Array[Army] = []
+	for child in current_region.get_children():
+		if child is Army:
+			armies_in_region.append(child as Army)
+	return armies_in_region
+
+func _region_has_army_capacity() -> bool:
+	return !army_manager.is_region_at_army_cap(current_region)
 
 func _region_has_army_for_player(player_id: int) -> bool:
 	if current_region == null:

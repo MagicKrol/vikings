@@ -42,7 +42,7 @@ Main (Node2D) [place_armies.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
-│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals
+│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals; Raise Army also locks when the region already hosts `GameParameters.MAX_ARMIES_PER_REGION` armies and the tooltip surfaces the per-turn lock
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
@@ -168,6 +168,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Integrates: BattleModal UI, RegionManager (read), ArmyManager (remove/retreat), GameManager (finalization).
 - Behavior: If `GameManager.debug_disable_battle_modal` is enabled for AI, `start_battle()` simulates instantly via `BattleSimulator` and emits `battle_finished` without showing a modal. AI withdrawal checks include all defenders (armies + garrison + recruits), scale chance from `AI_WITHDRAW_POWER_THRESHOLD` down to forced retreats at `AI_WITHDRAW_MAX_POWER_DIFFERENCE`, and defender armies can retreat pre-battle (each picks a random owned neighbor) which ends the battle immediately.
  - Withdrawal: `BattleSimulator`/`AnimatedBattleSimulator` carry `withdrawing_side` in the BattleReport; `GameManager.finalize_battle_result()` applies retreats based on that. If missing, it falls back to attacker withdrawal.
+ - Withdrawal destinations ignore owned neighbors already holding five armies.
 - Post-battle reselection now mirrors `ArmySelectModal -> Move Army` by clearing `UIManager` modal state so the next region click moves immediately.
 
 ### Region systems
@@ -254,6 +255,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Gates:
   - Recruits: `recruits_total >= AI_MIN_RECRUITS_FOR_RAISING`
   - Gold reserve: `player.gold - RAISE_ARMY_COST >= AI_RESERVE_GOLD_MIN`
+  - Capacity: ignores castles already hosting `GameParameters.MAX_ARMIES_PER_REGION` armies; execution aborts (with gold restored) if a cap race happens mid-action.
 - Scoring factors (normalized 0..1):
   - Region/Army ratio within band `[AI_RAISE_R2A_BAND_MIN..MAX]`
   - Average MP distance of armies to candidate castle `[AI_RAISE_DIST_MIN..MAX]`
@@ -357,6 +359,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### army_manager.gd (ArmyManager)
 - Purpose: Army creation, selection, and adjacent-region movement.
 - Key: `create_army()`, `move_army()`, `move_army_to_region()`, `reset_all_army_movement_points()`.
+- Capacity: `GameParameters.MAX_ARMIES_PER_REGION = 5` enforced on creation/movement helpers (`is_region_at_army_cap`, `get_armies_in_region`, `get_army_count_in_region`) so UI/AI respect the stack limit.
 - Stacking: `_apply_army_offsets_for_region(region)` repositions all armies in a region to avoid overlap using fixed extra offsets. Applied on create, move (both source and target), and retreat. Pattern: 1st = base; 2nd = x-15/y-10/z-1; 3rd = x-30/y-20/z-2; 4th = x+15/y-10/z-3; 5th = x+30/y-20/z-4; 6th+ same as 1st.
 - Ready highlight: Caches `_ready_highlight_player_id`, listens to `Army.movement_points_changed`, and refreshes `VisualManager.update_ready_army_highlights()` on turn start, move/camp MP spend, resets, and army removal.
 - Retreat Support: `get_previous_region_for_army()` exposes the last region so cameras can focus on withdrawal destinations.

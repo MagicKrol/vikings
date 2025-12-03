@@ -1593,7 +1593,8 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 					var parent_region := defender.get_parent() as Region
 					if parent_region != null:
 						_battle_manager._apply_army_offsets_for_region(parent_region)
-		if army and is_instance_valid(army) and _army_manager:
+		var attacked_enemy_army := not defending_armies.is_empty()
+		if army and is_instance_valid(army) and _army_manager and attacked_enemy_army:
 			await _army_manager.reposition_army_in_region_with_animation(army)
 		# Attackers won - handle conquest
 		if army and is_instance_valid(army) and target_region_id != -1:

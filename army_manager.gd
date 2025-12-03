@@ -104,6 +104,10 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 	if is_raised:
 		DebugLogger.log("ArmyManagement", "create_army called for raised army, player " + str(player_id) + " in region " + region_container.name)
 	
+	if is_region_at_army_cap(region_container):
+		DebugLogger.log("ArmyManagement", "Cannot create army in " + region_container.name + " - max armies reached")
+		return null
+	
 	# Create army instance with Roman numeral naming
 	var army := Sprite2D.new()
 	# Explicitly attach the Army script
@@ -675,6 +679,26 @@ func get_player_armies(player_id: int) -> Array[Army]:
 				player_armies.append(army)
 	return player_armies
 
+func get_armies_in_region(region_container: Node) -> Array[Army]:
+	"""Collect all armies currently in the region."""
+	var armies: Array[Army] = []
+	for child in region_container.get_children():
+		if child is Army:
+			armies.append(child as Army)
+	return armies
+
+func get_army_count_in_region(region_container: Node) -> int:
+	"""Count armies in the given region."""
+	var count := 0
+	for child in region_container.get_children():
+		if child is Army:
+			count += 1
+	return count
+
+func is_region_at_army_cap(region_container: Node) -> bool:
+	"""Check if the region already holds the maximum allowed armies."""
+	return get_army_count_in_region(region_container) >= GameParameters.MAX_ARMIES_PER_REGION
+
 # Legacy constants - now using RegionTypeEnum for movement costs
 
 func can_army_move_to_region(army: Army, region_container: Node) -> bool:
@@ -692,6 +716,10 @@ func can_army_move_to_region(army: Army, region_container: Node) -> bool:
 	
 	# Check if region is passable
 	if not region.is_passable():
+		return false
+	
+	# Enforce army stack cap
+	if is_region_at_army_cap(region_container):
 		return false
 	
 	# Check if army has enough movement points (with ownership bonus)

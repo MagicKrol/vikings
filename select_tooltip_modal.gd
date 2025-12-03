@@ -197,6 +197,13 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 			
 			if not has_keep_or_higher:
 				tooltip_text += "\n\nRequires Keep"
+			
+			var capacity_available := bool(context_data.get("army_capacity_available", true))
+			if not capacity_available:
+				tooltip_text += "\nCannot support more armies in this region."
+			var raise_used := bool(context_data.get("raise_used", false))
+			if raise_used:
+				tooltip_text += "\nCannot raise more armies this turn."
 	
 	# Add detailed info for ore_search tooltip
 	if tooltip_key == "ore_search" and context_data.has("current_region"):

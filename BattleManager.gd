@@ -195,14 +195,30 @@ func withdraw_attacking_army(attacker: Army) -> void:
 	await _handle_army_withdrawal(attacker)
 
 func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region, owned_neighbors: Array) -> bool:
+	var capacity_by_region: Dictionary = {}
+	for neighbor_id in owned_neighbors:
+		var neighbor_region := _region_manager.map_generator.get_region_container_by_id(neighbor_id) as Region
+		if neighbor_region == null:
+			continue
+		var slots_left := GameParameters.MAX_ARMIES_PER_REGION - _army_manager.get_army_count_in_region(neighbor_region)
+		if slots_left > 0:
+			capacity_by_region[neighbor_id] = slots_left
+	if capacity_by_region.is_empty():
+		return false
 	var moved_any := false
 	for d in defender_armies:
 		if not is_instance_valid(d):
 			continue
-		var pick_id: int = owned_neighbors[randi() % owned_neighbors.size()]
+		if capacity_by_region.is_empty():
+			break
+		var ids := capacity_by_region.keys()
+		var pick_id: int = ids[randi() % ids.size()]
 		var dest_region := _region_manager.map_generator.get_region_container_by_id(pick_id) as Region
 		if dest_region == null:
 			continue
+		capacity_by_region[pick_id] = int(capacity_by_region[pick_id]) - 1
+		if int(capacity_by_region[pick_id]) <= 0:
+			capacity_by_region.erase(pick_id)
 		var start_global := d.global_position
 		from_region.remove_child(d)
 		dest_region.add_child(d)

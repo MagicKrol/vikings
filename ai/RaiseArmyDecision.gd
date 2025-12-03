@@ -15,8 +15,10 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 	# Hard gates mirrored by should_raise_army_simple()
 	var gold_after := float(gold - GameParameters.RAISE_ARMY_COST)
 	if gold_after < float(GameParameters.AI_RESERVE_GOLD_MIN):
+		DebugLogger.log("AIEconomy", "Recruitment: Reserve gold min - not satisfied")
 		return 0.0
 	if recruits < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
+		DebugLogger.log("AIEconomy", "Recruitment: Min recruits for raising - not satisfied")
 		return 0.0
 
 	# Ratios and normalizations
@@ -29,6 +31,7 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 	# Soft support guard: avoid barely-above-min raises
 	var support := 0.5 * recruits_norm + 0.5 * bank_norm
 	if support < GameParameters.AI_RAISE_SUPPORT_MIN:
+		DebugLogger.log("AIEconomy", "Recruitment: AI_RAISE_SUPPORT_MIN")
 		return 0.0
 
 	# Weighted sum

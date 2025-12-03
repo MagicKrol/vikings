@@ -335,6 +335,9 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		if region_manager.get_castle_level(region_id) < 2:
 			continue
 		castles_checked += 1
+		var region_container := region_manager.map_generator.get_region_container_by_id(region_id)
+		if army_manager.is_region_at_army_cap(region_container):
+			continue
 		
 		# Calculate total recruits from region and neighbors
 		var recruit_sources = region_manager.get_available_recruits_from_region_and_neighbors(region_id, player_id)
@@ -461,16 +464,23 @@ func _compute_avg_distance_to_castle(armies_arr: Array[Army], castle_region_id: 
 # Execute the army raising at the specified region
 func execute_raise_army(player_id: int, region_id: int) -> bool:
 	var player = player_manager.get_player(player_id)
+	var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
+	if army_manager.is_region_at_army_cap(region_container):
+		DebugLogger.log("AIEconomy", "Recruitment: is_region_at_army_cap")
+		return false
 	
 	# Check and deduct cost
 	if not player.remove_resources(ResourcesEnum.Type.GOLD, GameParameters.RAISE_ARMY_COST):
+		DebugLogger.log("AIEconomy", "Recruitment: cannot remove resources")
 		return false
 	
-	# Get the region container
-	var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
-	
 	# Create the army
-	army_manager.create_army(region_container, player_id, true)
+	var new_army := army_manager.create_army(region_container, player_id, true)
+	if new_army == null:
+		player.add_resources(ResourcesEnum.Type.GOLD, GameParameters.RAISE_ARMY_COST)
+		DebugLogger.log("AIEconomy", "Recruitment: army creation failed")
+		return false
+	DebugLogger.log("AIEconomy", "Recruitment: army creation successfully")
 	return true
 
 # Post-movement economy pass: spend leftovers on region economy only

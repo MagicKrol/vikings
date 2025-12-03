@@ -156,6 +156,8 @@ func _apply_armies(map_generator: MapGenerator, army_manager: ArmyManager, scena
 		var player_id: int = int(a.get("player_id", 1))
 		var region := map_generator.get_region_container_by_id(region_id)
 		var army := army_manager.create_army(region, player_id)
+		if army == null:
+			continue
 		if a.has("name"):
 			army.name = String(a.get("name"))
 		if a.has("composition"):

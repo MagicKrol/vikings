@@ -30,7 +30,7 @@ var debug_categories: Dictionary = {
 	"AIScoring": false,            # Target scoring and evaluation
 	"AIPlanning": false,           # Strategic planning decisions
 	"AITurnManager": false,        # High-level AI turn processing
-	"AIEconomy": false,            # AI economy decisions and raise army
+	"AIEconomy": true,            # AI economy decisions and raise army
 	"AIRecruitment": false,        # AI recruitment and budget allocation
 	
 	# Resource Systems
@@ -39,9 +39,9 @@ var debug_categories: Dictionary = {
 	
 	# Battle Systems
 	"BattleAI": false, 
-	"BattleSystem": true,         # Combat and battle resolution
+	"BattleSystem": false,         # Combat and battle resolution
 	"BattleCalculation": false,    # Detailed battle calculations
-	"BattleAnimation": true,      # Battle animation and rounds
+	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management

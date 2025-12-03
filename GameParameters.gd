@@ -161,6 +161,7 @@ const AI_CAND_W_TRAVEL = 20.0                  # Weight for travel hint
 const AI_RAISE_THRESHOLD = 35.0                # Global decision cutoff score
 # Target army power for raise army decisions
 const AI_TARGET_ARMY_POWER = 100               # Target power threshold for underpowered armies
+const MAX_ARMIES_PER_REGION = 5                # Maximum armies allowed in a single region
 
 # New raise-army decision tuning (normalized model)
 const AI_RAISE_R2A_BAND_MIN = 3.0
