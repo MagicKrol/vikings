@@ -209,6 +209,8 @@ func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region
 	for d in defender_armies:
 		if not is_instance_valid(d):
 			continue
+		if d.get_parent() != from_region:
+			continue
 		if capacity_by_region.is_empty():
 			break
 		var ids := capacity_by_region.keys()

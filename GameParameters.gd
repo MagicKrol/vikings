@@ -36,6 +36,7 @@ const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable si
 const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
 const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
 const POPULATION_GROWTH_RATE = 0.03            # Base population growth rate (%)
+const POPULATION_CONST_GROWTH_RATE = 0.02
 const WITHDRAWAL_FREE_HIT_ROUNDS = 3           # Number of free hit rounds enemy gets during withdrawal
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 3    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
@@ -138,8 +139,8 @@ const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for go
 const RAISE_ARMY_COST = 20                     # Gold cost to raise a new army
 
 ## Population Income Formula Constants
-const POPULATION_INCOME_BASE_DIVISOR = 64      # Base divisor for population gold income formula
-const POPULATION_INCOME_LEVEL_MULTIPLIER = 4   # Level multiplier for population gold income formula
+const POPULATION_INCOME_BASE_DIVISOR = 100      # Base divisor for population gold income formula
+const POPULATION_INCOME_LEVEL_MULTIPLIER = 10   # Level multiplier for population gold income formula
 
 ## AI Raise Army Decision Parameters
 # Cost/Reserves
@@ -404,20 +405,17 @@ const MOVEMENT_COSTS = {
 # Format: resource_type -> {min, max} range for randi_range()
 const REGION_RESOURCES = {
 	RegionTypeEnum.Type.GRASSLAND: {
-		ResourcesEnum.Type.FOOD: {"min": 2, "max": 5}
+		ResourcesEnum.Type.FOOD: {"min": 1, "max": 4}
 	},
 	RegionTypeEnum.Type.FOREST: {
-		ResourcesEnum.Type.FOOD: {"min": 0, "max": 1},
 		ResourcesEnum.Type.WOOD: {"min": 2, "max": 4}
 	},
 	RegionTypeEnum.Type.HILLS: {
-		ResourcesEnum.Type.FOOD: {"min": 0, "max": 1},
 		ResourcesEnum.Type.STONE: {"min": 2, "max": 4},
 		ResourcesEnum.Type.IRON: {"min": 2, "max": 5},
 		ResourcesEnum.Type.GOLD: {"min": 5, "max": 15}
 	},
 	RegionTypeEnum.Type.FOREST_HILLS: {
-		ResourcesEnum.Type.FOOD: {"min": 0, "max": 0},
 		ResourcesEnum.Type.WOOD: {"min": 1, "max": 2},
 		ResourcesEnum.Type.STONE: {"min": 0, "max": 2},
 		ResourcesEnum.Type.IRON: {"min": 1, "max": 3},
@@ -592,11 +590,11 @@ const GARRISON_BY_LEVEL = {
 
 ## Population Generation by Region Level
 const POPULATION_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 100, "max": 200},
-	RegionLevelEnum.Level.L2: {"min": 200, "max": 300},
-	RegionLevelEnum.Level.L3: {"min": 300, "max": 400},
-	RegionLevelEnum.Level.L4: {"min": 400, "max": 500},
-	RegionLevelEnum.Level.L5: {"min": 500, "max": 600}
+	RegionLevelEnum.Level.L1: {"min": 200, "max": 400},
+	RegionLevelEnum.Level.L2: {"min": 350, "max": 550},
+	RegionLevelEnum.Level.L3: {"min": 500, "max": 800},
+	RegionLevelEnum.Level.L4: {"min": 700, "max": 1000},
+	RegionLevelEnum.Level.L5: {"min": 900, "max": 1300}
 }
 
 ## Region Promotion Costs by Target Level
@@ -604,16 +602,16 @@ const POPULATION_BY_LEVEL = {
 const REGION_PROMOTION_COSTS = {
 	RegionLevelEnum.Level.L2: {  # Cost to promote from L1 to L2
 		ResourcesEnum.Type.GOLD: 10,
-		ResourcesEnum.Type.FOOD: 15
+		ResourcesEnum.Type.FOOD: 20
 	},
 	RegionLevelEnum.Level.L3: {  # Cost to promote from L2 to L3
 		ResourcesEnum.Type.GOLD: 15,
-		ResourcesEnum.Type.FOOD: 25,
+		ResourcesEnum.Type.FOOD: 30,
 		ResourcesEnum.Type.WOOD: 10,
 	},
 	RegionLevelEnum.Level.L4: {  # Cost to promote from L3 to L4
 		ResourcesEnum.Type.GOLD: 20,
-		ResourcesEnum.Type.FOOD: 35,
+		ResourcesEnum.Type.FOOD: 40,
 		ResourcesEnum.Type.WOOD: 20,
 		ResourcesEnum.Type.STONE: 0,
 	},
@@ -632,7 +630,7 @@ const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.OUTPOST: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 50,
-			ResourcesEnum.Type.WOOD: 40
+			ResourcesEnum.Type.WOOD: 30
 		},
 		"build_time": 2  # 2 turns to complete
 	},
@@ -647,7 +645,7 @@ const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.CASTLE: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 100,
-			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.WOOD: 30,
 			ResourcesEnum.Type.STONE: 35,
 			ResourcesEnum.Type.IRON: 10
 		},
@@ -656,7 +654,7 @@ const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 150,
-			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.WOOD: 30,
 			ResourcesEnum.Type.STONE: 50,
 			ResourcesEnum.Type.IRON: 20
 		},
@@ -745,7 +743,7 @@ static func get_starting_resource_amount(resource_type: ResourcesEnum.Type) -> i
 
 static func generate_garrison_size(region_level: RegionLevelEnum.Level) -> int:
 	"""Generate random garrison size based on region level"""
-	var range_data = GARRISON_BY_LEVEL.get(region_level, {"min": 10, "max": 20})
+	var range_data = GARRISON_BY_LEVEL.get(region_level, {"min": 0, "max": 0})
 	return randi_range(range_data.min, range_data.max)
 
 static func generate_population_size(region_level: RegionLevelEnum.Level) -> int:

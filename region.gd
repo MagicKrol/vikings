@@ -378,6 +378,7 @@ func get_growth() -> float:
 	if is_ocean:
 		return 0
 	var base_growth_rate = GameParameters.POPULATION_GROWTH_RATE
+	var const_growth_rate = GameParameters.POPULATION_CONST_GROWTH_RATE
 	var promotion_bonus = get_promotion_bonus()
 
 	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
@@ -388,7 +389,7 @@ func get_growth() -> float:
 
 	var food_bonus: float = float(resources.get_resource_amount(ResourcesEnum.Type.FOOD)) * 0.001
 
-	return standard_growth_rate + promotion_bonus + food_bonus
+	return standard_growth_rate + promotion_bonus + food_bonus + const_growth_rate
 
 func get_population_increase() -> int:
 	return int(population * get_growth())

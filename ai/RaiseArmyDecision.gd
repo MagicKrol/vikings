@@ -29,10 +29,10 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 	var bank_norm := _norm(gold_after, float(GameParameters.AI_RAISE_BANK_RESERVE), float(GameParameters.AI_RAISE_BANK_MAX))
 
 	# Soft support guard: avoid barely-above-min raises
-	var support := 0.5 * recruits_norm + 0.5 * bank_norm
-	if support < GameParameters.AI_RAISE_SUPPORT_MIN:
-		DebugLogger.log("AIEconomy", "Recruitment: AI_RAISE_SUPPORT_MIN")
-		return 0.0
+	# var support := 0.5 * recruits_norm + 0.5 * bank_norm
+	# if support < GameParameters.AI_RAISE_SUPPORT_MIN:
+	# 	DebugLogger.log("AIEconomy", "Recruitment: AI_RAISE_SUPPORT_MIN")
+	# 	return 0.0
 
 	# Weighted sum
 	var s := 0.0
