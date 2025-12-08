@@ -29,8 +29,8 @@ clip_children = 1
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = -10.0
-offset_right = -30.0
+offset_left = -25.0
+offset_right = -45.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -151,11 +151,11 @@ text = "Gold: "
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
-text = "204"
+text = "20433.0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
-text = "(+56)"
+text = "(+5633)"
 
 [node name="Control" type="Control" parent="Panel"]
 anchors_preset = 0

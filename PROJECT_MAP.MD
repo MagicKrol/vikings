@@ -61,6 +61,7 @@ Main (Node2D) [place_armies.gd]
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – simple displayMessage(text) overlay with recruitment-style continue button; emits continue_clicked for restore flows
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open
+│	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
 	├ Player1..Player6 (Node2D) – reserved containers
@@ -217,7 +218,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
 - RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources. Composition lookups route through `GameParameters.get_ideal_*_for_wealth()` so poor/normal/rich players field different mixes automatically (Normal halves peasant targets, Rich zeros them in favor of pricier units).
-- PlayerManagerNode.gd: Adds `get_projected_economy_for_player()` to return next-turn income (including food upkeep) and population growth without mutating state, reused by PlayerStatusModal2.
+- PlayerManagerNode.gd: `get_player_economy_snapshot()` aggregates balances, projected income (with food upkeep), and population totals; `get_projected_economy_for_player()` wraps it for compatibility and UI (PlayerStatusModal2) consumption.
 
 ### EconomyAIManager.gd
 - Purpose: Central, deterministic planner for AI economy decisions each turn.

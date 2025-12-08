@@ -243,6 +243,12 @@ func has_garrison() -> bool:
 	"""Check if region has any garrison soldiers"""
 	return garrison.has_soldiers()
 
+func has_defenders() -> bool:
+	"""Check if region has any defending forces (garrison or recruits)."""
+	if has_garrison():
+		return true
+	return get_base_available_recruits() > 0
+
 func get_garrison_composition_string() -> String:
 	"""Get garrison composition as a readable string"""
 	return garrison.get_composition_string()

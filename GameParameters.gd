@@ -581,20 +581,20 @@ const STARTING_RESOURCES = {
 
 ## Region Garrison Generation by Region Level
 const GARRISON_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 10, "max": 20},
-	RegionLevelEnum.Level.L2: {"min": 15, "max": 25},
-	RegionLevelEnum.Level.L3: {"min": 20, "max": 30},
-	RegionLevelEnum.Level.L4: {"min": 25, "max": 35},
-	RegionLevelEnum.Level.L5: {"min": 30, "max": 40}
+	RegionLevelEnum.Level.L1: {"min": 0, "max": 5},
+	RegionLevelEnum.Level.L2: {"min": 0, "max": 10},
+	RegionLevelEnum.Level.L3: {"min": 0, "max": 15},
+	RegionLevelEnum.Level.L4: {"min": 0, "max": 0},
+	RegionLevelEnum.Level.L5: {"min": 0, "max": 0}
 }
 
 ## Population Generation by Region Level
 const POPULATION_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 200, "max": 400},
-	RegionLevelEnum.Level.L2: {"min": 350, "max": 550},
-	RegionLevelEnum.Level.L3: {"min": 500, "max": 800},
-	RegionLevelEnum.Level.L4: {"min": 700, "max": 1000},
-	RegionLevelEnum.Level.L5: {"min": 900, "max": 1300}
+	RegionLevelEnum.Level.L1: {"min": 100, "max": 300},
+	RegionLevelEnum.Level.L2: {"min": 250, "max": 400},
+	RegionLevelEnum.Level.L3: {"min": 400, "max": 600},
+	RegionLevelEnum.Level.L4: {"min": 600, "max": 800},
+	RegionLevelEnum.Level.L5: {"min": 800, "max": 1000}
 }
 
 ## Region Promotion Costs by Target Level

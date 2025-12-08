@@ -115,16 +115,14 @@ func _update_display_from_game_state() -> void:
 
 	# Get current player
 	var current_player = game_manager.player_manager.get_current_player()
-	
-	var projection = game_manager.player_manager.get_projected_economy_for_player(current_player.get_player_id())
-	var projected_income: Dictionary = projection.get("income", {})
-	var population_data: Dictionary = projection.get("population", {})
+	var snapshot = game_manager.player_manager.get_player_economy_snapshot(current_player.get_player_id())
+	var projected_income: Dictionary = snapshot.get("income", {})
+	var population_data: Dictionary = snapshot.get("population", {})
+	var balances: Dictionary = snapshot.get("balances", {})
 	current_population.amount = int(population_data.get("amount", 0))
 	current_population.income = int(population_data.get("growth", 0))
-	
-	# Update resource data from current player
 	for resource_type in current_resources:
-		var amount = current_player.get_resource_amount(resource_type)
+		var amount = int(balances.get(resource_type, current_player.get_resource_amount(resource_type)))
 		var income = int(projected_income.get(resource_type, 0))
 		current_resources[resource_type] = {"amount": amount, "income": income}
 	
@@ -140,4 +138,3 @@ func show_and_update() -> void:
 	"""Show the modal and update it with current game state (public method for castle placement)"""
 	visible = true
 	_update_display_from_game_state()
-	update_all_resources(current_resources)

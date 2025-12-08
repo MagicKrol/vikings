@@ -1274,7 +1274,7 @@ func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 		return true
 	
 	# Battle if neutral region has a garrison
-	if region_owner == -1 and target_region.has_garrison():
+	if region_owner == -1 and target_region.has_defenders():
 		return true
 	
 	return false

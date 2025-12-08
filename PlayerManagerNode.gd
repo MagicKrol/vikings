@@ -219,8 +219,7 @@ func _calculate_player_income(player: Player) -> void:
 					total_resources[resource_type] += region_resource_amount
 			
 			# Add population-based gold income
-			var population_gold = _calculate_population_gold_income(region_node)
-			total_resources[ResourcesEnum.Type.GOLD] += population_gold
+			total_resources[ResourcesEnum.Type.GOLD] += region_node.get_income()
 	
 	# Apply the total resources to the player
 	var total_income_value = 0
@@ -237,26 +236,9 @@ func _find_region_by_id(regions_node: Node, region_id: int) -> Region:
 			return child
 	return null
 
-func _calculate_population_gold_income(region: Region) -> int:
-	"""Calculate gold income from population based on formula: floor(population / (56 - 6 * region_level))"""
-	var population = region.get_population()
-	var region_level = region.get_region_level()
-	
-	# Convert region level enum to integer (assuming L1=1, L2=2, etc.)
-	var level_int = RegionLevelEnum.level_to_number(region_level)
-	
-	# Formula: floor(Population / (56 - 6 * region_level))
-	var divisor = 56 - (6 * level_int)
-	
-	# Prevent division by zero or negative divisors
-	if divisor <= 0:
-		return 0
-	
-	var gold_income = int(population / divisor)
-	return max(0, gold_income)
-
-func get_projected_economy_for_player(player_id: int) -> Dictionary:
-	"""Return next-turn resource income and population growth snapshot without mutating state."""
+func get_player_economy_snapshot(player_id: int) -> Dictionary:
+	"""Aggregate current balances, projected income, and population snapshot for a player."""
+	var player = get_player(player_id)
 	var income := {
 		ResourcesEnum.Type.GOLD: 0,
 		ResourcesEnum.Type.FOOD: 0,
@@ -268,15 +250,24 @@ func get_projected_economy_for_player(player_id: int) -> Dictionary:
 	var population_growth := 0
 	var owned_regions = region_manager.get_player_regions(player_id)
 	var regions_node = map_generator.get_node_or_null("Regions")
+	if regions_node == null:
+		return {
+			"income": income,
+			"population": {
+				"amount": population_amount,
+				"growth": population_growth
+			},
+			"balances": player.get_all_resources()
+		}
 	for region_id in owned_regions:
 		var region_node = _find_region_by_id(regions_node, region_id)
 		if region_node != null:
 			for resource_type in income.keys():
 				if region_node.can_collect_resource(resource_type):
 					income[resource_type] += region_node.get_resource_amount(resource_type)
-			income[ResourcesEnum.Type.GOLD] += _calculate_population_gold_income(region_node)
+			income[ResourcesEnum.Type.GOLD] += region_node.get_income()
 			population_amount += region_node.get_population()
-			if not region_node.is_ocean:
+			if not region_node.is_ocean_region():
 				population_growth += region_node.get_population_increase()
 	var food_upkeep := calculate_total_army_food_cost(player_id)
 	income[ResourcesEnum.Type.FOOD] -= int(ceil(food_upkeep))
@@ -285,7 +276,16 @@ func get_projected_economy_for_player(player_id: int) -> Dictionary:
 		"population": {
 			"amount": population_amount,
 			"growth": population_growth
-		}
+		},
+		"balances": player.get_all_resources()
+	}
+
+func get_projected_economy_for_player(player_id: int) -> Dictionary:
+	"""Return next-turn resource income and population growth snapshot without mutating state."""
+	var snapshot = get_player_economy_snapshot(player_id)
+	return {
+		"income": snapshot.get("income", {}),
+		"population": snapshot.get("population", {"amount": 0, "growth": 0})
 	}
 
 # Player information
