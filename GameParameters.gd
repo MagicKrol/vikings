@@ -586,6 +586,10 @@ const TRADE_PRICES = {
 	ResourcesEnum.Type.IRON: {"sell": 3, "buy": 6}
 }
 
+const TRADE_MARKET_MIN_PRICE = 0.4
+const TRADE_MARKET_K = 0.01
+const TRADE_RESET_RATE = 0.2
+
 ## Region Garrison Generation by Region Level
 const GARRISON_BY_LEVEL = {
 	RegionLevelEnum.Level.L1: {"min": 0, "max": 5},

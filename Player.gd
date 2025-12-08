@@ -34,6 +34,7 @@ var computer_controlled: bool = false
 # Resource storage - maps ResourcesEnum.Type -> int (amount)
 var resources: Dictionary = {}
 var wealth_level: int = GameParameters.WealthLevel.POOR
+var traded_resources: Dictionary = {}
 
 # Player statistics
 var regions_owned: Array[int] = []
@@ -57,6 +58,7 @@ func _initialize_resources() -> void:
 	"""Initialize all resources with starting amounts"""
 	for resource_type in ResourcesEnum.get_all_types():
 		resources[resource_type] = ResourcesEnum.get_starting_amount(resource_type)
+		traded_resources[resource_type] = 0
 
 func _set_player_color() -> void:
 	"""Set player color based on player ID"""
@@ -135,6 +137,29 @@ func set_resource_amount(resource_type: ResourcesEnum.Type, amount: int) -> void
 	"""Set a specific resource to an exact amount (for debugging/testing)"""
 	resources[resource_type] = max(0, amount)
 	DebugLogger.log("PlayerManagement", "Player " + str(player_id) + " Set " + ResourcesEnum.type_to_string(resource_type) + " to " + str(amount))
+
+func add_traded_resource_amount(resource_type: ResourcesEnum.Type, amount: int) -> void:
+	traded_resources[resource_type] = traded_resources.get(resource_type, 0) + amount
+
+func get_traded_resource_amount(resource_type: ResourcesEnum.Type) -> int:
+	return traded_resources.get(resource_type, 0)
+
+func decay_traded_resources(rate: float, growths: Dictionary) -> void:
+	for resource_type in traded_resources:
+		var current = traded_resources.get(resource_type, 0)
+		if current == 0:
+			continue
+		var growth_value = abs(growths.get(resource_type, 0.0))
+		var step = int(floor(rate * growth_value))
+		if step < 1:
+			step = 1
+		if current > 0:
+			traded_resources[resource_type] = current - min(step, current)
+		else:
+			traded_resources[resource_type] = current + min(step, -current)
+		DebugLogger.log("Trade", "Decay %s: %d -> %d" % [ResourcesEnum.type_to_string(resource_type), current, traded_resources[resource_type]])
+
+# Region ownership1)
 
 # Player information methods
 func get_player_id() -> int:

@@ -666,6 +666,7 @@ func _process_player_turn_start(player_id: int):
 	DebugLogger.log("TurnProcessing", "Processing turn start for Player " + str(player_id) + "...")
 	if player_manager:
 		player_manager.decay_enemy_memory_for_player(player_id)
+		player_manager.decay_traded_resources_for_player(player_id, GameParameters.TRADE_RESET_RATE)
 	if _region_manager:
 		_region_manager.process_castle_progress_for_player(player_id)
 		_region_manager.heal_wounded_for_player(player_id)

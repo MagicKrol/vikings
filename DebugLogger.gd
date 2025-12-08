@@ -67,7 +67,8 @@ var debug_categories: Dictionary = {
 	"UIManager": false,
 	"AICamera": false,             # AI camera focus / delays
 	"Animation": false,             # Generic node/tween animations
-	"MapEditorPanel": false
+	"MapEditorPanel": false,
+	"Trade": true
 }
 
 # Color coding for different log levels

@@ -140,6 +140,35 @@ func remove_resources_from_player(player_id: int, resource_type: ResourcesEnum.T
 	
 	return player.remove_resources(resource_type, amount)
 
+func add_traded_resource_amount(player_id: int, resource_type: ResourcesEnum.Type, amount: int) -> void:
+	var player = get_player(player_id)
+	if player == null:
+		return
+	player.add_traded_resource_amount(resource_type, amount)
+
+func get_traded_resource_amount(player_id: int, resource_type: ResourcesEnum.Type) -> int:
+	var player = get_player(player_id)
+	if player == null:
+		return 0
+	return player.get_traded_resource_amount(resource_type)
+
+func decay_traded_resources_for_player(player_id: int, rate: float) -> void:
+	var player = get_player(player_id)
+	if player == null:
+		return
+	if region_manager == null or map_generator == null:
+		return
+	var growths: Dictionary = {}
+	var trade_resources = [
+		ResourcesEnum.Type.FOOD,
+		ResourcesEnum.Type.WOOD,
+		ResourcesEnum.Type.STONE,
+		ResourcesEnum.Type.IRON
+	]
+	for rt in trade_resources:
+		growths[rt] = get_player_resource_growth(player_id, rt)
+	player.decay_traded_resources(rate, growths)
+
 func can_player_afford(player_id: int, resource_type: ResourcesEnum.Type, amount: int) -> bool:
 	"""Check if a player can afford a specific cost"""
 	var player = get_player(player_id)
