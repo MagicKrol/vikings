@@ -61,7 +61,8 @@ Main (Node2D) [place_armies.gd]
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – simple displayMessage(text) overlay with recruitment-style continue button; emits continue_clicked for restore flows
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open
-│	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover
+│	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
+│	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – opens from trade icon; fixed buy/sell prices (Food/Wood 2/1, Stone 4/2, Iron 6/3); buttons adjust buy/sell amounts with affordability limits, updating totals, gold, and gold delta; Continue applies trade, Cancel closes
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
 	├ Player1..Player6 (Node2D) – reserved containers

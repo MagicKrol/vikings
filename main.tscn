@@ -178,7 +178,7 @@ visible = false
 offset_left = 10.0
 offset_right = 450.0
 
-[node name="RecruitmentModal2" parent="UI" instance=ExtResource("35_c1ajo")]
+[node name="TradeModal" parent="UI" instance=ExtResource("35_c1ajo")]
 
 [node name="Players" type="Node2D" parent="."]
 

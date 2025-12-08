@@ -579,6 +579,13 @@ const STARTING_RESOURCES = {
 	ResourcesEnum.Type.STONE: 10
 }
 
+const TRADE_PRICES = {
+	ResourcesEnum.Type.WOOD: {"sell": 1, "buy": 2},
+	ResourcesEnum.Type.FOOD: {"sell": 1, "buy": 2},
+	ResourcesEnum.Type.STONE: {"sell": 2, "buy": 4},
+	ResourcesEnum.Type.IRON: {"sell": 3, "buy": 6}
+}
+
 ## Region Garrison Generation by Region Level
 const GARRISON_BY_LEVEL = {
 	RegionLevelEnum.Level.L1: {"min": 0, "max": 5},
