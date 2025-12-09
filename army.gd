@@ -74,8 +74,9 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 	_set_warrior_texture(player_id)
 	
 	# Start with a basic army composition
-	composition.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, 20)
-	composition.set_soldier_count(SoldierTypeEnum.Type.KNIGHTS, 1)
+	var starting_comp = GameParameters.get_starting_army_composition()
+	for unit_type in starting_comp.keys():
+		composition.set_soldier_count(unit_type, starting_comp[unit_type])
 	
 	z_index = 125 + player_id
 

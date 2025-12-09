@@ -46,6 +46,9 @@ var sound_manager: SoundManager = null
 # Reference to the move modal for UI updates
 var move_modal: MoveModal = null
 
+# Reference to the UI manager for modal coordination
+var ui_manager: UIManager = null
+
 # Reference to the visual manager for ownership animations
 var visual_manager: VisualManager = null
 var _ready_highlight_player_id: int = -1
@@ -87,6 +90,9 @@ func set_move_modal(modal: MoveModal) -> void:
 	move_modal = modal
 	if move_modal:
 		move_modal.set_army_manager(self)
+
+func set_ui_manager(manager: UIManager) -> void:
+	ui_manager = manager
 
 func set_visual_manager(manager: VisualManager) -> void:
 	"""Set the visual manager reference"""
@@ -300,6 +306,8 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 	DebugLogger.log("ArmyManagement", "Setting selected_army to " + army.name)
 	selected_army = army
 	selected_region_container = region_container
+	if ui_manager:
+		ui_manager.suppress_turn_modal_for_movement(true)
 
 	# Show army modal
 	if army_modal != null:
@@ -322,6 +330,8 @@ func deselect_army() -> void:
 	"""Deselect the currently selected army"""
 	selected_army = null
 	selected_region_container = null
+	if ui_manager:
+		ui_manager.suppress_turn_modal_for_movement(false)
 
 	# Hide army modal
 	if army_modal != null:

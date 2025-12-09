@@ -9,6 +9,7 @@ var player_manager: PlayerManagerNode
 var game_manager: GameManager
 var budget_manager: BudgetManager
 var recruitment_manager: RecruitmentManager
+var trade_manager: TradeManager
 var signals: Dictionary
 var garrison_requests: Array = []
 var garrison_skip_logs: Array = []
@@ -53,6 +54,7 @@ func _init(_region_manager: RegionManager, _army_manager: ArmyManager, _player_m
 	game_manager = _game_manager
 	budget_manager = BudgetManager.new()
 	recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
+	trade_manager = game_manager.get_trade_manager()
 
 func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	DebugLogger.log("AIEconomy", "\n=== AI ECONOMY TURN PLANNING (Player %d, Turn %d) ===" % [player_id, turn_number])
@@ -97,6 +99,10 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	# Step 8: Additional castle recruitment (threat-weighted)
 	var garrison_trickle = perform_garrison_trickle(player_id)
 	summary["garrison_trickle"] = garrison_trickle
+	
+	# Step 9: Trading (sell surplus, buy to cover food deficit)
+	var trade_result = _execute_ai_trades(player_id)
+	summary["trade"] = trade_result
 	
 	summary["recruitment_candidates"] = army_recruitment["candidates"]
 	DebugLogger.log("AIEconomy", "=== END AI ECONOMY TURN PLANNING ===\n")
@@ -874,69 +880,74 @@ func _evaluate_upgrade_region(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	if player == null:
 		return {"executed": false, "reason": "no_player", "details": [], "actions": [], "action_entries": []}
+	# Quick affordability check for the cheapest upgrade (L1 -> L2)
+	var min_upgrade_cost: Dictionary = GameParameters.REGION_PROMOTION_COSTS.get(RegionLevelEnum.Level.L2, {})
+	if not min_upgrade_cost.is_empty() and not player.can_afford_cost(min_upgrade_cost):
+		return {"executed": false, "reason": "insufficient_for_min_upgrade", "details": [], "actions": [], "action_entries": []}
 	var upgrades: Array[String] = []
 	var action_entries: Array = []
 	var reason = "no_candidate"
+	var skip_reasons: Array[String] = []
 	var last_details: Array = []
-	var safety := 0
-	while true:
-		safety += 1
-		if safety > 20:
-			reason = "loop_guard"
-			break
-		var candidate_info = _pick_region_upgrade_candidates(player_id)
-		var details: Array = candidate_info.get("details", [])
-		last_details = details
-		var best_region_id = int(candidate_info.get("best_region_id", -1))
-		if best_region_id == -1 or details.is_empty():
-			reason = "no_candidate"
-			break
-		var best_detail = details[0]
-		var score = float(best_detail.get("score", 0.0))
-		if score <= 0.0:
-			reason = "low_score"
-			break
-		var next_level = int(best_detail.get("next_level", RegionLevelEnum.Level.L1))
-		var cost: Dictionary = best_detail.get("cost", {})
-		if cost.is_empty():
-			reason = "no_cost_data"
-			break
-		var region = region_manager.map_generator.get_region_container_by_id(best_region_id) as Region
-		if region == null:
-			reason = "region_missing"
-			break
-		if region.get_promotion_cooldown() > 0:
-			reason = "cooldown_active"
-			break
-		var food_cost = int(cost.get(ResourcesEnum.Type.FOOD, 0))
-		if not player_manager.meets_food_upgrade_safeguard(player_id, food_cost):
-			reason = "food_safeguard"
-			break
-		if not player.can_afford_cost(cost):
-			reason = "insufficient_resources"
-			break
-		if not player.pay_cost(cost):
-			reason = "deduction_failed"
-			break
-		region.set_region_level(next_level)
-		region_manager.generate_region_resources(region)
-		region.set_promotion_cooldown(3)
-		var level_name = RegionLevelEnum.level_to_string(next_level)
-		var msg = "Upgrading %s to %s (score: %.1f)" % [region.get_region_name(), level_name, score]
-		upgrades.append(msg)
-		action_entries.append({
-			"action": "upgrade_region",
-			"region_id": best_region_id,
-			"details": best_detail
-		})
-		reason = "upgrades_completed"
-		# Continue loop to see if we can afford another upgrade
-		continue
+	var candidate_info = _pick_region_upgrade_candidates(player_id)
+	var details: Array = candidate_info.get("details", [])
+	last_details = details
+	if candidate_info.get("best_region_id", -1) == -1 or details.is_empty():
+		reason = "no_candidate"
+	else:
+		for detail in details:
+			var region_id = int(detail.get("region_id", -1))
+			var score = float(detail.get("score", 0.0))
+			if region_id == -1 or score <= 0.0:
+				skip_reasons.append("Region %d: low_score" % region_id)
+				continue
+			var next_level = int(detail.get("next_level", RegionLevelEnum.Level.L1))
+			var cost: Dictionary = detail.get("cost", {})
+			if cost.is_empty():
+				skip_reasons.append("Region %d: no_cost_data" % region_id)
+				continue
+			var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+			if region == null:
+				skip_reasons.append("Region %d: region_missing" % region_id)
+				continue
+			if region.get_promotion_cooldown() > 0:
+				skip_reasons.append("Region %d: cooldown_active" % region_id)
+				continue
+			var food_cost = int(cost.get(ResourcesEnum.Type.FOOD, 0))
+			if not player_manager.meets_food_upgrade_safeguard(player_id, food_cost):
+				skip_reasons.append("Region %d: food_safeguard" % region_id)
+				continue
+			if not player.can_afford_cost(cost):
+				skip_reasons.append("Region %d: insufficient_resources" % region_id)
+				continue
+			if not player.pay_cost(cost):
+				skip_reasons.append("Region %d: deduction_failed" % region_id)
+				continue
+			region.set_region_level(next_level)
+			region_manager.generate_region_resources(region)
+			region.set_promotion_cooldown(3)
+			var level_name = RegionLevelEnum.level_to_string(next_level)
+			var msg = "Upgrading %s to %s (score: %.1f)" % [region.get_region_name(), level_name, score]
+			upgrades.append(msg)
+			action_entries.append({
+				"action": "upgrade_region",
+				"region_id": region_id,
+				"details": detail
+			})
+			reason = "upgrades_completed"
+			# Stop if we run out of resources for further upgrades
+			continue
+	var final_reason = reason
+	if upgrades.is_empty() and not skip_reasons.is_empty():
+		final_reason = "skipped_all"
+	var actions_final: Array = upgrades
+	if upgrades.is_empty() and not skip_reasons.is_empty():
+		actions_final = skip_reasons
 	return {
 		"executed": upgrades.size() > 0,
-		"reason": reason,
+		"reason": final_reason,
 		"details": _limit_candidate_details(last_details),
-		"actions": upgrades,
+		"actions": actions_final,
 		"action_entries": action_entries
 	}
 
@@ -984,6 +995,79 @@ func perform_garrison_trickle(player_id: int) -> Dictionary:
 		entries.append(region.get_region_name() + ": +" + str(units_to_add))
 	var reason = "success" if processed > 0 else "no_castles"
 	return {"processed": processed, "recruited": added, "reason": reason, "entries": entries}
+
+func _execute_ai_trades(player_id: int) -> Dictionary:
+	var player = player_manager.get_player(player_id)
+	var sold: Array = []
+	var bought: Array = []
+	var actions: Array[String] = []
+	var gold_change := 0
+	var resources_to_sell = [
+		ResourcesEnum.Type.WOOD,
+		ResourcesEnum.Type.FOOD,
+		ResourcesEnum.Type.STONE,
+		ResourcesEnum.Type.IRON
+	]
+	for resource_type in resources_to_sell:
+		var growth = player_manager.get_player_resource_growth(player_id, resource_type)
+		if growth > 0.0:
+			var threshold = GameParameters.get_ai_trade_threshold(resource_type)
+			var current_amount = player.get_resource_amount(resource_type)
+			var surplus = max(0, current_amount - threshold)
+			if surplus > 0:
+				var result = trade_manager.sell(player_id, resource_type, surplus)
+				var entry = {
+					"resource": ResourcesEnum.type_to_string(resource_type),
+					"amount": surplus,
+					"success": result.get("success", false)
+				}
+				if result.get("success", false):
+					var delta_gold = int(result.get("gold_change", 0))
+					entry["gold_change"] = delta_gold
+					gold_change += delta_gold
+					var msg = "Sold %d %s for %d gold" % [surplus, ResourcesEnum.type_to_string(resource_type), delta_gold]
+					actions.append(msg)
+					_log_trade(msg)
+				else:
+					var reason = String(result.get("reason", "fail"))
+					entry["reason"] = reason
+					var fail_msg = "Sell %s failed (%s)" % [ResourcesEnum.type_to_string(resource_type), reason]
+					actions.append(fail_msg)
+					_log_trade(fail_msg)
+				sold.append(entry)
+	
+	var food_growth = player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.FOOD)
+	if food_growth < 0.0:
+		var deficit = int(ceil(-food_growth))
+		if deficit > 0:
+			var buy_result = trade_manager.buy(player_id, ResourcesEnum.Type.FOOD, deficit)
+			var buy_entry = {
+				"resource": ResourcesEnum.type_to_string(ResourcesEnum.Type.FOOD),
+				"amount": deficit,
+				"success": buy_result.get("success", false)
+			}
+			if buy_result.get("success", false):
+				var delta_gold_buy = int(buy_result.get("gold_change", 0))
+				buy_entry["gold_change"] = delta_gold_buy
+				gold_change += delta_gold_buy
+				var buy_msg = "Bought %d Food (gold change %d)" % [deficit, delta_gold_buy]
+				actions.append(buy_msg)
+				_log_trade(buy_msg)
+			else:
+				var buy_reason = String(buy_result.get("reason", "fail"))
+				buy_entry["reason"] = buy_reason
+				var buy_fail_msg = "Buy Food failed (%s)" % [buy_reason]
+				actions.append(buy_fail_msg)
+				_log_trade(buy_fail_msg)
+			bought.append(buy_entry)
+	
+	return {
+		"executed": not actions.is_empty(),
+		"actions": actions,
+		"sold": sold,
+		"bought": bought,
+		"gold_change": gold_change
+	}
 
 func _pick_trickle_unit(castle_type: CastleTypeEnum.Type, wood_positive: bool, iron_positive: bool) -> SoldierTypeEnum.Type:
 	var composition = GameParameters.get_ideal_castle_garrison(castle_type)
@@ -1167,3 +1251,9 @@ func _get_castle_threat_weight(region: Region, enemy_castles: Array[int]) -> flo
 	if distance <= 0:
 		distance = 1
 	return base_weight / float(distance)
+
+func _log_trade(message: String) -> void:
+	DebugLogger.log("AIEconomy", message)
+	game_manager.ensure_ai_log_started()
+	var ai_log = game_manager.get_ai_log_manager()
+	ai_log.log_economy(message)

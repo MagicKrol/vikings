@@ -282,11 +282,8 @@ func _apply_call_to_arms() -> void:
 				# Remove recruits from source region (like hiring them)
 				var actual_moved = source_region.hire_recruits(count_to_move)
 				
-				# Add recruits to target region and bump population to keep totals consistent
-				var new_population = target_region.get_population() + actual_moved
-				target_region.set_population(new_population)
-				var max_recruits = target_region.get_max_recruits()
-				target_region.available_recruits = min(target_region.available_recruits + actual_moved, max_recruits)
+				# Add recruits to target region and bump population; allow exceeding current recruit cap
+				target_region.add_call_to_arms_recruits(actual_moved)
 				
 				DebugLogger.log("UISystem", "Moved " + str(actual_moved) + " recruits from " + source_region.get_region_name() + " to " + target_region.get_region_name())
 				DebugLogger.log("UISystem", target_region.get_region_name() + " now has " + str(target_region.get_available_recruits()) + "/" + str(target_region.get_max_recruits()) + " recruits")

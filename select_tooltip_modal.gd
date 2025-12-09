@@ -224,7 +224,7 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 				var discovered_ores = current_region.get_discovered_ores()
 				# Show discovered ores
 				if not discovered_ores.is_empty():
-					tooltip_text += "\n\nDiscovered: "
+					tooltip_text += "\nDiscovered: "
 					for ore_type in discovered_ores:
 						tooltip_text += "" + ResourcesEnum.type_to_string(ore_type)
 				elif attempts_remaining > 0:

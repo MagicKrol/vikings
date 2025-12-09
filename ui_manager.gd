@@ -33,6 +33,7 @@ var last_hovered_region: Region = null
 
 # Modal mode system
 var is_modal_active: bool = false
+var _turn_modal_suppressed: bool = false
 
 # Modal references for centralized management
 var _select_modal: GeneralSelectModal
@@ -106,10 +107,17 @@ func display_message(text: String) -> void:
 func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
 	is_modal_active = active
-	if _turn_modal:
-		_turn_modal.visible = not active
+	_update_turn_modal_visibility()
 	if is_modal_active and region_tooltip and region_tooltip.visible:
 		hide_region_tooltip()
+
+func suppress_turn_modal_for_movement(enabled: bool) -> void:
+	_turn_modal_suppressed = enabled
+	_update_turn_modal_visibility()
+
+func _update_turn_modal_visibility() -> void:
+	if _turn_modal:
+		_turn_modal.visible = not is_modal_active and not _turn_modal_suppressed
 
 func hide_region_tooltip() -> void:
 	DebugLogger.log("UIManager", "hide_region_tooltip called. visible=" + str(region_tooltip.visible))

@@ -244,10 +244,15 @@ func has_garrison() -> bool:
 	return garrison.has_soldiers()
 
 func has_defenders() -> bool:
-	"""Check if region has any defending forces (garrison or recruits)."""
+	"""Check if region has any defending forces (garrison, recruits, or armies present)."""
 	if has_garrison():
 		return true
-	return get_base_available_recruits() > 0
+	if get_base_available_recruits() > 0:
+		return true
+	for child in get_children():
+		if child is Army:
+			return true
+	return false
 
 func get_garrison_composition_string() -> String:
 	"""Get garrison composition as a readable string"""
@@ -618,6 +623,10 @@ func can_search_for_ore() -> bool:
 	if not GameParameters.can_search_for_ore_in_region(region_type):
 		return false
 	
+	# Stop searching after any ore has been discovered
+	if not discovered_ores.is_empty():
+		return false
+	
 	# Must have search attempts remaining
 	if ore_search_attempts_remaining <= 0:
 		return false
@@ -655,6 +664,7 @@ func search_for_ore() -> Dictionary:
 		# Add to discovered ores if not already found
 		if ore_type not in discovered_ores:
 			discovered_ores.append(ore_type)
+			ore_search_attempts_remaining = 0
 		
 		DebugLogger.log("RegionManagement", "Ore discovered in " + region_name + "! Found: " + ResourcesEnum.type_to_string(ore_type))
 		return {"success": true, "ore_type": ore_type, "message": "Discovered " + ResourcesEnum.type_to_string(ore_type) + " ore!"}
@@ -700,6 +710,13 @@ func has_promoted_this_turn() -> bool:
 
 func mark_promoted_this_turn() -> void:
 	promotion_used_this_turn = true
+
+func add_call_to_arms_recruits(amount: int) -> void:
+	"""Add recruits gathered via call to arms (can exceed current recruit cap)."""
+	if amount <= 0:
+		return
+	population += amount
+	available_recruits += amount
 
 func get_ore_search_status_string() -> String:
 	"""Get a human-readable string describing ore search status"""

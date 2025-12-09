@@ -65,6 +65,7 @@ var _battle_manager: BattleManager
 var _visual_manager: VisualManager
 var _border_manager: BorderManager
 var _ui_manager: UIManager
+var _trade_manager: TradeManager
 var _ai_camera_director: AICameraDirector
 var ai_step_requires_shift: bool = false
 
@@ -223,6 +224,7 @@ func initialize_managers(is_scenario: bool = false):
 		_army_manager.set_army_modal(army_modal)
 		_army_manager.set_battle_modal(_battle_modal)
 		_army_manager.set_move_modal(move_modal)
+		_army_manager.set_ui_manager(_ui_manager)
 	
 	_sound_manager = get_node("../SoundManager") as SoundManager
 	
@@ -251,6 +253,7 @@ func initialize_managers(is_scenario: bool = false):
 		player_manager.set_army_manager(_army_manager)
 		# Ensure players are initialized before any UI or scenario logic uses them
 		player_manager._initialize_players(player_types)
+		_trade_manager = TradeManager.new(player_manager)
 		
 		# Connect to player change signal to refresh UI
 		player_manager.current_player_changed.connect(_on_current_player_changed)
@@ -1676,6 +1679,9 @@ func get_battle_manager() -> BattleManager:
 func get_visual_manager() -> VisualManager:
 	"""Get the VisualManager instance"""
 	return _visual_manager
+
+func get_trade_manager() -> TradeManager:
+	return _trade_manager
 
 func get_region_manager() -> RegionManager:
 	"""Get the RegionManager instance"""

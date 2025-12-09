@@ -130,7 +130,7 @@ const AI_ENEMY_DISTANCE_WEIGHT = 5.0           # Closer to enemies = more strate
 const AI_MAX_EXPECTED_DISTANCE = 10            # Expected max distance for normalization
 
 ## Mining System Constants
-const ORE_SEARCH_COST = 5                      # Gold cost to perform ore search
+const ORE_SEARCH_COST = 10                      # Gold cost to perform ore search
 const ORE_SEARCH_CHANCES_PER_REGION = 3        # Number of ore search attempts per region
 const ORE_DISCOVERY_CHANCE = 0.25               # 20% chance to find ore per search
 const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for gold
@@ -408,7 +408,7 @@ const REGION_RESOURCES = {
 		ResourcesEnum.Type.FOOD: {"min": 1, "max": 4}
 	},
 	RegionTypeEnum.Type.FOREST: {
-		ResourcesEnum.Type.WOOD: {"min": 2, "max": 4}
+		ResourcesEnum.Type.WOOD: {"min": 1, "max": 4}
 	},
 	RegionTypeEnum.Type.HILLS: {
 		ResourcesEnum.Type.STONE: {"min": 2, "max": 4},
@@ -579,6 +579,16 @@ const STARTING_RESOURCES = {
 	ResourcesEnum.Type.STONE: 10
 }
 
+const STARTING_ARMY_COMPOSITION = {
+	SoldierTypeEnum.Type.PEASANTS: 15,
+	SoldierTypeEnum.Type.SPEARMEN: 10,
+	SoldierTypeEnum.Type.SWORDSMEN: 5,
+	SoldierTypeEnum.Type.ARCHERS: 5,
+	SoldierTypeEnum.Type.CROSSBOWMEN: 0,
+	SoldierTypeEnum.Type.HORSEMEN: 0,
+	SoldierTypeEnum.Type.KNIGHTS: 1
+}
+
 const TRADE_PRICES = {
 	ResourcesEnum.Type.WOOD: {"sell": 1, "buy": 2},
 	ResourcesEnum.Type.FOOD: {"sell": 1, "buy": 2},
@@ -589,14 +599,18 @@ const TRADE_PRICES = {
 const TRADE_MARKET_MIN_PRICE = 0.4
 const TRADE_MARKET_K = 0.01
 const TRADE_RESET_RATE = 0.2
+const AI_TRADE_THRESHOLD_FOOD = 100
+const AI_TRADE_THRESHOLD_WOOD = 100
+const AI_TRADE_THRESHOLD_STONE = 50
+const AI_TRADE_THRESHOLD_IRON = 50
 
 ## Region Garrison Generation by Region Level
 const GARRISON_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 0, "max": 5},
-	RegionLevelEnum.Level.L2: {"min": 0, "max": 10},
-	RegionLevelEnum.Level.L3: {"min": 0, "max": 15},
-	RegionLevelEnum.Level.L4: {"min": 0, "max": 0},
-	RegionLevelEnum.Level.L5: {"min": 0, "max": 0}
+	RegionLevelEnum.Level.L1: {"min": 1, "max": 8},
+	RegionLevelEnum.Level.L2: {"min": 1, "max": 15},
+	RegionLevelEnum.Level.L3: {"min": 1, "max": 20},
+	RegionLevelEnum.Level.L4: {"min": 1, "max": 0},
+	RegionLevelEnum.Level.L5: {"min": 1, "max": 0}
 }
 
 ## Population Generation by Region Level
@@ -640,23 +654,23 @@ const REGION_PROMOTION_COSTS = {
 const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.OUTPOST: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 50,
+			ResourcesEnum.Type.GOLD: 30,
 			ResourcesEnum.Type.WOOD: 30
 		},
 		"build_time": 2  # 2 turns to complete
 	},
 	CastleTypeEnum.Type.KEEP: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 75,
-			ResourcesEnum.Type.WOOD: 30,
+			ResourcesEnum.Type.GOLD: 50,
+			ResourcesEnum.Type.WOOD: 20,
 			ResourcesEnum.Type.STONE: 15
 		},
 		"build_time": 2  # 3 turns to complete
 	},
 	CastleTypeEnum.Type.CASTLE: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 100,
-			ResourcesEnum.Type.WOOD: 30,
+			ResourcesEnum.Type.GOLD: 75,
+			ResourcesEnum.Type.WOOD: 25,
 			ResourcesEnum.Type.STONE: 35,
 			ResourcesEnum.Type.IRON: 10
 		},
@@ -664,7 +678,7 @@ const CASTLE_BUILDING_COSTS = {
 	},
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"cost": {
-			ResourcesEnum.Type.GOLD: 150,
+			ResourcesEnum.Type.GOLD: 100,
 			ResourcesEnum.Type.WOOD: 30,
 			ResourcesEnum.Type.STONE: 50,
 			ResourcesEnum.Type.IRON: 20
@@ -847,6 +861,25 @@ static func roll_ore_type() -> ResourcesEnum.Type:
 		return ResourcesEnum.Type.IRON
 	else:
 		return ResourcesEnum.Type.GOLD
+
+static func get_starting_army_composition() -> Dictionary:
+	var comp: Dictionary = {}
+	for key in STARTING_ARMY_COMPOSITION.keys():
+		comp[key] = int(STARTING_ARMY_COMPOSITION[key])
+	return comp
+
+static func get_ai_trade_threshold(resource_type: ResourcesEnum.Type) -> int:
+	match resource_type:
+		ResourcesEnum.Type.FOOD:
+			return AI_TRADE_THRESHOLD_FOOD
+		ResourcesEnum.Type.WOOD:
+			return AI_TRADE_THRESHOLD_WOOD
+		ResourcesEnum.Type.STONE:
+			return AI_TRADE_THRESHOLD_STONE
+		ResourcesEnum.Type.IRON:
+			return AI_TRADE_THRESHOLD_IRON
+		_:
+			return 0
 
 static func get_raise_army_cost() -> int:
 	"""Get the gold cost for raising a new army"""

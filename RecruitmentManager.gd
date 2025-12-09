@@ -307,13 +307,7 @@ func _allocate_with_unit0_gd(
 ) -> Dictionary:
 	"""Mirror units.py allocation algorithm using game data"""
 	
-	# 1) Unit 0 (peasants - free)
-	var unit0 = int(floor(unit0_share * float(total_units)))
-	if special_caps.has(SoldierTypeEnum.Type.PEASANTS):
-		unit0 = min(unit0, int(special_caps[SoldierTypeEnum.Type.PEASANTS]))
-	var paid_units_cap = max(0, total_units - unit0)
-	
-	# 2) Build non-peasant props (integer ratios)
+	# 1) Build non-peasant props (integer ratios)
 	var non_peasant_types: Array = []
 	var props_raw: Dictionary = {}
 	for t in ideal.keys():
@@ -326,11 +320,13 @@ func _allocate_with_unit0_gd(
 	
 	if non_peasant_types.is_empty():
 		# No paid units - just add peasants
-		target_comp.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
+		var fallback_peasants = min(total_units, special_caps.get(SoldierTypeEnum.Type.PEASANTS, total_units))
+		if fallback_peasants > 0:
+			target_comp.add_soldiers(SoldierTypeEnum.Type.PEASANTS, fallback_peasants)
 		return {
-			"hired": {SoldierTypeEnum.Type.PEASANTS: unit0},
+			"hired": {SoldierTypeEnum.Type.PEASANTS: fallback_peasants},
 			"spent_gold": 0, "spent_wood": 0, "spent_iron": 0,
-			"total_recruited": unit0
+			"total_recruited": fallback_peasants
 		}
 	
 	# Build unit costs only for non-peasant types (micro-optimization)
@@ -348,11 +344,13 @@ func _allocate_with_unit0_gd(
 	var pack_costs = _compute_pack_costs(props, unit_costs)
 	
 	# 4) Full packages (min over all constraints)
-	var full_packages = _max_full_packages(budget, pack_costs, P, paid_units_cap, special_caps, props)
+	var full_packages = _max_full_packages(budget, pack_costs, P, total_units, special_caps, props)
+	var expected_peasants = int(floor(unit0_share * float(total_units)))
+	var paid_cap = max(0, total_units - expected_peasants)
 	
 	if debug:
 		DebugLogger.log("AIRecruitment", "=== UNITS.PY DEBUG ===")
-		DebugLogger.log("AIRecruitment", "Total units: " + str(total_units) + ", Unit0: " + str(unit0) + ", Paid cap: " + str(paid_units_cap))
+		DebugLogger.log("AIRecruitment", "Total units: " + str(total_units) + ", Target peasants: " + str(expected_peasants) + ", Paid cap: " + str(paid_cap))
 		DebugLogger.log("AIRecruitment", "Props: " + str(props) + ", P: " + str(P))
 		DebugLogger.log("AIRecruitment", "Pack costs: " + str(pack_costs))
 		DebugLogger.log("AIRecruitment", "Full packages: " + str(full_packages))
@@ -370,7 +368,7 @@ func _allocate_with_unit0_gd(
 			"wood": budget.wood -= cost
 			"iron": budget.iron -= cost
 	
-	var units_left = paid_units_cap - full_packages * P
+	var units_left = max(0, total_units - full_packages * P)
 	
 	# 6) Partial sequence fill
 	var seq = _build_sequence(props, non_peasant_types)
@@ -400,22 +398,32 @@ func _allocate_with_unit0_gd(
 	if debug:
 		DebugLogger.log("AIRecruitment", "Partial fill: " + str(x_paid) + ", units left: " + str(units_left))
 	
-	# 7) Apply to army
-	if unit0 > 0:
-		target_comp.add_soldiers(SoldierTypeEnum.Type.PEASANTS, unit0)
+	# 7) Apply paid units to army
 	for t in non_peasant_types:
 		var count = x_paid.get(t, 0)
 		if count > 0:
 			target_comp.add_soldiers(t, count)
 	
-	# 8) Calculate spending
+	# 8) Fill peasants to maintain target share after paid units are known
+	var paid_total = _sum_dict_values(x_paid)
+	var target_peasants: int = 0
+	if unit0_share > 0.0 and unit0_share < 1.0:
+		target_peasants = int(floor((unit0_share / (1.0 - unit0_share)) * float(paid_total)))
+	var remaining_capacity = max(0, total_units - paid_total)
+	var peasants_to_add = min(target_peasants, remaining_capacity)
+	if special_caps.has(SoldierTypeEnum.Type.PEASANTS):
+		peasants_to_add = min(peasants_to_add, int(special_caps[SoldierTypeEnum.Type.PEASANTS]))
+	if peasants_to_add > 0:
+		target_comp.add_soldiers(SoldierTypeEnum.Type.PEASANTS, peasants_to_add)
+	
+	# 9) Calculate spending
 	var hired: Dictionary = {}
-	if unit0 > 0:
-		hired[SoldierTypeEnum.Type.PEASANTS] = unit0
 	for t in non_peasant_types:
 		var count = x_paid.get(t, 0)
 		if count > 0:
 			hired[t] = count
+	if peasants_to_add > 0:
+		hired[SoldierTypeEnum.Type.PEASANTS] = peasants_to_add
 	
 	var spent_gold = 0
 	var spent_wood = 0
@@ -427,7 +435,7 @@ func _allocate_with_unit0_gd(
 		spent_wood += count * cost["wood"]
 		spent_iron += count * cost["iron"]
 	
-	var total_recruited = unit0 + _sum_dict_values(x_paid)
+	var total_recruited = peasants_to_add + _sum_dict_values(x_paid)
 	
 	return {
 		"hired": hired,
