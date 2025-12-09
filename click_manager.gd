@@ -337,8 +337,13 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		
 		# If region is owned by current player, open RegionSelectModal
 		if region_owner == current_player_id:
-			var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
-			region_select_modal.show_region_actions(region)
+			# If just conquered (ownership counter 0) and no armies present, block management this turn
+			if region.get_ownership_turns() == 0:
+				var message_modal = get_node("../UI/MessageModal") as MessageModal
+				message_modal.displayMessage("Conquered region cannot be managed the same turn.")
+			else:
+				var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
+				region_select_modal.show_region_actions(region)
 		# Otherwise, just log for unowned/enemy regions (no modal)
 		else:
 			DebugLogger.log("InputSystem", "Clicked on region: " + region.get_region_name() + " (Owner: " + str(region_owner) + ")")

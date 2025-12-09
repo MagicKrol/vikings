@@ -511,19 +511,19 @@ func calculate_total_army_food_cost(player_id: int) -> float:
 	var is_computer = player.is_computer()
 	
 	# Get all regions owned by this player and sum garrison food costs
-	if not is_computer or 1: #for now we enable food cost for AI
-		var owned_regions = region_manager.get_player_regions(player_id)
-		var regions_node = map_generator.get_node_or_null("Regions")
-		for region_id in owned_regions:
-			var region_node = _find_region_by_id(regions_node, region_id)
-			var garrison = region_node.get_garrison()
-			if garrison != null:
-				var garrison_food_cost = garrison.get_total_food_cost()
-				total_food_cost += garrison_food_cost
-			var wounded_garrison = region_node.get_wounded_garrison()
-			if wounded_garrison != null:
-				var wounded_garrison_food_cost = wounded_garrison.get_total_food_cost()
-				total_food_cost += wounded_garrison_food_cost
+	# if not is_computer or 1: #for now we enable food cost for AI
+	# 	var owned_regions = region_manager.get_player_regions(player_id)
+	# 	var regions_node = map_generator.get_node_or_null("Regions")
+	# 	for region_id in owned_regions:
+	# 		var region_node = _find_region_by_id(regions_node, region_id)
+	# 		var garrison = region_node.get_garrison()
+	# 		if garrison != null:
+	# 			var garrison_food_cost = garrison.get_total_food_cost()
+	# 			total_food_cost += garrison_food_cost
+	# 		var wounded_garrison = region_node.get_wounded_garrison()
+	# 		if wounded_garrison != null:
+	# 			var wounded_garrison_food_cost = wounded_garrison.get_total_food_cost()
+	# 			total_food_cost += wounded_garrison_food_cost
 	
 	# Add standalone armies
 	if army_manager != null:

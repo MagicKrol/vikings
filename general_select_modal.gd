@@ -54,12 +54,20 @@ func _update_header() -> void:
 
 func _add_region_button(font: Font) -> void:
 	var is_last := current_armies.is_empty()
-	var region_btn := _make_button(current_region.get_region_name(), true, is_last, font)
-	region_btn.pressed.connect(_on_region_button_pressed)
-	region_btn.mouse_entered.connect(_on_region_button_hovered)
-	region_btn.mouse_entered.connect(_on_region_tooltip_hovered)
-	region_btn.mouse_exited.connect(_on_button_unhovered)
-	_prepare_button(region_btn)
+	var is_conquered := current_region.get_ownership_turns() == 0
+	var region_btn: Button
+	if is_conquered:
+		region_btn = _make_disabled_action_button(current_region.get_region_name(), true, is_last, font)
+		_prepare_disabled_button(region_btn)
+		region_btn.mouse_entered.connect(func(): show_message_tooltip("conquered_region_blocked"))
+		region_btn.mouse_exited.connect(_on_button_unhovered)
+	else:
+		region_btn = _make_button(current_region.get_region_name(), true, is_last, font)
+		region_btn.pressed.connect(_on_region_button_pressed)
+		region_btn.mouse_entered.connect(_on_region_button_hovered)
+		region_btn.mouse_exited.connect(_on_button_unhovered)
+		region_btn.mouse_entered.connect(_on_region_tooltip_hovered)
+		_prepare_button(region_btn)
 	button_container.add_child(region_btn)
 	_add_separator()
 
@@ -86,6 +94,12 @@ func _prepare_button(button: Button) -> void:
 	button.add_theme_color_override("font_pressed_color", Color.WHITE)
 	button.add_theme_color_override("font_disabled_color", Color.WHITE)
 	button.add_theme_font_size_override("font_size", 22)
+
+func _prepare_disabled_button(button: Button) -> void:
+	button.size_flags_vertical = Control.SIZE_FILL
+	button.custom_minimum_size.y = 40
+	button.add_theme_font_size_override("font_size", 22)
+	button.focus_mode = Control.FOCUS_NONE
 
 
 

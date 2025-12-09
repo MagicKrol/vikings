@@ -1,0 +1,670 @@
+[gd_scene load_steps=13 format=3 uid="uid://cxmedb6o3yrb7"]
+
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="1_dkv22"]
+[ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="3_svfyk"]
+[ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="4_k7ktn"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="5_2xk0f"]
+[ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="6_2cs4o"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="8_2dxbd"]
+[ext_resource type="Script" path="res://trade_modal.gd" id="9_trademodal"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
+draw_center = false
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_earim"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 1.0
+texture = ExtResource("6_2cs4o")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6x2g4"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_508s8"]
+content_margin_left = 5.0
+content_margin_top = 2.0
+content_margin_right = 5.0
+content_margin_bottom = 1.0
+texture = ExtResource("6_2cs4o")
+modulate_color = Color(1, 1, 1, 0.552941)
+
+[sub_resource type="Theme" id="Theme_NumberButtons"]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/icon_max_width = 0
+Button/constants/outline_size = 0
+Button/styles/disabled = SubResource("StyleBoxTexture_earim")
+Button/styles/focus = SubResource("StyleBoxEmpty_6x2g4")
+Button/styles/hover = SubResource("StyleBoxTexture_earim")
+Button/styles/normal = SubResource("StyleBoxTexture_earim")
+Button/styles/pressed = SubResource("StyleBoxTexture_508s8")
+
+[node name="TradeModal" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 500.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_dkv22")
+script = ExtResource("9_trademodal")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 600.0
+texture = ExtResource("3_svfyk")
+expand_mode = 3
+
+[node name="ArmyTexture" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 150.0
+offset_right = 885.0
+offset_bottom = 480.0
+texture = ExtResource("4_k7ktn")
+expand_mode = 2
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 600.0
+theme = ExtResource("1_dkv22")
+theme_override_styles/panel = SubResource("StyleBoxFlat_wgf6c")
+
+[node name="Army" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 890.0
+offset_bottom = 620.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+
+[node name="Header" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="RecruitmentRegion" type="Label" parent="Panel/Army/Header"]
+layout_mode = 2
+theme = ExtResource("5_2xk0f")
+text = "Trade"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="AvailableRecruits" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/AvailableRecruits"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
+layout_mode = 2
+text = "Gold:"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1203"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HeaderSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/HeaderSection"]
+layout_mode = 2
+
+[node name="ArmyName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+
+[node name="Amount" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Total"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+
+[node name="RecruitmentLabel" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+layout_mode = 2
+text = "Buy"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer"]
+custom_minimum_size = Vector2(405, 0)
+layout_mode = 2
+
+[node name="CostLabel" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer"]
+layout_mode = 2
+text = "Sell"
+horizontal_alignment = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="UnitsSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="FoodPrice" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice"]
+custom_minimum_size = Vector2(410, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/FoodPrice"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Buy:"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/FoodPrice"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2"
+horizontal_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/Army/UnitsSection/FoodPrice"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Sell:"
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/FoodPrice"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1"
+horizontal_alignment = 2
+
+[node name="Food" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Food:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4534"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="Button100" type="Button" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+100"
+
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
+
+[node name="Button100m" type="Button" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-100"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/Food"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(410, 10)
+layout_mode = 2
+
+[node name="FoodPrice2" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice2"]
+custom_minimum_size = Vector2(410, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/FoodPrice2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Buy:"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/FoodPrice2"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2"
+horizontal_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice2"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/Army/UnitsSection/FoodPrice2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Sell:"
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/FoodPrice2"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1"
+horizontal_alignment = 2
+
+[node name="Wood" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Wood:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4534"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="Button100" type="Button" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+100"
+
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
+
+[node name="Button100m" type="Button" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-100"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/Wood"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(410, 10)
+layout_mode = 2
+
+[node name="FoodPrice3" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice3"]
+custom_minimum_size = Vector2(410, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/FoodPrice3"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Buy:"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/FoodPrice3"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4"
+horizontal_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice3"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/Army/UnitsSection/FoodPrice3"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Sell:"
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/FoodPrice3"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2"
+horizontal_alignment = 2
+
+[node name="Stone" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Stone:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4534"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="Button100" type="Button" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+100"
+
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
+
+[node name="Button100m" type="Button" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-100"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/Stone"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(410, 10)
+layout_mode = 2
+
+[node name="FoodPrice4" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice4"]
+custom_minimum_size = Vector2(410, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/FoodPrice4"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Buy:"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/FoodPrice4"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "6"
+horizontal_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/FoodPrice4"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Panel/Army/UnitsSection/FoodPrice4"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Sell:"
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/FoodPrice4"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "3"
+horizontal_alignment = 2
+
+[node name="Iron" type="HBoxContainer" parent="Panel/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Iron:"
+
+[node name="Value" type="Label" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4534"
+
+[node name="Buy" type="Label" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="Button100" type="Button" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+100"
+
+[node name="Button10" type="Button" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+10"
+
+[node name="Button1" type="Button" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "+1"
+
+[node name="Button1m" type="Button" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-1"
+
+[node name="Button10m" type="Button" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-10"
+
+[node name="Button100m" type="Button" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+focus_mode = 0
+theme = SubResource("Theme_NumberButtons")
+text = "-100"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="Sell" type="Label" parent="Panel/Army/UnitsSection/Iron"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "453"
+
+[node name="MarginContainer5" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="TotalSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/TotalSection"]
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+text = "Gold balance"
+
+[node name="TotalValue" type="Label" parent="Panel/Army/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1231
+"
+
+[node name="MarginContainer4" type="MarginContainer" parent="Panel/Army"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="Continue" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("8_2dxbd")
+text = "Continue"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("8_2dxbd")
+text = "Cancel"

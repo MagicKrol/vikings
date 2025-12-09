@@ -43,6 +43,7 @@ const TOOLTIP_TEXTS = {
 	"promote_region": "Promote region to the next administrative level, increase growth and production.",
 	"call_to_arms": "Gather recruits from neighboring regions.",
 	"ore_search": "Search for Gold or Iron ores.",
+	"conquered_region_blocked": "Conquered region cannot be managed the same turn.",
 	
 	# Generic army tooltip (for army buttons in SelectModal)
 	"army": "Select this army to view available actions: movement, recruitment, transfers."

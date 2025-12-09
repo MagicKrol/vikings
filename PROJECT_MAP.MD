@@ -316,6 +316,8 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 	- trade_modal.gd: UI-only; delegates pricing/affordability to TradeManager and applies trades through it.
 	- TradeManager.gd: Centralizes trade math (dynamic pricing, affordability, batch apply) with simple `buy`/`sell` helpers; updates player resources, gold, traded volumes, and emits player status refresh.
 	- call_to_arms_modal.gd: Uses `Region.add_call_to_arms_recruits()` so gathered recruits add to population and can exceed the previous recruit cap in the target region.
+	- general_select_modal.gd: Region button is disabled on the conquest turn (ownership counter 0) with tooltip “Conquered region cannot be managed the same turn.”
+	- click_manager.gd: Clicking an owned region with ownership counter 0 (and no armies) shows a message modal instead of RegionSelectModal.
 
 - F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. Names file by mode: `res://screenshots/screenshot_<scenario>.png` in scenario mode (from `GameManager.scenario_path`) or `res://screenshots/screenshot_<mapdata>.png` in custom mode (from `MapGenerator.data_file_path`). Camera centers/zooms out, UI hides for capture, then both restore.
 

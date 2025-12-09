@@ -76,6 +76,7 @@ var promotion_used_this_turn: bool = false  # Track if promotion was used this t
 # Ownership tracking information
 var current_owner_id: int = 0  # Current owner player ID (0 = neutral)
 var ownership_turns_counter: int = 0  # How many turns region has been owned by current owner
+var just_conquered_this_turn: bool = false  # Marks regions conquered this turn for UI restrictions
 
 # AI Scoring data - calculated once, stored permanently until recalculation needed
 var ai_cluster_score: float = 0.0              # Final cluster score (0-100)
@@ -698,6 +699,7 @@ func reset_turn_actions_usage() -> void:
 	reset_ore_search_turn_usage()
 	raise_army_used_this_turn = false
 	promotion_used_this_turn = false
+	just_conquered_this_turn = false
 
 func has_raised_army_this_turn() -> bool:
 	return raise_army_used_this_turn

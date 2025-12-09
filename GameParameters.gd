@@ -35,8 +35,8 @@ const BIOME_ICON_SCALE = 0.2                # Map generation icon scale
 const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable size)
 const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
 const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
-const POPULATION_GROWTH_RATE = 0.03            # Base population growth rate (%)
-const POPULATION_CONST_GROWTH_RATE = 0.02
+const POPULATION_GROWTH_RATE = 0.02            # Base population growth rate (%)
+const POPULATION_CONST_GROWTH_RATE = 0.01
 const WITHDRAWAL_FREE_HIT_ROUNDS = 3           # Number of free hit rounds enemy gets during withdrawal
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 3    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
@@ -92,11 +92,11 @@ const PROMOTION_GROWTH_BONUS_BY_TURN = {
 
 ## Castle Recruitment Bonuses (percentage of population becomes recruits)
 const CASTLE_RECRUITMENT_PERCENTAGES = {
-	CastleTypeEnum.Type.NONE: 0.06,         # No castle:
-	CastleTypeEnum.Type.OUTPOST: 0.07,      # Outpost: 
-	CastleTypeEnum.Type.KEEP: 0.08,         # Keep:
-	CastleTypeEnum.Type.CASTLE: 0.09,       # Castle:
-	CastleTypeEnum.Type.STRONGHOLD: 0.10    # Stronghold:
+	CastleTypeEnum.Type.NONE: 0.05,         # No castle:
+	CastleTypeEnum.Type.OUTPOST: 0.05,      # Outpost: 
+	CastleTypeEnum.Type.KEEP: 0.06,         # Keep:
+	CastleTypeEnum.Type.CASTLE: 0.06,       # Castle:
+	CastleTypeEnum.Type.STRONGHOLD: 0.7    # Stronghold:
 }
 
 ## AI Region Scoring Weights (0-100 scale normalization factors)
@@ -408,10 +408,10 @@ const REGION_RESOURCES = {
 		ResourcesEnum.Type.FOOD: {"min": 1, "max": 4}
 	},
 	RegionTypeEnum.Type.FOREST: {
-		ResourcesEnum.Type.WOOD: {"min": 1, "max": 4}
+		ResourcesEnum.Type.WOOD: {"min": 1, "max": 3}
 	},
 	RegionTypeEnum.Type.HILLS: {
-		ResourcesEnum.Type.STONE: {"min": 2, "max": 4},
+		ResourcesEnum.Type.STONE: {"min": 1, "max": 3},
 		ResourcesEnum.Type.IRON: {"min": 2, "max": 5},
 		ResourcesEnum.Type.GOLD: {"min": 5, "max": 15}
 	},
