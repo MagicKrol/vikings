@@ -11,6 +11,7 @@ var current_armies: Array[Army] = []
 # Additional references specific to selection
 var army_select_modal: ArmySelectModal = null
 var region_select_modal: RegionSelectModal = null
+var tutorial_manager: TutorialManager = null
 
 @onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
 
@@ -21,6 +22,7 @@ func _ready():
 func _setup_select_references():
 	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
 	region_select_modal = get_node("../RegionSelectModal") as RegionSelectModal
+	tutorial_manager = get_node("../../GameManager").get_tutorial_manager()
 
 func show_selection(region: Region, armies: Array[Army]) -> void:
 	if region == null or armies.is_empty():
@@ -77,7 +79,10 @@ func _add_army_buttons(font: Font) -> void:
 		var army := current_armies[i]
 		var is_last := i == current_armies.size() - 1
 		var button := _make_button("Army " + str(army.number), false, is_last, font)
+		button.name = "ArmyButton" + str(i)
 		button.pressed.connect(_on_army_button_pressed.bind(army))
+		if tutorial_manager:
+			button.pressed.connect(func(): tutorial_manager.handle_ui_click("GeneralSelectModal/" + button.name))
 		button.mouse_entered.connect(_on_army_button_hovered.bind(army))
 		button.mouse_entered.connect(_on_army_tooltip_hovered)
 		button.mouse_exited.connect(_on_button_unhovered)

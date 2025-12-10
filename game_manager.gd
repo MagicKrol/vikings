@@ -66,6 +66,7 @@ var _visual_manager: VisualManager
 var _border_manager: BorderManager
 var _ui_manager: UIManager
 var _trade_manager: TradeManager
+var _tutorial_manager: TutorialManager
 var _ai_camera_director: AICameraDirector
 var ai_step_requires_shift: bool = false
 
@@ -89,6 +90,7 @@ var debug_heatmap: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _sound_manager: SoundManager
+var tutorial_enabled: bool = false
 # Map editor mode state
 var enable_map_editor: bool = false  # Configurable flag to enable map editor mode
 
@@ -103,7 +105,7 @@ var _player_initial_turn_completed: Dictionary = {}
 
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
-var scenario_path: String = "mission1.json"
+var scenario_path: String = "tutorial.json"
 # var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 var _ai_log_manager: AILogManager = AILogManager.new()
@@ -216,6 +218,13 @@ func initialize_managers(is_scenario: bool = false):
 	_prebattle_modal = ui_node.get_node("PrebattleModal") as PrebattleModal
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
+	var message_modal = ui_node.get_node("MessageModal") as MessageModal
+	var tutorial_modal = get_node("../UI/TutorialModal") as TutorialModal
+	var tutorial_world_arrow = get_node("../Map/TutorialWorldArrow") as Sprite2D
+	var tutorial_camera = get_node("../Camera2D") as Camera2D
+	if tutorial_modal:
+		tutorial_modal.set_camera(tutorial_camera)
+		tutorial_modal.set_world_arrow(tutorial_world_arrow)
 	
 	# Connect UI components to ArmyManager
 	var army_modal = ui_node.get_node("InfoModal") as InfoModal
@@ -261,6 +270,35 @@ func initialize_managers(is_scenario: bool = false):
 		push_error("[GameManager] CRITICAL: Failed to cast PlayerManager node to PlayerManagerNode! Node type: " + str(type_string(typeof(player_manager_node))))
 		return
 	
+	# Handle tutorial flag from scenario name (only for non-editor)
+	tutorial_enabled = _should_enable_tutorial() and not enable_map_editor
+	if tutorial_enabled:
+		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, message_modal, tutorial_camera, _ai_camera_director)
+		if click_manager and click_manager.has_method("set_tutorial_manager"):
+			click_manager.set_tutorial_manager(_tutorial_manager)
+	
+	# Early flows: heatmap/scenario/editor
+	if debug_heatmap:
+		var heat := StrategicPointsHeatmap.new()
+		heat.name = "StrategicPointsHeatmap"
+		add_child(heat)
+		heat.initialize(_region_manager, map_generator)
+		heat.enable_key_toggle = true
+		heat.compute_and_show()
+		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying strategic points heatmap. Castle placement and turns are disabled.")
+		return
+	if is_scenario and scenario_path != "":
+		_start_scenario()
+		return
+	if enable_map_editor:
+		DebugLogger.log("GameInit", "Map editor enabled: skipping heatmap and castle placement initialization")
+		return
+	var heat_calc := StrategicPointsHeatmap.new()
+	heat_calc.initialize(_region_manager, map_generator)
+	heat_calc.enable_key_toggle = false
+	heat_calc.compute_and_store()
+	_initialize_castle_placement_sequence()
+	
 	# Initialize AI system (now with proper PlayerManagerNode reference)
 	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
 	_ai_castle_placement_scorer = CastlePlacementScorer.new(_region_manager, map_generator)
@@ -281,6 +319,12 @@ func initialize_managers(is_scenario: bool = false):
 	var camera_controller: CameraController = get_node("../Camera2D")
 	_ai_camera_director.initialize(camera_controller)
 	
+	tutorial_enabled = _should_enable_tutorial()
+	if tutorial_enabled and not enable_map_editor:
+		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, message_modal, tutorial_camera, _ai_camera_director)
+		if click_manager and click_manager.has_method("set_tutorial_manager"):
+			click_manager.set_tutorial_manager(_tutorial_manager)
+	
 	# Add AI debug visualizer to the scene tree
 	var map_node = get_node("../Map")
 	map_node.add_child(_ai_debug_visualizer)
@@ -295,32 +339,9 @@ func initialize_managers(is_scenario: bool = false):
 	for i in range(1, total_players + 1):
 		DebugLogger.log("GameInit", "  Player " + str(i) + ": " + PlayerTypeEnum.type_to_string(get_player_type(i)))
 	player_manager.print_all_resources()
-	
-	# Initialize castle placement with proper player type handling
-	# Always compute strategic points heatmap scores before castle placement
-	if debug_heatmap:
-		# Create and show heatmap; block normal game flow (no castle placement/turns)
-		var heat := StrategicPointsHeatmap.new()
-		heat.name = "StrategicPointsHeatmap"
-		add_child(heat)
-		heat.initialize(_region_manager, map_generator)
-		heat.enable_key_toggle = true
-		heat.compute_and_show()
-		DebugLogger.log("GameInit", "Debug heatmap enabled: displaying strategic points heatmap. Castle placement and turns are disabled.")
-	else:
-		# Scenario mode: apply scenario and start game immediately
-		if is_scenario and scenario_path != "":
-			_start_scenario()
-			return
-		# In map editor mode, skip heatmap/castle placement/turn flow entirely
-		if enable_map_editor:
-			DebugLogger.log("GameInit", "Map editor enabled: skipping heatmap and castle placement initialization")
-			return
-		var heat_calc := StrategicPointsHeatmap.new()
-		heat_calc.initialize(_region_manager, map_generator)
-		heat_calc.enable_key_toggle = false
-		heat_calc.compute_and_store()
-		_initialize_castle_placement_sequence()
+
+func _should_enable_tutorial() -> bool:
+	return scenario_path.to_lower().find("tutorial") != -1
 
 func _start_scenario() -> void:
 	"""Apply scenario to runtime and start gameplay (no castle placement)."""
@@ -1680,6 +1701,9 @@ func get_visual_manager() -> VisualManager:
 	"""Get the VisualManager instance"""
 	return _visual_manager
 
+func get_tutorial_manager() -> TutorialManager:
+	return _tutorial_manager
+
 func get_trade_manager() -> TradeManager:
 	return _trade_manager
 
@@ -2079,6 +2103,9 @@ func _start_first_turn() -> void:
 	
 	# Process player-specific turn start actions
 	_process_player_turn_start(current_player)
+	
+	if _tutorial_manager and not is_player_computer(current_player) and not _tutorial_manager.is_active():
+		_tutorial_manager.start_tutorial(current_player)
 	
 	# Check if current player is AI and handle AI turn processing
 	DebugLogger.log("TurnProcessing", "Checking AI turn: castle_placing_mode=" + str(castle_placing_mode) + ", current_player=" + str(current_player) + ", is_computer=" + str(is_player_computer(current_player)))

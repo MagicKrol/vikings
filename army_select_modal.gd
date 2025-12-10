@@ -15,6 +15,7 @@ var transfer_soldiers_modal: TransferSoldiersModal = null
 var transfer_select_modal: TransferSelectModal = null
 var army_manager: ArmyManager = null
 var game_manager: GameManager = null
+var tutorial_manager: TutorialManager = null
 
 @onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
 
@@ -35,6 +36,8 @@ func _setup_army_references():
 		army_manager = click_manager.get_army_manager()
 	
 	game_manager = get_node("../../GameManager") as GameManager
+	if game_manager:
+		tutorial_manager = game_manager.get_tutorial_manager()
 
 func show_army_actions(army: Army, region: Region) -> void:
 	if army == null:
@@ -81,6 +84,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	definitions.append({
 		"text": "Move Army",
+		"name": "move_army",
 		"enabled": current_army != null and current_region != null,
 		"action": "_on_move_army_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("move_army")
@@ -88,6 +92,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	definitions.append({
 		"text": "Make Camp",
+		"name": "make_camp",
 		"enabled": current_army != null and current_army.has_method("make_camp"),
 		"action": "_on_make_camp_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("make_camp")
@@ -95,6 +100,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	definitions.append({
 		"text": "Transfer Soldiers",
+		"name": "transfer_soldiers",
 		"enabled": current_region != null,
 		"action": "_on_transfer_soldiers_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("transfer_soldiers")
@@ -102,6 +108,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	definitions.append({
 		"text": "Recruit Soldiers",
+		"name": "recruit_soldiers",
 		"enabled": current_army != null and current_region != null,
 		"action": "_on_recruit_soldiers_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers")
@@ -109,6 +116,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	definitions.append({
 		"text": "Back",
+		"name": "back",
 		"enabled": current_region != null,
 		"action": "_on_back_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("back")
@@ -121,14 +129,19 @@ func _create_button_from_definition(button_data: Dictionary, is_first: bool, is_
 	var button: Button
 	var enabled: bool = button_data.get("enabled", true)
 	var text := button_data.get("text", "") as String
+	var static_name: String = button_data.get("name", "")
 	if enabled:
 		button = _make_button(text, is_first, is_last, BUTTON_FONT)
 		_prepare_button(button)
-		if button_data.has("action"):
-			button.pressed.connect(Callable(self, button_data.action))
+	if button_data.has("action"):
+		button.pressed.connect(Callable(self, button_data.action))
 	else:
 		button = _make_disabled_action_button(text, is_first, is_last, BUTTON_FONT)
 		_prepare_disabled_button(button)
+	if static_name != "":
+		button.name = static_name
+		if tutorial_manager != null:
+			button.pressed.connect(func(): tutorial_manager.handle_ui_click("ArmySelectModal/" + static_name))
 
 	_attach_tooltip(button_data, button)
 	return button

@@ -236,7 +236,7 @@ func _scale_map_data() -> void:
 func _render_from_json() -> void:
 	# Clear previous children
 	for child in get_children():
-		if child is Polygon2D or child is ColorRect or child is Sprite2D or child is Line2D:
+		if (child is Polygon2D or child is ColorRect or child is Sprite2D or child is Line2D) and child.name != "TutorialWorldArrow":
 			remove_child(child)
 			child.queue_free()
 

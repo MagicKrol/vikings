@@ -15,13 +15,21 @@ const BORDER_WIDTH = 4.0
 @onready var sound_manager: SoundManager = get_node("../../SoundManager") as SoundManager
 @onready var message_label: Label = get_node("PanelRoot/ContentContainer/MessageLabel")
 @onready var continue_button: Button = get_node("PanelRoot/ContentContainer/ContinueButton")
+@onready var panel_root: Control = get_node("PanelRoot")
+var original_panel_offsets: Rect2
 
 func _ready():
 	visible = false
 	continue_button.pressed.connect(_on_continue_pressed)
+	original_panel_offsets = Rect2(
+		panel_root.position,
+		panel_root.size
+	)
 
 func displayMessage(text: String) -> void:
+	continue_button.visible = true
 	message_label.text = text
+	_set_mouse_block(true)
 	_show_modal()
 
 func display_message(header: String, message: String = "") -> void:
@@ -29,6 +37,16 @@ func display_message(header: String, message: String = "") -> void:
 		displayMessage(header)
 		return
 	displayMessage(header + "\n\n" + message)
+
+func show_tutorial_message(text: String, show_continue: bool, block_input: bool) -> void:
+	message_label.text = text
+	continue_button.visible = show_continue
+	_set_mouse_block(block_input)
+	visible = true
+	if block_input:
+		ui_manager.set_modal_active(true)
+	else:
+		ui_manager.set_modal_active(false)
 
 func hide_modal() -> void:
 	_hide_modal()
@@ -48,3 +66,15 @@ func _on_continue_pressed() -> void:
 
 func _draw():
 	pass
+
+func _set_mouse_block(blocked: bool) -> void:
+	var mode = Control.MOUSE_FILTER_STOP if blocked else Control.MOUSE_FILTER_IGNORE
+	mouse_filter = mode
+	if panel_root:
+		panel_root.mouse_filter = mode
+
+func set_panel_position(pos: Vector2) -> void:
+	panel_root.position = pos
+
+func reset_panel_position() -> void:
+	panel_root.position = original_panel_offsets.position

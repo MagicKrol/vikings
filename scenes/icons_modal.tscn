@@ -9,8 +9,8 @@ layout_mode = 3
 anchors_preset = 0
 offset_left = 20.0
 offset_top = 20.0
-offset_right = 460.0
-offset_bottom = 370.0
+offset_right = 20.0
+offset_bottom = 20.0
 script = ExtResource("3_jgatv")
 
 [node name="TextureRect" type="TextureRect" parent="."]

@@ -16,6 +16,7 @@ var army_manager: ArmyManager = null
 var player_manager: PlayerManagerNode = null
 var region_manager: RegionManager = null
 var game_manager: GameManager = null
+var tutorial_manager: TutorialManager = null
 
 @onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
 
@@ -38,6 +39,7 @@ func _setup_region_references():
 	game_manager = get_node("../../GameManager") as GameManager
 	if game_manager != null:
 		region_manager = game_manager.get_region_manager()
+		tutorial_manager = game_manager.get_tutorial_manager()
 
 func show_region_actions(region: Region) -> void:
 	if region == null:
@@ -87,6 +89,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 		var promotion_available := not current_region.has_promoted_this_turn()
 		definitions.append({
 			"text": "Promote Region",
+			"name": "promote_region",
 			"enabled": promotion_available and can_afford_promotion,
 			"action": "_on_promote_region_pressed",
 			"tooltip": Callable(self, "_on_promote_tooltip_hovered")
@@ -94,6 +97,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	definitions.append({
 		"text": "Recruit Soldiers",
+		"name": "recruit_soldiers",
 		"enabled": true,
 		"action": "_on_recruit_soldiers_pressed",
 		"tooltip": Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers_garrison")
@@ -105,6 +109,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var has_castle := current_region != null and current_region.get_castle_type() != CastleTypeEnum.Type.NONE
 	definitions.append({
 		"text": "Call To Arms",
+		"name": "call_to_arms",
 		"enabled": has_castle,
 		"action": "_on_call_to_arms_pressed",
 		"tooltip": Callable(self, "_on_call_to_arms_tooltip_hovered")
@@ -115,6 +120,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 		var can_afford_ore := _can_player_afford_ore_search()
 		definitions.append({
 			"text": "Ore Search",
+			"name": "ore_search",
 			"enabled": can_search and can_afford_ore,
 			"action": "_on_ore_search_pressed",
 			"tooltip": Callable(self, "_on_ore_search_tooltip_hovered")
@@ -126,6 +132,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var has_used_raise_army := current_region != null and current_region.has_raised_army_this_turn()
 	definitions.append({
 		"text": "Raise Army",
+		"name": "raise_army",
 		"enabled": has_keep_or_higher and can_afford_army and not has_used_raise_army and army_capacity_available,
 		"action": "_on_raise_army_pressed",
 		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
@@ -134,6 +141,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	if not armies_in_region.is_empty():
 		definitions.append({
 			"text": "Back",
+			"name": "back",
 			"enabled": true,
 			"action": "_on_back_pressed",
 			"tooltip": Callable(self, "_on_tooltip_hovered").bind("back")
@@ -145,6 +153,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 func _create_button_from_definition(button_data: Dictionary, is_first: bool, is_last: bool) -> Button:
 	var button: Button
 	var enabled: bool = button_data.get("enabled", true)
+	var static_name: String = button_data.get("name", "")
 	if enabled:
 		button = _make_button(button_data.text, is_first, is_last, BUTTON_FONT)
 		_prepare_button(button)
@@ -153,6 +162,10 @@ func _create_button_from_definition(button_data: Dictionary, is_first: bool, is_
 	else:
 		button = _make_disabled_action_button(button_data.text, is_first, is_last, BUTTON_FONT)
 		_prepare_disabled_button(button)
+	if static_name != "":
+		button.name = static_name
+		if tutorial_manager != null:
+			button.pressed.connect(func(): tutorial_manager.handle_ui_click("RegionSelectModal/" + static_name))
 
 	_attach_tooltip(button_data, button)
 	return button

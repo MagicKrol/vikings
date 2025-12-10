@@ -26,7 +26,8 @@ Main (Node2D) [place_armies.gd]
 │	│	└ Borders: `BorderManager` instantiates named Line2D nodes (`OceanBorder@id`, `OwnershipBorder@id`, `InternalBorder@id`) and only adjusts width/color/offset when ownership changes so counts always match adjacency.
 │	├ Ocean (Node2D) – metadata-only ocean polygons (hidden visuals)
 │	├ Frame (Node2D)
-│	└ BorderManager (Node) [border_manager.gd] – centralizes noisy border creation, caches per-edge geometries, preserves ocean strokes (5.2px black) and exposes refresh helpers consumed by MapGenerator/RegionManager; MapEditor now reruns `BorderManager.setup()` (plus the noisy polygon rebuild/overlay sync) whenever a region toggles between land and ocean so the new coastline/borders appear immediately.
+│	├ BorderManager (Node) [border_manager.gd] – centralizes noisy border creation, caches per-edge geometries, preserves ocean strokes (5.2px black) and exposes refresh helpers consumed by MapGenerator/RegionManager; MapEditor now reruns `BorderManager.setup()` (plus the noisy polygon rebuild/overlay sync) whenever a region toggles between land and ocean so the new coastline/borders appear immediately.
+│	└ TutorialWorldArrow (Sprite2D) – single world-space tutorial arrow used for region-anchored hints
 ├ Background (Sprite2D)
 ├ Camera2D [camera_controller.gd]
 ├ ClickManager (Node) [click_manager.gd]
@@ -49,6 +50,7 @@ Main (Node2D) [place_armies.gd]
 │	├ PrebattleModal [scenes/prebattle_modal.tscn] [prebattle_modal.gd] – human-only step after moving into enemy territory; supports siege equipment buying (spends wood + siege points from defender count), applies gate/wall damage and ladder penalties to castle defense for the upcoming battle, Withdraw refunds purchases and retreats via BattleManager, Attack proceeds to BattleModal
 │	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
+│	├ TutorialModal [tutorial_modal.tscn] [tutorial_modal.gd] – UI-layer arrows for screen-anchored tutorial hints (Arrow1/Arrow2 placed manually in scene)
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
 │	├ PlayerStatusModal2 [scenes/player_status_modal2.tscn] [player_status_modal2.gd] – resource HUD; hides RegionTooltip2 on mouse enter; shows projected next-turn income/pop growth from live state and refreshes via the `player_status_refresh_requested` signal (emitted by GameManager and actions like recruitment, ore search, promotions, castle construction, call to arms, battles, and raise-army)
 │	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
@@ -313,11 +315,12 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - select_tooltip_modal.gd: Tooltip text provider for action buttons. Uses `SelectTooltipModal` when resource costs are shown and `SelectTooltipModalNoRes` for message-only tips.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`. Recruitment / TransferSoldiers / CallToArms Continue buttons now close themselves, drop modal mode, then ask UIManager to reopen the stored select modal context automatically.
-	- trade_modal.gd: UI-only; delegates pricing/affordability to TradeManager and applies trades through it.
-	- TradeManager.gd: Centralizes trade math (dynamic pricing, affordability, batch apply) with simple `buy`/`sell` helpers; updates player resources, gold, traded volumes, and emits player status refresh.
-	- call_to_arms_modal.gd: Uses `Region.add_call_to_arms_recruits()` so gathered recruits add to population and can exceed the previous recruit cap in the target region.
-	- general_select_modal.gd: Region button is disabled on the conquest turn (ownership counter 0) with tooltip “Conquered region cannot be managed the same turn.”
-	- click_manager.gd: Clicking an owned region with ownership counter 0 (and no armies) shows a message modal instead of RegionSelectModal.
+		- trade_modal.gd: UI-only; delegates pricing/affordability to TradeManager and applies trades through it.
+		- TradeManager.gd: Centralizes trade math (dynamic pricing, affordability, batch apply) with simple `buy`/`sell` helpers; updates player resources, gold, traded volumes, and emits player status refresh.
+		- call_to_arms_modal.gd: Uses `Region.add_call_to_arms_recruits()` so gathered recruits add to population and can exceed the previous recruit cap in the target region.
+		- general_select_modal.gd: Region button is disabled on the conquest turn (ownership counter 0) with tooltip “Conquered region cannot be managed the same turn.”
+		- click_manager.gd: Clicking an owned region with ownership counter 0 (and no armies) shows a message modal instead of RegionSelectModal.
+		- tutorial_manager.gd / tutorial_modal.gd: Data-driven tutorial steps (welcome message → click castle with world-anchored arrow under `Map/TutorialWorldArrow` → choose army with screen-anchored Arrow2 under `UI/TutorialModal`); arrows are pre-placed and toggled per step while clicks/UI actions are gated to the expected target.
 
 - F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. Names file by mode: `res://screenshots/screenshot_<scenario>.png` in scenario mode (from `GameManager.scenario_path`) or `res://screenshots/screenshot_<mapdata>.png` in custom mode (from `MapGenerator.data_file_path`). Camera centers/zooms out, UI hides for capture, then both restore.
 

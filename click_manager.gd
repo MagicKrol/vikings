@@ -57,6 +57,7 @@ func _unhandled_input(event: InputEvent) -> void:
 @onready var _region_manager: RegionManager
 @onready var _army_manager: ArmyManager
 @onready var _move_tooltip: MoveTooltip = get_node("../UI/MoveTooltip") as MoveTooltip
+var _tutorial_manager: TutorialManager
 
 # Editor quick-ownership mode state
 var _editor_ownership_mode: bool = false
@@ -70,6 +71,9 @@ func set_managers(region_manager: RegionManager, army_manager: ArmyManager) -> v
 	"""Set manager references from GameManager"""
 	_region_manager = region_manager
 	_army_manager = army_manager
+
+func set_tutorial_manager(manager: TutorialManager) -> void:
+	_tutorial_manager = manager
 
 func get_region_manager() -> RegionManager:
 	"""Get the RegionManager instance"""
@@ -85,16 +89,19 @@ func get_army_manager() -> ArmyManager:
 func _on_left_click(screen_pos: Vector2) -> void:
 	# Check if any modal is active and close them first
 	if _ui_manager and _ui_manager.is_modal_active:
-		DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
-		# Don't close modals if BattleModal is in battle mode (battle_in_progress)
-		var battle_modal = get_node("../UI/BattleModal") as BattleModal
-		if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
-			# Battle is active - don't allow closing the modal
-			DebugLogger.log("InputSystem", "Battle is active, not closing modal")
+		if _tutorial_manager != null and _tutorial_manager.is_ui_step_active():
 			return
-		_ui_manager.close_all_active_modals()
-		DebugLogger.log("InputSystem", "Closed all active modals, returning")
-		return
+		if not (_tutorial_manager != null and _tutorial_manager.is_waiting_for_region()):
+			DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
+			# Don't close modals if BattleModal is in battle mode (battle_in_progress)
+			var battle_modal = get_node("../UI/BattleModal") as BattleModal
+			if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
+				# Battle is active - don't allow closing the modal
+				DebugLogger.log("InputSystem", "Battle is active, not closing modal")
+				return
+			_ui_manager.close_all_active_modals()
+			DebugLogger.log("InputSystem", "Closed all active modals, returning")
+			return
 	
 	# Get the camera and convert screen to world coordinates properly
 	var camera := get_node("../Camera2D") as Camera2D
@@ -154,6 +161,7 @@ func _handle_region_click(region_container: Node) -> void:
 	if _game_manager and _game_manager.enable_map_editor:
 		_handle_editor_region_click(region_container)
 		return
+	var tutorial_region_matched := false
 
 	# Get region script to check if it's a mountain
 	var region = region_container as Region
@@ -164,6 +172,10 @@ func _handle_region_click(region_container: Node) -> void:
 		# Check if this is a mountain region - if so, ignore clicks
 		if _is_mountain_region(region):
 			return
+		if _tutorial_manager != null and _tutorial_manager.is_active() and _tutorial_manager.get_expected_action() == "region":
+			if not _tutorial_manager.handle_region_click(region):
+				return
+			tutorial_region_matched = true
 	
 	# Delegate to GameManager based on game state
 	if _game_manager:
@@ -180,6 +192,8 @@ func _handle_region_click(region_container: Node) -> void:
 			else:
 				DebugLogger.log("InputSystem", "Cannot place castle - region already owned by another player")
 		else:
+			if _tutorial_manager != null and _tutorial_manager.is_active() and _tutorial_manager.get_expected_action() == "ui" and not tutorial_region_matched:
+				return
 			# For now, delegate army handling back to legacy system
 			# TODO: Move to ArmyManager in future refactor
 			_handle_army_selection_and_movement.call_deferred(region_container)

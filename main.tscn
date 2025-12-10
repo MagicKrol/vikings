@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=38 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -35,6 +35,8 @@
 [ext_resource type="PackedScene" uid="uid://btie6wac3wml3" path="res://scenes/prebattle_modal.tscn" id="31_prebattle"]
 [ext_resource type="PackedScene" uid="uid://dxbh6skra8djp" path="res://scenes/icons_modal.tscn" id="34_dn8i2"]
 [ext_resource type="PackedScene" uid="uid://cxmedb6o3yrb7" path="res://scenes/trade_modal.tscn" id="35_c1ajo"]
+[ext_resource type="PackedScene" uid="uid://5d88xtt84ehc" path="res://tutorial_modal.tscn" id="36_tutorial"]
+[ext_resource type="Texture2D" uid="uid://cef4a8vfbpqtt" path="res://images/icons/arrow.png" id="37_arrow"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -50,6 +52,11 @@ script = ExtResource("1_m7t5v")
 
 [node name="BorderManager" type="Node" parent="Map"]
 script = ExtResource("2_border")
+
+[node name="TutorialWorldArrow" type="Sprite2D" parent="Map"]
+z_index = 2000
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("37_arrow")
 
 [node name="Background" type="Sprite2D" parent="."]
 visible = false
@@ -83,6 +90,9 @@ script = ExtResource("25_player")
 script = ExtResource("28_mapeditor")
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="TutorialModal" parent="UI" instance=ExtResource("36_tutorial")]
+visible = false
 
 [node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
 visible = false

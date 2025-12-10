@@ -26,7 +26,7 @@ func await_focus_on_region(region: Region) -> void:
 	var target: Vector2 = Vector2.ZERO
 	var target_found := false
 	var polygon := region.get_node_or_null("Polygon") as Polygon2D
-	if polygon != null:
+	if polygon != null and polygon.get_meta_list().has("center"):
 		var center_meta = polygon.get_meta("center")
 		if center_meta is Vector2:
 			target = region.to_global(center_meta)
