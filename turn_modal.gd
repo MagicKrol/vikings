@@ -5,11 +5,15 @@ class_name TurnModal
 var game_manager: GameManager = null
 # UI manager reference
 var ui_manager: UIManager = null
+var tutorial_manager: TutorialManager = null
+var end_turn_button: Button = null
 
 func _ready():
 	# Get manager references
 	game_manager = get_node("../../GameManager") as GameManager
 	ui_manager = get_node("../UIManager") as UIManager
+	if game_manager:
+		tutorial_manager = game_manager.get_tutorial_manager()
 	mouse_entered.connect(_on_mouse_entered)
 	DebugLogger.log("UIManager", "TurnModal ready, mouse_entered connected")
 	DebugLogger.log("UIManager", "TurnModal mouse_filter=" + str(mouse_filter))
@@ -18,9 +22,14 @@ func _ready():
 	DebugLogger.log("UIManager", "TurnModal Panel mouse_filter=" + str(panel.mouse_filter))
 	
 	# Connect end turn button signal
-	var end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton")
+	end_turn_button = get_node_or_null("Panel/VBoxContainer/Button/EndTurnButton")
 	if end_turn_button:
 		end_turn_button.pressed.connect(_on_end_turn_button_pressed)
+		if tutorial_manager != null:
+			end_turn_button.name = "EndTurn"
+			end_turn_button.pressed.connect(func(): tutorial_manager.handle_ui_click("TurnModal/" + end_turn_button.name))
+	else:
+		push_error("TurnModal: EndTurnButton not found at Panel/VBoxContainer/Button/EndTurnButton")
 	# In editor mode, keep hidden and skip updates
 	if game_manager and game_manager.enable_map_editor:
 		visible = false
@@ -51,11 +60,12 @@ func update_turn_display() -> void:
 	player_label.add_theme_color_override("font_color", player_color)
 
 	# Update button text based on mode
-	var end_turn_btn = get_node("Panel/VBoxContainer/Button/EndTurnButton")
+	if end_turn_button == null:
+		return
 	if game_manager.is_castle_placing_mode():
-		end_turn_btn.text = "SKIP"
+		end_turn_button.text = ""
 	else:
-		end_turn_btn.text = "END TURN"
+		end_turn_button.text = "END TURN"
 
 func _get_player_label_color(base_color: Color) -> Color:
 	return Color.from_hsv(base_color.h, base_color.s, 0.6, base_color.a)

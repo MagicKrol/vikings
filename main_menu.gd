@@ -35,11 +35,24 @@ class_name MainMenu
 
 # Container references
 @onready var menu_container: VBoxContainer = $MenuContainer
-@onready var new_game_container: VBoxContainer = $NewGame  
+@onready var new_game_container: VBoxContainer = $NewGame
 @onready var options_container: VBoxContainer = $Options
 @onready var campaign_container: VBoxContainer = $Campaign
 @onready var scenario_container: VBoxContainer = $Scenario
 @onready var custom_map_container: VBoxContainer = $CustomMap
+@onready var demo_container: VBoxContainer = $Demo
+
+# Demo menu buttons
+@onready var demo_tutorial_button: Button = $Demo/TutorialButton
+@onready var demo_map_button: Button = $Demo/DemoMapButton
+@onready var demo_options_button: Button = $Demo/OptionsButton
+@onready var demo_exit_button: Button = $Demo/ExitButton
+
+@onready var button_bg1 = $TextureRect1
+@onready var button_bg2 = $TextureRect2
+@onready var button_bg3 = $TextureRect3
+@onready var button_bg4 = $TextureRect4
+@onready var button_bg5 = $TextureRect5
 
 # Map preview references
 @onready var map_preview: Control = $MapPreview
@@ -103,11 +116,17 @@ func _ready():
 	# Connect custom map menu button signals
 	custom_map_back_button.pressed.connect(_on_custom_map_back_pressed)
 	custom_map_play_button.pressed.connect(_on_custom_map_play_pressed)
-	
+
+	# Connect demo menu button signals
+	demo_tutorial_button.pressed.connect(_on_demo_tutorial_pressed)
+	demo_map_button.pressed.connect(_on_demo_map_pressed)
+	demo_options_button.pressed.connect(_on_options_pressed)
+	demo_exit_button.pressed.connect(_on_exit_pressed)
+
 	# Hover sounds removed - no sound on mouse enter
-	
-	# Initially show main menu
-	_show_main_menu()
+
+	# Initially show demo menu
+	_show_demo_menu()
 	
 	# Initialize player settings UI
 	_initialize_player_settings()
@@ -189,7 +208,7 @@ func _on_campaign_play_pressed():
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
-	_show_main_menu()
+	_show_demo_menu()
 
 func _on_scenario_back_pressed():
 	DebugLogger.log("UISystem", "Scenario Back button pressed")  
@@ -228,46 +247,99 @@ func _on_custom_map_play_pressed():
 			sound_manager.stop_main_menu_music()
 		get_tree().change_scene_to_file("res://main.tscn")
 
+func _on_demo_tutorial_pressed():
+	DebugLogger.log("UISystem", "Demo Tutorial button pressed")
+	var scen_path := "res://scenarios/tutorial.json"
+	get_tree().set_meta("start_payload", {
+		"type": "scenario",
+		"scenario_path": scen_path
+	})
+	if sound_manager:
+		sound_manager.stop_main_menu_music()
+	get_tree().change_scene_to_file("res://main.tscn")
+
+func _on_demo_map_pressed():
+	DebugLogger.log("UISystem", "Demo Map button pressed")
+	var map_path := "res://mapdata/demo-999-medium.json"
+	var demo_player_settings := [
+		{"player_id": 1, "control_type": "Player"},
+		{"player_id": 2, "control_type": "Computer"},
+		{"player_id": 3, "control_type": "Computer"},
+		{"player_id": 4, "control_type": "Computer"},
+		{"player_id": 5, "control_type": "Computer"},
+		{"player_id": 6, "control_type": "Off"}
+	]
+	get_tree().set_meta("start_payload", {
+		"type": "map",
+		"map_file": map_path,
+		"map_size": "medium",
+		"player_settings": demo_player_settings
+	})
+	if sound_manager:
+		sound_manager.stop_main_menu_music()
+	get_tree().change_scene_to_file("res://main.tscn")
+
 func _show_main_menu():
 	"""Show the main menu and hide other menus"""
+	button_bg1.visible = true
+	button_bg2.visible = true
+	button_bg3.visible = true
+	button_bg4.visible = true
+	button_bg5.visible = true
 	menu_container.visible = true
 	new_game_container.visible = false
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
 	custom_map_container.visible = false
+	demo_container.visible = false
 	map_preview.visible = false
 	custom_map_settings.visible = false
 
 func _show_new_game_menu():
 	"""Show the new game menu"""
+	button_bg1.visible = true
+	button_bg2.visible = true
+	button_bg3.visible = true
+	button_bg4.visible = true
+	button_bg5.visible = false
 	menu_container.visible = false
 	new_game_container.visible = true
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
 	custom_map_container.visible = false
+	demo_container.visible = false
 	map_preview.visible = false
 	custom_map_settings.visible = false
 
 func _show_options_menu():
 	"""Show the options menu"""
+	button_bg4.visible = false
+	button_bg5.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = true
 	campaign_container.visible = false
 	scenario_container.visible = false
 	custom_map_container.visible = false
+	demo_container.visible = false
 	map_preview.visible = false
 
 func _show_campaign_menu():
 	"""Show the campaign menu and load scenarios"""
+	button_bg1.visible = true
+	button_bg2.visible = false
+	button_bg3.visible = false
+	button_bg4.visible = false
+	button_bg5.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
 	campaign_container.visible = true
 	scenario_container.visible = false
 	custom_map_container.visible = false
+	demo_container.visible = false
 	map_preview.visible = true
 	selected_scenario = ""
 	default_preview_item = ""
@@ -279,12 +351,18 @@ func _show_campaign_menu():
 
 func _show_scenario_menu():
 	"""Show the scenario menu and load scenario list"""
+	button_bg1.visible = true
+	button_bg2.visible = false
+	button_bg3.visible = false
+	button_bg4.visible = false
+	button_bg5.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = true
 	custom_map_container.visible = false
+	demo_container.visible = false
 	map_preview.visible = true
 	selected_scenario = ""
 	default_preview_item = ""
@@ -296,12 +374,18 @@ func _show_scenario_menu():
 
 func _show_custom_map_menu():
 	"""Show the custom map menu and load map list"""
+	button_bg1.visible = true
+	button_bg2.visible = false
+	button_bg3.visible = false
+	button_bg4.visible = false
+	button_bg5.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
 	campaign_container.visible = false
 	scenario_container.visible = false
 	custom_map_container.visible = true
+	demo_container.visible = false
 	map_preview.visible = true
 	custom_map_settings.visible = true
 	selected_custom_map = ""
@@ -311,6 +395,23 @@ func _show_custom_map_menu():
 	selected_custom_map_button = null
 	custom_map_play_button.disabled = true
 	_load_custom_map_list()
+
+func _show_demo_menu():
+	"""Show the demo menu"""
+	button_bg1.visible = true
+	button_bg2.visible = true
+	button_bg3.visible = true
+	button_bg4.visible = true
+	button_bg5.visible = false
+	menu_container.visible = false
+	new_game_container.visible = false
+	options_container.visible = false
+	campaign_container.visible = false
+	scenario_container.visible = false
+	custom_map_container.visible = false
+	demo_container.visible = true
+	map_preview.visible = false
+	custom_map_settings.visible = false
 
 func _load_scenario_list():
 	"""Load and display available scenarios"""

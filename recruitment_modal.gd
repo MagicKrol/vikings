@@ -11,6 +11,7 @@ var total_count_label: Label
 var total_recruit_label: Label
 var available_recruits_label: Label
 var continue_button: Button
+var tutorial_manager: TutorialManager = null
 
 # Recruitment data
 var target_army: Army = null
@@ -19,6 +20,7 @@ var recruitment_counts: Dictionary = {} # unit_type -> count to hire
 var total_cost: Dictionary = {} # resource_type -> total cost
 
 # Additional manager reference
+var game_manager: GameManager = null
 var player_manager: PlayerManagerNode = null
 
 # Common references
@@ -32,6 +34,9 @@ func _setup_references():
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
 	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
+	game_manager = get_node("../../GameManager") as GameManager
+	if game_manager:
+		tutorial_manager = game_manager.get_tutorial_manager()
 
 func _ready():
 	# Setup base references but skip button_container setup
@@ -48,9 +53,12 @@ func _ready():
 	total_recruit_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalHiredValue")
 	available_recruits_label = get_node("Panel/Army/AvailableRecruits/HBoxContainer/Value")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
+	continue_button.name = "continue"
 	
 	# Connect button signal
 	continue_button.pressed.connect(_on_continue_pressed)
+	if tutorial_manager != null:
+		continue_button.pressed.connect(func(): tutorial_manager.handle_ui_click("RecruitmentModal/" + continue_button.name))
 	
 	# Connect unit adjustment buttons
 	_connect_button_signals()

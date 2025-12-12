@@ -860,5 +860,5 @@ func get_income() -> int:
 	if divisor <= 0:
 		return 0
 	
-	var gold_income = int(population / divisor)
+	var gold_income = 1 + int(population / divisor)
 	return max(0, gold_income)

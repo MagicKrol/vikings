@@ -10,7 +10,7 @@ anchors_preset = 0
 offset_left = 810.0
 offset_top = 340.0
 offset_right = 1110.0
-offset_bottom = 940.0
+offset_bottom = 739.0
 script = ExtResource("1_1f07t")
 
 [node name="Top" type="TextureRect" parent="."]
@@ -27,7 +27,7 @@ anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 5.0
 offset_right = -10.0
-offset_bottom = 405.0
+offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0

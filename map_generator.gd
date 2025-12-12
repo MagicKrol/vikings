@@ -1103,7 +1103,10 @@ func refresh_region_visual(region_id: int) -> void:
 		polygon.visible = true
 		# Re-add biome icon
 		var rdata: Dictionary = region_by_id.get(region_id, {})
-		rdata["biome"] = region.get_biome()
+		var biome_str := region.get_biome()
+		if biome_str == "forest_hills":
+			biome_str = "hill_forest"
+		rdata["biome"] = biome_str
 		region_by_id[region_id] = rdata
 		RegionIconManager.place_region_icon(polygon, rdata, polygon_scale, map_size)
 	# Regenerate borders for region and neighbors

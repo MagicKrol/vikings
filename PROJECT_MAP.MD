@@ -9,14 +9,15 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 - Entry UI. Starts a new game or continues; loads `main.tscn`.
 - MapPreview: Visible only in Campaign/Scenario menus. `InnerPanel` background stays visible while menu is open; `MapScreenshot` toggled on hover. Fits height (keeps aspect), width is clipped.
 - Menu UX: No click sounds on button presses in main menu.
+- Demo Menu: Default visible menu with Tutorial button (loads tutorial.json scenario), Demo Map button (loads demo-999-medium.json custom game with Player 1 human, Players 2-5 computer, Player 6 off), Options and Exit buttons.
 
 Start Flow
 - Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
   - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
-- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <small|medium|large|huge> }` (size inferred from filename suffix; new names map internally to legacy values)
+- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <small|medium|large|huge>, player_settings: [...] }` (size inferred from filename suffix; new names map internally to legacy values)
 - `GameManager._ready()` reads `start_payload`:
   - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file).
-  - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, then `generate_map()`.
+  - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, then `generate_map()`.
   - Payload is cleared after consumption.
 
 ### main.tscn (Primary)
@@ -320,7 +321,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 		- call_to_arms_modal.gd: Uses `Region.add_call_to_arms_recruits()` so gathered recruits add to population and can exceed the previous recruit cap in the target region.
 		- general_select_modal.gd: Region button is disabled on the conquest turn (ownership counter 0) with tooltip “Conquered region cannot be managed the same turn.”
 		- click_manager.gd: Clicking an owned region with ownership counter 0 (and no armies) shows a message modal instead of RegionSelectModal.
-		- tutorial_manager.gd / tutorial_modal.gd: Data-driven tutorial steps (welcome message → click castle with world-anchored arrow under `Map/TutorialWorldArrow` → choose army with screen-anchored Arrow2 under `UI/TutorialModal`); arrows are pre-placed and toggled per step while clicks/UI actions are gated to the expected target.
+		- tutorial_manager.gd / tutorial_modal.gd: Data-driven tutorial steps (welcome message → click castle with world-anchored arrow under `Map/TutorialWorldArrow` → choose army with screen-anchored Arrow2 under `UI/TutorialModal`); arrows are pre-placed and toggled per step while clicks/UI actions are gated to the expected target; BattleModal now pings TutorialManager on battle completion so a step can advance when fights end.
 
 - F8 Screenshot: `GameManager._unhandled_input(KEY_F8)` calls `Utils.take_screenshot()`. Names file by mode: `res://screenshots/screenshot_<scenario>.png` in scenario mode (from `GameManager.scenario_path`) or `res://screenshots/screenshot_<mapdata>.png` in custom mode (from `MapGenerator.data_file_path`). Camera centers/zooms out, UI hides for capture, then both restore.
 

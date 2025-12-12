@@ -181,6 +181,8 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 	region.set_ocean(false)
 	var t := _display_to_enum(selection)
 	var biome_str := RegionTypeEnum.type_to_string(t).to_lower()
+	if biome_str == "forest_hills":
+		biome_str = "hill_forest"
 	_apply_region_data_updates(mg, region_id, {
 		"ocean": false,
 		"biome": biome_str

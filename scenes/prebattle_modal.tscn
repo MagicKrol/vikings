@@ -215,6 +215,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(530, 0)
 layout_mode = 2
 text = "Your scouts estimate enemy force to: Your scouts estimate enemy force to:"
+horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="TextSection" type="VBoxContainer" parent="Panel/Army"]
@@ -229,7 +230,7 @@ custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
 [node name="Text" type="Label" parent="Panel/Army/TextSection/Total"]
-custom_minimum_size = Vector2(60, 0)
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 text = "Your scouts estimate enemy force to:"
 horizontal_alignment = 1
@@ -246,7 +247,7 @@ custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
 [node name="Estimate" type="Label" parent="Panel/Army/EstimateSection/Total"]
-custom_minimum_size = Vector2(60, 0)
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Less than 20 soldiers"

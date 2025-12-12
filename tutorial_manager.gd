@@ -5,7 +5,7 @@ var region_manager: RegionManager
 var tutorial_modal: TutorialModal
 var message_modal: MessageModal
 var camera: Camera2D
-var ai_camera_director: AICameraDirector
+var ai_camera_director_ref: AICameraDirector
 
 var active: bool = false
 var step_index: int = -1
@@ -14,16 +14,21 @@ var expected_action: String = ""
 var tutorial_player_id: int = 1
 var expected_ui_target: String = ""
 var steps: Array = []
+var ai_camera_director: AICameraDirector
+var _battle_finished_flag: bool = false
 
 func _init(region_mgr: RegionManager, tutorial_ui: TutorialModal, msg_modal: MessageModal, cam: Camera2D, camera_director: AICameraDirector) -> void:
 	region_manager = region_mgr
 	tutorial_modal = tutorial_ui
 	message_modal = msg_modal
 	camera = cam
-	ai_camera_director = camera_director
+	ai_camera_director_ref = camera_director
 	_connect_message_signal()
 	DebugLogger.log("Tutorial", "TutorialManager initialized")
 	steps = _build_default_steps()
+
+func set_ai_camera_director(director: AICameraDirector) -> void:
+	ai_camera_director_ref = director
 
 func is_active() -> bool:
 	return active
@@ -80,6 +85,16 @@ func handle_ui_click(target: String) -> void:
 	DebugLogger.log("Tutorial", "UI click matched target: " + target)
 	_advance_step()
 
+func handle_battle_finished() -> void:
+	_battle_finished_flag = true
+	if not active:
+		return
+	if expected_action != "battle_finished":
+		return
+	DebugLogger.log("Tutorial", "Battle finished, advancing tutorial")
+	_battle_finished_flag = false
+	_advance_step()
+
 func _advance_step() -> void:
 	step_index += 1
 	expected_region_id = -1
@@ -103,6 +118,7 @@ func _finish() -> void:
 	active = false
 	if tutorial_modal:
 		tutorial_modal.hide_all_arrows()
+		tutorial_modal.show_block("")  # Clear all blocks to re-enable input
 	if message_modal:
 		message_modal.hide_modal()
 
@@ -112,7 +128,9 @@ func is_waiting_for_region() -> bool:
 func _apply_step(step: Dictionary) -> void:
 	expected_action = String(step.get("expected_action", ""))
 	expected_ui_target = String(step.get("ui_target", ""))
-	if message_modal:
+	DebugLogger.log("Tutorial", "Applying step data: expected_action=" + expected_action + ", ui_target=" + expected_ui_target + ", camera_focus=" + str(step.get("camera_focus", {})))
+	var hide_message = bool(step.get("hide_message", false))
+	if message_modal and not hide_message:
 		message_modal.hide_modal()
 		await Engine.get_main_loop().process_frame
 		var text = String(step.get("message", ""))
@@ -124,6 +142,8 @@ func _apply_step(step: Dictionary) -> void:
 			message_modal.set_panel_position(panel_pos)
 		else:
 			message_modal.reset_panel_position()
+	elif message_modal and hide_message:
+		message_modal.hide_modal()
 	var focus_data: Dictionary = step.get("camera_focus", {})
 	if not focus_data.is_empty():
 		await _apply_camera_focus(focus_data)
@@ -144,12 +164,24 @@ func _apply_step(step: Dictionary) -> void:
 		else:
 			var pos: Vector2 = arrow_data.get("screen_pos", Vector2.ZERO) + offset
 			tutorial_modal.show_arrow(arrow_id, pos, false, Vector2.ZERO, rotation)
+	if tutorial_modal:
+		var block_id := String(step.get("block", ""))
+		tutorial_modal.show_block(block_id)
 	if expected_action == "region":
 		expected_region_id = int(step.get("target_region_id", -1))
 		if expected_region_id == -1:
 			expected_region_id = _get_player_castle_region()
 	if tutorial_modal:
 		DebugLogger.log("Tutorial", "Applying step: action=" + expected_action + ", arrow_keys=" + str(tutorial_modal.arrows.keys()) + ", arrow_exists=" + str(tutorial_modal.arrows.has("1")))
+
+	# Handle race condition: if expecting battle_finished but battle already finished
+	if expected_action == "battle_finished":
+		DebugLogger.log("Tutorial", "Step expects battle_finished, flag status: " + str(_battle_finished_flag))
+		if _battle_finished_flag:
+			DebugLogger.log("Tutorial", "Battle already finished, auto-advancing")
+			_battle_finished_flag = false
+			await Engine.get_main_loop().process_frame
+			_advance_step()
 
 func _get_player_castle_region() -> int:
 	return region_manager.get_castle_starting_position(tutorial_player_id)
@@ -161,7 +193,8 @@ func _build_default_steps() -> Array:
 			"message": "Welcome to the tutorial",
 			"show_continue": true,
 			"block_input": true,
-			"expected_action": "continue"
+			"expected_action": "continue",
+			"block": "trade,endturn"
 		},
 		{
 			"message": "This is your home region.\n Click on it",
@@ -177,6 +210,7 @@ func _build_default_steps() -> Array:
 				"offset": Vector2(-150, 0),
 				"rotation": -25.0
 			},
+			"block": "trade,endturn",
 			"camera_focus": {"type": "region", "region_id": 190}
 		},
 		{
@@ -189,10 +223,11 @@ func _build_default_steps() -> Array:
 			"arrow": {
 				"id": "1",
 				"anchor": "screen"
-			}
+			},
+			"block": "trade,endturn,firstelement",
 		},
 		{
-			"message": "Before we jump into battle. Let's recruit more soldiers.",
+			"message": "Before we jump into battle let's recruit additional soldiers.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -201,24 +236,602 @@ func _build_default_steps() -> Array:
 			"arrow": {
 				"id": "2",
 				"anchor": "screen"
-			}
+			},
+			"block": "trade,endturn,armyactions",
 		},
 		{
-			"message": "Add some archers to you army.",
+			"message": "Every unit has it's role on the battlefield. You can learn more about it by hovering over the unit name.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(150, 500),
+			"arrow": {
+				"id": "9",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,recruitment,continue",
+		},
+		{
+			"message": "But for now, let's just add some archers to you army.\n\n When done. \nPress Continue button.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "RecruitmentModal/Archers/Button10",
+			"ui_target": "RecruitmentModal/continue",
 			"panel_position": Vector2(150, 500),
 			"arrow": {
 				"id": "3",
 				"anchor": "screen"
-			}
+			},
+			"block": "trade,endturn,recruitment",
+		},
+		{
+			"message": "We are ready to battle. \nClick Move Army button.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "ArmySelectModal/move_army",
+			"panel_position": Vector2(350, 700),
+			"arrow": {
+				"id": "4",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,armyactions2",
+		},
+		{
+			"message": "Click on the highlighted region to attack it.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "region",
+			"target_region_id": 196,
+			"panel_position": Vector2(500, 200),
+			"block": "trade,endturn,cancelmove,makecamp"
+		},
+		{
+			"message": "Before a battle you will get some intel on the region's defenders. \n\nPress attack button to start the battle.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "PrebattleModal/continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw"
+		},
+		{
+			"message": "You don't have much control over the battle.\n It's resolved automatically.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,continue"
+		},
+		{
+			"message": "But you can always withdraw, if battle starts to go wrong. Though expect some additional losses in the process.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,continue"
+		},
+		{
+			"message": "",
+			"show_continue": false,
+			"hide_message": true,
+			"block_input": false,
+			"expected_action": "battle_finished",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,continue"
+		},
+		{
+			"message": "Let's click continue and see the battle summary.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"panel_position": Vector2(200, 500),
+			"ui_target": "BattleModal/continue",
+			"arrow": {
+				"id": "5",
+				"anchor": "screen"
+			},
+			"block": "trade"
+		},
+		{
+			"message": "That's a battle summary screen. \nIt presents detailed information about battle result.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(20, 300),
+			"block": "trade,continue"
+		},
+		{
+			"message": "On the left hand side you can find information about your wounded soldiers...",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(20, 300),
+			"arrow": {
+				"id": "6",
+				"anchor": "screen"
+			},
+			"block": "trade,continue"
+		},
+		{
+			"message": "... end the dead one. \n\nFortunately wounded soldier get healed when army gets rest.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(20, 300),
+			"arrow": {
+				"id": "7",
+				"anchor": "screen"
+			},
+			"block": "trade,continue"
+		},
+		{
+			"message": "Let's click continue.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"panel_position": Vector2(20, 300),
+			"ui_target": "BattleSummaryModal/continue",
+			"block": "trade"
+		},
+		{
+			"message": "Before we move on. Take a look here.\n It's your Army status screen.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "8",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,cancelmove,makecamp"
+		},
+		{
+			"message": "Every action uses some move points. Especially travelling through a difficult terrain!",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "8",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,cancelmove,makecamp"
+		},
+		{
+			"message": "Vigor represents your's army morale and stamina. It replesh upon resting. It affects army's battle effectiveness.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "8",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,cancelmove,makecamp"
+		},
+		{
+			"message": "Let's make a camp, to heal our wounded and restore some vigor.",
+			"show_continue": false,
+			"block_input": true,
+			"expected_action": "ui",
+			"ui_target": "MoveModal/make_camp",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "10",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,cancelmove"
+		},
+		{
+			"message": "Vigor restored!\nBut we don't have enough movement points to move our army!\n Let's cancel our move.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "MoveModal/cancel_move",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "11",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,makecamp"
+		},
+		{
+			"message": "We can end our turn now.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "TurnModal/EndTurn",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "12",
+				"anchor": "screen"
+			},
+			"block": "trade"
+		},
+		{
+			"message": "New turn and new movement points. Let's attack the last region. Try it on your own.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn"
+		},
+		{
+			"message": "",
+			"show_continue": false,
+			"block_input": false,
+			"hide_message": true,
+			"expected_action": "region",
+			"target_region_id": 196,
+			"panel_position": Vector2(0,0),
+			"block": "trade,endturn",
+			"camera_focus": {"type": "region", "region_id": 228}
+		},
+		{
+			"message": "",
+			"show_continue": false,
+			"block_input": false,
+			"hide_message": true,
+			"expected_action": "ui",
+			"ui_target": "GeneralSelectModal/ArmyButton0",
+			"panel_position": Vector2(350, 700),
+			"block": "trade,endturn,firstelement",
+		},
+		{
+			"message": "",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"hide_message": true,
+			"ui_target": "ArmySelectModal/move_army",
+			"panel_position": Vector2(350, 700),
+			"block": "trade,endturn,armyactions2",
+		},
+		{
+			"message": "",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "region",
+			"hide_message": true,
+			"target_region_id": 228,
+			"panel_position": Vector2(500, 200),
+			"block": "trade,endturn,cancelmove,makecamp"
+		},
+		{
+			"message": "During siege battles, defenders receive defense bonus. That allows them to receive less damage.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue",
+			"arrow": {
+				"id": "14",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "We can reduce it by constructing siege equipment.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue",
+			"arrow": {
+				"id": "13",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Ladders are the simplest option. Battering rams can destroy gates, and trebuchets will breach walls.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue",
+			"arrow": {
+				"id": "13",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Ladders are good if you have superiority. Other options are better when you really need to reduce defense.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue",
+			"arrow": {
+				"id": "13",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Construct some siege equipement and let's attack.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "PrebattleModal/continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw",
+			"arrow": {
+				"id": "13",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "This battle should be easy.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "battle_finished",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,continue"
+		},
+		{
+			"message": "Let's move to the battle summary.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"panel_position": Vector2(200, 500),
+			"ui_target": "BattleModal/continue",
+			"arrow": {
+				"id": "5",
+				"anchor": "screen"
+			},
+			"block": "trade"
+		},
+		{
+			"message": "Let's click continue.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"panel_position": Vector2(20, 300),
+			"ui_target": "BattleSummaryModal/continue",
+			"block": "trade"
+		},
+		{
+			"message": "We finished our conquests for now.\n Cancel our move.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "MoveModal/cancel_move",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "11",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,makecamp"
+		},
+		{
+			"message": "Let's talk about economy and resources.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Population is your main source for gold income and recruits for your armies.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "15",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Promoting regions will boost region's growth. Hiring soldiers will reduce it.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "15",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "You need food to upkeep your armies. Every soldier uses 0.1 of Food per turn.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "16",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Hungry armies will drain resources from local regions. Bringing death and starvation.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "16",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Wood is your basic building resource. You need it to build outposts, upgrade castles or regions.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "17",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "You will also need it to hire ranged units and build siege equipment.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "17",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Stone is mostly needed for your keeps, castles and strongholds.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "18",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Iron is a crucial resource to produce armour required by your top tier units - knights.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "19",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "To gain access to iron you need mines. Conquer regions with hills and look for iron ore!",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "19",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Raising armies, promoting regions, building, recruiting - you will need gold for all of it.\nA lot! ",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "20",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "Last few points and we are done. Click your region again. I want to show you something.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "region",
+			"target_region_id": 190,
+			"panel_position": Vector2(300, 450),
+			"arrow": {
+				"id": "1",
+				"anchor": "world",
+				"region_id": 190,
+				"offset": Vector2(-150, 0),
+				"rotation": -25.0
+			},
+			"block": "trade,endturn",
+			"camera_focus": {"type": "region", "region_id": 190}
+		},
+		{
+			"message": "That's your region's status screen.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "8",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "You can find basic information about your population, growth, region's level and income.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "8",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "In this section you find a size of your local garrison. Current castle level, defense rate.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "21",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "But also information about available recruits. Recruits pool slowly replenish every turn.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "21",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "Amount of recruits results from the size of the region's population and castle's level.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "21",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "And finally all local resources. Including information about possible ores veins.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "22",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "That's most of it. I will let you figure out the rest of it on your own.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn,regionsactions"
 		}
 	]
 
 func _apply_camera_focus(focus_data: Dictionary) -> void:
-	if ai_camera_director == null:
+	if ai_camera_director_ref == null:
+		DebugLogger.log("Tutorial", "Camera focus skipped: director null")
 		return
 	var focus_type = String(focus_data.get("type", ""))
 	if focus_type == "region":
@@ -226,10 +839,13 @@ func _apply_camera_focus(focus_data: Dictionary) -> void:
 		if rid == -1:
 			rid = _get_player_castle_region()
 		if rid == -1:
+			DebugLogger.log("Tutorial", "Camera focus skipped: no region id")
 			return
 		var region = region_manager.map_generator.get_region_container_by_id(rid) as Region
 		if region != null:
-			await ai_camera_director.await_focus_on_region(region)
+			await ai_camera_director_ref.await_focus_on_region(region)
+			DebugLogger.log("Tutorial", "Camera focused on region " + str(rid))
 	elif focus_type == "position":
 		var pos: Vector2 = focus_data.get("position", Vector2.ZERO)
-		await ai_camera_director.await_focus_on_position(pos)
+		await ai_camera_director_ref.await_focus_on_position(pos)
+		DebugLogger.log("Tutorial", "Camera focused on position " + str(pos))

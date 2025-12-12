@@ -97,7 +97,7 @@ func plan_turn(player_id: int, turn_number: int) -> Dictionary:
 	summary["ore"] = ore_result
 	
 	# Step 8: Additional castle recruitment (threat-weighted)
-	var garrison_trickle = perform_garrison_trickle(player_id)
+	var garrison_trickle = perform_garrison_trickle(player_id, turn_number)
 	summary["garrison_trickle"] = garrison_trickle
 	
 	# Step 9: Trading (sell surplus, buy to cover food deficit)
@@ -973,7 +973,9 @@ func execute_garrison_recruitment(player_id: int) -> Dictionary:
 		request["hired"] = hired
 	return {"processed": processed, "recruited": recruited, "entries": entries}
 
-func perform_garrison_trickle(player_id: int) -> Dictionary:
+func perform_garrison_trickle(player_id: int, turn_number: int) -> Dictionary:
+	if turn_number == 1:
+		return {"processed": 0, "recruited": 0, "reason": "first_turn_skip", "entries": []}
 	var wood_positive := player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD) > 0.0
 	var iron_positive := player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.IRON) > 0.0
 	var owned_regions = region_manager.get_player_regions(player_id)

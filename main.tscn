@@ -91,9 +91,6 @@ script = ExtResource("28_mapeditor")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="TutorialModal" parent="UI" instance=ExtResource("36_tutorial")]
-visible = false
-
 [node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
 visible = false
 
@@ -157,7 +154,6 @@ visible = false
 visible = false
 
 [node name="PlayerStatusModal2" parent="UI" instance=ExtResource("25_8wafx")]
-visible = false
 
 [node name="TurnModal" parent="UI" instance=ExtResource("27_o7y1n")]
 visible = false
@@ -189,6 +185,8 @@ offset_left = 10.0
 offset_right = 450.0
 
 [node name="TradeModal" parent="UI" instance=ExtResource("35_c1ajo")]
+
+[node name="TutorialModal" parent="UI" instance=ExtResource("36_tutorial")]
 
 [node name="Players" type="Node2D" parent="."]
 

@@ -51,6 +51,7 @@ var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 # Click manager reference for conquest completion
 var click_manager: Node = null
+var tutorial_manager: TutorialManager = null
 
 func _ready():
 	# Get references to static UI elements from updated scene structure
@@ -69,12 +70,18 @@ func _ready():
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
 	withdraw_button = continue_button  # Both reference the same button
+	continue_button.name = "continue"
 	_set_message("")
 	
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	click_manager = get_node("../../ClickManager")
+	var game_manager = get_node("../../GameManager") as GameManager
+	if game_manager:
+		tutorial_manager = game_manager.get_tutorial_manager()
+		if tutorial_manager != null:
+			continue_button.pressed.connect(func(): tutorial_manager.handle_ui_click("BattleModal/" + continue_button.name))
 	
 	# Create animated battle simulator
 	animated_simulator = AnimatedBattleSimulator.new()
@@ -527,6 +534,8 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 
 	# Final display update
 	_update_display()
+	if tutorial_manager != null:
+		tutorial_manager.handle_battle_finished()
 	
 	DebugLogger.log("UISystem", "Battle finished! Winner: " + str(report.winner))
 

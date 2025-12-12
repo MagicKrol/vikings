@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=16 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="5_background"]
 [ext_resource type="FontFile" uid="uid://cavdsubauup7v" path="res://fonts/Viking.TTF" id="7_viking_font"]
 [ext_resource type="FontFile" uid="uid://pclcml0fh6k3" path="res://fonts/Cardo-Bold.ttf" id="8_cardo_bold_font"]
+[ext_resource type="Texture2D" uid="uid://cmbvsve3p21xh" path="res://images/button_bg.png" id="8_t5cyh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -87,7 +88,49 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_background")
 
+[node name="TextureRect1" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 720.0
+offset_top = 260.0
+offset_right = 1200.0
+offset_bottom = 360.0
+texture = ExtResource("8_t5cyh")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+offset_left = 720.0
+offset_top = 371.0
+offset_right = 1200.0
+offset_bottom = 471.0
+texture = ExtResource("8_t5cyh")
+expand_mode = 2
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+offset_left = 720.0
+offset_top = 482.0
+offset_right = 1200.0
+offset_bottom = 582.0
+texture = ExtResource("8_t5cyh")
+expand_mode = 2
+
+[node name="TextureRect4" type="TextureRect" parent="."]
+offset_left = 720.0
+offset_top = 593.0
+offset_right = 1200.0
+offset_bottom = 693.0
+texture = ExtResource("8_t5cyh")
+expand_mode = 2
+
+[node name="TextureRect5" type="TextureRect" parent="."]
+offset_left = 720.0
+offset_top = 704.0
+offset_right = 1200.0
+offset_bottom = 804.0
+texture = ExtResource("8_t5cyh")
+expand_mode = 2
+
 [node name="MenuContainer" type="VBoxContainer" parent="."]
+visible = false
 z_index = 10
 layout_mode = 1
 anchors_preset = 8
@@ -95,50 +138,71 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -150.0
-offset_right = 150.0
-offset_bottom = 150.0
+offset_left = -205.0
+offset_top = -245.0
+offset_right = 205.0
+offset_bottom = 245.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 65
 
 [node name="ContinueButton" type="Button" parent="MenuContainer"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Continue"
 
-[node name="Spacer1" type="Control" parent="MenuContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
 [node name="NewGameButton" type="Button" parent="MenuContainer"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "New Game"
-
-[node name="Spacer2" type="Control" parent="MenuContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
 
 [node name="LoadGameButton" type="Button" parent="MenuContainer"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Load Game"
 
-[node name="Spacer3" type="Control" parent="MenuContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
 [node name="OptionsButton" type="Button" parent="MenuContainer"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Options"
 
-[node name="Spacer4" type="Control" parent="MenuContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
 [node name="ExitButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Exit"
+
+[node name="Demo" type="VBoxContainer" parent="."]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = -245.0
+offset_right = 205.0
+offset_bottom = 245.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 65
+
+[node name="TutorialButton" type="Button" parent="Demo"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Tutorial"
+
+[node name="DemoMapButton" type="Button" parent="Demo"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Demo map"
+
+[node name="OptionsButton" type="Button" parent="Demo"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "Options"
+
+[node name="ExitButton" type="Button" parent="Demo"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Exit"
@@ -152,47 +216,36 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -150.0
-offset_right = 150.0
-offset_bottom = 150.0
+offset_left = -205.0
+offset_top = -245.0
+offset_right = 205.0
+offset_bottom = 245.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 65
 
 [node name="CampaignButton" type="Button" parent="NewGame"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Campaign"
 
-[node name="Spacer1" type="Control" parent="NewGame"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
 [node name="ScenarioButton" type="Button" parent="NewGame"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Scenario"
 
-[node name="Spacer2" type="Control" parent="NewGame"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
 [node name="ScenarioButton2" type="Button" parent="NewGame"]
 layout_mode = 2
 theme = ExtResource("3_theme")
-text = "Custom Map"
-
-[node name="Spacer4" type="Control" parent="NewGame"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
+text = "Custom "
 
 [node name="BackButton" type="Button" parent="NewGame"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Back"
 
-[node name="Spacer3" type="Control" parent="NewGame"]
-custom_minimum_size = Vector2(0, 100)
+[node name="Button" type="Button" parent="NewGame"]
+visible = false
 layout_mode = 2
 
 [node name="Options" type="VBoxContainer" parent="."]
@@ -204,38 +257,35 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -150.0
-offset_right = 150.0
-offset_bottom = 150.0
+offset_left = -205.0
+offset_top = -245.0
+offset_right = 205.0
+offset_bottom = 245.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 65
 
 [node name="AudoButton" type="Button" parent="Options"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Audio"
 
-[node name="Spacer1" type="Control" parent="Options"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
 [node name="MusicButton" type="Button" parent="Options"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Music"
-
-[node name="Spacer2" type="Control" parent="Options"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
 
 [node name="BackButton" type="Button" parent="Options"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Back"
 
-[node name="Spacer3" type="Control" parent="Options"]
-custom_minimum_size = Vector2(0, 213)
+[node name="Button" type="Button" parent="Options"]
+visible = false
+layout_mode = 2
+
+[node name="Button2" type="Button" parent="Options"]
+visible = false
 layout_mode = 2
 
 [node name="Campaign" type="VBoxContainer" parent="."]
@@ -247,10 +297,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -300.0
-offset_right = 200.0
-offset_bottom = 300.0
+offset_left = -205.0
+offset_top = -302.0
+offset_right = 205.0
+offset_bottom = 298.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -383,10 +433,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -300.0
-offset_right = 200.0
-offset_bottom = 300.0
+offset_left = -205.0
+offset_top = -302.0
+offset_right = 205.0
+offset_bottom = 298.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -496,6 +546,7 @@ disabled = true
 text = "Play"
 
 [node name="Control" type="Control" parent="."]
+visible = false
 anchors_preset = 0
 offset_left = 710.0
 offset_top = 240.0
@@ -533,6 +584,7 @@ theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
 [node name="MapPreview" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 100.0
@@ -697,3 +749,8 @@ offset_bottom = 400.0
 mouse_filter = 2
 theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

@@ -105,7 +105,7 @@ var _player_initial_turn_completed: Dictionary = {}
 
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
-var scenario_path: String = "tutorial.json"
+var scenario_path: String = ""
 # var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 var _ai_log_manager: AILogManager = AILogManager.new()
@@ -140,6 +140,7 @@ func _ready():
 			scenario_path = String(payload.get("scenario_path", ""))
 		elif kind == "map":
 			game_mode = "custom"
+			scenario_path = ""
 			var map_path := String(payload.get("map_file", ""))
 			var size_str := String(payload.get("map_size", "small"))
 			map_generator.data_file_path = map_path.get_file()
@@ -270,6 +271,16 @@ func initialize_managers(is_scenario: bool = false):
 		push_error("[GameManager] CRITICAL: Failed to cast PlayerManager node to PlayerManagerNode! Node type: " + str(type_string(typeof(player_manager_node))))
 		return
 	
+	# Initialize AI camera director early so tutorial can use it even in scenario/custom flows
+	_ai_camera_director = AICameraDirector.new()
+	_ai_camera_director.name = "AICameraDirector"
+	add_child(_ai_camera_director)
+	var camera_controller: CameraController = get_node("../Camera2D")
+	_ai_camera_director.initialize(camera_controller)
+	if _tutorial_manager:
+		_tutorial_manager.set_ai_camera_director(_ai_camera_director)
+		DebugLogger.log("Tutorial", "TutorialManager camera director set during AI director init")
+	
 	# Handle tutorial flag from scenario name (only for non-editor)
 	tutorial_enabled = _should_enable_tutorial() and not enable_map_editor
 	if tutorial_enabled:
@@ -313,17 +324,6 @@ func initialize_managers(is_scenario: bool = false):
 	_turn_controller.initialize(_region_manager, _army_manager, player_manager, _battle_manager)
 	if _turn_controller.debug_step_gate:
 		_turn_controller.debug_step_gate.set_debug_enabled(ai_step_requires_shift)
-	_ai_camera_director = AICameraDirector.new()
-	_ai_camera_director.name = "AICameraDirector"
-	add_child(_ai_camera_director)
-	var camera_controller: CameraController = get_node("../Camera2D")
-	_ai_camera_director.initialize(camera_controller)
-	
-	tutorial_enabled = _should_enable_tutorial()
-	if tutorial_enabled and not enable_map_editor:
-		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, message_modal, tutorial_camera, _ai_camera_director)
-		if click_manager and click_manager.has_method("set_tutorial_manager"):
-			click_manager.set_tutorial_manager(_tutorial_manager)
 	
 	# Add AI debug visualizer to the scene tree
 	var map_node = get_node("../Map")
@@ -341,7 +341,7 @@ func initialize_managers(is_scenario: bool = false):
 	player_manager.print_all_resources()
 
 func _should_enable_tutorial() -> bool:
-	return scenario_path.to_lower().find("tutorial") != -1
+	return game_mode == "scenario" and scenario_path != "" and scenario_path.to_lower().find("tutorial") != -1
 
 func _start_scenario() -> void:
 	"""Apply scenario to runtime and start gameplay (no castle placement)."""
@@ -351,6 +351,29 @@ func _start_scenario() -> void:
 	var scen := scen_mgr.load_scenario(scenario_path)
 	# Apply to runtime
 	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager)
+
+	# Initialize AI system (now with proper PlayerManagerNode reference)
+	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
+	_ai_castle_placement_scorer = CastlePlacementScorer.new(_region_manager, map_generator)
+	_ai_debug_visualizer = AIDebugVisualizer.new()
+	_ai_debug_visualizer.initialize(_ai_region_scorer, _ai_castle_placement_scorer, map_generator, _region_manager)
+
+	# Initialize new unified turn controller (DebugStepGate should be in scene)
+	_turn_controller = TurnController.new()
+	_turn_controller.name = "TurnController"
+	add_child(_turn_controller)
+	_turn_controller.initialize(_region_manager, _army_manager, player_manager, _battle_manager)
+	if _turn_controller.debug_step_gate:
+		_turn_controller.debug_step_gate.set_debug_enabled(ai_step_requires_shift)
+
+	# Add AI debug visualizer to the scene tree
+	var map_node = get_node("../Map")
+	map_node.add_child(_ai_debug_visualizer)
+
+	# Enable debug mode and step-by-step mode by default
+	_ai_debug_visualizer.enable_step_by_step_mode(true)
+	DebugLogger.log("GameInit", "AI system initialized with debug and step-by-step mode enabled")
+
 	# Set game state for immediate play
 	castle_placing_mode = false
 	current_player = 1

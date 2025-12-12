@@ -139,8 +139,8 @@ const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for go
 const RAISE_ARMY_COST = 20                     # Gold cost to raise a new army
 
 ## Population Income Formula Constants
-const POPULATION_INCOME_BASE_DIVISOR = 100      # Base divisor for population gold income formula
-const POPULATION_INCOME_LEVEL_MULTIPLIER = 10   # Level multiplier for population gold income formula
+const POPULATION_INCOME_BASE_DIVISOR = 165      # Base divisor for population gold income formula
+const POPULATION_INCOME_LEVEL_MULTIPLIER = 15   # Level multiplier for population gold income formula
 
 ## AI Raise Army Decision Parameters
 # Cost/Reserves
@@ -615,7 +615,7 @@ const GARRISON_BY_LEVEL = {
 
 ## Population Generation by Region Level
 const POPULATION_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 100, "max": 300},
+	RegionLevelEnum.Level.L1: {"min": 50, "max": 300},
 	RegionLevelEnum.Level.L2: {"min": 250, "max": 400},
 	RegionLevelEnum.Level.L3: {"min": 400, "max": 600},
 	RegionLevelEnum.Level.L4: {"min": 600, "max": 800},
@@ -671,7 +671,7 @@ const CASTLE_BUILDING_COSTS = {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 75,
 			ResourcesEnum.Type.WOOD: 25,
-			ResourcesEnum.Type.STONE: 35,
+			ResourcesEnum.Type.STONE: 30,
 			ResourcesEnum.Type.IRON: 10
 		},
 		"build_time": 2  # 4 turns to complete

@@ -993,6 +993,8 @@ func _describe_trickle_reason(code: String) -> String:
 	match code:
 		"success":
 			return "success"
+		"first_turn_skip":
+			return "skipped (first turn)"
 		"no_food_surplus":
 			return "no food surplus"
 		"no_castles":

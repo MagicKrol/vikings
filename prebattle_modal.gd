@@ -32,6 +32,7 @@ var ui_manager: UIManager
 var game_manager: GameManager
 var sound_manager: SoundManager
 var player_manager: PlayerManagerNode
+var tutorial_manager: TutorialManager = null
 
 const LADDER_DATA = {"points": 1, "wood": 2, "defense": 2, "max": 10}
 const RAM_DATA = {"points": 4, "wood": 5, "defense": 5, "max": 2}
@@ -70,6 +71,8 @@ func _ready():
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	player_manager = game_manager.player_manager
+	if game_manager:
+		tutorial_manager = game_manager.get_tutorial_manager()
 	withdraw_button.pressed.connect(_on_withdraw_pressed)
 	attack_button.pressed.connect(_on_attack_pressed)
 	ladders_plus.pressed.connect(func(): _adjust_siege_equipment("ladders", 1))
@@ -78,6 +81,9 @@ func _ready():
 	rams_minus.pressed.connect(func(): _adjust_siege_equipment("rams", -1))
 	treb_plus.pressed.connect(func(): _adjust_siege_equipment("trebuchets", 1))
 	treb_minus.pressed.connect(func(): _adjust_siege_equipment("trebuchets", -1))
+	if tutorial_manager != null:
+		attack_button.name = "continue"
+		attack_button.pressed.connect(func(): tutorial_manager.handle_ui_click("PrebattleModal/" + attack_button.name))
 	visible = false
 
 func show_prebattle(army: Army, region: Region) -> void:

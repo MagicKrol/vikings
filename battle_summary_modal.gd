@@ -20,6 +20,7 @@ var defender_name_label: Label
 var continue_button: Button
 var units_section: VBoxContainer
 var total_section: VBoxContainer
+var tutorial_manager: TutorialManager = null
 
 func _ready():
 	# Get UI element references
@@ -32,12 +33,18 @@ func _ready():
 	
 	# Connect button signal
 	continue_button.pressed.connect(_on_continue_pressed)
+	continue_button.name = "continue"
 	
 	# Get manager references
 	var main_node = get_node("/root/Main")
 	if main_node:
 		sound_manager = main_node.get_node_or_null("SoundManager") as SoundManager
 		ui_manager = main_node.get_node_or_null("UI/UIManager") as UIManager
+		var gm = main_node.get_node_or_null("GameManager") as GameManager
+		if gm:
+			tutorial_manager = gm.get_tutorial_manager()
+			if tutorial_manager != null:
+				continue_button.pressed.connect(func(): tutorial_manager.handle_ui_click("BattleSummaryModal/" + continue_button.name))
 	
 	# Initially hidden
 	visible = false

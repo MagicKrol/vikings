@@ -11,19 +11,34 @@ var selected_army: Army = null
 var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
+var tutorial_manager: TutorialManager = null
+var make_camp_button: Button = null
+var cancel_button: Button = null
 
 func _ready():
 	# Get button reference and connect signal
-	var cancel_button = get_node("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder/Button")
-	cancel_button.pressed.connect(_on_cancel_move_pressed)
+	cancel_button = get_node_or_null("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder/Button")
+	if cancel_button:
+		cancel_button.pressed.connect(_on_cancel_move_pressed)
 	
-	var make_camp_button = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder/MakeCamp")
-	make_camp_button.pressed.connect(_on_make_camp_pressed)
+	make_camp_button = get_node_or_null("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder/MakeCamp")
+	if make_camp_button:
+		make_camp_button.pressed.connect(_on_make_camp_pressed)
 	
 	# Get sound manager reference
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
+	var game_manager = get_node("../../GameManager") as GameManager
+	if game_manager:
+		tutorial_manager = game_manager.get_tutorial_manager()
+		if tutorial_manager != null:
+			if make_camp_button:
+				make_camp_button.name = "make_camp"
+				make_camp_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + make_camp_button.name))
+			if cancel_button:
+				cancel_button.name = "cancel_move"
+				cancel_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + cancel_button.name))
 	mouse_entered.connect(_on_mouse_entered)
 	var panel = get_node("Panel") as Control
 	panel.mouse_entered.connect(_on_panel_mouse_entered)
@@ -77,7 +92,8 @@ func _on_army_movement_points_changed(army: Army, new_points: int) -> void:
 		_update_make_camp_button_state()
 
 func _update_make_camp_button_state() -> void:
-	var make_camp_button = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder/MakeCamp")
+	if make_camp_button == null:
+		return
 	if selected_army:
 		make_camp_button.disabled = selected_army.get_movement_points() <= 0
 	else:
