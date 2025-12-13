@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bus48vblq4ked"]
+[gd_scene load_steps=15 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
 [ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="2_yfl7o"]
@@ -8,6 +8,7 @@
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="5_s8e3m"]
 [ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="6_gu7nv"]
 [ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/coin.png" id="7_m17ys"]
+[ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="9_xnj5v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
 draw_center = false
@@ -700,3 +701,362 @@ layout_mode = 2
 layout_mode = 2
 theme = ExtResource("5_s8e3m")
 text = "Continue"
+
+[node name="Info" type="Control" parent="."]
+anchors_preset = 0
+offset_left = -350.0
+offset_right = -20.0
+offset_bottom = 600.0
+
+[node name="TextureRect" type="TextureRect" parent="Info"]
+layout_mode = 0
+offset_right = 330.0
+offset_bottom = 600.0
+texture = ExtResource("9_xnj5v")
+expand_mode = 1
+
+[node name="Header" type="VBoxContainer" parent="Info"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 132.0
+
+[node name="RecruitmentRegion" type="Label" parent="Info/Header"]
+layout_mode = 2
+theme = ExtResource("4_header")
+text = "Mounted Knights"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Attack" type="HBoxContainer" parent="Info/Header"]
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Attack"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Attack"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Attack: "
+
+[node name="Value" type="Label" parent="Info/Header/Attack"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "12"
+
+[node name="Defense" type="HBoxContainer" parent="Info/Header"]
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Defense"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Defense"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Defense: "
+
+[node name="Value" type="Label" parent="Info/Header/Defense"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "12"
+
+[node name="Upkeep" type="HBoxContainer" parent="Info/Header"]
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Upkeep"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Upkeep"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Upkeep: "
+
+[node name="Value" type="Label" parent="Info/Header/Upkeep"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0.1"
+
+[node name="Food" type="Label" parent="Info/Header/Upkeep"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "food per turn"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Info/Header"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Trait1" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait1"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait1"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Long spears"
+
+[node name="TraitDesc1" type="HBoxContainer" parent="Info/Header"]
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc1"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc1"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Double atack against mounted units"
+autowrap_mode = 2
+
+[node name="Trait2" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait2"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait2"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Ranged"
+
+[node name="TraitDesc2" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc2"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc2"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Can attack all units.
+Protected by melee units from close combat damage."
+autowrap_mode = 2
+
+[node name="Trait3" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait3"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait3"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Mobility"
+
+[node name="TraitDesc3" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc3"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc3"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Allows chasing retreating units dealing additional damage."
+autowrap_mode = 2
+
+[node name="Trait4" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait4"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait4"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Flanker"
+
+[node name="TraitDesc4" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc4"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc4"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Can directly attack enemy ranged units."
+autowrap_mode = 2
+
+[node name="Trait5" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait5"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait5"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Charge"
+
+[node name="TraitDesc5" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc5"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc5"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Doubles attack power when fighting in grassland regions."
+autowrap_mode = 2
+
+[node name="Trait6" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait6"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait6"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Master-at-Arms"
+
+[node name="TraitDesc6" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc6"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc6"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Provides additional attack"
+autowrap_mode = 2
+
+[node name="Trait7" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait7"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait7"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Armour Piercing"
+
+[node name="TraitDesc7" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc7"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc7"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Halves enemy defense"
+autowrap_mode = 2
+
+[node name="Trait8" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait8"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait8"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Trait 8"
+
+[node name="TraitDesc8" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc8"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc8"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Trait 8 description"
+autowrap_mode = 2

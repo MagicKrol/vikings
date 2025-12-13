@@ -48,13 +48,13 @@ const TRAIT_DISPLAY_NAMES = {
 
 # Descriptions for each trait (from traits.txt)
 const TRAIT_DESCRIPTIONS = {
-	Type.UNIT_TRAIT_1: "Effective against cavalry with long spear formations",
-	Type.UNIT_TRAIT_2: "Can attack from range",
-	Type.UNIT_TRAIT_3: "Enhanced movement capabilities",
-	Type.UNIT_TRAIT_4: "Can flank enemy formations",
-	Type.UNIT_TRAIT_5: "Devastating charge attacks",
-	Type.UNIT_TRAIT_6: "Can perform multiple attacks",
-	Type.UNIT_TRAIT_7: "Can pierce through armor",
+	Type.UNIT_TRAIT_1: "Double atack against mounted units",
+	Type.UNIT_TRAIT_2: "Can attack all units. Protected by melee units from close combat damage",
+	Type.UNIT_TRAIT_3: "Allows chasing retreating units dealing additional damage",
+	Type.UNIT_TRAIT_4: "Can directly attack enemy ranged units",
+	Type.UNIT_TRAIT_5: "Doubles attack power when fighting in grassland regions",
+	Type.UNIT_TRAIT_6: "Provides additional attack",
+	Type.UNIT_TRAIT_7: "Halves enemy defense",
 	Type.UNIT_TRAIT_8: "No armor protection",
 	Type.UNIT_TRAIT_9: "Light armor protection",
 	Type.UNIT_TRAIT_10: "Medium armor protection",

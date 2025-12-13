@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=39 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://cxmedb6o3yrb7" path="res://scenes/trade_modal.tscn" id="35_c1ajo"]
 [ext_resource type="PackedScene" uid="uid://5d88xtt84ehc" path="res://tutorial_modal.tscn" id="36_tutorial"]
 [ext_resource type="Texture2D" uid="uid://cef4a8vfbpqtt" path="res://images/icons/arrow.png" id="37_arrow"]
+[ext_resource type="PackedScene" path="res://scenes/game_menu_modal.tscn" id="38_gamemenu"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -136,7 +137,6 @@ offset_right = 247.0
 offset_bottom = 285.0
 
 [node name="RecruitmentModal" parent="UI" instance=ExtResource("18_recru")]
-visible = false
 
 [node name="CallToArmsModal" parent="UI" instance=ExtResource("19_callarms")]
 visible = false
@@ -187,6 +187,9 @@ offset_right = 450.0
 [node name="TradeModal" parent="UI" instance=ExtResource("35_c1ajo")]
 
 [node name="TutorialModal" parent="UI" instance=ExtResource("36_tutorial")]
+
+[node name="GameMenuModal" parent="UI" instance=ExtResource("38_gamemenu")]
+visible = false
 
 [node name="Players" type="Node2D" parent="."]
 

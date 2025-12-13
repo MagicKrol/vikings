@@ -70,6 +70,7 @@ var debug_categories: Dictionary = {
 	"MapEditorPanel": false,
 	"Trade": false,
 	"Tutorial": true,
+	"TradeModal": true
 }
 
 # Color coding for different log levels

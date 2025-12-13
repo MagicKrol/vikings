@@ -42,6 +42,7 @@ Main (Node2D) [place_armies.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
 │	├ GeneralSelectModal [scenes/general_select_modal.tscn] [general_select_modal.gd] – fixed-size menu with textured backdrop, themed header, region + army buttons
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
+│	├ GameMenuModal [scenes/game_menu_modal.tscn] [game_menu_modal.gd] – pause overlay using select-modal styling; Continue resumes, Main Menu loads main_menu.tscn, Exit quits, Options disabled placeholder
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
 │	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals; Raise Army also locks when the region already hosts `GameParameters.MAX_ARMIES_PER_REGION` armies and the tooltip surfaces the per-turn lock
@@ -55,7 +56,7 @@ Main (Node2D) [place_armies.gd]
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
 │	├ PlayerStatusModal2 [scenes/player_status_modal2.tscn] [player_status_modal2.gd] – resource HUD; hides RegionTooltip2 on mouse enter; shows projected next-turn income/pop growth from live state and refreshes via the `player_status_refresh_requested` signal (emitted by GameManager and actions like recruitment, ore search, promotions, castle construction, call to arms, battles, and raise-army)
 │	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
-│	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd] – info-modal fonts with +/-10/1 number buttons per unit; sliders removed
+│	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd] – info-modal fonts with +/-10/1 number buttons per unit; sliders removed; unit hover shows stat/trait panel populated from GameParameters/UnitTraitEnum
 │	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd] – transfer-modal layout; region rows use +/-10/1 buttons to shift recruits into target; buttons styled via themes/number_buttons_theme.tres and total row tracks remaining recruits; moved recruits now increase target population so later recruitment doesn’t overdraw population
 │	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer buttons move units between army/garrison; labels use standard modal text theme with white value columns like recruitment
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
@@ -118,6 +119,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Key: `initialize_managers()`, `next_turn()`, `_process_round_start_actions()`, `_process_player_turn_start()`, `handle_castle_placement()`, `finalize_battle_result(...)`.
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
 - Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
+- `debug_mode`: when false, AI turns hide the PlayerStatus panel, IconsModal (trade/map icons), and TurnModal end-turn button (keeps AI HUD minimal).
 - Camera: Sets initial zoom by map size at startup (Small=1.0, Medium=1.5, Large=2.0) and clamps zoom-out to 0.5.
 - AI memory: Records observed enemy army power for computer players after each battle (5-round decay window via `GameParameters.ENEMY_ARMY_MEMORY_ROUNDS`).
 - AI memory: Records observed enemy garrison power when computer armies attack a region (shared 5-round decay window).
@@ -280,7 +282,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 
 ## AI & Scoring
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance). Used for castle placement scoring.
-- ai/castle_placement_scorer.gd: Candidate scoring for initial castles with random perturbation.
+- ai/castle_placement_scorer.gd: Candidate scoring for initial castles with random perturbation; weights favor resources/size over safety (safety saturates beyond ~7 tiles).
 - **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
   - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
   - `get_resource_component_breakdown_out_of_10(region, player_id)`: Per-resource contributions using simple weighted sum with modifiers (low income × 3, high stockpile × 0.5 for non-gold)
@@ -310,12 +312,14 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Withdrawal camera pacing: `GameManager.finalize_battle_result()` now waits for `BattleManager._handle_army_withdrawal()`/`ArmyManager.retreat_army_to_previous_region()` to finish, then the AI camera tracks the retreating army itself instead of the destination region, preventing the extra camera hop reported in logs.
 
 ## Input & UI
+- ESC Key: Opens/closes game menu modal (pauses game) when pressed during gameplay. Not available in map editor mode.
 - click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), Select/Region modals, human battle start; ESC deselects army. In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. If an army is already selected, clicks prioritize movement to the clicked region, even when friendly armies are present there. Mouse motion feeds `VisualManager` both move-target hover and neutral land hover via the new `set_map_hover_region()`.
 - Movement animation: Army moves animate smoothly using tweens (`Army.animate_move_to`). `ArmyManager.move_army_to_region()` preserves global position across reparenting, computes the stacked target, animates to global target, awaits tween completion, then proceeds (ownership, battle checks, UI). All callers (`GameManager.perform_region_entry`, `ai_travel_to`) await move completion, so no new actions start until the animation ends.
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; remembers the last opened select modal (region vs army) via region_id/army_number so Recruitment / Transfer / Call-To-Arms modals can jump back with `restore_select_context()`. ESC closes any active modal via `close_all_active_modals()`. Treats mountain regions like oceans for tooltip suppression. Turn modal visibility is now suppressed while an army is selected for movement (managed via ArmyManager).
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - select_tooltip_modal.gd: Tooltip text provider for action buttons. Uses `SelectTooltipModal` when resource costs are shown and `SelectTooltipModalNoRes` for message-only tips.
-- Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`. Recruitment / TransferSoldiers / CallToArms Continue buttons now close themselves, drop modal mode, then ask UIManager to reopen the stored select modal context automatically.
+- Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`, `game_menu_modal`. Recruitment / TransferSoldiers / CallToArms Continue buttons now close themselves, drop modal mode, then ask UIManager to reopen the stored select modal context automatically.
+		- game_menu_modal.gd: In-game menu accessed via ESC key; pauses game and provides Continue (resume), Options (disabled), Main Menu (return to main menu), and Exit Game (quit) buttons.
 		- trade_modal.gd: UI-only; delegates pricing/affordability to TradeManager and applies trades through it.
 		- TradeManager.gd: Centralizes trade math (dynamic pricing, affordability, batch apply) with simple `buy`/`sell` helpers; updates player resources, gold, traded volumes, and emits player status refresh.
 		- call_to_arms_modal.gd: Uses `Region.add_call_to_arms_recruits()` so gathered recruits add to population and can exceed the previous recruit cap in the target region.

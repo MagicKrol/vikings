@@ -24,11 +24,11 @@ class_name CastlePlacementScorer
 
 # Scoring weights (population reduced, safety remains critical)
 const WEIGHTS = {
-	"pop": 0.10,     # Reduced from 0.20 to 0.10 - population less important
-	"res": 0.25, 
-	"safety": 0.40,  # Safety is critical
-	"size": 0.15,    # Increased size importance to compensate
-	"level": 0.10    # Increased level importance to compensate
+	"pop": 0.10,
+	"res": 0.30,
+	"safety": 0.25,
+	"size": 0.20,
+	"level": 0.15
 }
 
 # Fixed normalization parameters based on GameParameters.gd ranges
@@ -50,8 +50,9 @@ const CLUSTER_RESOURCE_RANGES = {
 }
 
 # Safety scoring parameters
-const LAMBDA = 4.0
+const LAMBDA = 3.5
 const SAFE_FLOOR = 1.0
+const SAFETY_MAX_DISTANCE = 7.0
 
 # Component references
 var region_manager: RegionManager
@@ -312,7 +313,8 @@ func _calculate_resource_score(resource_totals: Dictionary, unused_params: Dicti
 
 func _calculate_safety_score(distance_to_enemy: int) -> float:
 	"""Calculate safety score with exponential decay"""
-	var adjusted_distance = max(distance_to_enemy - SAFE_FLOOR, 0.0)
+	var capped_distance = min(float(distance_to_enemy), SAFETY_MAX_DISTANCE)
+	var adjusted_distance = max(capped_distance - SAFE_FLOOR, 0.0)
 	var safety_score = clampf(1.0 - exp(-adjusted_distance / LAMBDA), 0.0, 1.0)
 	
 	# Debug safety calculation - we'll check this in the calling function for region 203

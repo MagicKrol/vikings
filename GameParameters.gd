@@ -302,7 +302,7 @@ const UNIT_STATS = {
 		"power": 2
 	},
 	SoldierTypeEnum.Type.SPEARMEN: {
-		"attack": 8,     # 10% hit chance per unit
+		"attack": 8,     # 10	% hit chance per unit
 		"defense": 20,    # 25% chance to deflect hits
 		"cost": 1,        # Recruitment cost
 		"gold_cost": 1,
@@ -361,7 +361,7 @@ const UNIT_STATS = {
 		"defense": 70,    # 60% chance to deflect hits
 		"cost": 10,       # Recruitment cost
 		"gold_cost": 10,
-		"food_cost": 0.2,
+		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 1,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_11],  # heavy_armor,
@@ -372,7 +372,7 @@ const UNIT_STATS = {
 		"defense": 70,    # 60% chance to deflect hits
 		"cost": 15,       # Recruitment cost
 		"gold_cost": 15,
-		"food_cost": 0.4,
+		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 1,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_4, UnitTraitEnum.Type.UNIT_TRAIT_5, UnitTraitEnum.Type.UNIT_TRAIT_11],  # flanker, charge, heavy_armor,
@@ -383,10 +383,10 @@ const UNIT_STATS = {
 		"defense": 90,    # 80% chance to deflect hits
 		"cost": 20,       # Recruitment cost
 		"gold_cost": 20,
-		"food_cost": 0.3,
+		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 1,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_6, UnitTraitEnum.Type.UNIT_TRAIT_11],  # multi_attack, heavy_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_6, UnitTraitEnum.Type.UNIT_TRAIT_7, UnitTraitEnum.Type.UNIT_TRAIT_11],  # multi_attack, heavy_armor,
 		"power": 15
 	}
 }

@@ -138,3 +138,6 @@ func show_and_update() -> void:
 	"""Show the modal and update it with current game state (public method for castle placement)"""
 	visible = true
 	_update_display_from_game_state()
+
+func set_panel_visible(is_visible: bool) -> void:
+	get_node("Panel").visible = is_visible

@@ -22,14 +22,11 @@ func _ready():
 	DebugLogger.log("UIManager", "TurnModal Panel mouse_filter=" + str(panel.mouse_filter))
 	
 	# Connect end turn button signal
-	end_turn_button = get_node_or_null("Panel/VBoxContainer/Button/EndTurnButton")
-	if end_turn_button:
-		end_turn_button.pressed.connect(_on_end_turn_button_pressed)
-		if tutorial_manager != null:
-			end_turn_button.name = "EndTurn"
-			end_turn_button.pressed.connect(func(): tutorial_manager.handle_ui_click("TurnModal/" + end_turn_button.name))
-	else:
-		push_error("TurnModal: EndTurnButton not found at Panel/VBoxContainer/Button/EndTurnButton")
+	end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton") as Button
+	end_turn_button.pressed.connect(_on_end_turn_button_pressed)
+	if tutorial_manager != null:
+		end_turn_button.name = "EndTurn"
+		end_turn_button.pressed.connect(func(): tutorial_manager.handle_ui_click("TurnModal/" + end_turn_button.name))
 	# In editor mode, keep hidden and skip updates
 	if game_manager and game_manager.enable_map_editor:
 		visible = false
@@ -60,8 +57,6 @@ func update_turn_display() -> void:
 	player_label.add_theme_color_override("font_color", player_color)
 
 	# Update button text based on mode
-	if end_turn_button == null:
-		return
 	if game_manager.is_castle_placing_mode():
 		end_turn_button.text = ""
 	else:
@@ -78,6 +73,10 @@ func show_and_update() -> void:
 	"""Show the modal and update it with current game state"""
 	visible = true
 	update_turn_display()
+
+func set_end_turn_button_visible(is_visible: bool) -> void:
+	end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton") as Button
+	end_turn_button.visible = is_visible
 
 func _on_end_turn_button_pressed():
 	"""Handle end turn button press"""

@@ -13,6 +13,18 @@ var available_recruits_label: Label
 var continue_button: Button
 var tutorial_manager: TutorialManager = null
 
+const UNIT_SECTIONS := [
+	{"path": "Panel/Army/UnitsSection/Peasants", "type": SoldierTypeEnum.Type.PEASANTS},
+	{"path": "Panel/Army/UnitsSection/Spearmen", "type": SoldierTypeEnum.Type.SPEARMEN},
+	{"path": "Panel/Army/UnitsSection/Archers", "type": SoldierTypeEnum.Type.ARCHERS},
+	{"path": "Panel/Army/UnitsSection/Swordmen", "type": SoldierTypeEnum.Type.SWORDSMEN},
+	{"path": "Panel/Army/UnitsSection/Crossbowmen", "type": SoldierTypeEnum.Type.CROSSBOWMEN},
+	{"path": "Panel/Army/UnitsSection/Horsemen", "type": SoldierTypeEnum.Type.HORSEMEN},
+	{"path": "Panel/Army/UnitsSection/Knights", "type": SoldierTypeEnum.Type.KNIGHTS},
+	{"path": "Panel/Army/UnitsSection/Mounted Knights", "type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS},
+	{"path": "Panel/Army/UnitsSection/Royal Guard", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
+]
+
 # Recruitment data
 var target_army: Army = null
 var target_region: Region = null
@@ -28,6 +40,16 @@ var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
 var select_tooltip_modal: SelectTooltipModal = null
+var info_panel: Control
+var info_unit_name_label: Label
+var info_attack_value: Label
+var info_defense_value: Label
+var info_upkeep_value: Label
+var info_trait_rows: Array = []
+var info_trait_desc_rows: Array = []
+var info_trait_name_labels: Array = []
+var info_trait_desc_labels: Array = []
+var trait_desc_templates: Dictionary = {}
 
 func _setup_references():
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -62,29 +84,86 @@ func _ready():
 	
 	# Connect unit adjustment buttons
 	_connect_button_signals()
+	_setup_info_nodes()
+	_connect_info_signals()
 	
 	# Get additional manager reference
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 
 func _connect_button_signals() -> void:
-	var sections = [
-		{"path": "Panel/Army/UnitsSection/Peasants", "type": SoldierTypeEnum.Type.PEASANTS},
-		{"path": "Panel/Army/UnitsSection/Spearmen", "type": SoldierTypeEnum.Type.SPEARMEN},
-		{"path": "Panel/Army/UnitsSection/Archers", "type": SoldierTypeEnum.Type.ARCHERS},
-		{"path": "Panel/Army/UnitsSection/Swordmen", "type": SoldierTypeEnum.Type.SWORDSMEN},
-		{"path": "Panel/Army/UnitsSection/Crossbowmen", "type": SoldierTypeEnum.Type.CROSSBOWMEN},
-		{"path": "Panel/Army/UnitsSection/Horsemen", "type": SoldierTypeEnum.Type.HORSEMEN},
-		{"path": "Panel/Army/UnitsSection/Knights", "type": SoldierTypeEnum.Type.KNIGHTS},
-		{"path": "Panel/Army/UnitsSection/Mounted Knights", "type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS},
-		{"path": "Panel/Army/UnitsSection/Royal Guard", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
-	]
-
-	for section_data in sections:
+	for section_data in UNIT_SECTIONS:
 		var section = get_node(section_data.path)
 		(section.get_node("Button10") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, 10))
 		(section.get_node("Button1") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, 1))
 		(section.get_node("Button1m") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, -1))
 		(section.get_node("Button10m") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, -10))
+
+func _connect_info_signals() -> void:
+	for section_data in UNIT_SECTIONS:
+		var section = get_node(section_data.path)
+		section.mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		section.mouse_exited.connect(_on_unit_section_exit)
+		section.get_node("Button10").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		section.get_node("Button10").mouse_exited.connect(_on_unit_section_exit)
+		section.get_node("Button1").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		section.get_node("Button1").mouse_exited.connect(_on_unit_section_exit)
+		section.get_node("Button1m").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		section.get_node("Button1m").mouse_exited.connect(_on_unit_section_exit)
+		section.get_node("Button10m").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		section.get_node("Button10m").mouse_exited.connect(_on_unit_section_exit)
+
+func _setup_info_nodes() -> void:
+	info_panel = get_node("Info")
+	info_unit_name_label = get_node("Info/Header/RecruitmentRegion")
+	info_attack_value = get_node("Info/Header/Attack/Value")
+	info_defense_value = get_node("Info/Header/Defense/Value")
+	info_upkeep_value = get_node("Info/Header/Upkeep/Value")
+	info_trait_rows.clear()
+	info_trait_desc_rows.clear()
+	info_trait_name_labels.clear()
+	info_trait_desc_labels.clear()
+	for i in range(1, 9):
+		var trait_row: HBoxContainer = get_node("Info/Header/Trait" + str(i))
+		var trait_row_label: Label = trait_row.get_node("Name")
+		var trait_desc_row: HBoxContainer = get_node("Info/Header/TraitDesc" + str(i))
+		var trait_desc_label: Label = trait_desc_row.get_node("Name")
+		trait_desc_templates[trait_row_label.text] = trait_desc_label.text
+		info_trait_rows.append(trait_row)
+		info_trait_desc_rows.append(trait_desc_row)
+		info_trait_name_labels.append(trait_row_label)
+		info_trait_desc_labels.append(trait_desc_label)
+	_reset_info_panel()
+
+func _reset_info_panel() -> void:
+	for i in range(info_trait_rows.size()):
+		info_trait_rows[i].visible = false
+		info_trait_desc_rows[i].visible = false
+	info_panel.visible = false
+
+func _on_unit_section_hover(unit_type: SoldierTypeEnum.Type) -> void:
+	info_unit_name_label.text = SoldierTypeEnum.type_to_string(unit_type)
+	info_attack_value.text = str(GameParameters.get_unit_stat(unit_type, "attack"))
+	info_defense_value.text = str(GameParameters.get_unit_stat(unit_type, "defense"))
+	info_upkeep_value.text = str(GameParameters.get_unit_food_cost(unit_type))
+	_populate_traits(GameParameters.get_unit_traits(unit_type))
+	info_panel.visible = true
+
+func _on_unit_section_exit() -> void:
+	_reset_info_panel()
+
+func _populate_traits(traits: Array) -> void:
+	_reset_info_panel()
+	var trait_count = traits.size()
+	if trait_count > info_trait_rows.size():
+		trait_count = info_trait_rows.size()
+	for i in range(trait_count):
+		var trait_type = traits[i]
+		info_trait_rows[i].visible = true
+		info_trait_desc_rows[i].visible = true
+		var display_name = UnitTraitEnum.type_to_display_name(trait_type)
+		info_trait_name_labels[i].text = display_name
+		info_trait_desc_labels[i].text = trait_desc_templates.get(display_name, UnitTraitEnum.get_description(trait_type))
+	info_panel.visible = true
 
 func show_recruitment(army: Army, region: Region) -> void:
 	"""Show the recruitment modal with army and region information"""
@@ -98,6 +177,7 @@ func show_recruitment(army: Army, region: Region) -> void:
 	# Reset recruitment state
 	recruitment_counts.clear()
 	total_cost.clear()
+	_reset_info_panel()
 	
 	# Update display
 	_update_display()
@@ -119,6 +199,7 @@ func show_region_recruitment(region: Region) -> void:
 	# Reset recruitment state
 	recruitment_counts.clear()
 	total_cost.clear()
+	_reset_info_panel()
 	
 	# Update display
 	_update_display()
@@ -144,6 +225,7 @@ func hide_modal() -> void:
 	
 	if info_modal != null and info_modal.visible:
 		info_modal.hide_modal(false)
+	_reset_info_panel()
 	
 	visible = false
 	

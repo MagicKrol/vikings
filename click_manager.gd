@@ -354,7 +354,12 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			# If just conquered (ownership counter 0) and no armies present, block management this turn
 			if region.get_ownership_turns() == 0:
 				var message_modal = get_node("../UI/MessageModal") as MessageModal
+				var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
+				var continue_callable := Callable(region_select_modal, "_on_message_modal_continue")
+				if message_modal.continue_clicked.is_connected(continue_callable):
+					message_modal.continue_clicked.disconnect(continue_callable)
 				message_modal.displayMessage("Conquered region cannot be managed the same turn.")
+				return
 			else:
 				var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
 				region_select_modal.show_region_actions(region)

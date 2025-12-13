@@ -15,6 +15,8 @@ var gold_value_label: Label
 var balance_gold_label: Label
 var continue_button: Button
 var cancel_button: Button
+var game_manager: GameManager
+var allow_for_current_turn: bool = true
 
 var base_resources: Dictionary = {}
 var buy_amounts: Dictionary = {}
@@ -30,6 +32,7 @@ var color_white := Color.WHITE
 func _ready() -> void:
 	ui_manager = get_node("../UIManager") as UIManager
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
+	game_manager = get_node("../../GameManager") as GameManager
 	trade_manager = TradeManager.new(player_manager)
 	gold_value_label = get_node("Panel/Army/AvailableRecruits/HBoxContainer/Value") as Label
 	balance_gold_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalValue") as Label
@@ -40,13 +43,27 @@ func _ready() -> void:
 	_reset_trade_state()
 
 func show_modal() -> void:
+	if not allow_for_current_turn:
+		return
+	if not game_manager.debug_mode and game_manager.is_player_computer(game_manager.get_current_player()):
+		return
 	_refresh_state()
 	visible = true
-	ui_manager.set_modal_active(true)
+	if ui_manager:
+		ui_manager.set_modal_active(true)
 
 func hide_modal() -> void:
 	visible = false
-	ui_manager.set_modal_active(false)
+	if ui_manager:
+		ui_manager.set_modal_active(false)
+
+func hide_for_ai_turn() -> void:
+	hide_modal()
+
+func set_allowed_for_turn(is_allowed: bool) -> void:
+	allow_for_current_turn = is_allowed
+	if not allow_for_current_turn:
+		hide_modal()
 
 func _init_sections() -> void:
 	resource_sections[ResourcesEnum.Type.FOOD] = _build_section("Food", "FoodPrice")

@@ -53,7 +53,7 @@ func show_next_player(player_id: int, is_castle_mode: bool = false) -> void:
 	# Update header based on mode
 	if is_castle_mode:
 		if header_label:
-			header_label.text = "Plce your castle"
+			header_label.text = "Place your castle"
 	else:
 		if header_label:
 			header_label.text = "Your turn"

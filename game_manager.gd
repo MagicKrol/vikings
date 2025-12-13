@@ -87,8 +87,10 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
+@export var debug_mode: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
+var _game_menu_modal: Control
 var _sound_manager: SoundManager
 var tutorial_enabled: bool = false
 # Map editor mode state
@@ -218,6 +220,10 @@ func initialize_managers(is_scenario: bool = false):
 	_battle_modal = ui_node.get_node("BattleModal") as BattleModal
 	_prebattle_modal = ui_node.get_node("PrebattleModal") as PrebattleModal
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
+	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
+	if _game_menu_modal:
+		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
+		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	var message_modal = ui_node.get_node("MessageModal") as MessageModal
 	var tutorial_modal = get_node("../UI/TutorialModal") as TutorialModal
@@ -391,7 +397,13 @@ func _start_scenario() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_ENTER:
+		if event.keycode == KEY_ESCAPE:
+			if _game_menu_modal and not enable_map_editor:
+				if _game_menu_modal.visible:
+					_game_menu_modal.hide_modal()
+				else:
+					_game_menu_modal.show_modal()
+		elif event.keycode == KEY_ENTER:
 			next_turn()
 		elif event.keycode == KEY_0:
 			# Toggle AI debug visualization
@@ -971,9 +983,21 @@ func request_player_status_refresh() -> void:
 func _emit_player_status_refresh() -> void:
 	GlobalSignals.emit_signal("player_status_refresh_requested")
 
+func _apply_debug_ui_visibility_for_player(player_id: int) -> void:
+	var hide_ai_ui = (not debug_mode) and is_player_computer(player_id)
+	var ui_node = get_node("../UI")
+	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+	var icons_modal = ui_node.get_node("IconsModal") as Control
+	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
+	player_status_modal2.set_panel_visible(not hide_ai_ui)
+	turn_modal.set_end_turn_button_visible(not hide_ai_ui)
+	if icons_modal:
+		icons_modal.visible = not hide_ai_ui
+
 func _on_current_player_changed(player_id: int) -> void:
 	"""Handle player change signal by refreshing UI and showing next player modal"""
 	DebugLogger.log("TurnProcessing", "Player changed to " + str(player_id) + " - refreshing UI and showing next player modal")
+	_apply_debug_ui_visibility_for_player(player_id)
 	
 	# Update player status display
 	_update_player_status_display()
@@ -2187,3 +2211,14 @@ func _center_camera_on_player_assets(player_id: int) -> void:
 func _take_game_screenshot() -> void:
 	"""Take a screenshot using Utils function"""
 	Utils.take_screenshot()
+
+func _on_game_menu_main_menu_pressed() -> void:
+	"""Handle Main Menu button from game menu"""
+	DebugLogger.log("UISystem", "Returning to main menu")
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
+func _on_game_menu_exit_pressed() -> void:
+	"""Handle Exit Game button from game menu"""
+	DebugLogger.log("UISystem", "Exiting game")
+	get_tree().quit()
