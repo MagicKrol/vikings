@@ -298,7 +298,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_8],  # no_armor,
+		"traits": [],  # no_armor,
 		"power": 2
 	},
 	SoldierTypeEnum.Type.SPEARMEN: {
@@ -309,7 +309,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_1, UnitTraitEnum.Type.UNIT_TRAIT_9],  # long_spears, light_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_1],  # long_spears, light_armor,
 		"power": 3
 	},
 	SoldierTypeEnum.Type.SWORDSMEN: {
@@ -320,7 +320,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_10],  # medium_armor,
+		"traits": [],  # medium_armor,
 		"power": 4
 	},
 	SoldierTypeEnum.Type.ARCHERS: {
@@ -331,7 +331,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, light_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2],  # ranged, light_armor,
 		"power": 3
 	},
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
@@ -342,7 +342,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_7, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, armor_piercing, light_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_7],  # ranged, armor_piercing, light_armor,
 		"power": 4
 	},
 	SoldierTypeEnum.Type.HORSEMEN: {
@@ -353,7 +353,7 @@ const UNIT_STATS = {
 		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_3, UnitTraitEnum.Type.UNIT_TRAIT_4, UnitTraitEnum.Type.UNIT_TRAIT_5, UnitTraitEnum.Type.UNIT_TRAIT_10],  # mobility, flanker, charge, medium_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_3, UnitTraitEnum.Type.UNIT_TRAIT_4, UnitTraitEnum.Type.UNIT_TRAIT_5],  # mobility, flanker, charge, medium_armor,
 		"power": 5
 	},
 	SoldierTypeEnum.Type.KNIGHTS: {
@@ -364,7 +364,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 1,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_11],  # heavy_armor,
+		"traits": [],  # heavy_armor,
 		"power": 10
 	},
 	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: {
@@ -375,7 +375,7 @@ const UNIT_STATS = {
 		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 1,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_4, UnitTraitEnum.Type.UNIT_TRAIT_5, UnitTraitEnum.Type.UNIT_TRAIT_11],  # flanker, charge, heavy_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_4, UnitTraitEnum.Type.UNIT_TRAIT_5],  # flanker, charge, heavy_armor,
 		"power": 13
 	},
 	SoldierTypeEnum.Type.ROYAL_GUARD: {
@@ -386,7 +386,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 1,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_6, UnitTraitEnum.Type.UNIT_TRAIT_7, UnitTraitEnum.Type.UNIT_TRAIT_11],  # multi_attack, heavy_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_6, UnitTraitEnum.Type.UNIT_TRAIT_7],  # multi_attack, heavy_armor,
 		"power": 15
 	}
 }

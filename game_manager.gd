@@ -389,8 +389,11 @@ func _start_scenario() -> void:
 	var ui_node = get_node("../UI")
 	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
 	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
+	var icons_modal = ui_node.get_node("IconsModal") as Control
 	player_status_modal2.show_and_update()
 	turn_modal.show_and_update()
+	if icons_modal:
+		icons_modal.visible = true
 	# Start first turn immediately
 	_start_first_turn()
 
@@ -983,14 +986,21 @@ func request_player_status_refresh() -> void:
 func _emit_player_status_refresh() -> void:
 	GlobalSignals.emit_signal("player_status_refresh_requested")
 
+func _should_show_player_status_panel(player_id: int) -> bool:
+	return debug_mode or (not castle_placing_mode and not is_player_computer(player_id))
+
+func _set_player_status_panel_visibility(player_id: int, ui_node: Node) -> void:
+	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+	player_status_modal2.set_panel_visible(_should_show_player_status_panel(player_id))
+
 func _apply_debug_ui_visibility_for_player(player_id: int) -> void:
 	var hide_ai_ui = (not debug_mode) and is_player_computer(player_id)
 	var ui_node = get_node("../UI")
-	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+	_set_player_status_panel_visibility(player_id, ui_node)
 	var icons_modal = ui_node.get_node("IconsModal") as Control
 	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
-	player_status_modal2.set_panel_visible(not hide_ai_ui)
-	turn_modal.set_end_turn_button_visible(not hide_ai_ui)
+	if turn_modal:
+		turn_modal.set_end_turn_button_visible(not hide_ai_ui)
 	if icons_modal:
 		icons_modal.visible = not hide_ai_ui
 
@@ -1269,15 +1279,22 @@ func handle_castle_placement(region: Region) -> void:
 		# All active players placed castles - end castle placing mode and start normal gameplay
 		castle_placing_mode = false
 		DebugLogger.log("GameInit", "All active players have placed castles. Game begins!")
-		
+
+		# Show PlayerStatusModal2 and IconsModal now that castle placement is done
+		var ui_node = get_node("../UI")
+		var icons_modal = ui_node.get_node("IconsModal") as Control
+		if icons_modal:
+			icons_modal.visible = true
+
 		# Switch AI debug visualizer to army target mode
 		if _ai_debug_visualizer:
 			_ai_debug_visualizer.switch_to_army_target_mode()
 		DebugLogger.log("GameInit", "Switched AI debug visualizer to army target scoring mode")
-		
+
 		# Set current player to Player 1 to start normal gameplay
 		current_player = 1
 		player_manager.set_current_player(current_player)
+		_set_player_status_panel_visibility(current_player, ui_node)
 		
 		# Start the first turn of normal gameplay
 		DebugLogger.log("GameInit", "Starting first turn of normal gameplay...")
@@ -1306,14 +1323,15 @@ func _advance_castle_placement_turn() -> void:
 		await _handle_ai_castle_placement(current_player)
 	# OFF players are skipped by _get_next_active_player()
 	
-	# Show player status modals with current state
+	# Show turn modal but hide PlayerStatusModal2 and IconsModal during castle placement
 	var ui_node = get_node("../UI")
-	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
 	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
-	if player_status_modal2:
-		player_status_modal2.show_and_update()
+	var icons_modal = ui_node.get_node("IconsModal") as Control
+	_set_player_status_panel_visibility(current_player, ui_node)
 	if turn_modal:
 		turn_modal.show_and_update()
+	if icons_modal:
+		icons_modal.visible = false
 	
 	# Update AI debug scores if debug mode is active (for next player's perspective)
 	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
@@ -2147,7 +2165,25 @@ func consume_ai_battle_log_for_token(token: String) -> Array[String]:
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""
 	DebugLogger.log("TurnProcessing", "_start_first_turn called for Player " + str(current_player))
-	
+	DebugLogger.log("TurnProcessing", "Player " + str(current_player) + " is human: " + str(is_player_human(current_player)))
+	DebugLogger.log("TurnProcessing", "Player type: " + PlayerTypeEnum.type_to_string(get_player_type(current_player)))
+
+	# Ensure PlayerStatusModal2 and IconsModal are visible for human players
+	if is_player_human(current_player):
+		DebugLogger.log("TurnProcessing", "Showing PlayerStatusModal2 and IconsModal for human player")
+		var ui_node = get_node("../UI")
+		var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+		var icons_modal = ui_node.get_node("IconsModal") as Control
+		DebugLogger.log("TurnProcessing", "PlayerStatusModal2 found: " + str(player_status_modal2 != null))
+		DebugLogger.log("TurnProcessing", "IconsModal found: " + str(icons_modal != null))
+		if player_status_modal2:
+			_set_player_status_panel_visibility(current_player, ui_node)
+			var panel = player_status_modal2.get_node("Panel")
+			DebugLogger.log("TurnProcessing", "Called set_panel_visible(true), Panel exists: " + str(panel != null) + ", Panel.visible: " + str(panel.visible if panel else "null"))
+		if icons_modal:
+			icons_modal.visible = true
+			DebugLogger.log("TurnProcessing", "Set IconsModal.visible = true")
+
 	# Process player-specific turn start actions
 	_process_player_turn_start(current_player)
 	

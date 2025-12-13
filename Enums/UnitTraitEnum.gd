@@ -10,10 +10,6 @@ enum Type {
 	UNIT_TRAIT_5,   # charge
 	UNIT_TRAIT_6,   # multi_attack
 	UNIT_TRAIT_7,   # armor_piercing
-	UNIT_TRAIT_8,   # no_armor
-	UNIT_TRAIT_9,   # light_armor
-	UNIT_TRAIT_10,  # medium_armor
-	UNIT_TRAIT_11   # heavy_armor
 }
 
 # Map generic trait constants to actual trait names from traits.txt
@@ -25,10 +21,6 @@ const TRAIT_NAMES = {
 	Type.UNIT_TRAIT_5: "charge",
 	Type.UNIT_TRAIT_6: "multi_attack",
 	Type.UNIT_TRAIT_7: "armor_piercing",
-	Type.UNIT_TRAIT_8: "no_armor",
-	Type.UNIT_TRAIT_9: "light_armor",
-	Type.UNIT_TRAIT_10: "medium_armor",
-	Type.UNIT_TRAIT_11: "heavy_armor"
 }
 
 # Human-readable display names for each trait
@@ -40,10 +32,6 @@ const TRAIT_DISPLAY_NAMES = {
 	Type.UNIT_TRAIT_5: "Charge",
 	Type.UNIT_TRAIT_6: "Multi attack",
 	Type.UNIT_TRAIT_7: "Armor Piercing",
-	Type.UNIT_TRAIT_8: "No armor",
-	Type.UNIT_TRAIT_9: "Light armor",
-	Type.UNIT_TRAIT_10: "Medium armor",
-	Type.UNIT_TRAIT_11: "Heavy armor"
 }
 
 # Descriptions for each trait (from traits.txt)
@@ -55,10 +43,6 @@ const TRAIT_DESCRIPTIONS = {
 	Type.UNIT_TRAIT_5: "Doubles attack power when fighting in grassland regions",
 	Type.UNIT_TRAIT_6: "Provides additional attack",
 	Type.UNIT_TRAIT_7: "Halves enemy defense",
-	Type.UNIT_TRAIT_8: "No armor protection",
-	Type.UNIT_TRAIT_9: "Light armor protection",
-	Type.UNIT_TRAIT_10: "Medium armor protection",
-	Type.UNIT_TRAIT_11: "Heavy armor protection"
 }
 
 # Convert enum type to internal trait name
@@ -90,8 +74,4 @@ static func get_all_types() -> Array[Type]:
 		Type.UNIT_TRAIT_5,
 		Type.UNIT_TRAIT_6,
 		Type.UNIT_TRAIT_7,
-		Type.UNIT_TRAIT_8,
-		Type.UNIT_TRAIT_9,
-		Type.UNIT_TRAIT_10,
-		Type.UNIT_TRAIT_11
 	]

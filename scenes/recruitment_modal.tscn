@@ -837,7 +837,6 @@ text = "Double atack against mounted units"
 autowrap_mode = 2
 
 [node name="Trait2" type="HBoxContainer" parent="Info/Header"]
-visible = false
 layout_mode = 2
 theme = ExtResource("4_header")
 

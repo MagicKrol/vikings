@@ -122,7 +122,7 @@ func _setup_info_nodes() -> void:
 	info_trait_desc_rows.clear()
 	info_trait_name_labels.clear()
 	info_trait_desc_labels.clear()
-	for i in range(1, 9):
+	for i in range(1, 7):
 		var trait_row: HBoxContainer = get_node("Info/Header/Trait" + str(i))
 		var trait_row_label: Label = trait_row.get_node("Name")
 		var trait_desc_row: HBoxContainer = get_node("Info/Header/TraitDesc" + str(i))

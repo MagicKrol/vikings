@@ -1,6 +1,9 @@
 extends Control
 class_name MainMenu
 
+# Set to true for demo menu, false for standard menu
+const USE_DEMO_MENU: bool = true
+
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
 @onready var load_game_button: Button = $MenuContainer/LoadGameButton
@@ -125,9 +128,12 @@ func _ready():
 
 	# Hover sounds removed - no sound on mouse enter
 
-	# Initially show demo menu
-	_show_demo_menu()
-	
+	# Show demo or standard menu based on USE_DEMO_MENU constant
+	if USE_DEMO_MENU:
+		_show_demo_menu()
+	else:
+		_show_main_menu()
+
 	# Initialize player settings UI
 	_initialize_player_settings()
 
@@ -208,7 +214,10 @@ func _on_campaign_play_pressed():
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
-	_show_demo_menu()
+	if USE_DEMO_MENU:
+		_show_demo_menu()
+	else:
+		_show_main_menu()
 
 func _on_scenario_back_pressed():
 	DebugLogger.log("UISystem", "Scenario Back button pressed")  
