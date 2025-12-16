@@ -1,10 +1,52 @@
 extends Node
 class_name SoundManager
 
+class Playlist:
+	var tracks: Array[String] = []
+	var shuffle_enabled: bool = false
+	var repeat_enabled: bool = true
+	var _order: Array[String] = []
+	var _index: int = 0
+
+	func _init(track_list: Array[String], shuffle: bool, repeat: bool = true) -> void:
+		tracks = track_list.duplicate()
+		shuffle_enabled = shuffle
+		repeat_enabled = repeat
+		_reset_order()
+
+	func _reset_order() -> void:
+		_order = tracks.duplicate()
+		if shuffle_enabled:
+			_order.shuffle()
+		_index = 0
+
+	func next_track_path() -> String:
+		if _order.is_empty():
+			return ""
+		if _index >= _order.size():
+			if not repeat_enabled:
+				return ""
+			_reset_order()
+		var path := _order[_index]
+		_index += 1
+		return path
+
 # Audio players for different sound effects
 @onready var click_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var horn_player: AudioStreamPlayer = AudioStreamPlayer.new()
+
+# Playlists
+const PLAYLIST_DEFS := {
+	"tutorial": {
+		"tracks": [
+			"res://music/track2.mp3",
+			"res://music/track1.mp3"
+		],
+		"shuffle": false,
+		"repeat": true
+	}
+}
 
 # Audio stream resources
 var main_menu_music: AudioStream
@@ -14,12 +56,15 @@ var starting_horn: AudioStream
 # Music state
 var music_enabled: bool = false
 var sound_enabled: bool = false
+var _current_playlist: Playlist = null
+var _audio_cache: Dictionary = {}
 
 func _ready():
 	# Add the audio players to the scene tree
 	add_child(click_player)
 	add_child(music_player)
 	add_child(horn_player)
+	music_player.finished.connect(_on_music_finished)
 	
 	# Load the click sound
 	var click_sound = load("res://sounds/click.wav") as AudioStream
@@ -91,12 +136,13 @@ func play_game_music() -> void:
 	DebugLogger.log("GameInit", "music_player: " + str(music_player))
 	DebugLogger.log("GameInit", "game_music: " + str(game_music))
 	
-	if music_player and game_music and music_enabled:
+	if _current_playlist != null:
+		_play_from_current_playlist()
+		return
+	if music_enabled:
 		DebugLogger.log("GameInit", "Playing game music...")
 		music_player.stream = game_music
 		music_player.play()
-	else:
-		DebugLogger.log("GameInit", "Error: Missing music_player or game_music audio")
 
 func stop_all_music() -> void:
 	"""Stop all music and horn sounds"""
@@ -131,3 +177,48 @@ func set_music_enabled(enabled: bool) -> void:
 	"""Set music enabled state programmatically"""
 	if music_enabled != enabled:
 		toggle_music()
+
+func set_active_playlist(name: String) -> void:
+	"""Set the current playlist using predefined definitions"""
+	if not PLAYLIST_DEFS.has(name):
+		DebugLogger.log("GameInit", "Warning: Playlist " + name + " not defined")
+		return
+	var definition: Dictionary = PLAYLIST_DEFS[name]
+	var tracks: Array[String] = _build_track_list(definition.get("tracks", []))
+	var shuffle: bool = bool(definition.get("shuffle", false))
+	var repeat: bool = bool(definition.get("repeat", true))
+	_current_playlist = Playlist.new(tracks, shuffle, repeat)
+
+func clear_playlist() -> void:
+	_current_playlist = null
+
+func _on_music_finished() -> void:
+	if _current_playlist != null and music_enabled:
+		_play_from_current_playlist()
+
+func _play_from_current_playlist() -> void:
+	if _current_playlist == null:
+		return
+	var next_path := _current_playlist.next_track_path()
+	if next_path == "":
+		return
+	var stream := _get_stream(next_path)
+	if stream == null:
+		DebugLogger.log("GameInit", "Error: Could not load stream at " + next_path)
+		return
+	music_player.stream = stream
+	music_player.play()
+
+func _get_stream(path: String) -> AudioStream:
+	if _audio_cache.has(path):
+		return _audio_cache[path] as AudioStream
+	var stream = load(path) as AudioStream
+	if stream != null:
+		_audio_cache[path] = stream
+	return stream
+
+func _build_track_list(raw: Array) -> Array[String]:
+	var list: Array[String] = []
+	for item in raw:
+		list.append(String(item))
+	return list

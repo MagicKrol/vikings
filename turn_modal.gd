@@ -25,8 +25,7 @@ func _ready():
 	end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton") as Button
 	end_turn_button.pressed.connect(_on_end_turn_button_pressed)
 	if tutorial_manager != null:
-		end_turn_button.name = "EndTurn"
-		end_turn_button.pressed.connect(func(): tutorial_manager.handle_ui_click("TurnModal/" + end_turn_button.name))
+		end_turn_button.pressed.connect(func(): tutorial_manager.handle_ui_click("TurnModal/" + end_turn_button.name ))
 	# In editor mode, keep hidden and skip updates
 	if game_manager and game_manager.enable_map_editor:
 		visible = false

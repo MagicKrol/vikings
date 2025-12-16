@@ -179,6 +179,8 @@ func _ready():
 	initialize_managers(game_mode == "scenario")
 	_apply_initial_camera_zoom()
 	_apply_center_marker_setting()
+	if tutorial_enabled:
+		_sound_manager.set_active_playlist("tutorial")
 	
 	# Start the game audio sequence after a brief delay to ensure sound manager is ready
 	await get_tree().process_frame

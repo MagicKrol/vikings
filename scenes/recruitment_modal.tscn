@@ -703,6 +703,7 @@ theme = ExtResource("5_s8e3m")
 text = "Continue"
 
 [node name="Info" type="Control" parent="."]
+z_index = 1050
 anchors_preset = 0
 offset_left = -350.0
 offset_right = -20.0

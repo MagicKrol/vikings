@@ -121,6 +121,7 @@ func _finish() -> void:
 		tutorial_modal.show_block("")  # Clear all blocks to re-enable input
 	if message_modal:
 		message_modal.hide_modal()
+		_restore_modal_state()
 
 func is_waiting_for_region() -> bool:
 	return active and expected_action == "region"
@@ -441,7 +442,7 @@ func _build_default_steps() -> Array:
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "TurnModal/EndTurn",
+			"ui_target": "TurnModal/EndTurnButton",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
 				"id": "12",
@@ -750,7 +751,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "That's your region's status screen.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -762,7 +763,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "You can find basic information about your population, growth, region's level and income.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -774,7 +775,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "In this section you find a size of your local garrison. Current castle level, defense rate.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -786,7 +787,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "But also information about available recruits. Recruits pool slowly replenish every turn.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -798,7 +799,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "Amount of recruits results from the size of the region's population and castle's level.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -810,7 +811,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "And finally all local resources. Including information about possible ores veins.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -822,7 +823,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "That's most of it. I will let you figure out the rest of it on your own.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"block": "trade,endturn,regionsactions"
@@ -849,3 +850,16 @@ func _apply_camera_focus(focus_data: Dictionary) -> void:
 		var pos: Vector2 = focus_data.get("position", Vector2.ZERO)
 		await ai_camera_director_ref.await_focus_on_position(pos)
 		DebugLogger.log("Tutorial", "Camera focused on position " + str(pos))
+
+func _restore_modal_state() -> void:
+	if message_modal == null:
+		return
+	var ui_manager := message_modal.ui_manager
+	if ui_manager == null:
+		return
+	var should_enable := ui_manager.is_any_modal_visible()
+	var region_modal := ui_manager.get_node_or_null("../RegionSelectModal") as Control
+	if region_modal and region_modal.visible:
+		should_enable = true
+	ui_manager.set_modal_active(should_enable)
+	ui_manager.call_deferred("set_modal_active", should_enable)
