@@ -2,7 +2,7 @@ extends Control
 class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
-const USE_DEMO_MENU: bool = true
+const USE_DEMO_MENU: bool = false
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton

@@ -1,0 +1,137 @@
+AI Log File: custom_game
+
+Economy: Bought 2 Food (gold change -4)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army II -------------
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Saintfjell (no enemy)
+Moves to Westford [MP left: 4, Vigor: 95%]
+Moves to Saintfjell [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Saintfjell
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 12 - P:6]
+Defender Recruits (Saintfjell) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Saintfjell [Power: 0 - none]
+
+Moving to Saintfjell [MP left: 2, Vigor: 85%]
+-------------- ARMY Army III -------------
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Woodstadir (no enemy)
+Moves to Westford [MP left: 4, Vigor: 95%]
+Moves to Woodstadir [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Woodstadir
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Woodstadir) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Woodstadir [Power: 0 - none]
+
+Moving to Woodstadir [MP left: 2, Vigor: 85%]
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Riverchester (no enemy)
+Moves to Woodton [MP left: 4, Vigor: 95%]
+Moves to Riverchester [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Riverchester
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Riverchester) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverchester [Power: 0 - none]
+
+Moving to Riverchester [MP left: 2, Vigor: 85%]
+Army I makes camp [MP left: 1, Vigor: 95%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 95%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+Army III makes camp [MP left: 1, Vigor: 95%]
+Army III makes camp [MP left: 0, Vigor: 100%]
+Resources (end):
+Gold: 96
+Food: 52
+Wood: 20
+Iron: 10
+Stone: 10
+

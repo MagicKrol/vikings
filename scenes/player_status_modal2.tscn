@@ -71,11 +71,11 @@ text = "Population:"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
-text = "7381"
+text = "0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
-text = "(+232)"
+text = "(+0)"
 
 [node name="Food" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
@@ -87,11 +87,11 @@ text = "Food: "
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
-text = "87"
+text = "0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
-text = "(-15)"
+text = "(+0)"
 
 [node name="Wood" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
@@ -103,11 +103,11 @@ text = "Wood: "
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
-text = "49"
+text = "0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
-text = "(+19)"
+text = "(+0)"
 
 [node name="Stone" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
@@ -119,11 +119,11 @@ text = "Stone: "
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
-text = "44"
+text = "0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
-text = "(+12)"
+text = "(+0)"
 
 [node name="Iron" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
@@ -135,11 +135,11 @@ text = "Iron: "
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
-text = "31"
+text = "0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
-text = "(+7)"
+text = "(+0)"
 
 [node name="Gold" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
@@ -151,11 +151,11 @@ text = "Gold: "
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
-text = "20433.0"
+text = "0"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
-text = "(+5633)"
+text = "(+0)"
 
 [node name="Control" type="Control" parent="Panel"]
 anchors_preset = 0

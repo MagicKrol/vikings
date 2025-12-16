@@ -1,0 +1,188 @@
+AI Log File: custom_game
+
+Economy: Bought 7 Food (gold change -15)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.625
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=4, discoveries=2, gold_spent=40.
+
+Economy: Ore discoveries: Berghavn, Hellathwaite
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army III -------------
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Eastworth (no enemy)
+Moves to Sandvik [MP left: 3, Vigor: 95%]
+Moves to Eastworth [MP left: 0, Vigor: 90%]
+[BATTLE]
+Fight at Eastworth
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 6 - P:3]
+Defender Recruits (Eastworth) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army III [Power: 101 - P:13, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Eastworth [Power: 0 - none]
+
+Moving to Eastworth [MP left: 0, Vigor: 85%]
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Torhaug (no enemy)
+Moves to Hellathwaite [MP left: 3, Vigor: 95%]
+Moves to Torhaug [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Torhaug
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Torhaug) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army I [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torhaug [Power: 0 - none]
+
+Moving to Torhaug [MP left: 1, Vigor: 85%]
+[MOVEMENT]
+No valid targets; camping
+Army I makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army II -------------
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Greendon (no enemy)
+Moves to Berghavn [MP left: 3, Vigor: 95%]
+Moves to Greendon [MP left: 0, Vigor: 90%]
+[BATTLE]
+Fight at Greendon
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Greendon) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army II [Power: 102 - P:15, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Greendon [Power: 0 - none]
+
+Moving to Greendon [MP left: 0, Vigor: 85%]
+Resources (end):
+Gold: 45
+Food: 57
+Wood: 20
+Iron: 10
+Stone: 10
+
+Economy: Bought 4 Food (gold change -8)
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.625
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=4, discoveries=0, gold_spent=40.
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Akrham (no enemy)
+Moves to Hvitdon [MP left: 3, Vigor: 95%]
+Moves to Akrham [MP left: 0, Vigor: 90%]

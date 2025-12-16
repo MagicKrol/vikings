@@ -1,0 +1,466 @@
+AI Log File: custom_game
+
+Economy: Bought 11 Food (gold change -24)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Stonefjord (no enemy)
+Moves to Osthorpe [MP left: 3, Vigor: 95%]
+Moves to Stonefjord [MP left: 0, Vigor: 90%]
+[BATTLE]
+Fight at Stonefjord
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 6 - P:3]
+Defender Recruits (Stonefjord) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army I [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Stonefjord [Power: 0 - none]
+
+Moving to Stonefjord [MP left: 0, Vigor: 85%]
+-------------- ARMY Army III -------------
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Torham (no enemy)
+Moves to Riverfjell [MP left: 3, Vigor: 95%]
+Moves to Torham [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Torham
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 16 - P:8]
+Defender Recruits (Torham) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army III [Power: 101 - P:13, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torham [Power: 0 - none]
+
+Moving to Torham [MP left: 1, Vigor: 85%]
+-------------- ARMY Army II -------------
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Sanddon (no enemy)
+Moves to Kingley [MP left: 3, Vigor: 95%]
+Moves to Sanddon [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Sanddon
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 6 - P:3]
+Defender Recruits (Sanddon) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army II [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Sanddon [Power: 0 - none]
+
+Moving to Sanddon [MP left: 1, Vigor: 85%]
+Army II makes camp [MP left: 0, Vigor: 95%]
+Army III makes camp [MP left: 0, Vigor: 95%]
+Resources (end):
+Gold: 76
+Food: 61
+Wood: 20
+Iron: 10
+Stone: 10
+
+Economy: Bought 10 Food (gold change -22)
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.750
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=2, discoveries=2, gold_spent=20.
+
+Economy: Ore discoveries: Torfjell, Eastdal
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Eydon (no enemy)
+Moves to Sandberg [MP left: 3, Vigor: 95%]
+Moves to Eydon [MP left: 0, Vigor: 90%]
+[BATTLE]
+Fight at Eydon
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 10 - P:5]
+Defender Recruits (Eydon) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army I [Power: 98 - P:15, S:9, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Eydon [Power: 0 - none]
+
+Moving to Eydon [MP left: 0, Vigor: 85%]
+-------------- ARMY Army III -------------
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Akrfjord (no enemy)
+Moves to Greendon [MP left: 3, Vigor: 95%]
+Moves to Akrfjord [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Akrfjord
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 6 - P:3]
+Defender Recruits (Akrfjord) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Akrfjord [Power: 0 - none]
+
+Moving to Akrfjord [MP left: 1, Vigor: 85%]
+-------------- ARMY Army II -------------
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Vatnfjord (no enemy)
+Moves to Akrhaug [MP left: 3, Vigor: 95%]
+Moves to Vatnfjord [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Vatnfjord
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Vatnfjord) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Vatnfjord [Power: 0 - none]
+
+Moving to Vatnfjord [MP left: 1, Vigor: 85%]
+Army II makes camp [MP left: 0, Vigor: 95%]
+Army III makes camp [MP left: 0, Vigor: 95%]
+Resources (end):
+Gold: 58
+Food: 60
+Wood: 20
+Iron: 10
+Stone: 10
+
+Economy: Bought 4 Food (gold change -8)
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Kirkworth (no enemy)
+Moves to Kingdon [MP left: 3, Vigor: 95%]
+Moves to Kirkworth [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Kirkworth
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 16 - P:8]
+Defender Recruits (Kirkworth) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army I [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Kirkworth [Power: 0 - none]
+
+Moving to Kirkworth [MP left: 1, Vigor: 85%]
+-------------- ARMY Army III -------------
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Moves to Kingvik [MP left: 3, Vigor: 95%]
+Moves to Sandhavn [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Sandhavn
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Sandhavn) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Sandhavn [Power: 0 - none]
+
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+-------------- ARMY Army II -------------
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Riverham (no enemy)
+Moves to Blackworth [MP left: 4, Vigor: 95%]
+Moves to Riverham [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Riverham
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Riverham) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army II [Power: 101 - P:15, S:10, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverham [Power: 0 - none]
+
+Moving to Riverham [MP left: 2, Vigor: 85%]
+Army I makes camp [MP left: 0, Vigor: 95%]
+Army II makes camp [MP left: 1, Vigor: 95%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+Army III makes camp [MP left: 0, Vigor: 95%]
+Resources (end):
+Gold: 92
+Food: 54
+Wood: 20
+Iron: 10
+Stone: 10
+
+[Player Player 5 (#5)]
+ 
+░█████████  ░██                                              ░████████ 
+░██     ░██ ░██                                              ░██       
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████    ░███████  
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███              ░██ 
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░██   ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army II -------------
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Torholme (no enemy)
+Moves to Vatnwich [MP left: 4, Vigor: 95%]
+Moves to Torholme [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Torholme
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 14 - P:7]
+Defender Recruits (Torholme) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army II [Power: 100 - P:14, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Torholme [Power: 0 - none]
+
+Moving to Torholme [MP left: 2, Vigor: 85%]
+-------------- ARMY Army I -------------
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Osoy (no enemy)
+Moves to Vatnwich [MP left: 4, Vigor: 95%]
+Moves to Torholme [MP left: 3, Vigor: 90%]
+Moves to Osoy [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Osoy
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 14 - P:7]
+Defender Recruits (Osoy) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Osoy [Power: 0 - none]
+
+Moving to Osoy [MP left: 1, Vigor: 80%]
+-------------- ARMY Army III -------------
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+[MOVEMENT]
+Best target: Riverstadir (no enemy)
+Moves to Vatnwich [MP left: 4, Vigor: 95%]
+Moves to Torholme [MP left: 3, Vigor: 90%]
+Moves to Osoy [MP left: 2, Vigor: 85%]
+Moves to Riverstadir [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Riverstadir
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 6 - P:3]
+Defender Recruits (Riverstadir) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverstadir [Power: 0 - none]
+
+Moving to Riverstadir [MP left: 0, Vigor: 75%]
+Army I makes camp [MP left: 0, Vigor: 90%]
+Army II makes camp [MP left: 1, Vigor: 95%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+Resources (end):
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+

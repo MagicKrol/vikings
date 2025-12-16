@@ -122,163 +122,19 @@ func start_turn(player_id: int) -> void:
 	
 	emit_signal("turn_started", player_id)
 	DebugLogger.log("AITurnManager", "[TurnController] Starting turn for Player " + str(player_id))
-	if is_ai_player and turn_number > 1:
-		_army_transfers_check(player_id)
 	
-	await _process_turn(player_id)
+	await _process_army_turns(player_id)
 	if player_manager != null and player_manager.has_method("update_player_wealth_status"):
 		player_manager.update_player_wealth_status(player_id)
 	emit_signal("turn_finished", player_id)
 	DebugLogger.log("AITurnManager", "[TurnController] Completed turn for Player " + str(player_id))
 	_log_turn_outro(player_id)
 
-func _process_turn(player_id: int) -> void:
-	"""Main turn processing loop - shared between Human and AI"""
-	while true:
-		# Refresh army list each loop to avoid referencing freed armies after battles
-		var armies := _get_available_armies(player_id)
-		# Step 1: Find frontier targets
-		var frontier := region_manager.get_frontier_regions(player_id)
-		if frontier.is_empty():
-			DebugLogger.log("AITurnManager", "[TurnController] No frontier regions available")
-			break
-		
-		# Step 2-4: Build move candidates from all armies
-		var candidates: Array = []
-		var turn_number := _get_current_turn()
-		
-		for army in armies:
-			DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " Power: " + str(army.get_army_power()))
-			if moved_armies.has(army):
-				continue
-			if army.get_movement_points() <= 0:
-				continue
-			# Rest rule 3: if efficiency < 75% at beginning, spend all MPs making camp
-			if army.get_efficiency() < 75:
-				while army.get_movement_points() > 0:
-					army.make_camp()
-					_log_army_make_camp(army)
-				moved_armies[army] = true
-				continue
-			
-			# Check reinforcement logic
-			var on_region := army.get_parent() as Region
-			if not on_region:
-				continue
-			var region_id: int = on_region.get_region_id()
-			var on_castle := region_manager.get_castle_level(region_id) >= 1
-			var needs_recruitment := army.needs_recruitment(turn_number)
-			
-			if army.is_recruitment_requested():
-				var assigned_budget := army.get_assigned_budget()
-				if assigned_budget == null:
-					_log_recruitment_status_once(army, region_id, "no_budget_assigned")
-					var reinforce_move := _build_reinforce_move_candidate(army, region_id)
-					if reinforce_move.is_empty():
-						_log_recruitment_skip(army, region_id, "no_castle_available")
-						army.clear_recruitment_request()
-					else:
-						candidates.append(reinforce_move)
-					continue
-				if on_castle:
-					var allow_recruit := army.get_movement_points() >= 1
-					# Allow instant recruitment for freshly raised AI armies (flagged)
-					if game_manager.is_player_ai(player_id) and army.just_raised:
-						allow_recruit = true
-					if allow_recruit:
-						var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
-						var comp_before = _get_army_composition_suffix(army)
-						var power_before = army.get_army_power()
-						var result = recruitment_manager.hire_soldiers(army, true)
-						if army.get_total_soldiers() > 0:
-							army.just_raised = false
-						if result.has("error"):
-							DebugLogger.log("AITurnManager", "[TurnController] RecruitmentManager error: " + str(result.get("error", "unknown")))
-							_log_recruitment_skip(army, region_id, String(result.get("error", "unknown")))
-						else:
-							_log_recruitment_success(army, region_id, result, comp_before, power_before)
-					else:
-						DebugLogger.log("AITurnManager", "[TurnController] Army " + str(army.name) + " cannot recruit now (no MP and not fresh AI). Skipping.")
-						_log_recruitment_skip(army, region_id, "no_movement_points")
-				else:
-					_log_recruitment_skip(army, region_id, "not_at_castle")
-					var reinforce_move2 := _build_reinforce_move_candidate(army, region_id)
-					if reinforce_move2.is_empty():
-						_log_recruitment_skip(army, region_id, "no_castle_available")
-					else:
-						candidates.append(reinforce_move2)
-						continue  # Skip normal frontier evaluation
-			else:
-				if needs_recruitment:
-					_log_recruitment_status_once(army, region_id, "no_budget_assigned")
-				else:
-					_log_recruitment_status_once(army, region_id, "not_needed")
-			
-			# Check peasants-only recruitment (only if normal recruitment not needed)
-			var peasant_plan = _needs_recruitment_peasants(army, turn_number)
-			if peasant_plan["needed"]:
-				var best_peasant_region = _find_best_owned_region_for_peasants(army, int(peasant_plan["ideal_needed"]))
-				if best_peasant_region != -1:
-					if best_peasant_region == region_id:
-						# Current region is best - hire peasants immediately
-						var hired = _hire_peasants_at_region(army, on_region, peasant_plan["ideal_needed"])
-						if hired > 0:
-							DebugLogger.log("AIRecruitment", "Army " + str(army.name) + " hired " + str(hired) + " peasants at current region")
-							_log_peasant_recruitment(army, on_region, hired)
-						# Continue to normal movement scoring since army can still move/fight
-					else:
-						# Need to move to different region for peasants
-						var pf = pathfinder.find_path_to_target(region_id, best_peasant_region, army.get_player_id())
-						if pf["success"]:
-							candidates.append({
-								"army": army,
-								"target_id": best_peasant_region,
-								"path": pf["path"],
-								"mp_cost": pf["cost"],
-								"final_score": INF - 1,  # High priority, but lower than reinforce
-								"goal": "peasants",
-								"current_region_id": region_id,
-								"can_reach_now": int(pf["cost"]) <= army.get_movement_points(),
-								"peasant_plan": peasant_plan
-							})
-				else:
-					army.request_recruitment()
-					_log_recruitment_status_once(army, region_id, "peasants_insufficient")
-			
-			# Normal frontier scoring for armies not needing reinforcement
-			var best_move := _find_best_move_for_army(army, frontier)
-			if not best_move.is_empty():
-				candidates.append(best_move)
-		
-		if candidates.is_empty():
-			DebugLogger.log("AITurnManager", "[TurnController] No valid moves available")
-			break
-		
-		# Step 5: Order by final score (highest first)
-		candidates.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
-		var best_move = candidates[0]
-		
-		# Emit signal for move preparation
-		emit_signal("move_prepared", best_move["army"], best_move["target_id"], best_move["final_score"])
-		
-		# Step 6: Execute the move (ai_travel_to handles debug stepping internally)
-		# Note: Removed redundant debug gate here since ai_travel_to has its own step-by-step gating
-		moved_armies[best_move["army"]] = true
-		var ownership_changed := await _execute_move(best_move)
-		
-		# Step 8: Recalculate if ownership changed, otherwise continue
-		if ownership_changed:
-			DebugLogger.log("AITurnManager", "[TurnController] Ownership changed - recalculating frontier")
-			# Loop continues with fresh frontier calculation
-		else:
-			DebugLogger.log("AITurnManager", "[TurnController] No ownership change - continuing with remaining armies")
-
-	# Rest rule 1: any remaining MPs at end of turn are spent making camp
-	var all_armies := army_manager.get_player_armies(player_id)
-	for a in all_armies:
-		while a.get_movement_points() > 0:
-			a.make_camp()
-			_log_army_make_camp(a)
+func _process_army_turns(player_id: int) -> void:
+	var armies := _get_available_armies(player_id)
+	armies.shuffle()
+	for army in armies:
+		await _process_single_army(army)
 
 func _get_available_armies(player_id: int) -> Array[Army]:
 	"""Get armies that can still move this turn"""
@@ -288,19 +144,268 @@ func _get_available_armies(player_id: int) -> Array[Army]:
 	for army in player_armies:
 		if army == null or not is_instance_valid(army):
 			continue
-		if moved_armies.has(army):
-			continue
 		if army.get_movement_points() <= 0:
 			continue
 		available.append(army)
 	
 	return available
 
+func _process_single_army(army: Army) -> void:
+	var turn_number := _get_current_turn()
+	_log_army_separator(army)
+	while army.get_movement_points() > 0:
+		if await _handle_recruitment_cycle(army, turn_number):
+			continue
+		if await _handle_peasant_cycle(army, turn_number):
+			continue
+		_ensure_vigor_before_move(army)
+		var move := _select_frontier_move(army)
+		if move.is_empty():
+			_log_movement_header()
+			_log_army_detail_line("No valid targets; camping")
+			_spend_all_on_camp(army)
+			break
+		var enemy_info := _build_enemy_info(move["target_id"], army.get_player_id())
+		_log_movement_header()
+		_log_target_choice(army, move["target_id"], enemy_info)
+		var merge_decision := _evaluate_merge_policy(army, enemy_info)
+		if merge_decision == "halt":
+			_log_defense_todo(army, move["target_id"], enemy_info)
+			break
+		if merge_decision == "merge":
+			_merge_local_armies_into(army)
+		var moved_ok = await _execute_move_to_target(army, move)
+		if not moved_ok:
+			break
+	if is_instance_valid(army) and army.get_movement_points() > 0:
+		_log_army_detail_line("Spending remaining %d MP on camping" % army.get_movement_points())
+		_spend_all_on_camp(army)
+
+func _handle_recruitment_cycle(army: Army, turn_number: int) -> bool:
+	if army.needs_recruitment(turn_number) and not army.is_recruitment_requested():
+		army.request_recruitment()
+	if not army.is_recruitment_requested():
+		return false
+	_log_recruitment_header()
+	var current_region := army.get_parent() as Region
+	var current_region_id: int = current_region.get_region_id()
+	var best_castle := region_manager.find_best_recruitment_castle(current_region_id, army.get_player_id(), true, army)
+	_log_recruitment_candidates(best_castle, current_region_id)
+	var target_region_id := int(best_castle.get("best_region_id", -1))
+	if target_region_id == -1:
+		_log_recruitment_status_once(army, current_region_id, "no_recruit_castle")
+		_spend_all_on_camp(army)
+		return true
+	if current_region_id != target_region_id:
+		_log_army_detail_line("Needs recruitment moving to " + _get_region_name_by_id(target_region_id))
+		var moved = await _move_army_to_region(army, target_region_id, "reinforce", best_castle)
+		return true
+	_log_army_detail_line("Recruiting at " + _get_region_name_by_id(current_region_id))
+	var assigned_budget := army.get_assigned_budget()
+	if assigned_budget == null:
+		_log_recruitment_status_once(army, current_region_id, "no_budget_assigned")
+		_log_army_detail_line("Waiting for recruitment budget at " + _get_region_name_by_id(current_region_id))
+		_spend_all_on_camp(army)
+		return true
+	var allow_recruit := army.get_movement_points() >= 1 or army.just_raised
+	if not allow_recruit:
+		_log_recruitment_skip(army, current_region_id, "no_movement_points")
+		_spend_all_on_camp(army)
+		return true
+	var recruitment_manager = RecruitmentManager.new(region_manager, game_manager)
+	var comp_before = _get_army_composition_suffix(army)
+	var power_before = army.get_army_power()
+	var result = recruitment_manager.hire_soldiers(army, true)
+	if army.get_total_soldiers() > 0:
+		army.just_raised = false
+	if result.has("error"):
+		_log_recruitment_skip(army, current_region_id, String(result.get("error", "unknown")))
+	else:
+		_log_recruitment_success(army, current_region_id, result, comp_before, power_before)
+		_log_recruitment_detail(army, result, current_region.get_region_name())
+	return true
+
+func _handle_peasant_cycle(army: Army, turn_number: int) -> bool:
+	var peasant_plan = _needs_recruitment_peasants(army, turn_number)
+	if not peasant_plan.get("needed", false):
+		return false
+	_log_recruitment_header()
+	var current_region := army.get_parent() as Region
+	var current_region_id: int = current_region.get_region_id()
+	var best_region_id = _find_best_owned_region_for_peasants(army, int(peasant_plan.get("ideal_needed", 0)))
+	if best_region_id == -1:
+		army.request_recruitment()
+		_log_recruitment_status_once(army, current_region_id, "peasants_insufficient")
+		return false
+	if best_region_id != current_region_id:
+		_log_army_detail_line("Need peasants recruitment moving to " + _get_region_name_by_id(best_region_id))
+		var moved = await _move_army_to_region(army, best_region_id, "peasants", {})
+		return true if moved else false
+	var hired = _hire_peasants_at_region(army, current_region, peasant_plan.get("ideal_needed", 0))
+	if hired > 0:
+		_log_peasant_recruitment(army, current_region, hired)
+		_log_army_detail_line("Hired " + str(hired) + " peasants in " + _get_region_name_by_id(current_region_id))
+	return true
+
+func _select_frontier_move(army: Army) -> Dictionary:
+	var frontier := region_manager.get_frontier_regions(army.get_player_id())
+	if frontier.is_empty():
+		return {}
+	var move := _find_best_move_for_army(army, frontier)
+	if move.is_empty():
+		return {}
+	if not move.has("goal"):
+		move["goal"] = "attack"
+	return move
+
+func _build_enemy_info(target_region_id: int, player_id: int) -> Dictionary:
+	var target_region = region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+	var enemy_armies: Array = []
+	for target_army in army_manager.get_armies_in_region(target_region):
+		if target_army.get_player_id() != player_id:
+			enemy_armies.append(target_army)
+	var enemy_owner = region_manager.get_region_owner(target_region_id)
+	var castle_level = region_manager.get_castle_level(target_region_id)
+	var garrison_power = 0
+	if enemy_owner != -1 and enemy_owner != player_id and castle_level > 0:
+		garrison_power = target_region.get_garrison_strength()
+	var enemy_power = garrison_power
+	for ea in enemy_armies:
+		enemy_power += ea.get_army_power()
+	var has_enemy = enemy_owner != -1 and enemy_owner != player_id
+	if enemy_armies.size() > 0:
+		has_enemy = true
+	var known_strength = enemy_armies.size() > 0 or garrison_power > 0
+	return {
+		"has_enemy": has_enemy,
+		"known": known_strength,
+		"power": enemy_power,
+		"armies": enemy_armies,
+		"castle_level": castle_level,
+		"owner": enemy_owner
+	}
+
+func _evaluate_merge_policy(army: Army, enemy_info: Dictionary) -> String:
+	if not enemy_info.get("has_enemy", false):
+		return "proceed"
+	if not enemy_info.get("known", false):
+		return "merge"
+	var enemy_power: int = int(enemy_info.get("power", 0))
+	if army.get_army_power() > enemy_power:
+		return "proceed"
+	var local_power = _get_local_armies_power(army)
+	if local_power > enemy_power:
+		return "merge"
+	return "halt"
+
+func _merge_local_armies_into(receiver: Army) -> void:
+	var source_region = receiver.get_parent() as Region
+	var armies_here = army_manager.get_armies_in_region(source_region)
+	for donor in armies_here:
+		if donor == receiver:
+			continue
+		if donor.get_parent() != source_region:
+			continue
+		var moved = army_manager.transfer_all_soldiers(donor, receiver)
+		if moved:
+			_log_army_transfer(donor, receiver)
+			donor.spawn_minimal_peasant_token()
+
+func _get_local_armies_power(army: Army) -> int:
+	var source_region = army.get_parent() as Region
+	var armies_here = army_manager.get_armies_in_region(source_region)
+	var total = 0
+	for a in armies_here:
+		total += a.get_army_power()
+	return total
+
+func _ensure_vigor_before_move(army: Army) -> bool:
+	var target_efficiency = 85
+	if army.get_efficiency() >= target_efficiency:
+		return true
+	while army.get_efficiency() < target_efficiency and army.get_movement_points() > 0:
+		army.make_camp()
+		_log_army_make_camp(army)
+	return army.get_movement_points() > 0
+
+func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra_log: Dictionary) -> bool:
+	if not _ensure_vigor_before_move(army):
+		return false
+	var current_region := army.get_parent() as Region
+	var current_region_id: int = current_region.get_region_id()
+	var pf = pathfinder.find_path_to_target(current_region_id, target_region_id, army.get_player_id())
+	if not pf["success"]:
+		_spend_all_on_camp(army)
+		return false
+	var move := {
+		"army": army,
+		"target_id": target_region_id,
+		"path": pf["path"],
+		"mp_cost": pf["cost"],
+		"final_score": 0.0,
+		"goal": goal,
+		"suppress_summary": true
+	}
+	if extra_log.has("candidates"):
+		move["castle_log"] = _build_castle_log_lines(extra_log.get("candidates", []))
+	_emit_move_prepared(army, target_region_id, move)
+	emit_signal("move_started", army, target_region_id)
+	_log_army_move_action(army, move)
+	var army_log_token := game_manager.get_ai_battle_log_token(army)
+	var result = await game_manager.ai_travel_to(army, target_region_id)
+	var log_army: Army = army if is_instance_valid(army) else null
+	_log_army_move_result(log_army, target_region_id, result, army_log_token)
+	if result != "battle_withdrawal":
+		_log_move_status(army, target_region_id)
+	if result == "battle_victory":
+		emit_signal("region_conquered", target_region_id, army.get_player_id())
+	if result == "blocked" or result == "out_of_movement_points":
+		if is_instance_valid(army):
+			_spend_all_on_camp(army)
+	if not is_instance_valid(army):
+		return false
+	return army.get_movement_points() > 0
+
+func _emit_move_prepared(army: Army, target_id: int, move: Dictionary) -> void:
+	var score = float(move.get("final_score", 0.0))
+	emit_signal("move_prepared", army, target_id, score)
+
+func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
+	var target_id: int = move["target_id"]
+	move["suppress_summary"] = true
+	_emit_move_prepared(army, target_id, move)
+	emit_signal("move_started", army, target_id)
+	_log_army_move_action(army, move)
+	var army_log_token := game_manager.get_ai_battle_log_token(army)
+	var result = await game_manager.ai_travel_to(army, target_id)
+	var log_army: Army = army if is_instance_valid(army) else null
+	_log_army_move_result(log_army, target_id, result, army_log_token)
+	if result != "battle_withdrawal":
+		_log_move_status(army, target_id)
+	if result == "battle_victory":
+		emit_signal("region_conquered", target_id, army.get_player_id())
+	if result == "battle_defeat":
+		return false
+	if result == "blocked":
+		if is_instance_valid(army):
+			_spend_all_on_camp(army)
+		return false
+	if result == "out_of_movement_points":
+		if is_instance_valid(army):
+			_spend_all_on_camp(army)
+		return false
+	if not is_instance_valid(army):
+		return false
+	return army.get_movement_points() > 0
+
+func _spend_all_on_camp(army: Army) -> void:
+	while army.get_movement_points() > 0:
+		army.make_camp()
+		_log_army_make_camp(army)
 func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 	"""Find the best target for a specific army"""
 	var best_move := {}
 	var reachable: Array = []
-	var unreachable: Array = []
 	var player_id := army.get_player_id()
 	var current_region := army.get_parent()
 	if not current_region or not current_region.has_method("get_region_id"):
@@ -322,6 +427,8 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 
 		var cost := int(path_result["cost"])
 		var can_reach_now := cost <= mp_available
+		if not can_reach_now:
+			continue
 		var random_mod := rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
 		var final_score := base_score + random_mod - float(cost)
 
@@ -334,93 +441,16 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 			"final_score": final_score,
 			"path": path_result["path"],
 			"current_region_id": current_region_id,
-			"can_reach_now": can_reach_now,
+			"can_reach_now": can_reach_now
 		}
 
-		if can_reach_now:
-			reachable.append(cand)
-		else:
-			unreachable.append(cand)
+		reachable.append(cand)
 
-	var pool := reachable if reachable.size() > 0 else unreachable
-	if pool.is_empty():
+	if reachable.is_empty():
 		return {}
 
-	pool.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
-	return pool[0]
-
-func _execute_move(move: Dictionary) -> bool:
-	"""Execute a single move through the standardized pipeline"""
-	var army: Army = move["army"]
-	var army_log_token := game_manager.get_ai_battle_log_token(army) if game_manager else ""
-	var target_id: int = move["target_id"]
-	var path: Array[int] = move["path"]
-
-	emit_signal("move_started", army, target_id)
-	DebugLogger.log("AITurnManager", "[TurnController] Executing move: %s -> Region %d (score: %.1f, goal: %s)"
-		% [army.name, target_id, move["final_score"], move.get("goal", "attack")])
-	_log_army_move_action(army, move)
-
-	# Handle peasants-only moves specially
-	if move.get("goal", "") == "peasants":
-		var result = await game_manager.ai_travel_to(army, target_id)
-		var log_army: Army = army if is_instance_valid(army) else null
-		_log_army_move_result(log_army, target_id, result, army_log_token)
-		if result == "arrived":
-			# Hire peasants at destination
-			var target_region = region_manager.map_generator.get_region_container_by_id(target_id)
-			var peasant_plan = move.get("peasant_plan", {})
-			var hired = _hire_peasants_at_region(army, target_region, peasant_plan.get("ideal_needed", 0))
-			DebugLogger.log("AIRecruitment", "Peasants-only move completed: hired " + str(hired) + " peasants")
-			if hired > 0:
-				_log_peasant_recruitment(army, target_region, hired)
-		return false  # No ownership change for peasants-only moves
-
-	# Only allow a battle if the army could afford the full cost now.
-	var initial_mp := army.get_movement_points()
-	var can_reach_target_now := int(move["mp_cost"]) <= initial_mp
-
-	if can_reach_target_now:
-		DebugLogger.log("AITurnManager", "[TurnController] Army can reach target this turn")
-		# Rest rule 2: if about to attack and efficiency < 90%, try to make camp twice (limited by MPs)
-		var target_region: Region = region_manager.map_generator.get_region_container_by_id(target_id)
-		if _should_trigger_battle(army, target_region):
-			_rest_army_before_battle(army)
-		# Army can reach target this turn - use ai_travel_to for step-by-step debug
-		var result = await game_manager.ai_travel_to(army, target_id)
-		var log_army: Army = army if is_instance_valid(army) else null
-		_log_army_move_result(log_army, target_id, result, army_log_token)
-		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
-		if result == "out_of_movement_points":
-			return false
-		if result == "blocked":
-			return false
-		elif result == "battle_victory":
-			emit_signal("region_conquered", target_id, army.get_player_id())
-			return true
-		elif result == "battle_defeat":
-			return false
-		elif result == "arrived":
-			# Peaceful arrival - no ownership change
-			return false
-		else:
-			DebugLogger.log("AITurnManager", "[TurnController] Unexpected ai_travel_to result: " + str(result))
-			return false
-	else:
-		DebugLogger.log("AITurnManager", "[TurnController] Army cannot reach target this turn")
-		# Army cannot reach target this turn - use ai_travel_to for partial movement
-		var result = await game_manager.ai_travel_to(army, target_id)
-		var log_army: Army = army if is_instance_valid(army) else null
-		_log_army_move_result(log_army, target_id, result, army_log_token)
-		DebugLogger.log("AITurnManager", "[TurnController] ai_travel_to result: " + str(result))
-		if result == "battle_victory":
-			emit_signal("region_conquered", target_id, army.get_player_id())
-			return true
-		else:
-			# No ownership change for partial movement or other results
-			return false
-
-# _execute_army_movement_toward_target removed - ai_travel_to handles both full and partial movement
+	reachable.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
+	return reachable[0]
 
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	"""Check if moving to this region should trigger a battle - delegates to GameManager"""
@@ -480,7 +510,7 @@ func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 	var ideal_needed = army.compute_peasant_need(target_prop)
 	DebugLogger.log(
 		"AIRecruitment",
-		"Army " + str(army.name) + " peasant need: current=" + str(current_ratio) + ", target=" + str(target_prop) + ", need=" + str(ideal_needed)
+			"Army " + army.get_display_name() + " peasant need: current=" + str(current_ratio) + ", target=" + str(target_prop) + ", need=" + str(ideal_needed)
 	)
 	
 	return {
@@ -490,7 +520,7 @@ func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
 	}
 
 func _find_best_owned_region_for_peasants(army: Army, min_required: int) -> int:
-	"""Find the best owned region reachable this turn for peasant recruitment"""
+	"""Find the best owned region for peasant recruitment (allows multi-turn travel)"""
 	var player_id = army.get_player_id()
 	var current_region = army.get_parent() as Region
 	if not current_region:
@@ -507,9 +537,6 @@ func _find_best_owned_region_for_peasants(army: Army, min_required: int) -> int:
 			continue
 		
 		var cost = int(path_result["cost"])
-		if cost > army.get_movement_points():
-			continue  # Not reachable this turn
-		
 		var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
 		var available_recruits = region_container.get_available_recruits()
 		if available_recruits < min_recruits:
@@ -582,6 +609,32 @@ func _army_transfers_check(player_id: int) -> void:
 			if moved:
 				donor.spawn_minimal_peasant_token()
 
+func _merge_attack_stack_if_needed(army: Army, target_region_id: int) -> void:
+	if not _target_has_enemy_force(target_region_id, army.get_player_id()):
+		return
+	var source_region = army.get_parent() as Region
+	var armies_here = army_manager.get_armies_in_region(source_region)
+	if armies_here.size() < 2:
+		return
+	for donor in armies_here:
+		if donor == army:
+			continue
+		var moved = army_manager.transfer_all_soldiers(donor, army)
+		if moved:
+			_log_army_transfer(donor, army)
+			donor.spawn_minimal_peasant_token()
+
+func _target_has_enemy_force(target_region_id: int, player_id: int) -> bool:
+	var target_region = region_manager.map_generator.get_region_container_by_id(target_region_id)
+	var armies_in_target = army_manager.get_armies_in_region(target_region)
+	for target_army in armies_in_target:
+		if target_army.get_player_id() != player_id:
+			return true
+	var target_owner = region_manager.get_region_owner(target_region_id)
+	if target_owner == player_id or target_owner == -1:
+		return false
+	return region_manager.get_castle_level(target_region_id) > 0
+
 func _region_borders_enemy(region_id: int, player_id: int) -> bool:
 	var neighbors = region_manager.get_neighbor_regions(region_id)
 	for neighbor_id in neighbors:
@@ -633,7 +686,7 @@ func _roman_to_int(roman: String) -> int:
 	return total
 
 func _build_reinforce_move_candidate(army: Army, current_region_id: int, include_origin: bool = false) -> Dictionary:
-	var castle_pick := region_manager.find_best_recruitment_castle(current_region_id, army.get_player_id(), include_origin)
+	var castle_pick := region_manager.find_best_recruitment_castle(current_region_id, army.get_player_id(), include_origin, army)
 	var castle_id := int(castle_pick.get("best_region_id", -1))
 	if castle_id == -1:
 		return {}
@@ -666,8 +719,9 @@ func _build_castle_log_lines(candidates: Array) -> Array[String]:
 		var recruits := int(entry.get("recruits", 0))
 		var distance := int(entry.get("distance", 0))
 		var level := int(entry.get("castle_level", 0))
+		var needs_recruitment_armies := int(entry.get("needs_recruitment_armies", 0))
 		var score := float(entry.get("score", 0.0))
-		lines.append("Castle %s - recruits:%d, distance:%d, level:%d, score: %.1f" % [name, recruits, distance, level, score])
+		lines.append("Castle %s - recruits:%d, distance:%d, level:%d, needs_recruitment_armies:%d, score: %.1f" % [name, recruits, distance, level, needs_recruitment_armies, score])
 	return lines
 
 func _hire_peasants_at_region(army: Army, region: Region, max_needed: int) -> int:
@@ -726,7 +780,8 @@ func _log_army_move_action(army: Army, move: Dictionary) -> void:
 	if goal == "reinforce":
 		action = "Recruits"
 	var target_name = _get_region_name_by_id(move["target_id"])
-	_log_army_summary(army, action, target_name)
+	if not move.get("suppress_summary", false):
+		_log_army_summary(army, action, target_name)
 	_log_army_move_path_preview(army, move)
 	if move.has("castle_log"):
 		var castle_lines: Array = move.get("castle_log", [])
@@ -734,33 +789,92 @@ func _log_army_move_action(army: Army, move: Dictionary) -> void:
 			_log_army_detail_line(line)
 
 func _log_army_make_camp(army: Army) -> void:
-	_log_army_detail_line("%s makes camp" % army.name)
+		_log_army_detail_line("%s makes camp [MP left: %d, Vigor: %d%%]" % [army.get_display_name(), army.get_movement_points(), army.get_efficiency()])
+
+func _log_recruitment_detail(army: Army, result: Dictionary, region_name: String) -> void:
+	if not _log_active_turn:
+		return
+	var hired: Dictionary = result.get("hired", {})
+	if hired.is_empty():
+		return
+	var parts: Array[String] = []
+	for soldier_type in hired.keys():
+		var count = int(hired[soldier_type])
+		if count <= 0:
+			continue
+		var label = SoldierTypeEnum.type_to_string(soldier_type)
+		if label.length() > 0:
+			label = label.substr(0, 1).to_upper()
+		parts.append("%s:%d" % [label, count])
+	if parts.is_empty():
+		return
+	var line = "Hired soldiers " + ", ".join(parts) + " in " + region_name
+	_log_army_detail_line(line)
+
+func _log_target_choice(army: Army, target_region_id: int, enemy_info: Dictionary) -> void:
+	if not _log_active_turn:
+		return
+	var target_name = _get_region_name_by_id(target_region_id)
+	var status = "no enemy"
+	if enemy_info.get("has_enemy", false):
+		var armies: Array = enemy_info.get("armies", [])
+		var owner_id = int(enemy_info.get("owner", -1))
+		var enemy_label = "Player " + str(owner_id)
+		if armies.size() > 0:
+			var first_army: Army = armies[0]
+			enemy_label = "Player " + str(first_army.get_player_id()) + "'s " + first_army.get_display_name()
+		var info_flag = "known" if enemy_info.get("known", false) else "unknown"
+		status = enemy_label + " (" + info_flag + ")"
+	_log_army_detail_line("Best target: " + target_name + " (" + status + ")")
+
+func _log_defense_todo(army: Army, target_region_id: int, enemy_info: Dictionary) -> void:
+	if not _log_active_turn:
+		return
+	var target_name = _get_region_name_by_id(target_region_id)
+	var enemy_power = int(enemy_info.get("power", 0))
+	_log_army_detail_line("Defense TODO for attack on " + target_name + " (enemy power " + str(enemy_power) + ")")
+
+func _log_army_transfer(donor: Army, receiver: Army) -> void:
+	_log_army_detail_line("Transfering units from %s to %s" % [donor.name, receiver.name])
 
 func _log_army_move_path_preview(army: Army, move: Dictionary) -> void:
 	var path: Array = move.get("path", [])
 	if path.size() <= 1:
 		return
+	var preview_mp = army.get_movement_points()
+	var preview_eff = army.get_efficiency()
 	for i in range(1, path.size()):
 		var step_name = _get_region_name_by_id(path[i])
-		_log_army_detail_line("Moves to %s" % step_name)
+		var target_region = region_manager.map_generator.get_region_container_by_id(path[i])
+		var step_cost = army_manager.get_terrain_cost(target_region, army.get_player_id())
+		preview_mp = max(0, preview_mp - step_cost)
+		preview_eff = max(0, preview_eff - 5)
+		_log_army_detail_line("Moves to %s [MP left: %d, Vigor: %d%%]" % [step_name, preview_mp, preview_eff])
 
 func _log_army_move_result(army: Army, target_region_id: int, result: String, army_log_token: String) -> void:
 	var target_name = _get_region_name_by_id(target_region_id)
 	match result:
 		"battle_victory":
+			_log_battle_header()
 			_log_army_detail_line("Fight at %s" % target_name)
 			_log_recent_battle_details(army, army_log_token)
 		"battle_defeat":
+			_log_battle_header()
 			_log_army_detail_line("Fight at %s" % target_name)
 			_log_recent_battle_details(army, army_log_token)
 		"battle_withdrawal":
+			_log_battle_header()
 			_log_army_detail_line("Fight at %s" % target_name)
-			var withdraw_name = target_name
 			if army != null and is_instance_valid(army):
 				var current_region = army.get_parent() as Region
-				if current_region:
-					withdraw_name = current_region.get_region_name()
-			_log_army_detail_line("Withdrew to %s" % withdraw_name)
+				if current_region and current_region.get_region_id() == target_region_id:
+					_log_army_detail_line("Defender withdrew; holding " + target_name)
+				elif current_region:
+					_log_army_detail_line("Withdrew to " + current_region.get_region_name())
+				else:
+					_log_army_detail_line("Withdrew")
+			else:
+				_log_army_detail_line("Withdrew")
 			_log_recent_battle_details(army, army_log_token)
 		"arrived":
 			_log_army_detail_line("Arrived at %s" % target_name)
@@ -786,12 +900,12 @@ func _log_recruitment_success(army: Army, region_id: int, result: Dictionary, co
 	var power_for_log = power_before if power_before >= 0 else army.get_army_power()
 	_log_army_summary(army, "Recruits", location, comp_before, power_for_log)
 	if region_manager != null:
-		var castle_pick := region_manager.find_best_recruitment_castle(region_id, army.get_player_id(), true)
+		var castle_pick := region_manager.find_best_recruitment_castle(region_id, army.get_player_id(), true, army)
 		var castle_lines := _build_castle_log_lines(castle_pick.get("candidates", []))
 		for line in castle_lines:
 			_log_army_detail_line(line)
 	var message = "Army %s recruited %d at %s (gold: %d, wood: %d, iron: %d)" % [
-		army.name,
+		army.get_display_name(),
 		total_hired,
 		location,
 		spent_gold,
@@ -799,7 +913,7 @@ func _log_recruitment_success(army: Army, region_id: int, result: Dictionary, co
 		spent_iron
 	]
 	game_manager.get_ai_log_manager().log_recruitment(message)
-	_log_army_detail_line("%s [Power: %d - %s]" % [army.name, army.get_army_power(), _get_army_composition_suffix(army)])
+	_log_army_detail_line("%s [Power: %d - %s]" % [army.get_display_name(), army.get_army_power(), _get_army_composition_suffix(army)])
 
 func _log_recruitment_skip(army: Army, region_id: int, reason: String) -> void:
 	if not _log_active_turn:
@@ -807,7 +921,7 @@ func _log_recruitment_skip(army: Army, region_id: int, reason: String) -> void:
 	if reason == "not_needed":
 		return
 	var location = _get_region_name_by_id(region_id)
-	var message = "Army %s could not recruit at %s (reason: %s)" % [army.name, location, reason]
+	var message = "Army %s could not recruit at %s (reason: %s)" % [army.get_display_name(), location, reason]
 	game_manager.get_ai_log_manager().log_recruitment(message)
 
 func _log_recruitment_status_once(army: Army, region_id: int, reason: String) -> void:
@@ -824,7 +938,7 @@ func _log_recruitment_status_once(army: Army, region_id: int, reason: String) ->
 func _log_peasant_recruitment(army: Army, region: Region, amount: int) -> void:
 	if not _log_active_turn or amount <= 0:
 		return
-	var message = "Army %s raised %d peasants at %s" % [army.name, amount, region.get_region_name()]
+	var message = "Army %s raised %d peasants at %s" % [army.get_display_name(), amount, region.get_region_name()]
 	game_manager.get_ai_log_manager().log_recruitment(message)
 
 func _log_economy_plan(econ_result: Dictionary) -> void:
@@ -909,12 +1023,55 @@ func _log_army_summary(army: Army, action: String, target_region: String, compos
 	var comp = composition_override if composition_override != "" else _get_army_composition_suffix(army)
 	var power_value = power_override if power_override >= 0 else army.get_army_power()
 	var eff_value = army.get_efficiency()
-	game_manager.get_ai_log_manager().log_army_action(army.name, power_value, eff_value, action, target_region, comp)
+	game_manager.get_ai_log_manager().log_army_action(army.get_display_name(), power_value, eff_value, action, target_region, comp)
 
 func _log_army_detail_line(text: String) -> void:
 	if not _log_active_turn or text == "":
 		return
 	game_manager.get_ai_log_manager().log_army_detail(text)
+
+func _log_move_status(army: Army, target_region_id: int) -> void:
+	if not _log_active_turn or army == null or not is_instance_valid(army):
+		return
+	var target_name = _get_region_name_by_id(target_region_id)
+	_log_army_detail_line("Moving to %s [MP left: %d, Vigor: %d%%]" % [target_name, army.get_movement_points(), army.get_efficiency()])
+
+func _log_army_separator(army: Army) -> void:
+	if not _log_active_turn:
+		return
+	_log_army_detail_line("-------------- ARMY " + army.get_display_name() + " -------------")
+	_log_army_detail_line("%s [Power: %d, E: %d - %s]" % [army.get_display_name(), army.get_army_power(), army.get_efficiency(), _get_army_composition_suffix(army)])
+
+func _log_recruitment_header() -> void:
+	if _log_active_turn:
+		_log_army_detail_line("[RECRUITMENT]")
+
+func _log_recruitment_candidates(best_castle: Dictionary, current_region_id: int) -> void:
+	if not _log_active_turn:
+		return
+	var candidates: Array = best_castle.get("candidates", [])
+	if candidates.is_empty():
+		_log_army_detail_line("No recruit castles available from " + _get_region_name_by_id(current_region_id))
+		return
+	_log_army_detail_line("Recruitment castle candidates:")
+	for cand in candidates:
+		var name := String(cand.get("region_name", _get_region_name_by_id(int(cand.get("region_id", -1)))))
+		var distance := int(cand.get("distance", 0))
+		var recruits := int(cand.get("recruits", 0))
+		var needs_recruitment_armies := int(cand.get("needs_recruitment_armies", 0))
+		var score := float(cand.get("score", 0.0))
+		_log_army_detail_line("- %s (dist:%d, recruits:%d, needs_recruitment_armies:%d, score: %.1f)" % [name, distance, recruits, needs_recruitment_armies, score])
+	var pick_id := int(best_castle.get("best_region_id", -1))
+	if pick_id != -1:
+		_log_army_detail_line("Selected castle: " + _get_region_name_by_id(pick_id))
+
+func _log_movement_header() -> void:
+	if _log_active_turn:
+		_log_army_detail_line("[MOVEMENT]")
+
+func _log_battle_header() -> void:
+	if _log_active_turn:
+		_log_army_detail_line("[BATTLE]")
 
 func _log_recent_battle_details(army: Army, army_log_token: String) -> void:
 	if not _log_active_turn:
@@ -931,16 +1088,6 @@ func _log_recent_battle_details(army: Army, army_log_token: String) -> void:
 			game_manager.get_ai_log_manager().log_army_detail("")
 		else:
 			_log_army_detail_line(line)
-
-func _rest_army_before_battle(army: Army) -> void:
-	if army == null or not is_instance_valid(army):
-		return
-	while army.get_movement_points() > 0 and army.get_efficiency() < 100:
-		var before_efficiency = army.get_efficiency()
-		army.make_camp()
-		_log_army_make_camp(army)
-		if army.get_efficiency() <= before_efficiency:
-			break
 
 func _get_army_composition_suffix(army: Army) -> String:
 	var comp = army.get_composition()

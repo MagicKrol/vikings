@@ -87,7 +87,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -1389,7 +1389,7 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 	Shared orchestration function for Human and AI region entry flow.
 	Returns: "blocked" | "moved" | "battle_started"
 	"""
-	DebugLogger.log("TurnProcessing", "perform_region_entry: " + army.name + " -> region " + str(target_region_id) + " (source: " + source + ")")
+	DebugLogger.log("TurnProcessing", "perform_region_entry: " + army.get_display_name() + " -> region " + str(target_region_id) + " (source: " + source + ")")
 	
 	# Resolve target region Node using RegionManager lookup
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
@@ -1416,10 +1416,10 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 			if result == "victory":
 				return "battle_victory"
 			elif result == "withdrawal":
-				return "battle_withdrawal" 
+				return "battle_withdrawal"
 			else:
 				return "battle_defeat"
-	
+
 	return "moved"
 
 # Battle coordination - unified system for both Human and AI players
@@ -1430,7 +1430,7 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	"""
 	var attacker_owner_id := army.get_player_id()
 	var target_region := _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
-	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.name + " vs region " + str(target_region_id))
+	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.get_display_name() + " vs region " + str(target_region_id))
 	var siege_payload := {}
 	if is_player_computer(attacker_owner_id):
 		siege_payload = _execute_ai_siege_preparation(army, target_region)
@@ -1439,36 +1439,11 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
 	_battle_manager.start_battle(army, target_region_id, ladder_damage)
 
-	# If background mode is enabled for AI AND defender is not human,
-	# the result is ready immediately and signal will be emitted deferred
-	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
-	var defender_is_human := (defender_owner_id != -1 and is_player_human(defender_owner_id))
-	if debug_disable_battle_modal and is_player_computer(attacker_owner_id) and not defender_is_human:
-		await _battle_manager.await_finalize_complete()
-		var report = _battle_manager.get_last_battle_report()
-		var res := _derive_battle_result_from_report(report)
-		return res
-
-	# Otherwise wait for the modal-driven signal
+	# Always wait for battle_finished signal - it contains the correct result
+	# The signal is emitted by BattleManager with the proper victory/defeat/withdrawal value
 	var result: String = await _battle_manager.battle_finished
 	DebugLogger.log("TurnProcessing", "Battle completed with result: " + result)
 	await _battle_manager.await_finalize_complete()
-	
-	# For AI battles (modal path), finalize immediately using last battle report after signal
-	if is_player_computer(attacker_owner_id) and not debug_disable_battle_modal:
-		var result_data = {
-			"result": result,
-			"army": army,
-			"target_region_id": target_region_id,
-			"battle_report": _battle_manager.get_last_battle_report(),
-			"attacking_armies": _battle_manager._pending_attackers,
-			"defending_armies": _battle_manager._pending_defenders,
-			"defending_garrison": _battle_manager._pending_garrison,
-			"defending_recruits_region": _battle_manager._pending_recruits_region,
-			"defending_recruits_count": _battle_manager._pending_recruits_count
-		}
-		finalize_battle_result(result_data)
-	
 	return result
 
 func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dictionary:
@@ -1581,9 +1556,11 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	
 	var army_name = "unknown army"
 	if army != null:
-		army_name = army.name
+		army_name = army.get_display_name()
 	DebugLogger.log("TurnProcessing", "Finalizing battle result: " + normalized_result + " for " + army_name)
-	var withdrawing_side := 0
+	var withdrawing_side := int(result_data.get("withdrawing_side", 0))
+	if withdrawing_side == 0 and battle_report != null:
+		withdrawing_side = int(battle_report.withdrawing_side)
 	var should_queue_battle_log := army != null and is_player_computer(army.get_player_id()) and battle_report != null
 	var battle_log_lines: Array[String] = []
 	var defender_entries: Array = []
@@ -1667,7 +1644,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	if battle_report and _battle_manager:
 		_battle_manager._apply_battle_losses()
 		if should_queue_battle_log:
-			var post_lines := _build_battle_post_log_lines(army, defender_entries, normalized_result)
+			var post_lines := _build_battle_post_log_lines(army, defender_entries, normalized_result, withdrawing_side)
 			var combined := battle_log_lines.duplicate()
 			combined.append_array(post_lines)
 			combined.append("")
@@ -1702,25 +1679,26 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			
 			# Reduce efficiency for conquest
 			army.reduce_efficiency(5)
-			DebugLogger.log("TurnProcessing", "Reduced " + army.name + " efficiency to " + str(army.get_efficiency()) + "% after conquest")
+			DebugLogger.log("TurnProcessing", "Reduced " + army.get_display_name() + " efficiency to " + str(army.get_efficiency()) + "% after conquest")
 	elif normalized_result == "withdrawal":
 		# Army withdrew - handle retreat and efficiency reduction
-		withdrawing_side = int(result_data.get("withdrawing_side", 0))
+		if withdrawing_side == 0:
+			withdrawing_side = int(result_data.get("withdrawing_side", 0))
 		var attacker_can_withdraw_flag := bool(result_data.get("attacker_can_withdraw", false))
 		var defender_can_withdraw_flag := bool(result_data.get("defender_can_withdraw", false))
 		DebugLogger.log("BattleSystem", "Withdrawal finalization: side=" + str(withdrawing_side) + ", attacker_can=" + str(attacker_can_withdraw_flag) + ", defender_can=" + str(defender_can_withdraw_flag))
 		if withdrawing_side == 0 and battle_report != null:
 			withdrawing_side = int(battle_report.withdrawing_side)
-		if withdrawing_side == 0:
-			if defender_can_withdraw_flag and not attacker_can_withdraw_flag:
-				withdrawing_side = 2
-			elif attacker_can_withdraw_flag and not defender_can_withdraw_flag:
-				withdrawing_side = 1
+			if withdrawing_side == 0:
+				if defender_can_withdraw_flag and not attacker_can_withdraw_flag:
+					withdrawing_side = 2
+				elif attacker_can_withdraw_flag and not defender_can_withdraw_flag:
+					withdrawing_side = 1
 		DebugLogger.log("BattleSystem", "Resolved withdrawing_side=" + str(withdrawing_side))
 		if withdrawing_side == 1:
 			if army and is_instance_valid(army) and _battle_manager:
 				var is_ai_withdraw := is_player_computer(army.get_player_id())
-				DebugLogger.log("BattleSystem", "Applying attacker withdrawal for army " + army.name)
+				DebugLogger.log("BattleSystem", "Applying attacker withdrawal for army " + army.get_display_name())
 				await _battle_manager._handle_army_withdrawal(army)
 				if is_ai_withdraw and _ai_camera_director:
 					await _ai_camera_director.await_focus_on_army(army)
@@ -1826,7 +1804,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	var current_region_id = current_region.get_region_id()
 	var player_id = army.get_player_id()
 	
-	DebugLogger.log("AIPathfinding", "ai_travel_to: Army %s traveling from region %d to region %d" % [army.name, current_region_id, final_region_id])
+	DebugLogger.log("AIPathfinding", "ai_travel_to: Army %s traveling from region %d to region %d" % [army.get_display_name(), current_region_id, final_region_id])
 	
 	var pathfinder = _turn_controller.pathfinder
 	
@@ -1847,12 +1825,12 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	var last_battle_outcome := ""
 	for i in range(1, full_path.size()):
 		var next_region_id = full_path[i]
-		
+
 		# Check if army still has movement points
 		if army.get_movement_points() <= 0:
-			DebugLogger.log("AIMovement", "ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.name, army.get_parent().get_region_id()])
+			DebugLogger.log("AIMovement", "ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.get_display_name(), army.get_parent().get_region_id()])
 			return "out_of_movement_points"
-		
+
 		# Get next region for battle check
 		var next_region_container = _region_manager.map_generator.get_region_container_by_id(next_region_id)
 		if next_region_container == null:
@@ -1865,7 +1843,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 			return "blocked"
 		# Debug step pausing using DebugStepGate
 		if _turn_controller.debug_step_gate:
-			DebugLogger.log("AIMovement", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.name, next_region_id, i, full_path.size()-1])
+			DebugLogger.log("AIMovement", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.get_display_name(), next_region_id, i, full_path.size()-1])
 			await _turn_controller.debug_step_gate.step()
 		
 		# Check if this step should trigger battle
@@ -1914,13 +1892,13 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	# Check if we reached the final destination
 	var final_position = army.get_parent() as Region
 	if final_position and final_position.get_region_id() == final_region_id:
-		DebugLogger.log("AIMovement", "ai_travel_to: Army %s successfully arrived at region %d" % [army.name, final_region_id])
+		DebugLogger.log("AIMovement", "ai_travel_to: Army %s successfully arrived at region %d" % [army.get_display_name(), final_region_id])
 		if last_battle_outcome != "":
 			return last_battle_outcome
 		return "arrived"
 	else:
 		var current_pos = final_position.get_region_id() if final_position else -1
-		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.name, current_pos, final_region_id])
+		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.get_display_name(), current_pos, final_region_id])
 		return "blocked"
 
 # ============================================================================
@@ -1973,9 +1951,16 @@ func _build_battle_pre_log_lines(attacker: Army, defender_entries: Array) -> Arr
 			lines.append(_format_defender_pre_line(entry))
 	return lines
 
-func _build_battle_post_log_lines(attacker: Army, defender_entries: Array, result: String) -> Array[String]:
+func _build_battle_post_log_lines(attacker: Army, defender_entries: Array, result: String, withdrawing_side: int) -> Array[String]:
 	var lines: Array[String] = []
 	lines.append("Battle Result: %s" % _format_battle_result_label(result))
+	if result == "withdrawal":
+		var label := "Withdrawal: Unknown"
+		if withdrawing_side == 1:
+			label = "Withdrawal: Attacker"
+		elif withdrawing_side == 2:
+			label = "Withdrawal: Defender"
+		lines.append(label)
 	lines.append(_format_attacker_after_line("Attacker After", attacker, attacker.name if attacker else "Unknown Army"))
 	if defender_entries.is_empty():
 		lines.append("Defender After: None")
@@ -1986,12 +1971,12 @@ func _build_battle_post_log_lines(attacker: Army, defender_entries: Array, resul
 
 func _format_attacker_line(prefix: String, army: Army, fallback_name: String) -> String:
 	if army != null and is_instance_valid(army):
-		return "%s: %s [Power: %d - %s]" % [prefix, army.name, army.get_army_power(), _format_composition_suffix(army.get_composition())]
+		return "%s: %s [Power: %d - %s]" % [prefix, army.get_display_name(), army.get_army_power(), _format_composition_suffix(army.get_composition())]
 	return "%s: %s [Power: 0 - none]" % [prefix, fallback_name]
 
 func _format_attacker_after_line(prefix: String, army: Army, fallback_name: String) -> String:
 	if army != null and is_instance_valid(army):
-		return "%s: %s [Power: %d - %s]" % [prefix, army.name, army.get_army_power(), _format_composition_suffix(army.get_composition())]
+		return "%s: %s [Power: %d - %s]" % [prefix, army.get_display_name(), army.get_army_power(), _format_composition_suffix(army.get_composition())]
 	return "%s: %s destroyed" % [prefix, fallback_name]
 
 func _format_defender_pre_line(entry: Dictionary) -> String:
@@ -2222,7 +2207,7 @@ func _center_camera_on_player_assets(player_id: int) -> void:
 		if not player_armies.is_empty():
 			var first_army = player_armies[0]
 			camera_controller.center_on_army(first_army)
-			DebugLogger.log("TurnProcessing", "Centered camera on Player " + str(player_id) + "'s first army: " + first_army.name)
+			DebugLogger.log("TurnProcessing", "Centered camera on Player " + str(player_id) + "'s first army: " + first_army.get_display_name())
 			return
 	
 	# If no armies, try to find their castle

@@ -1,0 +1,551 @@
+AI Log File: custom_game
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=10.
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Eastoy
+
+Moves to Osthwaite
+Moves to Eastoy
+Fight at Eastoy
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 12 - P:6]
+Defender Recruits (Eastoy) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army III [Power: 94 - P:13, S:9, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Eastoy [Power: 0 - none]
+
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Redley
+
+Moves to Hvitberg
+Moves to Redley
+Fight at Redley
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Redley) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Redley [Power: 0 - none]
+
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Greenley
+
+Moves to Vatnvik
+Moves to Greenley
+Fight at Greenley
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Greenley) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Greenley [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Army II makes camp
+Army III makes camp
+Resources (end):
+Gold: 90
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Oakfell
+
+Moves to Akrstadir
+Moves to Oakfell
+Fight at Oakfell
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Oakfell) [Power: 6 - P:3]
+Battle Result: Won
+Attacker After: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Oakfell [Power: 0 - none]
+
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Osholme
+
+Moves to Saintdon
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 12 - P:6]
+Defender Recruits (Osholme) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army I [Power: 102 - P:15, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Osholme [Power: 0 - none]
+
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Riverchester
+
+Moves to Hafnthwaite
+Moves to Riverchester
+Fight at Riverchester
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 10 - P:5]
+Defender Recruits (Riverchester) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 97 - P:13, S:10, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Riverchester [Power: 0 - none]
+
+Resources (end):
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Economy: Bought 6 Food (gold change -13)
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.250
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Saintwich
+
+Moves to Ashfjell
+Moves to Saintwich
+Fight at Saintwich
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Saintwich) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 101 - P:15, S:10, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Saintwich [Power: 0 - none]
+
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Ashholme
+
+Moves to Ashfjell
+Moves to Saintwich
+Moves to Ashholme
+Fight at Ashholme
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 8 - P:4]
+Defender Recruits (Ashholme) [Power: 38 - P:19]
+Battle Result: Won
+Attacker After: Army III [Power: 78 - P:13, S:5, A:5, SW:3, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Ashholme [Power: 0 - none]
+
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Osholme
+
+Moves to Hafnthorpe
+Moves to Osholme
+Fight at Osholme
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 4 - P:2]
+Defender Recruits (Osholme) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army I [Power: 100 - P:14, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Osholme [Power: 0 - none]
+
+Army I makes camp
+Army I makes camp
+Army II makes camp
+Resources (end):
+Gold: 87
+Food: 56
+Wood: 20
+Iron: 10
+Stone: 10
+
+Economy: Bought 10 Food (gold change -22)
+
+[Player Player 5 (#5)]
+ 
+░█████████  ░██                                              ░████████ 
+░██     ░██ ░██                                              ░██       
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████    ░███████  
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███              ░██ 
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░██   ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=2, discoveries=1, gold_spent=20.
+
+Economy: Ore discoveries: Sandthwaite
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Whithavn
+
+Moves to Akrton
+Moves to Whithavn
+Fight at Whithavn
+Battle started
+Attacker: Army III [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Whithavn) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army III [Power: 103 - P:14, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Whithavn [Power: 0 - none]
+
+Army II [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Hvitthorpe
+
+Moves to Ashnes
+Moves to Hvitthorpe
+Fight at Hvitthorpe
+Battle started
+Attacker: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 2 - P:1]
+Defender Recruits (Hvitthorpe) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army II [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Hvitthorpe [Power: 0 - none]
+
+Army I [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Hafnthwaite
+
+Moves to Ashnes
+Moves to Hafnthwaite
+Fight at Hafnthwaite
+Battle started
+Attacker: Army I [Power: 105 - P:15, S:10, A:5, SW:5, K:1]
+Defender Garrison [Power: 12 - P:6]
+Defender Recruits (Hafnthwaite) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army I [Power: 100 - P:14, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Hafnthwaite [Power: 0 - none]
+
+Army I makes camp
+Army II makes camp
+Resources (end):
+Gold: 58
+Food: 60
+Wood: 20
+Iron: 10
+Stone: 10
+
+Economy: Bought 5 Food (gold change -10)
+
+[Player Player 6 (#6)]
+    
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████    ░██       
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░███████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░██   ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.286
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Danger castles checked: 1.
+
+Castle Defense Recruitment:
+- Sandvik: 35 units (S: 15, A: 7, SW: 9, C: 4) - gold spent: 86, recruits left: 94
+
+Economy: Raise Army: guards_failed.
+
+Economy: Build Castle: no_viable_candidate.
+
+Economy: Upgrade Castle: insufficient_resources.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Army III [Power: 105, E: 100 - P:15, S:10, A:5, SW:5, K:1]
+Action: Moves
+Target: Ashholme
+
+Moves to Ashholme
+Transfering soldiers from Army I to Army III
+Transfering soldiers from Army II to Army III
+Fight at Ashholme
+Battle started
+Attacker: @Sprite2D@717 [Power: 315 - P:45, S:30, A:15, SW:15, K:3]
+Defender Army III [Power: 78 - P:13, S:5, A:5, SW:3, K:1]
+Defender Garrison [Power: 0 - none]
+Defender Recruits (Ashholme) [Power: 0 - none]
+Battle Result: Withdrew
+Attacker After: @Sprite2D@717 [Power: 315 - P:45, S:30, A:15, SW:15, K:3]
+Defender After: Army III [Power: 26 - P:3, A:2, SW:1, K:1]
+Defender After (Garrison): Garrison [Power: 0 - none]
+Defender After (Recruits): Ashholme [Power: 0 - none]
+
+Recruitment: Army Army I could not recruit at Sandvik (reason: no_budget_assigned)
+
+Recruitment: Army Army II could not recruit at Sandvik (reason: no_budget_assigned)
+
+Army II [Power: 2, E: 100 - P:1]
+Action: Moves
+Target: Stoneham
+
+Moves to Ashholme
+Moves to Stoneham
+Fight at Stoneham
+Battle started
+Attacker: Army II [Power: 2 - P:1]
+Defender Garrison [Power: 12 - P:6]
+Defender Recruits (Stoneham) [Power: 20 - P:10]
+Battle Result: Withdrew
+Attacker After: Army II [Power: 0 - none]
+Defender After (Garrison): Garrison [Power: 12 - P:6]
+Defender After (Recruits): Stoneham [Power: 20 - P:10]
+
+Army I [Power: 2, E: 100 - P:1]
+Action: Moves
+Target: Stoneham
+
+Moves to Ashholme
+Moves to Stoneham
+Fight at Stoneham
+Battle started
+Attacker: Army I [Power: 2 - P:1]
+Defender Garrison [Power: 12 - P:6]
+Defender Recruits (Stoneham) [Power: 20 - P:10]
+Battle Result: Withdrew
+Attacker After: Army I [Power: 2 - P:1]
+Defender After (Garrison): Garrison [Power: 12 - P:6]
+Defender After (Recruits): Stoneham [Power: 20 - P:10]
+
+@Sprite2D@717 makes camp
+@Sprite2D@717 makes camp
+@Sprite2D@717 makes camp
+Resources (end):
+Gold: 4
+Food: 55
+Wood: 9
+Iron: 10
+Stone: 10
+

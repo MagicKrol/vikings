@@ -520,6 +520,9 @@ func get_frontier_regions(player_id: int) -> Array[int]:
 			var neighbor_owner = get_region_owner(neighbor_id)
 			if neighbor_owner != player_id:
 				frontier.append(neighbor_id)
+
+	if frontier.is_empty():
+		DebugLogger.log("AITurnManager", "[TurnController] No frontier regions available")
 	
 	return frontier
 
@@ -549,7 +552,7 @@ func get_castle_level(region_id: int) -> int:
 		_:
 			return 0
 
-func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_origin: bool = false) -> Dictionary:
+func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_origin: bool = false, exclude_army: Army = null) -> Dictionary:
 	"""Find owned castles scored by (recruits / distance) * (1 + 0.2 * level).
 	Returns {"best_region_id": int, "candidates": Array[Dictionary]}.
 	Set include_origin=true to consider the starting castle (distance clamped to >=1).
@@ -578,7 +581,9 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 						total_recruits += int(source.get("amount", 0))
 					if total_recruits > 0:
 						var distance_for_score := float(max(1, distance))
-						var distance_score := float(total_recruits) / distance_for_score
+						var needy_armies := _count_recruitment_needy_armies(current_id, owner_id, exclude_army)
+						var recruits_for_score: int = max(0, total_recruits - (needy_armies * 50))
+						var distance_score := float(recruits_for_score) / distance_for_score
 						var level_bonus := 1.0 + (0.2 * float(castle_level))
 						var total_score := distance_score * level_bonus
 						var region_node = map_generator.get_region_container_by_id(current_id) as Region
@@ -588,6 +593,7 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 							"region_name": region_name,
 							"distance": distance,
 							"recruits": total_recruits,
+							"needs_recruitment_armies": needy_armies,
 							"castle_level": castle_level,
 							"score": total_score
 						}
@@ -609,6 +615,19 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 		"best_region_id": best_castle_id,
 		"candidates": candidates
 	}
+
+func _count_recruitment_needy_armies(region_id: int, owner_id: int, exclude_army: Army = null) -> int:
+	"""Count armies belonging to owner_id in the region that requested recruitment."""
+	var region_container: Region = map_generator.get_region_container_by_id(region_id)
+	var count := 0
+	for child in region_container.get_children():
+		if child is Army:
+			var army := child as Army
+			if army == exclude_army:
+				continue
+			if army.get_player_id() == owner_id and army.is_recruitment_requested():
+				count += 1
+	return count
 
 func get_available_recruits_from_region_and_neighbors(region_id: int, player_id: int) -> Array:
 	"""Get available recruits from a region and all owned neighboring regions. Returns array of {region_id: int, amount: int}"""

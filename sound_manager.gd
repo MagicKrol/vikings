@@ -12,7 +12,8 @@ var game_music: AudioStream
 var starting_horn: AudioStream
 
 # Music state
-var music_enabled: bool = true
+var music_enabled: bool = false
+var sound_enabled: bool = false
 
 func _ready():
 	# Add the audio players to the scene tree
@@ -50,9 +51,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func click_sound() -> void:
 	"""Play click sound effect"""
-	if click_player and click_player.stream:
-		pass
-		#click_player.play()
+	if click_player and click_player.stream and sound_enabled:
+		click_player.play()
 
 func play_main_menu_music() -> void:
 	"""Play main menu music"""
@@ -62,8 +62,9 @@ func play_main_menu_music() -> void:
 
 func stop_main_menu_music() -> void:
 	"""Stop main menu music"""
-	if music_player:
-		music_player.stop()
+	pass
+	#if music_player:
+		#music_player.stop()
 
 func play_game_start_sequence() -> void:
 	"""Play starting horn, wait 3 seconds, then play game music"""

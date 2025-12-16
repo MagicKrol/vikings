@@ -237,6 +237,15 @@ func get_army_composition_string() -> String:
 	"""Get army composition as a readable string"""
 	return composition.get_composition_string()
 
+func get_display_name() -> String:
+	"""Get a stable label for logging/UI, falling back to roman number when the node name is default"""
+	var label := String(name)
+	if label == "" or label.begins_with("@") or label.begins_with("Sprite2D"):
+		if number != "":
+			return "Army " + str(number)
+		return "Army"
+	return label
+
 func animate_move_to(target_pos: Vector2, duration: float, use_global: bool = false) -> Tween:
 	"""Animate the army icon moving smoothly to target_pos over duration seconds.
 	If use_global is true, animates global_position instead of local position."""
