@@ -125,7 +125,8 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 	if is_raised:
 		army.setup_raised_army(player_id, roman_number)
 	else:
-		army.setup_army(player_id, roman_number)
+		var starting_composition := _get_starting_army_composition(player_id)
+		army.setup_army(player_id, roman_number, starting_composition)
 	
 	# Position army at region center with appropriate offset
 	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
@@ -413,6 +414,8 @@ func move_army_to_region(target_region_container: Node) -> bool:
 			var current_points = moving_army.get_movement_points()
 			DebugLogger.log("AIMovement", "Movement blocked - not enough movement points (need " + str(terrain_cost) + ", have " + str(current_points) + ")")
 		return false
+
+	_play_move_click(moving_army)
 	
 	# Battle conditions will be handled after movement by click_manager
 	var target_region = target_region_container as Region
@@ -491,9 +494,6 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	
 	DebugLogger.log("AIMovement", "Army moved (cost: " + str(terrain_cost) + ", remaining points: " + str(remaining_points) + ")")
 	
-	# Play click sound for successful army movement
-	if sound_manager:
-		sound_manager.click_sound()
 	if moving_army.get_player_id() == _ready_highlight_player_id:
 		update_ready_highlights_for_player(_ready_highlight_player_id)
 	
@@ -821,6 +821,16 @@ func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -
 				return
 		
 		DebugLogger.log("ArmyManagement", "Warning: Could not trigger combat - BattleManager not available")
+
+func _play_move_click(moving_army: Army) -> void:
+	if sound_manager == null or moving_army == null:
+		return
+	var game_manager := _get_game_manager()
+	if game_manager != null and game_manager.is_player_human(moving_army.get_player_id()):
+		sound_manager.click_sound()
+
+func _get_starting_army_composition(player_id: int) -> Dictionary:
+	return _get_game_manager().get_starting_army_composition_for_player(player_id)
 
 func _get_game_manager() -> GameManager:
 	"""Get GameManager reference"""

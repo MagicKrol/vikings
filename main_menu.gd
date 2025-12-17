@@ -258,6 +258,8 @@ func _on_custom_map_play_pressed():
 
 func _on_demo_tutorial_pressed():
 	DebugLogger.log("UISystem", "Demo Tutorial button pressed")
+	# Disable button to prevent re-triggering
+	demo_tutorial_button.disabled = true
 	var scen_path := "res://scenarios/tutorial.json"
 	get_tree().set_meta("start_payload", {
 		"type": "scenario",
@@ -265,10 +267,17 @@ func _on_demo_tutorial_pressed():
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
+	# Wait for mouse button release to prevent click leaking to next scene
+	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		await get_tree().process_frame
+	# Small delay to absorb any rapid subsequent clicks
+	await get_tree().create_timer(0.15).timeout
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_demo_map_pressed():
 	DebugLogger.log("UISystem", "Demo Map button pressed")
+	# Disable button to prevent re-triggering
+	# demo_map_button.disabled = true
 	var map_path := "res://mapdata/demo-999-medium.json"
 	var demo_player_settings := [
 		{"player_id": 1, "control_type": "Player"},
@@ -276,7 +285,7 @@ func _on_demo_map_pressed():
 		{"player_id": 3, "control_type": "Computer"},
 		{"player_id": 4, "control_type": "Computer"},
 		{"player_id": 5, "control_type": "Computer"},
-		{"player_id": 6, "control_type": "Off"}
+		{"player_id": 6, "control_type": "Computer"}
 	]
 	get_tree().set_meta("start_payload", {
 		"type": "map",
@@ -286,6 +295,11 @@ func _on_demo_map_pressed():
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
+	# Wait for mouse button release to prevent click leaking to next scene
+	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		await get_tree().process_frame
+	# Small delay to absorb any rapid subsequent clicks
+	await get_tree().create_timer(0.15).timeout
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _show_main_menu():

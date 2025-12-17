@@ -35,6 +35,7 @@ class Playlist:
 @onready var click_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var horn_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var battle_player: AudioStreamPlayer = AudioStreamPlayer.new()
 
 # Playlists
 const PLAYLIST_DEFS := {
@@ -45,6 +46,19 @@ const PLAYLIST_DEFS := {
 		],
 		"shuffle": false,
 		"repeat": true
+	},
+	"custom_map": {
+		"tracks": [
+			"res://music/track1.mp3",
+			"res://music/track2.mp3",
+			"res://music/track3.mp3",
+			"res://music/track4.mp3",
+			"res://music/track5.mp3",
+			"res://music/track6.mp3",
+			"res://music/track7.mp3"
+		],
+		"shuffle": true,
+		"repeat": true
 	}
 }
 
@@ -52,10 +66,12 @@ const PLAYLIST_DEFS := {
 var main_menu_music: AudioStream
 var game_music: AudioStream
 var starting_horn: AudioStream
+var retreat_horn: AudioStream
+var battle_sound: AudioStream
 
 # Music state
-var music_enabled: bool = false
-var sound_enabled: bool = false
+var music_enabled: bool = true
+var sound_enabled: bool = true
 var _current_playlist: Playlist = null
 var _audio_cache: Dictionary = {}
 
@@ -64,7 +80,9 @@ func _ready():
 	add_child(click_player)
 	add_child(music_player)
 	add_child(horn_player)
+	add_child(battle_player)
 	music_player.finished.connect(_on_music_finished)
+	battle_player.volume_db = linear_to_db(0.75)
 	
 	# Load the click sound
 	var click_sound = load("res://sounds/click.wav") as AudioStream
@@ -87,6 +105,16 @@ func _ready():
 	starting_horn = load("res://sounds/Starting_horn.mp3") as AudioStream
 	if not starting_horn:
 		DebugLogger.log("GameInit", "Error: Could not load Starting_horn.mp3")
+	
+	# Load the retreat horn
+	retreat_horn = load("res://sounds/retreat_horn.mp3") as AudioStream
+	if not retreat_horn:
+		DebugLogger.log("GameInit", "Error: Could not load retreat_horn.mp3")
+	
+	# Load the battle sound
+	battle_sound = load("res://sounds/battle.wav") as AudioStream
+	if not battle_sound:
+		DebugLogger.log("GameInit", "Error: Could not load battle.wav")
 
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle keyboard input for music toggle"""
@@ -98,6 +126,32 @@ func click_sound() -> void:
 	"""Play click sound effect"""
 	if click_player and click_player.stream and sound_enabled:
 		click_player.play()
+
+func play_retreat_horn() -> void:
+	if horn_player and retreat_horn and sound_enabled:
+		horn_player.stream = retreat_horn
+		horn_player.play(4.08)
+		# Stop at 9.2s to keep playback within the desired slice
+		var timer := get_tree().create_timer(5.12)
+		timer.timeout.connect(func():
+			if horn_player.stream == retreat_horn:
+				horn_player.stop())
+
+func play_battle_sound() -> void:
+	if battle_sound and sound_enabled:
+		battle_player.stream = battle_sound
+		battle_player.volume_db = linear_to_db(0.5)
+		battle_player.play()
+
+func stop_battle_sound() -> void:
+	battle_player.stop()
+
+func fade_out_battle_sound(duration: float = 2.0) -> void:
+	var tween := create_tween()
+	tween.tween_property(battle_player, "volume_db", -80.0, duration)
+	tween.finished.connect(func():
+		battle_player.stop()
+		battle_player.volume_db = linear_to_db(0.5))
 
 func play_main_menu_music() -> void:
 	"""Play main menu music"""

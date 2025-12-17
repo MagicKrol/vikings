@@ -76,10 +76,6 @@ func show_next_player(player_id: int, is_castle_mode: bool = false) -> void:
 	# Start auto-hide timer
 	if hide_timer:
 		hide_timer.start()
-	
-	# Play notification sound
-	if sound_manager:
-		sound_manager.click_sound()
 
 func _on_timer_timeout() -> void:
 	"""Handle timer timeout - hide modal automatically"""

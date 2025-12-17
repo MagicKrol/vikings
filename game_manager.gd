@@ -295,6 +295,8 @@ func initialize_managers(is_scenario: bool = false):
 		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, message_modal, tutorial_camera, _ai_camera_director)
 		if click_manager and click_manager.has_method("set_tutorial_manager"):
 			click_manager.set_tutorial_manager(_tutorial_manager)
+	elif not enable_map_editor and game_mode == "custom" and _sound_manager:
+		_sound_manager.set_active_playlist("custom_map")
 	
 	# Early flows: heatmap/scenario/editor
 	if debug_heatmap:
@@ -1044,6 +1046,10 @@ func get_player_type(player_id: int) -> PlayerTypeEnum.Type:
 		return player_types[player_id - 1]  # Convert 1-based to 0-based index
 	return PlayerTypeEnum.Type.OFF
 
+func get_starting_army_composition_for_player(player_id: int) -> Dictionary:
+	"""Get starting army composition for the given player's control type"""
+	return GameParameters.get_starting_army_composition_for_player_type(get_player_type(player_id))
+
 func is_player_active(player_id: int) -> bool:
 	"""Check if a player is active (not OFF)"""
 	return get_player_type(player_id) != PlayerTypeEnum.Type.OFF
@@ -1230,6 +1236,9 @@ func handle_castle_placement(region: Region) -> void:
 	if not placement_successful:
 		DebugLogger.log("GameInit", "Castle placement failed - unexpected error")
 		return
+
+	if _sound_manager:
+		_sound_manager.click_sound()
 	
 	# Upgrade castle region and neighboring regions
 	if _region_manager:
@@ -1346,9 +1355,6 @@ func _advance_castle_placement_turn() -> void:
 		_ai_debug_visualizer._update_scores_for_player(next_player_for_scoring)
 		_ai_debug_visualizer.queue_redraw()
 	
-	# Play sound
-	if _sound_manager:
-		_sound_manager.click_sound()
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	"""
 	Centralized pure helper to determine if a battle is required.

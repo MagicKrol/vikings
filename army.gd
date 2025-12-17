@@ -60,7 +60,7 @@ func apply_map_size_scaling(map_generator: MapGenerator) -> void:
 	var base_scale = 0.05
 	scale = Vector2(base_scale * map_size_scale, base_scale * map_size_scale)
 
-func setup_army(new_player_id: int, roman_number: String) -> void:
+func setup_army(new_player_id: int, roman_number: String, starting_composition: Dictionary = {}) -> void:
 	"""Setup the army with player ID and default composition"""
 	player_id = new_player_id
 	movement_points = GameParameters.MOVEMENT_POINTS_PER_TURN
@@ -74,7 +74,9 @@ func setup_army(new_player_id: int, roman_number: String) -> void:
 	_set_warrior_texture(player_id)
 	
 	# Start with a basic army composition
-	var starting_comp = GameParameters.get_starting_army_composition()
+	var starting_comp = starting_composition
+	if starting_comp.is_empty():
+		starting_comp = GameParameters.get_starting_army_composition_human()
 	for unit_type in starting_comp.keys():
 		composition.set_soldier_count(unit_type, starting_comp[unit_type])
 	

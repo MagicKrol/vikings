@@ -579,8 +579,18 @@ const STARTING_RESOURCES = {
 	ResourcesEnum.Type.STONE: 10
 }
 
-const STARTING_ARMY_COMPOSITION = {
+const STARTING_ARMY_COMPOSITION_HUMAN = {
 	SoldierTypeEnum.Type.PEASANTS: 15,
+	SoldierTypeEnum.Type.SPEARMEN: 5,
+	SoldierTypeEnum.Type.SWORDSMEN: 0,
+	SoldierTypeEnum.Type.ARCHERS: 5,
+	SoldierTypeEnum.Type.CROSSBOWMEN: 0,
+	SoldierTypeEnum.Type.HORSEMEN: 0,
+	SoldierTypeEnum.Type.KNIGHTS: 1
+}
+
+const STARTING_ARMY_COMPOSITION_AI = {
+	SoldierTypeEnum.Type.PEASANTS: 20,
 	SoldierTypeEnum.Type.SPEARMEN: 10,
 	SoldierTypeEnum.Type.SWORDSMEN: 5,
 	SoldierTypeEnum.Type.ARCHERS: 5,
@@ -862,11 +872,25 @@ static func roll_ore_type() -> ResourcesEnum.Type:
 	else:
 		return ResourcesEnum.Type.GOLD
 
-static func get_starting_army_composition() -> Dictionary:
+static func _copy_starting_composition(source: Dictionary) -> Dictionary:
 	var comp: Dictionary = {}
-	for key in STARTING_ARMY_COMPOSITION.keys():
-		comp[key] = int(STARTING_ARMY_COMPOSITION[key])
+	for key in source.keys():
+		comp[key] = int(source[key])
 	return comp
+
+static func get_starting_army_composition_human() -> Dictionary:
+	return _copy_starting_composition(STARTING_ARMY_COMPOSITION_HUMAN)
+
+static func get_starting_army_composition_ai() -> Dictionary:
+	return _copy_starting_composition(STARTING_ARMY_COMPOSITION_AI)
+
+static func get_starting_army_composition_for_player_type(player_type: PlayerTypeEnum.Type) -> Dictionary:
+	if player_type == PlayerTypeEnum.Type.COMPUTER:
+		return get_starting_army_composition_ai()
+	return get_starting_army_composition_human()
+
+static func get_starting_army_composition() -> Dictionary:
+	return get_starting_army_composition_human()
 
 static func get_ai_trade_threshold(resource_type: ResourcesEnum.Type) -> int:
 	match resource_type:

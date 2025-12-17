@@ -106,6 +106,7 @@ func show_battle(army: Army, region: Region) -> void:
 	defending_region = region
 
 	_set_message("")
+	sound_manager.play_battle_sound()
 
 	# Show initial display BEFORE starting battle
 	_update_display()
@@ -516,6 +517,7 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 	report.defender_wounded = Utils.compute_wounded(report.defender_losses)
 	battle_report = report
+	sound_manager.fade_out_battle_sound()
 
 	# If AI modal is disabled for debugging, finalize immediately only when defender is not human
 	var gm = get_node("../../GameManager") as GameManager
@@ -542,6 +544,7 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 func _on_ai_withdrawal_started() -> void:
 	"""Display notice when AI attacker begins withdrawal."""
 	_set_message("Enemy is withdrawing")
+	_play_retreat_sound()
 	withdrawal_in_progress = true
 	_update_action_button()
 
@@ -615,14 +618,12 @@ func _on_withdraw_pressed() -> void:
 			return
 		var pick_id: int = owned_neighbors[randi() % owned_neighbors.size()]
 		var dest_region := gm.get_region_manager().map_generator.get_region_container_by_id(pick_id) as Region
+		_set_message("Your army is withdrawing")
+		_play_retreat_sound()
 		# Move all defending armies (exclude garrison)
 		var moved_any := false
-		var message_shown := false
 		for child in defending_region.get_children():
 			if child is Army and child.get_player_id() == region_owner:
-				if not message_shown:
-					_set_message("Your army is withdrawing")
-					message_shown = true
 				var d := child as Army
 				var start_global := d.global_position
 				defending_region.remove_child(d)
@@ -641,6 +642,7 @@ func _on_withdraw_pressed() -> void:
 		# Attacker withdrawal: use animated simulator flow (defender free hits), then finalize to previous region
 		withdrawal_in_progress = true
 		_set_message("Your army is withdrawing")
+		_play_retreat_sound()
 		_update_action_button()
 		if animated_simulator:
 			animated_simulator.start_withdrawal_round(1)
@@ -693,6 +695,10 @@ func _update_action_button() -> void:
 
 func _set_message(text: String) -> void:
 	message_label.text = text
+
+func _play_retreat_sound() -> void:
+	if sound_manager:
+		sound_manager.play_retreat_horn()
 
 func _update_attacker_header() -> void:
 	var player_id = attacking_army.get_player_id()
