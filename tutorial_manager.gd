@@ -294,7 +294,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw"
+			"block": "endturn,trade,withdraw"
 		},
 		{
 			"message": "You don't have much control over the battle.\n It's resolved automatically.",
@@ -302,7 +302,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,continue"
+			"block": "endturn,trade,continue"
 		},
 		{
 			"message": "But you can always withdraw, if battle starts to go wrong. Though expect some additional losses in the process.",
@@ -310,7 +310,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,continue"
+			"block": "endturn,trade,continue"
 		},
 		{
 			"message": "",
@@ -319,7 +319,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,continue"
+			"block": "endturn,trade,continue"
 		},
 		{
 			"message": "Let's click continue and see the battle summary.",
@@ -332,7 +332,7 @@ func _build_default_steps() -> Array:
 				"id": "5",
 				"anchor": "screen"
 			},
-			"block": "trade"
+			"block": "endturn,trade"
 		},
 		{
 			"message": "That's a battle summary screen. \nIt presents detailed information about battle result.",
@@ -340,7 +340,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(20, 300),
-			"block": "trade,continue"
+			"block": "endturn,trade,continue"
 		},
 		{
 			"message": "On the left hand side you can find information about your wounded soldiers...",
@@ -352,7 +352,7 @@ func _build_default_steps() -> Array:
 				"id": "6",
 				"anchor": "screen"
 			},
-			"block": "trade,continue"
+			"block": "endturn,trade,continue"
 		},
 		{
 			"message": "... end the dead one. \n\nFortunately wounded soldier get healed when army gets rest.",
@@ -364,7 +364,7 @@ func _build_default_steps() -> Array:
 				"id": "7",
 				"anchor": "screen"
 			},
-			"block": "trade,continue"
+			"block": "endturn,trade,continue"
 		},
 		{
 			"message": "Let's click continue.",
@@ -373,7 +373,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"panel_position": Vector2(20, 300),
 			"ui_target": "BattleSummaryModal/continue",
-			"block": "trade"
+			"block": "endturn,trade"
 		},
 		{
 			"message": "Before we move on. Take a look here.\n It's your Army status screen.",
@@ -390,7 +390,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "Every action uses some move points. Especially travelling through a difficult terrain!",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -402,7 +402,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "Vigor represents your's army morale and stamina. It replesh upon resting. It affects army's battle effectiveness.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"arrow": {
@@ -453,7 +453,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "New turn and new movement points. Let's attack the last region. Try it on your own.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"block": "trade,endturn"
@@ -505,7 +505,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue",
+			"block": "trade,withdraw,continue,endturn",
 			"arrow": {
 				"id": "14",
 				"anchor": "screen"
@@ -517,7 +517,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue",
+			"block": "trade,withdraw,continue,endturn",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
@@ -529,7 +529,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue",
+			"block": "trade,withdraw,continue,endturn",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
@@ -541,7 +541,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue",
+			"block": "trade,withdraw,continue,endturn",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
@@ -554,7 +554,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw",
+			"block": "trade,withdraw,endturn",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
@@ -566,7 +566,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,continue"
+			"block": "trade,continue,endturn"
 		},
 		{
 			"message": "Let's move to the battle summary.",
@@ -579,7 +579,7 @@ func _build_default_steps() -> Array:
 				"id": "5",
 				"anchor": "screen"
 			},
-			"block": "trade"
+			"block": "trade,endturn"
 		},
 		{
 			"message": "Let's click continue.",
@@ -588,7 +588,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"panel_position": Vector2(20, 300),
 			"ui_target": "BattleSummaryModal/continue",
-			"block": "trade"
+			"block": "trade,endturn"
 		},
 		{
 			"message": "We finished our conquests for now.\n Cancel our move.",
@@ -606,7 +606,7 @@ func _build_default_steps() -> Array:
 		{
 			"message": "Let's talk about economy and resources.",
 			"show_continue": true,
-			"block_input": false,
+			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
 			"block": "trade,endturn"

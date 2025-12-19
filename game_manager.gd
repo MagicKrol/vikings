@@ -68,6 +68,7 @@ var _ui_manager: UIManager
 var _trade_manager: TradeManager
 var _tutorial_manager: TutorialManager
 var _ai_camera_director: AICameraDirector
+var _message_modal: MessageModal
 var ai_step_requires_shift: bool = false
 
 # AI system references
@@ -179,6 +180,7 @@ func _ready():
 	initialize_managers(game_mode == "scenario")
 	_apply_initial_camera_zoom()
 	_apply_center_marker_setting()
+	_show_custom_start_prompt()
 	if tutorial_enabled:
 		_sound_manager.set_active_playlist("tutorial")
 	
@@ -223,11 +225,11 @@ func initialize_managers(is_scenario: bool = false):
 	_prebattle_modal = ui_node.get_node("PrebattleModal") as PrebattleModal
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
 	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
+	_message_modal = ui_node.get_node("MessageModal") as MessageModal
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
 		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
-	var message_modal = ui_node.get_node("MessageModal") as MessageModal
 	var tutorial_modal = get_node("../UI/TutorialModal") as TutorialModal
 	var tutorial_world_arrow = get_node("../Map/TutorialWorldArrow") as Sprite2D
 	var tutorial_camera = get_node("../Camera2D") as Camera2D
@@ -292,7 +294,7 @@ func initialize_managers(is_scenario: bool = false):
 	# Handle tutorial flag from scenario name (only for non-editor)
 	tutorial_enabled = _should_enable_tutorial() and not enable_map_editor
 	if tutorial_enabled:
-		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, message_modal, tutorial_camera, _ai_camera_director)
+		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, _message_modal, tutorial_camera, _ai_camera_director)
 		if click_manager and click_manager.has_method("set_tutorial_manager"):
 			click_manager.set_tutorial_manager(_tutorial_manager)
 	elif not enable_map_editor and game_mode == "custom" and _sound_manager:
@@ -647,6 +649,15 @@ func _on_map_generated() -> void:
 func _apply_center_marker_setting() -> void:
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 	map_generator.set_center_markers_enabled(show_region_center_markers)
+
+func _show_custom_start_prompt() -> void:
+	if game_mode != "custom":
+		return
+	if enable_map_editor:
+		return
+	if _message_modal == null:
+		return
+	_message_modal.call_deferred("display_message", "Click a region to choose your starting location")
 
 func set_region_center_markers_enabled(value: bool) -> void:
 	if show_region_center_markers == value:

@@ -22,6 +22,7 @@ mouse_filter = 0
 texture = ExtResource("1_uhujf")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 120.0
 offset_top = 950.0

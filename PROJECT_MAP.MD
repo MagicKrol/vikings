@@ -19,6 +19,7 @@ Start Flow
   - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file).
   - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, then `generate_map()`.
   - Payload is cleared after consumption.
+- Custom map start shows `MessageModal` prompt "Click a region to choose your starting location" during castle placement.
 
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
@@ -42,7 +43,7 @@ Main (Node2D) [place_armies.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
 │	├ GeneralSelectModal [scenes/general_select_modal.tscn] [general_select_modal.gd] – fixed-size menu with textured backdrop, themed header, region + army buttons
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
-│	├ GameMenuModal [scenes/game_menu_modal.tscn] [game_menu_modal.gd] – pause overlay using select-modal styling; Continue resumes, Main Menu loads main_menu.tscn, Exit quits, Options disabled placeholder
+│	├ GameMenuModal [scenes/game_menu_modal.tscn] [game_menu_modal.gd] – pause overlay using select-modal styling; 60px tall buttons matching other select modals; Continue resumes, Main Menu loads main_menu.tscn, Exit quits, Options disabled placeholder
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
 │	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals; Raise Army also locks when the region already hosts `GameParameters.MAX_ARMIES_PER_REGION` armies and the tooltip surfaces the per-turn lock
@@ -318,7 +319,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - select_tooltip_modal.gd: Tooltip text provider for action buttons. Uses `SelectTooltipModal` when resource costs are shown and `SelectTooltipModalNoRes` for message-only tips.
 - Scenes in `scenes/` folder (each with paired script): `army_modal`, `select_modal`, `army_select_modal`, `info_modal`, `region_select_modal`, `region_tooltip`, `battle_modal`, `player_status_modal`, `recruitment_modal`, `call_to_arms_modal`, `transfer_soldiers_modal`, `transfer_select_modal`, `select_tooltip_modal`, `message_modal`, `next_player_modal`, `game_menu_modal`. Recruitment / TransferSoldiers / CallToArms Continue buttons now close themselves, drop modal mode, then ask UIManager to reopen the stored select modal context automatically.
-		- game_menu_modal.gd: In-game menu accessed via ESC key; pauses game and provides Continue (resume), Options (disabled), Main Menu (return to main menu), and Exit Game (quit) buttons.
+		- game_menu_modal.gd: In-game menu accessed via ESC key; pauses game. Main menu provides Continue (resume), Options, Main Menu (return to main menu), and Exit Game (quit). Options submenu has Back and Audio buttons. Audio submenu has Back button and audio panel with Music/Sound toggles (CheckButton) and volume sliders (HSlider 0-100) that sync with SoundManager state.
 		- trade_modal.gd: UI-only; delegates pricing/affordability to TradeManager and applies trades through it.
 		- TradeManager.gd: Centralizes trade math (dynamic pricing, affordability, batch apply) with simple `buy`/`sell` helpers; updates player resources, gold, traded volumes, and emits player status refresh.
 		- call_to_arms_modal.gd: Uses `Region.add_call_to_arms_recruits()` so gathered recruits add to population and can exceed the previous recruit cap in the target region.
@@ -357,6 +358,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ## Notable Relationships
 - GameManager wires all managers, creates `TurnController`, and hands references around; UI/battle events flow back through `BattleManager` → `GameManager.finalize_battle_result`.
 - Sound: `SoundManager` respects `music_enabled`; `GameManager` does not force-enable music and calls `play_game_start_sequence()` which no-ops when disabled. Retreat horn (`sounds/retreat_horn.mp3`) plays via `SoundManager.play_retreat_horn()` whenever BattleModal shows a withdrawal message. Battle sound (`sounds/battle.wav`) plays at 50% volume through `SoundManager.play_battle_sound()` when BattleModal opens.
+- Sound players run with `PROCESS_MODE_ALWAYS` so opening the in-game menu (tree pause) does not stop music/SFX.
 - Music playlists: `SoundManager` hosts `Playlist` (tracks + shuffle + repeat) and predefined `PLAYLIST_DEFS` with a tutorial playlist (`track2.mp3`, then `track1.mp3`, no shuffle, repeats) and a custom-map playlist (`track1.mp3`–`track7.mp3`, shuffle on, repeat). `GameManager` activates the tutorial playlist when tutorial mode is enabled and the custom-map playlist whenever game mode is custom; the music player advances through the playlist on the `AudioStreamPlayer.finished` signal, looping from the start.
 - Wounded: Simple wounded system added. `GameParameters.WOUNDED_CHANCE` base chance; per casualty wounded chance is `base * (1 + defense%)`. `Utils.compute_wounded()` calculates wounded per unit type from loss dicts. Wounded are computed exactly once when a battle finishes (modal path computes on finish; background path sets it before finalization). `GameManager.finalize_battle_result()` never computes wounded; it assumes they exist on the report, allocates them proportionally (attackers: attacker army; defenders: across defending armies, garrison, and recruits), then applies losses. `Army` tracks a separate `wounded_composition` excluded from battles but included in food upkeep via `PlayerManagerNode.calculate_total_army_food_cost()`.
   - Storage: `Army.wounded_composition`, `Region.wounded_garrison`, `Region.wounded_recruits` (peasants only).

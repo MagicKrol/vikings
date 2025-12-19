@@ -81,8 +81,13 @@ func _ready():
 	add_child(music_player)
 	add_child(horn_player)
 	add_child(battle_player)
+	click_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	music_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	horn_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	battle_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.finished.connect(_on_music_finished)
 	battle_player.volume_db = linear_to_db(0.75)
+	music_player.volume_db = linear_to_db(0.5)
 	
 	# Load the click sound
 	var click_sound = load("res://sounds/click.wav") as AudioStream

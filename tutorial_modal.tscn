@@ -190,7 +190,6 @@ offset_right = 240.0
 offset_bottom = 1100.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="endturn" type="Control" parent="Blocks"]
@@ -210,7 +209,6 @@ offset_right = 1910.0
 offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="firstelement" type="Control" parent="Blocks"]
@@ -230,7 +228,6 @@ offset_right = 1120.0
 offset_bottom = 460.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="armyactions" type="Control" parent="Blocks"]
@@ -250,7 +247,6 @@ offset_right = 1120.0
 offset_bottom = 570.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="ColorRect2" type="ColorRect" parent="Blocks/armyactions"]
@@ -264,7 +260,6 @@ offset_right = 1120.0
 offset_bottom = 680.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="recruitment" type="Control" parent="Blocks"]
@@ -372,7 +367,6 @@ offset_right = 1085.0
 offset_bottom = 755.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="cancelmove" type="Control" parent="Blocks"]
@@ -392,8 +386,7 @@ offset_right = 1100.0
 offset_bottom = 1050.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
-color = Color(1, 1, 1, 0)
+color = Color(0.83, 0.2573, 0.2573, 0)
 
 [node name="regionsactions" type="Control" parent="Blocks"]
 layout_mode = 3
@@ -411,7 +404,6 @@ offset_right = 1120.0
 offset_bottom = 800.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="makecamp" type="Control" parent="Blocks"]
@@ -431,5 +423,4 @@ offset_right = 1100.0
 offset_bottom = 975.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)

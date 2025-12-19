@@ -37,7 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://cxmedb6o3yrb7" path="res://scenes/trade_modal.tscn" id="35_c1ajo"]
 [ext_resource type="PackedScene" uid="uid://5d88xtt84ehc" path="res://tutorial_modal.tscn" id="36_tutorial"]
 [ext_resource type="Texture2D" uid="uid://cef4a8vfbpqtt" path="res://images/icons/arrow.png" id="37_arrow"]
-[ext_resource type="PackedScene" path="res://scenes/game_menu_modal.tscn" id="38_gamemenu"]
+[ext_resource type="PackedScene" uid="uid://cs8o70rk3hgp4" path="res://scenes/game_menu_modal.tscn" id="38_gamemenu"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
