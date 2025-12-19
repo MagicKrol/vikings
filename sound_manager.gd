@@ -86,7 +86,7 @@ func _ready():
 	horn_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	battle_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.finished.connect(_on_music_finished)
-	battle_player.volume_db = linear_to_db(0.75)
+	battle_player.volume_db = linear_to_db(0.5)
 	music_player.volume_db = linear_to_db(0.5)
 	
 	# Load the click sound

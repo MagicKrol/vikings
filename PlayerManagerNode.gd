@@ -214,6 +214,7 @@ func process_resource_income_for_player(player_id: int) -> void:
 func _calculate_player_income(player: Player) -> void:
 	"""Calculate and apply resource income for a player based on owned regions"""
 	var player_id = player.get_player_id()
+	var is_ai := player.is_computer()
 
 	# Get all regions owned by this player
 	var owned_regions = region_manager.get_player_regions(player_id)
@@ -249,6 +250,10 @@ func _calculate_player_income(player: Player) -> void:
 			
 			# Add population-based gold income
 			total_resources[ResourcesEnum.Type.GOLD] += region_node.get_income()
+	
+	# Apply AI handicap bonuses
+	if is_ai:
+		total_resources = _apply_ai_income_bonus(total_resources)
 	
 	# Apply the total resources to the player
 	var total_income_value = 0
@@ -298,6 +303,8 @@ func get_player_economy_snapshot(player_id: int) -> Dictionary:
 			population_amount += region_node.get_population()
 			if not region_node.is_ocean_region():
 				population_growth += region_node.get_population_increase()
+	if player != null and player.is_computer():
+		income = _apply_ai_income_bonus(income)
 	var food_upkeep := calculate_total_army_food_cost(player_id)
 	income[ResourcesEnum.Type.FOOD] -= int(ceil(food_upkeep))
 	return {
@@ -316,6 +323,18 @@ func get_projected_economy_for_player(player_id: int) -> Dictionary:
 		"income": snapshot.get("income", {}),
 		"population": snapshot.get("population", {"amount": 0, "growth": 0})
 	}
+
+func _apply_ai_income_bonus(income: Dictionary) -> Dictionary:
+	var result := income.duplicate()
+	var resource_multiplier := 1.0 + GameParameters.AI_RESOURCE_GROWTH_BONUS
+	var gold_multiplier := 1.0 + GameParameters.AI_INCOME_GROWTH_BONUS
+	for resource_type in result.keys():
+		var amount := float(result[resource_type])
+		if resource_type == ResourcesEnum.Type.GOLD:
+			result[resource_type] = int(ceil(amount * gold_multiplier))
+		else:
+			result[resource_type] = int(ceil(amount * resource_multiplier))
+	return result
 
 # Player information
 func get_player_resource_summary() -> String:

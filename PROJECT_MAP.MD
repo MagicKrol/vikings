@@ -216,7 +216,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 
 ### PlayerManagerNode.gd (PlayerManagerNode)
 - Purpose: Player storage and per-player economy as a scene node.
-- Key: initialize players; `current_player_changed` signal; add/remove/afford/pay; per-player income `process_resource_income_for_player()`; total army+garrison food cost; `set_player_resources()` for scenario starts; save/load.
+- Key: initialize players; `current_player_changed` signal; add/remove/afford/pay; per-player income `process_resource_income_for_player()` (AI income/resources boosted by `GameParameters.AI_RESOURCE_GROWTH_BONUS` and `AI_INCOME_GROWTH_BONUS`); total army+garrison food cost; `set_player_resources()` for scenario starts; save/load.
 - Exposes `get_player_food_growth()` and `meets_food_upgrade_safeguard()` so UI/AI can gate promotions on the required post-upgrade food buffer from `GameParameters.AI_MIN_FOOD_AFTER_UPGRADE`.
 - Wealth helpers: `get_player_wealth_level()` / `update_player_wealth_status()` wrap the new gold thresholds so other systems can react to poor/normal/rich states without reimplementing the math.
 - Used by GameManager and TurnController.

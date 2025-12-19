@@ -196,6 +196,10 @@ const AI_NEED_MIN_STOCK = {
 }
 const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per resource
 
+## AI Handicap Bonuses
+const AI_RESOURCE_GROWTH_BONUS = 0.20          # Multiplier bonus for non-gold resource income (e.g., +25%)
+const AI_INCOME_GROWTH_BONUS = 0.30            # Multiplier bonus for gold income (e.g., +20%)
+
 
 ## AI Peasants-Only Recruitment Parameters
 # Minimum peasant share threshold
