@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cykx27qbqfbie"]
 
 [ext_resource type="Script" path="res://move_modal.gd" id="1_emb2f"]
-[ext_resource type="Texture2D" uid="uid://rsij5522cl4w" path="res://images/movemodal2.png" id="2_6w3mo"]
+[ext_resource type="Texture2D" uid="uid://w57tdi2mrhbw" path="res://images/movemodal3.png" id="2_n7ogd"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_6ahqv"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_button_theme"]
 
@@ -29,9 +29,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -115.0
-offset_top = 360.0
+offset_top = 330.0
 offset_right = 135.0
-offset_bottom = 460.0
+offset_bottom = 530.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_emb2f")
@@ -39,22 +39,22 @@ script = ExtResource("1_emb2f")
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 250.0
-offset_bottom = 100.0
-texture = ExtResource("2_6w3mo")
+offset_bottom = 200.0
+texture = ExtResource("2_n7ogd")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_right = 250.0
-offset_bottom = 150.0
+offset_bottom = 200.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
 [node name="Army" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-offset_left = 16.0
-offset_top = 10.0
-offset_right = 219.0
-offset_bottom = 160.0
+offset_left = 8.0
+offset_top = 7.0
+offset_right = 227.0
+offset_bottom = 179.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 15
@@ -62,8 +62,40 @@ theme_override_constants/separation = 15
 [node name="ButtonSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection"]
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/ButtonSection"]
 custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer3"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="ButtonBorder" type="Panel" parent="Panel/Army/ButtonSection/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+theme = ExtResource("4_button_theme")
+theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
+
+[node name="ArmyActions" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer3/ButtonBorder"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_button_theme")
+text = "Army Actions"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection"]
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
@@ -95,7 +127,7 @@ theme = ExtResource("4_button_theme")
 text = "Make Camp"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/ButtonSection"]
-custom_minimum_size = Vector2(0, 7)
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
