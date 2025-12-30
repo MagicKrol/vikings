@@ -42,6 +42,11 @@ func _ready():
 	battle_timer.one_shot = true
 	add_child(battle_timer)
 
+func set_round_time(seconds: float) -> void:
+	battle_timer.wait_time = seconds
+	if is_battle_running:
+		battle_timer.start()
+
 func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1) -> void:
 	"""Start an animated battle with round-by-round updates"""
 	if is_battle_running:

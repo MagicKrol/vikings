@@ -14,21 +14,23 @@ var info_modal: InfoModal = null
 var tutorial_manager: TutorialManager = null
 var make_camp_button: Button = null
 var cancel_button: Button = null
+var army_actions_button: Button = null
+var army_select_modal: ArmySelectModal = null
 
 func _ready():
 	# Get button reference and connect signal
-	cancel_button = get_node_or_null("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder/Button")
-	if cancel_button:
-		cancel_button.pressed.connect(_on_cancel_move_pressed)
-	
-	make_camp_button = get_node_or_null("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder/MakeCamp")
-	if make_camp_button:
-		make_camp_button.pressed.connect(_on_make_camp_pressed)
+	cancel_button = get_node("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder/Button") as Button
+	cancel_button.pressed.connect(_on_cancel_move_pressed)
+	army_actions_button = get_node("Panel/Army/ButtonSection/HBoxContainer3/ButtonBorder/ArmyActions") as Button
+	army_actions_button.pressed.connect(_on_army_actions_pressed)
+	make_camp_button = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder/MakeCamp") as Button
+	make_camp_button.pressed.connect(_on_make_camp_pressed)
 	
 	# Get sound manager reference
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
+	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
 	var game_manager = get_node("../../GameManager") as GameManager
 	if game_manager:
 		tutorial_manager = game_manager.get_tutorial_manager()
@@ -39,6 +41,9 @@ func _ready():
 			if cancel_button:
 				cancel_button.name = "cancel_move"
 				cancel_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + cancel_button.name))
+			if army_actions_button:
+				army_actions_button.name = "army_actions"
+				army_actions_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + army_actions_button.name))
 	mouse_entered.connect(_on_mouse_entered)
 	var panel = get_node("Panel") as Control
 	panel.mouse_entered.connect(_on_panel_mouse_entered)
@@ -77,6 +82,13 @@ func _cancel_move() -> void:
 	if army_manager:
 		army_manager.deselect_army()
 	hide_move_modal()
+
+func _on_army_actions_pressed() -> void:
+	sound_manager.click_sound()
+	var army := selected_army
+	var region := army.get_parent() as Region
+	_cancel_move()
+	army_select_modal.show_army_actions(army, region)
 
 func _on_make_camp_pressed() -> void:
 	"""Handle Make Camp button press"""

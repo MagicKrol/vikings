@@ -9,9 +9,10 @@ var current_region: Region = null
 var current_armies: Array[Army] = []
 
 # Additional references specific to selection
-var army_select_modal: ArmySelectModal = null
 var region_select_modal: RegionSelectModal = null
 var tutorial_manager: TutorialManager = null
+var game_manager: GameManager = null
+var army_manager: ArmyManager = null
 
 @onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
 
@@ -20,9 +21,10 @@ func _ready():
 	_setup_select_references()
 
 func _setup_select_references():
-	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
+	game_manager = get_node("../../GameManager") as GameManager
+	army_manager = game_manager.get_army_manager()
 	region_select_modal = get_node("../RegionSelectModal") as RegionSelectModal
-	tutorial_manager = get_node("../../GameManager").get_tutorial_manager()
+	tutorial_manager = game_manager.get_tutorial_manager()
 
 func show_selection(region: Region, armies: Array[Army]) -> void:
 	if region == null or armies.is_empty():
@@ -118,12 +120,15 @@ func _on_region_button_pressed() -> void:
 		region_select_modal.show_region_actions(region_to_show)
 
 func _on_army_button_pressed(army: Army) -> void:
-	var army_to_show = army
-	var region_to_show = current_region
-	if sound_manager: sound_manager.click_sound()
+	var region := current_region
+	sound_manager.click_sound()
 	hide_modal()
-	if army_select_modal and army_to_show and is_instance_valid(army_select_modal) and is_instance_valid(army_to_show):
-		army_select_modal.show_army_actions(army_to_show, region_to_show)
+	_start_army_move_selection(army, region)
+
+func _start_army_move_selection(army: Army, region: Region) -> void:
+	var current_player_id = game_manager.get_current_player_id()
+	army_manager.select_army(army, region, current_player_id)
+	ui_manager.set_modal_active(false)
 
 func _on_region_button_hovered() -> void:
 	if info_modal and current_region and is_instance_valid(info_modal) and is_instance_valid(current_region):

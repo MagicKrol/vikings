@@ -181,6 +181,7 @@ func _ready():
 	_apply_initial_camera_zoom()
 	_apply_center_marker_setting()
 	_show_custom_start_prompt()
+
 	if tutorial_enabled:
 		_sound_manager.set_active_playlist("tutorial")
 	
@@ -351,6 +352,9 @@ func initialize_managers(is_scenario: bool = false):
 	for i in range(1, total_players + 1):
 		DebugLogger.log("GameInit", "  Player " + str(i) + ": " + PlayerTypeEnum.type_to_string(get_player_type(i)))
 	player_manager.print_all_resources()
+
+	var icons_modal = ui_node.get_node("IconsModal") as Control
+	icons_modal.visible = false
 
 func _should_enable_tutorial() -> bool:
 	return game_mode == "scenario" and scenario_path != "" and scenario_path.to_lower().find("tutorial") != -1
@@ -1352,8 +1356,6 @@ func _advance_castle_placement_turn() -> void:
 	_set_player_status_panel_visibility(current_player, ui_node)
 	if turn_modal:
 		turn_modal.show_and_update()
-	if icons_modal:
-		icons_modal.visible = false
 	
 	# Update AI debug scores if debug mode is active (for next player's perspective)
 	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():

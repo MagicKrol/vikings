@@ -41,8 +41,8 @@ Main (Node2D) [place_armies.gd]
 │	├ UIManager (Control) [ui_manager.gd]
 │	├ ArmyModal [scenes/army_modal.tscn] [army_modal.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
-│	├ GeneralSelectModal [scenes/general_select_modal.tscn] [general_select_modal.gd] – fixed-size menu with textured backdrop, themed header, region + army buttons
-│	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back)
+│	├ GeneralSelectModal [scenes/general_select_modal.tscn] [general_select_modal.gd] – fixed-size menu with textured backdrop, themed header, region + army buttons; picking an army now immediately selects it for movement (InfoModal + move arrows/MoveModal)
+│	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back); opened from MoveModal's ArmyActions when you cancel a move but still want actions
 │	├ GameMenuModal [scenes/game_menu_modal.tscn] [game_menu_modal.gd] – pause overlay using select-modal styling; 60px tall buttons matching other select modals; Continue resumes, Main Menu loads main_menu.tscn, Exit quits, Options disabled placeholder
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
 │	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
@@ -51,7 +51,7 @@ Main (Node2D) [place_armies.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
 │	├ PrebattleModal [scenes/prebattle_modal.tscn] [prebattle_modal.gd] – human-only step after moving into enemy territory; supports siege equipment buying (spends wood + siege points from defender count), applies gate/wall damage and ladder penalties to castle defense for the upcoming battle, Withdraw refunds purchases and retreats via BattleManager, Attack proceeds to BattleModal
-│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name
+│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name; Quick Resolve button drops battle round time to the quick parameter for immediate simulation
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ TutorialModal [tutorial_modal.tscn] [tutorial_modal.gd] – UI-layer arrows for screen-anchored tutorial hints (Arrow1/Arrow2 placed manually in scene)
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
@@ -65,7 +65,7 @@ Main (Node2D) [place_armies.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – simple displayMessage(text) overlay with recruitment-style continue button; emits continue_clicked for restore flows
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
-│	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open
+│	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open; ArmyActions button cancels move and reopens ArmySelectModal for the selected army
 │	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
 │	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – opens from trade icon; prices start at Food/Wood 2/1, Stone 4/2, Iron 6/3 then adjust by market curve (min 0.4, k=0.01); per-player trade history decays each turn (trade_reset_rate=0.2); buttons adjust buy/sell amounts, update totals/gold delta, and continue applies trades via PlayerManager with status refresh
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]

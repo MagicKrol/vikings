@@ -18,8 +18,10 @@ var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
 var withdraw_button: Button
+var quick_resolve_button: Button
 var message_label: Label
 var defender_defense_value: Label
+var buttons_margin: MarginContainer
 
 # Battle data
 var attacking_army: Army = null
@@ -63,12 +65,15 @@ func _ready():
 	attacker_units_container = get_node("Panel/Army/UnitsSection")
 	defender_units_container = get_node("Panel/Army/UnitsSection")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
+	quick_resolve_button = get_node("Panel/Army/ButtonSection/HBoxContainer/QuickResolve")
 	withdraw_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
 	message_label = get_node("Panel/Army/MessageSection/HBoxContainer/Message")
 	defender_defense_value = get_node("Panel/Army/HeaderSection/HBoxContainer2/DefenderDefenseValue")
+	buttons_margin = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonsMargin") as MarginContainer
 
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
+	quick_resolve_button.pressed.connect(_on_quick_resolve_pressed)
 	withdraw_button = continue_button  # Both reference the same button
 	continue_button.name = "continue"
 	_set_message("")
@@ -107,6 +112,9 @@ func show_battle(army: Army, region: Region) -> void:
 
 	_set_message("")
 	sound_manager.play_battle_sound()
+	quick_resolve_button.visible = true
+	if buttons_margin:
+		buttons_margin.visible = true
 
 	# Show initial display BEFORE starting battle
 	_update_display()
@@ -489,6 +497,7 @@ func _run_battle_simulation() -> void:
 		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, available_recruits)
 		defending_compositions.append(recruits_comp)
 	# Start the animated battle with attacker efficiency
+	animated_simulator.set_round_time(GameParameters.BATTLE_ROUND_TIME)
 	var attacker_efficiency = attacking_army.get_efficiency()
 	var terrain_type = defending_region.get_region_type()
 	var castle_type = defending_region.get_castle_type()
@@ -518,6 +527,9 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	report.defender_wounded = Utils.compute_wounded(report.defender_losses)
 	battle_report = report
 	sound_manager.fade_out_battle_sound()
+	quick_resolve_button.visible = false
+	if buttons_margin:
+		buttons_margin.visible = false
 
 	# If AI modal is disabled for debugging, finalize immediately only when defender is not human
 	var gm = get_node("../../GameManager") as GameManager
@@ -547,6 +559,11 @@ func _on_ai_withdrawal_started() -> void:
 	_play_retreat_sound()
 	withdrawal_in_progress = true
 	_update_action_button()
+
+func _on_quick_resolve_pressed() -> void:
+	if sound_manager:
+		sound_manager.click_sound()
+	animated_simulator.set_round_time(GameParameters.BATTLE_ROUND_TIME_QUICK)
 
 func _on_button_pressed() -> void:
 	"""Handle button press - either Continue or Withdraw based on battle state"""
@@ -691,7 +708,6 @@ func _update_action_button() -> void:
 		continue_button.visible = true
 		continue_button.text = "Continue"
 		continue_button.disabled = false
-
 
 func _set_message(text: String) -> void:
 	message_label.text = text

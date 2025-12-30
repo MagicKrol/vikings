@@ -539,9 +539,15 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
 layout_mode = 2
+alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
-custom_minimum_size = Vector2(240, 0)
+[node name="QuickResolve" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_button_theme")
+text = "Quick Resolve"
+
+[node name="ButtonsMargin" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]

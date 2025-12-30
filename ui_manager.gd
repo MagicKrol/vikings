@@ -45,6 +45,10 @@ var _info_modal: InfoModal
 var _move_modal: MoveModal
 var _prebattle_modal: PrebattleModal
 var _message_modal: MessageModal
+var _trade_modal: TradeModal
+var _recruitment_modal: RecruitmentModal
+var _transfer_select_modal: TransferSelectModal
+var _transfer_soldiers_modal: TransferSoldiersModal
 
 enum SelectContextType {
 	NONE,
@@ -92,6 +96,10 @@ func _ready():
 	_move_modal = get_parent().get_node("MoveModal") as MoveModal
 	_prebattle_modal = get_parent().get_node("PrebattleModal") as PrebattleModal
 	_message_modal = get_parent().get_node("MessageModal") as MessageModal
+	_trade_modal = get_parent().get_node("TradeModal") as TradeModal
+	_recruitment_modal = get_parent().get_node("RecruitmentModal") as RecruitmentModal
+	_transfer_select_modal = get_parent().get_node("TransferSelectModal") as TransferSelectModal
+	_transfer_soldiers_modal = get_parent().get_node("TransferSoldiersModal") as TransferSoldiersModal
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
@@ -282,6 +290,14 @@ func close_all_active_modals() -> void:
 		_move_modal.hide_move_modal()
 	if _prebattle_modal.visible:
 		_prebattle_modal.hide_prebattle()
+	if _trade_modal and _trade_modal.visible:
+		_trade_modal.hide_modal()
+	if _recruitment_modal and _recruitment_modal.visible:
+		_recruitment_modal.hide_modal()
+	if _transfer_select_modal and _transfer_select_modal.visible:
+		_transfer_select_modal.hide_modal()
+	if _transfer_soldiers_modal and _transfer_soldiers_modal.visible:
+		_transfer_soldiers_modal.hide_modal()
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
