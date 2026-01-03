@@ -61,6 +61,7 @@ var _fighting_army_for_reselection: Army = null
 var _attacker_withdraw_allowed: bool = false
 var _defender_withdraw_allowed: bool = false
 var _current_ladder_damage: int = 0
+var _attacker_manual_withdraw_requested: bool = false
 
 func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_modal: BattleModal, sound_manager: SoundManager):
 	_region_manager = region_manager
@@ -72,10 +73,16 @@ func set_game_manager(game_manager) -> void:
 	"""Set GameManager reference for AI turn resumption"""
 	_game_manager = game_manager
 
+func mark_attacker_manual_withdrawal() -> void:
+	_attacker_manual_withdraw_requested = true
+	DebugLogger.log("Withdrawal", "BattleManager.mark_attacker_manual_withdrawal flagged")
+
 func start_battle(attacker: Army, target_region_id: int, ladder_damage: int = 0) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	_current_ladder_damage = ladder_damage
+	_attacker_manual_withdraw_requested = false
+	DebugLogger.log("Withdrawal", "BattleManager.start_battle attacker=" + str(attacker.name) + " target=" + str(target_region.get_region_name()))
 
 	# Ensure attacker has a stored previous region for potential withdrawal fallback
 	if _army_manager and attacker and is_instance_valid(attacker):
@@ -300,6 +307,7 @@ func prepare_human_battle(attacker: Army, region: Region) -> void:
 func handle_battle_modal_closed() -> void:
 	"""Handle battle modal closure and complete conquest if needed"""
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle modal closed, checking for pending conquest...")
+	DebugLogger.log("Withdrawal", "BattleManager.handle_battle_modal_closed manual_flag=" + str(_attacker_manual_withdraw_requested))
 	
 	if pending_conquest_army != null and pending_conquest_region != null:
 		DebugLogger.log("BattleSystem", "[BattleManager] Found pending conquest, delegating to GameManager finalization...")
@@ -323,6 +331,7 @@ func handle_battle_modal_closed() -> void:
 			"defending_recruits_region": _pending_recruits_region,
 			"defending_recruits_count": _pending_recruits_count
 		}
+		DebugLogger.log("Withdrawal", "BattleManager.handle_battle_modal_closed battle_result=" + str(battle_result) + " withdraw_side=" + str(result_data["withdrawing_side"]) + " attacker_can=" + str(_attacker_withdraw_allowed) + " defender_can=" + str(_defender_withdraw_allowed))
 		
 		# Use GameManager's unified finalization
 		if _game_manager:
@@ -421,6 +430,8 @@ func _get_battle_result() -> String:
 		return "defeat"
 	
 	var battle_report = _battle_modal.battle_report
+	if _attacker_manual_withdraw_requested:
+		DebugLogger.log("Withdrawal", "BattleManager._get_battle_result manual flag set; report winner=" + str(battle_report.winner) + " withdrawing_side=" + str(battle_report.withdrawing_side))
 	if battle_report.winner == "Attackers":
 		return "victory"
 	elif battle_report.winner == "Withdrawal":
@@ -434,6 +445,7 @@ func _handle_army_withdrawal(withdrawing_army: Army) -> void:
 		return
 	
 	DebugLogger.log("BattleSystem", "[BattleManager] Army " + str(withdrawing_army.name) + " withdrew from battle")
+	DebugLogger.log("Withdrawal", "BattleManager._handle_army_withdrawal start army=" + str(withdrawing_army.name))
 	
 	# Reduce efficiency by 5 for withdrawal (in addition to movement penalty already applied)
 	withdrawing_army.reduce_efficiency(5)
@@ -447,6 +459,7 @@ func _handle_army_withdrawal(withdrawing_army: Army) -> void:
 		else:
 			DebugLogger.log("BattleSystem", "No previous region stored for " + withdrawing_army.name + " - cannot retreat")
 		await _army_manager.retreat_army_to_previous_region(withdrawing_army)
+		DebugLogger.log("Withdrawal", "BattleManager._handle_army_withdrawal finished army=" + str(withdrawing_army.name))
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] Warning: ArmyManager not available for army retreat")
 

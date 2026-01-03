@@ -558,6 +558,7 @@ func start_withdrawal_round(side: int) -> void:
 	withdrawal_rounds_remaining = GameParameters.WITHDRAWAL_FREE_HIT_ROUNDS
 	mobility_withdrawal_rounds_remaining = GameParameters.MOBILITY_EXTRA_WITHDRAWAL_ROUNDS
 	DebugLogger.log("BattleAnimation", "Starting withdrawal with " + str(withdrawal_rounds_remaining) + " free hit rounds and " + str(mobility_withdrawal_rounds_remaining) + " mobility rounds...")
+	DebugLogger.log("Withdrawal", "AnimatedBattleSimulator.start_withdrawal_round side=" + str(side) + " standard=" + str(withdrawal_rounds_remaining) + " mobility=" + str(mobility_withdrawal_rounds_remaining) + " atk_size=" + str(battle_simulator._army_size(current_attackers)) + " def_size=" + str(battle_simulator._army_size(current_defenders)))
 	battle_timer.start()
 
 func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
@@ -638,6 +639,7 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	round_completed.emit(round_data)
 	
 	var defenders_armies_size = battle_simulator._army_size(_get_armies_from_defenders())
+	DebugLogger.log("Withdrawal", "AnimatedBattleSimulator._process_withdrawal_round side=" + str(withdrawing_side) + " round=" + str(current_round) + " type=" + round_type + " atk_size=" + str(battle_simulator._army_size(current_attackers)) + " def_size=" + str(battle_simulator._army_size(current_defenders)) + " def_army_size=" + str(defenders_armies_size) + " std_left=" + str(withdrawal_rounds_remaining) + " mob_left=" + str(mobility_withdrawal_rounds_remaining))
 	if (withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining <= 0) or battle_simulator._army_size(current_attackers) <= 0 or defenders_armies_size <= 0:
 		_finish_withdrawal()
 		return
@@ -666,6 +668,7 @@ func _finish_withdrawal() -> void:
 	report.withdrawing_side = side
 	
 	DebugLogger.log("BattleAnimation", "Withdrawal completed! Side=" + str(side) + " after " + str(current_round) + " rounds")
+	DebugLogger.log("Withdrawal", "AnimatedBattleSimulator._finish_withdrawal side=" + str(side) + " atk_size=" + str(battle_simulator._army_size(current_attackers)) + " def_size=" + str(battle_simulator._army_size(current_defenders)) + " atk_losses=" + str(attacker_losses) + " def_losses=" + str(defender_losses))
 	
 	# Emit final results
 	battle_finished.emit(report)

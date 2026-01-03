@@ -104,7 +104,9 @@ func _build_button_definitions() -> Array[Dictionary]:
 	})
 
 	if current_region != null:
-		definitions.append(_get_castle_button_data())
+		var castle_button_data = _get_castle_button_data()
+		if not castle_button_data.is_empty():
+			definitions.append(castle_button_data)
 
 	var has_castle := current_region != null and current_region.get_castle_type() != CastleTypeEnum.Type.NONE
 	definitions.append({
@@ -206,12 +208,11 @@ func _get_castle_button_data() -> Dictionary:
 	var under_repair = current_region.is_castle_under_repair()
 	
 	if under_construction:
-		var turns_remaining = current_region.get_castle_build_turns_remaining()
-		var next_type = CastleTypeEnum.get_next_level(current_region.get_castle_under_construction())
-		if next_type == CastleTypeEnum.Type.NONE:
+		var building_type = current_region.get_castle_under_construction()
+		if building_type == CastleTypeEnum.Type.NONE:
 			return {}
 		return {
-			"text": "Build " + CastleTypeEnum.type_to_string(next_type),
+			"text": "Build " + CastleTypeEnum.type_to_string(building_type),
 			"enabled": false,
 			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
 		}

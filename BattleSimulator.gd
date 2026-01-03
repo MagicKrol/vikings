@@ -339,12 +339,14 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 		return 0
 	var forced_ratio := GameParameters.AI_WITHDRAW_POWER_THRESHOLD - GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE
 	if ratio <= forced_ratio:
+		DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal forced side=" + str(withdrawing_side) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
 		DebugLogger.log("BattleCalculation", "Forced withdrawal. side=" + str(withdrawing_side) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
 		return withdrawing_side
 	var chance: float = clampf(1.0 - ratio, 0.0, 1.0)
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var roll := rng.randf()
+	DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal roll side=" + str(withdrawing_side) + " ratio=" + str(snappedf(ratio, 0.003)) + " chance=" + str(snappedf(chance, 0.003)) + " roll=" + str(snappedf(roll, 0.003)))
 	DebugLogger.log("BattleCalculation", "Withdrawal check. side=" + str(withdrawing_side) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)) + " roll=" + str(snappedf(roll, 0.003)) + " chance=" + str(snappedf(chance, 0.003)))
 	return withdrawing_side if roll < chance else 0
 
@@ -353,6 +355,7 @@ func _resolve_withdrawal_phase(current_attackers: Dictionary, current_defenders:
 	var standard_rounds := GameParameters.WITHDRAWAL_FREE_HIT_ROUNDS
 	var mobility_rounds := GameParameters.MOBILITY_EXTRA_WITHDRAWAL_ROUNDS
 	var garrison_dict := current_garrison.duplicate()
+	DebugLogger.log("Withdrawal", "BattleSimulator.resolve_withdrawal start side=" + str(withdrawing_side) + " standard_rounds=" + str(standard_rounds) + " mobility_rounds=" + str(mobility_rounds))
 	while _army_size(current_attackers) > 0 and (standard_rounds > 0 or mobility_rounds > 0):
 		extra_rounds += 1
 		var kills := {}

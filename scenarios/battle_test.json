@@ -39,7 +39,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 0,
+				"Peasants": 100,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -198,11 +198,11 @@
 		{
 			"player_id": 1,
 			"resources": {
-				"Food": 1,
-				"Gold": 1,
-				"Iron": 1,
-				"Stone": 1,
-				"Wood": 1
+				"Food": 100,
+				"Gold": 100,
+				"Iron": 100,
+				"Stone": 100,
+				"Wood": 100
 			}
 		},
 		{
@@ -3680,13 +3680,13 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "ocean",
+			"biome": "grassland",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 188,
 			"level": "Shire",
-			"ocean": true,
-			"owner": 0,
+			"ocean": false,
+			"owner": 1,
 			"population": 0,
 			"resources": {
 				"Food": 4,
@@ -6333,7 +6333,7 @@
 		},
 		{
 			"biome": "forest",
-			"castle_type": "None",
+			"castle_type": "Castle",
 			"discovered_ores": [],
 			"garrison": {
 				"Archers": 0,

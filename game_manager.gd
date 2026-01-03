@@ -1708,6 +1708,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 		var attacker_can_withdraw_flag := bool(result_data.get("attacker_can_withdraw", false))
 		var defender_can_withdraw_flag := bool(result_data.get("defender_can_withdraw", false))
 		DebugLogger.log("BattleSystem", "Withdrawal finalization: side=" + str(withdrawing_side) + ", attacker_can=" + str(attacker_can_withdraw_flag) + ", defender_can=" + str(defender_can_withdraw_flag))
+		DebugLogger.log("Withdrawal", "GameManager.finalize_battle_result start withdrawal side=" + str(withdrawing_side) + " attacker_can=" + str(attacker_can_withdraw_flag) + " defender_can=" + str(defender_can_withdraw_flag))
 		if withdrawing_side == 0 and battle_report != null:
 			withdrawing_side = int(battle_report.withdrawing_side)
 			if withdrawing_side == 0:
@@ -1721,6 +1722,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 				var is_ai_withdraw := is_player_computer(army.get_player_id())
 				DebugLogger.log("BattleSystem", "Applying attacker withdrawal for army " + army.get_display_name())
 				await _battle_manager._handle_army_withdrawal(army)
+				DebugLogger.log("Withdrawal", "GameManager.finalize_battle_result attacker retreat complete for " + army.get_display_name())
 				if is_ai_withdraw and _ai_camera_director:
 					await _ai_camera_director.await_focus_on_army(army)
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
@@ -1728,6 +1730,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			if _battle_manager:
 				DebugLogger.log("BattleSystem", "Applying defender withdrawal retreat for defenders: " + str(defending_armies.size()))
 				await _battle_manager.retreat_defender_armies(defending_armies, defending_recruits_region)
+				DebugLogger.log("Withdrawal", "GameManager.finalize_battle_result defender retreat complete")
 			if army and is_instance_valid(army) and target_region_id != -1:
 				DebugLogger.log("BattleSystem", "Setting ownership after defender withdrawal to player " + str(army.get_player_id()) + " for region " + str(target_region_id))
 				_region_manager.set_region_ownership(target_region_id, army.get_player_id())

@@ -45,6 +45,7 @@ var initial_defender_comp: Dictionary = {}
 
 # Withdrawal state
 var withdrawal_in_progress: bool = false
+var attacker_manual_withdraw_requested: bool = false
 var _defender_start_recruits: int = 0
 
 # Sound manager reference
@@ -107,6 +108,8 @@ func show_battle(army: Army, region: Region) -> void:
 		hide_modal()
 		return
 	
+	DebugLogger.log("Withdrawal", "BattleModal.show_battle attacker=" + str(army.get_display_name()) + " defender_region=" + str(region.get_region_name()))
+	attacker_manual_withdraw_requested = false
 	attacking_army = army
 	defending_region = region
 
@@ -130,6 +133,7 @@ func show_battle(army: Army, region: Region) -> void:
 func hide_modal() -> void:
 	"""Hide the battle modal"""
 	DebugLogger.log("UISystem", "Hiding modal and notifying click manager...")
+	DebugLogger.log("Withdrawal", "BattleModal.hide_modal reset state")
 	
 	# Stop any ongoing battle animation
 	if animated_simulator and animated_simulator.is_running():
@@ -525,6 +529,7 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	# Compute wounded before showing summary
 	report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 	report.defender_wounded = Utils.compute_wounded(report.defender_losses)
+	DebugLogger.log("Withdrawal", "BattleModal._on_battle_finished winner=" + str(report.winner) + " withdrawing_side=" + str(report.withdrawing_side) + " manual_request=" + str(attacker_manual_withdraw_requested))
 	battle_report = report
 	sound_manager.fade_out_battle_sound()
 	quick_resolve_button.visible = false
@@ -603,10 +608,12 @@ func _on_withdraw_pressed() -> void:
 	"""Handle Withdraw button press"""
 	# Don't allow withdrawal if battle is not in progress
 	if not battle_in_progress:
+		DebugLogger.log("Withdrawal", "Withdraw click ignored: battle not in progress")
 		return
 	
 	# Don't allow withdrawal if already withdrawing
 	if withdrawal_in_progress:
+		DebugLogger.log("Withdrawal", "Withdraw click ignored: already withdrawing")
 		return
 	
 	# Play click sound for button press
@@ -618,54 +625,39 @@ func _on_withdraw_pressed() -> void:
 	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
 	var human_controls_attacker := _player_controls_attacking_army()
 	var human_controls_defender := gm.is_player_human(region_owner) or _player_has_defending_army()
+	DebugLogger.log("Withdrawal", "Withdraw click state round=" + str(current_round) + " attacker_controls=" + str(human_controls_attacker) + " defender_controls=" + str(human_controls_defender) + " withdraw_flag=" + str(withdrawal_in_progress))
 	
 	# Defender (human): retreat not simulated with attacker-only withdrawal rounds
 	if human_controls_defender and not human_controls_attacker:
 		# If not allowed, ignore
 		if not _is_withdraw_allowed_for_current_role():
+			DebugLogger.log("Withdrawal", "Defender withdraw denied by eligibility")
 			return
-		# For now, retreat defending armies to a random owned neighbor (simple UX);
-		# arrow-based selection requires additional UI plumbing between modal and click manager.
-		var neighbors := gm.get_region_manager().get_neighbor_regions(defending_region.get_region_id())
-		var owned_neighbors: Array = []
-		for nid in neighbors:
-			if gm.get_region_manager().get_region_owner(nid) == region_owner:
-				owned_neighbors.append(nid)
-		if owned_neighbors.is_empty():
-			return
-		var pick_id: int = owned_neighbors[randi() % owned_neighbors.size()]
-		var dest_region := gm.get_region_manager().map_generator.get_region_container_by_id(pick_id) as Region
+		withdrawal_in_progress = true
 		_set_message("Your army is withdrawing")
 		_play_retreat_sound()
-		# Move all defending armies (exclude garrison)
-		var moved_any := false
-		for child in defending_region.get_children():
-			if child is Army and child.get_player_id() == region_owner:
-				var d := child as Army
-				var start_global := d.global_position
-				defending_region.remove_child(d)
-				dest_region.add_child(d)
-				var target_local := gm.get_army_manager()._compute_army_target_position(dest_region, d)
-				gm.get_army_manager()._apply_army_offsets_for_region(dest_region, d)
-				var target_global: Vector2 = dest_region.to_global(target_local)
-				d.global_position = start_global
-				var tw := d.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
-				await tw.finished
-				moved_any = true
-		if moved_any:
-			DebugLogger.log("UISystem", "Defender withdrew armies to neighbor; continuing battle vs garrison only")
-			return
+		_update_action_button()
+		if animated_simulator:
+			animated_simulator.start_withdrawal_round(2)
+		DebugLogger.log("UISystem", "Starting withdrawal...")
+		DebugLogger.log("Withdrawal", "Defender withdrawal started")
+		return
 	elif human_controls_attacker:
 		# Attacker withdrawal: use animated simulator flow (defender free hits), then finalize to previous region
 		withdrawal_in_progress = true
+		attacker_manual_withdraw_requested = true
+		gm.get_battle_manager().mark_attacker_manual_withdrawal()
+		animated_simulator.defender_can_withdraw = false
 		_set_message("Your army is withdrawing")
 		_play_retreat_sound()
 		_update_action_button()
 		if animated_simulator:
 			animated_simulator.start_withdrawal_round(1)
 		DebugLogger.log("UISystem", "Starting withdrawal...")
+		DebugLogger.log("Withdrawal", "Attacker withdrawal started; def_withdraw_allowed=" + str(animated_simulator.defender_can_withdraw) + " timer=" + str(animated_simulator.battle_timer.wait_time))
 	else:
 		# No human-controlled side detected; ignore button
+		DebugLogger.log("Withdrawal", "Withdraw click ignored: no human-controlled side")
 		return
 
 func _is_withdraw_allowed_for_current_role() -> bool:
