@@ -34,9 +34,9 @@ var sound_manager: SoundManager
 var player_manager: PlayerManagerNode
 var tutorial_manager: TutorialManager = null
 
-const LADDER_DATA = {"points": 1, "wood": 2, "defense": 2, "max": 10}
-const RAM_DATA = {"points": 4, "wood": 5, "defense": 5, "max": 2}
-const TREB_DATA = {"points": 10, "wood": 10, "defense": 15, "max": 99}
+const LADDER_DATA = {"points": 1, "wood": 0, "defense": 0, "max": 99}
+const RAM_DATA = {"points": 2, "wood": 2, "defense": 5, "max": 99}
+const TREB_DATA = {"points": 3, "wood": 5, "defense": 10, "max": 99}
 
 var siege_points_total: int = 0
 var siege_points_spent: int = 0

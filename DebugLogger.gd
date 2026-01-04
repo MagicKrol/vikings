@@ -39,9 +39,9 @@ var debug_categories: Dictionary = {
 	
 	# Battle Systems
 	"BattleAI": false, 
-	"BattleSystem": true,         # Combat and battle resolution
+	"BattleSystem": false,         # Combat and battle resolution
 	"BattleCalculation": false,    # Detailed battle calculations
-	"BattleAnimation": true,      # Battle animation and rounds
+	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management
@@ -69,9 +69,9 @@ var debug_categories: Dictionary = {
 	"Animation": false,             # Generic node/tween animations
 	"MapEditorPanel": false,
 	"Trade": false,
-	"Tutorial": true,
-	"TradeModal": true,
-	"Withdrawal": true
+	"Tutorial": false,
+	"TradeModal": false,
+	"Withdrawal": false
 }
 
 # Color coding for different log levels

@@ -10,6 +10,9 @@ enum Type {
 	UNIT_TRAIT_5,   # charge
 	UNIT_TRAIT_6,   # multi_attack
 	UNIT_TRAIT_7,   # armor_piercing
+	UNIT_TRAIT_8,   # siege laborer
+	UNIT_TRAIT_9,   # back_rank
+	UNIT_TRAIT_10,  # defender
 }
 
 # Map generic trait constants to actual trait names from traits.txt
@@ -21,6 +24,9 @@ const TRAIT_NAMES = {
 	Type.UNIT_TRAIT_5: "charge",
 	Type.UNIT_TRAIT_6: "multi_attack",
 	Type.UNIT_TRAIT_7: "armor_piercing",
+	Type.UNIT_TRAIT_8: "siege_laborer",
+	Type.UNIT_TRAIT_9: "back_rank",
+	Type.UNIT_TRAIT_10: "defender",
 }
 
 # Human-readable display names for each trait
@@ -30,19 +36,25 @@ const TRAIT_DISPLAY_NAMES = {
 	Type.UNIT_TRAIT_3: "Mobility", 
 	Type.UNIT_TRAIT_4: "Flanker",
 	Type.UNIT_TRAIT_5: "Charge",
-	Type.UNIT_TRAIT_6: "Multi attack",
+	Type.UNIT_TRAIT_6: "Multi Attack",
 	Type.UNIT_TRAIT_7: "Armor Piercing",
+	Type.UNIT_TRAIT_8: "Siege Laborer",
+	Type.UNIT_TRAIT_9: "Back Rank",
+	Type.UNIT_TRAIT_10: "Defender",
 }
 
 # Descriptions for each trait (from traits.txt)
 const TRAIT_DESCRIPTIONS = {
 	Type.UNIT_TRAIT_1: "Double atack against mounted units",
-	Type.UNIT_TRAIT_2: "Can attack all units. Protected by melee units from close combat damage",
+	Type.UNIT_TRAIT_2: "Can attack all units",
 	Type.UNIT_TRAIT_3: "Allows chasing retreating units dealing additional damage",
 	Type.UNIT_TRAIT_4: "Can directly attack enemy ranged units",
 	Type.UNIT_TRAIT_5: "Doubles attack power when fighting in grassland regions",
 	Type.UNIT_TRAIT_6: "Provides additional attack",
 	Type.UNIT_TRAIT_7: "Halves enemy defense",
+	Type.UNIT_TRAIT_8: "Can construct siege equipment.",
+	Type.UNIT_TRAIT_9: "Protected by melee units from close combat damage",
+	Type.UNIT_TRAIT_10: "50% attack bonus when defending",
 }
 
 # Convert enum type to internal trait name
@@ -74,4 +86,5 @@ static func get_all_types() -> Array[Type]:
 		Type.UNIT_TRAIT_5,
 		Type.UNIT_TRAIT_6,
 		Type.UNIT_TRAIT_7,
+		Type.UNIT_TRAIT_8,
 	]

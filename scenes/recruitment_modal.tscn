@@ -834,7 +834,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Double atack against mounted units"
+text = "Double atack against mounted units or when defending."
 autowrap_mode = 2
 
 [node name="Trait2" type="HBoxContainer" parent="Info/Header"]
@@ -865,8 +865,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Can attack all units.
-Protected by melee units from close combat damage."
+text = "Can attack all units."
 autowrap_mode = 2
 
 [node name="Trait3" type="HBoxContainer" parent="Info/Header"]
@@ -1042,7 +1041,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
-text = "Trait 8"
+text = "Siege Laborer"
 
 [node name="TraitDesc8" type="HBoxContainer" parent="Info/Header"]
 visible = false
@@ -1058,5 +1057,69 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Trait 8 description"
+text = "Can constuct siege equipment"
+autowrap_mode = 2
+
+[node name="Trait9" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait9"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait9"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Back Rank"
+
+[node name="TraitDesc9" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc9"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc9"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Protected by melee units from close combat damage."
+autowrap_mode = 2
+
+[node name="Trait10" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/Trait10"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/Trait10"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+text = "Defender"
+
+[node name="TraitDesc10" type="HBoxContainer" parent="Info/Header"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_header")
+
+[node name="MarginContainer" type="MarginContainer" parent="Info/Header/TraitDesc10"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Info/Header/TraitDesc10"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme = ExtResource("3_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "50% attack bonus when defending"
 autowrap_mode = 2

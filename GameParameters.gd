@@ -278,7 +278,7 @@ const CASTLE_DEFENSE_BONUSES_MIN = {
 const UNIT_TIERS = {
 	SoldierTypeEnum.Type.PEASANTS: 1,      # Tier 1 - Available at L1+
 	SoldierTypeEnum.Type.SPEARMEN: 2,      # Tier 1 - Available at L1+
-	SoldierTypeEnum.Type.SWORDSMEN: 2,     # Tier 2 - Available at L2+
+	SoldierTypeEnum.Type.SWORDSMEN: 3,     # Tier 2 - Available at L2+
 	SoldierTypeEnum.Type.ARCHERS: 2,       # Tier 2 - Available at L2+
 	SoldierTypeEnum.Type.CROSSBOWMEN: 3,   # Tier 3 - Available at L3+
 	SoldierTypeEnum.Type.HORSEMEN: 3,      # Tier 3 - Available at L3+
@@ -308,7 +308,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [],  # no_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_8],  # no_armor,
 		"power": 2
 	},
 	SoldierTypeEnum.Type.SPEARMEN: {
@@ -319,7 +319,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_1],  # long_spears, light_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_1, UnitTraitEnum.Type.UNIT_TRAIT_8, UnitTraitEnum.Type.UNIT_TRAIT_10],  # long_spears, light_armor,
 		"power": 3
 	},
 	SoldierTypeEnum.Type.SWORDSMEN: {
@@ -330,7 +330,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
-		"traits": [],  # medium_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_8],  # medium_armor,
 		"power": 4
 	},
 	SoldierTypeEnum.Type.ARCHERS: {
@@ -341,7 +341,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2],  # ranged, light_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, light_armor,
 		"power": 3
 	},
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
@@ -352,7 +352,7 @@ const UNIT_STATS = {
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
-		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_7],  # ranged, armor_piercing, light_armor,
+		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_7, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, armor_piercing, light_armor,
 		"power": 4
 	},
 	SoldierTypeEnum.Type.HORSEMEN: {

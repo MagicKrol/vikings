@@ -2,15 +2,15 @@
 	"armies": [
 		{
 			"composition": {
-				"Archers": 50,
-				"Crossbowmen": 50,
+				"Archers": 100,
+				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 50,
+				"Peasants": 100,
 				"Royal Guard": 0,
-				"Spearmen": 50,
-				"Swordsmen": 50
+				"Spearmen": 100,
+				"Swordsmen": 100
 			},
 			"name": "Army II",
 			"player_id": 2,
@@ -18,7 +18,7 @@
 		},
 		{
 			"composition": {
-				"Archers": 0,
+				"Archers": 50,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
@@ -3683,8 +3683,20 @@
 			"biome": "grassland",
 			"castle_type": "None",
 			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 6,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
 			"id": 188,
 			"level": "Shire",
+			"name": "Hellaby",
 			"ocean": false,
 			"owner": 1,
 			"population": 0,
@@ -5409,7 +5421,7 @@
 		},
 		{
 			"biome": "grassland",
-			"castle_type": "None",
+			"castle_type": "Outpost",
 			"discovered_ores": [],
 			"garrison": {
 				"Archers": 0,
