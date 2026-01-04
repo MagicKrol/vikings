@@ -437,7 +437,10 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	_apply_army_offsets_for_region(target_region_container, moving_army)
 	# Animate the moving army to its target position (use global for robust animation)
 	var target_global: Vector2 = target_region_container.to_global(target_local)
-	var tween: Tween = moving_army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	var gm := _get_game_manager()
+	var is_ai_player := gm != null and gm.is_player_computer(moving_army.get_player_id())
+	var move_duration := GameParameters.get_move_animation_duration(is_ai_player)
+	var tween: Tween = moving_army.animate_move_to(target_global, move_duration, true)
 	await tween.finished
 	# Do not re-apply offsets for the moving army here; let the tween finish
 	

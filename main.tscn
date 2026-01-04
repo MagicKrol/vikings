@@ -94,6 +94,7 @@ script = ExtResource("28_mapeditor")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="SpeedModal" parent="UI" instance=ExtResource("12_dvvgp")]
+visible = false
 offset_left = -940.0
 offset_top = 330.0
 offset_right = -690.0
@@ -188,6 +189,7 @@ offset_bottom = 305.0
 visible = false
 
 [node name="IconsModal" parent="UI" instance=ExtResource("34_dn8i2")]
+visible = false
 offset_left = 10.0
 offset_right = 450.0
 

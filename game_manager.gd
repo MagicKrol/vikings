@@ -1018,10 +1018,13 @@ func _apply_debug_ui_visibility_for_player(player_id: int) -> void:
 	_set_player_status_panel_visibility(player_id, ui_node)
 	var icons_modal = ui_node.get_node("IconsModal") as Control
 	var turn_modal = ui_node.get_node("TurnModal") as TurnModal
+	var speed_modal = ui_node.get_node("SpeedModal") as Control
 	if turn_modal:
 		turn_modal.set_end_turn_button_visible(not hide_ai_ui)
 	if icons_modal:
 		icons_modal.visible = not hide_ai_ui
+	if speed_modal:
+		speed_modal.visible = is_player_computer(player_id) and not castle_placing_mode
 
 func _on_current_player_changed(player_id: int) -> void:
 	"""Handle player change signal by refreshing UI and showing next player modal"""

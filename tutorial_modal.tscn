@@ -71,13 +71,13 @@ texture = ExtResource("2")
 
 [node name="Arrow10" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(739, 959)
+position = Vector2(739, 985)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow11" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(733, 1025)
+position = Vector2(733, 1040)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
@@ -161,6 +161,12 @@ rotation = 3.14159
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 flip_v = true
+
+[node name="Arrow23" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(739, 930)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
 
 [node name="Blocks" type="Control" parent="."]
 top_level = true
@@ -361,10 +367,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 885.0
-offset_top = 700.0
-offset_right = 1085.0
-offset_bottom = 755.0
+offset_left = 960.0
+offset_top = 750.0
+offset_right = 1160.0
+offset_bottom = 805.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
@@ -381,14 +387,15 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 840.0
-offset_top = 975.0
+offset_top = 1000.0
 offset_right = 1100.0
-offset_bottom = 1050.0
+offset_bottom = 1060.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.83, 0.2573, 0.2573, 0)
 
 [node name="regionsactions" type="Control" parent="Blocks"]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -418,9 +425,28 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 840.0
-offset_top = 900.0
+offset_top = 940.0
 offset_right = 1100.0
-offset_bottom = 975.0
+offset_bottom = 1000.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
+
+[node name="armyactions3" type="Control" parent="Blocks"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="Blocks/armyactions3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 840.0
+offset_top = 880.0
+offset_right = 1100.0
+offset_bottom = 935.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0)

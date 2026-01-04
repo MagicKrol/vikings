@@ -38,11 +38,14 @@ const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes availab
 const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
 const POPULATION_GROWTH_RATE = 0.02            # Base population growth rate (%)
 const POPULATION_CONST_GROWTH_RATE = 0.01
-const WITHDRAWAL_FREE_HIT_ROUNDS = 3           # Number of free hit rounds enemy gets during withdrawal
-const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 3    # Extra rounds mobility units get to attack withdrawing enemies
+const WITHDRAWAL_FREE_HIT_ROUNDS = 2           # Number of free hit rounds enemy gets during withdrawal
+const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 2    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
 const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
 const AI_WITHDRAW_MAX_POWER_DIFFERENCE = 0.20	# Power gap (20%) that forces withdrawal once reached
+const AI_MOVE_SPEED_NORMAL = 1.0
+const AI_MOVE_SPEED_FAST = 3.0
+const AI_MOVE_SPEED_VERY_FAST = 6.0
 
 ## Border Enhancement Constants
 const BORDER_SATURATION_BOOST = 0.1           # Increase saturation by 20% for colored borders
@@ -115,6 +118,8 @@ const AI_WOOD_RESOURCE_WEIGHT = 1.0            # Wood for building
 const AI_STONE_RESOURCE_WEIGHT = 1.0           # Stone for building
 const AI_IRON_RESOURCE_WEIGHT = 1.25            # Iron for advanced units
 const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount for normalization
+
+static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -764,6 +769,17 @@ static func get_movement_cost(region_type: RegionTypeEnum.Type) -> int:
 static func is_passable(region_type: RegionTypeEnum.Type) -> bool:
 	"""Check if terrain is passable (movement cost != -1)"""
 	return get_movement_cost(region_type) != -1
+
+static func set_ai_move_speed_multiplier(multiplier: float) -> void:
+	_ai_move_speed_multiplier = max(AI_MOVE_SPEED_NORMAL, multiplier)
+
+static func get_ai_move_speed_multiplier() -> float:
+	return _ai_move_speed_multiplier
+
+static func get_move_animation_duration(is_ai_player: bool) -> float:
+	if is_ai_player:
+		return MOVE_ANIMATION_DURATION / max(_ai_move_speed_multiplier, AI_MOVE_SPEED_NORMAL)
+	return MOVE_ANIMATION_DURATION
 
 static func get_resource_range(region_type: RegionTypeEnum.Type, resource_type: ResourcesEnum.Type) -> Dictionary:
 	"""Get min/max range for resource generation in region type"""

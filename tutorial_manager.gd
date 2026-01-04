@@ -228,7 +228,20 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,firstelement",
 		},
 		{
-			"message": "Before we jump into battle let's recruit additional soldiers.",
+			"message": "Before we jump into battle let's recruit additional soldiers. \nSelect army actions.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "MoveModal/army_actions",
+			"panel_position": Vector2(350, 700),
+			"arrow": {
+				"id": "23",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,makecamp,cancelmove",
+		},
+		{
+			"message": "Here is the list of all actions available to the army. Click on the Recruit Soldiers.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -238,7 +251,7 @@ func _build_default_steps() -> Array:
 				"id": "2",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,armyactions",
+			"block": "trade,endturn,armyactions,cancelmove,makecamp",
 		},
 		{
 			"message": "Every unit has it's role on the battlefield. You can learn more about it by hovering over the unit name.",
@@ -285,7 +298,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "region",
 			"target_region_id": 196,
 			"panel_position": Vector2(500, 200),
-			"block": "trade,endturn,cancelmove,makecamp"
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "Before a battle you will get some intel on the region's defenders. \n\nPress attack button to start the battle.",
@@ -385,7 +398,7 @@ func _build_default_steps() -> Array:
 				"id": "8",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,makecamp"
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "Every action uses some move points. Especially travelling through a difficult terrain!",
@@ -397,7 +410,7 @@ func _build_default_steps() -> Array:
 				"id": "8",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,makecamp"
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "Vigor represents your's army morale and stamina. It replesh upon resting. It affects army's battle effectiveness.",
@@ -409,7 +422,7 @@ func _build_default_steps() -> Array:
 				"id": "8",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,makecamp"
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "Let's make a camp, to heal our wounded and restore some vigor.",
@@ -422,7 +435,7 @@ func _build_default_steps() -> Array:
 				"id": "10",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove"
+			"block": "trade,endturn,cancelmove,armyactions3"
 		},
 		{
 			"message": "Vigor restored!\nBut we don't have enough movement points to move our army!\n Let's cancel our move.",
@@ -435,7 +448,7 @@ func _build_default_steps() -> Array:
 				"id": "11",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,makecamp"
+			"block": "trade,endturn,makecamp,armyactions3"
 		},
 		{
 			"message": "We can end our turn now.",
@@ -479,16 +492,16 @@ func _build_default_steps() -> Array:
 			"panel_position": Vector2(350, 700),
 			"block": "trade,endturn,firstelement",
 		},
-		{
-			"message": "",
-			"show_continue": false,
-			"block_input": false,
-			"expected_action": "ui",
-			"hide_message": true,
-			"ui_target": "ArmySelectModal/move_army",
-			"panel_position": Vector2(350, 700),
-			"block": "trade,endturn,armyactions2",
-		},
+		# {
+		# 	"message": "",
+		# 	"show_continue": false,
+		# 	"block_input": false,
+		# 	"expected_action": "ui",
+		# 	"hide_message": true,
+		# 	"ui_target": "ArmySelectModal/move_army",
+		# 	"panel_position": Vector2(350, 700),
+		# 	"block": "trade,endturn,armyactions2",
+		# },
 		{
 			"message": "",
 			"show_continue": false,
@@ -497,7 +510,7 @@ func _build_default_steps() -> Array:
 			"hide_message": true,
 			"target_region_id": 228,
 			"panel_position": Vector2(500, 200),
-			"block": "trade,endturn,cancelmove,makecamp"
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "During siege battles, defenders receive defense bonus. That allows them to receive less damage.",
@@ -601,7 +614,7 @@ func _build_default_steps() -> Array:
 				"id": "11",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,makecamp"
+			"block": "trade,endturn,makecamp,armyactions3"
 		},
 		{
 			"message": "Let's talk about economy and resources.",

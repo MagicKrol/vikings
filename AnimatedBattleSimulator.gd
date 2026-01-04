@@ -133,13 +133,13 @@ func _process_next_round() -> void:
 	
 	# Process garrison attacks at 100% efficiency if garrison exists
 	if not current_garrison_composition.is_empty():
-		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type, null, null, castle_defense_override)
+		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1)
 		battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 	
 	# Process defending army attacks at their efficiency if any defending armies exist
 	var armies_composition = _get_armies_from_defenders()
 	if not armies_composition.is_empty():
-		var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
+		var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1)
 		battle_simulator._merge_kill_results(defender_kills, army_kills)
 	
 	# Apply kills simultaneously
@@ -342,10 +342,12 @@ func _try_start_withdrawal(rng: RandomNumberGenerator) -> bool:
 		return true
 	return false
 
-func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100) -> Dictionary:
+func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, apply_castle_defense: bool = true) -> Dictionary:
 	"""Process attacks from only mobility trait units during mobility withdrawal rounds"""
 	var mobility_kills = {}
 	var efficiency_modifier = efficiency / 100.0
+	var defense_castle := castle_type if apply_castle_defense else CastleTypeEnum.Type.NONE
+	var defense_override := castle_defense_override if apply_castle_defense else -1
 	
 	# Only process units with mobility trait
 	for defender_unit_type in defending_army:
@@ -393,17 +395,19 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 						rng
 					)
 		
-		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, castle_type, castle_defense_override)
+		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, defense_castle, defense_override)
 		
 		# Merge kills into total
 		battle_simulator._merge_kill_results(mobility_kills, target_kills)
 	
 	return mobility_kills
 
-func _process_ranged_attacks(attacking_army: Dictionary, defending_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100) -> Dictionary:
+func _process_ranged_attacks(attacking_army: Dictionary, defending_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, apply_castle_defense: bool = true) -> Dictionary:
 	"""Process attacks from only ranged trait units during opening volley"""
 	var ranged_kills = {}
 	var efficiency_modifier = efficiency / 100.0
+	var defense_castle := castle_type if apply_castle_defense else CastleTypeEnum.Type.NONE
+	var defense_override := castle_defense_override if apply_castle_defense else -1
 	
 	# Only process units with ranged trait
 	for attacker_unit_type in attacking_army:
@@ -451,7 +455,7 @@ func _process_ranged_attacks(attacking_army: Dictionary, defending_targets: Dict
 						rng
 					)
 		
-		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, attacker_unit_type, rng, castle_type, castle_defense_override)
+		var target_kills = battle_simulator._defense_resolution_with_attacker_traits(target_assigned, attacker_unit_type, rng, defense_castle, defense_override)
 		
 		# Merge kills into total
 		battle_simulator._merge_kill_results(ranged_kills, target_kills)
@@ -464,7 +468,7 @@ func _process_ranged_opening_volley() -> void:
 	rng.randomize()
 	
 	# Process attacker ranged attacks
-	var attacker_ranged_kills = _process_ranged_attacks(current_attackers, current_defenders, rng, attacker_efficiency)
+	var attacker_ranged_kills = _process_ranged_attacks(current_attackers, current_defenders, rng, attacker_efficiency, true)
 	
 	# Process defender ranged attacks
 	var defender_ranged_kills = {}
@@ -472,13 +476,13 @@ func _process_ranged_opening_volley() -> void:
 	# Process garrison ranged attacks at 100% efficiency if garrison exists
 	if region_garrison != null and not region_garrison.is_empty():
 		var garrison_dict = battle_simulator._merge_compositions([region_garrison])
-		var garrison_ranged_kills = _process_ranged_attacks(garrison_dict, current_attackers, rng, 100)
+		var garrison_ranged_kills = _process_ranged_attacks(garrison_dict, current_attackers, rng, 100, false)
 		battle_simulator._merge_kill_results(defender_ranged_kills, garrison_ranged_kills)
 	
 	# Process defending army ranged attacks at their efficiency if any defending armies exist
 	var armies_composition = _get_armies_from_defenders()
 	if not armies_composition.is_empty():
-		var army_ranged_kills = _process_ranged_attacks(armies_composition, current_attackers, rng, defender_efficiency)
+		var army_ranged_kills = _process_ranged_attacks(armies_composition, current_attackers, rng, defender_efficiency, false)
 		battle_simulator._merge_kill_results(defender_ranged_kills, army_ranged_kills)
 	
 	# Apply ranged volley kills simultaneously
@@ -575,25 +579,25 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	if withdrawing_side == 1:
 		if is_mobility_round:
 			if not current_garrison_composition.is_empty():
-				var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100)
+				var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100, false)
 				battle_simulator._merge_kill_results(defender_kills, mobility_garrison_kills)
 			var armies_comp = _get_armies_from_defenders()
 			if not armies_comp.is_empty():
-				var mobility_army_kills = _process_mobility_attacks(armies_comp, current_attackers, rng, defender_efficiency)
+				var mobility_army_kills = _process_mobility_attacks(armies_comp, current_attackers, rng, defender_efficiency, false)
 				battle_simulator._merge_kill_results(defender_kills, mobility_army_kills)
 		else:
 			if not current_garrison_composition.is_empty():
-				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, castle_type, null, null, castle_defense_override)
+				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1)
 				battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 			var armies_standard = _get_armies_from_defenders()
 			if not armies_standard.is_empty():
-				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
+				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1)
 				battle_simulator._merge_kill_results(defender_kills, army_kills)
 	else:
 		var armies_only = _get_armies_from_defenders()
 		if not armies_only.is_empty():
 			if is_mobility_round:
-				attacker_kills = _process_mobility_attacks(current_attackers, armies_only, rng, attacker_efficiency)
+				attacker_kills = _process_mobility_attacks(current_attackers, armies_only, rng, attacker_efficiency, true)
 			else:
 				attacker_kills = battle_simulator._process_unit_attacks(current_attackers, armies_only, rng, attacker_efficiency, terrain_type, castle_type, null, null, castle_defense_override)
 	

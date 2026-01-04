@@ -67,6 +67,7 @@ Main (Node2D) [place_armies.gd]
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open; ArmyActions button cancels move and reopens ArmySelectModal for the selected army
 │	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
+│	├ SpeedModal [scenes/speed_modal.tscn] [scenes/speed_modal.gd] – shown only during AI turns; buttons toggle AI move animation speed (normal/fast/very fast) with the active choice highlighted in yellow; updates GameParameters AI move speed multiplier
 │	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – opens from trade icon; prices start at Food/Wood 2/1, Stone 4/2, Iron 6/3 then adjust by market curve (min 0.4, k=0.01); per-player trade history decays each turn (trade_reset_rate=0.2); buttons adjust buy/sell amounts, update totals/gold delta, and continue applies trades via PlayerManager with status refresh
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
