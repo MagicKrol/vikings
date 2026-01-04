@@ -91,8 +91,8 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 		var defender_snapshot := _copy_composition_dict(merged_defenders)
 		var attacker_hit_log := {}
 		
-		# Attack phases - unit-by-unit with trait-based targeting
-	var attacker_kills = _process_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_hit_log, attacker_stats, castle_defense_bonus_override)
+			# Attack phases - unit-by-unit with trait-based targeting
+		var attacker_kills = _process_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_hit_log, attacker_stats, castle_defense_bonus_override)
 		
 		# Defense phase - separate garrison and army processing for defenders
 		var defender_kills = {}
