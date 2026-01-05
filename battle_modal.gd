@@ -14,6 +14,7 @@ var attacker_header: Label
 var defender_header: Label
 var attacker_effectiveness: Label
 var defender_effectiveness: Label
+var assault_value_label: Label
 var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
@@ -63,6 +64,7 @@ func _ready():
 	defender_header = get_node("Panel/Army/HeaderSection/HBoxContainer/DefenderName")
 	attacker_effectiveness = get_node("Panel/Army/HeaderSection/Status/AttackerVigorValue")
 	defender_effectiveness = get_node("Panel/Army/HeaderSection/Status/DefenderVigorValue")
+	assault_value_label = get_node("Panel/Army/HeaderSection/HBoxContainer2/AssaultValue")
 	attacker_units_container = get_node("Panel/Army/UnitsSection")
 	defender_units_container = get_node("Panel/Army/UnitsSection")
 	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
@@ -173,6 +175,7 @@ func _update_display() -> void:
 		return
 	
 	_update_defense_bonus_display()
+	_update_assault_value()
 
 	if showing_battle_report:
 		# Show battle report screen
@@ -486,6 +489,7 @@ func _run_battle_simulation() -> void:
 		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
 	
 	# During battle, show withdraw functionality
+	_update_assault_value()
 	_update_action_button()
 	
 	# Get attacking compositions (all pending attackers)
@@ -508,7 +512,8 @@ func _run_battle_simulation() -> void:
 	var defense_override = bm.get_effective_defense_for_region(defending_region)
 	var attacker_withdraw_allowed = bm.get_attacker_withdraw_allowed()
 	var defender_withdraw_allowed = bm.get_defender_withdraw_allowed()
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override)
+	var attacker_effectiveness_ratio = bm.get_attacker_effectiveness_ratio()
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override, attacker_effectiveness_ratio)
 	
 	DebugLogger.log("UISystem", "Starting animated battle simulation...")
 
@@ -730,6 +735,13 @@ func _update_defense_bonus_display() -> void:
 			defender_defense_value.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
 	else:
 		defender_defense_value.add_theme_color_override("font_color", Color.WHITE)
+
+func _update_assault_value() -> void:
+	var gm = get_node("../../GameManager") as GameManager
+	var bm = gm.get_battle_manager()
+	var ratio := bm.get_attacker_effectiveness_ratio()
+	var percent := int(round(ratio * 100.0))
+	assault_value_label.text = str(percent) + "%"
 
 func _update_defender_header() -> void:
 	var region_name = defending_region.get_region_name()

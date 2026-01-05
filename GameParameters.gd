@@ -256,6 +256,9 @@ const CAMERA_BATTLE_RESULT_DELAY = 0.1			# Seconds to pause after battle results
 const CAMERA_CONQUEST_DELAY = 0.1				# Seconds to pause after region conquest to show ownership change
 const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army moves
 
+## Siege ladders
+const LADDER_EFFECTIVENESS_PER = 5				# Raw effectiveness added per ladder for siege assaults
+
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
 	CastleTypeEnum.Type.NONE: 0,          # No castle
@@ -952,6 +955,25 @@ static func get_units_with_trait(trait_type) -> Array[SoldierTypeEnum.Type]:
 static func is_cavalry_unit(unit_type: SoldierTypeEnum.Type) -> bool:
 	"""Check if a unit type is cavalry (has mobility or charge traits)"""
 	return unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_3) or unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_5)  # mobility or charge
+
+static func calculate_siege_points_for_composition(composition: ArmyComposition) -> int:
+	"""Siege points come only from units with the siege laborer trait."""
+	if composition == null:
+		return 0
+	var total := 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		if unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_8):
+			total += composition.get_soldier_count(unit_type)
+	return int(total / 10)
+
+static func calculate_non_ranged_count(composition: ArmyComposition) -> int:
+	if composition == null:
+		return 0
+	var total := 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		if not unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_2):
+			total += composition.get_soldier_count(unit_type)
+	return total
 
 static func get_castle_defense_bonus(castle_type: CastleTypeEnum.Type) -> int:
 	"""Get the defensive hit avoidance percentage for a castle type"""

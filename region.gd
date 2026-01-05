@@ -457,7 +457,8 @@ func has_castle_damage() -> bool:
 	return gate_damage > 0 or wall_damage > 0
 
 func apply_siege_damage(siege_counts: Dictionary, ladder_data: Dictionary, ram_data: Dictionary, treb_data: Dictionary) -> Dictionary:
-	var ladder_damage: int = int(siege_counts.get("ladders", 0)) * int(ladder_data.get("defense", 0))
+	var ladder_count: int = int(siege_counts.get("ladders", 0))
+	var ladder_effectiveness_raw: int = ladder_count * int(ladder_data.get("effectiveness", GameParameters.LADDER_EFFECTIVENESS_PER))
 	var gate_cap: int = 10
 	var ram_damage: int = int(siege_counts.get("rams", 0)) * int(ram_data.get("defense", 0))
 	var gate_room: int = max(0, gate_cap - gate_damage)
@@ -471,7 +472,10 @@ func apply_siege_damage(siege_counts: Dictionary, ladder_data: Dictionary, ram_d
 	var wall_applied: int = min(wall_cap, trebs_damage)
 	if wall_applied > 0:
 		wall_damage = min(wall_cap, wall_damage + wall_applied)
-	return {"ladder_damage": ladder_damage}
+	return {
+		"ladder_effectiveness_raw": ladder_effectiveness_raw,
+		"ladder_damage": 0
+	}
 
 func get_castle_type_string() -> String:
 	"""Get the castle type as a string"""

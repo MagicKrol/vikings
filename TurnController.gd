@@ -165,10 +165,16 @@ func _process_single_army(army: Army) -> void:
 			_log_army_detail_line("No valid targets; camping")
 			_spend_all_on_camp(army)
 			break
-		var enemy_info := _build_enemy_info(move["target_id"], army.get_player_id())
+		if move.get("goal", "") == "halt":
+			var defense_info: Dictionary = move.get("enemy_info", _build_enemy_info(move["target_id"], army.get_player_id()))
+			_log_movement_header()
+			_log_target_choice(army, move["target_id"], defense_info)
+			_log_defense_todo(army, move["target_id"], defense_info)
+			break
+		var enemy_info: Dictionary = move.get("enemy_info", _build_enemy_info(move["target_id"], army.get_player_id()))
 		_log_movement_header()
 		_log_target_choice(army, move["target_id"], enemy_info)
-		var merge_decision := _evaluate_merge_policy(army, enemy_info)
+		var merge_decision: String = move.get("merge_decision", _evaluate_merge_policy(army, enemy_info))
 		if merge_decision == "halt":
 			_log_defense_todo(army, move["target_id"], enemy_info)
 			break
@@ -194,8 +200,8 @@ func _handle_recruitment_cycle(army: Army, turn_number: int) -> bool:
 	var target_region_id := int(best_castle.get("best_region_id", -1))
 	if target_region_id == -1:
 		_log_recruitment_status_once(army, current_region_id, "no_recruit_castle")
-		_spend_all_on_camp(army)
-		return true
+		army.clear_recruitment_request()
+		return false
 	if current_region_id != target_region_id:
 		_log_army_detail_line("Needs recruitment moving to " + _get_region_name_by_id(target_region_id))
 		var moved = await _move_army_to_region(army, target_region_id, "reinforce", best_castle)
@@ -251,31 +257,61 @@ func _select_frontier_move(army: Army) -> Dictionary:
 	var frontier := region_manager.get_frontier_regions(army.get_player_id())
 	if frontier.is_empty():
 		return {}
-	var move := _find_best_move_for_army(army, frontier)
-	if move.is_empty():
+	var moves := _get_sorted_frontier_moves(army, frontier)
+	if moves.is_empty():
 		return {}
-	if not move.has("goal"):
-		move["goal"] = "attack"
-	return move
+	var best_halt := {}
+	for move in moves:
+		var enemy_info := _build_enemy_info(move["target_id"], army.get_player_id())
+		var decision := _evaluate_merge_policy(army, enemy_info)
+		if decision == "halt":
+			if best_halt.is_empty():
+				best_halt = {
+					"target_id": move["target_id"],
+					"enemy_info": enemy_info
+				}
+			continue
+		if not move.has("goal"):
+			move["goal"] = "attack"
+		move["enemy_info"] = enemy_info
+		move["merge_decision"] = decision
+		return move
+	if not best_halt.is_empty():
+		return {
+			"goal": "halt",
+			"target_id": best_halt.get("target_id", -1),
+			"enemy_info": best_halt.get("enemy_info", {})
+		}
+	return {}
 
 func _build_enemy_info(target_region_id: int, player_id: int) -> Dictionary:
 	var target_region = region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
-	var enemy_armies: Array = []
-	for target_army in army_manager.get_armies_in_region(target_region):
-		if target_army.get_player_id() != player_id:
-			enemy_armies.append(target_army)
 	var enemy_owner = region_manager.get_region_owner(target_region_id)
 	var castle_level = region_manager.get_castle_level(target_region_id)
 	var garrison_power = 0
 	if enemy_owner != -1 and enemy_owner != player_id and castle_level > 0:
 		garrison_power = target_region.get_garrison_strength()
-	var enemy_power = garrison_power
-	for ea in enemy_armies:
-		enemy_power += ea.get_army_power()
+	var enemy_armies: Array = []
+	var enemy_power = 0
+	var known_strength = false
 	var has_enemy = enemy_owner != -1 and enemy_owner != player_id
-	if enemy_armies.size() > 0:
+	for target_army in army_manager.get_armies_in_region(target_region):
+		if target_army.get_player_id() == player_id:
+			continue
 		has_enemy = true
-	var known_strength = enemy_armies.size() > 0 or garrison_power > 0
+		var tracker_key := Player.get_enemy_tracker_key(target_army)
+		var tracked_power := player_manager.get_tracked_enemy_power(player_id, tracker_key)
+		if tracked_power < 0:
+			continue
+		enemy_armies.append(target_army)
+		enemy_power += tracked_power
+		known_strength = true
+	var tracked_garrison := player_manager.get_tracked_enemy_garrison_power(player_id, target_region_id)
+	if tracked_garrison >= 0:
+		enemy_power += tracked_garrison
+		known_strength = true
+	else:
+		enemy_power += garrison_power
 	return {
 		"has_enemy": has_enemy,
 		"known": known_strength,
@@ -451,6 +487,54 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 
 	reachable.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
 	return reachable[0]
+
+func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
+	var sorted: Array = []
+	var player_id := army.get_player_id()
+	var current_region := army.get_parent()
+	if not current_region or not current_region.has_method("get_region_id"):
+		return sorted
+	var current_region_id: int = current_region.get_region_id()
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(army.name + str(player_id))
+	var mp_available := army.get_movement_points()
+
+	for target_id in frontier:
+		var base_score := target_scorer.score_region_base(target_id)
+		if base_score <= 0.0:
+			continue
+
+		var path_result := pathfinder.find_path_to_target(current_region_id, target_id, player_id)
+		if not path_result["success"]:
+			continue
+
+		var cost := int(path_result["cost"])
+		var can_reach_now := cost <= mp_available
+		if not can_reach_now:
+			continue
+		var random_mod := rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
+		var final_score := base_score + random_mod - float(cost)
+
+		var cand := {
+			"army": army,
+			"target_id": target_id,
+			"base_score": base_score,
+			"random_modifier": random_mod,
+			"mp_cost": cost,
+			"final_score": final_score,
+			"path": path_result["path"],
+			"current_region_id": current_region_id,
+			"can_reach_now": can_reach_now
+		}
+
+		sorted.append(cand)
+
+	if sorted.is_empty():
+		return sorted
+
+	sorted.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
+	return sorted
 
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	"""Check if moving to this region should trigger a battle - delegates to GameManager"""

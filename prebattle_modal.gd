@@ -11,6 +11,7 @@ var withdraw_button: Button
 var attack_button: Button
 var estimate_text_label: Label
 var estimate_range_label: Label
+var assault_value_label: Label
 var siege_available: VBoxContainer
 var siege_not_available: VBoxContainer
 var siege_points_text: Label
@@ -34,14 +35,13 @@ var sound_manager: SoundManager
 var player_manager: PlayerManagerNode
 var tutorial_manager: TutorialManager = null
 
-const LADDER_DATA = {"points": 1, "wood": 0, "defense": 0, "max": 99}
-const RAM_DATA = {"points": 2, "wood": 2, "defense": 5, "max": 99}
-const TREB_DATA = {"points": 3, "wood": 5, "defense": 10, "max": 99}
+const LADDER_DATA = {"points": 1, "wood": 0, "defense": 0, "max": 0, "effectiveness": GameParameters.LADDER_EFFECTIVENESS_PER}
+const RAM_DATA = {"points": 2, "wood": 2, "defense": 0, "max": 99}
+const TREB_DATA = {"points": 3, "wood": 5, "defense": 15, "max": 99}
 
 var siege_points_total: int = 0
 var siege_points_spent: int = 0
 var siege_counts: Dictionary = {"ladders": 0, "rams": 0, "trebuchets": 0}
-var _pending_ladder_damage: int = 0
 
 func _ready():
 	region_label = get_node("Panel/Army/Header/Region")
@@ -50,6 +50,7 @@ func _ready():
 	attacker_vigor_label = get_node("Panel/Army/HeaderSection/Status/AttackerVigorValue")
 	defender_vigor_label = get_node("Panel/Army/HeaderSection/Status/DefenderVigorValue")
 	defense_value_label = get_node("Panel/Army/HeaderSection/HBoxContainer2/DefenderDefenseValue")
+	assault_value_label = get_node("Panel/Army/HeaderSection/HBoxContainer2/AssaultValue")
 	withdraw_button = get_node("Panel/Army/AttackSection/HBoxContainer/WithdrawButton")
 	attack_button = get_node("Panel/Army/AttackSection/HBoxContainer/AttackButton")
 	estimate_text_label = get_node("Panel/Army/TextSection2/Total/EstimateText")
@@ -108,6 +109,7 @@ func _update_labels() -> void:
 	defender_vigor_label.text = "100%"
 	var defense_bonus = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())
 	defense_value_label.text = str(defense_bonus) + "%"
+	_update_assault_value()
 	_update_siege_visibility(defense_bonus)
 	_reset_siege_state()
 	_update_estimate()
@@ -156,11 +158,12 @@ func _reset_siege_state() -> void:
 	siege_counts = {"ladders": 0, "rams": 0, "trebuchets": 0}
 	siege_points_spent = 0
 	siege_points_total = _calculate_siege_points()
-	_pending_ladder_damage = 0
 	_refresh_siege_ui()
 
 func _calculate_siege_points() -> int:
-	return int(attacking_army.get_total_soldiers() / 10)
+	if attacking_army == null:
+		return 0
+	return GameParameters.calculate_siege_points_for_composition(attacking_army.get_composition())
 
 func _adjust_siege_equipment(kind: String, delta: int) -> void:
 	if not siege_available.visible:
@@ -251,7 +254,7 @@ func _get_min_defense() -> int:
 	return GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(defending_region.get_castle_type(), 0)
 
 func _get_total_defense_reduction() -> int:
-	return siege_counts.get("ladders", 0) * LADDER_DATA["defense"] + siege_counts.get("rams", 0) * RAM_DATA["defense"] + siege_counts.get("trebuchets", 0) * TREB_DATA["defense"]
+	return siege_counts.get("rams", 0) * RAM_DATA["defense"] + siege_counts.get("trebuchets", 0) * TREB_DATA["defense"]
 
 func _get_structural_damage() -> int:
 	return defending_region.gate_damage + defending_region.wall_damage
@@ -275,6 +278,7 @@ func _refresh_siege_ui() -> void:
 	ladders_count_label.text = str(siege_counts.get("ladders", 0))
 	rams_count_label.text = str(siege_counts.get("rams", 0))
 	treb_count_label.text = str(siege_counts.get("trebuchets", 0))
+	_update_assault_value()
 	_update_defense_value()
 	_update_siege_buttons()
 
@@ -290,7 +294,8 @@ func _can_purchase(kind: String) -> bool:
 	var data = _get_siege_data(kind)
 	if data.is_empty():
 		return false
-	if siege_counts.get(kind, 0) >= data["max"]:
+	var max_allowed: int = int(data.get("max", 0))
+	if max_allowed > 0 and siege_counts.get(kind, 0) >= max_allowed:
 		return false
 	if not _has_enough_points(data["points"]):
 		return false
@@ -309,8 +314,29 @@ func _refund_all_siege_purchases() -> void:
 
 func _apply_siege_damage_and_get_payload() -> Dictionary:
 	var payload := defending_region.apply_siege_damage(siege_counts, LADDER_DATA, RAM_DATA, TREB_DATA)
-	_pending_ladder_damage = int(payload.get("ladder_damage", 0))
+	payload["ladder_effectiveness_ratio"] = _calculate_assault_effectiveness_ratio()
+	payload["ladder_effectiveness_raw"] = _get_ladder_effectiveness_raw()
 	return payload
+
+func _calculate_assault_effectiveness_ratio() -> float:
+	if attacking_army == null:
+		return 0.0
+	var raw := _get_ladder_effectiveness_raw()
+	if raw <= 0:
+		return 0.0
+	var non_ranged := GameParameters.calculate_non_ranged_count(attacking_army.get_composition())
+	if non_ranged <= 0:
+		return 0.0
+	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
+
+func _get_ladder_effectiveness_raw() -> int:
+	return siege_counts.get("ladders", 0) * int(LADDER_DATA.get("effectiveness", GameParameters.LADDER_EFFECTIVENESS_PER))
+
+func _update_assault_value() -> void:
+	if assault_value_label == null:
+		return
+	var percent := int(round(_calculate_assault_effectiveness_ratio() * 100.0))
+	assault_value_label.text = str(percent) + "%"
 
 func _update_player_status_modal() -> void:
 	GlobalSignals.emit_signal("player_status_refresh_requested")

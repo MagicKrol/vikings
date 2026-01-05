@@ -1402,8 +1402,8 @@ func show_prebattle_modal(army: Army, target_region: Region) -> void:
 	_prebattle_modal.show_prebattle(army, target_region)
 
 func handle_prebattle_attack(army: Army, target_region: Region, siege_payload: Dictionary = {}) -> void:
-	var ladder_damage: int = int(siege_payload.get("ladder_damage", 0))
-	_battle_manager.start_battle(army, target_region.get_region_id(), ladder_damage)
+	var attacker_effectiveness_ratio: float = _compute_attacker_effectiveness_ratio(army, siege_payload)
+	_battle_manager.start_battle(army, target_region.get_region_id(), attacker_effectiveness_ratio)
 
 func handle_prebattle_withdraw(army: Army) -> void:
 	await _battle_manager.withdraw_attacking_army(army)
@@ -1458,10 +1458,10 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	var siege_payload := {}
 	if is_player_computer(attacker_owner_id):
 		siege_payload = _execute_ai_siege_preparation(army, target_region)
-	var ladder_damage := int(siege_payload.get("ladder_damage", 0))
+	var attacker_effectiveness_ratio := _compute_attacker_effectiveness_ratio(army, siege_payload)
 
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
-	_battle_manager.start_battle(army, target_region_id, ladder_damage)
+	_battle_manager.start_battle(army, target_region_id, attacker_effectiveness_ratio)
 
 	# Always wait for battle_finished signal - it contains the correct result
 	# The signal is emitted by BattleManager with the proper victory/defeat/withdrawal value
@@ -1474,7 +1474,7 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 	var castle_defense := GameParameters.get_castle_defense_bonus(target_region.get_castle_type())
 	if castle_defense <= 0:
 		return {}
-	var siege_points_total: int = int(attacker.get_total_soldiers() / 10)
+	var siege_points_total: int = GameParameters.calculate_siege_points_for_composition(attacker.get_composition())
 	var player_id := attacker.get_player_id()
 	var player := player_manager.get_player(player_id)
 	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
@@ -1497,7 +1497,8 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 			continue
 		var max_by_points := int(remaining_points / points_cost)
 		var max_by_wood := int(remaining_wood / wood_cost) if wood_cost > 0 else max_by_points
-		var max_allowed := int(data.get("max", 0))
+		var max_allowed_raw := int(data.get("max", 0))
+		var max_allowed := max_by_points if max_allowed_raw <= 0 else max_allowed_raw
 		var buyable := int(min(max_by_points, max_by_wood, max_allowed))
 		if buyable > 0:
 			siege_counts[kind] = buyable
@@ -1505,8 +1506,9 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 			if wood_cost > 0:
 				remaining_wood -= buyable * wood_cost
 	var spawned_free_ladder := false
-	if siege_counts["trebuchets"] == 0 and siege_counts["rams"] == 0 and siege_counts["ladders"] == 0:
+	if siege_counts["trebuchets"] == 0 and siege_counts["rams"] == 0 and siege_counts["ladders"] == 0 and remaining_points > 0:
 		siege_counts["ladders"] = 1
+		remaining_points = max(0, remaining_points - int(PrebattleModal.LADDER_DATA["points"]))
 		spawned_free_ladder = true
 	var wood_spent := 0
 	if not spawned_free_ladder:
@@ -1516,9 +1518,30 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 		if wood_spent > 0:
 			player.remove_resources(ResourcesEnum.Type.WOOD, wood_spent)
 	var payload := target_region.apply_siege_damage(siege_counts, PrebattleModal.LADDER_DATA, PrebattleModal.RAM_DATA, PrebattleModal.TREB_DATA)
+	if DebugLogger.is_category_enabled("BattleCalculation") or DebugLogger.is_category_enabled("BattleSystem"):
+		var raw := int(payload.get("ladder_effectiveness_raw", 0))
+		var non_ranged := GameParameters.calculate_non_ranged_count(attacker.get_composition())
+		var ratio := 0.0
+		if non_ranged > 0:
+			ratio = clampf(float(raw) / float(non_ranged), 0.0, 1.0)
+		DebugLogger.log("BattleCalculation", "AI siege prep: points=" + str(siege_points_total) + ", ladders=" + str(siege_counts.get("ladders", 0)) + ", rams=" + str(siege_counts.get("rams", 0)) + ", trebs=" + str(siege_counts.get("trebuchets", 0)) + ", raw_effectiveness=" + str(raw) + ", non_ranged=" + str(non_ranged) + ", ratio=" + str(snappedf(ratio * 100.0, 0.1)) + "%")
 	var limit_label := "no limit" if available_wood > 50 else "growth limit"
 	_log_ai_siege_preparation(siege_points_total, available_wood, limit_label, siege_counts)
 	return payload
+
+func _compute_attacker_effectiveness_ratio(attacker: Army, siege_payload: Dictionary) -> float:
+	if attacker == null:
+		return 0.0
+	var preset_ratio := float(siege_payload.get("ladder_effectiveness_ratio", -1.0))
+	if preset_ratio >= 0.0:
+		return clampf(preset_ratio, 0.0, 1.0)
+	var raw: int = int(siege_payload.get("ladder_effectiveness_raw", 0))
+	if raw <= 0:
+		return 0.0
+	var non_ranged := GameParameters.calculate_non_ranged_count(attacker.get_composition())
+	if non_ranged <= 0:
+		return 0.0
+	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
 
 func _log_ai_siege_preparation(points: int, wood_available: int, wood_limit_label: String, siege_counts: Dictionary) -> void:
 	ensure_ai_log_started()

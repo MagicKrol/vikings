@@ -134,11 +134,11 @@ text = "ARMY IV (Player 2)"
 layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
 [node name="AttackerVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
 text = "Vigor:"
 
@@ -149,11 +149,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "90%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(195, 0)
+custom_minimum_size = Vector2(210, 0)
 layout_mode = 2
 
 [node name="DefenderVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(95, 0)
 layout_mode = 2
 text = "Vigor: "
 
@@ -167,12 +167,20 @@ text = "95%"
 layout_mode = 2
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
-[node name="AttackerRemaining" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+[node name="AssaultText" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 custom_minimum_size = Vector2(78, 0)
 layout_mode = 2
+text = "Assault:"
+horizontal_alignment = 1
+
+[node name="AssaultValue" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "40%"
 horizontal_alignment = 1
 
 [node name="MarginContainer6" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -180,7 +188,7 @@ custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 
 [node name="UnitName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 text = " "
 horizontal_alignment = 1

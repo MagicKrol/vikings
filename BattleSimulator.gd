@@ -25,7 +25,7 @@ class BattleReport:
 		withdrawing_side = 0
 
 # Main battle function - accepts arrays of compositions for each side
-func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1) -> BattleReport:
+func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0) -> BattleReport:
 	"""
 	Simulate a battle between multiple armies and defenders
 	attacking_armies: Array of ArmyComposition objects
@@ -38,6 +38,10 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	"""
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
+	var is_siege_battle := castle_type != CastleTypeEnum.Type.NONE
+	var attacker_effectiveness_value := attacker_effectiveness_ratio if is_siege_battle else 0.0
+	if DebugLogger.is_category_enabled("BattleCalculation") or DebugLogger.is_category_enabled("BattleSystem"):
+		DebugLogger.log("BattleCalculation", "Assault effectiveness ratio=" + str(snappedf(attacker_effectiveness_value * 100.0, 0.1)) + "% (applied to non-ranged attackers)")
 	
 	# Merge all attacking forces
 	var merged_attackers = _merge_compositions(attacking_armies)
@@ -60,18 +64,18 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	var max_rounds = 1000
 	
 	# Ranged opening volley - both sides shoot simultaneously before main battle
-	var attacker_ranged_kills = _process_ranged_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_stats, castle_defense_bonus_override)
+	var attacker_ranged_kills = _process_ranged_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_stats, castle_defense_bonus_override, is_siege_battle)
 	var defender_ranged_kills = {}
 	
 	# Process garrison ranged attacks at 100% efficiency if garrison exists
 	if not current_garrison.is_empty():
-		var garrison_ranged_kills = _process_ranged_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1)
+		var garrison_ranged_kills = _process_ranged_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, is_siege_battle)
 		_merge_kill_results(defender_ranged_kills, garrison_ranged_kills)
 	
 	# Process defending army ranged attacks at their efficiency if any defending armies exist
 	var ranged_armies_only := _compute_army_composition(merged_defenders, current_garrison)
 	if not ranged_armies_only.is_empty():
-		var army_ranged_kills = _process_ranged_unit_attacks(ranged_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1)
+		var army_ranged_kills = _process_ranged_unit_attacks(ranged_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, is_siege_battle)
 		_merge_kill_results(defender_ranged_kills, army_ranged_kills)
 	
 	# Apply ranged volley kills simultaneously
@@ -80,7 +84,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 
 	var withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw)
 	if withdraw_side != 0:
-		var withdraw_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, withdraw_side, castle_defense_bonus_override)
+		var withdraw_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, withdraw_side, castle_defense_bonus_override, is_siege_battle)
 		rounds += withdraw_rounds
 		return _create_withdrawal_report(original_attackers, original_defenders, merged_attackers, merged_defenders, rounds, withdraw_side)
 	
@@ -90,26 +94,34 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 		var attacker_snapshot := _copy_composition_dict(merged_attackers)
 		var defender_snapshot := _copy_composition_dict(merged_defenders)
 		var attacker_hit_log := {}
+		var attacker_hit_totals = null
+		if DebugLogger.is_category_enabled("BattleCalculation"):
+			attacker_hit_totals = _new_hit_totals()
 		
-			# Attack phases - unit-by-unit with trait-based targeting
-		var attacker_kills = _process_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_hit_log, attacker_stats, castle_defense_bonus_override)
+		# Attack phases - unit-by-unit with trait-based targeting
+		var attacker_kills = _process_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_hit_log, attacker_stats, castle_defense_bonus_override, attacker_effectiveness_value, is_siege_battle, attacker_hit_totals)
 		
 		# Defense phase - separate garrison and army processing for defenders
 		var defender_kills = {}
+		var defender_hit_totals = null
+		if DebugLogger.is_category_enabled("BattleCalculation"):
+			defender_hit_totals = _new_hit_totals()
 		var defender_hit_log := {}
 		
 		# Process garrison attacks at 100% efficiency if garrison exists
 		if not current_garrison.is_empty():
-			var garrison_kills = _process_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1)
+			var garrison_kills = _process_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1, -1.0, is_siege_battle, defender_hit_totals)
 			_merge_kill_results(defender_kills, garrison_kills)
 		
 		# Process defending army attacks at their efficiency if any defending armies exist
 		var defender_armies_only := _compute_army_composition(merged_defenders, current_garrison)
 		if not defender_armies_only.is_empty():
-			var army_kills = _process_unit_attacks(defender_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1)
+			var army_kills = _process_unit_attacks(defender_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1, -1.0, is_siege_battle, defender_hit_totals)
 			_merge_kill_results(defender_kills, army_kills)
 		
 		_log_battle_round_debug(rounds, attacker_label, defender_label, attacker_snapshot, defender_snapshot, attacker_hit_log, defender_hit_log, attacker_kills, defender_kills)
+		if DebugLogger.is_category_enabled("BattleCalculation"):
+			_log_round_totals(rounds, attacker_label, defender_label, attacker_hit_totals, defender_hit_totals, attacker_kills, defender_kills, attacker_snapshot, defender_snapshot)
 		
 		# Apply kills simultaneously
 		_apply_kills(merged_defenders, attacker_kills)
@@ -118,7 +130,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 
 		var mid_withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw)
 		if mid_withdraw_side != 0:
-			var withdraw_extra_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, mid_withdraw_side, castle_defense_bonus_override)
+			var withdraw_extra_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, mid_withdraw_side, castle_defense_bonus_override, is_siege_battle)
 			rounds += withdraw_extra_rounds
 			return _create_withdrawal_report(original_attackers, original_defenders, merged_attackers, merged_defenders, rounds, mid_withdraw_side)
 	
@@ -219,10 +231,14 @@ func _army_size(army: Dictionary) -> int:
 		total += army[unit_type]
 	return total
 
-func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, hit_log = null, stats_accumulator = null, castle_defense_bonus_override: int = -1) -> Dictionary:
+func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, hit_log = null, stats_accumulator = null, castle_defense_bonus_override: int = -1, attack_effectiveness_ratio: float = -1.0, disable_siege_traits: bool = false, hit_totals = null) -> Dictionary:
 	"""Process attacks unit-by-unit with trait-based targeting rules"""
 	var total_kills = {}
 	var efficiency_modifier = efficiency / 100.0
+	var apply_effectiveness := disable_siege_traits and attack_effectiveness_ratio >= 0.0
+	var clamped_effectiveness := clampf(attack_effectiveness_ratio, 0.0, 1.0)
+	var hit_records := []
+	var total_non_ranged_hits := 0
 	
 	# Process each attacking unit type
 	for attacker_unit_type in attacking_army:
@@ -235,26 +251,50 @@ func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionar
 		var modified_attack_chance = base_attack_chance * efficiency_modifier
 		
 		# Apply terrain bonuses
-		modified_attack_chance *= _get_terrain_attack_multiplier(attacker_unit_type, terrain_type, castle_type)
+		modified_attack_chance *= _get_terrain_attack_multiplier(attacker_unit_type, terrain_type, castle_type, disable_siege_traits)
 		
 		# Apply multi-attack trait (units get 2 attacks instead of 1)
 		var effective_unit_count = attacker_count
 		if GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_6):  # multi_attack
 			effective_unit_count *= 2
 		
-		var hits = _binomial_sample(rng, effective_unit_count, modified_attack_chance)
+		var hits: int = _binomial_sample(rng, effective_unit_count, modified_attack_chance)
+		var original_hits: int = hits
+		var is_ranged_unit := GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_2)
+		if apply_effectiveness and not is_ranged_unit:
+			total_non_ranged_hits += hits
+		hit_records.append({
+			"unit_type": attacker_unit_type,
+			"attacker_count": attacker_count,
+			"effective_unit_count": effective_unit_count,
+			"hits": hits,
+			"original_hits": original_hits,
+			"is_ranged": is_ranged_unit
+		})
+	
+	if apply_effectiveness and clamped_effectiveness < 1.0 and total_non_ranged_hits > 0:
+		var scaled_hits := _apply_multiplier_stochastic(total_non_ranged_hits, clamped_effectiveness, rng)
+		_scale_non_ranged_hit_records(hit_records, scaled_hits, rng)
+	
+	for record in hit_records:
+		var attacker_unit_type = record["unit_type"]
+		var hits: int = int(record["hits"])
+		var original_hits: int = int(record["original_hits"])
+		var is_ranged_unit: bool = record["is_ranged"]
+		if hit_totals != null:
+			_accumulate_hit_totals(hit_totals, is_ranged_unit, original_hits, hits)
 		
 		if stats_accumulator != null:
-			_record_unit_stats(stats_accumulator, attacker_unit_type, effective_unit_count, hits)
+			_record_unit_stats(stats_accumulator, attacker_unit_type, int(record["effective_unit_count"]), hits)
 		
 		if hits <= 0:
 			continue
 		
 		if hit_log != null:
-			_record_unit_hits(hit_log, attacker_unit_type, attacker_count, hits)
+			_record_unit_hits(hit_log, attacker_unit_type, int(record["attacker_count"]), hits)
 			
 		# Determine valid targets based on traits
-		var valid_targets = _get_valid_targets(attacker_unit_type, attacking_army, defending_army)
+		var valid_targets = _get_valid_targets(attacker_unit_type, attacking_army, defending_army, disable_siege_traits)
 		
 		if valid_targets.is_empty():
 			continue
@@ -263,7 +303,7 @@ func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionar
 		var target_assigned = _distribute_hits_to_valid_targets(defending_army, valid_targets, hits, rng)
 		
 		# Apply long-spears bonus: double hits against cavalry if attacker has long-spears
-		if GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):  # long_spears
+		if not disable_siege_traits and GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):  # long_spears
 			for defender_unit_type in target_assigned:
 				if GameParameters.is_cavalry_unit(defender_unit_type):
 					target_assigned[defender_unit_type] = _apply_multiplier_stochastic(target_assigned[defender_unit_type], GameParameters.LONG_SPEARS_CAVALRY_MULTIPLIER, rng)
@@ -275,32 +315,59 @@ func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionar
 	
 	return total_kills
 
-func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, stats_accumulator = null, castle_defense_bonus_override: int = -1) -> Dictionary:
+func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, stats_accumulator = null, castle_defense_bonus_override: int = -1, attack_effectiveness_ratio: float = -1.0, disable_siege_traits: bool = false, hit_totals = null) -> Dictionary:
 	var mobility_kills := {}
 	var efficiency_modifier = efficiency / 100.0
+	var apply_effectiveness := disable_siege_traits and attack_effectiveness_ratio >= 0.0
+	var clamped_effectiveness := clampf(attack_effectiveness_ratio, 0.0, 1.0)
+	var hit_records := []
+	var total_non_ranged_hits := 0
 	for defender_unit_type in defending_army.keys():
 		var defender_count = defending_army[defender_unit_type]
 		if defender_count <= 0:
 			continue
-		if not GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_3):
+		if disable_siege_traits or not GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_3):
 			continue
 		var base_attack_chance = GameParameters.get_unit_stat(defender_unit_type, "attack") / 100.0
 		var modified_attack_chance = base_attack_chance * efficiency_modifier
-		modified_attack_chance *= _get_terrain_attack_multiplier(defender_unit_type, terrain_type, castle_type)
+		modified_attack_chance *= _get_terrain_attack_multiplier(defender_unit_type, terrain_type, castle_type, disable_siege_traits)
 		var effective_unit_count = defender_count
 		if GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_6):
 			effective_unit_count *= 2
-		var hits = _binomial_sample(rng, effective_unit_count, modified_attack_chance)
+		var hits: int = _binomial_sample(rng, effective_unit_count, modified_attack_chance)
+		var original_hits: int = hits
+		var is_ranged_unit := GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_2)
+		if apply_effectiveness and not is_ranged_unit:
+			total_non_ranged_hits += hits
+		hit_records.append({
+			"unit_type": defender_unit_type,
+			"effective_unit_count": effective_unit_count,
+			"hits": hits,
+			"original_hits": original_hits,
+			"is_ranged": is_ranged_unit
+		})
+	
+	if apply_effectiveness and clamped_effectiveness < 1.0 and total_non_ranged_hits > 0:
+		var scaled_hits := _apply_multiplier_stochastic(total_non_ranged_hits, clamped_effectiveness, rng)
+		_scale_non_ranged_hit_records(hit_records, scaled_hits, rng)
+	
+	for record in hit_records:
+		var defender_unit_type = record["unit_type"]
+		var hits: int = int(record["hits"])
+		var original_hits: int = int(record["original_hits"])
+		var is_ranged_unit: bool = record["is_ranged"]
+		if hit_totals != null:
+			_accumulate_hit_totals(hit_totals, is_ranged_unit, original_hits, hits)
 		
 		if stats_accumulator != null:
-			_record_unit_stats(stats_accumulator, defender_unit_type, effective_unit_count, hits)
+			_record_unit_stats(stats_accumulator, defender_unit_type, int(record["effective_unit_count"]), hits)
 		if hits <= 0:
 			continue
-		var valid_targets = _get_valid_targets(defender_unit_type, defending_army, attacking_targets)
+		var valid_targets = _get_valid_targets(defender_unit_type, defending_army, attacking_targets, disable_siege_traits)
 		if valid_targets.is_empty():
 			continue
 		var target_assigned = _distribute_hits_to_valid_targets(attacking_targets, valid_targets, hits, rng)
-		if GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):
+		if not disable_siege_traits and GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):
 			for target_unit_type in target_assigned.keys():
 				if GameParameters.is_cavalry_unit(target_unit_type):
 					target_assigned[target_unit_type] = _apply_multiplier_stochastic(target_assigned[target_unit_type], GameParameters.LONG_SPEARS_CAVALRY_MULTIPLIER, rng)
@@ -350,7 +417,7 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 	DebugLogger.log("BattleCalculation", "Withdrawal check. side=" + str(withdrawing_side) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)) + " roll=" + str(snappedf(roll, 0.003)) + " chance=" + str(snappedf(chance, 0.003)))
 	return withdrawing_side if roll < chance else 0
 
-func _resolve_withdrawal_phase(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_efficiency: int, defender_efficiency: int, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, attacker_stats: Dictionary, defender_stats: Dictionary, withdrawing_side: int, castle_defense_bonus_override: int = -1) -> int:
+func _resolve_withdrawal_phase(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_efficiency: int, defender_efficiency: int, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, attacker_stats: Dictionary, defender_stats: Dictionary, withdrawing_side: int, castle_defense_bonus_override: int = -1, disable_siege_traits: bool = false) -> int:
 	var extra_rounds := 0
 	var standard_rounds := GameParameters.WITHDRAWAL_FREE_HIT_ROUNDS
 	var mobility_rounds := GameParameters.MOBILITY_EXTRA_WITHDRAWAL_ROUNDS
@@ -363,18 +430,18 @@ func _resolve_withdrawal_phase(current_attackers: Dictionary, current_defenders:
 			var armies_only := _get_armies_without_garrison(current_defenders, garrison_dict)
 			if standard_rounds > 0:
 				if not garrison_dict.is_empty():
-					var garrison_hits = _process_unit_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1)
+					var garrison_hits = _process_unit_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1, -1.0, disable_siege_traits, null)
 					_merge_kill_results(kills, garrison_hits)
 				if not armies_only.is_empty():
-					var army_hits = _process_unit_attacks(armies_only, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1)
+					var army_hits = _process_unit_attacks(armies_only, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1, -1.0, disable_siege_traits, null)
 					_merge_kill_results(kills, army_hits)
 				standard_rounds -= 1
 			else:
 				if not garrison_dict.is_empty():
-					var garrison_mobility_hits = _process_mobility_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1)
+					var garrison_mobility_hits = _process_mobility_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, -1.0, disable_siege_traits, null)
 					_merge_kill_results(kills, garrison_mobility_hits)
 				if not armies_only.is_empty():
-					var army_mobility_hits = _process_mobility_attacks(armies_only, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1)
+					var army_mobility_hits = _process_mobility_attacks(armies_only, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, -1.0, disable_siege_traits, null)
 					_merge_kill_results(kills, army_mobility_hits)
 				mobility_rounds -= 1
 			_apply_withdrawal_casualties(current_attackers, kills)
@@ -383,10 +450,10 @@ func _resolve_withdrawal_phase(current_attackers: Dictionary, current_defenders:
 			if armies_only_def.is_empty():
 				break
 			if standard_rounds > 0:
-				kills = _process_unit_attacks(current_attackers, armies_only_def, rng, attacker_efficiency, terrain_type, castle_type, null, attacker_stats, castle_defense_bonus_override)
+				kills = _process_unit_attacks(current_attackers, armies_only_def, rng, attacker_efficiency, terrain_type, castle_type, null, attacker_stats, castle_defense_bonus_override, 0.0, disable_siege_traits, null)
 				standard_rounds -= 1
 			else:
-				kills = _process_mobility_attacks(current_attackers, armies_only_def, rng, attacker_efficiency, terrain_type, castle_type, attacker_stats, castle_defense_bonus_override)
+				kills = _process_mobility_attacks(current_attackers, armies_only_def, rng, attacker_efficiency, terrain_type, castle_type, attacker_stats, castle_defense_bonus_override, 0.0, disable_siege_traits, null)
 				mobility_rounds -= 1
 			_apply_withdrawal_casualties_to_defenders(current_defenders, garrison_dict, kills)
 		if withdrawing_side == 1 and _army_size(current_attackers) <= 0:
@@ -623,11 +690,11 @@ func _multinomial_sample(rng: RandomNumberGenerator, n: int, weights: Array) -> 
 	
 	return results
 
-func _get_valid_targets(attacker_unit_type: SoldierTypeEnum.Type, attacking_army: Dictionary, defending_army: Dictionary) -> Array[SoldierTypeEnum.Type]:
+func _get_valid_targets(attacker_unit_type: SoldierTypeEnum.Type, attacking_army: Dictionary, defending_army: Dictionary, disable_siege_traits: bool = false) -> Array[SoldierTypeEnum.Type]:
 	"""Get valid target unit types based on trait-based combat rules"""
 	var valid_targets: Array[SoldierTypeEnum.Type] = []
 	var attacker_has_ranged = GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_2)  # ranged
-	var attacker_has_flanker = GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_4)  # flanker
+	var attacker_has_flanker = not disable_siege_traits and GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_4)  # flanker
 	
 	# Check each defending unit type
 	for defender_unit_type in defending_army:
@@ -693,18 +760,18 @@ func _distribute_hits_to_valid_targets(defending_army: Dictionary, valid_targets
 	
 	return result
 
-func _get_terrain_attack_multiplier(unit_type: SoldierTypeEnum.Type, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type) -> float:
+func _get_terrain_attack_multiplier(unit_type: SoldierTypeEnum.Type, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type, disable_siege_traits: bool = false) -> float:
 	"""Get terrain-based attack multipliers for units with specific traits"""
 	var multiplier = 1.0
 	
 	# Charge bonus: 100% bonus on grassland unless attacking a region with any level of castle
-	if GameParameters.unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_5):  # charge trait
+	if not disable_siege_traits and GameParameters.unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_5):  # charge trait
 		if terrain_type == RegionTypeEnum.Type.GRASSLAND and castle_type == CastleTypeEnum.Type.NONE:
 			multiplier += GameParameters.CHARGE_BONUS_GRASSLAND
 	
 	return multiplier
 
-func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, stats_accumulator = null, castle_defense_bonus_override: int = -1) -> Dictionary:
+func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, stats_accumulator = null, castle_defense_bonus_override: int = -1, disable_siege_traits: bool = false) -> Dictionary:
 	"""Process attacks from only ranged trait units during opening volley"""
 	var ranged_kills = {}
 	var efficiency_modifier = efficiency / 100.0
@@ -724,7 +791,7 @@ func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Di
 		var modified_attack_chance = base_attack_chance * efficiency_modifier
 		
 		# Apply terrain bonuses
-		modified_attack_chance *= _get_terrain_attack_multiplier(attacker_unit_type, terrain_type, castle_type)
+		modified_attack_chance *= _get_terrain_attack_multiplier(attacker_unit_type, terrain_type, castle_type, disable_siege_traits)
 		
 		# Apply multi-attack trait if present
 		var effective_unit_count = attacker_count
@@ -740,7 +807,7 @@ func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Di
 			continue
 			
 		# Determine valid targets based on traits
-		var valid_targets = _get_valid_targets(attacker_unit_type, attacking_army, defending_army)
+		var valid_targets = _get_valid_targets(attacker_unit_type, attacking_army, defending_army, disable_siege_traits)
 		
 		if valid_targets.is_empty():
 			continue
@@ -749,7 +816,7 @@ func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Di
 		var target_assigned = _distribute_hits_to_valid_targets(defending_army, valid_targets, hits, rng)
 		
 		# Apply long-spears bonus: double hits against cavalry if attacker has long-spears
-		if GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):  # long_spears
+		if not disable_siege_traits and GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):  # long_spears
 			for defender_unit_type in target_assigned:
 				if GameParameters.is_cavalry_unit(defender_unit_type):
 					target_assigned[defender_unit_type] = _apply_multiplier_stochastic(target_assigned[defender_unit_type], GameParameters.LONG_SPEARS_CAVALRY_MULTIPLIER, rng)
@@ -760,6 +827,43 @@ func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Di
 		_merge_kill_results(ranged_kills, target_kills)
 	
 	return ranged_kills
+
+func _scale_non_ranged_hit_records(hit_records: Array, target_total: int, rng: RandomNumberGenerator) -> void:
+	var non_ranged_indices := []
+	var remaining_hits := []
+	var current_total := 0
+	for i in range(hit_records.size()):
+		var record = hit_records[i]
+		if bool(record.get("is_ranged", false)):
+			continue
+		var hits: int = int(record.get("hits", 0))
+		hit_records[i]["hits"] = 0
+		if hits <= 0:
+			continue
+		non_ranged_indices.append(i)
+		remaining_hits.append(hits)
+		current_total += hits
+	if current_total == 0:
+		return
+	if target_total >= current_total:
+		for idx in range(non_ranged_indices.size()):
+			var record_index = non_ranged_indices[idx]
+			hit_records[record_index]["hits"] = remaining_hits[idx]
+		return
+	var hits_to_assign := target_total
+	var total_remaining := current_total
+	while hits_to_assign > 0 and total_remaining > 0:
+		var pick := rng.randi_range(1, total_remaining)
+		var cumulative := 0
+		for idx in range(non_ranged_indices.size()):
+			cumulative += remaining_hits[idx]
+			if pick <= cumulative:
+				var record_index = non_ranged_indices[idx]
+				hit_records[record_index]["hits"] = int(hit_records[record_index]["hits"]) + 1
+				remaining_hits[idx] -= 1
+				total_remaining -= 1
+				hits_to_assign -= 1
+				break
 
 func _apply_multiplier_stochastic(base_hits: int, mult: float, rng: RandomNumberGenerator) -> int:
 	"""Apply multiplier with stochastic rounding to preserve exact expectations"""
@@ -788,6 +892,36 @@ func _log_battle_round_debug(round_number: int, attacker_label: String, defender
 	DebugLogger.log("BattleCalculation", "-Killed Phase-")
 	_log_battle_phase_section(attacker_label, attacker_snapshot, defender_kills, "No losses")
 	_log_battle_phase_section(defender_label, defender_snapshot, attacker_kills, "No losses")
+
+func _log_round_totals(round_number: int, attacker_label: String, defender_label: String, attacker_hit_totals, defender_hit_totals, attacker_kills: Dictionary, defender_kills: Dictionary, attacker_snapshot: Dictionary, defender_snapshot: Dictionary) -> void:
+	if attacker_hit_totals == null or defender_hit_totals == null:
+		return
+	var attacker_non_ranged_base: int = int(attacker_hit_totals.get("non_ranged_base", 0))
+	var attacker_non_ranged_scaled: int = int(attacker_hit_totals.get("non_ranged_scaled", 0))
+	var attacker_ranged: int = int(attacker_hit_totals.get("ranged", 0))
+	var defender_non_ranged_base: int = int(defender_hit_totals.get("non_ranged_base", 0))
+	var defender_non_ranged_scaled: int = int(defender_hit_totals.get("non_ranged_scaled", 0))
+	var defender_ranged: int = int(defender_hit_totals.get("ranged", 0))
+	var attacker_kill_total := _sum_dict(attacker_kills)
+	var defender_kill_total := _sum_dict(defender_kills)
+	var attacker_total_hits := attacker_non_ranged_scaled + attacker_ranged
+	var defender_total_hits := defender_non_ranged_scaled + defender_ranged
+	var attacker_kill_pct := _calc_pct(attacker_kill_total, attacker_total_hits)
+	var defender_kill_pct := _calc_pct(defender_kill_total, defender_total_hits)
+	DebugLogger.log("BattleCalculation", "Round " + str(round_number))
+	DebugLogger.log("BattleCalculation", attacker_label + ": Non-ranged=" + str(attacker_non_ranged_base) + " scaled=" + str(attacker_non_ranged_scaled) + ", Ranged=" + str(attacker_ranged) + ", Kills=" + str(attacker_kill_total) + " (" + str(attacker_kill_pct) + "%)")
+	DebugLogger.log("BattleCalculation", defender_label + ": Non-ranged=" + str(defender_non_ranged_base) + " scaled=" + str(defender_non_ranged_scaled) + ", Ranged=" + str(defender_ranged) + ", Kills=" + str(defender_kill_total) + " (" + str(defender_kill_pct) + "%)")
+
+func _sum_dict(dict: Dictionary) -> int:
+	var total := 0
+	for key in dict:
+		total += int(dict[key])
+	return total
+
+func _calc_pct(value: int, base: int) -> int:
+	if base <= 0:
+		return 0
+	return int(round((float(value) / float(base)) * 100.0))
 
 func _log_battle_phase_section(sector_label: String, snapshot: Dictionary, values: Dictionary, empty_text: String) -> void:
 	DebugLogger.log("BattleCalculation", sector_label)
@@ -861,6 +995,22 @@ func _record_unit_stats(stats_accumulator: Dictionary, unit_type: SoldierTypeEnu
 	entry["attempts"] = int(entry.get("attempts", 0)) + int(attempts)
 	entry["hits"] = int(entry.get("hits", 0)) + int(hits)
 	stats_accumulator[unit_type] = entry
+
+func _accumulate_hit_totals(hit_totals, is_ranged: bool, base_hits: int, scaled_hits: int) -> void:
+	if hit_totals == null:
+		return
+	if is_ranged:
+		hit_totals["ranged"] = int(hit_totals.get("ranged", 0)) + scaled_hits
+	else:
+		hit_totals["non_ranged_base"] = int(hit_totals.get("non_ranged_base", 0)) + base_hits
+		hit_totals["non_ranged_scaled"] = int(hit_totals.get("non_ranged_scaled", 0)) + scaled_hits
+
+func _new_hit_totals() -> Dictionary:
+	return {
+		"non_ranged_base": 0,
+		"non_ranged_scaled": 0,
+		"ranged": 0
+	}
 
 func _log_effectiveness_stats(header: String, stats: Dictionary) -> void:
 	if not DebugLogger.is_category_enabled("BattleCalculation"):

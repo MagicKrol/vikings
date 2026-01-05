@@ -5421,7 +5421,7 @@
 		},
 		{
 			"biome": "grassland",
-			"castle_type": "Outpost",
+			"castle_type": "Keep",
 			"discovered_ores": [],
 			"garrison": {
 				"Archers": 0,

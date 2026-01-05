@@ -38,10 +38,10 @@ var debug_categories: Dictionary = {
 	"ResourceCalculation": false,  # Detailed resource calculations
 	
 	# Battle Systems
-	"BattleAI": false, 
-	"BattleSystem": false,         # Combat and battle resolution
-	"BattleCalculation": false,    # Detailed battle calculations
-	"BattleAnimation": false,      # Battle animation and rounds
+	"BattleAI": true, 
+	"BattleSystem": true,         # Combat and battle resolution
+	"BattleCalculation": true,    # Detailed battle calculations
+	"BattleAnimation": true,      # Battle animation and rounds
 	
 	# Region Systems
 	"RegionManagement": false,     # Region ownership and management

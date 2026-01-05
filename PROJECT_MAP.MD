@@ -151,6 +151,9 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### TurnController.gd (TurnController)
 - Purpose: Unified turn pipeline for AI (and fits human pipeline shape).
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
+- Movement: Each AI army picks the best single frontier target to attack; if no valid target exists or merge policy halts on a stronger/unknown enemy, it logs defense and spends the turn camping.
+- Enemy intel logging: Target lines mark enemies as “known” only when tracked power exists (tracked armies or garrison memory); first-turn unseen enemies remain unknown.
+- Recruitment: When no recruit castle is available, the army logs the miss and proceeds with movement instead of camping out the turn.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
 - AI castle upkeep: `plan_turn()` handles both emergency garrison hires and the final “additional recruitment” pass (threat-weighted) before army movement, so TurnController no longer runs ore searches or garrison spending after movement.
@@ -178,6 +181,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
  - Withdrawal: `BattleSimulator`/`AnimatedBattleSimulator` carry `withdrawing_side` in the BattleReport; `GameManager.finalize_battle_result()` applies retreats based on that. If missing, it falls back to attacker withdrawal.
  - Withdrawal destinations ignore owned neighbors already holding five armies.
 - Post-battle reselection now mirrors `ArmySelectModal -> Move Army` by clearing `UIManager` modal state so the next region click moves immediately.
+- `BattleSimulator.gd` and `AnimatedBattleSimulator.gd`: core battle resolution (background and animated), handles siege assault effectiveness, per-round debug totals, and withdrawal free-hit/mobility rounds.
 
 ### Region systems
 - region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, recruit source aggregation, castle level lookup. Registers `VisualManager` via `set_visual_manager()` so ownership changes can clear any temporary hover highlights before recoloring overlays. `find_best_recruitment_castle()` returns both the best region id and the scored candidate list, using `(total available recruits from the castle + owned neighbors) / distance * (1 + 0.2 × castle level)`, then subtracts a per-army recruitment penalty for each friendly army at the castle that already requested recruitment (ignores the requesting army itself; distance is clamped to ≥1 so armies already on a castle can be evaluated too).
@@ -302,6 +306,10 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - BattleModal.gd: Action button switches Withdraw/Continue automatically; message label surfaces withdraw/start/end notices.
 - BattleManager.gd: Re-selects victorious human armies automatically, but skips re-selection after withdrawal outcomes.
 - BattleSummaryModal.gd: Remaining-unit colors only show red when forces started with troops; zero-initial rows use grey.
+- Siege trait rules: long spears (1), mobility (3), flanker (4), and charge (5) are ignored whenever a castle is present so siege battles use baseline stats.
+- Siege prep: siege points now come only from siege-laborer (trait 8) units; ladders no longer lower castle defense and instead add raw attacker effectiveness (5 each) that scales non-ranged attacker hits during sieges (effectiveness is fixed at battle start based on the attacker’s initial non-ranged count and shown in the prebattle/battle assault labels).
+- Assault effectiveness scales the total pool of non-ranged hits once per assaulting side before distributing targets (no per-unit scaling logs).
+- Round totals log kill percentages relative to that side's hits (scaled non-ranged + ranged) for the round.
 - ArmyTargetScorer.gd: Applies enemy memory adjustments (nullifies targets when tracked enemy armies are ≥25% stronger, adds ±1 per 5% difference up to ±10).
 - ArmyTargetScorer.gd: Combines stored army and garrison intel; requires known power for every defending army before applying bonuses.
 - ArmyTargetScorer.gd: Adds configurable +5 bonus for enemy-owned regions (`GameParameters.AI_ENEMY_REGION_SCORE_BONUS`).
