@@ -51,7 +51,7 @@ const TRAIT_DESCRIPTIONS = {
 	Type.UNIT_TRAIT_4: "Can directly attack enemy ranged units",
 	Type.UNIT_TRAIT_5: "Doubles attack power when fighting in grassland regions",
 	Type.UNIT_TRAIT_6: "Provides additional attack",
-	Type.UNIT_TRAIT_7: "Halves enemy defense",
+	Type.UNIT_TRAIT_7: "Ignores or reduces enemy defense",
 	Type.UNIT_TRAIT_8: "Can construct siege equipment.",
 	Type.UNIT_TRAIT_9: "Protected by melee units from close combat damage",
 	Type.UNIT_TRAIT_10: "50% attack bonus when defending",

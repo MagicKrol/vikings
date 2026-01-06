@@ -308,6 +308,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - BattleSummaryModal.gd: Remaining-unit colors only show red when forces started with troops; zero-initial rows use grey.
 - Siege trait rules: long spears (1), mobility (3), flanker (4), and charge (5) are ignored whenever a castle is present so siege battles use baseline stats.
 - Siege prep: siege points now come only from siege-laborer (trait 8) units; ladders no longer lower castle defense and instead add raw attacker effectiveness (5 each) that scales non-ranged attacker hits during sieges (effectiveness is fixed at battle start based on the attacker’s initial non-ranged count and shown in the prebattle/battle assault labels).
+- Armor piercing: subtracts `GameParameters.ARMOR_PIERCING_DEFENSE_REDUCTION` from defender defense chance (floored at 0) before the penetration roll; castle avoidance is applied first.
 - Assault effectiveness scales the total pool of non-ranged hits once per assaulting side before distributing targets (no per-unit scaling logs).
 - Round totals log kill percentages relative to that side's hits (scaled non-ranged + ranged) for the round.
 - ArmyTargetScorer.gd: Applies enemy memory adjustments (nullifies targets when tracked enemy armies are ≥25% stronger, adds ±1 per 5% difference up to ±10).

@@ -595,7 +595,7 @@ func _defense_resolution_with_attacker_traits(assigned_hits: Dictionary, attacke
 		
 		# Apply armor piercing reduction to unit armor only
 		if has_armor_piercing:
-			effective_defense_chance *= GameParameters.ARMOR_PIERCING_DEFENSE_REDUCTION
+			effective_defense_chance = max(0.0, base_defense_chance - GameParameters.ARMOR_PIERCING_DEFENSE_REDUCTION)
 		
 		var penetration_chance = max(0.0, 1.0 - effective_defense_chance)
 		var penetrating_hits = _binomial_sample(rng, hits_after_castle_defense, penetration_chance)

@@ -1,0 +1,159 @@
+[gd_scene load_steps=8 format=3 uid="uid://cnxuv4jykn5ue"]
+
+[ext_resource type="Texture2D" uid="uid://w57tdi2mrhbw" path="res://images/movemodal3.png" id="2_22mrf"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_3qw0k"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_w3oo4"]
+[ext_resource type="Script" path="res://scenes/speed_modal.gd" id="5_3sc3s"]
+
+[sub_resource type="Theme" id="Theme_tx0fs"]
+default_font = ExtResource("3_3qw0k")
+default_font_size = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4478i"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_border"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="SpeedModal" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -920.0
+offset_top = 310.0
+offset_right = -670.0
+offset_bottom = 510.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_3sc3s")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 200.0
+texture = ExtResource("2_22mrf")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 200.0
+theme = SubResource("Theme_tx0fs")
+theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
+
+[node name="List" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+offset_left = 8.0
+offset_top = 7.0
+offset_right = 227.0
+offset_bottom = 179.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="ButtonSection" type="VBoxContainer" parent="Panel/List"]
+layout_mode = 2
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel/List/ButtonSection"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Panel/List/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/List/ButtonSection/HBoxContainer3"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="ButtonBorder" type="Panel" parent="Panel/List/ButtonSection/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+theme = ExtResource("4_w3oo4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
+
+[node name="NormalButton" type="Button" parent="Panel/List/ButtonSection/HBoxContainer3/ButtonBorder"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_w3oo4")
+text = "Normal"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/List/ButtonSection"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/List/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/List/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="ButtonBorder" type="Panel" parent="Panel/List/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+theme = ExtResource("4_w3oo4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
+
+[node name="FastButton" type="Button" parent="Panel/List/ButtonSection/HBoxContainer/ButtonBorder"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_w3oo4")
+text = "Fast"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/List/ButtonSection"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/List/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/List/ButtonSection/HBoxContainer2"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="ButtonBorder" type="Panel" parent="Panel/List/ButtonSection/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+theme = ExtResource("4_w3oo4")
+theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
+
+[node name="VeryFastButton" type="Button" parent="Panel/List/ButtonSection/HBoxContainer2/ButtonBorder"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_w3oo4")
+text = "Very Fast"
