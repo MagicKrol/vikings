@@ -41,6 +41,7 @@ var _pending_defenders: Array[Army] = []
 var _pending_garrison: ArmyComposition = null
 var _pending_recruits_count: int = 0
 var _pending_recruits_region: Region = null
+var _pending_siege_payload: Dictionary = {}
 
 # Manager references
 var _region_manager: RegionManager
@@ -77,11 +78,14 @@ func mark_attacker_manual_withdrawal() -> void:
 	_attacker_manual_withdraw_requested = true
 	DebugLogger.log("Withdrawal", "BattleManager.mark_attacker_manual_withdrawal flagged")
 
-func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_ratio: float = 0.0) -> void:
+func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}) -> void:
 	"""Start a battle between attacker and target region"""
 	var target_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	_attacker_effectiveness_ratio = clampf(attacker_effectiveness_ratio, 0.0, 1.0)
+	if target_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		_attacker_effectiveness_ratio = 1.0
 	_attacker_manual_withdraw_requested = false
+	_pending_siege_payload = siege_payload
 	DebugLogger.log("Withdrawal", "BattleManager.start_battle attacker=" + str(attacker.name) + " target=" + str(target_region.get_region_name()))
 
 	# Ensure attacker has a stored previous region for potential withdrawal fallback
@@ -161,7 +165,7 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 		var attacker_label = "Attacker " + str(attacker.name)
 		var defender_label = "Defender " + str(target_region.get_region_name())
 		var effective_defense = _get_effective_defense_bonus(target_region)
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense, _attacker_effectiveness_ratio)
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense, _attacker_effectiveness_ratio, _pending_siege_payload)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
@@ -181,7 +185,8 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 			"defending_armies": _pending_defenders,
 			"defending_garrison": _pending_garrison,
 			"defending_recruits_region": _pending_recruits_region,
-			"defending_recruits_count": _pending_recruits_count
+			"defending_recruits_count": _pending_recruits_count,
+			"siege_payload": _pending_siege_payload
 		}
 		_queue_battle_finalization(result_data)
 		_clear_pending_conquest_state()
@@ -278,12 +283,12 @@ func _clear_pending_conquest_state() -> void:
 	pending_conquest_army = null
 	pending_conquest_region = null
 	_attacker_effectiveness_ratio = 0.0
+	_pending_siege_payload = {}
 
 func _get_effective_defense_bonus(region: Region) -> int:
 	var base_def := GameParameters.get_castle_defense_bonus(region.get_castle_type())
 	var min_def: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(region.get_castle_type(), 0)
-	var reduction := region.gate_damage + region.wall_damage
-	return max(min_def, base_def - reduction)
+	return max(min_def, base_def)
 
 func get_effective_defense_for_region(region: Region) -> int:
 	return _get_effective_defense_bonus(region)
@@ -293,6 +298,53 @@ func get_attacker_effectiveness_raw() -> int:
 
 func get_attacker_effectiveness_ratio() -> float:
 	return _attacker_effectiveness_ratio
+
+func compute_ladder_capacity(region: Region) -> int:
+	var data = GameParameters.CASTLE_WALLS_GATES.get(region.get_castle_type(), {})
+	var sections_total: int = int(data.get("wall_sections", 0))
+	return sections_total * GameParameters.LADDERS_PER_SECTION
+
+func compute_ladder_effective_count(region: Region, ladder_count: int) -> int:
+	var capacity := compute_ladder_capacity(region)
+	return min(capacity, ladder_count)
+
+func compute_ladder_effectiveness_raw(region: Region, ladder_count: int) -> int:
+	var effective_ladders := compute_ladder_effective_count(region, ladder_count)
+	return effective_ladders * GameParameters.LADDER_EFFECTIVENESS_PER
+
+func compute_wall_assault_raw(region: Region) -> float:
+	var data = GameParameters.CASTLE_WALLS_GATES.get(region.get_castle_type(), {})
+	var assault_per_section: int = int(data.get("wall_section_assault", 0))
+	if assault_per_section <= 0:
+		return 0.0
+	var wall_state := region.get_wall_state()
+	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
+	return float(destroyed * assault_per_section)
+
+func compute_wall_assault_ratio(region: Region, attacker_comp: ArmyComposition) -> float:
+	var raw := compute_wall_assault_raw(region)
+	if raw <= 0.0:
+		return 0.0
+	var non_ranged := GameParameters.calculate_non_ranged_count(attacker_comp)
+	if non_ranged <= 0:
+		return 0.0
+	return clampf(raw / float(non_ranged), 0.0, 1.0)
+
+func compute_gate_assault_ratio(region: Region) -> float:
+	var gate_state := region.get_gate_state()
+	var gate_hp: int = int(gate_state.get("gate_hp", 0))
+	var gate_values: Array = gate_state.get("gate_values", [])
+	var gates: int = int(gate_state.get("gates", gate_values.size()))
+	if gate_hp <= 0 or gates <= 0:
+		return 0.0
+	var capacity := gates * gate_hp
+	var missing := 0
+	if not gate_values.is_empty():
+		for hp in gate_values:
+			missing += max(0, gate_hp - int(hp))
+	else:
+		missing = 0
+	return clampf(float(missing) / float(capacity), 0.0, 1.0)
 
 func prepare_human_battle(attacker: Army, region: Region) -> void:
 	"""Prepare defender participants for a human-initiated battle while keeping pending conquest logic."""
@@ -335,7 +387,8 @@ func handle_battle_modal_closed() -> void:
 			"defending_armies": _pending_defenders,
 			"defending_garrison": _pending_garrison,
 			"defending_recruits_region": _pending_recruits_region,
-			"defending_recruits_count": _pending_recruits_count
+			"defending_recruits_count": _pending_recruits_count,
+			"siege_payload": _pending_siege_payload
 		}
 		DebugLogger.log("Withdrawal", "BattleManager.handle_battle_modal_closed battle_result=" + str(battle_result) + " withdraw_side=" + str(result_data["withdrawing_side"]) + " attacker_can=" + str(_attacker_withdraw_allowed) + " defender_can=" + str(_defender_withdraw_allowed))
 		

@@ -25,6 +25,23 @@ var rams_plus: Button
 var rams_minus: Button
 var treb_plus: Button
 var treb_minus: Button
+var message_label: Label
+
+var siege_panel: Control
+var walls_breached_value: Label
+var walls_damaged_value: Label
+var walls_intact_value: Label
+var gate_rows: Array[Dictionary] = []
+var gate_buttons_container: HBoxContainer
+var siege_reserve_row: HBoxContainer
+var siege_target_row: HBoxContainer
+
+var info_panel: Control
+var info_header_label: Label
+var info_ladders_body: Label
+var info_rams_body: Label
+var info_trebuchet_body: Label
+var info_body_map: Dictionary = {}
 
 var attacking_army: Army
 var defending_region: Region
@@ -35,13 +52,19 @@ var sound_manager: SoundManager
 var player_manager: PlayerManagerNode
 var tutorial_manager: TutorialManager = null
 
-const LADDER_DATA = {"points": 1, "wood": 0, "defense": 0, "max": 0, "effectiveness": GameParameters.LADDER_EFFECTIVENESS_PER}
+const LADDER_DATA = {"points": 1, "wood": 0, "defense": 0, "max": 99, "effectiveness": GameParameters.LADDER_EFFECTIVENESS_PER}
 const RAM_DATA = {"points": 2, "wood": 2, "defense": 0, "max": 99}
-const TREB_DATA = {"points": 3, "wood": 5, "defense": 15, "max": 99}
+const TREB_DATA = {"points": 4, "wood": 5, "defense": 5, "max": 99}
+const TREBUCHET_SHOTS: int = 4
+const TREBUCHET_HIT_CHANCE: float = 0.5
+const BOMBARD_TEXT := "Bombard"
+const CONTINUE_TEXT := "Continue"
 
 var siege_points_total: int = 0
 var siege_points_spent: int = 0
 var siege_counts: Dictionary = {"ladders": 0, "rams": 0, "trebuchets": 0}
+var bombard_performed: bool = false
+var trebuchet_bombard_result: Dictionary = {}
 
 func _ready():
 	region_label = get_node("Panel/Army/Header/Region")
@@ -68,6 +91,7 @@ func _ready():
 	rams_minus = get_node("Panel/Army/SiegeSection/Available/BatteringRams/Button1m")
 	treb_plus = get_node("Panel/Army/SiegeSection/Available/Trebuchets/Button1")
 	treb_minus = get_node("Panel/Army/SiegeSection/Available/Trebuchets/Button1m")
+	message_label = get_node("Panel/Army/MessageSection/HBoxContainer/Message")
 	game_manager = get_node("../../GameManager") as GameManager
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -82,14 +106,127 @@ func _ready():
 	rams_minus.pressed.connect(func(): _adjust_siege_equipment("rams", -1))
 	treb_plus.pressed.connect(func(): _adjust_siege_equipment("trebuchets", 1))
 	treb_minus.pressed.connect(func(): _adjust_siege_equipment("trebuchets", -1))
+	_setup_info_panel()
+	_connect_info_signals()
+	_setup_siege_status_nodes()
 	if tutorial_manager != null:
 		attack_button.name = "continue"
 		attack_button.pressed.connect(func(): tutorial_manager.handle_ui_click("PrebattleModal/" + attack_button.name))
 	visible = false
 
+func _setup_info_panel() -> void:
+	info_panel = get_node("Info")
+	info_header_label = get_node("Info/Header/Name")
+	info_ladders_body = get_node("Info/Body/Ladders")
+	info_rams_body = get_node("Info/Body/SiegeRams")
+	info_trebuchet_body = get_node("Info/Body/Trebuchet")
+	info_body_map = {
+		"Ladders": info_ladders_body,
+		"Siege Rams": info_rams_body,
+		"Trebuchet": info_trebuchet_body
+	}
+	_reset_info_panel()
+
+func _connect_info_signals() -> void:
+	var ladders_row: HBoxContainer = get_node("Panel/Army/SiegeSection/Available/Ladders")
+	var rams_row: HBoxContainer = get_node("Panel/Army/SiegeSection/Available/BatteringRams")
+	var trebuchet_row: HBoxContainer = get_node("Panel/Army/SiegeSection/Available/Trebuchets")
+	_connect_info_hover_group(ladders_row, ladders_plus, ladders_minus, "Ladders")
+	_connect_info_hover_group(rams_row, rams_plus, rams_minus, "Siege Rams")
+	_connect_info_hover_group(trebuchet_row, treb_plus, treb_minus, "Trebuchet")
+
+func _connect_info_hover_group(container: Control, add_button: Button, remove_button: Button, label: String) -> void:
+	container.mouse_entered.connect(func(): _show_info(label))
+	container.mouse_exited.connect(_hide_info_panel)
+	add_button.mouse_entered.connect(func(): _show_info(label))
+	add_button.mouse_exited.connect(_hide_info_panel)
+	remove_button.mouse_entered.connect(func(): _show_info(label))
+	remove_button.mouse_exited.connect(_hide_info_panel)
+
+func _setup_siege_status_nodes() -> void:
+	siege_panel = get_node("Siege")
+	walls_breached_value = get_node("Siege/Body/Breached/Value")
+	walls_damaged_value = get_node("Siege/Body/Danaged/Value")
+	walls_intact_value = get_node("Siege/Body/Intact/Value")
+	gate_rows.clear()
+	for i in range(1, 4):
+		var row: HBoxContainer = get_node("Siege/Body/Gate" + str(i))
+		var name_label: Label = row.get_node("Name")
+		var value_label: Label = row.get_node("Value")
+		var bar: ProgressBar = row.get_node("ProgressBar")
+		gate_rows.append({"container": row, "name": name_label, "value": value_label, "bar": bar})
+		row.visible = false
+	siege_reserve_row = get_node("Siege/Body/Reserve")
+	siege_target_row = get_node("Siege/Body/Reserve2")
+	siege_reserve_row.visible = false
+	siege_target_row.visible = false
+	gate_buttons_container = get_node("Siege/HBoxContainer")
+	gate_buttons_container.visible = false
+
+func _show_info(label: String) -> void:
+	_hide_all_info_bodies()
+	info_header_label.text = label
+	var body_label: Label = info_body_map[label]
+	body_label.visible = true
+	info_panel.visible = true
+
+func _hide_info_panel() -> void:
+	_reset_info_panel()
+
+func _hide_all_info_bodies() -> void:
+	for body_node in info_body_map.values():
+		var body_label: Label = body_node
+		body_label.visible = false
+
+func _reset_info_panel() -> void:
+	_hide_all_info_bodies()
+	info_header_label.text = ""
+	info_panel.visible = false
+
+func _update_siege_status_panel() -> void:
+	if defending_region == null or siege_panel == null:
+		return
+	var wall_state: Dictionary = defending_region.get_wall_state()
+	var wall_sections: int = int(wall_state.get("wall_sections", 0))
+	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
+	var damaged: int = int(wall_state.get("damaged_sections", 0))
+	var intact: int = max(0, wall_sections - destroyed - damaged)
+	walls_breached_value.text = str(destroyed)
+	walls_damaged_value.text = str(damaged)
+	walls_intact_value.text = str(intact)
+	_update_gate_rows(defending_region.get_gate_state())
+
+func _update_gate_rows(gate_state: Dictionary) -> void:
+	var base_hp: int = int(gate_state.get("gate_hp", 0))
+	var gate_values: Array = gate_state.get("gate_values", [])
+	var gates: int = int(gate_state.get("gates", gate_values.size()))
+	for i in range(gate_rows.size()):
+		var row_data: Dictionary = gate_rows[i]
+		var container: HBoxContainer = row_data["container"]
+		if i < gates and base_hp > 0:
+			container.visible = true
+			var name_label: Label = row_data["name"]
+			var value_label: Label = row_data["value"]
+			var bar: ProgressBar = row_data["bar"]
+			var current_hp: int = base_hp
+			if i < gate_values.size():
+				current_hp = int(gate_values[i])
+			var status := "Intact"
+			if current_hp <= 0:
+				status = "Breached"
+			elif current_hp < base_hp:
+				status = "Damaged"
+			name_label.text = "Gate " + str(i + 1)
+			value_label.text = status
+			bar.max_value = base_hp
+			bar.value = current_hp
+		else:
+			container.visible = false
+
 func show_prebattle(army: Army, region: Region) -> void:
 	attacking_army = army
 	defending_region = region
+	_reset_info_panel()
 	_update_labels()
 	ui_manager.set_modal_active(true)
 	visible = true
@@ -97,6 +234,7 @@ func show_prebattle(army: Army, region: Region) -> void:
 func hide_prebattle() -> void:
 	visible = false
 	ui_manager.set_modal_active(false)
+	_reset_info_panel()
 
 func is_showing_for(army: Army, region: Region) -> bool:
 	return visible and attacking_army == army and defending_region == region
@@ -158,6 +296,9 @@ func _reset_siege_state() -> void:
 	siege_counts = {"ladders": 0, "rams": 0, "trebuchets": 0}
 	siege_points_spent = 0
 	siege_points_total = _calculate_siege_points()
+	bombard_performed = false
+	trebuchet_bombard_result = {}
+	message_label.text = ""
 	_refresh_siege_ui()
 
 func _calculate_siege_points() -> int:
@@ -168,12 +309,16 @@ func _calculate_siege_points() -> int:
 func _adjust_siege_equipment(kind: String, delta: int) -> void:
 	if not siege_available.visible:
 		return
+	if bombard_performed and kind == "trebuchets":
+		return
 	var data = _get_siege_data(kind)
 	if data.is_empty() or delta == 0:
 		return
 	var current_count: int = siege_counts.get(kind, 0)
 	if delta > 0:
 		if current_count >= data["max"]:
+			return
+		if kind == "ladders" and not _has_ladder_capacity_for(1):
 			return
 		if not _has_enough_points(data["points"]):
 			return
@@ -222,11 +367,15 @@ func _refund_points(amount: int) -> void:
 	siege_points_spent = max(0, siege_points_spent - amount)
 
 func _can_spend_wood(cost: int) -> bool:
+	if cost <= 0:
+		return true
 	if player_manager == null:
 		return false
 	return player_manager.get_resource_amount(ResourcesEnum.Type.WOOD) >= cost
 
 func _spend_wood(cost: int) -> bool:
+	if cost <= 0:
+		return true
 	if player_manager == null:
 		return false
 	var ok = player_manager.spend_resource(ResourcesEnum.Type.WOOD, cost)
@@ -242,6 +391,8 @@ func _refund_wood(amount: int) -> void:
 		_update_player_status_modal()
 
 func _can_reduce_defense(reduction: int) -> bool:
+	if reduction <= 0:
+		return true
 	var base_defense = _get_base_defense()
 	var min_defense = _get_min_defense()
 	var new_defense = base_defense - (_get_structural_damage() + _get_total_defense_reduction() + reduction)
@@ -254,26 +405,22 @@ func _get_min_defense() -> int:
 	return GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(defending_region.get_castle_type(), 0)
 
 func _get_total_defense_reduction() -> int:
-	return siege_counts.get("rams", 0) * RAM_DATA["defense"] + siege_counts.get("trebuchets", 0) * TREB_DATA["defense"]
+	return 0
 
 func _get_structural_damage() -> int:
-	return defending_region.gate_damage + defending_region.wall_damage
+	return 0
 
 func _update_defense_value() -> void:
 	var base_defense = _get_base_defense()
-	var min_defense = _get_min_defense()
-	var effective = max(min_defense, base_defense - _get_structural_damage() - _get_total_defense_reduction())
-	defense_value_label.text = str(effective) + "%"
+	defense_value_label.text = str(base_defense) + "%"
 	defense_value_label.remove_theme_color_override("font_color")
-	if base_defense > 0:
-		if min_defense > 0 and effective <= min_defense:
-			defense_value_label.add_theme_color_override("font_color", Color.html("#d13131"))
-		elif effective < base_defense:
-			defense_value_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+	if base_defense <= 0:
+		defense_value_label.add_theme_color_override("font_color", Color.WHITE)
 	else:
 		defense_value_label.add_theme_color_override("font_color", Color.WHITE)
 
 func _refresh_siege_ui() -> void:
+	_recalculate_siege_points_total()
 	siege_points_value.text = str(_get_remaining_points())
 	ladders_count_label.text = str(siege_counts.get("ladders", 0))
 	rams_count_label.text = str(siege_counts.get("rams", 0))
@@ -281,8 +428,31 @@ func _refresh_siege_ui() -> void:
 	_update_assault_value()
 	_update_defense_value()
 	_update_siege_buttons()
+	_update_attack_button_text()
+	_update_siege_status_panel()
+
+func _recalculate_siege_points_total() -> void:
+	if attacking_army == null:
+		return
+	var fresh_total: int = GameParameters.calculate_siege_points_for_composition(attacking_army.get_composition())
+	if fresh_total != siege_points_total:
+		siege_points_total = fresh_total
+		siege_points_spent = min(siege_points_spent, siege_points_total)
+
+func _has_ladder_capacity_for(additional: int) -> bool:
+	var bm := _get_battle_manager()
+	var capacity := bm.compute_ladder_capacity(defending_region)
+	return siege_counts.get("ladders", 0) + additional <= capacity
 
 func _update_siege_buttons() -> void:
+	if bombard_performed:
+		ladders_plus.disabled = true
+		rams_plus.disabled = true
+		treb_plus.disabled = true
+		ladders_minus.disabled = true
+		rams_minus.disabled = true
+		treb_minus.disabled = true
+		return
 	ladders_plus.disabled = not _can_purchase("ladders")
 	rams_plus.disabled = not _can_purchase("rams")
 	treb_plus.disabled = not _can_purchase("trebuchets")
@@ -296,6 +466,8 @@ func _can_purchase(kind: String) -> bool:
 		return false
 	var max_allowed: int = int(data.get("max", 0))
 	if max_allowed > 0 and siege_counts.get(kind, 0) >= max_allowed:
+		return false
+	if kind == "ladders" and not _has_ladder_capacity_for(1):
 		return false
 	if not _has_enough_points(data["points"]):
 		return false
@@ -313,15 +485,36 @@ func _refund_all_siege_purchases() -> void:
 	_reset_siege_state()
 
 func _apply_siege_damage_and_get_payload() -> Dictionary:
-	var payload := defending_region.apply_siege_damage(siege_counts, LADDER_DATA, RAM_DATA, TREB_DATA)
-	payload["ladder_effectiveness_ratio"] = _calculate_assault_effectiveness_ratio()
-	payload["ladder_effectiveness_raw"] = _get_ladder_effectiveness_raw()
+	var apply_trebuchet_damage := not bombard_performed
+	var payload := defending_region.apply_siege_damage(siege_counts, LADDER_DATA, RAM_DATA, TREB_DATA, apply_trebuchet_damage)
+	var ladder_raw := _get_ladder_effectiveness_raw()
+	var ladder_ratio := _calculate_ladder_effectiveness_ratio_from_raw(ladder_raw)
+	var wall_ratio := _calculate_wall_effectiveness_ratio()
+	var gate_ratio := _calculate_gate_effectiveness_ratio()
+	var total_assault := clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	payload["ladder_effectiveness_ratio"] = ladder_ratio
+	payload["ladder_effectiveness_raw"] = ladder_raw
+	payload["wall_effectiveness_ratio"] = wall_ratio
+	payload["gate_effectiveness_ratio"] = gate_ratio
+	payload["assault_ratio"] = total_assault
+	payload["trebuchet_bombard"] = _get_bombard_payload()
 	return payload
 
 func _calculate_assault_effectiveness_ratio() -> float:
+	if defending_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		return 1.0
+	var ladder_ratio := _calculate_ladder_effectiveness_ratio()
+	var wall_ratio := _calculate_wall_effectiveness_ratio()
+	var gate_ratio := _calculate_gate_effectiveness_ratio()
+	return clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+
+func _calculate_ladder_effectiveness_ratio() -> float:
 	if attacking_army == null:
 		return 0.0
 	var raw := _get_ladder_effectiveness_raw()
+	return _calculate_ladder_effectiveness_ratio_from_raw(raw)
+
+func _calculate_ladder_effectiveness_ratio_from_raw(raw: int) -> float:
 	if raw <= 0:
 		return 0.0
 	var non_ranged := GameParameters.calculate_non_ranged_count(attacking_army.get_composition())
@@ -329,14 +522,24 @@ func _calculate_assault_effectiveness_ratio() -> float:
 		return 0.0
 	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
 
+func _calculate_wall_effectiveness_ratio() -> float:
+	return _get_battle_manager().compute_wall_assault_ratio(defending_region, attacking_army.get_composition())
+
+func _calculate_gate_effectiveness_ratio() -> float:
+	return _get_battle_manager().compute_gate_assault_ratio(defending_region)
+
 func _get_ladder_effectiveness_raw() -> int:
-	return siege_counts.get("ladders", 0) * int(LADDER_DATA.get("effectiveness", GameParameters.LADDER_EFFECTIVENESS_PER))
+	var bm := _get_battle_manager()
+	return bm.compute_ladder_effectiveness_raw(defending_region, siege_counts.get("ladders", 0))
 
 func _update_assault_value() -> void:
 	if assault_value_label == null:
 		return
 	var percent := int(round(_calculate_assault_effectiveness_ratio() * 100.0))
 	assault_value_label.text = str(percent) + "%"
+
+func _get_battle_manager() -> BattleManager:
+	return game_manager.get_battle_manager()
 
 func _update_player_status_modal() -> void:
 	GlobalSignals.emit_signal("player_status_refresh_requested")
@@ -349,6 +552,89 @@ func _on_withdraw_pressed() -> void:
 
 func _on_attack_pressed() -> void:
 	sound_manager.click_sound()
+	if _should_bombard_first():
+		_perform_trebuchet_bombard()
+		return
 	var siege_payload = _apply_siege_damage_and_get_payload()
 	hide_prebattle()
 	game_manager.handle_prebattle_attack(attacking_army, defending_region, siege_payload)
+
+func _should_bombard_first() -> bool:
+	return siege_counts.get("trebuchets", 0) > 0 and not bombard_performed and siege_available.visible
+
+func _update_attack_button_text() -> void:
+	if _should_bombard_first():
+		attack_button.text = BOMBARD_TEXT
+	else:
+		attack_button.text = CONTINUE_TEXT
+
+func _perform_trebuchet_bombard() -> void:
+	bombard_performed = true
+	var total_damage := _roll_trebuchet_damage()
+	var breach_result: Dictionary = {}
+	if total_damage > 0:
+		breach_result = defending_region.apply_wall_section_damage(total_damage)
+		_update_defense_value()
+	else:
+		breach_result = _get_wall_breach_snapshot()
+	var destroyed_sections := int(breach_result.get("destroyed_sections", 0))
+	var damaged_sections := int(breach_result.get("damaged_sections", 0))
+	_update_bombard_message(destroyed_sections, damaged_sections)
+	trebuchet_bombard_result = {
+		"total_damage": total_damage,
+		"destroyed_sections": destroyed_sections,
+		"damaged_sections": damaged_sections,
+		"section_damage": int(breach_result.get("section_damage", 0)),
+		"wall_section_hp": int(breach_result.get("wall_section_hp", 0)),
+		"wall_sections": int(breach_result.get("wall_sections", 0))
+	}
+	_update_attack_button_text()
+	_update_siege_buttons()
+	_update_assault_value()
+	_update_siege_status_panel()
+
+func _get_wall_breach_snapshot() -> Dictionary:
+	var wall_state := defending_region.get_wall_state()
+	return {
+		"destroyed_sections": int(wall_state.get("destroyed_sections", 0)),
+		"damaged_sections": int(wall_state.get("damaged_sections", 0)),
+		"wall_section_hp": int(wall_state.get("wall_section_hp", 0)),
+		"wall_sections": int(wall_state.get("wall_sections", 0)),
+		"section_damage": int(wall_state.get("section_damage", 0))
+	}
+
+func _roll_trebuchet_damage() -> int:
+	var treb_count: int = int(siege_counts.get("trebuchets", 0))
+	var total_damage := 0
+	for i in range(treb_count):
+		for shot in range(TREBUCHET_SHOTS):
+			if randf() <= TREBUCHET_HIT_CHANCE:
+				total_damage += 1
+	return total_damage
+
+func _get_bombard_payload() -> Dictionary:
+	if trebuchet_bombard_result.is_empty():
+		var wall_state := defending_region.get_wall_state()
+		return {
+			"total_damage": 0,
+			"destroyed_sections": int(wall_state.get("destroyed_sections", 0)),
+			"damaged_sections": int(wall_state.get("damaged_sections", 0)),
+			"section_damage": int(wall_state.get("section_damage", 0)),
+			"wall_section_hp": int(wall_state.get("wall_section_hp", 0)),
+			"wall_sections": int(wall_state.get("wall_sections", 0)),
+			"wall_effectiveness_raw": _get_battle_manager().compute_wall_assault_raw(defending_region),
+			"wall_effectiveness_ratio": _calculate_wall_effectiveness_ratio(),
+			"gate_effectiveness_ratio": _calculate_gate_effectiveness_ratio(),
+			"assault_ratio": _calculate_assault_effectiveness_ratio()
+		}
+	var wall_state := defending_region.get_wall_state()
+	trebuchet_bombard_result["wall_section_hp"] = int(wall_state.get("wall_section_hp", 0))
+	trebuchet_bombard_result["wall_sections"] = int(wall_state.get("wall_sections", 0))
+	trebuchet_bombard_result["wall_effectiveness_raw"] = _get_battle_manager().compute_wall_assault_raw(defending_region)
+	trebuchet_bombard_result["wall_effectiveness_ratio"] = _calculate_wall_effectiveness_ratio()
+	trebuchet_bombard_result["gate_effectiveness_ratio"] = _calculate_gate_effectiveness_ratio()
+	trebuchet_bombard_result["assault_ratio"] = _calculate_assault_effectiveness_ratio()
+	return trebuchet_bombard_result
+
+func _update_bombard_message(destroyed_sections: int, damaged_sections: int) -> void:
+	message_label.text = str(destroyed_sections) + " wall sections destroyed, " + str(damaged_sections) + " damaged by trebuchet(s)."

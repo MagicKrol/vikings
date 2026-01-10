@@ -14,6 +14,7 @@ class BattleReport:
 	var attacker_wounded: Dictionary
 	var defender_wounded: Dictionary
 	var withdrawing_side: int
+	var siege_payload: Dictionary
 	
 	func _init():
 		attacker_losses = {}
@@ -23,9 +24,10 @@ class BattleReport:
 		attacker_wounded = {}
 		defender_wounded = {}
 		withdrawing_side = 0
+		siege_payload = {}
 
 # Main battle function - accepts arrays of compositions for each side
-func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0) -> BattleReport:
+func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}) -> BattleReport:
 	"""
 	Simulate a battle between multiple armies and defenders
 	attacking_armies: Array of ArmyComposition objects
@@ -60,6 +62,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	var original_defenders = _copy_composition_dict(merged_defenders)
 	
 	var report = BattleReport.new()
+	report.siege_payload = siege_payload
 	var rounds = 0
 	var max_rounds = 1000
 	
@@ -86,7 +89,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	if withdraw_side != 0:
 		var withdraw_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, withdraw_side, castle_defense_bonus_override, is_siege_battle)
 		rounds += withdraw_rounds
-		return _create_withdrawal_report(original_attackers, original_defenders, merged_attackers, merged_defenders, rounds, withdraw_side)
+		return _create_withdrawal_report(original_attackers, original_defenders, merged_attackers, merged_defenders, rounds, withdraw_side, siege_payload)
 	
 	# Battle loop
 	while _army_size(merged_attackers) > 0 and _army_size(merged_defenders) > 0 and rounds < max_rounds:
@@ -132,7 +135,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 		if mid_withdraw_side != 0:
 			var withdraw_extra_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, mid_withdraw_side, castle_defense_bonus_override, is_siege_battle)
 			rounds += withdraw_extra_rounds
-			return _create_withdrawal_report(original_attackers, original_defenders, merged_attackers, merged_defenders, rounds, mid_withdraw_side)
+			return _create_withdrawal_report(original_attackers, original_defenders, merged_attackers, merged_defenders, rounds, mid_withdraw_side, siege_payload)
 	
 	# Determine winner
 	var attacker_size = _army_size(merged_attackers)
@@ -509,7 +512,7 @@ func _compute_dict_power(comp_dict: Dictionary) -> int:
 			total += GameParameters.get_unit_stat(ut, "power") * qty
 	return total
 
-func _create_withdrawal_report(original_attackers: Dictionary, original_defenders: Dictionary, current_attackers: Dictionary, current_defenders: Dictionary, rounds: int, withdrawing_side: int) -> BattleReport:
+func _create_withdrawal_report(original_attackers: Dictionary, original_defenders: Dictionary, current_attackers: Dictionary, current_defenders: Dictionary, rounds: int, withdrawing_side: int, siege_payload: Dictionary = {}) -> BattleReport:
 	var report = BattleReport.new()
 	report.winner = "Withdrawal"
 	report.rounds = rounds
@@ -518,6 +521,7 @@ func _create_withdrawal_report(original_attackers: Dictionary, original_defender
 	report.final_attacker = current_attackers.duplicate()
 	report.final_defender = current_defenders.duplicate()
 	report.withdrawing_side = withdrawing_side
+	report.siege_payload = siege_payload
 	return report
 
 func _distribute_hits_across_defender(defender: Dictionary, total_hits: int, rng: RandomNumberGenerator) -> Dictionary:

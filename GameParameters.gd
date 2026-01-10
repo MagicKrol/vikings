@@ -258,6 +258,7 @@ const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army 
 
 ## Siege ladders
 const LADDER_EFFECTIVENESS_PER = 5				# Raw effectiveness added per ladder for siege assaults
+const LADDERS_PER_SECTION = 4					# Max ladders applied per intact wall section
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
@@ -274,6 +275,41 @@ const CASTLE_DEFENSE_BONUSES_MIN = {
 	CastleTypeEnum.Type.KEEP: 25,         # Keep - 40% hit avoidance
 	CastleTypeEnum.Type.CASTLE: 30,       # Castle - 60% hit avoidance
 	CastleTypeEnum.Type.STRONGHOLD: 40    # Stronghold - 75% hit avoidance
+}
+
+const CASTLE_WALLS_GATES = {
+	CastleTypeEnum.Type.OUTPOST: {
+		"gates": 1,
+		"gate_hp": 4,
+		"wall_sections": 2,
+		"wall_hp": 2,
+		"trebuchet_damage_to_defense": 8,
+		"wall_section_assault": 10
+	},      # Outpost 
+	CastleTypeEnum.Type.KEEP: {
+		"gates": 1,
+		"gate_hp": 5,
+		"wall_sections": 4,
+		"wall_hp": 2,
+		"trebuchet_damage_to_defense": 7,
+		"wall_section_assault": 10
+	},         # Keep
+	CastleTypeEnum.Type.CASTLE: {
+		"gates": 2,
+		"gate_hp": 5,
+		"wall_sections": 6,
+		"wall_hp": 3,
+		"trebuchet_damage_to_defense": 5,
+		"wall_section_assault": 10
+	},      # Castle 
+	CastleTypeEnum.Type.STRONGHOLD: {
+		"gates": 2,
+		"gate_hp": 6,
+		"wall_sections": 8,
+		"wall_hp": 3,
+		"trebuchet_damage_to_defense": 4.,
+		"wall_section_assault": 10
+	}, 
 }
 
 ## Unit Tier System

@@ -108,18 +108,18 @@ custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
 [node name="AttackerVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(85, 0)
+custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
 text = "Vigor:"
 
 [node name="AttackerVigorValue" type="Label" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "90%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/HeaderSection/Status"]
-custom_minimum_size = Vector2(192, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 
 [node name="DefenderVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
@@ -141,30 +141,29 @@ custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
 [node name="AssaultText" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(78, 0)
+custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
-text = "Assault:"
+text = "Engaged:"
 horizontal_alignment = 1
 
 [node name="AssaultValue" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "40%"
-horizontal_alignment = 1
 
 [node name="MarginContainer6" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="UnitName" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(115, 0)
 layout_mode = 2
 text = "Unit"
 horizontal_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/HeaderSection/HBoxContainer2"]
-custom_minimum_size = Vector2(15, 0)
+clip_contents = true
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
 [node name="DefenderDefenseText" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]

@@ -61,8 +61,8 @@ var promotion_growth_bonus_turns_remaining: int = 0
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_build_turns_remaining: int = 0
-var gate_damage: int = 0
-var wall_damage: int = 0
+var gate_conditions: Array[int] = []
+var wall_section_conditions: Array[int] = []
 var castle_repair_turns_remaining: int = 0
 var castle_repair_in_progress: bool = false
 
@@ -102,10 +102,9 @@ func setup_region(region_data: Dictionary) -> void:
 	wounded_recruits = ArmyComposition.new()
 	resources = ResourceComposition.new()
 	base_resources = ResourceComposition.new()
-	gate_damage = 0
-	wall_damage = 0
 	castle_repair_turns_remaining = 0
 	castle_repair_in_progress = false
+	_reset_defense_state_to_full()
 	
 	# Set basic garrison composition and population for non-ocean regions
 	if not is_ocean:
@@ -447,6 +446,7 @@ func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
 	
 	# Recalculate recruitment limits when castle type changes
 	if old_castle_type != new_castle_type:
+		_reset_defense_state_to_full()
 		_recalculate_recruitment_limits()
 
 func has_castle() -> bool:
@@ -454,28 +454,173 @@ func has_castle() -> bool:
 	return castle_type != CastleTypeEnum.Type.NONE
 
 func has_castle_damage() -> bool:
-	return gate_damage > 0 or wall_damage > 0
+	return _get_total_defense_damage() > 0
 
-func apply_siege_damage(siege_counts: Dictionary, ladder_data: Dictionary, ram_data: Dictionary, treb_data: Dictionary) -> Dictionary:
+func get_gate_state() -> Dictionary:
+	return _build_gate_state()
+
+func get_wall_state() -> Dictionary:
+	return _build_wall_state()
+
+func get_wall_section_stats() -> Dictionary:
+	var stats := _get_wall_stats()
+	return {
+		"wall_sections": int(stats.get("sections", 0)),
+		"wall_hp": int(stats.get("hp", 0)),
+		"trebuchet_damage_to_defense": int(stats.get("trebuchet_damage_to_defense", 0)),
+		"gate_count": int(stats.get("gates", 0)),
+		"gate_hp": int(stats.get("gate_hp", 0)),
+		"wall_section_assault": int(stats.get("wall_section_assault", 0))
+	}
+
+func apply_wall_section_damage(damage: int) -> Dictionary:
+	var base_hp: int = _get_wall_section_hp()
+	if damage <= 0 or base_hp <= 0 or wall_section_conditions.is_empty():
+		return _build_wall_state()
+	var remaining: int = damage
+	for i in range(wall_section_conditions.size()):
+		if remaining <= 0:
+			break
+		var current_hp: int = wall_section_conditions[i]
+		if current_hp <= 0:
+			continue
+		var applied: int = min(current_hp, remaining)
+		wall_section_conditions[i] = max(0, current_hp - applied)
+		remaining -= applied
+	return _build_wall_state()
+
+func apply_siege_damage(siege_counts: Dictionary, ladder_data: Dictionary, ram_data: Dictionary, treb_data: Dictionary, apply_trebuchet_damage: bool = true) -> Dictionary:
 	var ladder_count: int = int(siege_counts.get("ladders", 0))
 	var ladder_effectiveness_raw: int = ladder_count * int(ladder_data.get("effectiveness", GameParameters.LADDER_EFFECTIVENESS_PER))
-	var gate_cap: int = 10
 	var ram_damage: int = int(siege_counts.get("rams", 0)) * int(ram_data.get("defense", 0))
-	var gate_room: int = max(0, gate_cap - gate_damage)
-	var gate_applied: int = min(gate_room, ram_damage)
-	if gate_applied > 0:
-		gate_damage += gate_applied
-	var base_defense: int = GameParameters.get_castle_defense_bonus(castle_type)
-	var min_defense: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(castle_type, 0)
-	var wall_cap: int = max(0, base_defense - gate_damage - min_defense)
-	var trebs_damage: int = int(siege_counts.get("trebuchets", 0)) * int(treb_data.get("defense", 0))
-	var wall_applied: int = min(wall_cap, trebs_damage)
-	if wall_applied > 0:
-		wall_damage = min(wall_cap, wall_damage + wall_applied)
+	var gate_result := _apply_gate_damage(ram_damage)
+	var wall_result := _build_wall_state()
+	if apply_trebuchet_damage:
+		var trebs_damage: int = int(siege_counts.get("trebuchets", 0)) * int(treb_data.get("defense", 0))
+		if trebs_damage > 0:
+			wall_result = apply_wall_section_damage(trebs_damage)
 	return {
 		"ladder_effectiveness_raw": ladder_effectiveness_raw,
-		"ladder_damage": 0
+		"ladder_damage": 0,
+		"wall_sections_destroyed": int(wall_result.get("destroyed_sections", 0)),
+		"wall_sections_damaged": int(wall_result.get("damaged_sections", 0)),
+		"gate_state": gate_result
 	}
+
+func _get_wall_stats() -> Dictionary:
+	var data = GameParameters.CASTLE_WALLS_GATES.get(castle_type, {})
+	return {
+		"sections": int(data.get("wall_sections", 0)),
+		"hp": int(data.get("wall_hp", 0)),
+		"trebuchet_damage_to_defense": int(data.get("trebuchet_damage_to_defense", 0)),
+		"gates": int(data.get("gates", 0)),
+		"gate_hp": int(data.get("gate_hp", 0))
+	}
+
+func _reset_defense_state_to_full() -> void:
+	gate_conditions.clear()
+	wall_section_conditions.clear()
+	var stats := _get_wall_stats()
+	var gate_count: int = int(stats.get("gates", 0))
+	var gate_hp: int = int(stats.get("gate_hp", 0))
+	if gate_count > 0 and gate_hp > 0:
+		gate_conditions.resize(gate_count)
+		for i in range(gate_count):
+			gate_conditions[i] = gate_hp
+	var wall_count: int = int(stats.get("sections", 0))
+	var wall_hp: int = int(stats.get("hp", 0))
+	if wall_count > 0 and wall_hp > 0:
+		wall_section_conditions.resize(wall_count)
+		for i in range(wall_count):
+			wall_section_conditions[i] = wall_hp
+
+func _get_gate_hp() -> int:
+	var stats := _get_wall_stats()
+	return int(stats.get("gate_hp", 0))
+
+func _get_wall_section_hp() -> int:
+	var stats := _get_wall_stats()
+	return int(stats.get("hp", 0))
+
+func _apply_gate_damage(damage: int) -> Dictionary:
+	var base_hp: int = _get_gate_hp()
+	if damage <= 0 or base_hp <= 0 or gate_conditions.is_empty():
+		return _build_gate_state()
+	var remaining: int = damage
+	for i in range(gate_conditions.size()):
+		if remaining <= 0:
+			break
+		var current_hp: int = gate_conditions[i]
+		if current_hp <= 0:
+			continue
+		var applied: int = min(current_hp, remaining)
+		gate_conditions[i] = max(0, current_hp - applied)
+		remaining -= applied
+	return _build_gate_state()
+
+func _build_gate_state() -> Dictionary:
+	var base_hp := _get_gate_hp()
+	var destroyed := 0
+	var damaged := 0
+	for hp in gate_conditions:
+		if hp <= 0:
+			destroyed += 1
+		elif hp < base_hp:
+			damaged += 1
+	return {
+		"destroyed_gates": destroyed,
+		"damaged_gates": damaged,
+		"gate_hp": base_hp,
+		"gates": gate_conditions.size(),
+		"gate_values": gate_conditions.duplicate()
+	}
+
+func _build_wall_state() -> Dictionary:
+	var base_hp := _get_wall_section_hp()
+	var destroyed := 0
+	var damaged := 0
+	var section_damage := 0
+	for hp in wall_section_conditions:
+		if hp <= 0:
+			destroyed += 1
+		elif hp < base_hp:
+			damaged += 1
+			if section_damage == 0:
+				section_damage = base_hp - hp
+	var total_sections := wall_section_conditions.size()
+	return {
+		"destroyed_sections": destroyed,
+		"damaged_sections": damaged,
+		"wall_section_hp": base_hp,
+		"wall_sections": total_sections,
+		"section_damage": section_damage,
+		"wall_values": wall_section_conditions.duplicate()
+	}
+
+func _get_total_defense_capacity() -> int:
+	var base_gate_hp := _get_gate_hp()
+	var base_wall_hp := _get_wall_section_hp()
+	var gate_cap := gate_conditions.size() * base_gate_hp
+	var wall_cap := wall_section_conditions.size() * base_wall_hp
+	return gate_cap + wall_cap
+
+func _get_total_defense_damage() -> int:
+	var base_gate_hp := _get_gate_hp()
+	var base_wall_hp := _get_wall_section_hp()
+	var missing := 0
+	if base_gate_hp > 0:
+		for hp in gate_conditions:
+			missing += max(0, base_gate_hp - hp)
+	if base_wall_hp > 0:
+		for hp in wall_section_conditions:
+			missing += max(0, base_wall_hp - hp)
+	return missing
+
+func get_defense_damage_fraction() -> float:
+	var capacity := _get_total_defense_capacity()
+	if capacity <= 0:
+		return 0.0
+	return clampf(float(_get_total_defense_damage()) / float(capacity), 0.0, 1.0)
 
 func get_castle_type_string() -> String:
 	"""Get the castle type as a string"""
@@ -512,8 +657,7 @@ func process_castle_repair() -> bool:
 		return false
 	castle_repair_turns_remaining -= 1
 	if castle_repair_turns_remaining <= 0:
-		gate_damage = 0
-		wall_damage = 0
+		_reset_defense_state_to_full()
 		castle_repair_turns_remaining = 0
 		castle_repair_in_progress = false
 		_update_castle_visual()
@@ -525,13 +669,13 @@ func get_castle_repair_cost() -> Dictionary:
 	var castle_type = get_castle_type()
 	if castle_type == CastleTypeEnum.Type.NONE:
 		return {}
-	var base_defense = GameParameters.get_castle_defense_bonus(castle_type)
-	if base_defense <= 0:
+	var capacity := _get_total_defense_capacity()
+	if capacity <= 0:
 		return {}
-	var total_damage = gate_damage + wall_damage
+	var total_damage = _get_total_defense_damage()
 	if total_damage <= 0:
 		return {}
-	var fraction = float(total_damage) / float(base_defense)
+	var fraction = float(total_damage) / float(capacity)
 	var base_cost = GameParameters.get_castle_building_cost(castle_type)
 	var repair_cost: Dictionary = {}
 	for res_type in base_cost:
@@ -554,6 +698,7 @@ func process_castle_construction() -> bool:
 		castle_type = castle_under_construction
 		castle_under_construction = CastleTypeEnum.Type.NONE
 		castle_build_turns_remaining = 0
+		_reset_defense_state_to_full()
 		DebugLogger.log("RegionManagement", "Castle construction completed in " + region_name + "! Built: " + CastleTypeEnum.type_to_string(completed_castle_type))
 		
 		# Recalculate recruitment limits based on new castle type
@@ -615,7 +760,7 @@ func can_upgrade_castle() -> bool:
 		return false
 	if is_castle_under_repair():
 		return false
-	if gate_damage > 0 or wall_damage > 0:
+	if has_castle_damage():
 		return false
 	
 	# Check if castle can be upgraded to next level

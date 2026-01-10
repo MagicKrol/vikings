@@ -20,3 +20,10 @@ Always Keep functions in appropiate classes based on their role, and use existin
 PROJECT structure and roles are defined in PROJECT_MAP.MD
 
 You MUST use tab indentation instead of space.
+Ensure that all new variables and params have a proper type to prevent these errors from happening:
+Cannot infer the type of "X" variable because the value doesn't have a set type.
+The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+
+After you finish, always run:
+godot4 --headless --check-only --path . project.godot --quit
+To ensure there are no errors. 

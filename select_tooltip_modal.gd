@@ -147,16 +147,8 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 			
 			if castle_type_to_build != CastleTypeEnum.Type.NONE:
 				if tooltip_key == "repair_castle":
-					var base_defense = GameParameters.get_castle_defense_bonus(castle_type_to_build)
-					var total_damage = current_region.gate_damage + current_region.wall_damage
-					if base_defense > 0 and total_damage > 0:
-						var fraction = float(total_damage) / float(base_defense)
-						var base_cost = GameParameters.get_castle_building_cost(castle_type_to_build)
-						var repair_cost: Dictionary = {}
-						for res_type in base_cost:
-							var val = base_cost[res_type]
-							if val > 0:
-								repair_cost[res_type] = int(ceil(float(val) * fraction))
+					var repair_cost = current_region.get_castle_repair_cost()
+					if not repair_cost.is_empty():
 						_display_cost(repair_cost, 1)
 				else:
 					var cost = GameParameters.get_castle_building_cost(castle_type_to_build)

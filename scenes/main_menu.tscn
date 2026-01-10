@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
 [ext_resource type="Texture2D" uid="uid://dgj6254a3foyr" path="res://images/tooltipmoda.png" id="3_701y0"]
 [ext_resource type="Theme" uid="uid://cdrs8n52og4kp" path="res://themes/main_menu_theme.tres" id="3_theme"]
-[ext_resource type="Texture2D" uid="uid://bcyawbhhrhk7u" path="res://images/modal_bg3.png" id="4_jiisd"]
-[ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="5_background"]
+[ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="4_jiisd"]
+[ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="5_background"]
 [ext_resource type="FontFile" uid="uid://cavdsubauup7v" path="res://fonts/Viking.TTF" id="7_viking_font"]
 [ext_resource type="FontFile" uid="uid://pclcml0fh6k3" path="res://fonts/Cardo-Bold.ttf" id="8_cardo_bold_font"]
 

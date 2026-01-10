@@ -1,6 +1,6 @@
 [gd_scene load_steps=40 format=3 uid="uid://cs6dvuoqlrn4w"]
 
-[ext_resource type="Texture2D" uid="uid://dmfw8ymp2tp4g" path="res://images/background.png" id="1_bgtex"]
+[ext_resource type="Texture2D" uid="uid://bimr046p3bsib" path="res://images/background4grass4.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
 [ext_resource type="Script" path="res://border_manager.gd" id="2_border"]
 [ext_resource type="Script" path="res://camera_controller.gd" id="3_camera"]
@@ -56,6 +56,7 @@ script = ExtResource("1_m7t5v")
 script = ExtResource("2_border")
 
 [node name="TutorialWorldArrow" type="Sprite2D" parent="Map"]
+visible = false
 z_index = 2000
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("37_arrow")
@@ -122,7 +123,6 @@ grow_vertical = 2
 script = ExtResource("8_ui")
 
 [node name="InfoModal" parent="UI" instance=ExtResource("13_35f3x")]
-visible = false
 
 [node name="RegionTooltip" parent="UI" instance=ExtResource("15_d3ude")]
 visible = false

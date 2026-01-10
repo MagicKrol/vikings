@@ -183,7 +183,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 0,
+				"Peasants": 20,
 				"Royal Guard": 0,
 				"Spearmen": 10,
 				"Swordsmen": 10
@@ -8943,7 +8943,7 @@
 		},
 		{
 			"biome": "forest",
-			"castle_type": "None",
+			"castle_type": "Outpost",
 			"discovered_ores": [],
 			"garrison": {
 				"Archers": 0,
