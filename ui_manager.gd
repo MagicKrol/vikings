@@ -49,6 +49,8 @@ var _trade_modal: TradeModal
 var _recruitment_modal: RecruitmentModal
 var _transfer_select_modal: TransferSelectModal
 var _transfer_soldiers_modal: TransferSoldiersModal
+var _icons_modal: Control
+var _icons_modal_was_visible: bool = false
 
 enum SelectContextType {
 	NONE,
@@ -100,6 +102,7 @@ func _ready():
 	_recruitment_modal = get_parent().get_node("RecruitmentModal") as RecruitmentModal
 	_transfer_select_modal = get_parent().get_node("TransferSelectModal") as TransferSelectModal
 	_transfer_soldiers_modal = get_parent().get_node("TransferSoldiersModal") as TransferSoldiersModal
+	_icons_modal = get_parent().get_node("IconsModal") as Control
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
@@ -115,6 +118,13 @@ func display_message(text: String) -> void:
 func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
 	is_modal_active = active
+	if _icons_modal:
+		if active:
+			_icons_modal_was_visible = _icons_modal.visible
+			_icons_modal.visible = false
+		elif _icons_modal_was_visible:
+			_icons_modal.visible = true
+			_icons_modal_was_visible = false
 	_update_turn_modal_visibility()
 	if is_modal_active and region_tooltip and region_tooltip.visible:
 		hide_region_tooltip()

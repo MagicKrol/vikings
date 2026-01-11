@@ -198,7 +198,7 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 
 	# Default: show interactive modal
 	if _battle_modal:
-		_battle_modal.show_battle(attacker, target_region)
+		_battle_modal.show_battle(attacker, target_region, _pending_siege_payload)
 
 	DebugLogger.log("BattleSystem", "[BattleManager] Battle started: " + str(attacker.name) + " vs " + str(target_region.get_region_name()))
 
@@ -285,10 +285,24 @@ func _clear_pending_conquest_state() -> void:
 	_attacker_effectiveness_ratio = 0.0
 	_pending_siege_payload = {}
 
+func _calculate_wall_defense_penalty(region: Region) -> int:
+	var wall_state: Dictionary = region.get_wall_state()
+	var data: Dictionary = GameParameters.CASTLE_WALLS_GATES.get(region.get_castle_type(), {})
+	var per_section: int = int(data.get("trebuchet_damage_to_defense", 0))
+	if per_section <= 0:
+		return 0
+	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
+	var damaged: int = int(wall_state.get("damaged_sections", 0))
+	var destroyed_penalty: int = destroyed * per_section
+	var damaged_penalty_per_section: int = int(round(float(per_section) * 0.5))
+	var damaged_penalty: int = damaged * damaged_penalty_per_section
+	return destroyed_penalty + damaged_penalty
+
 func _get_effective_defense_bonus(region: Region) -> int:
-	var base_def := GameParameters.get_castle_defense_bonus(region.get_castle_type())
+	var base_def: int = GameParameters.get_castle_defense_bonus(region.get_castle_type())
+	var penalty: int = _calculate_wall_defense_penalty(region)
 	var min_def: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(region.get_castle_type(), 0)
-	return max(min_def, base_def)
+	return max(min_def, base_def - penalty)
 
 func get_effective_defense_for_region(region: Region) -> int:
 	return _get_effective_defense_bonus(region)

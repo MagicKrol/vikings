@@ -30,7 +30,10 @@ class_name GameParameters
 
 ## Single-line Configuration Constants
 const MOVEMENT_POINTS_PER_TURN = 5          # Army movement points per turn
-const BATTLE_ROUND_TIME = 0.55               # Seconds between animated battle rounds
+const BATTLE_ROUND_TIME_NORMAL = 1.5           # Seconds between animated battle rounds (normal)
+const BATTLE_ROUND_TIME_FAST = 0.8             # Seconds between rounds when fast battle speed is selected
+const BATTLE_ROUND_TIME_VERY_FAST = 0.4        # Seconds between rounds when very fast battle speed is selected
+const BATTLE_ROUND_TIME = BATTLE_ROUND_TIME_NORMAL
 const BATTLE_ROUND_TIME_QUICK = 0.01          # Seconds between rounds when quick resolve is triggered
 const BIOME_ICON_SCALE = 0.2                # Map generation icon scale
 const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable size)
@@ -120,6 +123,7 @@ const AI_IRON_RESOURCE_WEIGHT = 1.25            # Iron for advanced units
 const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount for normalization
 
 static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
+static var _battle_round_time: float = BATTLE_ROUND_TIME_NORMAL
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -259,6 +263,8 @@ const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army 
 ## Siege ladders
 const LADDER_EFFECTIVENESS_PER = 5				# Raw effectiveness added per ladder for siege assaults
 const LADDERS_PER_SECTION = 4					# Max ladders applied per intact wall section
+const SIEGE_RAM_HP = 5							# Hit points per siege ram
+const SIEGE_RAM_SIZE = 500						# Target weight size for siege ram when absorbing ranged fire
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
@@ -283,7 +289,7 @@ const CASTLE_WALLS_GATES = {
 		"gate_hp": 4,
 		"wall_sections": 2,
 		"wall_hp": 2,
-		"trebuchet_damage_to_defense": 8,
+		"trebuchet_damage_to_defense": 10,
 		"wall_section_assault": 10
 	},      # Outpost 
 	CastleTypeEnum.Type.KEEP: {
@@ -299,7 +305,7 @@ const CASTLE_WALLS_GATES = {
 		"gate_hp": 5,
 		"wall_sections": 6,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 5,
+		"trebuchet_damage_to_defense": 6,
 		"wall_section_assault": 10
 	},      # Castle 
 	CastleTypeEnum.Type.STRONGHOLD: {
@@ -307,7 +313,7 @@ const CASTLE_WALLS_GATES = {
 		"gate_hp": 6,
 		"wall_sections": 8,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 4.,
+		"trebuchet_damage_to_defense": 5.,
 		"wall_section_assault": 10
 	}, 
 }
@@ -814,6 +820,12 @@ static func set_ai_move_speed_multiplier(multiplier: float) -> void:
 
 static func get_ai_move_speed_multiplier() -> float:
 	return _ai_move_speed_multiplier
+
+static func set_battle_round_time(seconds: float) -> void:
+	_battle_round_time = clampf(seconds, BATTLE_ROUND_TIME_VERY_FAST, BATTLE_ROUND_TIME_NORMAL)
+
+static func get_battle_round_time() -> float:
+	return _battle_round_time
 
 static func get_move_animation_duration(is_ai_player: bool) -> float:
 	if is_ai_player:

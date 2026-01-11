@@ -51,7 +51,8 @@ Main (Node2D) [place_armies.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
 │	├ PrebattleModal [scenes/prebattle_modal.tscn] [prebattle_modal.gd] – human-only step after moving into enemy territory; supports siege equipment buying (spends wood + siege points from defender count), shows a Bombard step when trebuchets are purchased (4x50% shots per treb), posts the breach result in the message row, and combines ladder, wall-breach, and gate damage into an assault effectiveness sent to BattleManager; Withdraw refunds purchases and retreats via BattleManager; siege equipment rows use the Info hover panel like Recruitment (Ladders/Rams/Trebuchet); Siege panel shows per-section wall status and per-gate HP bars (ram targeting controls hidden by default); non-castle fights display 100% assault
-│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name; Quick Resolve button drops battle round time to the quick parameter for immediate simulation; non-castle fights always show 100% assault
+│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name; Quick Resolve button drops battle round time to the quick parameter for immediate simulation; non-castle fights always show 100% assault; siege view updates gates/ram assignment each round with dynamic gate assault bonus
+│	├ SiegePanel [scenes/siege.tscn] [siege_panel.gd] – shared siege status view used by Prebattle and Battle modals to show wall/gate damage and ram placement from the current siege payload
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ TutorialModal [tutorial_modal.tscn] [tutorial_modal.gd] – UI-layer arrows for screen-anchored tutorial hints (Arrow1/Arrow2 placed manually in scene)
 │	├ PlayerStatusModal [scenes/player_status_modal.tscn] [player_status_modal.gd]
@@ -67,7 +68,7 @@ Main (Node2D) [place_armies.gd]
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open; ArmyActions button cancels move and reopens ArmySelectModal for the selected army
 │	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
-│	├ SpeedModal [scenes/speed_modal.tscn] [scenes/speed_modal.gd] – shown only during AI turns; buttons toggle AI move animation speed (normal/fast/very fast) with the active choice highlighted in yellow; updates GameParameters AI move speed multiplier
+│	├ SpeedModal [scenes/speed_modal.tscn] [scenes/speed_modal.gd] – AI/battle speed selector (normal/fast/very fast); adjusts AI move speed multiplier during map play and battle round timing during sieges; highlighted button reflects the active context; also shown during battles
 │	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – opens from trade icon; prices start at Food/Wood 2/1, Stone 4/2, Iron 6/3 then adjust by market curve (min 0.4, k=0.01); per-player trade history decays each turn (trade_reset_rate=0.2); buttons adjust buy/sell amounts, update totals/gold delta, and continue applies trades via PlayerManager with status refresh
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
@@ -305,6 +306,10 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - AnimatedBattleSimulator.gd: Round-based animated presentation and reporting for the BattleModal.
 - BattleModal.gd: Action button switches Withdraw/Continue automatically; message label surfaces withdraw/start/end notices.
 - BattleManager.gd: Re-selects victorious human armies automatically, but skips re-selection after withdrawal outcomes.
+- BattleManager.gd: Castle defense override now drops per breached wall section (full `trebuchet_damage_to_defense`, half when only damaged) and clamps to the castle’s minimum defense bonus.
+- PrebattleModal.gd: Displays castle defense with wall damage applied immediately after trebuchet bombardment (full per destroyed section, half per damaged).
+- Siege rams: each has 5 HP and size 10 for ranged targeting; defender ranged fire can hit assigned rams proportionally to size, destroying them and reassigning reserve rams to gates when available.
+- SiegePanel: shows active ram HP per gate (progress/percent) using `ram_hp` from siege state; reserves still listed separately.
 - BattleSummaryModal.gd: Remaining-unit colors only show red when forces started with troops; zero-initial rows use grey.
 - Siege trait rules: long spears (1), mobility (3), flanker (4), and charge (5) are ignored whenever a castle is present so siege battles use baseline stats.
 - Siege prep: siege points now come only from siege-laborer (trait 8) units; ladders no longer lower castle defense and instead add raw attacker effectiveness (5 each) that scales non-ranged attacker hits during sieges (effectiveness is fixed at battle start based on the attacker’s initial non-ranged count and shown in the prebattle/battle assault labels).

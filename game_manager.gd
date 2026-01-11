@@ -298,7 +298,7 @@ func initialize_managers(is_scenario: bool = false):
 		_tutorial_manager = TutorialManager.new(_region_manager, tutorial_modal, _message_modal, tutorial_camera, _ai_camera_director)
 		if click_manager and click_manager.has_method("set_tutorial_manager"):
 			click_manager.set_tutorial_manager(_tutorial_manager)
-	elif not enable_map_editor and game_mode == "custom" and _sound_manager:
+	elif not enable_map_editor and _sound_manager:
 		_sound_manager.set_active_playlist("custom_map")
 	
 	# Early flows: heatmap/scenario/editor
@@ -1533,6 +1533,9 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 	payload["wall_effectiveness_raw"] = wall_raw
 	payload["gate_effectiveness_ratio"] = gate_ratio
 	payload["assault_ratio"] = clampf(ladder_ratio + wall_ratio_calc + gate_ratio, 0.0, 1.0)
+	payload["siege_counts"] = siege_counts.duplicate()
+	var ai_gate_state: Dictionary = payload.get("gate_state", target_region.get_gate_state())
+	payload["siege_view_state"] = SiegePanel.build_state(target_region, ai_gate_state, int(siege_counts.get("rams", 0)))
 	var limit_label := "no limit" if available_wood > 50 else "growth limit"
 	_log_ai_siege_preparation(siege_points_total, available_wood, limit_label, siege_counts)
 	return payload

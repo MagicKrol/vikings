@@ -23,11 +23,15 @@ var quick_resolve_button: Button
 var message_label: Label
 var defender_defense_value: Label
 var buttons_margin: MarginContainer
+var siege_panel: SiegePanel
+var siege_payload: Dictionary = {}
 
 # Battle data
 var attacking_army: Army = null
 var defending_region: Region = null
 var battle_report: BattleSimulator.BattleReport = null
+var siege_view_state: Dictionary = {}
+var siege_counts: Dictionary = {}
 var animated_simulator: AnimatedBattleSimulator = null
 var battle_in_progress: bool = false
 
@@ -56,6 +60,8 @@ var ui_manager: UIManager = null
 # Click manager reference for conquest completion
 var click_manager: Node = null
 var tutorial_manager: TutorialManager = null
+var speed_modal: SpeedModal = null
+var assault_ratio_override: float = -1.0
 
 func _ready():
 	# Get references to static UI elements from updated scene structure
@@ -73,6 +79,7 @@ func _ready():
 	message_label = get_node("Panel/Army/MessageSection/HBoxContainer/Message")
 	defender_defense_value = get_node("Panel/Army/HeaderSection/HBoxContainer2/DefenderDefenseValue")
 	buttons_margin = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonsMargin") as MarginContainer
+	siege_panel = get_node("Siege") as SiegePanel
 
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
@@ -85,11 +92,14 @@ func _ready():
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	click_manager = get_node("../../ClickManager")
+	speed_modal = get_node("../SpeedModal") as SpeedModal
 	var game_manager = get_node("../../GameManager") as GameManager
 	if game_manager:
 		tutorial_manager = game_manager.get_tutorial_manager()
 		if tutorial_manager != null:
 			continue_button.pressed.connect(func(): tutorial_manager.handle_ui_click("BattleModal/" + continue_button.name))
+	if speed_modal:
+		speed_modal.speed_changed.connect(_on_speed_modal_changed)
 	
 	# Create animated battle simulator
 	animated_simulator = AnimatedBattleSimulator.new()
@@ -104,7 +114,7 @@ func _ready():
 	# Try to find or create battle summary modal
 	_setup_battle_summary_modal()
 
-func show_battle(army: Army, region: Region) -> void:
+func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> void:
 	"""Show the battle modal with army vs region information"""
 	if army == null or region == null:
 		hide_modal()
@@ -114,14 +124,22 @@ func show_battle(army: Army, region: Region) -> void:
 	attacker_manual_withdraw_requested = false
 	attacking_army = army
 	defending_region = region
+	self.siege_payload = siege_payload.duplicate(true)
+	siege_counts = siege_payload.get("siege_counts", {})
+	siege_view_state = _build_siege_view_state_from_payload(siege_payload)
+	assault_ratio_override = float(siege_payload.get("assault_ratio", -1.0))
 
 	_set_message("")
 	sound_manager.play_battle_sound()
 	quick_resolve_button.visible = true
 	if buttons_margin:
 		buttons_margin.visible = true
+	if speed_modal:
+		speed_modal.set_context("battle")
+		speed_modal.visible = true
 
 	# Show initial display BEFORE starting battle
+	_apply_siege_state()
 	_update_display()
 	visible = true
 	
@@ -149,11 +167,15 @@ func hide_modal() -> void:
 	attacking_army = null
 	defending_region = null
 	battle_report = null
+	siege_payload = {}
+	siege_view_state = {}
+	siege_counts = {}
 	battle_in_progress = false
 	showing_battle_report = false
 	current_round = 0
 	current_attacker_composition.clear()
 	current_defender_composition.clear()
+	assault_ratio_override = -1.0
 	_set_message("")
 
 	# Reset withdrawal state
@@ -167,6 +189,9 @@ func hide_modal() -> void:
 	# Set modal mode inactive
 	if ui_manager:
 		ui_manager.set_modal_active(false)
+	if speed_modal:
+		speed_modal.set_context("ai")
+		speed_modal.visible = false
 
 func _update_display() -> void:
 	"""Update the display with current battle information"""
@@ -202,6 +227,17 @@ func _update_display() -> void:
 		_update_defender_units()
 		
 		_update_action_button()
+
+func _build_siege_view_state_from_payload(siege_payload: Dictionary) -> Dictionary:
+	var payload_state: Dictionary = siege_payload.get("siege_view_state", {})
+	if not payload_state.is_empty():
+		return payload_state
+	var gate_state: Dictionary = siege_payload.get("gate_state", defending_region.get_gate_state())
+	var ram_total: int = int(siege_counts.get("rams", 0))
+	return SiegePanel.build_state(defending_region, gate_state, ram_total)
+
+func _apply_siege_state() -> void:
+	siege_panel.apply_state(siege_view_state)
 
 
 func _update_effectiveness_displays() -> void:
@@ -505,7 +541,7 @@ func _run_battle_simulation() -> void:
 		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, available_recruits)
 		defending_compositions.append(recruits_comp)
 	# Start the animated battle with attacker efficiency
-	animated_simulator.set_round_time(GameParameters.BATTLE_ROUND_TIME)
+	animated_simulator.set_round_time(GameParameters.get_battle_round_time())
 	var attacker_efficiency = attacking_army.get_efficiency()
 	var terrain_type = defending_region.get_region_type()
 	var castle_type = defending_region.get_castle_type()
@@ -513,7 +549,7 @@ func _run_battle_simulation() -> void:
 	var attacker_withdraw_allowed = bm.get_attacker_withdraw_allowed()
 	var defender_withdraw_allowed = bm.get_defender_withdraw_allowed()
 	var attacker_effectiveness_ratio = bm.get_attacker_effectiveness_ratio()
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override, attacker_effectiveness_ratio)
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override, attacker_effectiveness_ratio, siege_payload)
 	
 	DebugLogger.log("UISystem", "Starting animated battle simulation...")
 
@@ -522,6 +558,22 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	current_round = round_data["round"]
 	current_attacker_composition = round_data["current_attackers"]
 	current_defender_composition = round_data["current_defenders"]
+	if round_data.has("assault_ratio"):
+		assault_ratio_override = float(round_data["assault_ratio"])
+	if round_data.has("gate_state"):
+		var gate_state: Dictionary = round_data.get("gate_state", {})
+		var active_rams: int = int(round_data.get("active_rams", 0))
+		var reserve_rams: int = int(round_data.get("reserve_rams", 0))
+		var total_rams: int = active_rams + reserve_rams
+		var wall_state: Dictionary = siege_view_state.get("wall_state", {})
+		siege_view_state = {
+			"wall_state": wall_state,
+			"gate_state": gate_state,
+			"ram_count": total_rams,
+			"active_rams": active_rams,
+			"reserve_rams": reserve_rams
+		}
+		_apply_siege_state()
 	
 	# Update display with current round data
 	_update_display()
@@ -713,6 +765,10 @@ func _play_retreat_sound() -> void:
 	if sound_manager:
 		sound_manager.play_retreat_horn()
 
+func _on_speed_modal_changed(context: String, value: float) -> void:
+	if context == "battle" and animated_simulator:
+		animated_simulator.set_round_time(GameParameters.get_battle_round_time())
+
 func _update_attacker_header() -> void:
 	var player_id = attacking_army.get_player_id()
 	var player_name = "Player " + str(player_id)
@@ -733,14 +789,20 @@ func _update_defense_bonus_display() -> void:
 			defender_defense_value.add_theme_color_override("font_color", Color.html("#d13131"))
 		elif defense_bonus < base_def:
 			defender_defense_value.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+		else:
+			defender_defense_value.add_theme_color_override("font_color", Color.WHITE)
 	else:
 		defender_defense_value.add_theme_color_override("font_color", Color.WHITE)
 
 func _update_assault_value() -> void:
-	var gm = get_node("../../GameManager") as GameManager
-	var bm = gm.get_battle_manager()
-	var ratio := bm.get_attacker_effectiveness_ratio()
-	var percent := int(round(ratio * 100.0))
+	var percent := 0
+	if assault_ratio_override >= 0.0:
+		percent = int(round(clampf(assault_ratio_override, 0.0, 1.0) * 100.0))
+	else:
+		var gm = get_node("../../GameManager") as GameManager
+		var bm = gm.get_battle_manager()
+		var ratio := bm.get_attacker_effectiveness_ratio()
+		percent = int(round(ratio * 100.0))
 	assault_value_label.text = str(percent) + "%"
 
 func _update_defender_header() -> void:

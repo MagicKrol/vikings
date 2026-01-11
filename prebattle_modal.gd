@@ -31,10 +31,13 @@ var siege_panel: Control
 var walls_breached_value: Label
 var walls_damaged_value: Label
 var walls_intact_value: Label
+var wall_sections_total_value: Label
 var gate_rows: Array[Dictionary] = []
 var gate_buttons_container: HBoxContainer
 var siege_reserve_row: HBoxContainer
 var siege_target_row: HBoxContainer
+var ram_rows: Array[HBoxContainer] = []
+var ram_reserve_label: Label
 
 var info_panel: Control
 var info_header_label: Label
@@ -145,22 +148,26 @@ func _connect_info_hover_group(container: Control, add_button: Button, remove_bu
 
 func _setup_siege_status_nodes() -> void:
 	siege_panel = get_node("Siege")
-	walls_breached_value = get_node("Siege/Body/Breached/Value")
-	walls_damaged_value = get_node("Siege/Body/Danaged/Value")
-	walls_intact_value = get_node("Siege/Body/Intact/Value")
+	var siege_body: Control = siege_panel.get_node("Body")
+	walls_breached_value = siege_body.get_node("Breached/Value")
+	walls_damaged_value = siege_body.get_node("Danaged/Value")
+	walls_intact_value = siege_body.get_node("Intact/Value")
+	wall_sections_total_value = siege_body.get_node("WallSections/Value")
 	gate_rows.clear()
+	ram_rows.clear()
 	for i in range(1, 4):
-		var row: HBoxContainer = get_node("Siege/Body/Gate" + str(i))
+		var row: HBoxContainer = siege_body.get_node("Gate" + str(i) + "Body/Gate" + str(i))
 		var name_label: Label = row.get_node("Name")
 		var value_label: Label = row.get_node("Value")
 		var bar: ProgressBar = row.get_node("ProgressBar")
 		gate_rows.append({"container": row, "name": name_label, "value": value_label, "bar": bar})
 		row.visible = false
-	siege_reserve_row = get_node("Siege/Body/Reserve")
-	siege_target_row = get_node("Siege/Body/Reserve2")
-	siege_reserve_row.visible = false
-	siege_target_row.visible = false
-	gate_buttons_container = get_node("Siege/HBoxContainer")
+		var ram_row: HBoxContainer = siege_body.get_node("Gate" + str(i) + "Body/Ram" + str(i))
+		ram_rows.append(ram_row)
+		ram_row.visible = false
+	siege_reserve_row = siege_body.get_node("Reserve")
+	ram_reserve_label = siege_reserve_row.get_node("Value")
+	gate_buttons_container = get_node("Siege/GatesSelector")
 	gate_buttons_container.visible = false
 
 func _show_info(label: String) -> void:
@@ -191,6 +198,7 @@ func _update_siege_status_panel() -> void:
 	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
 	var damaged: int = int(wall_state.get("damaged_sections", 0))
 	var intact: int = max(0, wall_sections - destroyed - damaged)
+	wall_sections_total_value.text = str(wall_sections)
 	walls_breached_value.text = str(destroyed)
 	walls_damaged_value.text = str(damaged)
 	walls_intact_value.text = str(intact)
@@ -203,6 +211,7 @@ func _update_gate_rows(gate_state: Dictionary) -> void:
 	for i in range(gate_rows.size()):
 		var row_data: Dictionary = gate_rows[i]
 		var container: HBoxContainer = row_data["container"]
+		var ram_row: HBoxContainer = ram_rows[i]
 		if i < gates and base_hp > 0:
 			container.visible = true
 			var name_label: Label = row_data["name"]
@@ -211,17 +220,26 @@ func _update_gate_rows(gate_state: Dictionary) -> void:
 			var current_hp: int = base_hp
 			if i < gate_values.size():
 				current_hp = int(gate_values[i])
-			var status := "Intact"
-			if current_hp <= 0:
-				status = "Breached"
-			elif current_hp < base_hp:
-				status = "Damaged"
 			name_label.text = "Gate " + str(i + 1)
-			value_label.text = status
+			var percent: int = int(round(float(current_hp) / float(base_hp) * 100.0))
+			value_label.text = str(percent) + "%"
 			bar.max_value = base_hp
 			bar.value = current_hp
 		else:
 			container.visible = false
+			ram_row.visible = false
+
+func _update_ram_rows() -> void:
+	if defending_region == null:
+		return
+	var gates: int = int(defending_region.get_gate_state().get("gates", 0))
+	var ram_total: int = siege_counts.get("rams", 0)
+	var visible_rams: int = min(ram_total, gates, ram_rows.size())
+	for i in range(ram_rows.size()):
+		ram_rows[i].visible = i < visible_rams
+	var reserve: int = max(0, ram_total - visible_rams)
+	ram_reserve_label.text = str(reserve)
+	siege_reserve_row.visible = ram_total > 0
 
 func show_prebattle(army: Army, region: Region) -> void:
 	attacking_army = army
@@ -404,18 +422,39 @@ func _get_base_defense() -> int:
 func _get_min_defense() -> int:
 	return GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(defending_region.get_castle_type(), 0)
 
+func _calculate_wall_defense_penalty() -> int:
+	var wall_state: Dictionary = defending_region.get_wall_state()
+	var data: Dictionary = GameParameters.CASTLE_WALLS_GATES.get(defending_region.get_castle_type(), {})
+	var per_section: int = int(data.get("trebuchet_damage_to_defense", 0))
+	if per_section <= 0:
+		return 0
+	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
+	var damaged: int = int(wall_state.get("damaged_sections", 0))
+	var destroyed_penalty: int = destroyed * per_section
+	var damaged_penalty_per_section: int = int(round(float(per_section) * 0.5))
+	var damaged_penalty: int = damaged * damaged_penalty_per_section
+	return destroyed_penalty + damaged_penalty
+
 func _get_total_defense_reduction() -> int:
-	return 0
+	return _calculate_wall_defense_penalty()
 
 func _get_structural_damage() -> int:
 	return 0
 
 func _update_defense_value() -> void:
-	var base_defense = _get_base_defense()
-	defense_value_label.text = str(base_defense) + "%"
+	var base_defense: int = _get_base_defense()
+	var reduction: int = _get_total_defense_reduction()
+	var min_defense: int = _get_min_defense()
+	var effective_defense: int = max(min_defense, base_defense - reduction)
+	defense_value_label.text = str(effective_defense) + "%"
 	defense_value_label.remove_theme_color_override("font_color")
-	if base_defense <= 0:
-		defense_value_label.add_theme_color_override("font_color", Color.WHITE)
+	if base_defense > 0:
+		if min_defense > 0 and effective_defense <= min_defense:
+			defense_value_label.add_theme_color_override("font_color", Color.html("#d13131"))
+		elif effective_defense < base_defense:
+			defense_value_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+		else:
+			defense_value_label.add_theme_color_override("font_color", Color.WHITE)
 	else:
 		defense_value_label.add_theme_color_override("font_color", Color.WHITE)
 
@@ -425,6 +464,7 @@ func _refresh_siege_ui() -> void:
 	ladders_count_label.text = str(siege_counts.get("ladders", 0))
 	rams_count_label.text = str(siege_counts.get("rams", 0))
 	treb_count_label.text = str(siege_counts.get("trebuchets", 0))
+	_update_ram_rows()
 	_update_assault_value()
 	_update_defense_value()
 	_update_siege_buttons()
@@ -498,6 +538,9 @@ func _apply_siege_damage_and_get_payload() -> Dictionary:
 	payload["gate_effectiveness_ratio"] = gate_ratio
 	payload["assault_ratio"] = total_assault
 	payload["trebuchet_bombard"] = _get_bombard_payload()
+	payload["siege_counts"] = siege_counts.duplicate()
+	var gate_state: Dictionary = payload.get("gate_state", defending_region.get_gate_state())
+	payload["siege_view_state"] = SiegePanel.build_state(defending_region, gate_state, int(siege_counts.get("rams", 0)))
 	return payload
 
 func _calculate_assault_effectiveness_ratio() -> float:
