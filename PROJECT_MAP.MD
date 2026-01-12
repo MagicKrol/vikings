@@ -129,7 +129,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 - AI Step Gate: `ai_step_requires_shift` forwards to `DebugStepGate` — when true, AI waits for Shift to advance; false lets AI run automatically.
 - AI Logging: Owns `AILogManager`; `ensure_ai_log_started()` names the log `<scenario>_<timestamp>.txt` the first time any AI player takes a turn so all later TurnController events can append to the same file inside the root `logs/` directory.
-- AI Siege: `_execute_ai_siege_preparation()` auto-buys trebuchets → rams → ladders for castle assaults using siege points and a wood budget (no cap when wood > 50, otherwise capped to wood growth), charges wood, applies `Region.apply_siege_damage()` for gate/wall hits and ladder penalties, and logs the purchase summary through `AILogManager`.
+- AI Siege: `_execute_ai_siege_preparation()` rolls trebuchets between `(castle_level - 1 - destroyed_walls)` and intact wall sections, reduces by attacker/defender power advantage above 3:1 (defender power = garrison + recruits + owned armies), then clamps by siege points/wood/caps; rams spend random remaining points up to intact gates (respecting caps/wood), ladders take the leftover points. AI fires trebs once before battle (`trebuchet_bombard` payload, no double wall damage) and ships `siege_view_state` with ram HP.
 - Battle Log Queue: `finalize_battle_result()` snapshots attacker/defender forces before and after `_battle_manager._apply_battle_losses()`, converts the result into readable lines (`Battle started`, attacker/defender power/composition, `Battle Result`, post-battle status) and queues them per attacking army via `consume_ai_battle_log_for_army()` so TurnController can append them immediately after its movement logs.
 - Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
 - Debug overlay: `show_region_center_markers` draws a small red square at each land region center by calling `MapGenerator.set_center_markers_enabled()` after startup and whenever the map regenerates.
@@ -283,8 +283,11 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### AILogManager.gd (AILogManager)
 - Purpose: Writes AI-only log files under `logs/<scenario>_<timestamp>.txt` in the project root so each game session has its own text file distinct from standard debug logs.
 - API: `start_new_game_log(label)`, `log_turn_intro(turn, player_label, player_id, resources, signals, decision, region_names)`, `log_army_action(name, power, action, target)`, plus helpers for recruitment/economy notes.
+- Siege logging: records AI siege equipment purchases with SP available, ladders/rams/trebuchets, and breached/damaged wall sections.
 - Format: Turn headers (dashes + `[Turn X]` + ASCII digits) are emitted once per turn, then `[Player Y]` with matching ASCII art, full resource list, `Signals:` (frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm), `Decision: ...`, `Regions: ...`, followed by `Army N [Power: Z]: Recruits|Goes to Castle|Moves` with `Target: ...` and recruitment/economy rationales.
 - Integration: GameManager creates the logger once per session and exposes it; TurnController logs each AI turn header, army action, recruitment success/failure, peasant hires, and the post-movement economy summary through this manager.
+
+- PlayerManagerNode.set_player_resources(): applies scenario `player_resources` dictionaries to player resource amounts (keys must match ResourcesEnum.type_to_string, e.g., "Food", "Gold").
 
 ## AI & Scoring
 - ai/region_scorer.gd: Per-region score (population/resources/level/castle/neighbors/distance). Used for castle placement scoring.
@@ -310,6 +313,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - PrebattleModal.gd: Displays castle defense with wall damage applied immediately after trebuchet bombardment (full per destroyed section, half per damaged).
 - Siege rams: each has 5 HP and size 10 for ranged targeting; defender ranged fire can hit assigned rams proportionally to size, destroying them and reassigning reserve rams to gates when available.
 - SiegePanel: shows active ram HP per gate (progress/percent) using `ram_hp` from siege state; reserves still listed separately.
+- AI siege prep: buys siege equipment (trebs/rams/ladders) from siege points/wood, and now fires trebuchet bombard (same shot count/chance as player) before battle when trebs are bought, updating wall damage and assault ratios in the siege payload.
 - BattleSummaryModal.gd: Remaining-unit colors only show red when forces started with troops; zero-initial rows use grey.
 - Siege trait rules: long spears (1), mobility (3), flanker (4), and charge (5) are ignored whenever a castle is present so siege battles use baseline stats.
 - Siege prep: siege points now come only from siege-laborer (trait 8) units; ladders no longer lower castle defense and instead add raw attacker effectiveness (5 each) that scales non-ranged attacker hits during sieges (effectiveness is fixed at battle start based on the attacker’s initial non-ranged count and shown in the prebattle/battle assault labels).
@@ -320,7 +324,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - ArmyTargetScorer.gd: Combines stored army and garrison intel; requires known power for every defending army before applying bonuses.
 - ArmyTargetScorer.gd: Adds configurable +5 bonus for enemy-owned regions (`GameParameters.AI_ENEMY_REGION_SCORE_BONUS`).
 - Withdrawal Rules:
-- Power check runs inside the simulators each round (and after ranged volley): compare total attacker vs total defender power (armies + garrison + recruits). The weaker side may withdraw when `weaker/stronger <= AI_WITHDRAW_POWER_THRESHOLD`; if the gap reaches `AI_WITHDRAW_MAX_POWER_DIFFERENCE` it is forced.
+- Withdrawal power check runs each volley/round using total attacker/defender power (armies + garrison + recruits) but scales attacker power by `(assault_effectiveness + 0.2 × active_rams)` and defender power by `(1 + defense_bonus%)` (defense_bonus uses current breached/damaged walls). Forced/rolled thresholds stay tied to `AI_WITHDRAW_POWER_THRESHOLD` / `AI_WITHDRAW_MAX_POWER_DIFFERENCE`.
 - Eligibility: attacker auto-withdraw is AI-only; defender auto-withdraw is AI-only, castle must be `NONE`, and there must be at least one defending army and an owned neighboring region (garrison/recruits never withdraw). Human attacker can still click Withdraw in the modal; defenders have no button.
 - Withdrawal resolution: free-hit rounds run in-battle (AnimatedBattleSimulator/BattleSimulator). If attackers withdraw, defenders (armies + garrison) hit them; if defenders withdraw, attackers hit only defender armies (garrison stays). Outcome is reported as `Withdrawal` and ends the battle even if garrison/recruits remain.
 - Manual attacker withdrawal now locks defender auto-withdraw and forces the outcome to record as attacker withdrawal so the retreat happens after the free-hit rounds instead of mid-battle.

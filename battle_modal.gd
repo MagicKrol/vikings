@@ -191,7 +191,10 @@ func hide_modal() -> void:
 		ui_manager.set_modal_active(false)
 	if speed_modal:
 		speed_modal.set_context("ai")
-		speed_modal.visible = false
+		var gm = get_node("../../GameManager") as GameManager
+		var current_player_id := gm.get_current_player_id()
+		var show_ai_speed := gm.is_player_computer(current_player_id) and not gm.is_castle_placing_mode()
+		speed_modal.visible = show_ai_speed
 
 func _update_display() -> void:
 	"""Update the display with current battle information"""

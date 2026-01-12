@@ -264,7 +264,7 @@ const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army 
 const LADDER_EFFECTIVENESS_PER = 5				# Raw effectiveness added per ladder for siege assaults
 const LADDERS_PER_SECTION = 4					# Max ladders applied per intact wall section
 const SIEGE_RAM_HP = 5							# Hit points per siege ram
-const SIEGE_RAM_SIZE = 500						# Target weight size for siege ram when absorbing ranged fire
+const SIEGE_RAM_SIZE = 10						# Target weight size for siege ram when absorbing ranged fire
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
@@ -309,7 +309,7 @@ const CASTLE_WALLS_GATES = {
 		"wall_section_assault": 10
 	},      # Castle 
 	CastleTypeEnum.Type.STRONGHOLD: {
-		"gates": 2,
+		"gates": 3,
 		"gate_hp": 6,
 		"wall_sections": 8,
 		"wall_hp": 3,

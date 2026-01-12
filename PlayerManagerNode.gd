@@ -199,7 +199,7 @@ func set_player_resources(player_id: int, resources_data: Dictionary) -> void:
 	for resource_type in ResourcesEnum.get_all_types():
 		var key := ResourcesEnum.type_to_string(resource_type)
 		var amount := int(resources_data.get(key, GameParameters.get_starting_resource_amount(resource_type)))
-		#player.set_resource_amount(resource_type, amount)
+		player.set_resource_amount(resource_type, amount)
 
 func process_resource_income_for_player(player_id: int) -> void:
 	"""Process resource income for a specific player"""

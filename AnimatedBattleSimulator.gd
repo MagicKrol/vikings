@@ -148,6 +148,7 @@ func _process_next_round() -> void:
 		battle_simulator._increment_gate_assault_raw(siege_state)
 		attacker_effectiveness_ratio = battle_simulator._calculate_siege_assault_ratio(siege_state, current_attackers)
 	var attacker_effectiveness_value = attacker_effectiveness_ratio if is_siege_battle else 0.0
+	var defender_effectiveness_value = 0.0 if is_siege_battle and attacker_effectiveness_value <= 0.0 else -1.0
 	var attacker_hit_totals = null
 	var defender_hit_totals = null
 	if DebugLogger.is_category_enabled("BattleCalculation"):
@@ -160,13 +161,13 @@ func _process_next_round() -> void:
 	
 	# Process garrison attacks at 100% efficiency if garrison exists
 	if not current_garrison_composition.is_empty():
-		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, -1, is_siege_battle, defender_hit_totals, siege_state, true)
+		var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true)
 		battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 	
 	# Process defending army attacks at their efficiency if any defending armies exist
 	var armies_composition = _get_armies_from_defenders()
 	if not armies_composition.is_empty():
-		var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, -1, is_siege_battle, defender_hit_totals, siege_state, true)
+		var army_kills = battle_simulator._process_unit_attacks(armies_composition, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true)
 		battle_simulator._merge_kill_results(defender_kills, army_kills)
 	
 	# Apply kills simultaneously
@@ -577,6 +578,7 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	var is_mobility_round = withdrawal_rounds_remaining <= 0 and mobility_withdrawal_rounds_remaining > 0
 	var round_type = "mobility" if is_mobility_round else "standard"
 	var attacker_effectiveness_value = attacker_effectiveness_ratio if is_siege_battle else 0.0
+	var defender_effectiveness_value = 0.0 if is_siege_battle and attacker_effectiveness_value <= 0.0 else -1.0
 	var attacker_hit_totals = null
 	var defender_hit_totals = null
 	if DebugLogger.is_category_enabled("BattleCalculation"):
@@ -592,19 +594,19 @@ func _process_withdrawal_round(rng: RandomNumberGenerator) -> void:
 	if withdrawing_side == 1:
 		if is_mobility_round:
 			if not current_garrison_composition.is_empty():
-				var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100, false, -1.0)
+				var mobility_garrison_kills = _process_mobility_attacks(current_garrison_composition, current_attackers, rng, 100, false, defender_effectiveness_value)
 				battle_simulator._merge_kill_results(defender_kills, mobility_garrison_kills)
 			var armies_comp = _get_armies_from_defenders()
 			if not armies_comp.is_empty():
-				var mobility_army_kills = _process_mobility_attacks(armies_comp, current_attackers, rng, defender_efficiency, false, -1.0)
+				var mobility_army_kills = _process_mobility_attacks(armies_comp, current_attackers, rng, defender_efficiency, false, defender_effectiveness_value)
 				battle_simulator._merge_kill_results(defender_kills, mobility_army_kills)
 		else:
 			if not current_garrison_composition.is_empty():
-				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, -1.0, is_siege_battle, defender_hit_totals, siege_state, true)
+				var garrison_kills = battle_simulator._process_unit_attacks(current_garrison_composition, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true)
 				battle_simulator._merge_kill_results(defender_kills, garrison_kills)
 			var armies_standard = _get_armies_from_defenders()
 			if not armies_standard.is_empty():
-				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, -1.0, is_siege_battle, defender_hit_totals, siege_state, true)
+				var army_kills = battle_simulator._process_unit_attacks(armies_standard, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true)
 				battle_simulator._merge_kill_results(defender_kills, army_kills)
 	else:
 		var armies_only = _get_armies_from_defenders()

@@ -1479,8 +1479,7 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 	var player := player_manager.get_player(player_id)
 	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
 	var wood_growth: int = int(floor(player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD)))
-	var wood_limit: int = available_wood if available_wood > 50 else max(0, wood_growth)
-	var wood_budget: int = min(available_wood, wood_limit)
+	var wood_budget: int = _calculate_siege_wood_budget(available_wood, wood_growth)
 	var remaining_points: int = siege_points_total
 	var remaining_wood: int = wood_budget
 	var siege_counts: Dictionary = {"trebuchets": 0, "rams": 0, "ladders": 0}
@@ -1489,35 +1488,92 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 		"rams": PrebattleModal.RAM_DATA,
 		"ladders": PrebattleModal.LADDER_DATA
 	}
-	for kind in ["trebuchets", "rams", "ladders"]:
-		var data: Dictionary = siege_data[kind]
-		var points_cost := int(data.get("points", 0))
-		var wood_cost := int(data.get("wood", 0))
-		if points_cost <= 0:
-			continue
-		var max_by_points := int(remaining_points / points_cost)
-		var max_by_wood := int(remaining_wood / wood_cost) if wood_cost > 0 else max_by_points
-		var max_allowed_raw := int(data.get("max", 0))
-		var max_allowed := max_by_points if max_allowed_raw <= 0 else max_allowed_raw
-		var buyable := int(min(max_by_points, max_by_wood, max_allowed))
-		if buyable > 0:
-			siege_counts[kind] = buyable
-			remaining_points -= buyable * points_cost
-			if wood_cost > 0:
-				remaining_wood -= buyable * wood_cost
-	var spawned_free_ladder := false
-	if siege_counts["trebuchets"] == 0 and siege_counts["rams"] == 0 and siege_counts["ladders"] == 0 and remaining_points > 0:
-		siege_counts["ladders"] = 1
-		remaining_points = max(0, remaining_points - int(PrebattleModal.LADDER_DATA["points"]))
-		spawned_free_ladder = true
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	# --- Trebuchets ---
+	var wall_state: Dictionary = target_region.get_wall_state()
+	var wall_sections: int = int(wall_state.get("wall_sections", 0))
+	var destroyed_sections: int = int(wall_state.get("destroyed_sections", 0))
+	var treb_data: Dictionary = siege_data["trebuchets"]
+	var treb_points_cost: int = int(treb_data.get("points", 0))
+	var treb_wood_cost: int = int(treb_data.get("wood", 0))
+	var treb_max_allowed: int = int(treb_data.get("max", 0))
+	var castle_level: int = int(target_region.get_castle_type())
+	var treb_min_raw: int = castle_level - 1 - destroyed_sections
+	var treb_min: int = max(0, treb_min_raw)
+	var treb_max: int = max(treb_min, wall_sections - destroyed_sections)
+	var trebuchets_target: int = 0
+	if treb_points_cost > 0 and treb_max > 0 and siege_points_total > 6:
+		trebuchets_target = rng.randi_range(treb_min, treb_max)
+		var attacker_power: int = attacker.get_army_power()
+		var defender_power: int = _compute_region_total_defender_power(target_region)
+		var ratio_denominator: int = defender_power if defender_power > 0 else 1
+		var ratio_value: float = float(attacker_power) / float(ratio_denominator)
+		var reduce_by: int = max(0, int(floor(ratio_value)) - 3)
+		trebuchets_target = max(treb_min, trebuchets_target - reduce_by)
+		var max_by_points: int = int(remaining_points / treb_points_cost)
+		var max_by_wood: int = int(remaining_wood / treb_wood_cost) if treb_wood_cost > 0 else max_by_points
+		var max_cap: int = treb_max if treb_max_allowed <= 0 else min(treb_max, treb_max_allowed)
+		trebuchets_target = clampi(trebuchets_target, treb_min, max_cap)
+		trebuchets_target = min(trebuchets_target, max_by_points, max_by_wood)
+		if trebuchets_target > 0:
+			siege_counts["trebuchets"] = trebuchets_target
+			remaining_points -= trebuchets_target * treb_points_cost
+			if treb_wood_cost > 0:
+				remaining_wood -= trebuchets_target * treb_wood_cost
+	# --- Rams ---
+	var ram_data: Dictionary = siege_data["rams"]
+	var ram_points: int = int(ram_data.get("points", 0))
+	var ram_wood: int = int(ram_data.get("wood", 0))
+	var ram_max: int = int(ram_data.get("max", 0))
+	var gate_state: Dictionary = target_region.get_gate_state()
+	var total_gates: int = int(gate_state.get("gates", 0))
+	var destroyed_gates: int = int(gate_state.get("destroyed_gates", 0))
+	var intact_gates: int = max(0, total_gates - destroyed_gates)
+	if ram_points > 0 and remaining_points > 0 and intact_gates > 0:
+		var ram_points_spend: int = rng.randi_range(0, remaining_points)
+		var max_by_points_ram: int = int(ram_points_spend / ram_points)
+		var max_by_wood_ram: int = int(remaining_wood / ram_wood) if ram_wood > 0 else max_by_points_ram
+		var ram_cap: int = intact_gates
+		if ram_max > 0:
+			ram_cap = min(ram_cap, ram_max)
+		var ram_count: int = min(max_by_points_ram, max_by_wood_ram, ram_cap)
+		if ram_count > 0:
+			siege_counts["rams"] = ram_count
+			remaining_points -= ram_count * ram_points
+			if ram_wood > 0:
+				remaining_wood -= ram_count * ram_wood
+	# --- Ladders ---
+	var ladder_data: Dictionary = siege_data["ladders"]
+	var ladder_points: int = int(ladder_data.get("points", 0))
+	var ladder_max: int = int(ladder_data.get("max", 0))
+	if ladder_points > 0 and remaining_points > 0:
+		var ladder_capacity: int = _battle_manager.compute_ladder_capacity(target_region)
+		var max_by_points_ladder: int = int(remaining_points / ladder_points)
+		var ladder_cap: int = ladder_capacity
+		if ladder_max > 0:
+			ladder_cap = min(ladder_cap, ladder_max)
+		var ladder_count: int = min(max_by_points_ladder, ladder_cap)
+		if ladder_count > 0:
+			siege_counts["ladders"] = ladder_count
+			remaining_points -= ladder_count * ladder_points
 	var wood_spent := 0
-	if not spawned_free_ladder:
-		wood_spent = siege_counts["ladders"] * int(PrebattleModal.LADDER_DATA["wood"])
-		wood_spent += siege_counts["rams"] * int(PrebattleModal.RAM_DATA["wood"])
-		wood_spent += siege_counts["trebuchets"] * int(PrebattleModal.TREB_DATA["wood"])
+	wood_spent = siege_counts["ladders"] * int(PrebattleModal.LADDER_DATA["wood"])
+	wood_spent += siege_counts["rams"] * int(PrebattleModal.RAM_DATA["wood"])
+	wood_spent += siege_counts["trebuchets"] * int(PrebattleModal.TREB_DATA["wood"])
 	if wood_spent > 0:
 		player.remove_resources(ResourcesEnum.Type.WOOD, wood_spent)
-	var payload := target_region.apply_siege_damage(siege_counts, PrebattleModal.LADDER_DATA, PrebattleModal.RAM_DATA, PrebattleModal.TREB_DATA)
+	var bombard_damage: int = 0
+	var bombard_state: Dictionary = {}
+	var apply_trebuchet_damage := true
+	if siege_counts["trebuchets"] > 0:
+		bombard_damage = _roll_ai_trebuchet_bombard_damage(int(siege_counts["trebuchets"]))
+		if bombard_damage > 0:
+			bombard_state = target_region.apply_wall_section_damage(bombard_damage)
+		else:
+			bombard_state = target_region.get_wall_state()
+		apply_trebuchet_damage = false
+	var payload := target_region.apply_siege_damage(siege_counts, PrebattleModal.LADDER_DATA, PrebattleModal.RAM_DATA, PrebattleModal.TREB_DATA, apply_trebuchet_damage)
 	var wall_raw := _battle_manager.compute_wall_assault_raw(target_region)
 	var wall_ratio_calc := _battle_manager.compute_wall_assault_ratio(target_region, attacker.get_composition())
 	var gate_ratio := _battle_manager.compute_gate_assault_ratio(target_region)
@@ -1534,10 +1590,18 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 	payload["gate_effectiveness_ratio"] = gate_ratio
 	payload["assault_ratio"] = clampf(ladder_ratio + wall_ratio_calc + gate_ratio, 0.0, 1.0)
 	payload["siege_counts"] = siege_counts.duplicate()
+	if siege_counts["trebuchets"] > 0:
+		payload["trebuchet_bombard"] = _build_ai_bombard_payload(target_region, bombard_damage, bombard_state, wall_ratio_calc, gate_ratio, ladder_ratio)
 	var ai_gate_state: Dictionary = payload.get("gate_state", target_region.get_gate_state())
 	payload["siege_view_state"] = SiegePanel.build_state(target_region, ai_gate_state, int(siege_counts.get("rams", 0)))
 	var limit_label := "no limit" if available_wood > 50 else "growth limit"
 	_log_ai_siege_preparation(siege_points_total, available_wood, limit_label, siege_counts)
+	var wall_state_log: Dictionary = bombard_state
+	if wall_state_log.is_empty():
+		wall_state_log = target_region.get_wall_state()
+	var breached_log: int = int(wall_state_log.get("destroyed_sections", 0))
+	var damaged_log: int = int(wall_state_log.get("damaged_sections", 0))
+	_log_ai_siege_purchase_summary(siege_points_total, siege_counts, breached_log, damaged_log)
 	return payload
 
 func _compute_attacker_effectiveness_ratio(attacker: Army, siege_payload: Dictionary, target_region: Region) -> float:
@@ -1570,9 +1634,68 @@ func _compute_attacker_effectiveness_ratio(attacker: Army, siege_payload: Dictio
 		return 0.0
 	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
 
+func _roll_ai_trebuchet_bombard_damage(treb_count: int) -> int:
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var total: int = 0
+	for i in range(treb_count):
+		for shot in range(PrebattleModal.TREBUCHET_SHOTS):
+			if rng.randf() <= PrebattleModal.TREBUCHET_HIT_CHANCE:
+				total += 1
+	return total
+
+func _build_ai_bombard_payload(region: Region, bombard_damage: int, wall_state: Dictionary, wall_ratio: float, gate_ratio: float, ladder_ratio: float) -> Dictionary:
+	var effective_wall_state: Dictionary = wall_state
+	if effective_wall_state.is_empty():
+		effective_wall_state = region.get_wall_state()
+	var wall_effectiveness_raw := _battle_manager.compute_wall_assault_raw(region)
+	var assault_ratio := clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	return {
+		"total_damage": bombard_damage,
+		"destroyed_sections": int(effective_wall_state.get("destroyed_sections", 0)),
+		"damaged_sections": int(effective_wall_state.get("damaged_sections", 0)),
+		"section_damage": int(effective_wall_state.get("section_damage", 0)),
+		"wall_section_hp": int(effective_wall_state.get("wall_section_hp", 0)),
+		"wall_sections": int(effective_wall_state.get("wall_sections", 0)),
+		"wall_effectiveness_raw": wall_effectiveness_raw,
+		"wall_effectiveness_ratio": wall_ratio,
+		"gate_effectiveness_ratio": gate_ratio,
+		"assault_ratio": assault_ratio
+	}
+
+func _compute_region_total_defender_power(region: Region) -> int:
+	var owner_id := region.get_region_owner()
+	var total: int = 0
+	var garrison_comp: ArmyComposition = region.get_garrison()
+	if garrison_comp != null:
+		total += _calculate_composition_power(garrison_comp)
+	var recruits: int = region.get_base_available_recruits()
+	if recruits > 0:
+		total += recruits * int(GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power"))
+	for child in region.get_children():
+		if child is Army and child.get_player_id() == owner_id:
+			total += child.get_army_power()
+	return total
+
 func _log_ai_siege_preparation(points: int, wood_available: int, wood_limit_label: String, siege_counts: Dictionary) -> void:
 	ensure_ai_log_started()
 	_ai_log_manager.log_siege_preparation(points, wood_available, wood_limit_label, siege_counts)
+
+func _log_ai_siege_purchase_summary(points: int, siege_counts: Dictionary, breached_sections: int, damaged_sections: int) -> void:
+	var ladders: int = int(siege_counts.get("ladders", 0))
+	var rams: int = int(siege_counts.get("rams", 0))
+	var trebs: int = int(siege_counts.get("trebuchets", 0))
+	var msg := "[AI Siege] SP available: " + str(points) + ", Ladders: " + str(ladders) + ", Siege Rams: " + str(rams) + ", Trebuchets: " + str(trebs) + ", Breached: " + str(breached_sections) + ", Damaged: " + str(damaged_sections)
+	DebugLogger.log("BattleCalculation", msg)
+	ensure_ai_log_started()
+	_ai_log_manager.log_siege_purchase_summary(points, siege_counts, breached_sections, damaged_sections)
+
+func _calculate_siege_wood_budget(available_wood: int, wood_growth: int) -> int:
+	var growth_cap: int = max(0, wood_growth)
+	if available_wood <= 30:
+		return min(available_wood, growth_cap)
+	var spendable: int = max(0, available_wood - 30) + growth_cap
+	return min(available_wood, spendable)
 
 func _derive_battle_result_from_report(report: BattleSimulator.BattleReport) -> String:
 	if report == null:

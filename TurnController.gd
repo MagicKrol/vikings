@@ -151,9 +151,11 @@ func _get_available_armies(player_id: int) -> Array[Army]:
 	return available
 
 func _process_single_army(army: Army) -> void:
+	if not is_instance_valid(army):
+		return
 	var turn_number := _get_current_turn()
 	_log_army_separator(army)
-	while army.get_movement_points() > 0:
+	while is_instance_valid(army) and army.get_movement_points() > 0:
 		if await _handle_recruitment_cycle(army, turn_number):
 			continue
 		if await _handle_peasant_cycle(army, turn_number):
@@ -181,9 +183,11 @@ func _process_single_army(army: Army) -> void:
 		if merge_decision == "merge":
 			_merge_local_armies_into(army)
 		var moved_ok = await _execute_move_to_target(army, move)
-		if not moved_ok:
+		if not moved_ok or not is_instance_valid(army):
 			break
-	if is_instance_valid(army) and army.get_movement_points() > 0:
+	if not is_instance_valid(army):
+		return
+	if army.get_movement_points() > 0:
 		_log_army_detail_line("Spending remaining %d MP on camping" % army.get_movement_points())
 		_spend_all_on_camp(army)
 

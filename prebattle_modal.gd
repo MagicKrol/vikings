@@ -389,14 +389,36 @@ func _can_spend_wood(cost: int) -> bool:
 		return true
 	if player_manager == null:
 		return false
-	return player_manager.get_resource_amount(ResourcesEnum.Type.WOOD) >= cost
+	var budget: int = _get_siege_wood_budget()
+	var current_spent: int = _get_current_siege_wood_spent()
+	return current_spent + cost <= budget
+
+func _get_siege_wood_budget() -> int:
+	var player = player_manager.get_player(attacking_army.get_player_id())
+	if player == null:
+		return 0
+	var available: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
+	var growth: int = int(floor(player_manager.get_player_resource_growth(attacking_army.get_player_id(), ResourcesEnum.Type.WOOD)))
+	var growth_cap: int = max(0, growth)
+	if available <= 30:
+		return min(available, growth_cap)
+	var spendable: int = max(0, available - 30) + growth_cap
+	return min(available, spendable)
+
+func _get_current_siege_wood_spent() -> int:
+	var total: int = 0
+	total += siege_counts.get("ladders", 0) * int(LADDER_DATA.get("wood", 0))
+	total += siege_counts.get("rams", 0) * int(RAM_DATA.get("wood", 0))
+	total += siege_counts.get("trebuchets", 0) * int(TREB_DATA.get("wood", 0))
+	return total
 
 func _spend_wood(cost: int) -> bool:
 	if cost <= 0:
 		return true
 	if player_manager == null:
 		return false
-	var ok = player_manager.spend_resource(ResourcesEnum.Type.WOOD, cost)
+	var player_id := attacking_army.get_player_id() if attacking_army != null else player_manager.current_player_id
+	var ok = player_manager.remove_resources_from_player(player_id, ResourcesEnum.Type.WOOD, cost)
 	if ok:
 		_update_player_status_modal()
 	return ok
@@ -404,7 +426,7 @@ func _spend_wood(cost: int) -> bool:
 func _refund_wood(amount: int) -> void:
 	if player_manager == null:
 		return
-	var player_id = player_manager.current_player_id
+	var player_id := attacking_army.get_player_id() if attacking_army != null else player_manager.current_player_id
 	if player_manager.add_resources_to_player(player_id, ResourcesEnum.Type.WOOD, amount):
 		_update_player_status_modal()
 
@@ -516,6 +538,9 @@ func _can_purchase(kind: String) -> bool:
 	return _can_reduce_defense(data["defense"])
 
 func _refund_all_siege_purchases() -> void:
+	if bombard_performed:
+		_reset_siege_state()
+		return
 	var wood_refund = siege_counts.get("ladders", 0) * LADDER_DATA["wood"] + siege_counts.get("rams", 0) * RAM_DATA["wood"] + siege_counts.get("trebuchets", 0) * TREB_DATA["wood"]
 	if wood_refund > 0:
 		_refund_wood(wood_refund)

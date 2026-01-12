@@ -103,6 +103,17 @@ func log_siege_preparation(points: int, wood_available: int, wood_limit_label: S
 	lines.append("")
 	_append_lines(lines)
 
+func log_siege_purchase_summary(points: int, purchases: Dictionary, breached: int, damaged: int) -> void:
+	var lines: Array[String] = []
+	lines.append("Siege purchase summary")
+	lines.append("SP available: %d" % points)
+	lines.append("Ladders: %d" % int(purchases.get("ladders", 0)))
+	lines.append("Siege Rams: %d" % int(purchases.get("rams", 0)))
+	lines.append("Trebuchets: %d" % int(purchases.get("trebuchets", 0)))
+	lines.append("%d Breached, %d Damaged wall sections" % [breached, damaged])
+	lines.append("")
+	_append_lines(lines)
+
 func _append_turn_header(turn_number: int) -> void:
 	var lines: Array[String] = []
 	lines.append("--------------------------------------------------------")
