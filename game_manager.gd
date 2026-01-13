@@ -1457,7 +1457,16 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.get_display_name() + " vs region " + str(target_region_id))
 	var siege_payload := {}
 	if is_player_computer(attacker_owner_id):
+		if _should_ai_withdraw_pre_siege(army, target_region):
+			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing before siege prep due to unfavorable power vs defense.")
+			await _battle_manager.withdraw_attacking_army(army)
+			return "withdrawal"
+	if is_player_computer(attacker_owner_id):
 		siege_payload = _execute_ai_siege_preparation(army, target_region)
+		if _should_ai_withdraw_post_siege(army, target_region, siege_payload):
+			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after siege prep due to unfavorable power ratio.")
+			await _battle_manager.withdraw_attacking_army(army)
+			return "withdrawal"
 	var attacker_effectiveness_ratio := _compute_attacker_effectiveness_ratio(army, siege_payload, target_region)
 
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
@@ -1696,6 +1705,62 @@ func _calculate_siege_wood_budget(available_wood: int, wood_growth: int) -> int:
 		return min(available_wood, growth_cap)
 	var spendable: int = max(0, available_wood - 30) + growth_cap
 	return min(available_wood, spendable)
+
+func should_ai_withdraw_by_power(attacker_power: float, defender_power: float, assault_multiplier: float, defense_bonus: int, threshold: float) -> bool:
+	if attacker_power <= 0.0 or defender_power <= 0.0:
+		return false
+	var effective_atk: float = attacker_power * assault_multiplier
+	var defense_multiplier: float = 1.0 + float(defense_bonus) / 100.0
+	var effective_def: float = defender_power * defense_multiplier
+	if effective_atk <= 0.0 or effective_def <= 0.0:
+		return false
+	var ratio: float = effective_atk / max(1.0, effective_def)
+	return ratio <= threshold
+
+func _should_ai_withdraw_pre_siege(attacker: Army, target_region: Region) -> bool:
+	if target_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		return false
+	var defense_bonus: int = _battle_manager.get_effective_defense_for_region(target_region)
+	if defense_bonus <= 0:
+		return false
+	var attacker_power: int = attacker.get_army_power()
+	var defender_power: int = _calculate_region_defender_power(target_region)
+	if defender_power <= 0:
+		return false
+	var should_withdraw: bool = should_ai_withdraw_by_power(float(attacker_power), float(defender_power), 1.0, defense_bonus, 1.0)
+	var ratio: float = float(attacker_power) / max(1.0, float(defender_power) * (1.0 + float(defense_bonus) / 100.0))
+	DebugLogger.log("Withdrawal", "[Pre-Siege Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " def_bonus=" + str(defense_bonus) + " ratio=" + str(snappedf(ratio, 0.003)))
+	return should_withdraw
+
+func _should_ai_withdraw_post_siege(attacker: Army, target_region: Region, siege_payload: Dictionary) -> bool:
+	var attacker_power: int = attacker.get_army_power()
+	var defender_power: int = _calculate_region_defender_power(target_region)
+	if attacker_power <= 0 or defender_power <= 0:
+		return false
+	var assault_multiplier: float = 1.0
+	if target_region.get_castle_type() != CastleTypeEnum.Type.NONE:
+		assault_multiplier = max(0.0, _compute_attacker_effectiveness_ratio(attacker, siege_payload, target_region))
+		var siege_counts: Dictionary = siege_payload.get("siege_counts", {})
+		var rams: int = int(siege_counts.get("rams", 0))
+		if rams > 0:
+			assault_multiplier += float(rams) * 0.2
+	var defense_bonus: int = _battle_manager.get_effective_defense_for_region(target_region)
+	var should_withdraw: bool = should_ai_withdraw_by_power(float(attacker_power), float(defender_power), assault_multiplier, defense_bonus, GameParameters.AI_WITHDRAW_POWER_THRESHOLD)
+	var defense_multiplier: float = 1.0 + float(defense_bonus) / 100.0
+	var ratio: float = float(attacker_power) * assault_multiplier / max(1.0, float(defender_power) * defense_multiplier)
+	DebugLogger.log("Withdrawal", "[Pre-Battle Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " assault_mult=" + str(snappedf(assault_multiplier, 0.003)) + " defense_mult=" + str(snappedf(defense_multiplier, 0.003)) + " ratio=" + str(snappedf(ratio, 0.003)))
+	return should_withdraw
+
+func _calculate_region_defender_power(region: Region) -> int:
+	var owner_id: int = region.get_region_owner()
+	var total: int = 0
+	var garrison_comp: ArmyComposition = region.get_garrison()
+	if garrison_comp != null:
+		total += _calculate_composition_power(garrison_comp)
+	for child in region.get_children():
+		if child is Army and child.get_player_id() == owner_id:
+			total += (child as Army).get_army_power()
+	return total
 
 func _derive_battle_result_from_report(report: BattleSimulator.BattleReport) -> String:
 	if report == null:

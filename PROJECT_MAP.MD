@@ -60,7 +60,7 @@ Main (Node2D) [place_armies.gd]
 │	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
 │	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd] – info-modal fonts with +/-10/1 number buttons per unit; sliders removed; unit hover shows stat/trait panel populated from GameParameters/UnitTraitEnum
 │	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd] – transfer-modal layout; region rows use +/-10/1 buttons to shift recruits into target; buttons styled via themes/number_buttons_theme.tres and total row tracks remaining recruits; moved recruits now increase target population so later recruitment doesn’t overdraw population
-│	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer buttons move units between army/garrison; labels use standard modal text theme with white value columns like recruitment
+│	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer buttons move units between army/garrison while keeping each army at ≥1 soldier; labels use standard modal text theme with white value columns like recruitment
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
@@ -133,6 +133,8 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Battle Log Queue: `finalize_battle_result()` snapshots attacker/defender forces before and after `_battle_manager._apply_battle_losses()`, converts the result into readable lines (`Battle started`, attacker/defender power/composition, `Battle Result`, post-battle status) and queues them per attacking army via `consume_ai_battle_log_for_army()` so TurnController can append them immediately after its movement logs.
 - Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
 - Debug overlay: `show_region_center_markers` draws a small red square at each land region center by calling `MapGenerator.set_center_markers_enabled()` after startup and whenever the map regenerates.
+- AI pre-battle withdrawal: before siege prep, AI attackers back out if attacker power ≤ defender power after defense bonus; after siege prep (or for open-field fights) AI withdraws immediately when the standard withdrawal power threshold is met (no roll, no casualties).
+- Target scoring: known enemy power (tracked armies + tracked garrison) is checked against the same withdrawal thresholds; regions with stronger known enemies are skipped during frontier target selection.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
  - Modes:
    - Custom: current behavior (castle placement → gameplay).

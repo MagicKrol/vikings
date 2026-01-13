@@ -125,10 +125,10 @@ func _calculate_region_score(region: Region, player_id: int) -> Dictionary:
 	# New components (capped):
 	# - Strategic point score: 0..10 (stored on Region)
 	# - Population: population/100 capped to 10
-	# - Level: level_int * 2 (max L5 -> 10)
+	# - Level: level_int * 2 / 2(max L5 -> 5)
 	# - Resources: dynamic need-weighted 0..10
 	var strategic: float = region.get_strategic_point_score()  # 0..10
-	var pop_component: float = min(10.0, float(region.get_population()) / 100.0)
+	var pop_component: float = min(10.0, float(region.get_population()) / 50.0)
 	var level_component: float = _level_component_out_of_10(region)
 	var res_component: float = _resource_component_out_of_10(region, player_id)
 
@@ -142,7 +142,7 @@ func _calculate_region_score(region: Region, player_id: int) -> Dictionary:
 		"region_name": region_name,
 		"strategic_score": strategic,
 		"population_component": pop_component,
-		"level_component": level_component,
+		"level_component": int(level_component/2),
 		"resource_component": res_component,
 		"overall_score": overall_score
 	}
@@ -303,11 +303,16 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 	
 	if not path_result.success:
 		return {"reachable": false}
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return {"reachable": false}
+	var region = region_container as Region
+	if region == null:
+		return {"reachable": false}
 	
 	# Generate army-specific random jitter
-	var army_hash = hash(army.name + str(army.get_player_id()))
 	var rng = RandomNumberGenerator.new()
-	rng.seed = army_hash
+	rng.randomize()
 	var random_modifier = rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
 
 	var enemy_adjustment := _calculate_enemy_army_adjustment(army, region_id)
@@ -319,7 +324,9 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 		if owner_id > 0 and owner_id != army.get_player_id():
 			ownership_bonus = float(GameParameters.AI_ENEMY_REGION_SCORE_BONUS)
 
-	var final_score = base_score + ownership_bonus + random_modifier - path_result.cost + enemy_adjustment.get("delta", 0.0)
+	var pursuit_bonus := _get_pursuit_bonus(army, region_id)
+	var castle_bonus := _get_castle_bonus(region, army.get_player_id())
+	var final_score = base_score + ownership_bonus + random_modifier + pursuit_bonus + castle_bonus - path_result.cost + enemy_adjustment.get("delta", 0.0)
 	if enemy_adjustment.get("nullify", false):
 		final_score = 0.0
 
@@ -335,6 +342,105 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 		"path": path_result.path,
 		"reachable": true
 	}
+
+func is_target_overmatched_by_known_enemy(army: Army, region_id: int) -> bool:
+	_ensure_runtime_references()
+	if army == null or not is_instance_valid(army):
+		return false
+	if game_manager == null or player_manager == null:
+		return false
+	var known := _get_known_enemy_power(army.get_player_id(), region_id)
+	if not known.get("has_data", false):
+		return false
+	var defender_power: float = float(known.get("power", 0))
+	if defender_power <= 0.0:
+		return false
+	var attacker_power: float = float(army.get_army_power())
+	if attacker_power <= 0.0:
+		return false
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return false
+	var region := region_container as Region
+	if region == null:
+		return false
+	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
+	var defense_bonus: int = GameParameters.get_castle_defense_bonus(castle_type)
+	# Castle gate: require attacker to exceed defended power before siege prep
+	if castle_type != CastleTypeEnum.Type.NONE:
+		if game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, 1.0, defense_bonus, 1.0):
+			return true
+	# Standard withdrawal threshold without siege bonuses
+	return game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, 1.0, defense_bonus, GameParameters.AI_WITHDRAW_POWER_THRESHOLD)
+
+func _get_pursuit_bonus(army: Army, region_id: int) -> float:
+	_ensure_runtime_references()
+	if army == null or not is_instance_valid(army):
+		return 0.0
+	if game_manager == null or player_manager == null:
+		return 0.0
+	var known := _get_known_enemy_power(army.get_player_id(), region_id)
+	if not known.get("has_data", false):
+		return 0.0
+	var defender_power: float = float(known.get("power", 0))
+	if defender_power <= 0.0:
+		return 0.0
+	var attacker_power: float = float(army.get_army_power())
+	if attacker_power <= 0.0:
+		return 0.0
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return 0.0
+	var region := region_container as Region
+	if region == null:
+		return 0.0
+	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
+	var defense_bonus: int = GameParameters.get_castle_defense_bonus(castle_type)
+	var assault_multiplier: float = 1.0
+	var meets_ratio := not game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_PURSUIT_POWER_RATIO)
+	if meets_ratio:
+		return float(GameParameters.AI_PURSUIT_SCORE_BONUS)
+	return 0.0
+
+func _get_known_enemy_power(observer_id: int, region_id: int) -> Dictionary:
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return {"power": 0, "has_data": false}
+	var total_power: int = 0
+	var has_data: bool = false
+	for child in region_container.get_children():
+		if not (child is Army):
+			continue
+		var enemy_army: Army = child
+		if enemy_army.get_player_id() == observer_id:
+			continue
+		var key := Player.get_enemy_tracker_key(enemy_army)
+		if key == "":
+			continue
+		var tracked_power: int = player_manager.get_tracked_enemy_power(observer_id, key)
+		if tracked_power < 0:
+			continue
+		total_power += tracked_power
+		if tracked_power > 0:
+			has_data = true
+	var tracked_garrison: int = player_manager.get_tracked_enemy_garrison_power(observer_id, region_id)
+	if tracked_garrison >= 0:
+		total_power += tracked_garrison
+		if tracked_garrison > 0:
+			has_data = true
+	return {"power": total_power, "has_data": has_data}
+
+func _get_castle_bonus(region: Region, player_id: int) -> float:
+	if region == null:
+		return 0.0
+	var owner_id := region.get_region_owner()
+	if owner_id == player_id:
+		return 0.0
+	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
+	if castle_type == CastleTypeEnum.Type.NONE:
+		return 0.0
+	var level_bonus: int = region.get_castle_type()
+	return 4.0 + float(level_bonus)
 
 func _calculate_enemy_army_adjustment(army: Army, region_id: int) -> Dictionary:
 	_ensure_runtime_references()
@@ -561,9 +667,8 @@ func get_final_army_score_raw(army: Army, region_id: int) -> Dictionary:
 		return {"reachable": false, "reason": "Unreachable"}
 	
 	# Generate army-specific random jitter
-	var army_hash = hash(army.name + str(army.get_player_id()))
 	var rng = RandomNumberGenerator.new()
-	rng.seed = army_hash
+	rng.randomize()
 	var random_modifier = rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
 	
 	# Get raw base score and components

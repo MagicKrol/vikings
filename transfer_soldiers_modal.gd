@@ -220,13 +220,22 @@ func _on_transfer_button_pressed(unit_index: int, delta: int) -> void:
 	if unit_index >= unit_desired_target_counts.size() or unit_index >= unit_value_labels.size():
 		DebugLogger.log("UISystem", "ERROR: Unit index " + str(unit_index) + " out of bounds for transfer buttons")
 		return
-	var total_units = unit_total_counts[unit_index]
-	var current_target = unit_desired_target_counts[unit_index]
-	var current_source = total_units - current_target
-	var new_source = clamp(current_source + delta, 0, total_units)
+	var total_units: int = unit_total_counts[unit_index]
+	var current_target: int = unit_desired_target_counts[unit_index]
+	var current_source: int = total_units - current_target
+	var other_totals: Vector2i = _calculate_other_totals(unit_index)
+	var required_source_min: int = max(0, 1 - other_totals.x)
+	var required_target_min: int = 0
+	if target_army != null:
+		required_target_min = max(0, 1 - other_totals.y)
+	var source_min: int = min(total_units, required_source_min)
+	var source_max: int = total_units - required_target_min
+	if source_max < source_min:
+		source_max = source_min
+	var new_source: int = clamp(current_source + delta, source_min, source_max)
 	if new_source == current_source:
 		return
-	var new_target = total_units - new_source
+	var new_target: int = total_units - new_source
 	unit_desired_target_counts[unit_index] = new_target
 	unit_value_labels[unit_index].text = str(new_source)
 	unit_target_value_labels[unit_index].text = str(new_target)
@@ -248,6 +257,13 @@ func _on_continue_pressed() -> void:
 
 func _apply_transfer_changes() -> void:
 	"""Apply transfers based on current button selections"""
+	var pending_totals: Vector2i = _get_pending_totals()
+	if pending_totals.x < 1:
+		DebugLogger.log("UISystem", "Transfer blocked: source army would drop below minimum soldiers.")
+		return
+	if target_army != null and pending_totals.y < 1:
+		DebugLogger.log("UISystem", "Transfer blocked: target army would drop below minimum soldiers.")
+		return
 	var has_transfers = false
 	for i in range(unit_types.size()):
 		var unit_type = unit_types[i]
@@ -279,3 +295,25 @@ func _apply_transfer_changes() -> void:
 	if has_transfers:
 		source_army.spend_movement_points(1)
 		DebugLogger.log("UISystem", "Army " + str(source_army.number) + " spent 1 movement point for transfer (remaining: " + str(source_army.get_movement_points()) + ")")
+
+func _calculate_other_totals(unit_index: int) -> Vector2i:
+	var source_total: int = 0
+	var target_total: int = 0
+	for i in range(unit_total_counts.size()):
+		if i == unit_index:
+			continue
+		var total_units: int = unit_total_counts[i]
+		var target_units: int = unit_desired_target_counts[i]
+		source_total += total_units - target_units
+		target_total += target_units
+	return Vector2i(source_total, target_total)
+
+func _get_pending_totals() -> Vector2i:
+	var total_source: int = 0
+	var total_target: int = 0
+	for i in range(unit_total_counts.size()):
+		var total_units: int = unit_total_counts[i]
+		var target_units: int = unit_desired_target_counts[i]
+		total_target += target_units
+		total_source += total_units - target_units
+	return Vector2i(total_source, total_target)

@@ -46,6 +46,8 @@ const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 2    # Extra rounds mobility units get 
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
 const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
 const AI_WITHDRAW_MAX_POWER_DIFFERENCE = 0.20	# Power gap (20%) that forces withdrawal once reached
+const AI_PURSUIT_POWER_RATIO = 1.5			# Ratio above which AI gets a pursuit bonus for targets
+const AI_PURSUIT_SCORE_BONUS = 5.0			# Score bonus for high-ratio pursuit targets
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 3.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
@@ -104,6 +106,14 @@ const CASTLE_RECRUITMENT_PERCENTAGES = {
 	CastleTypeEnum.Type.KEEP: 0.06,         # Keep:
 	CastleTypeEnum.Type.CASTLE: 0.06,       # Castle:
 	CastleTypeEnum.Type.STRONGHOLD: 0.7    # Stronghold:
+}
+
+const REGION_RECRUITMENT_PERCENTAGES = {
+	RegionLevelEnum.Level.L1: 0.05,         
+	RegionLevelEnum.Level.L2: 0.06,      
+	RegionLevelEnum.Level.L3: 0.07,        
+	RegionLevelEnum.Level.L4: 0.08,       
+	RegionLevelEnum.Level.L5: 0.09    
 }
 
 ## AI Region Scoring Weights (0-100 scale normalization factors)
@@ -208,7 +218,7 @@ const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per reso
 
 ## AI Handicap Bonuses
 const AI_RESOURCE_GROWTH_BONUS = 0.20          # Multiplier bonus for non-gold resource income (e.g., +25%)
-const AI_INCOME_GROWTH_BONUS = 0.30            # Multiplier bonus for gold income (e.g., +20%)
+const AI_INCOME_GROWTH_BONUS = 0.20            # Multiplier bonus for gold income (e.g., +20%)
 
 
 ## AI Peasants-Only Recruitment Parameters
@@ -671,7 +681,7 @@ const AI_TRADE_THRESHOLD_IRON = 50
 
 ## Region Garrison Generation by Region Level
 const GARRISON_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 1, "max": 8},
+	RegionLevelEnum.Level.L1: {"min": 1, "max": 10},
 	RegionLevelEnum.Level.L2: {"min": 1, "max": 15},
 	RegionLevelEnum.Level.L3: {"min": 1, "max": 20},
 	RegionLevelEnum.Level.L4: {"min": 1, "max": 0},
@@ -858,9 +868,9 @@ static func generate_population_size(region_level: RegionLevelEnum.Level) -> int
 	var range_data = POPULATION_BY_LEVEL.get(region_level, {"min": 200, "max": 400})
 	return randi_range(range_data.min, range_data.max)
 
-static func calculate_max_recruits(population: int, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> int:
+static func calculate_max_recruits(population: int, region_level) -> int:
 	"""Calculate maximum recruits available based on population and castle type"""
-	var recruitment_percentage = get_castle_recruitment_percentage(castle_type)
+	var recruitment_percentage = get_region_recruitment_percentage(region_level)
 	return int(population * recruitment_percentage)
 
 static func calculate_recruit_replenishment(population: int) -> int:
@@ -1030,6 +1040,10 @@ static func get_castle_defense_bonus(castle_type: CastleTypeEnum.Type) -> int:
 static func get_castle_recruitment_percentage(castle_type: CastleTypeEnum.Type) -> float:
 	"""Get the recruitment percentage for a castle type"""
 	return CASTLE_RECRUITMENT_PERCENTAGES.get(castle_type, 0.02)
+
+static func get_region_recruitment_percentage(region_level) -> float:
+	"""Get the recruitment percentage for a region level"""
+	return REGION_RECRUITMENT_PERCENTAGES.get(region_level)
 
 static func get_player_color(player_id: int) -> Color:
 	"""Get the color for a specific player"""

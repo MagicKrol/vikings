@@ -113,7 +113,7 @@ func setup_region(region_data: Dictionary) -> void:
 		# Generate population based on region level
 		population = GameParameters.generate_population_size(region_level)
 		# Initialize available recruits based on population
-		available_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+		available_recruits = GameParameters.calculate_max_recruits(population, region_level)
 		# Initialize ore search attempts if region can have ores
 		if GameParameters.can_search_for_ore_in_region(region_type):
 			ore_search_attempts_remaining = GameParameters.ORE_SEARCH_CHANCES_PER_REGION
@@ -316,7 +316,7 @@ func set_population(new_population: int) -> void:
 	"""Set population for this region"""
 	population = max(0, new_population)
 	# Recalculate max recruits when population changes
-	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	var max_recruits = GameParameters.calculate_max_recruits(population, region_level)
 	# Ensure available recruits don't exceed new maximum
 	available_recruits = min(available_recruits, max_recruits)
 
@@ -345,7 +345,7 @@ func get_base_available_recruits() -> int:
 
 func get_max_recruits() -> int:
 	"""Get maximum recruits based on current population and castle type"""
-	return GameParameters.calculate_max_recruits(population, castle_type)
+	return GameParameters.calculate_max_recruits(population, region_level)
 
 func hire_recruits(count: int) -> int:
 	"""Hire recruits from this region, returns actual hired count"""
@@ -371,14 +371,16 @@ func _reduce_recruits_and_population(count: int) -> void:
 	# Reduce population by the same amount
 	population -= count
 	# Recalculate max recruits after population reduction
-	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	var max_recruits = GameParameters.calculate_max_recruits(population, region_level)
 	# Ensure available recruits don't exceed new maximum
 	available_recruits = min(available_recruits, max_recruits)
 
 func replenish_recruits() -> void:
 	"""Replenish recruits based on current population (called each turn)"""
 	var replenishment = GameParameters.calculate_recruit_replenishment(population)
-	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	if promotion_growth_bonus_turns_remaining > 0:
+		replenishment = replenishment * 2
+	var max_recruits = GameParameters.calculate_max_recruits(population, region_level)
 	available_recruits = min(available_recruits + replenishment, max_recruits)
 
 func fill_recruits_to_maximum() -> void:
@@ -392,7 +394,7 @@ func get_growth() -> float:
 	var const_growth_rate = GameParameters.POPULATION_CONST_GROWTH_RATE
 	var promotion_bonus = get_promotion_bonus()
 
-	var max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
+	var max_recruits = GameParameters.calculate_max_recruits(population, region_level)
 	var recruit_ratio = 0.0
 	if max_recruits > 0:
 		recruit_ratio = min(1.0, float(available_recruits) / float(max_recruits))
@@ -447,7 +449,6 @@ func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
 	# Recalculate recruitment limits when castle type changes
 	if old_castle_type != new_castle_type:
 		_reset_defense_state_to_full()
-		_recalculate_recruitment_limits()
 
 func has_castle() -> bool:
 	"""Check if region has any castle"""
@@ -701,28 +702,12 @@ func process_castle_construction() -> bool:
 		_reset_defense_state_to_full()
 		DebugLogger.log("RegionManagement", "Castle construction completed in " + region_name + "! Built: " + CastleTypeEnum.type_to_string(completed_castle_type))
 		
-		# Recalculate recruitment limits based on new castle type
-		_recalculate_recruitment_limits()
-		
 		# Trigger visual update by finding and calling the visual manager
 		_update_castle_visual()
 		
 		return true
 	
 	return false
-
-func _recalculate_recruitment_limits() -> void:
-	"""Recalculate recruitment limits when castle type changes"""
-	var new_max_recruits = GameParameters.calculate_max_recruits(population, castle_type)
-	
-	# If the new max is higher, we don't change available recruits (they can recruit more)
-	# If the new max is lower, we cap available recruits to the new maximum
-	available_recruits = min(available_recruits, new_max_recruits)
-	
-	var old_percentage = GameParameters.get_castle_recruitment_percentage(CastleTypeEnum.Type.NONE)
-	var new_percentage = GameParameters.get_castle_recruitment_percentage(castle_type)
-	
-	DebugLogger.log("RegionManagement", "Recruitment limits updated in " + region_name + ": " + str(int(old_percentage * 100)) + "% -> " + str(int(new_percentage * 100)) + "% (" + str(available_recruits) + "/" + str(new_max_recruits) + " recruits)")
 
 func _update_castle_visual() -> void:
 	"""Update the castle visual when construction completes"""
@@ -992,7 +977,7 @@ func heal_all_wounded() -> void:
 	var wr := wounded_recruits.get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
 	if wr > 0:
 		wounded_recruits.remove_soldiers(SoldierTypeEnum.Type.PEASANTS, wr)
-		var max_recruits := GameParameters.calculate_max_recruits(population, castle_type)
+		var max_recruits := GameParameters.calculate_max_recruits(population, region_level)
 		available_recruits = min(available_recruits + wr, max_recruits)
 
 func get_income() -> int:

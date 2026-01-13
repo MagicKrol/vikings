@@ -71,7 +71,7 @@ var debug_categories: Dictionary = {
 	"Trade": false,
 	"Tutorial": false,
 	"TradeModal": false,
-	"Withdrawal": false
+	"Withdrawal": true
 }
 
 # Color coding for different log levels

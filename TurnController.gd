@@ -453,10 +453,12 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 	var current_region_id: int = current_region.get_region_id()
 
 	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(army.name + str(player_id))
+	rng.randomize()
 	var mp_available := army.get_movement_points()
 
 	for target_id in frontier:
+		if target_scorer != null and target_scorer.is_target_overmatched_by_known_enemy(army, target_id):
+			continue
 		var base_score := target_scorer.score_region_base(target_id)
 		if base_score <= 0.0:
 			continue
@@ -501,10 +503,12 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 	var current_region_id: int = current_region.get_region_id()
 
 	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(army.name + str(player_id))
+	rng.randomize()
 	var mp_available := army.get_movement_points()
 
 	for target_id in frontier:
+		if target_scorer != null and target_scorer.is_target_overmatched_by_known_enemy(army, target_id):
+			continue
 		var base_score := target_scorer.score_region_base(target_id)
 		if base_score <= 0.0:
 			continue
