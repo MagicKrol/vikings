@@ -88,7 +88,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -114,6 +114,7 @@ var loaded_scenario_name: String = ""  # Track the loaded scenario name for the 
 var _ai_log_manager: AILogManager = AILogManager.new()
 var _ai_log_started: bool = false
 var _ai_battle_log_queue: Dictionary = {}
+var average_army_power: float = 0.0
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -718,6 +719,7 @@ func _initialize_castle_placement_sequence() -> void:
 func _process_round_start_actions():
 	"""Process actions that happen once per round (when Player 1 starts)"""
 	DebugLogger.log("TurnProcessing", "Processing round start actions...")
+	_update_average_army_power()
 	
 	# Increment ownership counters for all owned regions
 	DebugLogger.log("TurnProcessing", "Incrementing ownership counters...")
@@ -741,6 +743,19 @@ func _process_round_start_actions():
 	
 	# Reset movement points for all armies
 	reset_movement_points()
+
+func _update_average_army_power() -> void:
+	var armies: Array[Army] = _army_manager.get_all_armies()
+	if armies.is_empty():
+		average_army_power = 0.0
+		return
+	var total_power: int = 0
+	for army in armies:
+		total_power += army.get_army_power()
+	average_army_power = float(total_power) / float(armies.size())
+
+func get_average_army_power() -> float:
+	return average_army_power
 
 func _process_player_turn_start(player_id: int):
 	"""Process actions that happen at the start of each player's turn"""
@@ -1041,7 +1056,9 @@ func _on_current_player_changed(player_id: int) -> void:
 	
 	# Show next player modal only for active players
 	if _next_player_modal and is_player_active(player_id):
-		_next_player_modal.show_next_player(player_id, castle_placing_mode)
+		var allow_castle_modal := not castle_placing_mode or is_player_human(player_id)
+		if allow_castle_modal:
+			_next_player_modal.show_next_player(player_id, castle_placing_mode)
 	
 	DebugLogger.log("TurnProcessing", "Round " + str(current_turn) + " - Player " + str(player_id) + "'s turn")
 
@@ -1455,15 +1472,20 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	var attacker_owner_id := army.get_player_id()
 	var target_region := _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.get_display_name() + " vs region " + str(target_region_id))
+	_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
 	var siege_payload := {}
 	if is_player_computer(attacker_owner_id):
 		if _should_ai_withdraw_pre_siege(army, target_region):
+			_log_ai_prebattle_withdraw(army, target_region, "pre_siege_power_check")
+			_record_both_sides_power_snapshot(army, target_region, [], target_region.get_garrison(), target_region.get_base_available_recruits())
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing before siege prep due to unfavorable power vs defense.")
 			await _battle_manager.withdraw_attacking_army(army)
 			return "withdrawal"
 	if is_player_computer(attacker_owner_id):
 		siege_payload = _execute_ai_siege_preparation(army, target_region)
 		if _should_ai_withdraw_post_siege(army, target_region, siege_payload):
+			_log_ai_prebattle_withdraw(army, target_region, "post_siege_power_check")
+			_record_both_sides_power_snapshot(army, target_region, [], target_region.get_garrison(), target_region.get_base_available_recruits())
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after siege prep due to unfavorable power ratio.")
 			await _battle_manager.withdraw_attacking_army(army)
 			return "withdrawal"
@@ -1706,6 +1728,22 @@ func _calculate_siege_wood_budget(available_wood: int, wood_growth: int) -> int:
 	var spendable: int = max(0, available_wood - 30) + growth_cap
 	return min(available_wood, spendable)
 
+func _record_enemy_presence(observer_id: int, target_region: Region) -> void:
+	if target_region == null:
+		return
+	var target_owner := _region_manager.get_region_owner(target_region.get_region_id())
+	if target_owner == observer_id or target_owner == -1:
+		return
+	var garrison_power: int = _compute_region_total_defender_power(target_region)
+	player_manager.record_enemy_garrison(observer_id, target_region.get_region_id(), garrison_power)
+	for child in target_region.get_children():
+		if not (child is Army):
+			continue
+		var enemy_army: Army = child
+		if enemy_army.get_player_id() == observer_id:
+			continue
+		player_manager.record_enemy_army_power(observer_id, enemy_army)
+
 func should_ai_withdraw_by_power(attacker_power: float, defender_power: float, assault_multiplier: float, defense_bonus: int, threshold: float) -> bool:
 	if attacker_power <= 0.0 or defender_power <= 0.0:
 		return false
@@ -1727,7 +1765,8 @@ func _should_ai_withdraw_pre_siege(attacker: Army, target_region: Region) -> boo
 	var defender_power: int = _calculate_region_defender_power(target_region)
 	if defender_power <= 0:
 		return false
-	var should_withdraw: bool = should_ai_withdraw_by_power(float(attacker_power), float(defender_power), 1.0, defense_bonus, 1.0)
+	var target_ratio: float = 1.5
+	var should_withdraw: bool = should_ai_withdraw_by_power(float(attacker_power), float(defender_power), 1.0, defense_bonus, target_ratio)
 	var ratio: float = float(attacker_power) / max(1.0, float(defender_power) * (1.0 + float(defense_bonus) / 100.0))
 	DebugLogger.log("Withdrawal", "[Pre-Siege Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " def_bonus=" + str(defense_bonus) + " ratio=" + str(snappedf(ratio, 0.003)))
 	return should_withdraw
@@ -1745,9 +1784,14 @@ func _should_ai_withdraw_post_siege(attacker: Army, target_region: Region, siege
 		if rams > 0:
 			assault_multiplier += float(rams) * 0.2
 	var defense_bonus: int = _battle_manager.get_effective_defense_for_region(target_region)
-	var should_withdraw: bool = should_ai_withdraw_by_power(float(attacker_power), float(defender_power), assault_multiplier, defense_bonus, GameParameters.AI_WITHDRAW_POWER_THRESHOLD)
+	var split := _split_power_by_ranged_composition(attacker.get_composition())
+	var ranged_power: float = split.get("ranged", 0.0)
+	var non_ranged_power: float = split.get("non_ranged", 0.0)
 	var defense_multiplier: float = 1.0 + float(defense_bonus) / 100.0
-	var ratio: float = float(attacker_power) * assault_multiplier / max(1.0, float(defender_power) * defense_multiplier)
+	var effective_atk: float = ranged_power + non_ranged_power * assault_multiplier
+	var effective_def: float = float(defender_power) * defense_multiplier
+	var ratio: float = effective_atk / max(1.0, effective_def)
+	var should_withdraw: bool = ratio <= 1.0
 	DebugLogger.log("Withdrawal", "[Pre-Battle Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " assault_mult=" + str(snappedf(assault_multiplier, 0.003)) + " defense_mult=" + str(snappedf(defense_multiplier, 0.003)) + " ratio=" + str(snappedf(ratio, 0.003)))
 	return should_withdraw
 
@@ -1761,6 +1805,74 @@ func _calculate_region_defender_power(region: Region) -> int:
 		if child is Army and child.get_player_id() == owner_id:
 			total += (child as Army).get_army_power()
 	return total
+
+func _split_power_by_ranged_composition(comp: ArmyComposition) -> Dictionary:
+	if comp == null:
+		return {"ranged": 0.0, "non_ranged": 0.0}
+	var ranged: float = 0.0
+	var non_ranged: float = 0.0
+	for ut in SoldierTypeEnum.get_all_types():
+		var qty := comp.get_soldier_count(ut)
+		if qty <= 0:
+			continue
+		var power: int = GameParameters.get_unit_stat(ut, "power") * qty
+		if GameParameters.unit_has_trait(ut, UnitTraitEnum.Type.UNIT_TRAIT_2):
+			ranged += float(power)
+		else:
+			non_ranged += float(power)
+	return {"ranged": ranged, "non_ranged": non_ranged}
+
+func _log_ai_prebattle_withdraw(attacker: Army, target_region: Region, reason: String) -> void:
+	var observer_id := attacker.get_player_id()
+	var defenders := _collect_defender_log_entries(_army_manager.get_armies_in_region(target_region), target_region.get_garrison(), target_region, target_region.get_base_available_recruits(), observer_id)
+	var lines := _build_battle_pre_log_lines(attacker, defenders)
+	lines.append("Battle Result: withdrawal (pre-battle)")
+	lines.append("Reason: " + reason)
+	lines.append("")
+	_enqueue_ai_battle_log(attacker, lines)
+
+func _record_enemy_presence_for_attacker(observer_id: int, target_region: Region) -> void:
+	if target_region == null:
+		return
+	var target_owner := _region_manager.get_region_owner(target_region.get_region_id())
+	if target_owner == observer_id or target_owner == -1:
+		return
+	var garrison_power: int = _compute_region_total_defender_power(target_region)
+	record_enemy_garrison(observer_id, target_region.get_region_id(), garrison_power)
+	for child in target_region.get_children():
+		if not (child is Army):
+			continue
+		var enemy_army: Army = child
+		if enemy_army.get_player_id() == observer_id:
+			continue
+		record_enemy_army_power(observer_id, enemy_army)
+
+func _record_attacker_for_defender(defender_player_id: int, attacking_armies: Array[Army]) -> void:
+	if not is_player_computer(defender_player_id):
+		return
+	for atk in attacking_armies:
+		if atk == null or not is_instance_valid(atk):
+			continue
+		record_enemy_army_power(defender_player_id, atk)
+
+func _record_both_sides_power_snapshot(attacker: Army, defender_region: Region, defender_armies: Array[Army], defender_garrison: ArmyComposition, defender_recruits: int) -> void:
+	if attacker != null and is_instance_valid(attacker):
+		_record_enemy_presence_for_attacker(attacker.get_player_id(), defender_region)
+	var defender_owner_id: int = defender_region.get_region_owner()
+	if defender_owner_id > 0:
+		var attacking_armies: Array[Army] = []
+		if attacker != null and is_instance_valid(attacker):
+			attacking_armies.append(attacker)
+		_record_attacker_for_defender(defender_owner_id, attacking_armies)
+
+func _record_battle_power_after_resolution(attacking_armies: Array[Army], defending_armies: Array[Army], defending_region: Region, defending_recruits_count: int, attacker_player_id: int, defender_owner_id: int) -> void:
+	var defender_region: Region = defending_region
+	if defending_region == null and not defending_armies.is_empty():
+		defender_region = defending_armies[0].get_parent() as Region
+	if defender_region != null and attacker_player_id > 0:
+		_record_enemy_presence_for_attacker(attacker_player_id, defender_region)
+	if defender_owner_id > 0:
+		_record_attacker_for_defender(defender_owner_id, attacking_armies)
 
 func _derive_battle_result_from_report(report: BattleSimulator.BattleReport) -> String:
 	if report == null:
@@ -1794,12 +1906,28 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var result: String = result_data.get("result", "defeat")
 	var army: Army = result_data.get("army")
 	var target_region_id: int = result_data.get("target_region_id", -1)
-	var battle_report = result_data.get("battle_report")
-	var attacking_armies: Array = result_data.get("attacking_armies", [])
-	var defending_armies: Array = result_data.get("defending_armies", [])
-	var defending_garrison = result_data.get("defending_garrison")
+	var battle_report: BattleSimulator.BattleReport = result_data.get("battle_report")
+	var attacking_armies_untyped: Array = result_data.get("attacking_armies", [])
+	var attacking_armies: Array[Army] = attacking_armies_untyped
+	var defending_armies_untyped: Array = result_data.get("defending_armies", [])
+	var defending_armies: Array[Army] = defending_armies_untyped
+	var defending_garrison: ArmyComposition = result_data.get("defending_garrison")
 	var defending_recruits_region: Region = result_data.get("defending_recruits_region")
 	var defending_recruits_count: int = result_data.get("defending_recruits_count", 0)
+	var attacker_player_id: int = army.get_player_id() if army != null else -1
+	if attacker_player_id == -1 and not attacking_armies.is_empty():
+		var first_attacker: Army = attacking_armies[0]
+		if first_attacker != null and is_instance_valid(first_attacker):
+			attacker_player_id = first_attacker.get_player_id()
+	var defender_owner_id: int = -1
+	if target_region_id != -1:
+		defender_owner_id = _region_manager.get_region_owner(target_region_id)
+	elif defending_recruits_region != null:
+		defender_owner_id = defending_recruits_region.get_region_owner()
+	if defender_owner_id == -1 and not defending_armies.is_empty():
+		var first_defender: Army = defending_armies[0]
+		if first_defender != null and is_instance_valid(first_defender):
+			defender_owner_id = first_defender.get_player_id()
 	var normalized_result := result
 	if battle_report != null and battle_report.winner != null:
 		match battle_report.winner:
@@ -1827,7 +1955,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var battle_log_lines: Array[String] = []
 	var defender_entries: Array = []
 	if should_queue_battle_log:
-		defender_entries = _collect_defender_log_entries(defending_armies, defending_garrison, defending_recruits_region, defending_recruits_count)
+		defender_entries = _collect_defender_log_entries(defending_armies, defending_garrison, defending_recruits_region, defending_recruits_count, attacker_player_id)
 		battle_log_lines = _build_battle_pre_log_lines(army, defender_entries)
 	
 	# Wounded must be precomputed by the battle flow (modal/background) before finalization
@@ -1911,6 +2039,11 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			combined.append_array(post_lines)
 			combined.append("")
 			_enqueue_ai_battle_log(army, combined)
+		var attacker_id_snapshot: int = attacker_player_id
+		if attacker_id_snapshot == -1 and army != null:
+			attacker_id_snapshot = army.get_player_id()
+		var defender_id_snapshot: int = defender_owner_id
+		_record_battle_power_after_resolution(attacking_armies, defending_armies, defending_recruits_region, defending_recruits_count, attacker_id_snapshot, defender_id_snapshot)
 	
 	# Handle battle outcome
 	if normalized_result == "victory":
@@ -2181,27 +2314,39 @@ func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
 func _get_ai_battle_log_key(army: Army) -> String:
 	return str(army.get_instance_id())
 
-func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int) -> Array:
+func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int, observer_id: int = -1) -> Array:
 	var entries: Array = []
 	for defender in defending_armies:
 		if defender == null:
 			continue
+		var known := false
+		if observer_id > 0 and player_manager != null:
+			var key := Player.get_enemy_tracker_key(defender)
+			if key != "":
+				known = player_manager.get_tracked_enemy_power(observer_id, key) >= 0
 		entries.append({
 			"type": "army",
 			"ref": defender,
-			"name": defender.name
+			"name": defender.name,
+			"known": known
 		})
 	if defending_garrison != null:
+		var g_known := false
+		if observer_id > 0 and player_manager != null and defending_recruits_region != null:
+			var rid := defending_recruits_region.get_region_id()
+			g_known = player_manager.get_tracked_enemy_garrison_power(observer_id, rid) >= 0
 		entries.append({
 			"type": "garrison",
 			"ref": defending_garrison,
-			"name": "Garrison"
+			"name": "Garrison",
+			"known": g_known
 		})
 	if defending_recruits_region != null:
 		entries.append({
 			"type": "recruits",
 			"region": defending_recruits_region,
-			"initial_count": max(0, defending_recruits_count)
+			"initial_count": max(0, defending_recruits_count),
+			"known": false
 		})
 	return entries
 
@@ -2245,9 +2390,11 @@ func _format_attacker_after_line(prefix: String, army: Army, fallback_name: Stri
 	return "%s: %s destroyed" % [prefix, fallback_name]
 
 func _format_defender_pre_line(entry: Dictionary) -> String:
+	var status := "unknown" if not entry.get("known", false) else "known"
 	if entry.get("type", "") == "garrison":
 		var garrison_comp: ArmyComposition = entry.get("ref")
-		return "Defender Garrison [Power: %d - %s]" % [
+		return "Defender Garrison (%s) [Power: %d - %s]" % [
+			status,
 			_calculate_composition_power(garrison_comp),
 			_format_composition_suffix(garrison_comp)
 		]
@@ -2258,22 +2405,25 @@ func _format_defender_pre_line(entry: Dictionary) -> String:
 		if region != null:
 			label += " (%s)" % region.get_region_name()
 		var comp := _build_peasant_composition(initial_count)
-		return "%s [Power: %d - %s]" % [
+		return "%s (%s) [Power: %d - %s]" % [
 			label,
+			status,
 			_calculate_composition_power(comp),
 			_format_composition_suffix(comp)
 		]
 	var defender: Army = entry.get("ref")
 	var label := "Defender %s" % entry.get("name", "Army")
 	if defender != null and is_instance_valid(defender):
-		return "%s [Power: %d - %s]" % [label, defender.get_army_power(), _format_composition_suffix(defender.get_composition())]
-	return "%s [Power: 0 - none]" % label
+		return "%s (%s) [Power: %d - %s]" % [label, status, defender.get_army_power(), _format_composition_suffix(defender.get_composition())]
+	return "%s (%s) [Power: 0 - none]" % [label, status]
 
 func _format_defender_after_line(entry: Dictionary) -> String:
+	var status := "unknown" if not entry.get("known", false) else "known"
 	if entry.get("type", "") == "garrison":
 		var garrison_comp: ArmyComposition = entry.get("ref")
-		return "Defender After (Garrison): %s [Power: %d - %s]" % [
+		return "Defender After (Garrison): %s (%s) [Power: %d - %s]" % [
 			entry.get("name", "Garrison"),
+			status,
 			_calculate_composition_power(garrison_comp),
 			_format_composition_suffix(garrison_comp)
 		]
@@ -2285,15 +2435,16 @@ func _format_defender_after_line(entry: Dictionary) -> String:
 			label += ": %s" % region.get_region_name()
 			remaining = max(0, region.get_base_available_recruits())
 		var comp := _build_peasant_composition(remaining)
-		return "%s [Power: %d - %s]" % [
+		return "%s (%s) [Power: %d - %s]" % [
 			label,
+			status,
 			_calculate_composition_power(comp),
 			_format_composition_suffix(comp)
 		]
 	var defender: Army = entry.get("ref")
 	var label := "Defender After: %s" % entry.get("name", "Army")
 	if defender != null and is_instance_valid(defender):
-		return "%s [Power: %d - %s]" % [label, defender.get_army_power(), _format_composition_suffix(defender.get_composition())]
+		return "%s (%s) [Power: %d - %s]" % [label, status, defender.get_army_power(), _format_composition_suffix(defender.get_composition())]
 	return "%s destroyed" % label
 
 func _format_battle_result_label(result: String) -> String:

@@ -506,9 +506,9 @@ const IDEAL_ARMY_COMPOSITIONS = {
 	},
 	"Outpost": {
 		"peasants": 40,
-		"spearmen": 30,
-		"archers": 20,
-		"swordsmen": 10,
+		"spearmen": 35,
+		"archers": 25,
+		"swordsmen": 0,
 		"crossbowmen": 0,
 		"horsemen": 0,
 		"knights": 0,
@@ -565,8 +565,8 @@ const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
 	"Outpost": {
 		"peasants": 40,
 		"spearmen": 30,
-		"archers": 20,
-		"swordsmen": 10,
+		"archers": 30,
+		"swordsmen": 0,
 		"crossbowmen": 0,
 		"horsemen": 0,
 		"knights": 0,
@@ -576,8 +576,8 @@ const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
 	"Keep": {
 		"peasants": 35,
 		"spearmen": 25,
-		"archers": 15,
-		"swordsmen": 15,
+		"archers": 20,
+		"swordsmen": 10,
 		"crossbowmen": 10,
 		"horsemen": 0,
 		"knights": 0,
@@ -610,9 +610,9 @@ const IDEAL_CASTLE_GARRISON_COMPOSITIONS = {
 
 const GARRISON_TRICKLE_PER_CASTLE = {
 	CastleTypeEnum.Type.OUTPOST: 4,
-	CastleTypeEnum.Type.KEEP: 6,
-	CastleTypeEnum.Type.CASTLE: 8,
-	CastleTypeEnum.Type.STRONGHOLD: 10
+	CastleTypeEnum.Type.KEEP: 5,
+	CastleTypeEnum.Type.CASTLE: 6,
+	CastleTypeEnum.Type.STRONGHOLD: 6
 }
 
 const SAFE_GARRISON_POWER_PER_LEVEL = {
@@ -676,7 +676,7 @@ const TRADE_MARKET_K = 0.01
 const TRADE_RESET_RATE = 0.2
 const AI_TRADE_THRESHOLD_FOOD = 100
 const AI_TRADE_THRESHOLD_WOOD = 100
-const AI_TRADE_THRESHOLD_STONE = 50
+const AI_TRADE_THRESHOLD_STONE = 100
 const AI_TRADE_THRESHOLD_IRON = 50
 
 ## Region Garrison Generation by Region Level

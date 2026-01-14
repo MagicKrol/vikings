@@ -39,6 +39,7 @@ var battle_manager: BattleManager
 var pathfinder: ArmyPathfinder
 var target_scorer: ArmyTargetScorer
 var game_manager: GameManager = null  # Optional reference for turn index
+var trade_manager: TradeManager = null
 
 # Debug step gate reference
 var debug_step_gate: DebugStepGate
@@ -49,6 +50,11 @@ var moved_armies: Dictionary = {}  # Army -> bool
 var _log_active_turn: bool = false
 var _recruitment_status_cache: Dictionary = {}
 var _turn_start_resources: Dictionary = {}
+const AI_RESOURCE_TARGETS := {
+	ResourcesEnum.Type.WOOD: 30,
+	ResourcesEnum.Type.STONE: 30,
+	ResourcesEnum.Type.IRON: 10
+}
 
 func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: PlayerManagerNode, battle_mgr: BattleManager) -> void:
 	"""Initialize with manager references"""
@@ -78,6 +84,7 @@ func initialize(region_mgr: RegionManager, army_mgr: ArmyManager, player_mgr: Pl
 	var parent = get_parent()
 	if parent and parent.has_method("get_current_turn"):
 		game_manager = parent
+		trade_manager = game_manager.get_trade_manager()
 	if target_scorer != null:
 		target_scorer.set_runtime_references(player_manager, game_manager)
 	
@@ -124,6 +131,8 @@ func start_turn(player_id: int) -> void:
 	DebugLogger.log("AITurnManager", "[TurnController] Starting turn for Player " + str(player_id))
 	
 	await _process_army_turns(player_id)
+	if is_ai_player:
+		_execute_ai_resource_top_up(player_id)
 	if player_manager != null and player_manager.has_method("update_player_wealth_status"):
 		player_manager.update_player_wealth_status(player_id)
 	emit_signal("turn_finished", player_id)
@@ -135,6 +144,77 @@ func _process_army_turns(player_id: int) -> void:
 	armies.shuffle()
 	for army in armies:
 		await _process_single_army(army)
+
+func _execute_ai_resource_top_up(player_id: int) -> void:
+	var player = player_manager.get_player(player_id)
+	var deficits: Array[Dictionary] = []
+	for resource_key in AI_RESOURCE_TARGETS.keys():
+		var resource_type: ResourcesEnum.Type = resource_key
+		var target_amount: int = int(AI_RESOURCE_TARGETS[resource_type])
+		var current_amount: int = player.get_resource_amount(resource_type)
+		var missing: int = max(0, target_amount - current_amount)
+		if missing <= 0:
+			continue
+		var ratio: float = float(missing) / float(max(1, target_amount))
+		deficits.append({
+			"type": resource_type,
+			"missing": missing,
+			"ratio": ratio
+		})
+	if deficits.is_empty():
+		return
+	deficits.sort_custom(func(a, b): return a["ratio"] > b["ratio"])
+	var gold_available: int = player.get_resource_amount(ResourcesEnum.Type.GOLD)
+	var staged_net: Dictionary = {}
+	var purchases: Array[Dictionary] = []
+	for entry in deficits:
+		if gold_available <= 0:
+			break
+		var resource_type: ResourcesEnum.Type = entry["type"]
+		var missing: int = int(entry["missing"])
+		var staged: int = int(staged_net.get(resource_type, 0))
+		var estimated_cost: int = trade_manager.calculate_buy_cost(player_id, resource_type, staged, missing)
+		var amount_to_buy: int = missing
+		if estimated_cost > gold_available and estimated_cost > 0:
+			amount_to_buy = int(floor(float(missing) * float(gold_available) / float(estimated_cost)))
+		if amount_to_buy <= 0:
+			continue
+		var result: Dictionary = trade_manager.buy(player_id, resource_type, amount_to_buy)
+		if not result.get("success", false):
+			continue
+		var gold_delta: int = int(result.get("gold_change", 0))
+		gold_available += gold_delta
+		staged_net[resource_type] = staged + amount_to_buy
+		var updated_amount: int = player.get_resource_amount(resource_type)
+		purchases.append({
+			"type": resource_type,
+			"amount": amount_to_buy,
+			"gold_change": gold_delta,
+			"new_total": updated_amount
+		})
+	_log_ai_resource_top_up_summary(purchases)
+
+func _log_ai_resource_top_up_summary(purchases: Array[Dictionary]) -> void:
+	if not _log_active_turn:
+		return
+	if purchases.is_empty():
+		return
+	var total_gold_change: int = 0
+	var parts: Array[String] = []
+	for entry in purchases:
+		var r_type: ResourcesEnum.Type = entry["type"]
+		var amount: int = int(entry.get("amount", 0))
+		var gold_delta: int = int(entry.get("gold_change", 0))
+		total_gold_change += gold_delta
+		parts.append("%d %s" % [amount, ResourcesEnum.type_to_string(r_type)])
+	var cost_abs := -total_gold_change
+	var msg := "Bought: " + ", ".join(parts)
+	if cost_abs != 0:
+		msg += " for " + str(cost_abs) + " gold"
+	DebugLogger.log("AIEconomy", msg)
+	game_manager.ensure_ai_log_started()
+	var ai_log = game_manager.get_ai_log_manager()
+	ai_log.log_economy(msg)
 
 func _get_available_armies(player_id: int) -> Array[Army]:
 	"""Get armies that can still move this turn"""
@@ -395,7 +475,7 @@ func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra
 	var result = await game_manager.ai_travel_to(army, target_region_id)
 	var log_army: Army = army if is_instance_valid(army) else null
 	_log_army_move_result(log_army, target_region_id, result, army_log_token)
-	if result != "battle_withdrawal":
+	if result == "arrived" or result == "battle_victory":
 		_log_move_status(army, target_region_id)
 	if result == "battle_victory":
 		emit_signal("region_conquered", target_region_id, army.get_player_id())
@@ -420,7 +500,7 @@ func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
 	var result = await game_manager.ai_travel_to(army, target_id)
 	var log_army: Army = army if is_instance_valid(army) else null
 	_log_army_move_result(log_army, target_id, result, army_log_token)
-	if result != "battle_withdrawal":
+	if result == "arrived" or result == "battle_victory":
 		_log_move_status(army, target_id)
 	if result == "battle_victory":
 		emit_signal("region_conquered", target_id, army.get_player_id())
@@ -446,6 +526,7 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 	"""Find the best target for a specific army"""
 	var best_move := {}
 	var reachable: Array = []
+	var far_targets: Array = []
 	var player_id := army.get_player_id()
 	var current_region := army.get_parent()
 	if not current_region or not current_region.has_method("get_region_id"):
@@ -490,16 +571,17 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 
 	if reachable.is_empty():
 		return {}
-
+		
 	reachable.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
 	return reachable[0]
 
 func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
-	var sorted: Array = []
+	var reachable: Array = []
+	var far_targets: Array = []
 	var player_id := army.get_player_id()
 	var current_region := army.get_parent()
 	if not current_region or not current_region.has_method("get_region_id"):
-		return sorted
+		return []
 	var current_region_id: int = current_region.get_region_id()
 
 	var rng := RandomNumberGenerator.new()
@@ -519,8 +601,6 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 
 		var cost := int(path_result["cost"])
 		var can_reach_now := cost <= mp_available
-		if not can_reach_now:
-			continue
 		var random_mod := rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
 		var final_score := base_score + random_mod - float(cost)
 
@@ -536,13 +616,22 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 			"can_reach_now": can_reach_now
 		}
 
-		sorted.append(cand)
+		if can_reach_now:
+			reachable.append(cand)
+		else:
+			far_targets.append(cand)
 
-	if sorted.is_empty():
-		return sorted
-
-	sorted.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
-	return sorted
+	if not reachable.is_empty():
+		reachable.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
+		return reachable
+	if far_targets.is_empty():
+		return []
+	far_targets.sort_custom(func(a, b):
+		if a["mp_cost"] == b["mp_cost"]:
+			return a["final_score"] > b["final_score"]
+		return a["mp_cost"] < b["mp_cost"]
+	)
+	return far_targets
 
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	"""Check if moving to this region should trigger a battle - delegates to GameManager"""
@@ -875,10 +964,6 @@ func _log_army_move_action(army: Army, move: Dictionary) -> void:
 	if not move.get("suppress_summary", false):
 		_log_army_summary(army, action, target_name)
 	_log_army_move_path_preview(army, move)
-	if move.has("castle_log"):
-		var castle_lines: Array = move.get("castle_log", [])
-		for line in castle_lines:
-			_log_army_detail_line(line)
 
 func _log_army_make_camp(army: Army) -> void:
 		_log_army_detail_line("%s makes camp [MP left: %d, Vigor: %d%%]" % [army.get_display_name(), army.get_movement_points(), army.get_efficiency()])
@@ -909,15 +994,40 @@ func _log_target_choice(army: Army, target_region_id: int, enemy_info: Dictionar
 	var target_name = _get_region_name_by_id(target_region_id)
 	var status = "no enemy"
 	if enemy_info.get("has_enemy", false):
-		var armies: Array = enemy_info.get("armies", [])
 		var owner_id = int(enemy_info.get("owner", -1))
 		var enemy_label = "Player " + str(owner_id)
-		if armies.size() > 0:
-			var first_army: Army = armies[0]
-			enemy_label = "Player " + str(first_army.get_player_id()) + "'s " + first_army.get_display_name()
-		var info_flag = "known" if enemy_info.get("known", false) else "unknown"
-		status = enemy_label + " (" + info_flag + ")"
+		var detail := _build_known_enemy_detail(army.get_player_id(), target_region_id, enemy_info.get("known", false))
+		status = enemy_label + " (" + detail + ")"
 	_log_army_detail_line("Best target: " + target_name + " (" + status + ")")
+
+func _build_known_enemy_detail(observer_id: int, region_id: int, known_flag: bool) -> String:
+	var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+	var known_parts: Array[String] = []
+	var total_known: int = 0
+	var unknown_armies: int = 0
+	var enemy_armies = army_manager.get_armies_in_region(region)
+	for enemy in enemy_armies:
+		if enemy.get_player_id() == observer_id:
+			continue
+		var key := Player.get_enemy_tracker_key(enemy)
+		var tracked: int = player_manager.get_tracked_enemy_power(observer_id, key)
+		if tracked >= 0:
+			var label := enemy.get_display_name()
+			known_parts.append("%s:%d" % [label, tracked])
+			total_known += tracked
+		else:
+			unknown_armies += 1
+	var tracked_garrison: int = player_manager.get_tracked_enemy_garrison_power(observer_id, region_id)
+	if tracked_garrison >= 0:
+		known_parts.append("Garrison:%d" % tracked_garrison)
+		total_known += tracked_garrison
+	if unknown_armies > 0:
+		known_parts.append("UnknownArmies:%d" % unknown_armies)
+	var prefix := "known" if known_flag else "unknown"
+	if not known_parts.is_empty():
+		var joined := ", ".join(known_parts)
+		return "%s - %s (total:%d)" % [prefix, joined, total_known]
+	return prefix
 
 func _log_defense_todo(army: Army, target_region_id: int, enemy_info: Dictionary) -> void:
 	if not _log_active_turn:
@@ -939,6 +1049,9 @@ func _log_army_move_path_preview(army: Army, move: Dictionary) -> void:
 		var step_name = _get_region_name_by_id(path[i])
 		var target_region = region_manager.map_generator.get_region_container_by_id(path[i])
 		var step_cost = army_manager.get_terrain_cost(target_region, army.get_player_id())
+		if step_cost > preview_mp:
+			_log_army_detail_line("Out of movement points before reaching %s" % step_name)
+			break
 		preview_mp = max(0, preview_mp - step_cost)
 		preview_eff = max(0, preview_eff - 5)
 		_log_army_detail_line("Moves to %s [MP left: %d, Vigor: %d%%]" % [step_name, preview_mp, preview_eff])
@@ -960,7 +1073,7 @@ func _log_army_move_result(army: Army, target_region_id: int, result: String, ar
 			if army != null and is_instance_valid(army):
 				var current_region = army.get_parent() as Region
 				if current_region and current_region.get_region_id() == target_region_id:
-					_log_army_detail_line("Defender withdrew; holding " + target_name)
+					pass
 				elif current_region:
 					_log_army_detail_line("Withdrew to " + current_region.get_region_name())
 				else:

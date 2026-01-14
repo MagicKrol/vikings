@@ -20,6 +20,7 @@ const FRIENDLY_NEIGHBOR_VALUE := 15.0
 const NEUTRAL_NEIGHBOR_VALUE := 5.0
 const ENEMY_NEIGHBOR_PENALTY := 10.0
 const CASTLE_SCORE_THRESHOLD := 100.0
+const SMALL_CASTLE_TOPUP_LIMIT := 5
 const MAX_DISTANCE := 9999
 const UNIT_LOG_ORDER := [
 	SoldierTypeEnum.Type.PEASANTS,
@@ -443,6 +444,8 @@ func should_raise_army(candidate: Dictionary, player: Player) -> bool:
 	var s := RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold)
 	DebugLogger.log("AIEconomy", "   Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f" % [
 		s, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM])
+	_log_recruitment("Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f" % [
+		s, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM])
 	DebugLogger.log("AIEconomy", "   Decision: %s" % ("RAISE" if decision else "DECLINE"))
 	return decision
 
@@ -494,6 +497,7 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	if player == null:
 		return {"executed": false, "reason": "no_player"}
+	var topup_result: Dictionary = {"success": false}
 	var candidate_info = _pick_castle_build_candidate(player_id)
 	var candidate_id = int(candidate_info.get("best_region_id", -1))
 	var detail_entries: Array = candidate_info.get("details", [])
@@ -508,18 +512,85 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 	if cost.is_empty():
 		return {"executed": false, "reason": "no_cost_data", "details": detail_summary}
 	if not player.can_afford_cost(cost):
-		return {"executed": false, "reason": "insufficient_resources", "details": detail_summary}
+		topup_result = _attempt_small_castle_topup(player_id, cost, "build")
+		if not bool(topup_result.get("success", false)) or not player.can_afford_cost(cost):
+			if topup_result.has("reason"):
+				_log_trade("Could not buy needed resources for build: " + String(topup_result.get("reason", "")))
+			_log_trade("Insufficient funds to build " + CastleTypeEnum.type_to_string(BUILD_CASTLE_TYPE) + ".")
+			return {"executed": false, "reason": "insufficient_resources", "details": detail_summary}
 	var region = region_manager.map_generator.get_region_container_by_id(candidate_id) as Region
 	if region == null:
 		return {"executed": false, "reason": "region_missing", "details": detail_summary}
 	if not player.pay_cost(cost):
 		return {"executed": false, "reason": "deduction_failed", "details": detail_summary}
+	if bool(topup_result.get("success", false)):
+		_log_castle_topup_purchase("build", BUILD_CASTLE_TYPE, topup_result)
 	region.start_castle_construction(BUILD_CASTLE_TYPE)
 	DebugLogger.log("AIEconomy", "   BUILD CASTLE: Started %s at region %s" % [
 		CastleTypeEnum.type_to_string(BUILD_CASTLE_TYPE),
 		region.get_region_name()
 	])
 	return {"executed": true, "region_id": candidate_id, "details": detail_summary, "reason": "built"}
+
+func _attempt_small_castle_topup(player_id: int, cost: Dictionary, label: String) -> Dictionary:
+	var player = player_manager.get_player(player_id)
+	var gold_available := player.get_resource_amount(ResourcesEnum.Type.GOLD)
+	var staged_net: Dictionary = {}
+	var purchased_any := false
+	var purchases: Array[Dictionary] = []
+	var total_gold_delta: int = 0
+	for resource_key in cost.keys():
+		var resource_type: ResourcesEnum.Type = resource_key
+		if resource_type == ResourcesEnum.Type.GOLD:
+			continue
+		var required: int = int(cost.get(resource_type, 0)) - player.get_resource_amount(resource_type)
+		if required <= 0:
+			continue
+		if required > SMALL_CASTLE_TOPUP_LIMIT:
+			return {"success": false, "reason": "needed resources beyond acceptable threshold"}
+		var staged := int(staged_net.get(resource_type, 0))
+		var estimated_cost := trade_manager.calculate_buy_cost(player_id, resource_type, staged, required)
+		var amount_to_buy := required
+		if estimated_cost > gold_available and estimated_cost > 0:
+			amount_to_buy = int(floor(float(required) * float(gold_available) / float(estimated_cost)))
+		if amount_to_buy <= 0:
+			return {"success": false, "reason": "insufficient gold for top-up"}
+		var result := trade_manager.buy(player_id, resource_type, amount_to_buy)
+		if not result.get("success", false):
+			return {"success": false, "reason": "top-up trade failed"}
+		var gold_delta := int(result.get("gold_change", 0))
+		gold_available += gold_delta
+		total_gold_delta += gold_delta
+		staged_net[resource_type] = staged + amount_to_buy
+		purchased_any = true
+		purchases.append({
+			"type": resource_type,
+			"amount": amount_to_buy,
+			"gold_change": gold_delta
+		})
+	if not purchased_any:
+		return {"success": false, "reason": "no purchases made"}
+	return {
+		"success": true,
+		"purchases": purchases,
+		"gold_change": total_gold_delta
+	}
+
+func _log_castle_topup_purchase(label: String, castle_type: CastleTypeEnum.Type, topup_result: Dictionary) -> void:
+	var purchases: Array = topup_result.get("purchases", [])
+	if purchases.is_empty():
+		return
+	var parts: Array[String] = []
+	var total_gold_delta: int = int(topup_result.get("gold_change", 0))
+	for entry in purchases:
+		var r_type: ResourcesEnum.Type = entry["type"]
+		var amount: int = int(entry.get("amount", 0))
+		parts.append("%d %s" % [amount, ResourcesEnum.type_to_string(r_type)])
+	var cost_abs := -total_gold_delta
+	var msg := "Bought " + ", ".join(parts) + " and " + label + " " + CastleTypeEnum.type_to_string(castle_type)
+	if cost_abs != 0:
+		msg += " (gold change " + str(total_gold_delta) + ")"
+	_log_trade(msg)
 
 func _pick_castle_build_candidate(player_id: int) -> Dictionary:
 	_maybe_reset_distance_cache()
@@ -555,6 +626,7 @@ func _pick_castle_build_candidate(player_id: int) -> Dictionary:
 			"distance_status": String(distance_info.get("label", "Not Checked")),
 			"score_pass": total_score >= CASTLE_SCORE_THRESHOLD
 		}
+
 		detail_entries.append(entry)
 		if total_score >= CASTLE_SCORE_THRESHOLD and bool(distance_info.get("passed", false)):
 			if total_score > best_score:
@@ -847,6 +919,7 @@ func _evaluate_upgrade_castle(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	if player == null:
 		return {"executed": false, "reason": "no_player", "details": []}
+	var topup_result: Dictionary = {"success": false}
 	var candidate_info = _pick_castle_upgrade_candidate(player_id)
 	var candidate_id = int(candidate_info.get("best_region_id", -1))
 	var detail_entries: Array = candidate_info.get("details", [])
@@ -866,9 +939,16 @@ func _evaluate_upgrade_castle(player_id: int, turn_number: int) -> Dictionary:
 	if cost.is_empty():
 		return {"executed": false, "reason": "no_cost_data", "details": detail_summary}
 	if not player.can_afford_cost(cost):
-		return {"executed": false, "reason": "insufficient_resources", "details": detail_summary}
+		topup_result = _attempt_small_castle_topup(player_id, cost, "upgrade")
+		if not bool(topup_result.get("success", false)) or not player.can_afford_cost(cost):
+			if topup_result.has("reason"):
+				_log_trade("Could not buy needed resources for upgrade: " + String(topup_result.get("reason", "")))
+			_log_trade("Insufficient funds to upgrade " + CastleTypeEnum.type_to_string(current_type) + ".")
+			return {"executed": false, "reason": "insufficient_resources", "details": detail_summary}
 	if not player.pay_cost(cost):
 		return {"executed": false, "reason": "deduction_failed", "details": detail_summary}
+	if bool(topup_result.get("success", false)):
+		_log_castle_topup_purchase("upgrade", next_type, topup_result)
 	region.start_castle_construction(next_type)
 	DebugLogger.log("AIEconomy", "   UPGRADE CASTLE: Started %s at region %s" % [
 		CastleTypeEnum.type_to_string(next_type),
@@ -976,25 +1056,35 @@ func execute_garrison_recruitment(player_id: int) -> Dictionary:
 func perform_garrison_trickle(player_id: int, turn_number: int) -> Dictionary:
 	if turn_number == 1:
 		return {"processed": 0, "recruited": 0, "reason": "first_turn_skip", "entries": []}
-	var wood_positive := player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD) > 0.0
-	var iron_positive := player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.IRON) > 0.0
-	var owned_regions = region_manager.get_player_regions(player_id)
-	var processed := 0
-	var added := 0
+	var average_power: float = max(game_manager.get_average_army_power(), 1.0)
+	var wood_positive: bool = player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD) > 0.0
+	var iron_positive: bool = player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.IRON) > 0.0
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
+	var processed: int = 0
+	var added: int = 0
 	var entries: Array[String] = []
 	for region_id in owned_regions:
 		var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
 		if not region.has_castle():
 			continue
-		var units_to_add = GameParameters.get_garrison_trickle_units(region.get_castle_type())
+		var units_to_add: int = GameParameters.get_garrison_trickle_units(region.get_castle_type())
 		if units_to_add <= 0:
 			continue
-		for i in range(units_to_add):
+		var garrison_power: int = region.get_garrison_strength()
+		var planned_units: int = 0
+		if garrison_power < average_power:
+			planned_units = units_to_add
+		elif garrison_power <= average_power * 1.25:
+			planned_units = int(ceil(float(units_to_add) / 2.0))
+		if planned_units <= 0:
+			entries.append("%s: skipped (garrison %d vs avg %.1f)" % [region.get_region_name(), garrison_power, average_power])
+			continue
+		for i in range(planned_units):
 			var unit_type = _pick_trickle_unit(region.get_castle_type(), wood_positive, iron_positive)
 			region.add_soldiers_to_garrison(unit_type, 1)
 			added += 1
 		processed += 1
-		entries.append(region.get_region_name() + ": +" + str(units_to_add))
+		entries.append(region.get_region_name() + ": +" + str(planned_units))
 	var reason = "success" if processed > 0 else "no_castles"
 	return {"processed": processed, "recruited": added, "reason": reason, "entries": entries}
 
@@ -1257,5 +1347,13 @@ func _get_castle_threat_weight(region: Region, enemy_castles: Array[int]) -> flo
 func _log_trade(message: String) -> void:
 	DebugLogger.log("AIEconomy", message)
 	game_manager.ensure_ai_log_started()
+	var ai_log = game_manager.get_ai_log_manager()
+	ai_log.log_economy(message)
+
+func _log_recruitment(message: String) -> void:
+	var ai_log = game_manager.get_ai_log_manager()
+	ai_log.log_recruitment(message)
+	
+func _log_economy(message: String) -> void:
 	var ai_log = game_manager.get_ai_log_manager()
 	ai_log.log_economy(message)

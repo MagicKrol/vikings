@@ -621,8 +621,11 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 	return mobility_kills
 
 func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_can_withdraw: bool, defender_can_withdraw: bool, attacker_effectiveness_ratio: float = 1.0, castle_defense_bonus_override: int = -1, siege_state: Dictionary = {}, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> int:
-	var atk_power := float(_compute_dict_power(current_attackers))
-	var def_power := float(_compute_dict_power(current_defenders))
+	var power_split := _split_power_by_ranged(current_attackers)
+	var atk_ranged: float = power_split.get("ranged", 0.0)
+	var atk_non_ranged: float = power_split.get("non_ranged", 0.0)
+	var atk_power: float = atk_ranged + atk_non_ranged
+	var def_power: float = float(_compute_dict_power(current_defenders))
 	if atk_power <= 0 or def_power <= 0:
 		return 0
 	var assault_multiplier: float = max(0.0, attacker_effectiveness_ratio)
@@ -631,7 +634,7 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 		assault_multiplier += float(total_rams) * 0.2
 	var defense_bonus: int = castle_defense_bonus_override if castle_defense_bonus_override >= 0 else GameParameters.get_castle_defense_bonus(castle_type)
 	var defense_multiplier: float = 1.0 + float(defense_bonus) / 100.0
-	var effective_atk: float = atk_power * assault_multiplier
+	var effective_atk: float = atk_ranged + atk_non_ranged * assault_multiplier
 	var effective_def: float = def_power * defense_multiplier
 	atk_power = effective_atk
 	def_power = effective_def
@@ -657,9 +660,9 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 		if armies_only.is_empty():
 			return 0
 	var ratio := float(weaker) / float(stronger)
-	if ratio > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
+	if ratio > 1.0:
 		return 0
-	var forced_ratio := GameParameters.AI_WITHDRAW_POWER_THRESHOLD - GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE
+	var forced_ratio := 1.0 - GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE
 	if ratio <= forced_ratio:
 		DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal forced side=" + str(withdrawing_side) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
 		DebugLogger.log("BattleCalculation", "Forced withdrawal. side=" + str(withdrawing_side) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
@@ -779,6 +782,24 @@ func _create_withdrawal_report(original_attackers: Dictionary, original_defender
 	report.withdrawing_side = withdrawing_side
 	report.siege_payload = siege_payload
 	return report
+
+func _split_power_by_ranged(comp_dict: Dictionary) -> Dictionary:
+	var ranged_power: float = 0.0
+	var non_ranged_power: float = 0.0
+	for ut in comp_dict.keys():
+		var qty: int = int(comp_dict[ut])
+		if qty <= 0:
+			continue
+		var unit_power: int = GameParameters.get_unit_stat(ut, "power")
+		var contribution := float(unit_power * qty)
+		if GameParameters.unit_has_trait(ut, UnitTraitEnum.Type.UNIT_TRAIT_2):
+			ranged_power += contribution
+		else:
+			non_ranged_power += contribution
+	return {
+		"ranged": ranged_power,
+		"non_ranged": non_ranged_power
+	}
 
 func _distribute_hits_across_defender(defender: Dictionary, total_hits: int, rng: RandomNumberGenerator) -> Dictionary:
 	"""Distribute hits proportionally across defender unit types"""

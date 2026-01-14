@@ -65,7 +65,7 @@ Main (Node2D) [place_armies.gd]
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – simple displayMessage(text) overlay with recruitment-style continue button; emits continue_clicked for restore flows
-│	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd]
+│	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd] – shows turn/castle prompt; castle-placement prompt only appears for human players
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open; ArmyActions button cancels move and reopens ArmySelectModal for the selected army
 │	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
 │	├ SpeedModal [scenes/speed_modal.tscn] [scenes/speed_modal.gd] – AI/battle speed selector (normal/fast/very fast); adjusts AI move speed multiplier during map play and battle round timing during sieges; highlighted button reflects the active context; also shown during battles
@@ -126,9 +126,11 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Camera: Sets initial zoom by map size at startup (Small=1.0, Medium=1.5, Large=2.0) and clamps zoom-out to 0.5.
 - AI memory: Records observed enemy army power for computer players after each battle (5-round decay window via `GameParameters.ENEMY_ARMY_MEMORY_ROUNDS`).
 - AI memory: Records observed enemy garrison power when computer armies attack a region (shared 5-round decay window).
+- Enemy intel snapshots: `_record_both_sides_power_snapshot()` captures defender forces for the attacker and attacker forces for the defender on early withdrawals; `_record_battle_power_after_resolution()` refreshes both sides' sightings after losses/retreats so AI knowledge stays current.
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
 - AI Step Gate: `ai_step_requires_shift` forwards to `DebugStepGate` — when true, AI waits for Shift to advance; false lets AI run automatically.
 - AI Logging: Owns `AILogManager`; `ensure_ai_log_started()` names the log `<scenario>_<timestamp>.txt` the first time any AI player takes a turn so all later TurnController events can append to the same file inside the root `logs/` directory.
+- Round start caches the average power of all armies each round so AI economy can compare castle garrisons against the global baseline.
 - AI Siege: `_execute_ai_siege_preparation()` rolls trebuchets between `(castle_level - 1 - destroyed_walls)` and intact wall sections, reduces by attacker/defender power advantage above 3:1 (defender power = garrison + recruits + owned armies), then clamps by siege points/wood/caps; rams spend random remaining points up to intact gates (respecting caps/wood), ladders take the leftover points. AI fires trebs once before battle (`trebuchet_bombard` payload, no double wall damage) and ships `siege_view_state` with ram HP.
 - Battle Log Queue: `finalize_battle_result()` snapshots attacker/defender forces before and after `_battle_manager._apply_battle_losses()`, converts the result into readable lines (`Battle started`, attacker/defender power/composition, `Battle Result`, post-battle status) and queues them per attacking army via `consume_ai_battle_log_for_army()` so TurnController can append them immediately after its movement logs.
 - Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
@@ -155,6 +157,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Purpose: Unified turn pipeline for AI (and fits human pipeline shape).
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
 - Movement: Each AI army picks the best single frontier target to attack; if no valid target exists or merge policy halts on a stronger/unknown enemy, it logs defense and spends the turn camping.
+- Frontier fallback: when no targets are reachable this turn, the AI now picks the closest distant frontier target (mp_cost) with score as tie-breaker.
 - Enemy intel logging: Target lines mark enemies as “known” only when tracked power exists (tracked armies or garrison memory); first-turn unseen enemies remain unknown.
 - Recruitment: When no recruit castle is available, the army logs the miss and proceeds with movement instead of camping out the turn.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
@@ -241,7 +244,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Future Hooks: region_upgrade, castle_upgrade (stubs in place).
 - Key Functions:
   - `plan_turn(player_id, turn_number)`: Computes signals, allocates recruitment budgets (and immediately hires armies/garrison defenders), then runs the sequential economy pass (raise → build → upgrade → ore → extra castle recruitment)
-  - `perform_garrison_trickle(player_id)`: Adds free garrison units each turn per castle tier (4/6/8/10) weighted by ideal compositions; archers/crossbowmen require positive wood growth, knights/royal guard require positive iron growth.
+  - `perform_garrison_trickle(player_id)`: Adds free garrison units each turn per castle tier (4/6/8/10) weighted by ideal compositions; archers/crossbowmen require positive wood growth, knights/royal guard require positive iron growth, and the free pool is full/half/blocked when the castle garrison is below / up to 125% / above the global average army power cached on round start.
   - `decide_and_raise_army(player_id, turn_number)`: Orchestrates the raise army decision and execution
   - `pick_best_raise_region(player_id)`: Selects optimal castle for new army based on recruits and frontier proximity
   - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring

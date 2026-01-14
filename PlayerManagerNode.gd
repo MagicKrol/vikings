@@ -195,7 +195,12 @@ func charge_player(player_id: int, cost: Dictionary) -> bool:
 
 func set_player_resources(player_id: int, resources_data: Dictionary) -> void:
 	"""Set all resource amounts for a player using a resource dictionary"""
+	if players.is_empty():
+		_initialize_players([])
 	var player = get_player(player_id)
+	if player == null:
+		push_error("[PlayerManagerNode] Cannot set resources: player ", player_id, " not found")
+		return
 	for resource_type in ResourcesEnum.get_all_types():
 		var key := ResourcesEnum.type_to_string(resource_type)
 		var amount := int(resources_data.get(key, GameParameters.get_starting_resource_amount(resource_type)))
