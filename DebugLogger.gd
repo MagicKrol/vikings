@@ -30,7 +30,7 @@ var debug_categories: Dictionary = {
 	"AIScoring": false,            # Target scoring and evaluation
 	"AIPlanning": false,           # Strategic planning decisions
 	"AITurnManager": false,        # High-level AI turn processing
-	"AIEconomy": false,            # AI economy decisions and raise army
+	"AIEconomy": true,            # AI economy decisions and raise army
 	"AIRecruitment": false,        # AI recruitment and budget allocation
 	
 	# Resource Systems
@@ -40,7 +40,7 @@ var debug_categories: Dictionary = {
 	# Battle Systems
 	"BattleAI": false, 
 	"BattleSystem": false,         # Combat and battle resolution
-	"BattleCalculation": true,    # Detailed battle calculations
+	"BattleCalculation": false,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds
 	
 	# Region Systems
@@ -71,7 +71,8 @@ var debug_categories: Dictionary = {
 	"Trade": false,
 	"Tutorial": false,
 	"TradeModal": false,
-	"Withdrawal": true
+	"Withdrawal": false,
+	"ArmyTracker": false
 }
 
 # Color coding for different log levels

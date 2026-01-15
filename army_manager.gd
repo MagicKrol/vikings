@@ -1008,7 +1008,10 @@ func retreat_army_to_previous_region(army: Army) -> void:
 	var target_local := _compute_army_target_position(previous_region, army)
 	_apply_army_offsets_for_region(previous_region, army)
 	var target_global: Vector2 = previous_region.to_global(target_local)
-	var retreat_tween: Tween = army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	var gm: GameManager = _get_game_manager()
+	var is_ai_player: bool = gm.is_player_computer(army.get_player_id())
+	var retreat_duration: float = GameParameters.get_move_animation_duration(is_ai_player)
+	var retreat_tween: Tween = army.animate_move_to(target_global, retreat_duration, true)
 	await retreat_tween.finished
 	
 	DebugLogger.log("ArmyManagement", "Army " + army.name + " retreated to " + previous_region.name)
@@ -1030,7 +1033,10 @@ func reposition_army_in_region_with_animation(army: Army) -> void:
 	var target_local := _compute_army_target_position(region, army)
 	_apply_army_offsets_for_region(region, army)
 	var target_global: Vector2 = region.to_global(target_local)
-	var tween := army.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+	var gm: GameManager = _get_game_manager()
+	var is_ai_player: bool = gm.is_player_computer(army.get_player_id())
+	var move_duration: float = GameParameters.get_move_animation_duration(is_ai_player)
+	var tween := army.animate_move_to(target_global, move_duration, true)
 	await tween.finished
 	_apply_army_offsets_for_region(region)
 

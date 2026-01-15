@@ -312,22 +312,25 @@ func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
 	
 	if candidate.is_empty():
 		DebugLogger.log("AIEconomy", "   Decision: NO - No valid castle regions with sufficient recruits")
-		return {"raised": false, "reason": "no_candidate"}
+		return {"raised": false, "reason": "no_candidate", "score_text": "", "score": 0.0}
 	
 	DebugLogger.log("AIEconomy", "   Best candidate: Region %d (recruits: %d, score: %.1f)" % [candidate["region_id"], candidate["recruits_total"], candidate["score"]])
 	
-	var should_raise = should_raise_army(candidate, player)
+	var raise_eval: Dictionary = should_raise_army(candidate, player)
+	var should_raise: bool = bool(raise_eval.get("decision", false))
+	var score_text: String = String(raise_eval.get("score_text", ""))
+	var raise_reason: String = String(raise_eval.get("reason", "guards_failed"))
 	if should_raise:
 		DebugLogger.log("AIEconomy", "   Decision: YES - All constraints satisfied")
 		var success = execute_raise_army(player_id, candidate["region_id"])
 		if success:
 			DebugLogger.log("AIEconomy", "   Execution: SUCCESS - Army raised at region %d" % candidate["region_id"])
-			return {"raised": true, "region_id": candidate["region_id"]}
+			return {"raised": true, "region_id": candidate["region_id"], "score_text": score_text, "score": float(raise_eval.get("score", 0.0)), "reason": "raised"}
 		else:
 			DebugLogger.log("AIEconomy", "   Execution: FAILED - Could not deduct gold cost")
-			return {"raised": false, "reason": "execution_failed"}
+			return {"raised": false, "reason": "execution_failed", "score_text": score_text, "score": float(raise_eval.get("score", 0.0))}
 	else:
-		return {"raised": false, "reason": "guards_failed"}
+		return {"raised": false, "reason": raise_reason, "score_text": score_text, "score": float(raise_eval.get("score", 0.0))}
 
 # Pick the best castle region to raise an army at
 func pick_best_raise_region(player_id: int) -> Dictionary:
@@ -347,10 +350,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 			continue
 		
 		# Calculate total recruits from region and neighbors
-		var recruit_sources = region_manager.get_available_recruits_from_region_and_neighbors(region_id, player_id)
-		var recruits_total = 0
-		for source in recruit_sources:
-			recruits_total += int(source.amount)
+		var recruits_total = _sum_castle_recruits(region_id, player_id)
 		
 		DebugLogger.log("AIEconomy", "   Castle %d: %d recruits (min: %d)" % [region_id, recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
 		
@@ -415,11 +415,11 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 	return candidates[0]
 
 # Decide whether to raise an army this turn
-func should_raise_army(candidate: Dictionary, player: Player) -> bool:
+func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
 	# New normalized model: region/army ratio, avg distance (MP), recruits, gold
 	if candidate.is_empty():
 		DebugLogger.log("AIEconomy", "   Constraint: NO_CANDIDATE")
-		return false
+		return {"decision": false, "reason": "no_candidate", "score_text": "", "score": 0.0}
 	
 	var regions := region_manager.get_player_regions(player.get_player_id()).size()
 	var armies_arr := army_manager.get_player_armies(player.get_player_id())
@@ -433,21 +433,35 @@ func should_raise_army(candidate: Dictionary, player: Player) -> bool:
 	
 	# Hard gates
 	var gold_after := gold - GameParameters.RAISE_ARMY_COST
+	var gate_failed: bool = false
 	if gold_after < GameParameters.AI_RESERVE_GOLD_MIN:
 		DebugLogger.log("AIEconomy", "   Gate FAIL: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
-		return false
+		gate_failed = true
 	if recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
 		DebugLogger.log("AIEconomy", "   Gate FAIL: RECRUITS_MIN (%d < %d)" % [recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
-		return false
+		gate_failed = true
 	
-	var decision := RaiseArmyDecision.should_raise_army_simple(regions, armies_count, avg_dist, recruits_total, gold)
-	var s := RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold)
-	DebugLogger.log("AIEconomy", "   Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f" % [
-		s, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM])
-	_log_recruitment("Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f" % [
-		s, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM])
+	var frontier_regions_count = region_manager.get_frontier_regions(player.get_player_id()).size()
+	var score_value: float = RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
+	var score_text: String = _format_raise_score(score_value, regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
+	DebugLogger.log("AIEconomy", score_text)
+	_log_recruitment(score_text)
+	var decision: bool = false
+	if not gate_failed:
+		decision = RaiseArmyDecision.should_raise_army_simple(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
 	DebugLogger.log("AIEconomy", "   Decision: %s" % ("RAISE" if decision else "DECLINE"))
-	return decision
+	var reason: String = "guards_failed"
+	return {
+		"decision": decision,
+		"reason": reason,
+		"score_text": score_text,
+		"score": score_value
+	}
+
+func _format_raise_score(score_value: float, regions: int, armies_count: int, avg_dist: float, recruits_total: int, gold: int, frontier_size: int) -> String:
+	return "Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f; Frontier2Army=%.2f" % [
+		score_value, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM, float(frontier_size)/float(armies_count)
+	]
 
 func _compute_avg_distance_to_castle(armies_arr: Array[Army], castle_region_id: int, player_id: int) -> float:
 	if armies_arr.size() == 0:
@@ -497,7 +511,7 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	if player == null:
 		return {"executed": false, "reason": "no_player"}
-	var topup_result: Dictionary = {"success": false}
+	var topup_result: Dictionary = {}
 	var candidate_info = _pick_castle_build_candidate(player_id)
 	var candidate_id = int(candidate_info.get("best_region_id", -1))
 	var detail_entries: Array = candidate_info.get("details", [])
@@ -506,23 +520,35 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 		return {
 			"executed": false,
 			"reason": "no_viable_candidate",
-			"details": detail_summary
+			"details": detail_summary,
+			"candidate_details": detail_entries
 		}
 	var cost = GameParameters.get_castle_building_cost(BUILD_CASTLE_TYPE)
 	if cost.is_empty():
-		return {"executed": false, "reason": "no_cost_data", "details": detail_summary}
+		return {"executed": false, "reason": "no_cost_data", "details": detail_summary, "candidate_details": detail_entries}
 	if not player.can_afford_cost(cost):
 		topup_result = _attempt_small_castle_topup(player_id, cost, "build")
 		if not bool(topup_result.get("success", false)) or not player.can_afford_cost(cost):
 			if topup_result.has("reason"):
 				_log_trade("Could not buy needed resources for build: " + String(topup_result.get("reason", "")))
 			_log_trade("Insufficient funds to build " + CastleTypeEnum.type_to_string(BUILD_CASTLE_TYPE) + ".")
-			return {"executed": false, "reason": "insufficient_resources", "details": detail_summary}
+			var topup_summary: Array[String] = _format_topup_summary(topup_result)
+			return {
+				"executed": false,
+				"reason": "insufficient_resources",
+				"details": detail_summary,
+				"candidate_details": detail_entries,
+				"resource_gap": _describe_resource_gap(cost, player),
+				"resources": _snapshot_player_resources(player),
+				"cost": cost,
+				"topup_summary": topup_summary,
+				"reason_detail": _extract_topup_reason(topup_summary)
+			}
 	var region = region_manager.map_generator.get_region_container_by_id(candidate_id) as Region
 	if region == null:
-		return {"executed": false, "reason": "region_missing", "details": detail_summary}
+		return {"executed": false, "reason": "region_missing", "details": detail_summary, "candidate_details": detail_entries}
 	if not player.pay_cost(cost):
-		return {"executed": false, "reason": "deduction_failed", "details": detail_summary}
+		return {"executed": false, "reason": "deduction_failed", "details": detail_summary, "candidate_details": detail_entries}
 	if bool(topup_result.get("success", false)):
 		_log_castle_topup_purchase("build", BUILD_CASTLE_TYPE, topup_result)
 	region.start_castle_construction(BUILD_CASTLE_TYPE)
@@ -530,7 +556,14 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 		CastleTypeEnum.type_to_string(BUILD_CASTLE_TYPE),
 		region.get_region_name()
 	])
-	return {"executed": true, "region_id": candidate_id, "details": detail_summary, "reason": "built"}
+	return {
+		"executed": true,
+		"region_id": candidate_id,
+		"details": detail_summary,
+		"candidate_details": detail_entries,
+		"reason": "built",
+		"topup_summary": _format_topup_summary(topup_result)
+	}
 
 func _attempt_small_castle_topup(player_id: int, cost: Dictionary, label: String) -> Dictionary:
 	var player = player_manager.get_player(player_id)
@@ -624,7 +657,8 @@ func _pick_castle_build_candidate(player_id: int) -> Dictionary:
 			"neighbor_score": neighbor_score,
 			"total_score": total_score,
 			"distance_status": String(distance_info.get("label", "Not Checked")),
-			"score_pass": total_score >= CASTLE_SCORE_THRESHOLD
+			"score_pass": total_score >= CASTLE_SCORE_THRESHOLD,
+			"score_threshold": CASTLE_SCORE_THRESHOLD
 		}
 
 		detail_entries.append(entry)
@@ -806,6 +840,49 @@ func _limit_candidate_details(all_details: Array) -> Array:
 		limited.append(all_details[i])
 	return limited
 
+func _describe_resource_gap(cost: Dictionary, player: Player) -> Array[String]:
+	var lines: Array[String] = []
+	for resource_key in cost.keys():
+		var resource_type: ResourcesEnum.Type = resource_key
+		var required: int = int(cost.get(resource_type, 0))
+		var available: int = player.get_resource_amount(resource_type)
+		var shortfall: int = max(0, required - available)
+		lines.append("%s need:%d have:%d short:%d" % [
+			ResourcesEnum.type_to_string(resource_type),
+			required,
+			available,
+			shortfall
+		])
+	return lines
+
+func _snapshot_player_resources(player: Player) -> Dictionary:
+	var snapshot: Dictionary = {}
+	for resource_type in ResourcesEnum.get_all_types():
+		snapshot[resource_type] = player.get_resource_amount(resource_type)
+	return snapshot
+
+func _format_topup_summary(topup_result: Dictionary) -> Array[String]:
+	if topup_result.is_empty():
+		return []
+	if not topup_result.get("success", false):
+		return ["Top-up failed: %s" % String(topup_result.get("reason", "unknown"))]
+	var purchases: Array = topup_result.get("purchases", [])
+	if purchases.is_empty():
+		return ["Top-up completed with no purchases"]
+	var parts: Array[String] = []
+	for entry in purchases:
+		var res_type: ResourcesEnum.Type = entry.get("type", ResourcesEnum.Type.GOLD)
+		var amount: int = int(entry.get("amount", 0))
+		var gold_delta: int = int(entry.get("gold_change", 0))
+		parts.append("%d %s (gold %d)" % [amount, ResourcesEnum.type_to_string(res_type), gold_delta])
+	var total_gold: int = int(topup_result.get("gold_change", 0))
+	return ["Top-up purchases: " + ", ".join(parts) + " | total gold change: " + str(total_gold)]
+
+func _extract_topup_reason(topup_summary: Array[String]) -> String:
+	if topup_summary.is_empty():
+		return ""
+	return topup_summary[0]
+
 func _get_region_distance(a: int, b: int) -> int:
 	if a == b:
 		return 0
@@ -919,34 +996,45 @@ func _evaluate_upgrade_castle(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	if player == null:
 		return {"executed": false, "reason": "no_player", "details": []}
-	var topup_result: Dictionary = {"success": false}
+	var topup_result: Dictionary = {}
 	var candidate_info = _pick_castle_upgrade_candidate(player_id)
 	var candidate_id = int(candidate_info.get("best_region_id", -1))
 	var detail_entries: Array = candidate_info.get("details", [])
 	var detail_summary = _limit_candidate_details(detail_entries)
 	if candidate_id == -1:
-		return {"executed": false, "reason": "no_upgrade_candidates", "details": detail_summary}
+		return {"executed": false, "reason": "no_upgrade_candidates", "details": detail_summary, "candidate_details": detail_entries}
 	var region = region_manager.map_generator.get_region_container_by_id(candidate_id) as Region
 	if region == null:
-		return {"executed": false, "reason": "region_missing", "details": detail_summary}
+		return {"executed": false, "reason": "region_missing", "details": detail_summary, "candidate_details": detail_entries}
 	if region.is_castle_under_construction():
-		return {"executed": false, "reason": "castle_under_construction", "details": detail_summary}
+		return {"executed": false, "reason": "castle_under_construction", "details": detail_summary, "candidate_details": detail_entries}
 	var current_type = region.get_castle_type()
 	var next_type = CastleTypeEnum.get_next_level(current_type)
 	if next_type == CastleTypeEnum.Type.NONE:
-		return {"executed": false, "reason": "max_level_reached", "details": detail_summary}
+		return {"executed": false, "reason": "max_level_reached", "details": detail_summary, "candidate_details": detail_entries}
 	var cost = GameParameters.get_castle_building_cost(next_type)
 	if cost.is_empty():
-		return {"executed": false, "reason": "no_cost_data", "details": detail_summary}
+		return {"executed": false, "reason": "no_cost_data", "details": detail_summary, "candidate_details": detail_entries}
 	if not player.can_afford_cost(cost):
 		topup_result = _attempt_small_castle_topup(player_id, cost, "upgrade")
 		if not bool(topup_result.get("success", false)) or not player.can_afford_cost(cost):
 			if topup_result.has("reason"):
 				_log_trade("Could not buy needed resources for upgrade: " + String(topup_result.get("reason", "")))
 			_log_trade("Insufficient funds to upgrade " + CastleTypeEnum.type_to_string(current_type) + ".")
-			return {"executed": false, "reason": "insufficient_resources", "details": detail_summary}
+			var topup_summary_upgrade: Array[String] = _format_topup_summary(topup_result)
+			return {
+				"executed": false,
+				"reason": "insufficient_resources",
+				"details": detail_summary,
+				"candidate_details": detail_entries,
+				"resource_gap": _describe_resource_gap(cost, player),
+				"resources": _snapshot_player_resources(player),
+				"cost": cost,
+				"topup_summary": topup_summary_upgrade,
+				"reason_detail": _extract_topup_reason(topup_summary_upgrade)
+			}
 	if not player.pay_cost(cost):
-		return {"executed": false, "reason": "deduction_failed", "details": detail_summary}
+		return {"executed": false, "reason": "deduction_failed", "details": detail_summary, "candidate_details": detail_entries}
 	if bool(topup_result.get("success", false)):
 		_log_castle_topup_purchase("upgrade", next_type, topup_result)
 	region.start_castle_construction(next_type)
@@ -954,7 +1042,14 @@ func _evaluate_upgrade_castle(player_id: int, turn_number: int) -> Dictionary:
 		CastleTypeEnum.type_to_string(next_type),
 		region.get_region_name()
 	])
-	return {"executed": true, "region_id": candidate_id, "details": detail_summary, "reason": "upgrade_started"}
+	return {
+		"executed": true,
+		"region_id": candidate_id,
+		"details": detail_summary,
+		"candidate_details": detail_entries,
+		"reason": "upgrade_started",
+		"topup_summary": _format_topup_summary(topup_result)
+	}
 
 func _evaluate_upgrade_region(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)

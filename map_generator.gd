@@ -307,9 +307,11 @@ func _render_from_json() -> void:
 		region_container.set_script(load("res://region.gd"))
 		region_container.setup_region(region_data)
 		_assign_region_name_if_available(region_container)
+		var reg_id: int = region_container.get_region_id()
+		region_container.name = "%s#%d" % [region_container.get_region_name(), reg_id]
 		map_node_regions.add_child(region_container)
 		region_container_by_id[region_id] = region_container
-		
+	
 		if not is_ocean:
 			land_region_ids.append(region_id)
 			_region_count += 1

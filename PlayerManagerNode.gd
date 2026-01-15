@@ -423,6 +423,11 @@ func get_tracked_enemy_garrison_power(player_id: int, region_id: int) -> int:
 		return -1
 	return player.get_tracked_enemy_garrison_power(region_id)
 
+func clear_enemy_garrison_memory(region_id: int) -> void:
+	for player_id in players:
+		var player: Player = players[player_id]
+		player.clear_enemy_garrison_memory(region_id)
+
 # Methods for recruitment modal support
 func get_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 	"""Get current player's resource amount"""

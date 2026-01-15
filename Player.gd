@@ -245,6 +245,13 @@ func get_tracked_enemy_garrison_power(region_id: int) -> int:
 		return int(enemy_garrison_memory[key].get("power", -1))
 	return -1
 
+func clear_enemy_garrison_memory(region_id: int) -> void:
+	if region_id < 0:
+		return
+	var key := str(region_id)
+	if enemy_garrison_memory.has(key):
+		enemy_garrison_memory.erase(key)
+
 # Resource display methods
 func get_resources_string() -> String:
 	"""Get all resources as a readable string"""

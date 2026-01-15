@@ -42,6 +42,7 @@ var _pending_garrison: ArmyComposition = null
 var _pending_recruits_count: int = 0
 var _pending_recruits_region: Region = null
 var _pending_siege_payload: Dictionary = {}
+var _garrison_recorded: bool = false
 
 # Manager references
 var _region_manager: RegionManager
@@ -86,6 +87,7 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 		_attacker_effectiveness_ratio = 1.0
 	_attacker_manual_withdraw_requested = false
 	_pending_siege_payload = siege_payload
+	_garrison_recorded = false
 	DebugLogger.log("Withdrawal", "BattleManager.start_battle attacker=" + str(attacker.name) + " target=" + str(target_region.get_region_name()))
 
 	# Ensure attacker has a stored previous region for potential withdrawal fallback
@@ -116,6 +118,7 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 	for child in target_region.get_children():
 		if child is Army and child.get_player_id() == owner_id and child != attacker:
 			defender_armies.append(child)
+	defender_armies = _filter_defender_armies(defender_armies, attacker)
 	var garrison := target_region.get_garrison()
 	var owned_neighbors: Array = []
 	for nid in _region_manager.get_neighbor_regions(target_region_id):
@@ -186,7 +189,8 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 			"defending_garrison": _pending_garrison,
 			"defending_recruits_region": _pending_recruits_region,
 			"defending_recruits_count": _pending_recruits_count,
-			"siege_payload": _pending_siege_payload
+			"siege_payload": _pending_siege_payload,
+			"garrison_recorded": _garrison_recorded
 		}
 		_queue_battle_finalization(result_data)
 		_clear_pending_conquest_state()
@@ -207,6 +211,9 @@ func withdraw_attacking_army(attacker: Army) -> void:
 	await _handle_army_withdrawal(attacker)
 
 func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region, owned_neighbors: Array) -> bool:
+	var owner_id: int = _region_manager.get_region_owner(from_region.get_region_id())
+	var is_ai_owner: bool = _game_manager.is_player_computer(owner_id)
+	var move_duration: float = GameParameters.get_move_animation_duration(is_ai_owner)
 	var capacity_by_region: Dictionary = {}
 	for neighbor_id in owned_neighbors:
 		var neighbor_region := _region_manager.map_generator.get_region_container_by_id(neighbor_id) as Region
@@ -240,7 +247,7 @@ func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region
 		_army_manager._apply_army_offsets_for_region(dest_region, d)
 		var target_global: Vector2 = dest_region.to_global(target_local)
 		d.global_position = start_global
-		var tw := d.animate_move_to(target_global, GameParameters.MOVE_ANIMATION_DURATION, true)
+		var tw := d.animate_move_to(target_global, move_duration, true)
 		await tw.finished
 		moved_any = true
 	return moved_any
@@ -402,7 +409,8 @@ func handle_battle_modal_closed() -> void:
 			"defending_garrison": _pending_garrison,
 			"defending_recruits_region": _pending_recruits_region,
 			"defending_recruits_count": _pending_recruits_count,
-			"siege_payload": _pending_siege_payload
+			"siege_payload": _pending_siege_payload,
+			"garrison_recorded": _garrison_recorded
 		}
 		DebugLogger.log("Withdrawal", "BattleManager.handle_battle_modal_closed battle_result=" + str(battle_result) + " withdraw_side=" + str(result_data["withdrawing_side"]) + " attacker_can=" + str(_attacker_withdraw_allowed) + " defender_can=" + str(_defender_withdraw_allowed))
 		
@@ -455,7 +463,8 @@ func _apply_battle_losses() -> void:
 		_destroy_attacker_side()
 		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
 
-	_update_enemy_power_tracking()
+	var record_garrison: bool = report != null and report.winner == "Withdrawal"
+	_update_enemy_power_tracking(record_garrison)
 
 
 	# Cleanup defeated armies ONLY among battle participants
@@ -630,6 +639,16 @@ func _collect_defender_armies(region: Region, attacker: Army) -> Array[Army]:
 			list.append(child)
 	return list
 
+func _filter_defender_armies(defenders: Array[Army], attacker: Army) -> Array[Army]:
+	var filtered: Array[Army] = []
+	for d in defenders:
+		if d == null:
+			continue
+		if d == attacker:
+			continue
+		filtered.append(d)
+	return filtered
+
 # --- Convert contributors into ArmyComposition array for the simulator ---
 func _compositions_from_armies(armies: Array[Army]) -> Array:
 	var comps: Array = []
@@ -637,7 +656,7 @@ func _compositions_from_armies(armies: Array[Army]) -> Array:
 		comps.append(a.get_composition())
 	return comps
 
-func _update_enemy_power_tracking() -> void:
+func _update_enemy_power_tracking(record_garrison: bool) -> void:
 	if _game_manager == null:
 		return
 	for attacker in _pending_attackers:
@@ -648,9 +667,15 @@ func _update_enemy_power_tracking() -> void:
 		if defender != null and is_instance_valid(defender):
 			var observer_id := defender.get_player_id()
 			_record_enemy_observations(observer_id, _pending_attackers)
-	if _pending_garrison != null and _pending_recruits_region != null:
+	if record_garrison and _pending_garrison != null and _pending_recruits_region != null:
 		var garrison_power := _calculate_composition_power(_pending_garrison)
 		var region_id := _pending_recruits_region.get_region_id()
+		DebugLogger.log("ArmyTracker", "Record garrison power %d for region %d (pending attackers: %d)" % [
+			garrison_power,
+			region_id,
+			_pending_attackers.size()
+		])
+		_garrison_recorded = true
 		for attacker in _pending_attackers:
 			if attacker != null and is_instance_valid(attacker):
 				_game_manager.record_enemy_garrison(attacker.get_player_id(), region_id, garrison_power)
@@ -666,6 +691,11 @@ func _record_enemy_observations(observer_id: int, enemies: Array) -> void:
 			continue
 		if not is_instance_valid(army_enemy):
 			continue
+		DebugLogger.log("ArmyTracker", "Track enemy army %s (power=%d) for observer %d" % [
+			army_enemy.get_display_name(),
+			army_enemy.get_army_power(),
+			observer_id
+		])
 		_game_manager.record_enemy_army_power(observer_id, army_enemy)
 
 func _calculate_composition_power(comp: ArmyComposition) -> int:

@@ -270,7 +270,7 @@ func _calculate_ownership_score(region: Region, player_id: int) -> float:
 func _calculate_population_score(region: Region) -> float:
 	return min(1.0, float(region.get_population()) / 1000.0)
 
-func score_region_base(region_id: int) -> float:
+func score_region_base(region_id: int, player_id: int = 1) -> float:
 	"""Calculate base region value (population/resources/level/ownership)"""
 	_ensure_runtime_references()
 	var region_container = map_generator.get_region_container_by_id(region_id)
@@ -282,8 +282,27 @@ func score_region_base(region_id: int) -> float:
 		return 0.0
 
 	# Use new normalized model (0..1) scaled to 0..100
-	var score_data = _calculate_region_score(region, 1)
+	var score_data = _calculate_region_score(region, player_id)
 	return float(score_data.overall_score) * 100.0
+
+func get_target_components(army: Army, region_id: int) -> Dictionary:
+	_ensure_runtime_references()
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	var region: Region = region_container
+	var score_data: Dictionary = _calculate_region_score(region, army.get_player_id())
+	var pursue_bonus := _get_pursuit_bonus(army, region_id)
+	var castle_bonus := _get_castle_bonus(region, army.get_player_id())
+	return {
+		"strategy": float(score_data.get("strategic_score", 0.0)),
+		"population": float(score_data.get("population_component", 0.0)),
+		"resources": float(score_data.get("resource_component", 0.0)),
+		"level": int(score_data.get("level_component", 0)),
+		"pursue_bonus": pursue_bonus,
+		"castle_bonus": castle_bonus
+	}
+
+func get_enemy_adjustment(army: Army, region_id: int) -> Dictionary:
+	return _calculate_enemy_army_adjustment(army, region_id)
 
 func score_army_target(army: Army, region_id: int) -> Dictionary:
 	"""Adjust base score for a specific army (add random jitter, subtract MP cost)"""

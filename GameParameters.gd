@@ -87,7 +87,7 @@ const REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA = 0.2
 const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
 
 ## Region Level Bonuses
-const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
+const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.15   # Resource bonus per level: +25% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
 
 ## Promotion Growth Bonus by Turn (added to base growth rate)
@@ -199,6 +199,7 @@ const AI_RAISE_W_DIST = 0.20
 const AI_RAISE_W_RECRUITS = 0.20
 const AI_RAISE_W_BANK = 0.10
 const AI_RAISE_THRESHOLD_NORM = 0.50
+const AI_RAISE_FRONTIER = 3.0
 
 ## Dynamic Resource Need Scoring (ArmyTargetScorer)
 # Need multipliers
@@ -402,13 +403,13 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
 		"attack": 8,     # 20% hit chance per unit
 		"defense": 15,    # 15% chance to deflect hits
-		"cost": 2,        # Recruitment cost
+		"cost": 3,        # Recruitment cost
 		"gold_cost": 4,
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_7, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, armor_piercing, light_armor,
-		"power": 4
+		"power": 3
 	},
 	SoldierTypeEnum.Type.HORSEMEN: {
 		"attack": 12,     # 30% hit chance per unit
@@ -424,7 +425,7 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.KNIGHTS: {
 		"attack": 25,     # 60% hit chance per unit
 		"defense": 70,    # 60% chance to deflect hits
-		"cost": 10,       # Recruitment cost
+		"cost": 8,       # Recruitment cost
 		"gold_cost": 10,
 		"food_cost": 0.1,
 		"wood_cost": 0,
@@ -435,7 +436,7 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: {
 		"attack": 30,     # 65% hit chance per unit
 		"defense": 70,    # 60% chance to deflect hits
-		"cost": 15,       # Recruitment cost
+		"cost": 10,       # Recruitment cost
 		"gold_cost": 15,
 		"food_cost": 0.2,
 		"wood_cost": 0,
@@ -446,7 +447,7 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.ROYAL_GUARD: {
 		"attack": 40,     # 80% hit chance per unit
 		"defense": 90,    # 80% chance to deflect hits
-		"cost": 20,       # Recruitment cost
+		"cost": 15,       # Recruitment cost
 		"gold_cost": 20,
 		"food_cost": 0.1,
 		"wood_cost": 0,

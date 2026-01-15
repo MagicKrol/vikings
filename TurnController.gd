@@ -344,6 +344,7 @@ func _select_frontier_move(army: Army) -> Dictionary:
 	var moves := _get_sorted_frontier_moves(army, frontier)
 	if moves.is_empty():
 		return {}
+	_log_target_candidates(moves)
 	var best_halt := {}
 	for move in moves:
 		var enemy_info := _build_enemy_info(move["target_id"], army.get_player_id())
@@ -554,6 +555,7 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 			continue
 		var random_mod := rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
 		var final_score := base_score + random_mod - float(cost)
+		var components := target_scorer.get_target_components(army, target_id)
 
 		var cand := {
 			"army": army,
@@ -564,7 +566,8 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 			"final_score": final_score,
 			"path": path_result["path"],
 			"current_region_id": current_region_id,
-			"can_reach_now": can_reach_now
+			"can_reach_now": can_reach_now,
+			"components": components
 		}
 
 		reachable.append(cand)
@@ -591,7 +594,7 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 	for target_id in frontier:
 		if target_scorer != null and target_scorer.is_target_overmatched_by_known_enemy(army, target_id):
 			continue
-		var base_score := target_scorer.score_region_base(target_id)
+		var base_score := target_scorer.score_region_base(target_id, army.get_player_id())
 		if base_score <= 0.0:
 			continue
 
@@ -602,7 +605,17 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 		var cost := int(path_result["cost"])
 		var can_reach_now := cost <= mp_available
 		var random_mod := rng.randf() * GameParameters.AI_RANDOM_SCORE_MODIFIER
-		var final_score := base_score + random_mod - float(cost)
+		var components := target_scorer.get_target_components(army, target_id)
+		var ownership_bonus := 0.0
+		var owner_id := region_manager.get_region_owner(target_id)
+		if owner_id > 0 and owner_id != player_id:
+			ownership_bonus = float(GameParameters.AI_ENEMY_REGION_SCORE_BONUS)
+		var pursue_bonus := float(components.get("pursue_bonus", 0.0))
+		var castle_bonus := float(components.get("castle_bonus", 0.0))
+		var enemy_adjustment := target_scorer.get_enemy_adjustment(army, target_id)
+		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus - float(cost) + float(enemy_adjustment.get("delta", 0.0))
+		if enemy_adjustment.get("nullify", false):
+			final_score = 0.0
 
 		var cand := {
 			"army": army,
@@ -613,7 +626,11 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 			"final_score": final_score,
 			"path": path_result["path"],
 			"current_region_id": current_region_id,
-			"can_reach_now": can_reach_now
+			"can_reach_now": can_reach_now,
+			"components": components,
+			"ownership_bonus": ownership_bonus,
+			"pursue_bonus": pursue_bonus,
+			"castle_bonus": castle_bonus
 		}
 
 		if can_reach_now:
@@ -1000,6 +1017,38 @@ func _log_target_choice(army: Army, target_region_id: int, enemy_info: Dictionar
 		status = enemy_label + " (" + detail + ")"
 	_log_army_detail_line("Best target: " + target_name + " (" + status + ")")
 
+func _log_target_candidates(moves: Array) -> void:
+	if not _log_active_turn:
+		return
+	if moves.is_empty():
+		return
+	var sorted := moves.duplicate()
+	sorted.sort_custom(func(a, b):
+		var a_score: float = float(a.get("final_score", 0.0))
+		var b_score: float = float(b.get("final_score", 0.0))
+		if abs(a_score - b_score) < 0.001:
+			return int(a.get("target_id", -1)) < int(b.get("target_id", -1))
+		return a_score > b_score
+	)
+	var top_count: int = min(3, sorted.size())
+	for i in range(top_count):
+		var move: Dictionary = sorted[i]
+		var region_id: int = int(move.get("target_id", -1))
+		var components: Dictionary = move.get("components", Dictionary())
+		var line := "Candidate %d: %s (#%d), score: %.1f (resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, strategy: %.1f)" % [
+			i + 1,
+			_get_region_name_by_id(region_id),
+			region_id,
+			float(move.get("final_score", 0.0)),
+			float(components.get("resources", 0.0)),
+			float(components.get("population", 0.0)),
+			int(components.get("level", 0)),
+			float(components.get("castle_bonus", 0.0)),
+			float(components.get("pursue_bonus", 0.0)),
+			float(components.get("strategy", 0.0))
+		]
+		_log_army_detail_line(line)
+
 func _build_known_enemy_detail(observer_id: int, region_id: int, known_flag: bool) -> String:
 	var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
 	var known_parts: Array[String] = []
@@ -1167,25 +1216,49 @@ func _log_economy_plan(econ_result: Dictionary) -> void:
 		log.log_economy("Castle Defense Recruitment skipped: %s" % note)
 	
 	var raise = econ_result.get("raise", {})
-	if raise.get("raised", false):
-		var region_name = _get_region_name_by_id(int(raise.get("region_id", -1)))
-		log.log_economy("Raise Army: Raised at %s." % region_name)
-	else:
-		log.log_economy("Raise Army: %s." % String(raise.get("reason", "skipped")))
+	var raise_reason: String = String(raise.get("reason", "raised" if raise.get("raised", false) else "guards_failed"))
+	var raise_score_text: String = String(raise.get("score_text", ""))
+	if raise_score_text == "" and raise.has("score"):
+		raise_score_text = "Score: %.2f" % float(raise.get("score", 0.0))
+	var raise_message: String = "Raise Army: %s" % raise_reason
+	if raise_score_text != "":
+		raise_message += " (%s)" % raise_score_text
+	log.log_economy(raise_message)
 	
 	var build_castle = econ_result.get("build_castle", {})
-	if build_castle.get("executed", false):
-		var build_region = _get_region_name_by_id(int(build_castle.get("region_id", -1)))
-		log.log_economy("Build Castle: Started construction at %s." % build_region)
+	var build_candidates: Array = build_castle.get("candidate_details", build_castle.get("details", []))
+	var build_topup: Array = build_castle.get("topup_summary", [])
+	var build_reason: String = String(build_castle.get("reason", "skipped"))
+	var build_detail: String = String(build_castle.get("reason_detail", ""))
+	if build_detail == "" and build_topup.size() > 0:
+		build_detail = String(build_topup[0])
+	var build_message: String = "Build Castle: %s" % build_reason
+	if build_detail != "":
+		build_message += " (%s)" % build_detail
 	else:
-		log.log_economy("Build Castle: %s." % String(build_castle.get("reason", "skipped")))
+		build_message += "."
+	log.log_economy(build_message)
+	log.log_economy_candidates("Build Castle", build_candidates)
+	var build_gap: Array = build_castle.get("resource_gap", [])
+	if build_gap.size() > 0:
+		log.log_economy_block("Build Castle resources", build_gap)
+	if build_topup.size() > 0:
+		log.log_economy_block("Build Castle top-up", build_topup)
 	
 	var upgrade_castle = econ_result.get("upgrade_castle", {})
-	if upgrade_castle.get("executed", false):
-		var upgrade_region_name = _get_region_name_by_id(int(upgrade_castle.get("region_id", -1)))
-		log.log_economy("Upgrade Castle: Upgraded %s." % upgrade_region_name)
+	var upgrade_candidates: Array = upgrade_castle.get("candidate_details", upgrade_castle.get("details", []))
+	var upgrade_topup: Array = upgrade_castle.get("topup_summary", [])
+	var upgrade_reason: String = String(upgrade_castle.get("reason", "skipped"))
+	var upgrade_detail: String = String(upgrade_castle.get("reason_detail", ""))
+	if upgrade_detail == "" and upgrade_topup.size() > 0:
+		upgrade_detail = String(upgrade_topup[0])
+	var upgrade_message: String = "Upgrade Castle: %s" % upgrade_reason
+	if upgrade_detail != "":
+		upgrade_message += " (%s)" % upgrade_detail
 	else:
-		log.log_economy("Upgrade Castle: %s." % String(upgrade_castle.get("reason", "skipped")))
+		upgrade_message += "."
+	log.log_economy(upgrade_message)
+	log.log_economy_candidates("Upgrade Castle", upgrade_candidates)
 	
 	var upgrade_region = econ_result.get("upgrade_region", {})
 	if upgrade_region.get("executed", false):

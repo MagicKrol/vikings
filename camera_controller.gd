@@ -323,6 +323,11 @@ func set_zoom_immediate(zoom_level: float) -> void:
 	target_zoom = Vector2(clamped, clamped)
 	zoom = target_zoom
 
+func snap_to_target() -> void:
+	"""Snap camera to the current targets immediately."""
+	global_position = target_position
+	zoom = target_zoom
+
 func await_target_reached(position_threshold: float = 2.0, zoom_threshold: float = 0.01) -> void:
 	"""Await until camera reaches its target position/zoom within thresholds"""
 	while true:

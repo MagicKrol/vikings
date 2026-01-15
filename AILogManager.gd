@@ -76,6 +76,79 @@ func log_recruitment(message: String) -> void:
 func log_economy(message: String) -> void:
 	_append_lines(["Economy: %s" % message, ""])
 
+func log_economy_block(header: String, rows: Array) -> void:
+	if rows.is_empty():
+		return
+	var lines: Array[String] = []
+	lines.append("%s:" % header)
+	for row in rows:
+		lines.append("- " + String(row))
+	lines.append("")
+	_append_lines(lines)
+
+func log_economy_candidates(header: String, candidates: Array) -> void:
+	var is_build := header.findn("Build Castle") != -1
+	if candidates.is_empty() and not is_build:
+		return
+	var lines: Array[String] = []
+	if is_build:
+		lines.append("Canidates:")
+		if candidates.is_empty():
+			lines.append("- none")
+	for entry in candidates:
+		if entry is Dictionary:
+			var dict_entry: Dictionary = entry
+			if dict_entry.has("strategic_score"):
+				lines.append(_format_build_candidate_line(dict_entry))
+			elif dict_entry.has("recruit_score") or dict_entry.has("distance_score"):
+				lines.append(_format_upgrade_candidate_line(dict_entry))
+			else:
+				lines.append("- " + str(dict_entry))
+		else:
+			lines.append("- " + str(entry))
+	lines.append("")
+	_append_lines(lines)
+
+func _format_build_candidate_line(entry: Dictionary) -> String:
+	var name: String = String(entry.get("name", ""))
+	var rid: int = int(entry.get("region_id", -1))
+	var desc: String = "%s (#%d)" % [name, rid] if name != "" else "Region %d" % rid
+	var total_score: float = float(entry.get("total_score", 0.0))
+	var strategic_score: float = float(entry.get("strategic_score", 0.0))
+	var neighbor_score: float = float(entry.get("neighbor_score", 0.0))
+	var distance_status: String = String(entry.get("distance_status", ""))
+	var threshold: float = float(entry.get("score_threshold", EconomyAIManager.CASTLE_SCORE_THRESHOLD))
+	var score_indicator: String = ">" if bool(entry.get("score_pass", false)) else "<"
+	return "- %s | total:%.1f (strategy:%.1f, neighbor:%.1f, distance_status:%s, score:%.1f%s[%.1f])" % [
+		desc,
+		total_score,
+		strategic_score,
+		neighbor_score,
+		distance_status,
+		total_score,
+		score_indicator,
+		threshold
+	]
+
+func _format_upgrade_candidate_line(entry: Dictionary) -> String:
+	var name: String = String(entry.get("name", ""))
+	var rid: int = int(entry.get("region_id", -1))
+	var desc: String = "%s (#%d)" % [name, rid] if name != "" else "Region %d" % rid
+	var total_score: float = float(entry.get("total_score", 0.0))
+	var recruit_score: float = float(entry.get("recruit_score", 0.0))
+	var distance_score: float = float(entry.get("distance_score", 0.0))
+	var distance: int = int(entry.get("distance", 0))
+	var next_type: CastleTypeEnum.Type = entry.get("next_type", CastleTypeEnum.Type.NONE)
+	var next_label: String = CastleTypeEnum.type_to_string(next_type)
+	return "- %s | total:%.1f (recruits:%.1f, distance:%.1f, dist:%d, next:%s)" % [
+		desc,
+		total_score,
+		recruit_score,
+		distance_score,
+		distance,
+		next_label
+	]
+
 func log_castle_recruitment_summary(header: String, entries: Array, fallback_reason: String) -> void:
 	var lines: Array[String] = []
 	if entries.size() > 0:

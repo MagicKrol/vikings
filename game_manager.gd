@@ -1734,7 +1734,13 @@ func _record_enemy_presence(observer_id: int, target_region: Region) -> void:
 	var target_owner := _region_manager.get_region_owner(target_region.get_region_id())
 	if target_owner == observer_id or target_owner == -1:
 		return
-	var garrison_power: int = _compute_region_total_defender_power(target_region)
+	var garrison_comp: ArmyComposition = target_region.get_garrison()
+	var recruits: int = target_region.get_base_available_recruits()
+	var garrison_power: int = 0
+	if garrison_comp != null:
+		garrison_power += _calculate_composition_power(garrison_comp)
+	if recruits > 0:
+		garrison_power += recruits * int(GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power"))
 	player_manager.record_enemy_garrison(observer_id, target_region.get_region_id(), garrison_power)
 	for child in target_region.get_children():
 		if not (child is Army):
@@ -1777,13 +1783,16 @@ func _should_ai_withdraw_post_siege(attacker: Army, target_region: Region, siege
 	if attacker_power <= 0 or defender_power <= 0:
 		return false
 	var assault_multiplier: float = 1.0
+	var defense_bonus: int = 0
+	var withdraw_threshold: float = GameParameters.AI_WITHDRAW_POWER_THRESHOLD
 	if target_region.get_castle_type() != CastleTypeEnum.Type.NONE:
 		assault_multiplier = max(0.0, _compute_attacker_effectiveness_ratio(attacker, siege_payload, target_region))
 		var siege_counts: Dictionary = siege_payload.get("siege_counts", {})
 		var rams: int = int(siege_counts.get("rams", 0))
 		if rams > 0:
 			assault_multiplier += float(rams) * 0.2
-	var defense_bonus: int = _battle_manager.get_effective_defense_for_region(target_region)
+		defense_bonus = _battle_manager.get_effective_defense_for_region(target_region)
+		withdraw_threshold = 1.0
 	var split := _split_power_by_ranged_composition(attacker.get_composition())
 	var ranged_power: float = split.get("ranged", 0.0)
 	var non_ranged_power: float = split.get("non_ranged", 0.0)
@@ -1791,8 +1800,8 @@ func _should_ai_withdraw_post_siege(attacker: Army, target_region: Region, siege
 	var effective_atk: float = ranged_power + non_ranged_power * assault_multiplier
 	var effective_def: float = float(defender_power) * defense_multiplier
 	var ratio: float = effective_atk / max(1.0, effective_def)
-	var should_withdraw: bool = ratio <= 1.0
-	DebugLogger.log("Withdrawal", "[Pre-Battle Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " assault_mult=" + str(snappedf(assault_multiplier, 0.003)) + " defense_mult=" + str(snappedf(defense_multiplier, 0.003)) + " ratio=" + str(snappedf(ratio, 0.003)))
+	var should_withdraw: bool = ratio <= withdraw_threshold
+	DebugLogger.log("Withdrawal", "[Pre-Battle Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " assault_mult=" + str(snappedf(assault_multiplier, 0.003)) + " defense_mult=" + str(snappedf(defense_multiplier, 0.003)) + " ratio=" + str(snappedf(ratio, 0.003)) + " thr=" + str(withdraw_threshold))
 	return should_withdraw
 
 func _calculate_region_defender_power(region: Region) -> int:
@@ -1915,6 +1924,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 	var defending_recruits_region: Region = result_data.get("defending_recruits_region")
 	var defending_recruits_count: int = result_data.get("defending_recruits_count", 0)
 	var attacker_player_id: int = army.get_player_id() if army != null else -1
+	var garrison_recorded: bool = bool(result_data.get("garrison_recorded", false))
 	if attacker_player_id == -1 and not attacking_armies.is_empty():
 		var first_attacker: Army = attacking_armies[0]
 		if first_attacker != null and is_instance_valid(first_attacker):
@@ -2066,6 +2076,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			if conquered_region != null:
 				conquered_region.kill_wounded_garrison()
 			refresh_ai_debug_scores()
+			player_manager.clear_enemy_garrison_memory(target_region_id)
+			if garrison_recorded:
+				DebugLogger.log("ArmyTracker", "Cleared tracked garrison for region " + str(target_region_id) + " after conquest by player " + str(player_id))
 			DebugLogger.log("TurnProcessing", "Player " + str(player_id) + " conquered region " + str(target_region_id) + " via unified finalization")
 			
 			if is_player_computer(player_id) and _ai_camera_director:
@@ -2111,6 +2124,9 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 				var conquered_region2 = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 				if conquered_region2 != null:
 					conquered_region2.kill_wounded_garrison()
+				player_manager.clear_enemy_garrison_memory(target_region_id)
+				if garrison_recorded:
+					DebugLogger.log("ArmyTracker", "Cleared tracked garrison for region " + str(target_region_id) + " after withdrawal conquest by player " + str(army.get_player_id()))
 				refresh_ai_debug_scores()
 				if _army_manager:
 					await _army_manager.reposition_army_in_region_with_animation(army)

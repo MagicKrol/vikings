@@ -344,10 +344,10 @@ func _allocate_with_unit0_gd(
 	var pack_costs = _compute_pack_costs(props, unit_costs)
 	
 	# 4) Full packages (min over all constraints)
-	var full_packages = _max_full_packages(budget, pack_costs, P, total_units, special_caps, props)
 	var expected_peasants = int(floor(unit0_share * float(total_units)))
 	var paid_cap = max(0, total_units - expected_peasants)
-	
+	var full_packages = _max_full_packages(budget, pack_costs, P, paid_cap, special_caps, props)
+
 	if debug:
 		DebugLogger.log("AIRecruitment", "=== UNITS.PY DEBUG ===")
 		DebugLogger.log("AIRecruitment", "Total units: " + str(total_units) + ", Target peasants: " + str(expected_peasants) + ", Paid cap: " + str(paid_cap))

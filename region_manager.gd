@@ -266,8 +266,7 @@ func generate_region_resources(region: Region) -> void:
 		return
 	
 	var biome_type = region.get_region_type()
-	var region_level = region.get_region_level()
-	
+
 	var base_comp = ResourceComposition.new()
 	for resource_type in ResourcesEnum.get_all_types():
 		var base_amount = GameParameters.generate_resource_amount(biome_type, resource_type)
