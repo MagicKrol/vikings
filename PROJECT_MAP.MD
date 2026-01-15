@@ -238,7 +238,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### Economy & Recruitment
 - BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
-- RecruitmentManager.gd: Hire units for an army using ideal-composition logic and neighbor recruit sources; deducts recruits proportionally and now removes the spent gold/wood/iron from the owning player's resources. Composition lookups route through `GameParameters.get_ideal_*_for_wealth()` so poor/normal/rich players field different mixes automatically (Normal halves peasant targets, Rich zeros them in favor of pricier units).
+- RecruitmentManager.gd: Python-inspired recruitment (feasibility-picked T with spend target, ranged/peasants bounds, diversity floor, peasant top-up, scarcity bias/boosts) using `GameParameters` exports (`RECRUIT_*`, unit boosts) and per-castle/garrison ideals (no wealth variants); sources recruits from region + owned neighbors, spends the provided budget exactly, and deducts recruits/resources from owners.
 - PlayerManagerNode.gd: `get_player_economy_snapshot()` aggregates balances, projected income (with food upkeep), and population totals; `get_projected_economy_for_player()` wraps it for compatibility and UI (PlayerStatusModal2) consumption.
 
 ### EconomyAIManager.gd
