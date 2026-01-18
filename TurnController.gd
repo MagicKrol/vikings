@@ -284,8 +284,9 @@ func _handle_recruitment_cycle(army: Army, turn_number: int) -> bool:
 	var target_region_id := int(best_castle.get("best_region_id", -1))
 	if target_region_id == -1:
 		_log_recruitment_status_once(army, current_region_id, "no_recruit_castle")
-		army.clear_recruitment_request()
-		return false
+		_log_army_detail_line("Defending due to no safe recruitment path")
+		_spend_all_on_camp(army)
+		return true
 	if current_region_id != target_region_id:
 		_log_army_detail_line("Needs recruitment moving to " + _get_region_name_by_id(target_region_id))
 		var moved = await _move_army_to_region(army, target_region_id, "reinforce", best_castle)
@@ -454,7 +455,8 @@ func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra
 		return false
 	var current_region := army.get_parent() as Region
 	var current_region_id: int = current_region.get_region_id()
-	var pf = pathfinder.find_path_to_target(current_region_id, target_region_id, army.get_player_id())
+	var friendly_only := goal == "reinforce" or goal == "peasants"
+	var pf = pathfinder.find_path_to_target(current_region_id, target_region_id, army.get_player_id(), friendly_only, true)
 	if not pf["success"]:
 		_spend_all_on_camp(army)
 		return false
@@ -473,9 +475,11 @@ func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra
 	emit_signal("move_started", army, target_region_id)
 	_log_army_move_action(army, move)
 	var army_log_token := game_manager.get_ai_battle_log_token(army)
-	var result = await game_manager.ai_travel_to(army, target_region_id)
+	var travel_result: Dictionary = await game_manager.ai_travel_to(army, target_region_id)
+	var result: String = String(travel_result.get("result", "blocked"))
+	var battle_region_id: int = int(travel_result.get("battle_region_id", target_region_id))
 	var log_army: Army = army if is_instance_valid(army) else null
-	_log_army_move_result(log_army, target_region_id, result, army_log_token)
+	_log_army_move_result(log_army, target_region_id, result, army_log_token, battle_region_id)
 	if result == "arrived" or result == "battle_victory":
 		_log_move_status(army, target_region_id)
 	if result == "battle_victory":
@@ -498,9 +502,11 @@ func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
 	emit_signal("move_started", army, target_id)
 	_log_army_move_action(army, move)
 	var army_log_token := game_manager.get_ai_battle_log_token(army)
-	var result = await game_manager.ai_travel_to(army, target_id)
+	var travel_result: Dictionary = await game_manager.ai_travel_to(army, target_id)
+	var result: String = String(travel_result.get("result", "blocked"))
+	var battle_region_id: int = int(travel_result.get("battle_region_id", target_id))
 	var log_army: Army = army if is_instance_valid(army) else null
-	_log_army_move_result(log_army, target_id, result, army_log_token)
+	_log_army_move_result(log_army, target_id, result, army_log_token, battle_region_id)
 	if result == "arrived" or result == "battle_victory":
 		_log_move_status(army, target_id)
 	if result == "battle_victory":
@@ -545,7 +551,7 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 		if base_score <= 0.0:
 			continue
 
-		var path_result := pathfinder.find_path_to_target(current_region_id, target_id, player_id)
+		var path_result := pathfinder.find_path_to_target(current_region_id, target_id, player_id, true, true)
 		if not path_result["success"]:
 			continue
 
@@ -598,7 +604,7 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 		if base_score <= 0.0:
 			continue
 
-		var path_result := pathfinder.find_path_to_target(current_region_id, target_id, player_id)
+		var path_result := pathfinder.find_path_to_target(current_region_id, target_id, player_id, true, true)
 		if not path_result["success"]:
 			continue
 
@@ -730,7 +736,7 @@ func _find_best_owned_region_for_peasants(army: Army, min_required: int) -> int:
 	var min_recruits = max(1, min_required)
 	
 	for region_id in owned_regions:
-		var path_result = pathfinder.find_path_to_target(current_region_id, region_id, player_id)
+		var path_result = pathfinder.find_path_to_target(current_region_id, region_id, player_id, true, true)
 		if not path_result["success"]:
 			continue
 		
@@ -888,7 +894,7 @@ func _build_reinforce_move_candidate(army: Army, current_region_id: int, include
 	var castle_id := int(castle_pick.get("best_region_id", -1))
 	if castle_id == -1:
 		return {}
-	var pf := pathfinder.find_path_to_target(current_region_id, castle_id, army.get_player_id())
+	var pf := pathfinder.find_path_to_target(current_region_id, castle_id, army.get_player_id(), true, true)
 	if not pf["success"]:
 		return {}
 	return {
@@ -1105,8 +1111,11 @@ func _log_army_move_path_preview(army: Army, move: Dictionary) -> void:
 		preview_eff = max(0, preview_eff - 5)
 		_log_army_detail_line("Moves to %s [MP left: %d, Vigor: %d%%]" % [step_name, preview_mp, preview_eff])
 
-func _log_army_move_result(army: Army, target_region_id: int, result: String, army_log_token: String) -> void:
-	var target_name = _get_region_name_by_id(target_region_id)
+func _log_army_move_result(army: Army, target_region_id: int, result: String, army_log_token: String, battle_region_id: int = -1) -> void:
+	var actual_region_id := target_region_id
+	if result.begins_with("battle") and battle_region_id >= 0:
+		actual_region_id = battle_region_id
+	var target_name = _get_region_name_by_id(actual_region_id)
 	match result:
 		"battle_victory":
 			_log_battle_header()

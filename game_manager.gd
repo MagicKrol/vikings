@@ -88,7 +88,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = true
+@export var debug_mode: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -1833,7 +1833,7 @@ func _split_power_by_ranged_composition(comp: ArmyComposition) -> Dictionary:
 
 func _log_ai_prebattle_withdraw(attacker: Army, target_region: Region, reason: String) -> void:
 	var observer_id := attacker.get_player_id()
-	var defenders := _collect_defender_log_entries(_army_manager.get_armies_in_region(target_region), target_region.get_garrison(), target_region, target_region.get_base_available_recruits(), observer_id)
+	var defenders := _collect_defender_log_entries(_army_manager.get_armies_in_region(target_region), target_region.get_garrison(), target_region, target_region.get_base_available_recruits(), observer_id, attacker, attacker.get_player_id())
 	var lines := _build_battle_pre_log_lines(attacker, defenders)
 	lines.append("Battle Result: withdrawal (pre-battle)")
 	lines.append("Reason: " + reason)
@@ -2195,22 +2195,22 @@ func refresh_ai_debug_scores():
 # All AI turn processing is now handled by TurnController
 # Legacy AI processing methods removed since TurnController handles all turn logic
 
-func ai_travel_to(army: Army, final_region_id: int) -> String:
+func ai_travel_to(army: Army, final_region_id: int) -> Dictionary:
 	"""
 	AI travel wrapper for step-by-step movement with debug pausing.
 	Gets the path using existing pathfinder, then iterates adjacent steps.
 	For contested steps: use perform_region_entry(army, next_id, "ai")
 	For friendly steps: use ArmyManager.move_army(army, next_region)
-	Returns: "arrived", "blocked", "battle_victory", "battle_defeat", "battle_withdrawal"
+	Returns Dictionary: {"result": String, "battle_region_id": int}
 	"""
 	if army == null or not is_instance_valid(army):
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Invalid army")
-		return "blocked"
+		return {"result": "blocked", "battle_region_id": -1}
 	
 	var current_region = army.get_parent() as Region
 	if current_region == null:
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Army not in valid region")
-		return "blocked"
+		return {"result": "blocked", "battle_region_id": -1}
 	
 	await _ai_camera_director.await_focus_on_army(army)
 	await _ai_camera_director.await_delay(GameParameters.CAMERA_ARMY_START_DELAY)
@@ -2223,38 +2223,39 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 	var pathfinder = _turn_controller.pathfinder
 	
 	# Get path using existing pathfinder with same filters (friendly-only, passable)
-	var path_result = pathfinder.find_path_to_target(current_region_id, final_region_id, player_id)
+	var path_result = pathfinder.find_path_to_target(current_region_id, final_region_id, player_id, true, true)
 	if not path_result["success"]:
 		DebugLogger.log("AIPathfinding", "ai_travel_to: No valid path found")
-		return "blocked"
+		return {"result": "blocked", "battle_region_id": current_region_id}
 	
 	var full_path = path_result["path"] as Array[int]
 	if full_path.size() <= 1:
 		DebugLogger.log("AIPathfinding", "ai_travel_to: Already at destination or invalid path")
-		return "arrived"
+		return {"result": "arrived", "battle_region_id": final_region_id}
 	
 	DebugLogger.log("AIPathfinding", "ai_travel_to: Path found with %d steps" % full_path.size())
 	
 	# Iterate adjacent steps starting from index 1 (skip current position)
 	var last_battle_outcome := ""
+	var last_battle_region_id: int = -1
 	for i in range(1, full_path.size()):
 		var next_region_id = full_path[i]
 
 		# Check if army still has movement points
 		if army.get_movement_points() <= 0:
 			DebugLogger.log("AIMovement", "ai_travel_to: Army %s out of movement points, stopping at region %d" % [army.get_display_name(), army.get_parent().get_region_id()])
-			return "out_of_movement_points"
+			return {"result": "out_of_movement_points", "battle_region_id": army.get_parent().get_region_id()}
 
 		# Get next region for battle check
 		var next_region_container = _region_manager.map_generator.get_region_container_by_id(next_region_id)
 		if next_region_container == null:
 			DebugLogger.log("AIMovement", "ai_travel_to: Invalid region %d in path" % next_region_id)
-			return "blocked"
+			return {"result": "blocked", "battle_region_id": next_region_id}
 		
 		var next_region = next_region_container as Region
 		if next_region == null:
 			DebugLogger.log("AIMovement", "ai_travel_to: Region %d is not valid" % next_region_id)
-			return "blocked"
+			return {"result": "blocked", "battle_region_id": next_region_id}
 		# Debug step pausing using DebugStepGate
 		if _turn_controller.debug_step_gate:
 			DebugLogger.log("AIMovement", "ai_travel_to: Debug step - Army %s moving to region %d (step %d/%d)" % [army.get_display_name(), next_region_id, i, full_path.size()-1])
@@ -2273,23 +2274,24 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 					DebugLogger.log("AIMovement", "ai_travel_to: Army victorious, continuing movement")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 					last_battle_outcome = "battle_victory"
+					last_battle_region_id = next_region_id
 					continue
 				"battle_withdrawal":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army withdrew from battle")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
-					return "battle_withdrawal"
+					return {"result": "battle_withdrawal", "battle_region_id": next_region_id}
 				"battle_defeat":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army defeated in battle")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
-					return "battle_defeat"
+					return {"result": "battle_defeat", "battle_region_id": next_region_id}
 				"blocked":
 					DebugLogger.log("AIMovement", "ai_travel_to: Movement blocked")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
-					return "blocked"
+					return {"result": "blocked", "battle_region_id": next_region_id}
 				_:
 					DebugLogger.log("AIMovement", "ai_travel_to: Unexpected battle result: %s" % battle_result)
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
-					return "blocked"
+					return {"result": "blocked", "battle_region_id": next_region_id}
 		else:
 			# Friendly step - use ArmyManager.move_army()
 			DebugLogger.log("AIMovement", "ai_travel_to: Friendly step - using ArmyManager.move_army")
@@ -2301,19 +2303,19 @@ func ai_travel_to(army: Army, final_region_id: int) -> String:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move successful for step %d" % i)
 			else:
 				DebugLogger.log("AIMovement", "ai_travel_to: Friendly move failed for step %d" % i)
-				return "blocked"
+				return {"result": "blocked", "battle_region_id": next_region_id}
 	
 	# Check if we reached the final destination
 	var final_position = army.get_parent() as Region
 	if final_position and final_position.get_region_id() == final_region_id:
 		DebugLogger.log("AIMovement", "ai_travel_to: Army %s successfully arrived at region %d" % [army.get_display_name(), final_region_id])
 		if last_battle_outcome != "":
-			return last_battle_outcome
-		return "arrived"
+			return {"result": last_battle_outcome, "battle_region_id": last_battle_region_id}
+		return {"result": "arrived", "battle_region_id": final_region_id}
 	else:
 		var current_pos = final_position.get_region_id() if final_position else -1
 		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.get_display_name(), current_pos, final_region_id])
-		return "blocked"
+		return {"result": "blocked", "battle_region_id": current_pos}
 
 # ============================================================================
 # AI Battle Log Helpers
@@ -2330,10 +2332,14 @@ func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
 func _get_ai_battle_log_key(army: Army) -> String:
 	return str(army.get_instance_id())
 
-func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int, observer_id: int = -1) -> Array:
+func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int, observer_id: int = -1, exclude_army: Army = null, exclude_player_id: int = -1) -> Array:
 	var entries: Array = []
 	for defender in defending_armies:
 		if defender == null:
+			continue
+		if exclude_army != null and defender == exclude_army:
+			continue
+		if exclude_player_id != -1 and defender.get_player_id() == exclude_player_id:
 			continue
 		var known := false
 		if observer_id > 0 and player_manager != null:

@@ -551,11 +551,16 @@ func get_castle_level(region_id: int) -> int:
 		_:
 			return 0
 
-func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_origin: bool = false, exclude_army: Army = null) -> Dictionary:
+func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_origin: bool = false, exclude_army: Army = null, friendly_only: bool = true) -> Dictionary:
 	"""Find owned castles scored by (recruits / distance) * (1 + 0.2 * level).
 	Returns {"best_region_id": int, "candidates": Array[Dictionary]}.
 	Set include_origin=true to consider the starting castle (distance clamped to >=1).
 	"""
+	if friendly_only and get_region_owner(from_region_id) != owner_id:
+		return {
+			"best_region_id": -1,
+			"candidates": []
+		}
 	var visited: Dictionary = {}
 	var queue: Array = [[from_region_id, 0]]
 	visited[from_region_id] = true
@@ -581,7 +586,8 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 					if total_recruits > 0:
 						var distance_for_score := float(max(1, distance))
 						var needy_armies := _count_recruitment_needy_armies(current_id, owner_id, exclude_army)
-						var recruits_for_score: int = max(0, total_recruits - (needy_armies * 50))
+						var requesting_armies: int = max(1, needy_armies + 1)
+						var recruits_for_score: int = int(float(total_recruits) / float(requesting_armies))
 						var distance_score := float(recruits_for_score) / distance_for_score
 						var level_bonus := 1.0 + (0.2 * float(castle_level))
 						var total_score := distance_score * level_bonus
@@ -603,6 +609,8 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 		
 		var neighbors = get_neighbor_regions(current_id)
 		for neighbor_id in neighbors:
+			if friendly_only and get_region_owner(neighbor_id) != owner_id:
+				continue
 			if not visited.has(neighbor_id):
 				visited[neighbor_id] = true
 				queue.append([neighbor_id, distance + 1])

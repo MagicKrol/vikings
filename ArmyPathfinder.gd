@@ -263,13 +263,13 @@ func calculate_path_cost(path: Array[int], player_id: int) -> int:
 	
 	return total_cost
 
-func find_path_to_target(start_region_id: int, target_region_id: int, player_id: int) -> Dictionary:
+func find_path_to_target(start_region_id: int, target_region_id: int, player_id: int, friendly_only: bool = false, allow_enemy_target: bool = false) -> Dictionary:
 	"""
 	Find shortest path from start to specific target region with early termination.
 	Returns: {success: bool, path: Array[int], cost: int}
 	"""
 	# Use optimized Dijkstra with early termination for single target
-	var result = _find_path_to_single_target(start_region_id, target_region_id, player_id)
+	var result = _find_path_to_single_target(start_region_id, target_region_id, player_id, friendly_only, allow_enemy_target)
 	
 	if not result.success:
 		return {"success": false, "reason": "Target unreachable"}
@@ -285,12 +285,15 @@ func find_path_to_target(start_region_id: int, target_region_id: int, player_id:
 		"cost": recalculated_cost if recalculated_cost != -1 else result.cost
 	}
 
-func _find_path_to_single_target(start_region_id: int, target_region_id: int, player_id: int) -> Dictionary:
+func _find_path_to_single_target(start_region_id: int, target_region_id: int, player_id: int, friendly_only: bool, allow_enemy_target: bool) -> Dictionary:
 	"""
 	Optimized Dijkstra with early termination for single target pathfinding.
 	Stops immediately when target is found, providing optimal path with minimal exploration.
 	Returns: {success: bool, path: Array[int], cost: int}
 	"""
+	if friendly_only and not _is_region_friendly(start_region_id, player_id):
+		var empty_path: Array[int] = []
+		return {"success": false, "path": empty_path, "cost": -1}
 	if start_region_id == target_region_id:
 		var single_path: Array[int] = [start_region_id]
 		return {"success": true, "path": single_path, "cost": 0}
@@ -335,6 +338,8 @@ func _find_path_to_single_target(start_region_id: int, target_region_id: int, pl
 		var neighbors = region_manager.get_neighbor_regions(current_region_id)
 		
 		for neighbor_id in neighbors:
+			if friendly_only and not _is_region_friendly(neighbor_id, player_id) and not (allow_enemy_target and neighbor_id == target_region_id):
+				continue
 			if visited.has(neighbor_id):
 				continue
 			
@@ -357,6 +362,9 @@ func _find_path_to_single_target(start_region_id: int, target_region_id: int, pl
 	
 	var empty_path: Array[int] = []
 	return {"success": false, "path": empty_path, "cost": -1}
+
+func _is_region_friendly(region_id: int, player_id: int) -> bool:
+	return region_manager.get_region_owner(region_id) == player_id
 
 func log_frontier_regions_summary(frontier_regions: Array, army_location: int, player_id: int) -> void:
 	"""

@@ -123,6 +123,7 @@ grow_vertical = 2
 script = ExtResource("8_ui")
 
 [node name="InfoModal" parent="UI" instance=ExtResource("13_35f3x")]
+visible = false
 
 [node name="RegionTooltip" parent="UI" instance=ExtResource("15_d3ude")]
 visible = false
@@ -184,6 +185,7 @@ offset_right = 520.0
 offset_bottom = 305.0
 
 [node name="MoveModal" parent="UI" instance=ExtResource("27_movemodal")]
+visible = false
 
 [node name="MapEditorPanel" parent="UI" instance=ExtResource("29_mapeditorpanel")]
 visible = false
@@ -196,6 +198,7 @@ offset_right = 450.0
 [node name="TradeModal" parent="UI" instance=ExtResource("35_c1ajo")]
 
 [node name="TutorialModal" parent="UI" instance=ExtResource("36_tutorial")]
+visible = false
 
 [node name="GameMenuModal" parent="UI" instance=ExtResource("38_gamemenu")]
 visible = false

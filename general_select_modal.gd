@@ -128,7 +128,8 @@ func _on_army_button_pressed(army: Army) -> void:
 func _start_army_move_selection(army: Army, region: Region) -> void:
 	var current_player_id = game_manager.get_current_player_id()
 	army_manager.select_army(army, region, current_player_id)
-	ui_manager.set_modal_active(false)
+	if ui_manager:
+		ui_manager.set_modal_active(false)
 
 func _on_region_button_hovered() -> void:
 	if info_modal and current_region and is_instance_valid(info_modal) and is_instance_valid(current_region):

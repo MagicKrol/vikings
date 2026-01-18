@@ -64,7 +64,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var definitions: Array[Dictionary] = []
 
 	definitions.append({
-		"text": current_region.get_region_name() + " (Garrison)",
+		"text": current_region.get_region_name(),
 		"enabled": true,
 		"action": "_on_region_button_pressed",
 		"tooltip": Callable(self, "_on_region_button_hovered")

@@ -315,7 +315,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "endturn,trade,continue"
+			"block": "endturn,trade,continue3"
 		},
 		{
 			"message": "But you can always withdraw, if battle starts to go wrong. Though expect some additional losses in the process.",
@@ -323,7 +323,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "endturn,trade,continue"
+			"block": "endturn,trade,continue3"
 		},
 		{
 			"message": "",
@@ -332,7 +332,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(200, 500),
-			"block": "endturn,trade,continue"
+			"block": "endturn,trade,continue3"
 		},
 		{
 			"message": "Let's click continue and see the battle summary.",
@@ -518,56 +518,80 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue,endturn",
+			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "14",
 				"anchor": "screen"
 			},
 		},
 		{
-			"message": "We can reduce it by constructing siege equipment.",
+			"message": "Only some of your soldiers will be engaged in a direct melee combat.",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue,endturn",
+			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"arrow": {
+				"id": "24",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Use your Siege Points to construct Siege Equipment. Some of your troops will increase these points.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"arrow": {
+				"id": "27",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Build trebuchets to reduce defense value, with a chance to breach a wall. ",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"arrow": {
+				"id": "25",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Siege rams will start attacking gates. Once breached it will gradually increase engage value.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"arrow": {
+				"id": "26",
+				"anchor": "screen"
+			},
+		},
+		{
+			"message": "Ladders are the simplest way to increase engage score by storming walls directly.",
+			"show_continue": true,
+			"block_input": false,
+			"expected_action": "continue",
+			"panel_position": Vector2(200, 500),
+			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
 			},
 		},
 		{
-			"message": "Ladders are the simplest option. Battering rams can destroy gates, and trebuchets will breach walls.",
-			"show_continue": true,
-			"block_input": false,
-			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue,endturn",
-			"arrow": {
-				"id": "13",
-				"anchor": "screen"
-			},
-		},
-		{
-			"message": "Ladders are good if you have superiority. Other options are better when you really need to reduce defense.",
-			"show_continue": true,
-			"block_input": false,
-			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,continue,endturn",
-			"arrow": {
-				"id": "13",
-				"anchor": "screen"
-			},
-		},
-		{
-			"message": "Construct some siege equipement and let's attack.",
+			"message": "Construct some ladders and let's attack.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,withdraw,endturn",
+			"block": "trade,withdraw,endturn,continue3,nonladders",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
@@ -579,7 +603,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,continue,endturn"
+			"block": "trade,continue3,endturn"
 		},
 		{
 			"message": "Let's move to the battle summary.",
@@ -786,7 +810,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "In this section you find a size of your local garrison. Current castle level, defense rate.",
+			"message": "In this section you find a size of your local garrison. Current castle level, defense score.",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -810,7 +834,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Amount of recruits results from the size of the region's population and castle's level.",
+			"message": "Amount of recruits results from the size of the region's population and region's level.",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

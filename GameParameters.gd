@@ -71,6 +71,8 @@ const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enem
 const AI_WITHDRAW_MAX_POWER_DIFFERENCE = 0.20	# Power gap (20%) that forces withdrawal once reached
 const AI_PURSUIT_POWER_RATIO = 1.5			# Ratio above which AI gets a pursuit bonus for targets
 const AI_PURSUIT_SCORE_BONUS = 5.0			# Score bonus for high-ratio pursuit targets
+const AI_CASTLE_ATTACK_MIN_RATIO = 1.5		# Minimum ratio required to consider attacking castles
+const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider attacking non-castles
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 3.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
@@ -286,6 +288,7 @@ const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry u
 const WOUNDED_CHANCE = 0.30						# Base chance per casualty to become wounded (0..1)
 const CAMP_HEAL_CHANCE = 0.50						# Chance to heal one wounded unit on make_camp() (0..1)
 const AI_WITHDRAW_POWER_THRESHOLD = 0.80			# AI withdraw triggers when own power <= 80% of enemy power
+const AI_CASTLE_ASSAULT_EXPECTED_MULTIPLIER = 0.70	# Expected assault effectiveness vs castles for pre-eval scoring/withdraw checks
 const MOVE_ANIMATION_DURATION = 0.5				# Seconds for army move animation
 
 ## Camera Centering Timing Constants
@@ -382,8 +385,8 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.PEASANTS: {
 		"attack": 5,      # 5% hit chance per unit
 		"defense": 10,    # 10% chance to deflect hits
-		"cost": 0,        # Free recruitment (food cost 0.1 handled separately)
-		"gold_cost": 0,
+		"cost": 1,        # Free recruitment (food cost 0.1 handled separately)
+		"gold_cost": 1,
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
@@ -393,8 +396,8 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.SPEARMEN: {
 		"attack": 8,     # 10	% hit chance per unit
 		"defense": 20,    # 25% chance to deflect hits
-		"cost": 1,        # Recruitment cost
-		"gold_cost": 1,
+		"cost": 2,        # Recruitment cost
+		"gold_cost": 2,
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 0,
@@ -402,9 +405,9 @@ const UNIT_STATS = {
 		"power": 3
 	},
 	SoldierTypeEnum.Type.SWORDSMEN: {
-		"attack": 12,     # 30% hit chance per unit
-		"defense": 30,    # 40% chance to deflect hits
-		"cost": 2,        # Recruitment cost
+		"attack": 14,     # 30% hit chance per unit
+		"defense": 35,    # 40% chance to deflect hits
+		"cost": 3,        # Recruitment cost
 		"gold_cost": 3,
 		"food_cost": 0.1,
 		"wood_cost": 0,
@@ -413,32 +416,32 @@ const UNIT_STATS = {
 		"power": 4
 	},
 	SoldierTypeEnum.Type.ARCHERS: {
-		"attack": 10,     # 25% hit chance per unit
+		"attack": 12,     # 25% hit chance per unit
 		"defense": 15,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
-		"gold_cost": 4,
+		"gold_cost": 3,
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, light_armor,
-		"power": 3
+		"power": 4
 	},
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
-		"attack": 8,     # 20% hit chance per unit
-		"defense": 15,    # 15% chance to deflect hits
+		"attack": 10,     # 20% hit chance per unit
+		"defense": 20,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
-		"gold_cost": 4,
+		"gold_cost": 3,
 		"food_cost": 0.1,
 		"wood_cost": 1,
 		"iron_cost": 0,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_2, UnitTraitEnum.Type.UNIT_TRAIT_7, UnitTraitEnum.Type.UNIT_TRAIT_9],  # ranged, armor_piercing, light_armor,
-		"power": 3
+		"power": 4
 	},
 	SoldierTypeEnum.Type.HORSEMEN: {
-		"attack": 12,     # 30% hit chance per unit
+		"attack": 15,     # 30% hit chance per unit
 		"defense": 25,    # 30% chance to deflect hits
 		"cost": 4,        # Recruitment cost
-		"gold_cost": 5,
+		"gold_cost": 4,
 		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 0,
@@ -446,10 +449,10 @@ const UNIT_STATS = {
 		"power": 5
 	},
 	SoldierTypeEnum.Type.KNIGHTS: {
-		"attack": 25,     # 60% hit chance per unit
-		"defense": 70,    # 60% chance to deflect hits
-		"cost": 8,       # Recruitment cost
-		"gold_cost": 10,
+		"attack": 35,     # 60% hit chance per unit
+		"defense": 65,    # 60% chance to deflect hits
+		"cost": 7,       # Recruitment cost
+		"gold_cost": 7,
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 1,
@@ -457,26 +460,26 @@ const UNIT_STATS = {
 		"power": 10
 	},
 	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: {
-		"attack": 30,     # 65% hit chance per unit
+		"attack": 35,     # 65% hit chance per unit
 		"defense": 70,    # 60% chance to deflect hits
 		"cost": 10,       # Recruitment cost
-		"gold_cost": 15,
+		"gold_cost": 10,
 		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 1,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_4, UnitTraitEnum.Type.UNIT_TRAIT_5],  # flanker, charge, heavy_armor,
-		"power": 13
+		"power": 12
 	},
 	SoldierTypeEnum.Type.ROYAL_GUARD: {
 		"attack": 40,     # 80% hit chance per unit
-		"defense": 90,    # 80% chance to deflect hits
-		"cost": 15,       # Recruitment cost
-		"gold_cost": 20,
+		"defense": 85,    # 80% chance to deflect hits
+		"cost": 18,       # Recruitment cost
+		"gold_cost": 18,
 		"food_cost": 0.1,
 		"wood_cost": 0,
-		"iron_cost": 1,
+		"iron_cost": 2,
 		"traits": [UnitTraitEnum.Type.UNIT_TRAIT_6, UnitTraitEnum.Type.UNIT_TRAIT_7],  # multi_attack, heavy_armor,
-		"power": 15
+		"power": 30
 	}
 }
 
@@ -494,7 +497,7 @@ const MOVEMENT_COSTS = {
 # Format: resource_type -> {min, max} range for randi_range()
 const REGION_RESOURCES = {
 	RegionTypeEnum.Type.GRASSLAND: {
-		ResourcesEnum.Type.FOOD: {"min": 1, "max": 4}
+		ResourcesEnum.Type.FOOD: {"min": 1, "max": 3}
 	},
 	RegionTypeEnum.Type.FOREST: {
 		ResourcesEnum.Type.WOOD: {"min": 1, "max": 3}
@@ -502,7 +505,7 @@ const REGION_RESOURCES = {
 	RegionTypeEnum.Type.HILLS: {
 		ResourcesEnum.Type.STONE: {"min": 1, "max": 3},
 		ResourcesEnum.Type.IRON: {"min": 2, "max": 5},
-		ResourcesEnum.Type.GOLD: {"min": 5, "max": 15}
+		ResourcesEnum.Type.GOLD: {"min": 5, "max": 12}
 	},
 	RegionTypeEnum.Type.FOREST_HILLS: {
 		ResourcesEnum.Type.WOOD: {"min": 1, "max": 2},

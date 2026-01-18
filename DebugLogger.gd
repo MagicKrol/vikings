@@ -30,7 +30,7 @@ var debug_categories: Dictionary = {
 	"AIScoring": false,            # Target scoring and evaluation
 	"AIPlanning": false,           # Strategic planning decisions
 	"AITurnManager": false,        # High-level AI turn processing
-	"AIEconomy": true,            # AI economy decisions and raise army
+	"AIEconomy": false,            # AI economy decisions and raise army
 	"AIRecruitment": false,        # AI recruitment and budget allocation
 	
 	# Resource Systems
@@ -71,8 +71,8 @@ var debug_categories: Dictionary = {
 	"Trade": false,
 	"Tutorial": false,
 	"TradeModal": false,
-	"Withdrawal": false,
-	"ArmyTracker": false
+	"Withdrawal": true,
+	"ArmyTracker": true
 }
 
 # Color coding for different log levels

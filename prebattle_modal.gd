@@ -492,6 +492,7 @@ func _refresh_siege_ui() -> void:
 	_update_siege_buttons()
 	_update_attack_button_text()
 	_update_siege_status_panel()
+	_update_attack_button_state()
 
 func _recalculate_siege_points_total() -> void:
 	if attacking_army == null:
@@ -636,6 +637,13 @@ func _update_attack_button_text() -> void:
 	else:
 		attack_button.text = CONTINUE_TEXT
 
+func _update_attack_button_state() -> void:
+	var ladders: int = siege_counts.get("ladders", 0)
+	var rams: int = siege_counts.get("rams", 0)
+	var assault_ratio: float = _calculate_assault_effectiveness_ratio()
+	var allow_attack := ladders > 0 or rams > 0 or assault_ratio > 0.0
+	attack_button.disabled = not allow_attack
+
 func _perform_trebuchet_bombard() -> void:
 	bombard_performed = true
 	var total_damage := _roll_trebuchet_damage()
@@ -660,6 +668,7 @@ func _perform_trebuchet_bombard() -> void:
 	_update_siege_buttons()
 	_update_assault_value()
 	_update_siege_status_panel()
+	_update_attack_button_state()
 
 func _get_wall_breach_snapshot() -> Dictionary:
 	var wall_state := defending_region.get_wall_state()

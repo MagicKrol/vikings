@@ -385,12 +385,15 @@ func is_target_overmatched_by_known_enemy(army: Army, region_id: int) -> bool:
 		return false
 	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
 	var defense_bonus: int = GameParameters.get_castle_defense_bonus(castle_type)
+	var assault_multiplier: float = 1.0
+	if castle_type != CastleTypeEnum.Type.NONE:
+		assault_multiplier = GameParameters.AI_CASTLE_ASSAULT_EXPECTED_MULTIPLIER
 	# Castle gate: require attacker to exceed defended power before siege prep
 	if castle_type != CastleTypeEnum.Type.NONE:
-		if game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, 1.0, defense_bonus, 1.0):
+		if game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_CASTLE_ATTACK_MIN_RATIO):
 			return true
 	# Standard withdrawal threshold without siege bonuses
-	return game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, 1.0, defense_bonus, GameParameters.AI_WITHDRAW_POWER_THRESHOLD)
+	return game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_FIELD_ATTACK_MIN_RATIO)
 
 func _get_pursuit_bonus(army: Army, region_id: int) -> float:
 	_ensure_runtime_references()
@@ -416,6 +419,8 @@ func _get_pursuit_bonus(army: Army, region_id: int) -> float:
 	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
 	var defense_bonus: int = GameParameters.get_castle_defense_bonus(castle_type)
 	var assault_multiplier: float = 1.0
+	if castle_type != CastleTypeEnum.Type.NONE:
+		assault_multiplier = GameParameters.AI_CASTLE_ASSAULT_EXPECTED_MULTIPLIER
 	var meets_ratio := not game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_PURSUIT_POWER_RATIO)
 	if meets_ratio:
 		return float(GameParameters.AI_PURSUIT_SCORE_BONUS)
@@ -476,6 +481,15 @@ func _calculate_enemy_army_adjustment(army: Army, region_id: int) -> Dictionary:
 	var region_container = map_generator.get_region_container_by_id(region_id)
 	if region_container == null:
 		return {"delta": 0.0, "nullify": false}
+	var region := region_container as Region
+	var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
+	var defense_bonus: int = 0
+	var assault_multiplier: float = 1.0
+	if region != null:
+		castle_type = region.get_castle_type()
+		defense_bonus = GameParameters.get_castle_defense_bonus(castle_type)
+		if castle_type != CastleTypeEnum.Type.NONE:
+			assault_multiplier = GameParameters.AI_CASTLE_ASSAULT_EXPECTED_MULTIPLIER
 	var total_enemy_power := 0
 	var max_ratio: float = 0.0
 	var min_ratio: float = INF
@@ -499,7 +513,7 @@ func _calculate_enemy_army_adjustment(army: Army, region_id: int) -> Dictionary:
 			missing_army_info = true
 			break
 		has_data = true
-		var ratio := float(tracked_power) / float(max(1, our_power))
+		var ratio := (float(tracked_power) * (1.0 + float(defense_bonus) / 100.0)) / (float(max(1, our_power)) * assault_multiplier)
 		if ratio > max_ratio:
 			max_ratio = ratio
 		if ratio < min_ratio:
@@ -510,7 +524,7 @@ func _calculate_enemy_army_adjustment(army: Army, region_id: int) -> Dictionary:
 	var tracked_garrison := player_manager.get_tracked_enemy_garrison_power(observer_id, region_id)
 	if tracked_garrison >= 0:
 		has_data = true
-		var g_ratio := float(tracked_garrison) / float(max(1, our_power))
+		var g_ratio := (float(tracked_garrison) * (1.0 + float(defense_bonus) / 100.0)) / (float(max(1, our_power)) * assault_multiplier)
 		if g_ratio > max_ratio:
 			max_ratio = g_ratio
 		if g_ratio < min_ratio:
