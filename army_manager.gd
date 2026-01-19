@@ -309,6 +309,7 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 	selected_region_container = region_container
 	if ui_manager:
 		ui_manager.suppress_turn_modal_for_movement(true)
+		ui_manager.set_move_selection_active(true)
 
 	# Show army modal
 	if army_modal != null:
@@ -333,6 +334,7 @@ func deselect_army() -> void:
 	selected_region_container = null
 	if ui_manager:
 		ui_manager.suppress_turn_modal_for_movement(false)
+		ui_manager.set_move_selection_active(false)
 
 	# Hide army modal
 	if army_modal != null:
@@ -807,6 +809,8 @@ func _trigger_combat_if_needed(attacking_army: Army, defending_region: Region) -
 		var game_manager = _get_game_manager()
 		if game_manager:
 			if game_manager.should_show_prebattle_for_army(attacking_army):
+				if ui_manager:
+					ui_manager.set_overlay_suppressed(true)
 				game_manager.show_prebattle_modal(attacking_army, defending_region)
 				deselect_army()
 				return

@@ -247,11 +247,13 @@ func show_prebattle(army: Army, region: Region) -> void:
 	_reset_info_panel()
 	_update_labels()
 	ui_manager.set_modal_active(true)
+	ui_manager.set_overlay_suppressed(true)
 	visible = true
 
 func hide_prebattle() -> void:
 	visible = false
 	ui_manager.set_modal_active(false)
+	ui_manager.set_overlay_suppressed(false)
 	_reset_info_panel()
 
 func is_showing_for(army: Army, region: Region) -> bool:

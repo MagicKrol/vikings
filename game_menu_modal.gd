@@ -22,6 +22,7 @@ extends Control
 @onready var sound_slider: HSlider = $InnerPanel/AudioContainer/AudioPanel/SoundRow/SoundSlider
 
 var sound_manager: SoundManager = null
+var ui_manager: UIManager
 
 signal main_menu_pressed
 signal exit_pressed
@@ -46,6 +47,7 @@ func _ready():
 
 	# Get sound manager reference
 	sound_manager = get_node_or_null("/root/Main/SoundManager")
+	ui_manager = get_node("../UIManager") as UIManager
 
 func _on_continue_pressed():
 	DebugLogger.log("UISystem", "Game Menu - Continue pressed")
@@ -134,6 +136,7 @@ func _sync_audio_controls():
 
 func show_modal():
 	visible = true
+	ui_manager.set_modal_active(true)
 	get_tree().paused = true
 	_show_main_menu()
 	# Re-acquire sound manager reference when showing modal
@@ -142,4 +145,5 @@ func show_modal():
 
 func hide_modal():
 	visible = false
+	ui_manager.set_modal_active(false)
 	get_tree().paused = false

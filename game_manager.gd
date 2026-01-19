@@ -1771,7 +1771,7 @@ func _should_ai_withdraw_pre_siege(attacker: Army, target_region: Region) -> boo
 	var defender_power: int = _calculate_region_defender_power(target_region)
 	if defender_power <= 0:
 		return false
-	var target_ratio: float = 1.5
+	var target_ratio: float = 1.0
 	var should_withdraw: bool = should_ai_withdraw_by_power(float(attacker_power), float(defender_power), 1.0, defense_bonus, target_ratio)
 	var ratio: float = float(attacker_power) / max(1.0, float(defender_power) * (1.0 + float(defense_bonus) / 100.0))
 	DebugLogger.log("Withdrawal", "[Pre-Siege Check] atk_power=" + str(attacker_power) + " def_power=" + str(defender_power) + " def_bonus=" + str(defense_bonus) + " ratio=" + str(snappedf(ratio, 0.003)))
@@ -1792,7 +1792,7 @@ func _should_ai_withdraw_post_siege(attacker: Army, target_region: Region, siege
 		if rams > 0:
 			assault_multiplier += float(rams) * 0.2
 		defense_bonus = _battle_manager.get_effective_defense_for_region(target_region)
-		withdraw_threshold = 1.0
+		withdraw_threshold = 0.5
 	var split := _split_power_by_ranged_composition(attacker.get_composition())
 	var ranged_power: float = split.get("ranged", 0.0)
 	var non_ranged_power: float = split.get("non_ranged", 0.0)

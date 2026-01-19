@@ -34,6 +34,7 @@ var last_hovered_region: Region = null
 # Modal mode system
 var is_modal_active: bool = false
 var _turn_modal_suppressed: bool = false
+var _overlay_suppressed: bool = false
 
 # Modal references for centralized management
 var _select_modal: GeneralSelectModal
@@ -51,6 +52,12 @@ var _transfer_select_modal: TransferSelectModal
 var _transfer_soldiers_modal: TransferSoldiersModal
 var _icons_modal: Control
 var _icons_modal_was_visible: bool = false
+var _call_to_arms_modal: CallToArmsModal
+var _battle_summary_modal: BattleSummaryModal
+var _next_player_modal: NextPlayerModal
+var _game_menu_modal: Control
+var _modal_nodes: Array[Control] = []
+var _move_selection_active: bool = false
 
 enum SelectContextType {
 	NONE,
@@ -103,11 +110,19 @@ func _ready():
 	_transfer_select_modal = get_parent().get_node("TransferSelectModal") as TransferSelectModal
 	_transfer_soldiers_modal = get_parent().get_node("TransferSoldiersModal") as TransferSoldiersModal
 	_icons_modal = get_parent().get_node("IconsModal") as Control
+	_call_to_arms_modal = get_parent().get_node("CallToArmsModal") as CallToArmsModal
+	_battle_summary_modal = get_parent().get_node("BattleSummaryModal") as BattleSummaryModal
+	_next_player_modal = get_parent().get_node("NextPlayerModal") as NextPlayerModal
+	_game_menu_modal = get_parent().get_node("GameMenuModal") as Control
+	_build_modal_list()
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
 	GlobalSignals.player_status_refresh_requested.connect(_on_player_status_refresh_requested)
 	
+
+func _process(_delta: float) -> void:
+	_sync_modal_state()
 
 func display_message(text: String) -> void:
 	# Do not close other modals; just mark modal state and show MessageModal on top
@@ -118,24 +133,74 @@ func display_message(text: String) -> void:
 func set_modal_active(active: bool) -> void:
 	"""Set the modal mode state"""
 	is_modal_active = active
-	if _icons_modal:
-		if active:
-			_icons_modal_was_visible = _icons_modal.visible
-			_icons_modal.visible = false
-		elif _icons_modal_was_visible:
-			_icons_modal.visible = true
-			_icons_modal_was_visible = false
+	_apply_icons_visibility()
 	_update_turn_modal_visibility()
 	if is_modal_active and region_tooltip and region_tooltip.visible:
 		hide_region_tooltip()
 
+func set_overlay_suppressed(active: bool) -> void:
+	_overlay_suppressed = active
+	_apply_icons_visibility()
+	_update_turn_modal_visibility()
+
+func _apply_icons_visibility() -> void:
+	if _icons_modal == null:
+		return
+	if is_modal_active or _overlay_suppressed or _move_selection_active:
+		if _icons_modal.visible:
+			_icons_modal_was_visible = true
+		_icons_modal.visible = false
+	elif _icons_modal_was_visible:
+		_icons_modal.visible = true
+		_icons_modal_was_visible = false
+
+func _build_modal_list() -> void:
+	_modal_nodes = [
+		_select_modal,
+		_army_select_modal,
+		_region_select_modal,
+		battle_modal,
+		_info_modal,
+		_prebattle_modal,
+		_message_modal,
+		_trade_modal,
+		_recruitment_modal,
+		_transfer_select_modal,
+		_transfer_soldiers_modal,
+		_call_to_arms_modal,
+		_next_player_modal,
+		_battle_summary_modal,
+		_game_menu_modal
+	]
+
+func _sync_modal_state() -> void:
+	var should_be_active := _is_any_tracked_modal_visible()
+	if should_be_active != is_modal_active:
+		set_modal_active(should_be_active)
+
+func _is_any_tracked_modal_visible() -> bool:
+	for modal in _modal_nodes:
+		if modal != null and _is_modal_forcing_active(modal):
+			return true
+	return false
+
+func set_move_selection_active(active: bool) -> void:
+	_move_selection_active = active
+	_apply_icons_visibility()
+	_update_turn_modal_visibility()
+
+func _is_modal_forcing_active(modal: Control) -> bool:
+	if modal == _message_modal:
+		return modal.visible and modal.mouse_filter == Control.MOUSE_FILTER_STOP
+	return modal.visible
+	
 func suppress_turn_modal_for_movement(enabled: bool) -> void:
 	_turn_modal_suppressed = enabled
 	_update_turn_modal_visibility()
 
 func _update_turn_modal_visibility() -> void:
 	if _turn_modal:
-		_turn_modal.visible = not is_modal_active and not _turn_modal_suppressed
+		_turn_modal.visible = not is_modal_active and not _turn_modal_suppressed and not _overlay_suppressed and not _move_selection_active
 
 func hide_region_tooltip() -> void:
 	DebugLogger.log("UIManager", "hide_region_tooltip called. visible=" + str(region_tooltip.visible))
@@ -311,11 +376,7 @@ func close_all_active_modals() -> void:
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
-	var modals = [_select_modal, _army_select_modal, _region_select_modal, battle_modal, _info_modal, _move_modal, _prebattle_modal]
-	for modal in modals:
-		if modal and modal.visible:
-			return true
-	return false
+	return _is_any_tracked_modal_visible()
 
 func get_player_status_modal2() -> PlayerStatusModal2:
 	"""Get the PlayerStatusModal2 instance"""

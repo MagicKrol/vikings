@@ -87,21 +87,29 @@ func get_army_manager() -> ArmyManager:
 
 
 func _on_left_click(screen_pos: Vector2) -> void:
-	# Check if any modal is active and close them first
+	# Check if any modal is active and close them first, but allow move flow to proceed
 	if _ui_manager and _ui_manager.is_modal_active:
-		if _tutorial_manager != null and _tutorial_manager.is_ui_step_active():
-			return
-		if not (_tutorial_manager != null and _tutorial_manager.is_waiting_for_region()):
-			DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
-			# Don't close modals if BattleModal is in battle mode (battle_in_progress)
-			var battle_modal = get_node("../UI/BattleModal") as BattleModal
-			if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
-				# Battle is active - don't allow closing the modal
-				DebugLogger.log("InputSystem", "Battle is active, not closing modal")
-				return
-			_ui_manager.close_all_active_modals()
-			DebugLogger.log("InputSystem", "Closed all active modals, returning")
-			return
+		var move_flow_active := _is_move_flow_active()
+		if not move_flow_active:
+			if _ui_manager.is_any_modal_visible():
+				if _tutorial_manager != null and _tutorial_manager.is_ui_step_active():
+					return
+				if not (_tutorial_manager != null and _tutorial_manager.is_waiting_for_region()):
+					DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
+					# Don't close modals if BattleModal is in battle mode (battle_in_progress)
+					var battle_modal = get_node("../UI/BattleModal") as BattleModal
+					if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
+						# Battle is active - don't allow closing the modal
+						DebugLogger.log("InputSystem", "Battle is active, not closing modal")
+						return
+					_ui_manager.close_all_active_modals()
+					DebugLogger.log("InputSystem", "Closed all active modals, returning")
+					return
+			else:
+				_ui_manager.set_modal_active(false)
+		else:
+			_ui_manager.set_modal_active(false)
+			_ui_manager.set_overlay_suppressed(true)
 	
 	# Get the camera and convert screen to world coordinates properly
 	var camera := get_node("../Camera2D") as Camera2D
@@ -203,11 +211,15 @@ func _handle_mouse_motion() -> void:
 		_move_tooltip.hide_tooltip()
 		return
 	if _ui_manager and _ui_manager.is_modal_active:
-		var vm_modal := _game_manager.get_visual_manager()
-		if vm_modal:
-			vm_modal.clear_interaction_highlights()
-		_move_tooltip.hide_tooltip()
-		return
+		if _is_move_flow_active():
+			_ui_manager.set_modal_active(false)
+			_ui_manager.set_overlay_suppressed(true)
+		else:
+			var vm_modal := _game_manager.get_visual_manager()
+			if vm_modal:
+				vm_modal.clear_interaction_highlights()
+			_move_tooltip.hide_tooltip()
+			return
 	var visual_manager = _game_manager.get_visual_manager()
 	if visual_manager == null:
 		_move_tooltip.hide_tooltip()
@@ -257,6 +269,10 @@ func _handle_mouse_motion() -> void:
 		else:
 			visual_manager.clear_region_highlight_hover()
 			visual_manager.set_map_hover_region(-1)
+
+func _is_move_flow_active() -> bool:
+	var move_modal: MoveModal = get_node("../UI/MoveModal") as MoveModal
+	return move_modal.visible and _army_manager != null and _army_manager.selected_army != null
 
 func _show_move_tooltip(region: Region) -> void:
 	var selected_army := _army_manager.selected_army

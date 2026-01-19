@@ -58,7 +58,9 @@ func show_move_modal(army: Army) -> void:
 		selected_army.movement_points_changed.connect(_on_army_movement_points_changed)
 	
 	_update_make_camp_button_state()
+	ui_manager.set_modal_active(false)
 	visible = true
+	ui_manager.set_overlay_suppressed(true)
 	
 	# Position at bottom center of screen
 	# Modal is already positioned in the scene file at offset_top = 360
@@ -69,6 +71,7 @@ func hide_move_modal() -> void:
 		selected_army.movement_points_changed.disconnect(_on_army_movement_points_changed)
 	visible = false
 	selected_army = null
+	ui_manager.set_overlay_suppressed(false)
 
 func _on_cancel_move_pressed() -> void:
 	"""Handle cancel move button press"""

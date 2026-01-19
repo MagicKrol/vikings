@@ -766,9 +766,17 @@ func _reselect_fighting_army_after_battle() -> void:
 	
 	# Wait a frame to ensure the modal is fully closed and UI state is updated
 	await Engine.get_main_loop().process_frame
+
+	var ui_manager: UIManager = _battle_modal.get_parent().get_node("UIManager") as UIManager
+	var overlay_locked := false
+	if ui_manager:
+		ui_manager.set_overlay_suppressed(true)
+		overlay_locked = true
 	
 	if _fighting_army_for_reselection == null:
 		DebugLogger.log("BattleSystem", "[BattleManager] No army stored for re-selection")
+		if overlay_locked:
+			ui_manager.set_overlay_suppressed(false)
 		return
 	
 	DebugLogger.log("BattleSystem", "[BattleManager] Found stored army: " + _fighting_army_for_reselection.name)
@@ -776,17 +784,23 @@ func _reselect_fighting_army_after_battle() -> void:
 	# Check if army is still valid and alive after battle
 	if not is_instance_valid(_fighting_army_for_reselection):
 		DebugLogger.log("BattleSystem", "[BattleManager] Stored army is no longer valid")
+		if overlay_locked:
+			ui_manager.set_overlay_suppressed(false)
 		_fighting_army_for_reselection = null
 		return
 	
 	if _fighting_army_for_reselection.get_total_soldiers() <= 0:
 		DebugLogger.log("BattleSystem", "[BattleManager] Stored army has no soldiers left")
+		if overlay_locked:
+			ui_manager.set_overlay_suppressed(false)
 		_fighting_army_for_reselection = null
 		return
 	
 	# Only re-select for human players
 	if _game_manager and not _game_manager.is_player_human(_fighting_army_for_reselection.get_player_id()):
 		DebugLogger.log("BattleSystem", "[BattleManager] Army belongs to AI player, not re-selecting")
+		if overlay_locked:
+			ui_manager.set_overlay_suppressed(false)
 		_fighting_army_for_reselection = null
 		return
 	
@@ -794,6 +808,8 @@ func _reselect_fighting_army_after_battle() -> void:
 	var current_region_container = _fighting_army_for_reselection.get_parent()
 	if current_region_container == null:
 		DebugLogger.log("BattleSystem", "[BattleManager] Army has no parent region container")
+		if overlay_locked:
+			ui_manager.set_overlay_suppressed(false)
 		_fighting_army_for_reselection = null
 		return
 	
@@ -805,9 +821,8 @@ func _reselect_fighting_army_after_battle() -> void:
 		# Use proper select_army method to trigger the same action as clicking "move army"
 		var current_player_id = _game_manager.get_current_player_id() if _game_manager else -1
 		_army_manager.select_army(_fighting_army_for_reselection, current_region_container, current_player_id)
-		var ui_manager: UIManager = _battle_modal.get_parent().get_node("UIManager") as UIManager
-		ui_manager.set_modal_active(false)
-		
+		if ui_manager:
+			ui_manager.set_modal_active(false)
 		DebugLogger.log("BattleSystem", "[BattleManager] Re-selected army " + _fighting_army_for_reselection.name + " after battle completion (with modals)")
 	else:
 		DebugLogger.log("BattleSystem", "[BattleManager] ArmyManager is null, cannot re-select army")
