@@ -248,12 +248,12 @@ func _process_single_army(army: Army) -> void:
 			_spend_all_on_camp(army)
 			break
 		if move.get("goal", "") == "halt":
-			var defense_info: Dictionary = move.get("enemy_info", _build_enemy_info(move["target_id"], army.get_player_id()))
+			var defense_info: Dictionary = move.get("enemy_info", _build_enemy_info(move["target_id"], army.get_player_id(), army))
 			_log_movement_header()
 			_log_target_choice(army, move["target_id"], defense_info)
 			_log_defense_todo(army, move["target_id"], defense_info)
 			break
-		var enemy_info: Dictionary = move.get("enemy_info", _build_enemy_info(move["target_id"], army.get_player_id()))
+		var enemy_info: Dictionary = move.get("enemy_info", _build_enemy_info(move["target_id"], army.get_player_id(), army))
 		_log_movement_header()
 		_log_target_choice(army, move["target_id"], enemy_info)
 		var merge_decision: String = move.get("merge_decision", _evaluate_merge_policy(army, enemy_info))
@@ -348,7 +348,7 @@ func _select_frontier_move(army: Army) -> Dictionary:
 	_log_target_candidates(moves)
 	var best_halt := {}
 	for move in moves:
-		var enemy_info := _build_enemy_info(move["target_id"], army.get_player_id())
+		var enemy_info := _build_enemy_info(move["target_id"], army.get_player_id(), army)
 		var decision := _evaluate_merge_policy(army, enemy_info)
 		if decision == "halt":
 			if best_halt.is_empty():
@@ -370,7 +370,7 @@ func _select_frontier_move(army: Army) -> Dictionary:
 		}
 	return {}
 
-func _build_enemy_info(target_region_id: int, player_id: int) -> Dictionary:
+func _build_enemy_info(target_region_id: int, player_id: int, attacker: Army) -> Dictionary:
 	var target_region = region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	var enemy_owner = region_manager.get_region_owner(target_region_id)
 	var castle_level = region_manager.get_castle_level(target_region_id)
@@ -398,16 +398,28 @@ func _build_enemy_info(target_region_id: int, player_id: int) -> Dictionary:
 		known_strength = true
 	else:
 		enemy_power += garrison_power
+	var simulation_result := ""
+	var simulation: Dictionary = {}
+	if game_manager and castle_level > 0 and has_enemy and known_strength:
+		simulation = game_manager.simulate_siege_battle(attacker, target_region)
+		simulation_result = String(simulation.get("result", ""))
 	return {
 		"has_enemy": has_enemy,
 		"known": known_strength,
 		"power": enemy_power,
 		"armies": enemy_armies,
 		"castle_level": castle_level,
-		"owner": enemy_owner
+		"owner": enemy_owner,
+		"simulation": simulation,
+		"simulation_result": simulation_result
 	}
 
 func _evaluate_merge_policy(army: Army, enemy_info: Dictionary) -> String:
+	var simulation_result: String = String(enemy_info.get("simulation_result", ""))
+	if simulation_result == "victory":
+		return "proceed"
+	if simulation_result == "defeat" or simulation_result == "withdrawal":
+		return "halt"
 	if not enemy_info.get("has_enemy", false):
 		return "proceed"
 	if not enemy_info.get("known", false):

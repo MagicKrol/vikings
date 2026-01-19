@@ -64,6 +64,8 @@ var _attacker_withdraw_allowed: bool = false
 var _defender_withdraw_allowed: bool = false
 var _attacker_effectiveness_ratio: float = 0.0
 var _attacker_manual_withdraw_requested: bool = false
+const MIN_FRAC_TREBS: float = 0.6
+const MIN_FRAC_RAMS: float = 0.6
 
 func _init(region_manager: RegionManager, army_manager: ArmyManager, battle_modal: BattleModal, sound_manager: SoundManager):
 	_region_manager = region_manager
@@ -366,6 +368,231 @@ func compute_gate_assault_ratio(region: Region) -> float:
 	else:
 		missing = 0
 	return clampf(float(missing) / float(capacity), 0.0, 1.0)
+
+func plan_siege_purchase(siege_points: int, intact_walls: int, intact_gates: int, available_wood: int, rng: RandomNumberGenerator) -> Dictionary:
+	var sp_in: int = siege_points
+	var wood_in: int = available_wood
+
+	DebugLogger.log("BattleAI",
+		"plan_siege_purchase IN"
+		+ " SP=" + str(sp_in)
+		+ " wood=" + str(wood_in)
+		+ " walls=" + str(intact_walls)
+		+ " gates=" + str(intact_gates)
+	)
+
+	if intact_walls + intact_gates == 0:
+		return {"trebuchets": 0, "rams": 0, "ladders": 0}
+
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.randomize()
+
+	var treb_cost: int = int(PrebattleModal.TREB_DATA.get("points", 4))
+	var ram_cost: int = int(PrebattleModal.RAM_DATA.get("points", 2))
+	var ladder_cost: int = int(PrebattleModal.LADDER_DATA.get("points", 1))
+	var treb_wood: int = int(PrebattleModal.TREB_DATA.get("wood", 0))
+	var ram_wood: int = int(PrebattleModal.RAM_DATA.get("wood", 0))
+
+	var max_ladders: int = intact_walls * GameParameters.LADDERS_PER_SECTION
+	var max_trebs: int = intact_walls
+	var max_rams: int = intact_gates * 3
+
+	DebugLogger.log("BattleAI",
+		"costs/caps"
+		+ " treb_cost=" + str(treb_cost) + " treb_wood=" + str(treb_wood)
+		+ " ram_cost=" + str(ram_cost) + " ram_wood=" + str(ram_wood)
+		+ " ladder_cost=" + str(ladder_cost)
+		+ " max_trebs=" + str(max_trebs)
+		+ " max_rams=" + str(max_rams)
+		+ " max_ladders=" + str(max_ladders)
+	)
+
+	var total_pressure: int = intact_walls + intact_gates
+	var wall_budget: int = int(round(float(siege_points) * float(intact_walls) / float(total_pressure)))
+	var gate_budget: int = siege_points - wall_budget
+
+	var exp_trebs: int = 0
+	var exp_rams: int = 0
+	if treb_cost > 0:
+		exp_trebs = int(floor(float(wall_budget) / float(treb_cost)))
+	if ram_cost > 0:
+		exp_rams = int(floor(float(gate_budget) / float(ram_cost)))
+
+	DebugLogger.log("BattleAI",
+		"budgets/expected"
+		+ " total_pressure=" + str(total_pressure)
+		+ " wall_budget=" + str(wall_budget)
+		+ " gate_budget=" + str(gate_budget)
+		+ " exp_trebs=" + str(exp_trebs)
+		+ " exp_rams=" + str(exp_rams)
+	)
+
+	var min_trebs: int = int(floor(float(exp_trebs) * MIN_FRAC_TREBS))
+	var min_rams: int = int(floor(float(exp_rams) * MIN_FRAC_RAMS))
+	if siege_points >= intact_gates * ram_cost:
+		min_rams = max(min_rams, intact_gates)
+
+	# clamp mins by geometry
+	min_trebs = clampi(min_trebs, 0, max_trebs)
+	min_rams = clampi(min_rams, 0, max_rams)
+
+	# clamp min trebs by wood
+	if treb_wood > 0:
+		min_trebs = min(min_trebs, int(floor(float(available_wood) / float(treb_wood))))
+
+	DebugLogger.log("BattleAI",
+		"mins/clamps"
+		+ " MIN_FRAC_TREBS=" + str(MIN_FRAC_TREBS)
+		+ " MIN_FRAC_RAMS=" + str(MIN_FRAC_RAMS)
+		+ " min_trebs=" + str(min_trebs)
+		+ " min_rams=" + str(min_rams)
+	)
+
+	# ---- buy min trebuchets ----
+	var trebs_max_by_points: int = 0
+	if treb_cost > 0:
+		trebs_max_by_points = int(floor(float(siege_points) / float(treb_cost)))
+	else:
+		trebs_max_by_points = 999999
+
+	DebugLogger.log("BattleAI",
+		"before_min_buy_trebs"
+		+ " sp=" + str(siege_points)
+		+ " wood=" + str(available_wood)
+		+ " trebs_max_by_points=" + str(trebs_max_by_points)
+	)
+
+	var trebs: int = min(min_trebs, trebs_max_by_points)
+	if treb_wood > 0:
+		trebs = min(trebs, int(floor(float(available_wood) / float(treb_wood))))
+
+	siege_points -= trebs * treb_cost
+	available_wood -= trebs * treb_wood
+
+	# ---- buy min rams ----
+	var max_rams_by_wood: int = max_rams
+	if ram_wood > 0:
+		max_rams_by_wood = int(floor(float(available_wood) / float(ram_wood)))
+
+	var rams_max_by_points: int = 0
+	if ram_cost > 0:
+		rams_max_by_points = int(floor(float(siege_points) / float(ram_cost)))
+	else:
+		rams_max_by_points = 999999
+
+	DebugLogger.log("BattleAI",
+		"before_min_buy_rams"
+		+ " sp=" + str(siege_points)
+		+ " wood=" + str(available_wood)
+		+ " rams_max_by_points=" + str(rams_max_by_points)
+		+ " max_rams_by_wood=" + str(max_rams_by_wood)
+	)
+
+	var rams: int = min(min_rams, rams_max_by_points, max_rams_by_wood)
+
+	siege_points -= rams * ram_cost
+	available_wood -= rams * ram_wood
+
+	DebugLogger.log("BattleAI",
+		"after_min_buy"
+		+ " bought_trebs=" + str(trebs)
+		+ " bought_rams=" + str(rams)
+		+ " sp_left=" + str(siege_points)
+		+ " wood_left=" + str(available_wood)
+	)
+
+	# ---- extra trebs ----
+	var max_extra_trebs: int = max_trebs - trebs
+	var max_extra_trebs_points: int = max_extra_trebs
+	if treb_cost > 0:
+		max_extra_trebs_points = min(max_extra_trebs_points, int(floor(float(siege_points) / float(treb_cost))))
+	var max_extra_trebs_wood: int = max_extra_trebs
+	if treb_wood > 0:
+		max_extra_trebs_wood = min(max_extra_trebs_wood, int(floor(float(available_wood) / float(treb_wood))))
+	max_extra_trebs = min(max_extra_trebs, max_extra_trebs_points, max_extra_trebs_wood)
+
+	DebugLogger.log("BattleAI",
+		"extra_trebs_limits"
+		+ " max_extra_trebs=" + str(max_extra_trebs)
+		+ " max_extra_trebs_points=" + str(max_extra_trebs_points)
+		+ " max_extra_trebs_wood=" + str(max_extra_trebs_wood)
+	)
+
+	var extra_trebs: int = 0
+	if max_extra_trebs > 0:
+		extra_trebs = rng.randi_range(0, max_extra_trebs)
+
+	trebs += extra_trebs
+	siege_points -= extra_trebs * treb_cost
+	available_wood -= extra_trebs * treb_wood
+
+	DebugLogger.log("BattleAI",
+		"after_extra_trebs"
+		+ " extra_trebs=" + str(extra_trebs)
+		+ " trebs_total=" + str(trebs)
+		+ " sp_left=" + str(siege_points)
+		+ " wood_left=" + str(available_wood)
+	)
+
+	# ---- extra rams ----
+	var max_extra_rams: int = max_rams - rams
+	var max_extra_rams_points: int = max_extra_rams
+	if ram_cost > 0:
+		max_extra_rams_points = min(max_extra_rams_points, int(floor(float(siege_points) / float(ram_cost))))
+	var max_extra_rams_wood: int = max_extra_rams
+	if ram_wood > 0:
+		max_extra_rams_wood = min(max_extra_rams_wood, int(floor(float(available_wood) / float(ram_wood))))
+	max_extra_rams = min(max_extra_rams, max_extra_rams_points, max_extra_rams_wood)
+
+	DebugLogger.log("BattleAI",
+		"extra_rams_limits"
+		+ " max_extra_rams=" + str(max_extra_rams)
+		+ " max_extra_rams_points=" + str(max_extra_rams_points)
+		+ " max_extra_rams_wood=" + str(max_extra_rams_wood)
+	)
+
+	var extra_rams: int = 0
+	if max_extra_rams > 0:
+		extra_rams = rng.randi_range(0, max_extra_rams)
+
+	rams += extra_rams
+	siege_points -= extra_rams * ram_cost
+	available_wood -= extra_rams * ram_wood
+
+	DebugLogger.log("BattleAI",
+		"after_extra_rams"
+		+ " extra_rams=" + str(extra_rams)
+		+ " rams_total=" + str(rams)
+		+ " sp_left=" + str(siege_points)
+		+ " wood_left=" + str(available_wood)
+	)
+
+	# ---- ladders ----
+	var ladders_possible: int = siege_points
+	if ladder_cost > 0:
+		ladders_possible = int(floor(float(siege_points) / float(ladder_cost)))
+
+	var ladders: int = min(ladders_possible, max_ladders)
+
+	# FINAL summary (note: siege_points is BEFORE ladder spend, since you don't subtract ladders cost)
+	var spent_sp_no_ladders: int = sp_in - siege_points
+	var spent_wood: int = wood_in - available_wood
+
+	DebugLogger.log("BattleAI",
+		"FINAL"
+		+ " trebs=" + str(trebs)
+		+ " rams=" + str(rams)
+		+ " ladders=" + str(ladders)
+		+ " sp_left_before_ladders=" + str(siege_points)
+		+ " spent_sp_no_ladders=" + str(spent_sp_no_ladders)
+		+ " spent_wood=" + str(spent_wood)
+		+ " ladders_cap=" + str(max_ladders)
+		+ " ladders_possible=" + str(ladders_possible)
+	)
+
+	return {"trebuchets": trebs, "rams": rams, "ladders": ladders}
+
 
 func prepare_human_battle(attacker: Army, region: Region) -> void:
 	"""Prepare defender participants for a human-initiated battle while keeping pending conquest logic."""

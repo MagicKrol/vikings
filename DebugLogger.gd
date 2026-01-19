@@ -38,7 +38,7 @@ var debug_categories: Dictionary = {
 	"ResourceCalculation": false,  # Detailed resource calculations
 	
 	# Battle Systems
-	"BattleAI": false, 
+	"BattleAI": true, 
 	"BattleSystem": false,         # Combat and battle resolution
 	"BattleCalculation": false,    # Detailed battle calculations
 	"BattleAnimation": false,      # Battle animation and rounds
@@ -71,8 +71,8 @@ var debug_categories: Dictionary = {
 	"Trade": false,
 	"Tutorial": false,
 	"TradeModal": false,
-	"Withdrawal": true,
-	"ArmyTracker": true
+	"Withdrawal": false,
+	"ArmyTracker": false
 }
 
 # Color coding for different log levels

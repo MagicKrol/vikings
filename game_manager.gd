@@ -88,7 +88,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -1474,19 +1474,31 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.get_display_name() + " vs region " + str(target_region_id))
 	_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
 	var siege_payload := {}
-	if is_player_computer(attacker_owner_id):
-		if _should_ai_withdraw_pre_siege(army, target_region):
-			_log_ai_prebattle_withdraw(army, target_region, "pre_siege_power_check")
+	var use_uncapped_siege: bool = false
+	var target_has_castle := target_region.get_castle_type() != CastleTypeEnum.Type.NONE
+	if is_player_computer(attacker_owner_id) and target_has_castle:
+		var sim_result := _run_ai_battle_simulation(army, target_region)
+		use_uncapped_siege = bool(sim_result.get("uncapped_wood", false))
+		var sim_outcome: String = sim_result.get("result", "defeat")
+		_log_ai_battle_simulation(army, target_region, sim_result)
+		if sim_outcome != "victory":
+			_log_ai_prebattle_withdraw(army, target_region, "siege_simulation_failure")
 			_record_both_sides_power_snapshot(army, target_region, [], target_region.get_garrison(), target_region.get_base_available_recruits())
-			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing before siege prep due to unfavorable power vs defense.")
+			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after failed siege simulation.")
 			await _battle_manager.withdraw_attacking_army(army)
 			return "withdrawal"
 	if is_player_computer(attacker_owner_id):
-		siege_payload = _execute_ai_siege_preparation(army, target_region)
-		if _should_ai_withdraw_post_siege(army, target_region, siege_payload):
+		if not target_has_castle and _should_ai_withdraw_pre_siege(army, target_region):
+			_log_ai_prebattle_withdraw(army, target_region, "pre_siege_power_check")
+			_record_both_sides_power_snapshot(army, target_region, [], target_region.get_garrison(), target_region.get_base_available_recruits())
+			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing before battle due to unfavorable power vs defense.")
+			await _battle_manager.withdraw_attacking_army(army)
+			return "withdrawal"
+		siege_payload = _execute_ai_siege_preparation(army, target_region, use_uncapped_siege)
+		if not target_has_castle and _should_ai_withdraw_post_siege(army, target_region, siege_payload):
 			_log_ai_prebattle_withdraw(army, target_region, "post_siege_power_check")
 			_record_both_sides_power_snapshot(army, target_region, [], target_region.get_garrison(), target_region.get_base_available_recruits())
-			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after siege prep due to unfavorable power ratio.")
+			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after battle prep due to unfavorable power ratio.")
 			await _battle_manager.withdraw_attacking_army(army)
 			return "withdrawal"
 	var attacker_effectiveness_ratio := _compute_attacker_effectiveness_ratio(army, siege_payload, target_region)
@@ -1501,7 +1513,7 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	await _battle_manager.await_finalize_complete()
 	return result
 
-func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dictionary:
+func _execute_ai_siege_preparation(attacker: Army, target_region: Region, use_full_wood: bool = false) -> Dictionary:
 	var castle_defense := GameParameters.get_castle_defense_bonus(target_region.get_castle_type())
 	if castle_defense <= 0:
 		return {}
@@ -1511,84 +1523,20 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
 	var wood_growth: int = int(floor(player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD)))
 	var wood_budget: int = _calculate_siege_wood_budget(available_wood, wood_growth)
-	var remaining_points: int = siege_points_total
-	var remaining_wood: int = wood_budget
-	var siege_counts: Dictionary = {"trebuchets": 0, "rams": 0, "ladders": 0}
-	var siege_data: Dictionary = {
-		"trebuchets": PrebattleModal.TREB_DATA,
-		"rams": PrebattleModal.RAM_DATA,
-		"ladders": PrebattleModal.LADDER_DATA
-	}
-	var rng := RandomNumberGenerator.new()
-	rng.randomize()
-	# --- Trebuchets ---
+	if use_full_wood:
+		wood_budget = available_wood
 	var wall_state: Dictionary = target_region.get_wall_state()
+	var gate_state: Dictionary = target_region.get_gate_state()
 	var wall_sections: int = int(wall_state.get("wall_sections", 0))
 	var destroyed_sections: int = int(wall_state.get("destroyed_sections", 0))
-	var treb_data: Dictionary = siege_data["trebuchets"]
-	var treb_points_cost: int = int(treb_data.get("points", 0))
-	var treb_wood_cost: int = int(treb_data.get("wood", 0))
-	var treb_max_allowed: int = int(treb_data.get("max", 0))
-	var castle_level: int = int(target_region.get_castle_type())
-	var treb_min_raw: int = castle_level - 1 - destroyed_sections
-	var treb_min: int = max(0, treb_min_raw)
-	var treb_max: int = max(treb_min, wall_sections - destroyed_sections)
-	var trebuchets_target: int = 0
-	if treb_points_cost > 0 and treb_max > 0 and siege_points_total > 6:
-		trebuchets_target = rng.randi_range(treb_min, treb_max)
-		var attacker_power: int = attacker.get_army_power()
-		var defender_power: int = _compute_region_total_defender_power(target_region)
-		var ratio_denominator: int = defender_power if defender_power > 0 else 1
-		var ratio_value: float = float(attacker_power) / float(ratio_denominator)
-		var reduce_by: int = max(0, int(floor(ratio_value)) - 3)
-		trebuchets_target = max(treb_min, trebuchets_target - reduce_by)
-		var max_by_points: int = int(remaining_points / treb_points_cost)
-		var max_by_wood: int = int(remaining_wood / treb_wood_cost) if treb_wood_cost > 0 else max_by_points
-		var max_cap: int = treb_max if treb_max_allowed <= 0 else min(treb_max, treb_max_allowed)
-		trebuchets_target = clampi(trebuchets_target, treb_min, max_cap)
-		trebuchets_target = min(trebuchets_target, max_by_points, max_by_wood)
-		if trebuchets_target > 0:
-			siege_counts["trebuchets"] = trebuchets_target
-			remaining_points -= trebuchets_target * treb_points_cost
-			if treb_wood_cost > 0:
-				remaining_wood -= trebuchets_target * treb_wood_cost
-	# --- Rams ---
-	var ram_data: Dictionary = siege_data["rams"]
-	var ram_points: int = int(ram_data.get("points", 0))
-	var ram_wood: int = int(ram_data.get("wood", 0))
-	var ram_max: int = int(ram_data.get("max", 0))
-	var gate_state: Dictionary = target_region.get_gate_state()
-	var total_gates: int = int(gate_state.get("gates", 0))
+	var intact_walls: int = max(0, wall_sections - destroyed_sections)
+	var total_gates: int = int(gate_state.get("gates", gate_state.get("gate_values", []).size()))
 	var destroyed_gates: int = int(gate_state.get("destroyed_gates", 0))
 	var intact_gates: int = max(0, total_gates - destroyed_gates)
-	if ram_points > 0 and remaining_points > 0 and intact_gates > 0:
-		var ram_points_spend: int = rng.randi_range(0, remaining_points)
-		var max_by_points_ram: int = int(ram_points_spend / ram_points)
-		var max_by_wood_ram: int = int(remaining_wood / ram_wood) if ram_wood > 0 else max_by_points_ram
-		var ram_cap: int = intact_gates
-		if ram_max > 0:
-			ram_cap = min(ram_cap, ram_max)
-		var ram_count: int = min(max_by_points_ram, max_by_wood_ram, ram_cap)
-		if ram_count > 0:
-			siege_counts["rams"] = ram_count
-			remaining_points -= ram_count * ram_points
-			if ram_wood > 0:
-				remaining_wood -= ram_count * ram_wood
-	# --- Ladders ---
-	var ladder_data: Dictionary = siege_data["ladders"]
-	var ladder_points: int = int(ladder_data.get("points", 0))
-	var ladder_max: int = int(ladder_data.get("max", 0))
-	if ladder_points > 0 and remaining_points > 0:
-		var ladder_capacity: int = _battle_manager.compute_ladder_capacity(target_region)
-		var max_by_points_ladder: int = int(remaining_points / ladder_points)
-		var ladder_cap: int = ladder_capacity
-		if ladder_max > 0:
-			ladder_cap = min(ladder_cap, ladder_max)
-		var ladder_count: int = min(max_by_points_ladder, ladder_cap)
-		if ladder_count > 0:
-			siege_counts["ladders"] = ladder_count
-			remaining_points -= ladder_count * ladder_points
-	var wood_spent := 0
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var siege_counts: Dictionary = _battle_manager.plan_siege_purchase(siege_points_total, intact_walls, intact_gates, wood_budget, rng)
+	var wood_spent: int = 0
 	wood_spent = siege_counts["ladders"] * int(PrebattleModal.LADDER_DATA["wood"])
 	wood_spent += siege_counts["rams"] * int(PrebattleModal.RAM_DATA["wood"])
 	wood_spent += siege_counts["trebuchets"] * int(PrebattleModal.TREB_DATA["wood"])
@@ -1605,9 +1553,9 @@ func _execute_ai_siege_preparation(attacker: Army, target_region: Region) -> Dic
 			bombard_state = target_region.get_wall_state()
 		apply_trebuchet_damage = false
 	var payload := target_region.apply_siege_damage(siege_counts, PrebattleModal.LADDER_DATA, PrebattleModal.RAM_DATA, PrebattleModal.TREB_DATA, apply_trebuchet_damage)
-	var wall_raw := _battle_manager.compute_wall_assault_raw(target_region)
-	var wall_ratio_calc := _battle_manager.compute_wall_assault_ratio(target_region, attacker.get_composition())
-	var gate_ratio := _battle_manager.compute_gate_assault_ratio(target_region)
+	var wall_raw: float = _battle_manager.compute_wall_assault_raw(target_region)
+	var wall_ratio_calc: float = _battle_manager.compute_wall_assault_ratio(target_region, attacker.get_composition())
+	var gate_ratio: float = _battle_manager.compute_gate_assault_ratio(target_region)
 	var raw := int(payload.get("ladder_effectiveness_raw", 0))
 	var non_ranged := GameParameters.calculate_non_ranged_count(attacker.get_composition())
 	var ladder_ratio := 0.0
@@ -1679,7 +1627,7 @@ func _build_ai_bombard_payload(region: Region, bombard_damage: int, wall_state: 
 	var effective_wall_state: Dictionary = wall_state
 	if effective_wall_state.is_empty():
 		effective_wall_state = region.get_wall_state()
-	var wall_effectiveness_raw := _battle_manager.compute_wall_assault_raw(region)
+	var wall_effectiveness_raw: float = _battle_manager.compute_wall_assault_raw(region)
 	var assault_ratio := clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
 	return {
 		"total_damage": bombard_damage,
@@ -1855,6 +1803,436 @@ func _record_enemy_presence_for_attacker(observer_id: int, target_region: Region
 		if enemy_army.get_player_id() == observer_id:
 			continue
 		record_enemy_army_power(observer_id, enemy_army)
+
+func simulate_siege_battle(attacker: Army, target_region: Region, use_full_wood: bool = false) -> Dictionary:
+	var defenders := _build_simulated_defenders(target_region)
+	var siege_sim := _simulate_ai_siege_preparation(attacker, target_region, use_full_wood)
+	var siege_payload: Dictionary = siege_sim.get("siege_payload", {})
+	var attacker_effectiveness_ratio: float = float(siege_sim.get("attacker_effectiveness_ratio", 1.0))
+	var defense_bonus: int = int(siege_sim.get("defense_bonus", _battle_manager.get_effective_defense_for_region(target_region)))
+	var simulator := BattleSimulator.new()
+	var attacker_comp: ArmyComposition = attacker.get_composition().duplicate()
+	var defender_armies: Array[ArmyComposition] = defenders.get("armies", [])
+	var garrison_comp: ArmyComposition = defenders.get("garrison", null)
+	var report := simulator.simulate_battle(
+		[attacker_comp],
+		defender_armies,
+		garrison_comp,
+		attacker.get_efficiency(),
+		100,
+		target_region.get_region_type(),
+		target_region.get_castle_type(),
+		"Attackers",
+		"Defenders",
+		false,
+		false,
+		defense_bonus,
+		attacker_effectiveness_ratio,
+		siege_payload
+	)
+	return {
+		"report": report,
+		"result": _derive_battle_result_from_report(report),
+		"attacker_effectiveness_ratio": attacker_effectiveness_ratio,
+		"defense_bonus": defense_bonus,
+		"attacker_survivors": _sum_composition(report.final_attacker),
+		"defender_survivors": _sum_composition(report.final_defender),
+		"siege_payload": siege_payload,
+		"uncapped_wood": use_full_wood
+	}
+
+func _build_simulated_defenders(target_region: Region) -> Dictionary:
+	var owner_id: int = _region_manager.get_region_owner(target_region.get_region_id())
+	var defender_armies: Array[ArmyComposition] = []
+	for child in target_region.get_children():
+		if child is Army and child.get_player_id() == owner_id:
+			defender_armies.append((child as Army).get_composition().duplicate())
+	var garrison_source: ArmyComposition = target_region.get_garrison()
+	var garrison_copy: ArmyComposition = ArmyComposition.new()
+	if garrison_source != null:
+		garrison_copy.copy_from(garrison_source)
+	var recruits: int = target_region.get_base_available_recruits()
+	if recruits > 0:
+		garrison_copy.add_soldiers(SoldierTypeEnum.Type.PEASANTS, recruits)
+	return {
+		"armies": defender_armies,
+		"garrison": garrison_copy
+	}
+
+func _simulate_ai_siege_preparation(attacker: Army, target_region: Region, use_full_wood: bool = false) -> Dictionary:
+	var castle_type := target_region.get_castle_type()
+	var default_defense: int = _battle_manager.get_effective_defense_for_region(target_region)
+	if castle_type == CastleTypeEnum.Type.NONE:
+		return {
+			"siege_payload": {},
+			"attacker_effectiveness_ratio": 1.0,
+			"defense_bonus": default_defense
+		}
+	var defense_state := _capture_defense_state(target_region)
+	var siege_counts := _simulate_siege_purchase(attacker, target_region, defense_state, use_full_wood)
+	var bombard_damage: int = 0
+	var apply_trebuchet_damage := true
+	if int(siege_counts.get("trebuchets", 0)) > 0:
+		bombard_damage = _roll_ai_trebuchet_bombard_damage(int(siege_counts["trebuchets"]))
+		if bombard_damage > 0:
+			_apply_wall_damage_to_state(defense_state, bombard_damage)
+		apply_trebuchet_damage = false
+	var siege_payload := _apply_siege_damage_to_state(defense_state, siege_counts, apply_trebuchet_damage)
+	var wall_state := _build_wall_state_from_sim(defense_state)
+	var gate_state := _build_gate_state_from_sim(defense_state)
+	var wall_raw := _compute_wall_assault_raw_from_state(castle_type, wall_state)
+	var wall_ratio := _compute_wall_assault_ratio_from_raw(wall_raw, attacker.get_composition())
+	var gate_ratio := _compute_gate_assault_ratio_from_state(gate_state, attacker.get_composition())
+	var ladder_ratio := _compute_ladder_ratio_from_raw(int(siege_payload.get("ladder_effectiveness_raw", 0)), attacker.get_composition())
+	if int(siege_counts.get("trebuchets", 0)) > 0:
+		siege_payload["trebuchet_bombard"] = _build_simulated_bombard_payload(wall_state, bombard_damage, wall_ratio, gate_ratio, ladder_ratio, castle_type)
+	siege_payload["siege_counts"] = siege_counts.duplicate()
+	siege_payload["gate_state"] = gate_state
+	siege_payload["ladder_effectiveness_ratio"] = ladder_ratio
+	siege_payload["wall_effectiveness_raw"] = wall_raw
+	siege_payload["wall_effectiveness_ratio"] = wall_ratio
+	siege_payload["gate_effectiveness_ratio"] = gate_ratio
+	siege_payload["assault_ratio"] = clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	var attacker_effectiveness_ratio: float = _compute_attacker_effectiveness_ratio(attacker, siege_payload, target_region)
+	var defense_bonus := _compute_defense_bonus_from_state(castle_type, wall_state)
+	return {
+		"siege_payload": siege_payload,
+		"attacker_effectiveness_ratio": attacker_effectiveness_ratio,
+		"defense_bonus": defense_bonus,
+		"wall_state": wall_state,
+		"gate_state": gate_state
+	}
+
+func _capture_defense_state(target_region: Region) -> Dictionary:
+	var gate_state: Dictionary = target_region.get_gate_state()
+	var wall_state: Dictionary = target_region.get_wall_state()
+	return {
+		"gate_hp": int(gate_state.get("gate_hp", 0)),
+		"gate_values": (gate_state.get("gate_values", []) as Array).duplicate(),
+		"wall_section_hp": int(wall_state.get("wall_section_hp", 0)),
+		"wall_values": (wall_state.get("wall_values", []) as Array).duplicate()
+	}
+
+func _simulate_siege_purchase(attacker: Army, target_region: Region, defense_state: Dictionary, use_full_wood: bool) -> Dictionary:
+	var siege_points_total: int = GameParameters.calculate_siege_points_for_composition(attacker.get_composition())
+	var player_id := attacker.get_player_id()
+	var player := player_manager.get_player(player_id)
+	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
+	var wood_growth: int = int(floor(player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD)))
+	var wood_budget: int = _calculate_siege_wood_budget(available_wood, wood_growth)
+	if use_full_wood:
+		wood_budget = available_wood
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var wall_state := _build_wall_state_from_sim(defense_state)
+	var gate_state := _build_gate_state_from_sim(defense_state)
+	var intact_walls: int = 0
+	for hp in wall_state.get("wall_values", []):
+		if int(hp) > 0:
+			intact_walls += 1
+	var intact_gates: int = 0
+	for hp in gate_state.get("gate_values", []):
+		if int(hp) > 0:
+			intact_gates += 1
+	return _battle_manager.plan_siege_purchase(siege_points_total, intact_walls, intact_gates, wood_budget, rng)
+
+func _apply_siege_damage_to_state(defense_state: Dictionary, siege_counts: Dictionary, apply_trebuchet_damage: bool) -> Dictionary:
+	var ladder_count: int = int(siege_counts.get("ladders", 0))
+	var ladder_effectiveness_raw: int = ladder_count * int(PrebattleModal.LADDER_DATA.get("effectiveness", GameParameters.LADDER_EFFECTIVENESS_PER))
+	var ram_damage: int = int(siege_counts.get("rams", 0)) * int(PrebattleModal.RAM_DATA.get("defense", 0))
+	if ram_damage > 0:
+		_apply_gate_damage_to_state(defense_state, ram_damage)
+	var wall_state := _build_wall_state_from_sim(defense_state)
+	if apply_trebuchet_damage:
+		var treb_damage: int = int(siege_counts.get("trebuchets", 0)) * int(PrebattleModal.TREB_DATA.get("defense", 0))
+		if treb_damage > 0:
+			wall_state = _apply_wall_damage_to_state(defense_state, treb_damage)
+	var gate_state := _build_gate_state_from_sim(defense_state)
+	return {
+		"ladder_effectiveness_raw": ladder_effectiveness_raw,
+		"ladder_damage": 0,
+		"wall_sections_destroyed": int(wall_state.get("destroyed_sections", 0)),
+		"wall_sections_damaged": int(wall_state.get("damaged_sections", 0)),
+		"gate_state": gate_state
+	}
+
+func _apply_gate_damage_to_state(defense_state: Dictionary, damage: int) -> void:
+	var gate_values: Array = defense_state.get("gate_values", [])
+	var remaining: int = damage
+	for i in range(gate_values.size()):
+		if remaining <= 0:
+			break
+		var current: int = int(gate_values[i])
+		if current <= 0:
+			continue
+		var applied: int = min(current, remaining)
+		gate_values[i] = max(0, current - applied)
+		remaining -= applied
+	defense_state["gate_values"] = gate_values
+
+func _apply_wall_damage_to_state(defense_state: Dictionary, damage: int) -> Dictionary:
+	var wall_values: Array = defense_state.get("wall_values", [])
+	var remaining: int = damage
+	for i in range(wall_values.size()):
+		if remaining <= 0:
+			break
+		var current: int = int(wall_values[i])
+		if current <= 0:
+			continue
+		var applied: int = min(current, remaining)
+		wall_values[i] = max(0, current - applied)
+		remaining -= applied
+	defense_state["wall_values"] = wall_values
+	return _build_wall_state_from_sim(defense_state)
+
+func _build_gate_state_from_sim(defense_state: Dictionary) -> Dictionary:
+	var gate_values: Array = defense_state.get("gate_values", [])
+	var gate_hp: int = int(defense_state.get("gate_hp", 0))
+	var destroyed := 0
+	var damaged := 0
+	for hp in gate_values:
+		var gate_hp_value: int = int(hp)
+		if gate_hp_value <= 0:
+			destroyed += 1
+		elif gate_hp_value < gate_hp:
+			damaged += 1
+	return {
+		"destroyed_gates": destroyed,
+		"damaged_gates": damaged,
+		"gate_hp": gate_hp,
+		"gates": gate_values.size(),
+		"gate_values": gate_values.duplicate()
+	}
+
+func _build_wall_state_from_sim(defense_state: Dictionary) -> Dictionary:
+	var wall_values: Array = defense_state.get("wall_values", [])
+	var wall_hp: int = int(defense_state.get("wall_section_hp", 0))
+	var destroyed := 0
+	var damaged := 0
+	var section_damage: int = 0
+	for hp in wall_values:
+		var wall_hp_value: int = int(hp)
+		if wall_hp_value <= 0:
+			destroyed += 1
+		elif wall_hp_value < wall_hp:
+			damaged += 1
+			if section_damage == 0:
+				section_damage = wall_hp - wall_hp_value
+	return {
+		"destroyed_sections": destroyed,
+		"damaged_sections": damaged,
+		"wall_section_hp": wall_hp,
+		"wall_sections": wall_values.size(),
+		"section_damage": section_damage,
+		"wall_values": wall_values.duplicate()
+	}
+
+func _compute_wall_assault_raw_from_state(castle_type: CastleTypeEnum.Type, wall_state: Dictionary) -> float:
+	var data: Dictionary = GameParameters.CASTLE_WALLS_GATES.get(castle_type, {})
+	var assault_per_section: int = int(data.get("wall_section_assault", 0))
+	if assault_per_section <= 0:
+		return 0.0
+	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
+	return float(destroyed * assault_per_section)
+
+func _compute_wall_assault_ratio_from_raw(raw: float, attacker_comp: ArmyComposition) -> float:
+	if raw <= 0.0:
+		return 0.0
+	var non_ranged := GameParameters.calculate_non_ranged_count(attacker_comp)
+	if non_ranged <= 0:
+		return 0.0
+	return clampf(raw / float(non_ranged), 0.0, 1.0)
+
+func _compute_gate_assault_ratio_from_state(gate_state: Dictionary, attacker_comp: ArmyComposition) -> float:
+	var gate_hp: int = int(gate_state.get("gate_hp", 0))
+	var gate_values: Array = gate_state.get("gate_values", [])
+	var gates: int = int(gate_state.get("gates", gate_values.size()))
+	if gate_hp <= 0 or gates <= 0:
+		return 0.0
+	var capacity: int = max(1, gates * gate_hp)
+	var missing: int = 0
+	for hp in gate_values:
+		missing += max(0, gate_hp - int(hp))
+	return clampf(float(missing) / float(capacity), 0.0, 1.0)
+
+func _compute_ladder_ratio_from_raw(raw: int, attacker_comp: ArmyComposition) -> float:
+	if raw <= 0:
+		return 0.0
+	var non_ranged := GameParameters.calculate_non_ranged_count(attacker_comp)
+	if non_ranged <= 0:
+		return 0.0
+	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
+
+func _compute_defense_bonus_from_state(castle_type: CastleTypeEnum.Type, wall_state: Dictionary) -> int:
+	var base_def: int = GameParameters.get_castle_defense_bonus(castle_type)
+	var data: Dictionary = GameParameters.CASTLE_WALLS_GATES.get(castle_type, {})
+	var per_section: int = int(data.get("trebuchet_damage_to_defense", 0))
+	var destroyed: int = int(wall_state.get("destroyed_sections", 0))
+	var damaged: int = int(wall_state.get("damaged_sections", 0))
+	var damaged_penalty_per_section: int = int(round(float(per_section) * 0.5))
+	var penalty: int = destroyed * per_section + damaged * damaged_penalty_per_section
+	var min_def: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(castle_type, 0)
+	return max(min_def, base_def - penalty)
+
+func _build_simulated_bombard_payload(wall_state: Dictionary, bombard_damage: int, wall_ratio: float, gate_ratio: float, ladder_ratio: float, castle_type: CastleTypeEnum.Type) -> Dictionary:
+	var wall_raw := _compute_wall_assault_raw_from_state(castle_type, wall_state)
+	var assault_ratio := clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	return {
+		"total_damage": bombard_damage,
+		"destroyed_sections": int(wall_state.get("destroyed_sections", 0)),
+		"damaged_sections": int(wall_state.get("damaged_sections", 0)),
+		"section_damage": int(wall_state.get("section_damage", 0)),
+		"wall_section_hp": int(wall_state.get("wall_section_hp", 0)),
+		"wall_sections": int(wall_state.get("wall_sections", 0)),
+		"wall_effectiveness_raw": wall_raw,
+		"wall_effectiveness_ratio": wall_ratio,
+		"gate_effectiveness_ratio": gate_ratio,
+		"assault_ratio": assault_ratio
+	}
+
+func _sum_composition(comp: Dictionary) -> int:
+	if comp == null:
+		return 0
+	var total := 0
+	for key in comp.keys():
+		total += int(comp[key])
+	return total
+
+func _run_ai_battle_simulation(attacker: Army, target_region: Region) -> Dictionary:
+	var result := simulate_siege_battle(attacker, target_region, false)
+	if String(result.get("result", "defeat")) != "victory":
+		var fallback := simulate_siege_battle(attacker, target_region, true)
+		return fallback
+	return result
+
+func _log_ai_battle_simulation(attacker: Army, target_region: Region, sim_result: Dictionary) -> void:
+	if attacker == null or target_region == null:
+		return
+	ensure_ai_log_started()
+	var siege_payload: Dictionary = sim_result.get("siege_payload", {})
+	var siege_counts: Dictionary = siege_payload.get("siege_counts", {})
+	var trebs: int = int(siege_counts.get("trebuchets", 0))
+	var rams: int = int(siege_counts.get("rams", 0))
+	var ladders: int = int(siege_counts.get("ladders", 0))
+	var assault_ratio: float = float(siege_payload.get("assault_ratio", sim_result.get("attacker_effectiveness_ratio", 0.0)))
+	var defense_bonus: int = int(sim_result.get("defense_bonus", 0))
+	var uncapped: bool = bool(sim_result.get("uncapped_wood", false))
+	var lines: Array[String] = []
+	lines.append("[Simulation]")
+	var wood_label := "Budgeted"
+	if uncapped:
+		wood_label = "None"
+	lines.append("Wood Cap: " + wood_label)
+	lines.append("Bought: %d Trebuchets, %d Battling Rams, %d Ladders" % [trebs, rams, ladders])
+	lines.append("Assault: %d%%" % int(round(assault_ratio * 100.0)))
+	lines.append("Defense: %d%%" % defense_bonus)
+	lines.append("Simulation started")
+	lines.append(_format_attacker_line("Attacker", attacker, attacker.name))
+	var defender_entries := _collect_defender_log_entries(_army_manager.get_armies_in_region(target_region), target_region.get_garrison(), target_region, target_region.get_base_available_recruits(), attacker.get_player_id())
+	for entry in defender_entries:
+		lines.append(_format_defender_pre_line(entry))
+	var sim_report: BattleSimulator.BattleReport = sim_result.get("report", null)
+	var sim_outcome: String = _format_battle_result_label(sim_result.get("result", "defeat"))
+	lines.append("Battle Result: %s" % sim_outcome)
+	var final_attacker_comp: ArmyComposition = _comp_from_dict(sim_report.final_attacker) if sim_report != null else null
+	lines.append(_format_comp_line("Attacker After", attacker.get_display_name(), final_attacker_comp))
+	var defender_sources := _build_simulation_defender_sources(target_region)
+	var final_defender_dict: Dictionary = sim_report.final_defender if sim_report != null else {}
+	var defender_survivors := _allocate_simulation_survivors(defender_sources, final_defender_dict)
+	for survivor_entry in defender_survivors:
+		lines.append(_format_comp_line(survivor_entry.get("label", "Defender After"), survivor_entry.get("label", "Defender After"), survivor_entry.get("comp", null)))
+	lines.append("")
+	for line in lines:
+		_ai_log_manager.log_army_detail(line)
+
+func _comp_from_dict(data: Dictionary) -> ArmyComposition:
+	var comp := ArmyComposition.new()
+	for ut in data.keys():
+		comp.set_soldier_count(ut, int(data[ut]))
+	return comp
+
+func _build_simulation_defender_sources(target_region: Region) -> Array[Dictionary]:
+	var sources: Array[Dictionary] = []
+	var owner_id: int = _region_manager.get_region_owner(target_region.get_region_id())
+	for child in target_region.get_children():
+		if child is Army and child.get_player_id() == owner_id:
+			var army: Army = child
+			var comp := army.get_composition().duplicate()
+			sources.append({"label": army.get_display_name(), "comp": comp})
+	var garrison_copy: ArmyComposition = ArmyComposition.new()
+	var garrison_source: ArmyComposition = target_region.get_garrison()
+	if garrison_source != null:
+		garrison_copy.copy_from(garrison_source)
+	if not garrison_copy.is_empty():
+		sources.append({"label": "Garrison", "comp": garrison_copy})
+	var recruits: int = target_region.get_base_available_recruits()
+	if recruits > 0:
+		var recruits_comp := ArmyComposition.new()
+		recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, recruits)
+		var region_label := target_region.get_region_name()
+		sources.append({"label": "Recruits (" + region_label + ")", "comp": recruits_comp})
+	return sources
+
+func _allocate_simulation_survivors(sources: Array[Dictionary], final_total: Dictionary) -> Array[Dictionary]:
+	var survivors: Array[Dictionary] = []
+	for src in sources:
+		var copy_comp := ArmyComposition.new()
+		var comp: ArmyComposition = src.get("comp", null)
+		if comp != null:
+			copy_comp.copy_from(comp)
+		survivors.append({"label": src.get("label", "Defender After"), "comp": copy_comp})
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var initial_total: int = 0
+		for src in sources:
+			var comp: ArmyComposition = src.get("comp", null)
+			if comp != null:
+				initial_total += comp.get_soldier_count(unit_type)
+		var final_count: int = int(final_total.get(unit_type, 0))
+		var loss: int = max(0, initial_total - final_count)
+		if loss <= 0 or initial_total <= 0:
+			continue
+		var allocations: Array[Dictionary] = []
+		var taken: int = 0
+		for src in sources:
+			var comp: ArmyComposition = src.get("comp", null)
+			if comp == null:
+				continue
+			var count: int = comp.get_soldier_count(unit_type)
+			if count <= 0:
+				continue
+			var share: float = float(loss) * float(count) / float(initial_total)
+			var take: int = int(floor(share))
+			var frac: float = share - float(take)
+			allocations.append({"label": src.get("label", ""), "take": take, "frac": frac})
+			taken += take
+		var remainder: int = loss - taken
+		allocations.sort_custom(func(a, b): return a["frac"] > b["frac"])
+		var idx: int = 0
+		while remainder > 0 and not allocations.is_empty():
+			if idx >= allocations.size():
+				idx = 0
+			allocations[idx]["take"] = int(allocations[idx]["take"]) + 1
+			remainder -= 1
+			idx += 1
+		for alloc in allocations:
+			var label := String(alloc.get("label", ""))
+			var take: int = int(alloc.get("take", 0))
+			if take <= 0:
+				continue
+			for survivor in survivors:
+				if survivor.get("label", "") == label:
+					var comp: ArmyComposition = survivor.get("comp", null)
+					if comp != null:
+						var current := comp.get_soldier_count(unit_type)
+						comp.set_soldier_count(unit_type, max(0, current - take))
+					break
+	return survivors
+
+func _format_comp_line(prefix: String, name: String, comp: ArmyComposition) -> String:
+	if comp == null:
+		return "%s: %s [Power: 0 - none]" % [prefix, name]
+	var power: int = _calculate_composition_power(comp)
+	return "%s: %s [Power: %d - %s]" % [prefix, name, power, _format_composition_suffix(comp)]
 
 func _record_attacker_for_defender(defender_player_id: int, attacking_armies: Array[Army]) -> void:
 	if not is_player_computer(defender_player_id):
