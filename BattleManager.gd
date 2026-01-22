@@ -170,7 +170,9 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 		var attacker_label = "Attacker " + str(attacker.name)
 		var defender_label = "Defender " + str(target_region.get_region_name())
 		var effective_defense = _get_effective_defense_bonus(target_region)
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense, _attacker_effectiveness_ratio, _pending_siege_payload)
+		var ai_log: AILogManager = _game_manager.get_ai_log_manager()
+		var battle_label: String = str(attacker.name) + " -> " + str(target_region.get_region_name())
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense, _attacker_effectiveness_ratio, _pending_siege_payload, ai_log, battle_label)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
@@ -691,8 +693,7 @@ func _apply_battle_losses() -> void:
 		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
 
 	var record_garrison: bool = report != null and report.winner == "Withdrawal"
-	_update_enemy_power_tracking(record_garrison)
-
+	var track_allowed: bool = report != null and report.rounds > 0
 
 	# Cleanup defeated armies ONLY among battle participants
 	for a in _pending_attackers:
@@ -701,6 +702,9 @@ func _apply_battle_losses() -> void:
 	for d in _pending_defenders:
 		if d.get_total_soldiers() <= 0:
 			_handle_battle_defeat(d)
+
+	if track_allowed:
+		_update_enemy_power_tracking(record_garrison)
 	
 	_last_battle_report = null
 
@@ -888,10 +892,14 @@ func _update_enemy_power_tracking(record_garrison: bool) -> void:
 		return
 	for attacker in _pending_attackers:
 		if attacker != null and is_instance_valid(attacker):
+			if attacker.get_total_soldiers() <= 0:
+				continue
 			var observer_id := attacker.get_player_id()
 			_record_enemy_observations(observer_id, _pending_defenders)
 	for defender in _pending_defenders:
 		if defender != null and is_instance_valid(defender):
+			if defender.get_total_soldiers() <= 0:
+				continue
 			var observer_id := defender.get_player_id()
 			_record_enemy_observations(observer_id, _pending_attackers)
 	if record_garrison and _pending_garrison != null and _pending_recruits_region != null:

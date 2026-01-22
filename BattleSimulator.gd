@@ -15,6 +15,7 @@ class BattleReport:
 	var defender_wounded: Dictionary
 	var withdrawing_side: int
 	var siege_payload: Dictionary
+	var gate_plan_log: Array[String]
 	
 	func _init():
 		attacker_losses = {}
@@ -25,6 +26,7 @@ class BattleReport:
 		defender_wounded = {}
 		withdrawing_side = 0
 		siege_payload = {}
+		gate_plan_log = []
 
 func _calculate_non_ranged_from_dict(composition: Dictionary) -> int:
 	var total := 0
@@ -36,6 +38,16 @@ func _calculate_non_ranged_from_dict(composition: Dictionary) -> int:
 			total += count
 	return total
 
+func _calculate_ranged_from_dict(composition: Dictionary) -> int:
+	var total: int = 0
+	for unit_type in composition:
+		var count: int = int(composition[unit_type])
+		if count <= 0:
+			continue
+		if GameParameters.unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_2):
+			total += count
+	return total
+
 func _calculate_gate_ratio_from_raw(raw: int, attackers: Dictionary) -> float:
 	if raw <= 0:
 		return 0.0
@@ -44,24 +56,195 @@ func _calculate_gate_ratio_from_raw(raw: int, attackers: Dictionary) -> float:
 		return 0.0
 	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
 
-func _init_siege_state_from_payload(siege_payload: Dictionary, attackers: Dictionary) -> Dictionary:
+func _calculate_gate_ratio_from_values(gate_hp: int, gate_values: Array, gates: int) -> float:
+	if gate_hp <= 0 or gates <= 0:
+		return 0.0
+	var destroyed: int = 0
+	for hp in gate_values:
+		if float(hp) <= 0.01:
+			destroyed += 1
+	if gate_values.size() < gates:
+		destroyed += gates - gate_values.size()
+	return clampf(float(destroyed) / float(gates), 0.0, 1.0)
+
+func _distribute_value_evenly(total: int, slots: int) -> Array[int]:
+	if slots <= 0:
+		return []
+	var base_per_slot: int = int(total / slots)
+	var remainder: int = total % slots
+	var distribution: Array[int] = []
+	for i in range(slots):
+		var value: int = base_per_slot
+		if i < remainder:
+			value += 1
+		distribution.append(value)
+	return distribution
+
+func _get_breach_chance_for_gate(ram_count: int, ranged_assigned: int) -> float:
+	if ram_count <= 0:
+		return 0.0
+	var chance_table: Dictionary = GameParameters.GATE_BREACH_SUCCESS
+	if chance_table.is_empty():
+		return 0.0
+	var sorted_buckets: Array = chance_table.keys()
+	sorted_buckets.sort()
+	var min_bucket: int = int(sorted_buckets[0])
+	var max_bucket: int = int(sorted_buckets[sorted_buckets.size() - 1])
+	if ranged_assigned < min_bucket:
+		var base_chance: float = float(chance_table[min_bucket])
+		return _scale_missing_archers_chance(base_chance, min_bucket, ranged_assigned)
+	var chosen_bucket: int = min(ranged_assigned, max_bucket)
+	for idx in range(sorted_buckets.size() - 1, -1, -1):
+		var bucket_value: int = int(sorted_buckets[idx])
+		if chosen_bucket >= bucket_value:
+			return float(chance_table[bucket_value])
+	return 0.0
+
+func _get_archer_bucket(ram_count: int, ranged_assigned: int) -> int:
+	if ram_count <= 0:
+		return 0
+	var chance_table: Dictionary = GameParameters.GATE_BREACH_SUCCESS
+	if chance_table.is_empty():
+		return 0
+	var sorted_buckets: Array = chance_table.keys()
+	sorted_buckets.sort()
+	var min_bucket: int = int(sorted_buckets[0])
+	var max_bucket: int = int(sorted_buckets[sorted_buckets.size() - 1])
+	if ranged_assigned <= min_bucket:
+		return min_bucket
+	if ranged_assigned >= max_bucket:
+		return max_bucket
+	for idx in range(sorted_buckets.size() - 1, -1, -1):
+		var bucket_value: int = int(sorted_buckets[idx])
+		if ranged_assigned >= bucket_value:
+			return bucket_value
+	return min_bucket
+
+func _scale_missing_archers_chance(base_chance: float, bucket: int, ranged_assigned: int) -> float:
+	if bucket <= 0:
+		return base_chance
+	var shortage_ratio := clampf(1.0 - float(ranged_assigned) / float(bucket), 0.0, 1.0)
+	return clampf(base_chance + (1.0 - base_chance) * shortage_ratio, 0.0, 1.0)
+
+func _compute_progress_q(chance: float, roll: float) -> float:
+	if chance <= 0.0:
+		return 0.0
+	if roll < chance:
+		return 1.0
+	if roll >= 1.0:
+		return 0.0
+	return 1.0 - ((roll - chance) / (1.0 - chance))
+
+func _sum_ram_hp(queue: Array) -> float:
+	var total: float = 0.0
+	for hp in queue:
+		total += float(hp)
+	return total
+
+func _format_ram_queue(queue: Array) -> String:
+	var parts: Array[String] = []
+	for hp in queue:
+		parts.append(str(snappedf(float(hp), 0.01)))
+	return "[" + ",".join(parts) + "]"
+
+func _build_ram_damage_schedule(total_damage: float, turns: int) -> Array[float]:
+	if turns <= 0 or total_damage <= 0.0:
+		return []
+	var weights: Array[float] = []
+	var weight_sum: float = 0.0
+	for i in range(1, turns + 1):
+		var w := float(i)
+		weights.append(w)
+		weight_sum += w
+	var schedule: Array[float] = []
+	for w in weights:
+		schedule.append(total_damage * (w / weight_sum))
+	return schedule
+
+func _get_ranged_for_gate(siege_state: Dictionary, gate_idx: int) -> int:
+	var ranged_per_gate: Array = siege_state.get("ranged_per_gate", [])
+	if gate_idx < ranged_per_gate.size():
+		return int(ranged_per_gate[gate_idx])
+	return 0
+
+func _start_ram_plan_for_gate(siege_state: Dictionary, gate_idx: int, rng: RandomNumberGenerator) -> void:
+	var gate_values: Array = siege_state.get("gate_values", [])
+	if gate_idx < 0 or gate_idx >= gate_values.size():
+		return
+	var active_rams: Dictionary = siege_state.get("active_rams", {})
+	if not active_rams.has(gate_idx):
+		return
+	var ram_hp: float = float(active_rams.get(gate_idx, 0.0))
+	var gate_hp_current: float = float(gate_values[gate_idx])
+	if gate_hp_current <= 0.0:
+		return
+	var ranged_assigned: int = _get_ranged_for_gate(siege_state, gate_idx)
+	var archers_bucket: int = _get_archer_bucket(1, ranged_assigned)
+	var chance: float = 0.0
+	if archers_bucket > 0:
+		chance = _get_breach_chance_for_gate(1, ranged_assigned)
+	var roll: float = rng.randf()
+	var turns_to_breach: int = rng.randi_range(int(ceil(gate_hp_current)), int(ceil(gate_hp_current)) + 2)
+	var progress_q: float = 0.0
+	if turns_to_breach > 0:
+		progress_q = _compute_progress_q(chance, roll)
+	var gate_damage_per_turn: float = 0.0
+	if progress_q > 0.0 and turns_to_breach > 0:
+		var base_gate_hp: float = float(siege_state.get("gate_hp", gate_hp_current))
+		var gate_damage_total: float = base_gate_hp * progress_q
+		gate_damage_per_turn = gate_damage_total / float(turns_to_breach)
+	var ram_loss_fraction: float = 1.0
+	if chance > 0.0 and roll < chance:
+		ram_loss_fraction = clampf(roll / chance, 0.0, 1.0)
+	var ram_damage_total: float = ram_hp * ram_loss_fraction
+	var ram_damage_schedule: Array[float] = _build_ram_damage_schedule(ram_damage_total, turns_to_breach)
+	var plan := {
+		"chance": chance,
+		"roll": roll,
+		"progress_q": progress_q,
+		"turns_to_breach": turns_to_breach,
+		"turns_elapsed": 0,
+		"gate_damage_per_turn": gate_damage_per_turn,
+		"ram_damage_schedule": ram_damage_schedule,
+		"archer_bucket": archers_bucket,
+		"ranged_assigned": ranged_assigned,
+		"ram_loss_fraction": ram_loss_fraction,
+		"ram_hp_start": ram_hp,
+		"gate_hp_start": gate_hp_current
+	}
+	var gate_plans: Dictionary = siege_state.get("gate_plans", {})
+	var active_plan_by_gate: Dictionary = siege_state.get("active_plan_by_gate", {})
+	if gate_plans.has(gate_idx):
+		gate_plans[gate_idx].append(plan)
+	else:
+		gate_plans[gate_idx] = [plan]
+	active_plan_by_gate[gate_idx] = plan
+	siege_state["gate_plans"] = gate_plans
+	siege_state["active_plan_by_gate"] = active_plan_by_gate
+	DebugLogger.log("siege", "[Plan] gate=" + str(gate_idx + 1) + " P=" + str(snappedf(chance, 0.001)) + " roll=" + str(snappedf(roll, 0.001)) + " q=" + str(snappedf(progress_q, 0.001)) + " T=" + str(turns_to_breach) + " gate_dpt=" + str(snappedf(gate_damage_per_turn, 0.001)) + " ram_hp=" + str(snappedf(ram_hp, 0.01)) + " ram_frac=" + str(snappedf(ram_loss_fraction, 0.001)))
+
+func _init_siege_state_from_payload(siege_payload: Dictionary, attackers: Dictionary, defenders: Dictionary = {}, rng: RandomNumberGenerator = null) -> Dictionary:
 	if siege_payload.is_empty():
 		DebugLogger.log("BattleCalculation", "[Siege] No siege payload provided.")
 		return {}
+	var local_rng: RandomNumberGenerator = rng
+	if local_rng == null:
+		local_rng = RandomNumberGenerator.new()
+		local_rng.randomize()
 	var gate_state: Dictionary = siege_payload.get("gate_state", {})
 	var gate_hp: int = int(gate_state.get("gate_hp", 0))
 	var gate_values_raw: Array = gate_state.get("gate_values", [])
 	var gates: int = int(gate_state.get("gates", gate_values_raw.size()))
-	var gate_values: Array[int] = []
+	var gate_values: Array[float] = []
 	if gate_values_raw.is_empty() and gates > 0 and gate_hp > 0:
 		for i in range(gates):
-			gate_values.append(gate_hp)
+			gate_values.append(float(gate_hp))
 	else:
 		for i in range(gate_values_raw.size()):
-			gate_values.append(int(gate_values_raw[i]))
+			gate_values.append(float(gate_values_raw[i]))
 		if gates > gate_values.size():
 			for i in range(gate_values.size(), gates):
-				gate_values.append(gate_hp)
+				gate_values.append(float(gate_hp))
 	var siege_counts: Dictionary = siege_payload.get("siege_counts", {})
 	var total_rams: int = int(siege_counts.get("rams", 0))
 	var ladder_ratio := float(siege_payload.get("ladder_effectiveness_ratio", -1.0))
@@ -72,89 +255,90 @@ func _init_siege_state_from_payload(siege_payload: Dictionary, attackers: Dictio
 		else:
 			ladder_ratio = 0.0
 	var wall_ratio := clampf(float(siege_payload.get("wall_effectiveness_ratio", 0.0)), 0.0, 1.0)
+	var ranged_total: int = _calculate_ranged_from_dict(defenders)
+	var ranged_per_gate: Array[int] = _distribute_value_evenly(ranged_total, gates)
+	var gate_plans: Dictionary = {}
+	var active_plan_by_gate: Dictionary = {}
+	var active_rams: Dictionary = {}
+	var reserve_rams: Array[float] = []
+	var assignable: int = min(total_rams, gates)
+	for i in range(assignable):
+		active_rams[i] = float(GameParameters.SIEGE_RAM_HP)
+	for i in range(assignable, total_rams):
+		reserve_rams.append(float(GameParameters.SIEGE_RAM_HP))
+	for gate_idx in range(gates):
+		gate_plans[gate_idx] = []
+		active_plan_by_gate[gate_idx] = null
 	return {
 		"gate_hp": gate_hp,
 		"gate_values": gate_values,
 		"gates": gates,
 		"total_rams": total_rams,
-		"active_assignments": {},
-		"ram_hp_by_gate": {},
+		"active_rams": active_rams,
+		"reserve_rams": reserve_rams,
+		"gate_plans": gate_plans,
+		"active_plan_by_gate": active_plan_by_gate,
 		"gate_assault_raw": 0,
 		"ladder_ratio": clampf(ladder_ratio, 0.0, 1.0),
-		"wall_ratio": wall_ratio
+		"wall_ratio": wall_ratio,
+		"ranged_per_gate": ranged_per_gate,
+		"ram_damage_managed": true,
+		"non_ranged_attackers": _calculate_non_ranged_from_dict(attackers)
 	}
-	DebugLogger.log("BattleCalculation", "[Siege] Payload init: gates=" + str(gates) + ", gate_hp=" + str(gate_hp) + ", rams=" + str(total_rams) + ", ladder_ratio=" + str(ladder_ratio) + ", wall_ratio=" + str(wall_ratio))
 
-func _cleanup_destroyed_gate_assignments(siege_state: Dictionary) -> void:
+func _rebalance_active_rams(siege_state: Dictionary) -> void:
 	var gate_values: Array = siege_state.get("gate_values", [])
-	var to_remove: Array[int] = []
-	for gate_idx in siege_state.get("active_assignments", {}).keys():
-		var idx: int = int(gate_idx)
-		if idx < 0 or idx >= gate_values.size():
+	var active_rams: Dictionary = siege_state.get("active_rams", {})
+	var reserve_rams: Array = siege_state.get("reserve_rams", [])
+	for gate_idx in range(gate_values.size()):
+		var gate_hp: float = float(gate_values[gate_idx])
+		if gate_hp <= 0.0:
+			if active_rams.has(gate_idx):
+				var returning_hp: float = float(active_rams[gate_idx])
+				if returning_hp > 0.0:
+					reserve_rams.append(returning_hp)
+				active_rams.erase(gate_idx)
 			continue
-		if int(gate_values[idx]) <= 0:
-			to_remove.append(idx)
-	for idx in to_remove:
-		siege_state["active_assignments"].erase(idx)
-		var ram_hp_by_gate: Dictionary = siege_state.get("ram_hp_by_gate", {})
-		if ram_hp_by_gate.has(idx):
-			ram_hp_by_gate.erase(idx)
-		siege_state["ram_hp_by_gate"] = ram_hp_by_gate
-
-func _assign_rams_to_gates(siege_state: Dictionary) -> void:
-	_cleanup_destroyed_gate_assignments(siege_state)
-	var gate_values: Array = siege_state.get("gate_values", [])
-	var gates: int = int(siege_state.get("gates", 0))
-	var total_rams: int = int(siege_state.get("total_rams", 0))
-	var max_active: int = min(gates, total_rams)
-	var ram_hp_by_gate: Dictionary = siege_state.get("ram_hp_by_gate", {})
-	for i in range(gates):
-		if siege_state["active_assignments"].size() >= max_active:
-			break
-		if i >= gate_values.size():
+		if active_rams.has(gate_idx):
 			continue
-		var gate_hp: int = int(gate_values[i])
-		if gate_hp <= 0:
+		if reserve_rams.is_empty():
 			continue
-		if not siege_state["active_assignments"].has(i):
-			siege_state["active_assignments"][i] = true
-			if not ram_hp_by_gate.has(i):
-				ram_hp_by_gate[i] = GameParameters.SIEGE_RAM_HP
-	siege_state["ram_hp_by_gate"] = ram_hp_by_gate
+		var next_hp: float = float(reserve_rams.pop_back())
+		active_rams[gate_idx] = next_hp
+	siege_state["active_rams"] = active_rams
+	siege_state["reserve_rams"] = reserve_rams
+	siege_state["total_rams"] = active_rams.size() + reserve_rams.size()
 	DebugLogger.log("BattleCalculation", "[Siege] Rams assigned: active=" + str(_get_active_ram_count(siege_state)) + ", reserve=" + str(_get_reserve_ram_count(siege_state)))
 
 func _get_active_ram_count(siege_state: Dictionary) -> int:
-	return int(siege_state.get("active_assignments", {}).size())
+	return int(siege_state.get("active_rams", {}).size())
 
 func _get_reserve_ram_count(siege_state: Dictionary) -> int:
-	var total_rams: int = int(siege_state.get("total_rams", 0))
-	var active: int = _get_active_ram_count(siege_state)
-	return max(0, total_rams - active)
+	return int(siege_state.get("reserve_rams", []).size())
 
 func _apply_ram_damage(siege_state: Dictionary, hits: int, rng: RandomNumberGenerator) -> void:
 	if hits <= 0:
 		return
-	var active_keys: Array = siege_state.get("active_assignments", {}).keys()
+	_rebalance_active_rams(siege_state)
+	var active_rams: Dictionary = siege_state.get("active_rams", {})
+	var active_keys: Array = active_rams.keys()
 	if active_keys.is_empty():
 		return
-	var ram_hp_by_gate: Dictionary = siege_state.get("ram_hp_by_gate", {})
 	var destroyed: int = 0
 	for i in range(hits):
 		if active_keys.is_empty():
 			break
 		var idx: int = int(active_keys[rng.randi() % active_keys.size()])
-		var current_hp: int = int(ram_hp_by_gate.get(idx, GameParameters.SIEGE_RAM_HP))
-		current_hp = max(0, current_hp - 1)
-		if current_hp <= 0:
-			siege_state["active_assignments"].erase(idx)
-			ram_hp_by_gate.erase(idx)
+		var current_hp: float = float(active_rams.get(idx, 0.0)) - 1.0
+		if current_hp <= 0.0:
+			active_rams.erase(idx)
 			siege_state["total_rams"] = max(0, int(siege_state.get("total_rams", 0)) - 1)
 			destroyed += 1
-			active_keys = siege_state.get("active_assignments", {}).keys()
 		else:
-			ram_hp_by_gate[idx] = current_hp
-	siege_state["ram_hp_by_gate"] = ram_hp_by_gate
-	_assign_rams_to_gates(siege_state)
+			active_rams[idx] = current_hp
+		active_keys = active_rams.keys()
+	siege_state["active_rams"] = active_rams
+	_rebalance_active_rams(siege_state)
 	var active_after: int = _get_active_ram_count(siege_state)
 	var reserve_after: int = _get_reserve_ram_count(siege_state)
 	DebugLogger.log("BattleCalculation", "[Siege] Rams took " + str(hits) + " hits, destroyed=" + str(destroyed) + ", active=" + str(active_after) + ", reserve=" + str(reserve_after))
@@ -162,48 +346,106 @@ func _apply_ram_damage(siege_state: Dictionary, hits: int, rng: RandomNumberGene
 func _allocate_hits_to_rams(hits: int, target_army: Dictionary, siege_state: Dictionary, rng: RandomNumberGenerator) -> int:
 	if hits <= 0:
 		return 0
+	if siege_state.get("ram_damage_managed", false):
+		return 0
 	var active_rams: int = _get_active_ram_count(siege_state)
 	if active_rams <= 0:
 		DebugLogger.log("BattleCalculation", "[Siege] Ram targeting skipped: no active rams, hits=" + str(hits))
 		return 0
-	var unit_pool: int = _army_size(target_army)
-	var ram_weight: int = active_rams * GameParameters.SIEGE_RAM_SIZE
-	var total_weight: int = unit_pool + ram_weight
-	if total_weight <= 0:
-		return 0
-	var ram_ratio := float(ram_weight) / float(total_weight)
-	var ram_hits := _apply_multiplier_stochastic(hits, ram_ratio, rng)
-	DebugLogger.log("BattleCalculation", "[Siege] Ram targeting: hits=" + str(hits) + ", ram_hits=" + str(ram_hits) + ", active_rams=" + str(active_rams) + ", unit_pool=" + str(unit_pool) + ", ram_weight=" + str(ram_weight))
+	var focus_cap: int = active_rams * GameParameters.SIEGE_RAM_FOCUS_RANGED
+	var ram_hits: int = min(hits, focus_cap)
+	DebugLogger.log("BattleCalculation", "[Siege] Ram targeting: hits=" + str(hits) + ", ram_hits=" + str(ram_hits) + ", active_rams=" + str(active_rams) + ", focus_cap=" + str(focus_cap))
 	if ram_hits <= 0:
 		return 0
 	_apply_ram_damage(siege_state, ram_hits, rng)
 	return ram_hits
 
+func _apply_structured_ram_damage(siege_state: Dictionary, gate_idx: int, damage: float) -> void:
+	if damage <= 0.0:
+		return
+	var active_rams: Dictionary = siege_state.get("active_rams", {})
+	if not active_rams.has(gate_idx):
+		return
+	var current_hp: float = float(active_rams.get(gate_idx, 0.0))
+	var remaining: float = damage
+	var new_hp: float = current_hp - remaining
+	if new_hp <= 0.01:
+		remaining = max(0.0, -new_hp)
+		active_rams.erase(gate_idx)
+		siege_state["total_rams"] = max(0, int(siege_state.get("total_rams", 0)) - 1)
+	else:
+		active_rams[gate_idx] = new_hp
+	siege_state["active_rams"] = active_rams
+	_rebalance_active_rams(siege_state)
+
 func _process_siege_ram_attacks(siege_state: Dictionary, rng: RandomNumberGenerator) -> void:
 	if siege_state.is_empty():
 		return
-	if int(siege_state.get("total_rams", 0)) <= 0:
-		return
-	_assign_rams_to_gates(siege_state)
 	var gate_values: Array = siege_state.get("gate_values", [])
-	var gates: int = int(siege_state.get("gates", 0))
-	var to_remove: Array[int] = []
-	for gate_idx in siege_state.get("active_assignments", {}).keys():
-		var idx: int = int(gate_idx)
-		if idx < 0 or idx >= gates:
+	var gate_plans: Dictionary = siege_state.get("gate_plans", {})
+	var active_plan_by_gate: Dictionary = siege_state.get("active_plan_by_gate", {})
+	var active_rams: Dictionary = siege_state.get("active_rams", {})
+	_rebalance_active_rams(siege_state)
+	for gate_idx in range(gate_values.size()):
+		if float(gate_values[gate_idx]) <= 0.0:
+			active_plan_by_gate[gate_idx] = {}
 			continue
-		if rng.randf() <= 0.75:
-			gate_values[idx] = max(0, int(gate_values[idx]) - 1)
-		if int(gate_values[idx]) <= 0:
-			to_remove.append(idx)
-	for idx in to_remove:
-		siege_state["active_assignments"].erase(idx)
+		if not active_rams.has(gate_idx):
+			active_plan_by_gate[gate_idx] = {}
+			continue
+		var plan = active_plan_by_gate.get(gate_idx, {})
+		if plan == null or plan.is_empty():
+			_start_ram_plan_for_gate(siege_state, gate_idx, rng)
+			plan = active_plan_by_gate.get(gate_idx, {})
+			if plan == null or plan.is_empty():
+				DebugLogger.log("siege", "[PlanMiss] gate=" + str(gate_idx + 1) + " active_ram=" + str(snappedf(float(active_rams.get(gate_idx, 0.0)), 0.01)))
+				continue
+		var turns_to_breach: int = int(plan.get("turns_to_breach", 0))
+		if turns_to_breach <= 0:
+			active_plan_by_gate[gate_idx] = {}
+			continue
+		var turns_elapsed: int = int(plan.get("turns_elapsed", 0))
+		if turns_elapsed >= turns_to_breach:
+			active_plan_by_gate[gate_idx] = {}
+			continue
+		var gate_hp_before: float = float(gate_values[gate_idx])
+		var ram_hp_before: float = float(active_rams.get(gate_idx, 0.0))
+		turns_elapsed += 1
+		plan["turns_elapsed"] = turns_elapsed
+		var gate_hp_after: float = gate_hp_before
+		var damage_per_turn: float = float(plan.get("gate_damage_per_turn", 0.0))
+		if damage_per_turn > 0.0:
+			gate_values[gate_idx] = max(0.0, gate_hp_after - damage_per_turn)
+			gate_hp_after = float(gate_values[gate_idx])
+		var ram_dmg_log: float = 0.0
+		var ram_schedule: Array = plan.get("ram_damage_schedule", [])
+		if turns_elapsed - 1 < ram_schedule.size():
+			ram_dmg_log = float(ram_schedule[turns_elapsed - 1])
+			if ram_dmg_log > 0.0:
+				_apply_structured_ram_damage(siege_state, gate_idx, ram_dmg_log)
+		var ram_hp_after: float = float(siege_state.get("active_rams", {}).get(gate_idx, 0.0))
+		var gate_dpt_log: float = damage_per_turn
+		DebugLogger.log("siege", "[Tick] gate=" + str(gate_idx + 1) + " turn=" + str(turns_elapsed) + "/" + str(turns_to_breach) + " gate_hp " + str(snappedf(gate_hp_before, 0.01)) + "->" + str(snappedf(gate_hp_after, 0.01)) + " gate_dmg=" + str(snappedf(gate_dpt_log, 0.01)) + " ram_dmg=" + str(snappedf(ram_dmg_log, 0.01)) + " ram_hp " + str(snappedf(ram_hp_before, 0.01)) + "->" + str(snappedf(ram_hp_after, 0.01)))
+		if gate_hp_before > 0.0 and gate_hp_after <= 0.01:
+			var current_raw: int = int(siege_state.get("gate_assault_raw", 0))
+			siege_state["gate_assault_raw"] = current_raw + 5
+			DebugLogger.log("siege", "[GateRaw] instant +5 (gate down) raw_before=" + str(current_raw) + " raw_after=" + str(siege_state["gate_assault_raw"]))
+			if siege_state.get("active_rams", {}).has(gate_idx):
+				var return_hp: float = float(siege_state.get("active_rams", {}).get(gate_idx, 0.0))
+				siege_state["reserve_rams"].append(return_hp)
+				siege_state["active_rams"].erase(gate_idx)
+		if turns_elapsed >= turns_to_breach or not siege_state.get("active_rams", {}).has(gate_idx) or gate_hp_after <= 0.0:
+			active_plan_by_gate[gate_idx] = {}
+		else:
+			active_plan_by_gate[gate_idx] = plan
 	siege_state["gate_values"] = gate_values
+	siege_state["active_plan_by_gate"] = active_plan_by_gate
+	_rebalance_active_rams(siege_state)
 
 func _count_destroyed_gates(gate_values: Array) -> int:
 	var destroyed := 0
 	for hp in gate_values:
-		if int(hp) <= 0:
+		if float(hp) <= 0.01:
 			destroyed += 1
 	return destroyed
 
@@ -211,7 +453,10 @@ func _increment_gate_assault_raw(siege_state: Dictionary) -> void:
 	var gate_values: Array = siege_state.get("gate_values", [])
 	var destroyed := _count_destroyed_gates(gate_values)
 	var current_raw: int = int(siege_state.get("gate_assault_raw", 0))
-	siege_state["gate_assault_raw"] = current_raw + destroyed * 5
+	var added := destroyed * 5
+	var new_raw: int = current_raw + added
+	siege_state["gate_assault_raw"] = new_raw
+	DebugLogger.log("siege", "[GateRaw] destroyed=" + str(destroyed) + " added=" + str(added) + " raw_before=" + str(current_raw) + " raw_after=" + str(new_raw))
 
 func _calculate_siege_assault_ratio(siege_state: Dictionary, attackers: Dictionary) -> float:
 	if siege_state.is_empty():
@@ -219,23 +464,29 @@ func _calculate_siege_assault_ratio(siege_state: Dictionary, attackers: Dictiona
 	var ladder_ratio := float(siege_state.get("ladder_ratio", 0.0))
 	var wall_ratio := float(siege_state.get("wall_ratio", 0.0))
 	var gate_raw: int = int(siege_state.get("gate_assault_raw", 0))
-	var gate_ratio := _calculate_gate_ratio_from_raw(gate_raw, attackers)
-	return clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	var non_ranged := _calculate_non_ranged_from_dict(attackers)
+	var gate_ratio_raw := _calculate_gate_ratio_from_raw(gate_raw, attackers)
+	var gate_ratio := gate_ratio_raw
+	var total := clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	DebugLogger.log("siege", "[Assault] ladder=" + str(snappedf(ladder_ratio, 0.01)) + " wall=" + str(snappedf(wall_ratio, 0.01)) + " gate_raw=" + str(gate_raw) + " non_ranged=" + str(non_ranged) + " gate_ratio=" + str(snappedf(gate_ratio, 0.01)) + " total=" + str(snappedf(total, 0.01)))
+	return total
 
 func _build_gate_state_payload(siege_state: Dictionary) -> Dictionary:
 	if siege_state.is_empty():
 		return {}
 	var gates: int = int(siege_state.get("gates", 0))
 	var ram_hp_array: Array = []
-	var ram_hp_by_gate: Dictionary = siege_state.get("ram_hp_by_gate", {})
+	var active_rams: Dictionary = siege_state.get("active_rams", {})
 	for i in range(gates):
-		ram_hp_array.append(int(ram_hp_by_gate.get(i, 0)))
+		ram_hp_array.append(int(ceil(float(active_rams.get(i, 0.0)))))
 	return {
 		"gate_hp": int(siege_state.get("gate_hp", 0)),
 		"gates": int(siege_state.get("gates", 0)),
 		"gate_values": (siege_state.get("gate_values", []) as Array).duplicate(),
 		"ram_hp": ram_hp_array,
-		"ram_hp_max": GameParameters.SIEGE_RAM_HP
+		"ram_hp_max": GameParameters.SIEGE_RAM_HP,
+		"reserve_rams": _get_reserve_ram_count(siege_state),
+		"active_rams": _get_active_ram_count(siege_state)
 	}
 
 func _build_siege_payload_output(siege_state: Dictionary, original_payload: Dictionary, attackers: Dictionary) -> Dictionary:
@@ -243,13 +494,73 @@ func _build_siege_payload_output(siege_state: Dictionary, original_payload: Dict
 		return original_payload
 	var output := original_payload.duplicate(true)
 	output["gate_state"] = _build_gate_state_payload(siege_state)
-	output["gate_assault_raw"] = int(siege_state.get("gate_assault_raw", 0))
-	output["gate_effectiveness_ratio"] = _calculate_gate_ratio_from_raw(int(siege_state.get("gate_assault_raw", 0)), attackers)
+	var gate_hp: int = int(siege_state.get("gate_hp", 0))
+	var gates: int = int(siege_state.get("gates", 0))
+	var gate_values: Array = siege_state.get("gate_values", [])
+	var gate_raw: int = int(siege_state.get("gate_assault_raw", 0))
+	output["gate_assault_raw"] = gate_raw
+	output["gate_effectiveness_ratio"] = _calculate_gate_ratio_from_raw(gate_raw, attackers)
 	output["assault_ratio"] = _calculate_siege_assault_ratio(siege_state, attackers)
 	return output
 
+func _build_gate_plan_log_lines(siege_state: Dictionary, battle_label: String) -> Array[String]:
+	if siege_state.is_empty():
+		return []
+	var gate_plans: Dictionary = siege_state.get("gate_plans", {})
+	if gate_plans.is_empty():
+		return []
+	var gate_values: Array = siege_state.get("gate_values", [])
+	var keys: Array = gate_plans.keys()
+	keys.sort()
+	var lines: Array[String] = []
+	var header: String = "Siege breach rolls"
+	if battle_label != "":
+		header += " - " + battle_label
+	lines.append(header)
+	for gate_key in keys:
+		var idx: int = int(gate_key)
+		var plan_list: Array = gate_plans[gate_key]
+		if plan_list.is_empty():
+			continue
+		lines.append("Gate %d: " % (idx + 1))
+		var gate_hp_value: float = float(siege_state.get("gate_hp", 0))
+		if idx < gate_values.size():
+			gate_hp_value = float(gate_values[idx])
+		for i in range(plan_list.size()):
+			var plan: Dictionary = plan_list[i]
+			var chance: float = float(plan.get("chance", 0.0))
+			var roll: float = float(plan.get("roll", 0.0))
+			var chance_pct: int = int(round(chance * 100.0))
+			var roll_pct: int = int(round(roll * 100.0))
+			var turns: int = int(plan.get("turns_to_breach", 0))
+			var gate_dpt: float = float(plan.get("gate_damage_per_turn", 0.0))
+			var ram_schedule: Array = plan.get("ram_damage_schedule", [])
+			var ram_total_loss: float = 0.0
+			for dmg in ram_schedule:
+				ram_total_loss += float(dmg)
+			var ram_dpt: float = 0.0
+			if turns > 0:
+				ram_dpt = ram_total_loss / float(turns)
+			var bucket: int = int(plan.get("archer_bucket", 0))
+			var progress_q: float = float(plan.get("progress_q", 0.0))
+			var ranged_assigned: int = int(plan.get("ranged_assigned", 0))
+			lines.append("  Ram %d: ranged %d (bucket %d), roll %d/%d, turns %d, q=%.2f, gate_dpt=%.2f (hp=%.1f), ram_dpt=%.2f" % [
+				i + 1,
+				ranged_assigned,
+				bucket,
+				roll_pct,
+				chance_pct,
+				turns,
+				progress_q,
+				gate_dpt,
+				gate_hp_value,
+				ram_dpt
+			])
+	lines.append("")
+	return lines
+
 # Main battle function - accepts arrays of compositions for each side
-func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}) -> BattleReport:
+func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}, ai_log: AILogManager = null, ai_log_label: String = "") -> BattleReport:
 	"""
 	Simulate a battle between multiple armies and defenders
 	attacking_armies: Array of ArmyComposition objects
@@ -276,13 +587,16 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	var attacker_stats := {}
 	var defender_stats := {}
 	var siege_state: Dictionary = {}
+	var report = BattleReport.new()
+	report.siege_payload = siege_payload
 	
 	# Store original compositions for loss calculation
 	var original_attackers = _copy_composition_dict(merged_attackers)
 	var original_defenders = _copy_composition_dict(merged_defenders)
 	if is_siege_battle and not siege_payload.is_empty():
-		siege_state = _init_siege_state_from_payload(siege_payload, merged_attackers)
-		_assign_rams_to_gates(siege_state)
+		siege_state = _init_siege_state_from_payload(siege_payload, merged_attackers, merged_defenders, rng)
+		_rebalance_active_rams(siege_state)
+		report.gate_plan_log = _build_gate_plan_log_lines(siege_state, ai_log_label)
 		attacker_effectiveness_ratio = _calculate_siege_assault_ratio(siege_state, merged_attackers)
 		DebugLogger.log("BattleCalculation", "[Siege] Init siege state: total_rams=" + str(int(siege_state.get("total_rams", 0))) + ", active=" + str(_get_active_ram_count(siege_state)) + ", reserve=" + str(_get_reserve_ram_count(siege_state)))
 	else:
@@ -292,8 +606,6 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	if DebugLogger.is_category_enabled("BattleCalculation") or DebugLogger.is_category_enabled("BattleSystem"):
 		DebugLogger.log("BattleCalculation", "Assault effectiveness ratio=" + str(snappedf(attacker_effectiveness_value * 100.0, 0.1)) + "% (applied to non-ranged attackers)")
 	
-	var report = BattleReport.new()
-	report.siege_payload = siege_payload
 	var rounds = 0
 	var max_rounds = 1000
 	

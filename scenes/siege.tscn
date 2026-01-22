@@ -173,7 +173,7 @@ custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "20%"
+text = "100%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Body/Gate1Body/Gate1"]
 custom_minimum_size = Vector2(10, 0)
@@ -186,7 +186,7 @@ size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
 theme_override_styles/fill = SubResource("StyleBoxTexture_pkuo3")
 step = 1.0
-value = 23.0
+value = 100.0
 show_percentage = false
 
 [node name="Ram1" type="HBoxContainer" parent="Body/Gate1Body"]
@@ -247,7 +247,7 @@ custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "90%"
+text = "100%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Body/Gate2Body/Gate2"]
 custom_minimum_size = Vector2(10, 0)
@@ -260,7 +260,7 @@ size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
 theme_override_styles/fill = SubResource("StyleBoxTexture_pkuo3")
 step = 1.0
-value = 90.0
+value = 100.0
 show_percentage = false
 
 [node name="Ram2" type="HBoxContainer" parent="Body/Gate2Body"]
@@ -282,7 +282,7 @@ custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "75%"
+text = "100%"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Body/Gate2Body/Ram2"]
 custom_minimum_size = Vector2(10, 0)
@@ -295,7 +295,7 @@ size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
 theme_override_styles/fill = SubResource("StyleBoxTexture_pkuo3")
 step = 1.0
-value = 75.0
+value = 100.0
 show_percentage = false
 
 [node name="MarginContainer3" type="MarginContainer" parent="Body"]
@@ -349,26 +349,27 @@ layout_mode = 2
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
+text = "Siege Ram"
 
 [node name="Value" type="Label" parent="Body/Gate3Body/Ram3"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "100%"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Body/Gate3Body/Ram3"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate3Body/Ram3"]
-visible = false
 custom_minimum_size = Vector2(96, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
 theme_override_styles/fill = SubResource("StyleBoxTexture_pkuo3")
 step = 1.0
-value = 23.0
+value = 100.0
 show_percentage = false
 
 [node name="MarginContainer2" type="MarginContainer" parent="Body"]
@@ -393,6 +394,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "2"
 
 [node name="TargetGates" type="HBoxContainer" parent="Body"]
+visible = false
 layout_mode = 2
 theme = ExtResource("2_nbqv0")
 
@@ -403,6 +405,7 @@ theme = ExtResource("3_6srto")
 text = "Target Gates:"
 
 [node name="GatesSelector" type="HBoxContainer" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 12.0
 offset_top = 540.0

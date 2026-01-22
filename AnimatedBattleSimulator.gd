@@ -32,6 +32,8 @@ var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_defense_override: int = -1
 var current_garrison_composition: Dictionary = {}
 var is_siege_battle: bool = false
+var previous_power_ratio: float = -1.0
+var losing_ratio_streak: int = 0
 var attacker_effectiveness_ratio: float = 0.0
 var siege_state: Dictionary = {}
 var siege_payload_base: Dictionary = {}
@@ -61,6 +63,8 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	siege_state = {}
 	siege_payload_base = {}
 	current_round = 0
+	previous_power_ratio = -1.0
+	losing_ratio_streak = 0
 	is_withdrawing = false
 	withdrawal_rounds_remaining = 0
 	mobility_withdrawal_rounds_remaining = 0
@@ -81,8 +85,6 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	is_siege_battle = castle_type != CastleTypeEnum.Type.NONE
 	battle_timer.wait_time = GameParameters.get_battle_round_time()
 	siege_payload_base = siege_payload.duplicate(true)
-	if is_siege_battle and not siege_payload_base.is_empty():
-		siege_state = battle_simulator._init_siege_state_from_payload(siege_payload_base, {})
 	DebugLogger.log("BattleAnimation", "Battle start flags: attacker_can_withdraw=" + str(attacker_can_withdraw) + ", defender_can_withdraw=" + str(defender_can_withdraw))
 	
 	# Merge all attacking forces
@@ -98,9 +100,9 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 	# Store original compositions for loss calculation
 	original_attackers = battle_simulator._copy_composition_dict(current_attackers)
 	original_defenders = battle_simulator._copy_composition_dict(current_defenders)
-	if is_siege_battle and not siege_state.is_empty():
-		siege_state = battle_simulator._init_siege_state_from_payload(siege_payload_base, current_attackers)
-		battle_simulator._assign_rams_to_gates(siege_state)
+	if is_siege_battle and not siege_payload_base.is_empty():
+		siege_state = battle_simulator._init_siege_state_from_payload(siege_payload_base, current_attackers, current_defenders)
+		battle_simulator._rebalance_active_rams(siege_state)
 		attacker_effectiveness_ratio = battle_simulator._calculate_siege_assault_ratio(siege_state, current_attackers)
 	
 	DebugLogger.log("BattleAnimation", "Starting animated battle...")
@@ -268,6 +270,7 @@ func _finish_battle() -> void:
 	report.withdrawing_side = withdrawing_side
 	if is_siege_battle:
 		report.siege_payload = battle_simulator._build_siege_payload_output(siege_state, siege_payload_base, current_attackers)
+		report.gate_plan_log = battle_simulator._build_gate_plan_log_lines(siege_state, "")
 	
 	DebugLogger.log("BattleAnimation", "Battle finished! Winner: " + winner + " in " + str(current_round) + " rounds")
 	
@@ -336,6 +339,8 @@ func _apply_withdrawal_casualties_to_defenders(kills: Dictionary, defender_casua
 func _try_start_withdrawal(rng: RandomNumberGenerator) -> bool:
 	if is_withdrawing:
 		return false
+	if is_siege_battle:
+		return _try_start_withdrawal_siege(rng)
 	var atk_power: int = _compute_power(current_attackers)
 	var def_power: int = _compute_power(current_defenders)
 	if atk_power <= 0 or def_power <= 0:
@@ -365,7 +370,7 @@ func _try_start_withdrawal(rng: RandomNumberGenerator) -> bool:
 		return false
 
 	if ratio <= GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE:
-		DebugLogger.log("BattleAnimation", "Forced withdrawal triggered. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
+		DebugLogger.log("Withdrawal", "Forced withdrawal triggered. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
 		ai_withdrawal_started.emit()
 		start_withdrawal_round(withdrawing)
 		return true
@@ -373,9 +378,41 @@ func _try_start_withdrawal(rng: RandomNumberGenerator) -> bool:
 	var chance: float = clampf(gap, 0.0, 1.0)
 	var roll := rng.randf()
 	if roll < chance:
-		DebugLogger.log("BattleAnimation", "Withdrawal roll passed. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)) + " roll=" + str(snappedf(roll, 0.003)) + " chance=" + str(snappedf(chance, 0.003)))
+		DebugLogger.log("Withdrawal", "Withdrawal roll passed. side=" + str(withdrawing) + " atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)) + " roll=" + str(snappedf(roll, 0.003)) + " chance=" + str(snappedf(chance, 0.003)))
 		ai_withdrawal_started.emit()
 		start_withdrawal_round(withdrawing)
+		return true
+	return false
+
+func _try_start_withdrawal_siege(rng: RandomNumberGenerator) -> bool:
+	# Siege-specific withdrawal logic using power ratio trend
+	var atk_power: int = _compute_power(current_attackers)
+	var def_power: int = _compute_power(current_defenders)
+	if atk_power <= 0 or def_power <= 0:
+		return false
+	if not attacker_can_withdraw:
+		return false
+	var ratio: float = float(atk_power) / float(def_power)
+	# Immediate bailout if overall ratio is too low
+	if ratio <= 1.5:
+		DebugLogger.log("Withdrawal", "Siege withdrawal triggered by low ratio. side=1 atk_power=" + str(atk_power) + " def_power=" + str(def_power) + " ratio=" + str(snappedf(ratio, 0.003)))
+		ai_withdrawal_started.emit()
+		start_withdrawal_round(1)
+		return true
+	# Track whether the ratio is worsening
+	if previous_power_ratio < 0.0:
+		previous_power_ratio = ratio
+		return false
+	if ratio < previous_power_ratio:
+		losing_ratio_streak += 1
+	else:
+		losing_ratio_streak = 0
+	previous_power_ratio = ratio
+	# After round 7, withdraw if the ratio worsened 3 times in a row
+	if current_round > 7 and losing_ratio_streak >= 3:
+		DebugLogger.log("Withdrawal", "Siege withdrawal triggered by worsening ratio streak. side=1 streak=" + str(losing_ratio_streak) + " ratio=" + str(snappedf(ratio, 0.003)) + " round=" + str(current_round))
+		ai_withdrawal_started.emit()
+		start_withdrawal_round(1)
 		return true
 	return false
 
@@ -463,7 +500,7 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 func _process_ranged_attacks(attacking_army: Dictionary, defending_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, apply_castle_defense: bool = true, target_has_rams: bool = false) -> Dictionary:
 	"""Process ranged attacks using shared simulator (supports ram targeting)."""
 	if target_has_rams and not siege_state.is_empty():
-		battle_simulator._assign_rams_to_gates(siege_state)
+		battle_simulator._rebalance_active_rams(siege_state)
 	var defense_castle := castle_type if apply_castle_defense else CastleTypeEnum.Type.NONE
 	var defense_override := castle_defense_override if apply_castle_defense else -1
 	return battle_simulator._process_ranged_unit_attacks(attacking_army, defending_targets, rng, efficiency, terrain_type, defense_castle, null, defense_override, is_siege_battle, siege_state, target_has_rams)
@@ -473,7 +510,7 @@ func _process_ranged_opening_volley() -> void:
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	if is_siege_battle and not siege_state.is_empty():
-		battle_simulator._assign_rams_to_gates(siege_state)
+		battle_simulator._rebalance_active_rams(siege_state)
 	
 	# Process attacker ranged attacks
 	var attacker_ranged_kills = _process_ranged_attacks(current_attackers, current_defenders, rng, attacker_efficiency, true, false)

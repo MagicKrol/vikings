@@ -300,8 +300,9 @@ const CAMERA_FRIENDLY_MOVE_DELAY = 0.1			# Seconds to pause after friendly army 
 ## Siege ladders
 const LADDER_EFFECTIVENESS_PER = 5				# Raw effectiveness added per ladder for siege assaults
 const LADDERS_PER_SECTION = 4					# Max ladders applied per intact wall section
-const SIEGE_RAM_HP = 5							# Hit points per siege ram
-const SIEGE_RAM_SIZE = 10						# Target weight size for siege ram when absorbing ranged fire
+const SIEGE_RAM_HP = 10						# Hit points per siege ram
+const SIEGE_RAM_SIZE = 10						# Target weight size for siege ram when absorbing ranged fire (legacy, not used for focus targeting)
+const SIEGE_RAM_FOCUS_RANGED = 25				# Number of ranged attackers that prioritize each active ram before shooting units
 
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
@@ -339,7 +340,7 @@ const CASTLE_WALLS_GATES = {
 	},         # Keep
 	CastleTypeEnum.Type.CASTLE: {
 		"gates": 2,
-		"gate_hp": 5,
+		"gate_hp": 6,
 		"wall_sections": 6,
 		"wall_hp": 3,
 		"trebuchet_damage_to_defense": 6,
@@ -347,13 +348,26 @@ const CASTLE_WALLS_GATES = {
 	},      # Castle 
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"gates": 3,
-		"gate_hp": 6,
+		"gate_hp": 7,
 		"wall_sections": 8,
 		"wall_hp": 3,
 		"trebuchet_damage_to_defense": 5.,
 		"wall_section_assault": 10
 	}, 
 }
+
+const GATE_BREACH_SUCCESS = {
+	10: 0.50,
+	15: 0.45,
+	20: 0.40,
+	25: 0.35,
+	30: 0.30,
+	35: 0.275,
+	40: 0.25,
+	45: 0.225,
+	50: 0.20,
+	60: 0.15
+};
 
 ## Unit Tier System
 # Defines which units are available at each region level

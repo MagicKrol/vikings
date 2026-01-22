@@ -110,9 +110,9 @@ func _update_gate_rows(gate_state: Dictionary) -> void:
 			var name_label: Label = row_data["name"]
 			var value_label: Label = row_data["value"]
 			var bar: ProgressBar = row_data["bar"]
-			var current_hp: int = base_hp
+			var current_hp: float = float(base_hp)
 			if i < gate_values.size():
-				current_hp = int(gate_values[i])
+				current_hp = float(gate_values[i])
 			name_label.text = "Gate " + str(i + 1)
 			var percent: int = int(round(float(current_hp) / float(base_hp) * 100.0))
 			value_label.text = str(percent) + "%"
@@ -126,16 +126,19 @@ func _update_ram_rows(gate_state: Dictionary, ram_total: int, active_rams: int, 
 	var gates: int = int(gate_state.get("gates", 0))
 	var ram_hp: Array = gate_state.get("ram_hp", [])
 	var ram_hp_max: int = int(gate_state.get("ram_hp_max", GameParameters.SIEGE_RAM_HP))
-	var visible_rams: int = min(active_rams, gates, ram_rows.size())
+	var gate_values: Array = gate_state.get("gate_values", [])
 	for i in range(ram_rows.size()):
-		var visible := i < visible_rams and i < gates
+		var gate_alive := i < gate_values.size() and float(gate_values[i]) > 0.0
+		var hp_val: int = ram_hp[i] if i < ram_hp.size() else 0
+		var has_ram := hp_val > 0
+		var visible := i < gates and gate_alive and has_ram
 		ram_rows[i].visible = visible
 		if not visible:
 			continue
 		var data: Dictionary = ram_row_data[i]
 		var bar: ProgressBar = data["bar"]
 		var value_label: Label = data["value"]
-		var current_hp: int = ram_hp[i] if i < ram_hp.size() else ram_hp_max
+		var current_hp: int = hp_val
 		current_hp = clampi(current_hp, 0, ram_hp_max)
 		bar.max_value = ram_hp_max
 		bar.value = current_hp
@@ -145,4 +148,3 @@ func _update_ram_rows(gate_state: Dictionary, ram_total: int, active_rams: int, 
 		value_label.text = str(percent) + "%"
 	var reserve: int = max(0, reserve_rams)
 	ram_reserve_label.text = str(reserve)
-	siege_reserve_row.visible = ram_total > 0

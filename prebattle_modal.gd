@@ -217,9 +217,9 @@ func _update_gate_rows(gate_state: Dictionary) -> void:
 			var name_label: Label = row_data["name"]
 			var value_label: Label = row_data["value"]
 			var bar: ProgressBar = row_data["bar"]
-			var current_hp: int = base_hp
+			var current_hp: float = float(base_hp)
 			if i < gate_values.size():
-				current_hp = int(gate_values[i])
+				current_hp = float(gate_values[i])
 			name_label.text = "Gate " + str(i + 1)
 			var percent: int = int(round(float(current_hp) / float(base_hp) * 100.0))
 			value_label.text = str(percent) + "%"

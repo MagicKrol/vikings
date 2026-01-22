@@ -493,13 +493,8 @@ func apply_wall_section_damage(damage: int) -> Dictionary:
 func apply_siege_damage(siege_counts: Dictionary, ladder_data: Dictionary, ram_data: Dictionary, treb_data: Dictionary, apply_trebuchet_damage: bool = true) -> Dictionary:
 	var ladder_count: int = int(siege_counts.get("ladders", 0))
 	var ladder_effectiveness_raw: int = ladder_count * int(ladder_data.get("effectiveness", GameParameters.LADDER_EFFECTIVENESS_PER))
-	var ram_damage: int = int(siege_counts.get("rams", 0)) * int(ram_data.get("defense", 0))
-	var gate_result := _apply_gate_damage(ram_damage)
+	var gate_result := _build_gate_state()
 	var wall_result := _build_wall_state()
-	if apply_trebuchet_damage:
-		var trebs_damage: int = int(siege_counts.get("trebuchets", 0)) * int(treb_data.get("defense", 0))
-		if trebs_damage > 0:
-			wall_result = apply_wall_section_damage(trebs_damage)
 	return {
 		"ladder_effectiveness_raw": ladder_effectiveness_raw,
 		"ladder_damage": 0,
