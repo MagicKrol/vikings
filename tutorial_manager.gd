@@ -315,7 +315,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "endturn,trade,continue3"
+			"block": "endturn,continue3, continue2"
 		},
 		{
 			"message": "But you can always withdraw, if battle starts to go wrong. Though expect some additional losses in the process.",
@@ -323,7 +323,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(200, 500),
-			"block": "endturn,trade,continue3"
+			"block": "endturn,continue3"
 		},
 		{
 			"message": "",
@@ -332,7 +332,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(200, 500),
-			"block": "endturn,trade,continue3"
+			"block": "endturn,continue3"
 		},
 		{
 			"message": "Let's click continue and see the battle summary.",
@@ -525,7 +525,7 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Only some of your soldiers will be engaged in a direct melee combat.",
+			"message": "Engaged presents how many of your soldiers will be engaged in a direct melee combat.",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -561,7 +561,7 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Siege rams will start attacking gates. Once breached it will gradually increase engage value.",
+			"message": "Siege rams will start attacking gates. Once breached it will gradually increase engaged value.",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -573,7 +573,7 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Ladders are the simplest way to increase engage score by storming walls directly.",
+			"message": "Ladders are the simplest way to increase engaged score by storming walls directly.",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -592,10 +592,6 @@ func _build_default_steps() -> Array:
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(200, 500),
 			"block": "trade,withdraw,endturn,continue3,nonladders",
-			"arrow": {
-				"id": "13",
-				"anchor": "screen"
-			},
 		},
 		{
 			"message": "This battle should be easy.",
@@ -603,7 +599,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(200, 500),
-			"block": "trade,continue3,endturn"
+			"block": "continue3,endturn"
 		},
 		{
 			"message": "Let's move to the battle summary.",
@@ -616,7 +612,7 @@ func _build_default_steps() -> Array:
 				"id": "5",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "Let's click continue.",

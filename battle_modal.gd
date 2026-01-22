@@ -62,6 +62,7 @@ var click_manager: Node = null
 var tutorial_manager: TutorialManager = null
 var speed_modal: SpeedModal = null
 var assault_ratio_override: float = -1.0
+var _is_siege_battle: bool = false
 
 func _ready():
 	# Get references to static UI elements from updated scene structure
@@ -128,6 +129,8 @@ func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> 
 	siege_counts = siege_payload.get("siege_counts", {})
 	siege_view_state = _build_siege_view_state_from_payload(siege_payload)
 	assault_ratio_override = float(siege_payload.get("assault_ratio", -1.0))
+	_is_siege_battle = defending_region.get_castle_type() != CastleTypeEnum.Type.NONE
+	siege_panel.visible = _is_siege_battle
 
 	_set_message("")
 	sound_manager.play_battle_sound()
@@ -240,6 +243,8 @@ func _build_siege_view_state_from_payload(siege_payload: Dictionary) -> Dictiona
 	return SiegePanel.build_state(defending_region, gate_state, ram_total)
 
 func _apply_siege_state() -> void:
+	if not _is_siege_battle:
+		return
 	siege_panel.apply_state(siege_view_state)
 
 

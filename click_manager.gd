@@ -89,6 +89,8 @@ func get_army_manager() -> ArmyManager:
 func _on_left_click(screen_pos: Vector2) -> void:
 	# Check if any modal is active and close them first, but allow move flow to proceed
 	if _ui_manager and _ui_manager.is_modal_active:
+		if _ui_manager.has_blocking_modal():
+			return
 		var move_flow_active := _is_move_flow_active()
 		if not move_flow_active:
 			if _ui_manager.is_any_modal_visible():

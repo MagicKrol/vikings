@@ -57,6 +57,7 @@ var _battle_summary_modal: BattleSummaryModal
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
 var _modal_nodes: Array[Control] = []
+var _blocking_modal_nodes: Array[Control] = []
 var _move_selection_active: bool = false
 
 enum SelectContextType {
@@ -115,6 +116,7 @@ func _ready():
 	_next_player_modal = get_parent().get_node("NextPlayerModal") as NextPlayerModal
 	_game_menu_modal = get_parent().get_node("GameMenuModal") as Control
 	_build_modal_list()
+	_build_blocking_modal_list()
 	
 	# Map is under root (UI parent's parent)
 	map_generator = get_parent().get_parent().get_node("Map") as MapGenerator
@@ -173,6 +175,13 @@ func _build_modal_list() -> void:
 		_game_menu_modal
 	]
 
+func _build_blocking_modal_list() -> void:
+	_blocking_modal_nodes = [
+		_prebattle_modal,
+		battle_modal,
+		_battle_summary_modal
+	]
+
 func _sync_modal_state() -> void:
 	var should_be_active := _is_any_tracked_modal_visible()
 	if should_be_active != is_modal_active:
@@ -181,6 +190,12 @@ func _sync_modal_state() -> void:
 func _is_any_tracked_modal_visible() -> bool:
 	for modal in _modal_nodes:
 		if modal != null and _is_modal_forcing_active(modal):
+			return true
+	return false
+
+func has_blocking_modal() -> bool:
+	for modal in _blocking_modal_nodes:
+		if modal != null and modal.visible:
 			return true
 	return false
 
@@ -349,7 +364,7 @@ func _is_blocking_control(control: Control) -> bool:
 	DebugLogger.log("UIManager", "_is_blocking_control: control " + control.name + " not blocking")
 	return false
 
-func close_all_active_modals() -> void:
+func close_all_active_modals(include_blocking: bool = false) -> void:
 	"""Close any active modals"""
 	if _select_modal and _select_modal.visible:
 		_select_modal.hide_modal()
@@ -357,13 +372,13 @@ func close_all_active_modals() -> void:
 		_army_select_modal.hide_modal()
 	if _region_select_modal and _region_select_modal.visible:
 		_region_select_modal.hide_modal()
-	if battle_modal and battle_modal.visible:
+	if include_blocking and battle_modal and battle_modal.visible:
 		battle_modal.hide_modal()
 	if _info_modal and _info_modal.visible:
 		_info_modal.hide_modal()
 	if _move_modal and _move_modal.visible:
 		_move_modal.hide_move_modal()
-	if _prebattle_modal.visible:
+	if include_blocking and _prebattle_modal.visible:
 		_prebattle_modal.hide_prebattle()
 	if _trade_modal and _trade_modal.visible:
 		_trade_modal.hide_modal()
@@ -373,6 +388,8 @@ func close_all_active_modals() -> void:
 		_transfer_select_modal.hide_modal()
 	if _transfer_soldiers_modal and _transfer_soldiers_modal.visible:
 		_transfer_soldiers_modal.hide_modal()
+	if include_blocking and _battle_summary_modal and _battle_summary_modal.visible:
+		_battle_summary_modal.hide_summary()
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
