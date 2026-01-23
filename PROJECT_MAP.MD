@@ -38,7 +38,7 @@ Main (Node2D) [place_armies.gd]
 ├ PlayerManager (Node) [PlayerManagerNode.gd]
 ├ MapEditor (Node) [map_editor.gd]
 ├ UI (CanvasLayer)
-│	├ UIManager (Control) [ui_manager.gd] – tracks modal visibility list to drive `is_modal_active`, hiding IconsModal/TurnModal whenever any tracked modal is up or a move selection is active; owns tooltip coordination
+│	├ UIManager (Control) [ui_manager.gd] – tracks modal visibility list to drive `is_modal_active`, hiding IconsModal/TurnModal whenever any tracked modal is up or a move selection is active; owns tooltip coordination; ClickManager/UIManager now block map clicks from dismissing Prebattle/Battle/BattleSummary modals (buttons only)
 │	├ ArmyModal [scenes/army_modal.tscn] [army_modal.gd]
 │	├ SelectModal [scenes/select_modal.tscn] [select_modal.gd]
 │	├ GeneralSelectModal [scenes/general_select_modal.tscn] [general_select_modal.gd] – fixed-size menu with textured backdrop, themed header, region + army buttons; picking an army now immediately selects it for movement (InfoModal + move arrows/MoveModal)
@@ -51,7 +51,7 @@ Main (Node2D) [place_armies.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
 │	├ PrebattleModal [scenes/prebattle_modal.tscn] [prebattle_modal.gd] – human-only step after moving into enemy territory; supports siege equipment buying (spends wood + siege points from defender count), shows a Bombard step when trebuchets are purchased (4x50% shots per treb), posts the breach result in the message row, and combines ladder, wall-breach, and gate damage into an assault effectiveness sent to BattleManager; Withdraw refunds purchases and retreats via BattleManager; siege equipment rows use the Info hover panel like Recruitment (Ladders/Rams/Trebuchet); Siege panel shows per-section wall status and per-gate HP bars (ram targeting controls hidden by default); non-castle fights display 100% assault; ladders/rams no longer reduce castle defense pre-battle
-│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name; Quick Resolve button drops battle round time to the quick parameter for immediate simulation; non-castle fights always show 100% assault; siege view updates gates/ram assignment each round with dynamic gate assault bonus and per-gate breach rolls (rams/ranged split, scheduled gate/ram damage over the breach duration)
+│	├ BattleModal [scenes/battle_modal.tscn] [battle_modal.gd] – shares InfoModal standard/header themes for text styling; shows castle defense bonus and colors attacker label with the player color/name; Quick Resolve button drops battle round time to the quick parameter for immediate simulation; non-castle fights always show 100% assault; siege view updates gates/ram assignment each round with dynamic gate assault bonus and per-gate breach rolls (rams/ranged split, scheduled gate/ram damage over the breach duration); siege panel hidden automatically for non-castle battles
 │	├ SiegePanel [scenes/siege.tscn] [siege_panel.gd] – shared siege status view used by Prebattle and Battle modals to show wall/gate damage and ram placement from the current siege payload (one active ram per gate; global reserve pool fills empty, intact gates)
 │	├ BattleSummaryModal [scenes/battle_summary_modal.tscn] [battle_summary_modal.gd] – uses same InfoModal body/header themes
 │	├ TutorialModal [tutorial_modal.tscn] [tutorial_modal.gd] – UI-layer arrows for screen-anchored tutorial hints (Arrow1/Arrow2 placed manually in scene)
@@ -171,6 +171,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry; battle log tokens are captured before travel so freed armies can still retrieve their queued entries, and the header uses the actual contested region returned by `ai_travel_to`.
 - Recruitment Loop: When an army needs troops, it always finds the best owned castle (logs every candidate with distance/recruits/score), travels there (including current region), and if no budget is available it camps and skips frontier actions until a budgeted hire succeeds.
 - Withdrawal Logging: `battle_withdrawal` results note which side withdrew; defender withdrawals are treated as holding the target (no extra movement log), while attacker withdrawals log the retreat destination.
+- Post-withdrawal reposition: when an AI army withdraws or loses and still has movement points, it moves to the strongest reachable friendly region within range.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Reinforcement routing: Armies that need recruitment but have no assigned budget now queue a `goal: reinforce` move toward the best owned castle before chasing frontier targets, so low-power stacks travel home for resupply.
 - Castle targeting: When enemy strength is known and the target has a castle, `_build_enemy_info()` triggers `GameManager.simulate_siege_battle()` and `_evaluate_merge_policy()` halts attacks predicted to lose (or withdraw) and proceeds when the sim reports victory.
@@ -212,6 +213,15 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Info modal theme uses a `FontVariation` and theme shadow settings for Labels so region stats stay legible over busy backgrounds without outlines.
 	- `get_wounded_recruits_total()` exposes the wounded-peasant count for UI consistency.
 
+### RecruitmentManager.gd (RecruitmentManager)
+	- Purpose: Builds recruitment plans from ideal compositions, budgets, and recruit caps for armies/garrisons using the same pipeline for simulation and execution.
+	- Sandbox helper: `recruitment.py` is now a standalone Gaussian visualizer (Tkinter) that computes weights with sigma=1.6, amplitude=10 (cutting to zero at x≥7) for peasants→royal_guard; mu shifts linearly by gold/recruits (≤0.5 -> 0, ≥5 -> 6), diverts 20-30% of base mass into ranged (archers from x 0-2 mass, crossbowmen from x 3-5 mass), applies a user-selected tier cap (1..5) to zero higher tiers, renders the curve instead of boosts, lists the Y(x) values, and allocates recruits under gold/wood/iron budgets using those weights.
+- Hard caps: Starts from `T` peasants, only converts/upgrades within budget left after that base cost, so total recruited never exceeds the chosen `T`; spending reports use `spent = start - left` for gold/wood/iron.
+- Castle tier gating: Ideal mapping and upgrade/burn steps drop unit types above `GameParameters.CASTLE_RECRUITMENT_TIERS` for the current castle, so keeps cannot hire Royal Guards or other over-tier units.
+- T chooser tweak: When gold-per-recruit is low, the T picker now gives a small bonus to larger T (quantity) before evaluating diversity/ideal distance; when the ratio rises toward/above 1.0, the bonus fades out so quality spending dominates again.
+- Burn-budget guard: Upgrade burn now preserves at least the ideal (rounded) counts for each donor type and skips converting peasants/spearmen when gold-per-recruit is low, keeping cheaper bodies in low-budget situations.
+- Scarcity bias window tightened: `RECRUIT_SCARCITY_LOW/HIGH` now 0.5/1.5 gold-per-recruit, so quality bias ramps up as soon as gold/recruits is decent and reaches max when ratio ≥1.5.
+
 ### Army systems
 - army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
 - army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Emits `movement_points_changed(army, new_points)` whenever points reset/spent/camped so ArmyManager can refresh highlights. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use) and `get_display_name()` to standardize log/UI labels (falls back to the roman number when the node keeps a default Sprite2D name).
@@ -246,7 +256,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### Economy & Recruitment
 - BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
-- RecruitmentManager.gd: Python-inspired recruitment (feasibility-picked T with spend target, ranged/peasants bounds, diversity floor, peasant top-up, scarcity bias/boosts) using `GameParameters` exports (`RECRUIT_*`, unit boosts) and per-castle/garrison ideals (no wealth variants); sources recruits from region + owned neighbors, spends the provided budget exactly, and deducts recruits/resources from owners.
+- RecruitmentManager.gd: Python-inspired recruitment (feasibility-picked T with spend target, ranged/peasants bounds, diversity floor, scarcity bias/boosts, low-gpr quantity bonus) using `GameParameters` exports (`RECRUIT_*`, unit boosts) and per-castle/garrison ideals; simulation and final hire share the same builder so hired counts match the decided `T`, budgets cannot go negative, and spent resources are `start - remaining`.
 - PlayerManagerNode.gd: `get_player_economy_snapshot()` aggregates balances, projected income (with food upkeep), and population totals; `get_projected_economy_for_player()` wraps it for compatibility and UI (PlayerStatusModal2) consumption.
 
 ### EconomyAIManager.gd

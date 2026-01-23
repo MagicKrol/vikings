@@ -1497,6 +1497,10 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 		if not target_has_castle and _should_ai_withdraw_post_siege(army, target_region, siege_payload):
 			_log_ai_prebattle_withdraw(army, target_region, "post_siege_power_check")
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after battle prep due to unfavorable power ratio.")
+			_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
+			var defender_owner := _region_manager.get_region_owner(target_region_id)
+			if defender_owner > 0:
+				_record_attacker_for_defender(defender_owner, [army])
 			await _battle_manager.withdraw_attacking_army(army)
 			return "withdrawal"
 	var attacker_effectiveness_ratio := _compute_attacker_effectiveness_ratio(army, siege_payload, target_region)

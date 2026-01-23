@@ -32,6 +32,7 @@ var debug_categories: Dictionary = {
 	"AITurnManager": false,        # High-level AI turn processing
 	"AIEconomy": false,            # AI economy decisions and raise army
 	"AIRecruitment": false,        # AI recruitment and budget allocation
+	"UnitRecruitment": true,
 	
 	# Resource Systems
 	"ResourceManagement": false,   # Resource income and spending
@@ -71,7 +72,7 @@ var debug_categories: Dictionary = {
 	"Trade": false,
 	"Tutorial": false,
 	"TradeModal": false,
-	"Withdrawal": true,
+	"Withdrawal": false,
 	"ArmyTracker": false,
 	"siege": false
 }

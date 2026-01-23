@@ -42,18 +42,18 @@ const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per
 const RECRUIT_PEA_CAP_SHARE = 0.40             # Max peasants share during recruitment composition
 const RECRUIT_RANGED_MIN_SHARE = 0.25          # Minimum ranged share (relative to recruit batch size)
 const RECRUIT_RANGED_MAX_SHARE = 0.35          # Maximum ranged share (relative to recruit batch size)
-const RECRUIT_SCARCITY_LOW = 10.0              # Gold/recruit lower bound for scarcity bias
-const RECRUIT_SCARCITY_HIGH = 25.0             # Gold/recruit upper bound for scarcity bias
-const RECRUIT_UNIT_BOOSTS: Dictionary = {      # Scarcity bias boosts from recruitment.py
-	SoldierTypeEnum.Type.PEASANTS: -0.6,
-	SoldierTypeEnum.Type.SPEARMEN: -0.2,
-	SoldierTypeEnum.Type.ARCHERS: 0.2,
-	SoldierTypeEnum.Type.SWORDSMEN: 0.3,
-	SoldierTypeEnum.Type.CROSSBOWMEN: 0.5,
-	SoldierTypeEnum.Type.HORSEMEN: 0.6,
-	SoldierTypeEnum.Type.KNIGHTS: 0.9,
-	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: 1.1,
-	SoldierTypeEnum.Type.ROYAL_GUARD: 1.4
+const RECRUIT_SCARCITY_LOW = 0.5               # Gold/recruit lower bound for scarcity bias (early game nudges quality when ratio rises)
+const RECRUIT_SCARCITY_HIGH = 1.5              # Gold/recruit upper bound for full scarcity bias
+const RECRUIT_UNIT_BOOSTS: Dictionary = {      # Scarcity bias boosts (higher = more likely when gold/recruit is high)
+	SoldierTypeEnum.Type.PEASANTS: -0.9,
+	SoldierTypeEnum.Type.SPEARMEN: -0.4,
+	SoldierTypeEnum.Type.ARCHERS: 0.5,
+	SoldierTypeEnum.Type.SWORDSMEN: 0.7,
+	SoldierTypeEnum.Type.CROSSBOWMEN: 0.9,
+	SoldierTypeEnum.Type.HORSEMEN: 0.9,
+	SoldierTypeEnum.Type.KNIGHTS: 1.2,
+	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: 1.4,
+	SoldierTypeEnum.Type.ROYAL_GUARD: 1.7
 }
 const RECRUIT_SPEND_TARGET_PCT = 0.95           # Target budget spend ratio when selecting T
 const RECRUIT_DIVERSITY_REQUIREMENTS: Dictionary = {  # Minimal diversity floor (applies when ideal has the unit)

@@ -630,7 +630,6 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	"""
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
-	attacker_can_withdraw = true
 	var is_siege_battle := castle_type != CastleTypeEnum.Type.NONE
 	
 	# Merge all attacking forces
@@ -779,7 +778,7 @@ func start_battle_session(attacking_armies: Array, defending_armies: Array, regi
 	session.terrain_type = terrain_type
 	session.castle_type = castle_type
 	session.castle_defense_override = castle_defense_bonus_override
-	session.attacker_can_withdraw = true
+	session.attacker_can_withdraw = attacker_can_withdraw
 	session.defender_can_withdraw = defender_can_withdraw and castle_type == CastleTypeEnum.Type.NONE
 	session.attacker_effectiveness_ratio = clampf(attacker_effectiveness_ratio, 0.0, 1.0)
 	session.is_siege_battle = castle_type != CastleTypeEnum.Type.NONE

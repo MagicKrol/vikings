@@ -499,6 +499,9 @@ func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra
 	if result == "blocked" or result == "out_of_movement_points":
 		if is_instance_valid(army):
 			_spend_all_on_camp(army)
+	if result == "battle_withdrawal" or result == "battle_defeat":
+		if is_instance_valid(army):
+			await _retreat_to_strong_friendly_region(army)
 	if not is_instance_valid(army):
 		return false
 	return army.get_movement_points() > 0
@@ -523,6 +526,9 @@ func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
 		_log_move_status(army, target_id)
 	if result == "battle_victory":
 		emit_signal("region_conquered", target_id, army.get_player_id())
+	if result == "battle_withdrawal" or result == "battle_defeat":
+		if is_instance_valid(army):
+			await _retreat_to_strong_friendly_region(army)
 	if result == "battle_defeat":
 		return false
 	if result == "blocked":
@@ -541,6 +547,53 @@ func _spend_all_on_camp(army: Army) -> void:
 	while army.get_movement_points() > 0:
 		army.make_camp()
 		_log_army_make_camp(army)
+
+func _retreat_to_strong_friendly_region(army: Army) -> void:
+	if army == null or not is_instance_valid(army):
+		return
+	var current_region := army.get_parent() as Region
+	if current_region == null:
+		return
+	var mp_left: int = army.get_movement_points()
+	if mp_left <= 0:
+		return
+	var player_id: int = army.get_player_id()
+	var current_region_id: int = current_region.get_region_id()
+	var best_region_id: int = current_region_id
+	var best_power: int = game_manager._calculate_region_defender_power(current_region)
+	var best_cost: int = 0
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
+	for region_id in owned_regions:
+		var path_result = pathfinder.find_path_to_target(current_region_id, region_id, player_id, true, true)
+		if not path_result["success"]:
+			continue
+		var cost: int = int(path_result.get("cost", 0))
+		if cost > mp_left:
+			continue
+		var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
+		if region_container == null:
+			continue
+		var region = region_container as Region
+		var power: int = game_manager._calculate_region_defender_power(region)
+		if power > best_power or (power == best_power and cost < best_cost):
+			best_power = power
+			best_region_id = region_id
+			best_cost = cost
+	if best_region_id == current_region_id:
+		return
+	var retreat_path = pathfinder.find_path_to_target(current_region_id, best_region_id, player_id, true, true)
+	if not retreat_path["success"]:
+		return
+	var path: Array[int] = retreat_path["path"]
+	for i in range(1, path.size()):
+		if army.get_movement_points() <= 0:
+			break
+		var step_region = region_manager.map_generator.get_region_container_by_id(path[i]) as Region
+		if step_region == null:
+			break
+		var move_success = await army_manager.move_army(army, step_region)
+		if not move_success:
+			break
 func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 	"""Find the best target for a specific army"""
 	var best_move := {}

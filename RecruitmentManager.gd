@@ -54,14 +54,17 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var available: int = _sum_sources(recruit_sources)
 	if budget.available_recruits > 0:
 		available = min(available, budget.available_recruits)
-	var ideal_raw: Dictionary = GameParameters.get_ideal_composition(CastleTypeEnum.type_to_string(region.get_castle_type()))
-	var result: Dictionary = _run_recruitment(ideal_raw, budget, available, {}, debug)
+	var castle_type := region.get_castle_type()
+	var ideal_raw: Dictionary = GameParameters.get_ideal_composition(CastleTypeEnum.type_to_string(castle_type))
+	DebugLogger.log("UnitRecruitment", "[hire_soldiers] army=" + str(army.get_display_name()) + " castle=" + str(castle_type) + " available=" + str(available) + " budget=" + str(budget.to_dict()) + " ideal_raw=" + str(ideal_raw))
+	var result: Dictionary = _run_recruitment(ideal_raw, budget, available, {}, debug, castle_type)
 	_apply_hires_to_composition(army.get_composition(), result.get("hired", {}), {})
 	_deduct_recruits_proportionally(int(result.get("total_recruited", 0)), recruit_sources)
 	_deduct_player_resources(player_id, int(result.get("spent_gold", 0)), int(result.get("spent_wood", 0)), int(result.get("spent_iron", 0)))
 	army.clear_recruitment_request()
 	result["recruits_left"] = _count_recruits_remaining(recruit_sources)
 	result["budget_left"] = budget.to_dict()
+	DebugLogger.log("UnitRecruitment", "[hire_soldiers] result hired=" + str(result.get("hired", {})) + " spent_g=" + str(result.get("spent_gold", 0)) + " spent_w=" + str(result.get("spent_wood", 0)) + " spent_i=" + str(result.get("spent_iron", 0)) + " total=" + str(result.get("total_recruited", 0)) + " recruits_left=" + str(result["recruits_left"]) + " budget_left=" + str(result["budget_left"]))
 	return result
 
 func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, debug: bool = false) -> Dictionary:
@@ -69,28 +72,71 @@ func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, de
 	var available: int = _sum_sources(recruit_sources)
 	if budget.available_recruits > 0:
 		available = min(available, budget.available_recruits)
-	var ideal_raw: Dictionary = GameParameters.get_ideal_castle_garrison(region.get_castle_type())
+	var castle_type := region.get_castle_type()
+	var ideal_raw: Dictionary = GameParameters.get_ideal_castle_garrison(castle_type)
 	var special_caps: Dictionary = _compute_garrison_caps(region.get_garrison(), ideal_raw)
 	var cap_total: int = _sum_dict_ints(special_caps)
 	if cap_total > 0:
 		available = min(available, cap_total)
-	var result: Dictionary = _run_recruitment(ideal_raw, budget, available, special_caps, debug)
+	DebugLogger.log("UnitRecruitment", "[hire_garrison] region=" + str(region.get_region_name()) + " castle=" + str(castle_type) + " available=" + str(available) + " budget=" + str(budget.to_dict()) + " ideal_raw=" + str(ideal_raw) + " caps=" + str(special_caps))
+	var result: Dictionary = _run_recruitment(ideal_raw, budget, available, special_caps, debug, castle_type)
 	_apply_hires_to_composition(region.get_garrison(), result.get("hired", {}), special_caps)
 	_deduct_recruits_proportionally(int(result.get("total_recruited", 0)), recruit_sources)
 	_deduct_player_resources(player_id, int(result.get("spent_gold", 0)), int(result.get("spent_wood", 0)), int(result.get("spent_iron", 0)))
 	result["recruits_left"] = _count_recruits_remaining(recruit_sources)
 	result["budget_left"] = budget.to_dict()
+	DebugLogger.log("UnitRecruitment", "[hire_garrison] result hired=" + str(result.get("hired", {})) + " spent_g=" + str(result.get("spent_gold", 0)) + " spent_w=" + str(result.get("spent_wood", 0)) + " spent_i=" + str(result.get("spent_iron", 0)) + " total=" + str(result.get("total_recruited", 0)) + " recruits_left=" + str(result["recruits_left"]) + " budget_left=" + str(result["budget_left"]))
 	return result
 
-func _run_recruitment(ideal_raw: Dictionary, budget: BudgetComposition, recruits_available: int, special_caps: Dictionary, debug: bool) -> Dictionary:
-	var mapped_ideal: Dictionary = _map_ideal_keys_to_types(ideal_raw)
+func _run_recruitment(ideal_raw: Dictionary, budget: BudgetComposition, recruits_available: int, special_caps: Dictionary, debug: bool, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> Dictionary:
+	var mapped_ideal: Dictionary = _map_ideal_keys_to_types(ideal_raw, castle_type)
+	var max_tier: int = GameParameters.CASTLE_RECRUITMENT_TIERS.get(castle_type, 1)
+	DebugLogger.log(
+		"UnitRecruitment",
+		"[run][IN] castle=" + str(castle_type) +
+		" max_tier=" + str(max_tier) +
+		" recruits_avail=" + str(recruits_available) +
+		" budget_g=" + str(budget.gold) +
+		" budget_w=" + str(budget.wood) +
+		" budget_i=" + str(budget.iron) +
+		" caps=" + str(special_caps) +
+		" caps_sum=" + str(_sum_dict_ints(special_caps))
+	)
+	var dropped_units: Dictionary = {}
+	for k in ideal_raw.keys():
+		var key_str: String = str(k).to_lower()
+		var mapped_type = null
+		match key_str:
+			"peasants":
+				mapped_type = SoldierTypeEnum.Type.PEASANTS
+			"spearmen":
+				mapped_type = SoldierTypeEnum.Type.SPEARMEN
+			"archers":
+				mapped_type = SoldierTypeEnum.Type.ARCHERS
+			"swordsman", "swordsmen":
+				mapped_type = SoldierTypeEnum.Type.SWORDSMEN
+			"crossbowmen":
+				mapped_type = SoldierTypeEnum.Type.CROSSBOWMEN
+			"horsemen":
+				mapped_type = SoldierTypeEnum.Type.HORSEMEN
+			"knights":
+				mapped_type = SoldierTypeEnum.Type.KNIGHTS
+			"mounted_knights":
+				mapped_type = SoldierTypeEnum.Type.MOUNTED_KNIGHTS
+			"royal_guard":
+				mapped_type = SoldierTypeEnum.Type.ROYAL_GUARD
+			_:
+				mapped_type = null
+		if mapped_type != null and not mapped_ideal.has(mapped_type):
+			var tier: int = int(GameParameters.UNIT_TIERS.get(mapped_type, 99))
+			if tier > max_tier:
+				dropped_units[mapped_type] = tier
+	DebugLogger.log("UnitRecruitment", "[run] castle=" + str(castle_type) + " max_tier=" + str(max_tier) + " recruits_avail=" + str(recruits_available) + " mapped_ideal=" + str(mapped_ideal) + " caps=" + str(special_caps) + " dropped_due_to_tier=" + str(dropped_units))
 	if mapped_ideal.is_empty() or recruits_available <= 0:
 		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0, "budget_left": budget.to_dict()}
 	var pea_cap_share: float = GameParameters.RECRUIT_PEA_CAP_SHARE
 	var rmin_share: float = GameParameters.RECRUIT_RANGED_MIN_SHARE
 	var rmax_share: float = GameParameters.RECRUIT_RANGED_MAX_SHARE
-	var low: float = GameParameters.RECRUIT_SCARCITY_LOW
-	var high: float = GameParameters.RECRUIT_SCARCITY_HIGH
 	var spend_target_pct: float = GameParameters.RECRUIT_SPEND_TARGET_PCT
 	var start_gold: int = budget.gold
 	var start_wood: int = budget.wood
@@ -99,64 +145,48 @@ func _run_recruitment(ideal_raw: Dictionary, budget: BudgetComposition, recruits
 	if not special_caps.is_empty():
 		total_cap = min(recruits_available, _sum_dict_ints(special_caps))
 	var T: int = _decide_T_auto(
-	total_cap,
-	budget.gold,
-	budget.wood,
-	budget.iron,
-	pea_cap_share,
-	rmin_share,
-	rmax_share,
-	mapped_ideal,
-	spend_target_pct,
-	special_caps
-)
+		total_cap,
+		budget.gold,
+		budget.wood,
+		budget.iron,
+		pea_cap_share,
+		rmin_share,
+		rmax_share,
+		mapped_ideal,
+		spend_target_pct,
+		special_caps,
+		max_tier
+	)
+	DebugLogger.log("UnitRecruitment", "[run] decided T=" + str(T) + " gold=" + str(budget.gold) + " wood=" + str(budget.wood) + " iron=" + str(budget.iron) + " range_bounds=" + str(_compute_ranged_bounds(T, rmin_share, rmax_share, budget.wood)) + " diversity_req=" + str(_compute_diversity_requirements(mapped_ideal, T)))
 
 	if T <= 0:
 		return {"hired": {}, "spent_gold": 0, "spent_wood": 0, "spent_iron": 0, "total_recruited": 0, "budget_left": budget.to_dict(), "notes": ["No feasible recruitment size."]}
-	var bias_res: Dictionary = _apply_scarcity_bias(mapped_ideal, GameParameters.RECRUIT_UNIT_BOOSTS, budget.gold, T, low, high, true)
-	var biased_ideal: Dictionary = bias_res.get("ideal", mapped_ideal)
-	var target_counts: Dictionary = _hamilton_round(biased_ideal, T)
-	var range_bounds: Dictionary = _compute_ranged_bounds(T, rmin_share, rmax_share, budget.wood)
-	var diversity_req: Dictionary = _compute_diversity_requirements(mapped_ideal, T)
-	var counts: Dictionary = _construct_base_counts(T)
-	var g_left: int = budget.gold
-	var w_left: int = budget.wood
-	var i_left: int = budget.iron
-	var min_ranged: int = int(range_bounds["min"])
-	var max_ranged: int = int(range_bounds["max"])
-	var cap_map: Dictionary = special_caps.duplicate()
-	var step = _enforce_ranged_min(counts, g_left, w_left, i_left, min_ranged)
-	counts = step.counts
-	g_left = step.g_left
-	w_left = step.w_left
-	i_left = step.i_left
-	var cap_limit: int = int(floor(pea_cap_share * float(T) + 1e-6))
-	step = _enforce_peasants_cap(counts, g_left, w_left, i_left, cap_limit, cap_map)
-	counts = step.counts
-	g_left = step.g_left
-	w_left = step.w_left
-	i_left = step.i_left
-	step = _seed_diversity(counts, diversity_req, g_left, w_left, i_left, min_ranged, max_ranged, cap_map)
-	counts = step.counts
-	g_left = step.g_left
-	w_left = step.w_left
-	i_left = step.i_left
-	step = _move_toward_target(counts, target_counts, g_left, w_left, i_left, min_ranged, max_ranged, cap_map)
-	counts = step.counts
-	g_left = step.g_left
-	w_left = step.w_left
-	i_left = step.i_left
-	step = _burn_budget(counts, g_left, w_left, i_left, min_ranged, max_ranged, cap_map)
-	counts = step.counts
-	g_left = step.g_left
-	w_left = step.w_left
-	i_left = step.i_left
-	counts = _trim_to_caps(counts, cap_map)
-	counts = _top_up_peasants(counts, total_cap, biased_ideal, pea_cap_share, cap_map)
-	var spent = _totals(counts)
-	g_left = max(0, start_gold - int(spent["gold"]))
-	w_left = max(0, start_wood - int(spent["wood"]))
-	i_left = max(0, start_iron - int(spent["iron"]))
+	var build := _build_counts_for_T(
+		T,
+		start_gold,
+		start_wood,
+		start_iron,
+		pea_cap_share,
+		rmin_share,
+		rmax_share,
+		mapped_ideal,
+		special_caps,
+		max_tier
+	)
+	var counts: Dictionary = build.counts
+	DebugLogger.log(
+		"UnitRecruitment",
+		"[run][T] decided T=" + str(T) +
+		" rmin=" + str(build.rmin) +
+		" rmax=" + str(build.rmax) +
+		" diversity_req=" + str(build.diversity_req)
+	)
+	var g_left: int = build.g_left
+	var w_left: int = build.w_left
+	var i_left: int = build.i_left
+	var spent_gold: int = start_gold - g_left
+	var spent_wood: int = start_wood - w_left
+	var spent_iron: int = start_iron - i_left
 	var hired: Dictionary = {}
 	for t in counts.keys():
 		var c: int = counts[t]
@@ -166,14 +196,33 @@ func _run_recruitment(ideal_raw: Dictionary, budget: BudgetComposition, recruits
 	budget.wood = w_left
 	budget.iron = i_left
 	if debug:
-		DebugLogger.log("AIRecruitment", "Recruitment result T=%d hired=%s spent=(%d,%d,%d)" % [T, str(hired), int(spent["gold"]), int(spent["wood"]), int(spent["iron"])])
+		DebugLogger.log("AIRecruitment", "Recruitment result T=%d hired=%s spent=(%d,%d,%d)" % [T, str(hired), spent_gold, spent_wood, spent_iron])
+	DebugLogger.log("UnitRecruitment", "[run] hired=" + str(hired) + " spent_g=" + str(spent_gold) + " spent_w=" + str(spent_wood) + " spent_i=" + str(spent_iron) + " remaining_g=" + str(g_left) + " remaining_w=" + str(w_left) + " remaining_i=" + str(i_left) + " total_recruited=" + str(_sum_dict_ints(counts)))
+	var total_hired_check := 0
+	for k in hired.keys():
+		total_hired_check += int(hired[k])
+
+	DebugLogger.log(
+		"UnitRecruitment",
+		"[run][OUT] decided_T=" + str(T) +
+		" total_recruited(result)=" + str(_sum_dict_ints(counts)) +
+		" total_hired(sum)=" + str(total_hired_check) +
+		" hired=" + str(hired) +
+		" spent_g=" + str(spent_gold) +
+		" spent_w=" + str(spent_wood) +
+		" spent_i=" + str(spent_iron) +
+		" remaining_g=" + str(g_left) +
+		" remaining_w=" + str(w_left) +
+		" remaining_i=" + str(i_left)
+	)
+	
 	return {
 		"hired": hired,
-		"spent_gold": int(spent["gold"]),
-		"spent_wood": int(spent["wood"]),
-		"spent_iron": int(spent["iron"]),
+		"spent_gold": spent_gold,
+		"spent_wood": spent_wood,
+		"spent_iron": spent_iron,
 		"total_recruited": _sum_dict_ints(counts),
-		"notes": bias_res.get("notes", [])
+		"notes": build.get("notes", [])
 	}
 
 func _gather_recruit_sources(region: Region, player_id: int) -> Array:
@@ -219,11 +268,14 @@ func _deduct_recruits_proportionally(total_to_deduct: int, recruit_sources: Arra
 			var actual: int = reg.hire_recruits(to_deduct)
 			remaining -= actual
 
-func _map_ideal_keys_to_types(raw: Dictionary) -> Dictionary:
+func _map_ideal_keys_to_types(raw: Dictionary, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE) -> Dictionary:
 	var out: Dictionary = {}
+	var max_tier: int = GameParameters.CASTLE_RECRUITMENT_TIERS.get(castle_type, 1)
 	for k in raw.keys():
 		var key: String = str(k).to_lower()
 		var pct: float = float(raw[k])
+		if pct <= 0.0:
+			continue
 		match key:
 			"peasants":
 				out[SoldierTypeEnum.Type.PEASANTS] = pct
@@ -245,7 +297,13 @@ func _map_ideal_keys_to_types(raw: Dictionary) -> Dictionary:
 				out[SoldierTypeEnum.Type.ROYAL_GUARD] = pct
 			_:
 				pass
-	return out
+	# Enforce castle recruitment tier: drop any unit above max tier
+	var filtered: Dictionary = {}
+	for unit_type in out.keys():
+		var unit_tier: int = GameParameters.UNIT_TIERS.get(unit_type, 99)
+		if unit_tier <= max_tier:
+			filtered[unit_type] = out[unit_type]
+	return filtered
 
 func _compute_diversity_requirements(ideal: Dictionary, T: int = -1) -> Dictionary:
 	# Diversity floors should only apply when the recruited batch is large enough,
@@ -268,68 +326,74 @@ func _decide_T_auto(
 	rmax_share: float,
 	mapped_ideal: Dictionary,
 	spend_pct: float,
-	special_caps: Dictionary
-) -> int:
-	# Match recruitment.py:
-	# score = (spent_g, div_ok, -ideal_dist, T) lexicographically max.
-	var gold_eff: int = int(floor(float(gold_budget) * spend_pct))
-	if gold_eff <= 0 or recruits_avail <= 0:
-		return 0
+	special_caps: Dictionary,
+	max_tier: int
+	) -> int:
+		# Match recruitment.py:
+		# score = (spent_g, div_ok, -ideal_dist, T) lexicographically max.
+		var gold_eff: int = int(floor(float(gold_budget) * spend_pct))
+		if gold_eff <= 0 or recruits_avail <= 0:
+			return 0
 
-	var best_t: int = 0
-	var best_spent: int = -1
-	var best_div_ok: int = -1
-	var best_dist: float = 1e18
+		var gpr: float = float(gold_eff) / max(1.0, float(recruits_avail))
+		var qty_factor: float = max(0.0, 1.0 - gpr) # Encourage quantity when gold per recruit is low
+		var qty_weight: float = 2.0
 
-	for T in range(1, recruits_avail + 1):
-		var sim: Dictionary = _simulate_for_T(
+		var best_t: int = 0
+		var best_spent: float = -1.0
+		var best_div_ok: int = -1
+		var best_dist: float = 1e18
+
+		for T in range(1, recruits_avail + 1):
+			var sim: Dictionary = _simulate_for_T(
 			T,
 			gold_eff, wood_av, iron_av,
 			pea_cap_share,
 			rmin_share, rmax_share,
 			mapped_ideal,
-			special_caps
-		)
-		if not bool(sim.get("hard_ok", false)):
-			continue
+			special_caps,
+			max_tier
+			)
+			if not bool(sim.get("hard_ok", false)):
+				continue
 
-		var spent_g: int = int(sim["spent_g"])
-		var div_ok: int = int(sim["div_ok"])
-		var dist: float = float(sim["ideal_dist"])
+			var spent_g: int = int(sim["spent_g"])
+			var spent_score: float = float(spent_g) + qty_weight * qty_factor * float(T)
+			var div_ok: int = int(sim["div_ok"])
+			var dist: float = float(sim["ideal_dist"])
 
-		var better := false
-		if spent_g > best_spent:
-			better = true
-		elif spent_g == best_spent:
-			if div_ok > best_div_ok:
+			var better := false
+			if spent_score > best_spent:
 				better = true
-			elif div_ok == best_div_ok:
-				if dist < best_dist - 1e-9:
+			elif abs(spent_score - best_spent) <= 1e-6:
+				if div_ok > best_div_ok:
 					better = true
+				elif div_ok == best_div_ok:
+					if dist < best_dist - 1e-9:
+						better = true
 				elif abs(dist - best_dist) <= 1e-9 and T > best_t:
 					better = true
 
-		if better:
-			best_spent = spent_g
-			best_div_ok = div_ok
-			best_dist = dist
-			best_t = T
+			if better:
+				best_spent = spent_score
+				best_div_ok = div_ok
+				best_dist = dist
+				best_t = T
 
-	return best_t
+		return best_t
 
-func _simulate_for_T(
+func _build_counts_for_T(
 	T: int,
 	gold_budget: int,
-	wood_av: int,
-	iron_av: int,
+	wood_budget: int,
+	iron_budget: int,
 	pea_cap_share: float,
 	rmin_share: float,
 	rmax_share: float,
 	mapped_ideal: Dictionary,
-	special_caps: Dictionary
+	special_caps: Dictionary,
+	max_tier: int
 ) -> Dictionary:
-	# Equivalent to recruitment.py simulate_for_T
-
 	var low: float = GameParameters.RECRUIT_SCARCITY_LOW
 	var high: float = GameParameters.RECRUIT_SCARCITY_HIGH
 
@@ -344,18 +408,18 @@ func _simulate_for_T(
 	)
 	var biased_ideal: Dictionary = bias_res.get("ideal", mapped_ideal)
 	var target_counts: Dictionary = _hamilton_round(biased_ideal, T)
-
-	# IMPORTANT: Python builds diversity req from the (biased) ideal.
-	var req: Dictionary = _compute_diversity_requirements(biased_ideal, T)
-
-	var bounds: Dictionary = _compute_ranged_bounds(T, rmin_share, rmax_share, wood_av)
+	var base_target_counts: Dictionary = _hamilton_round(_renormalize_to_100(mapped_ideal), T)
+	var diversity_req: Dictionary = _compute_diversity_requirements(biased_ideal, T)
+	var bounds: Dictionary = _compute_ranged_bounds(T, rmin_share, rmax_share, wood_budget)
 	var rmin: int = int(bounds["min"])
 	var rmax: int = int(bounds["max"])
+	var gpr_actual: float = float(gold_budget) / max(1.0, float(T))
 
 	var counts: Dictionary = _construct_base_counts(T)
-	var g_left: int = gold_budget
-	var w_left: int = wood_av
-	var i_left: int = iron_av
+	var base_totals: Dictionary = _totals(counts)
+	var g_left: int = gold_budget - int(base_totals["gold"])
+	var w_left: int = wood_budget - int(base_totals["wood"])
+	var i_left: int = iron_budget - int(base_totals["iron"])
 
 	var cap_map: Dictionary = special_caps.duplicate()
 
@@ -363,25 +427,80 @@ func _simulate_for_T(
 	counts = step.counts; g_left = step.g_left; w_left = step.w_left; i_left = step.i_left
 
 	var cap_units: int = int(floor(pea_cap_share * float(T) + 1e-6))
-	step = _enforce_peasants_cap(counts, g_left, w_left, i_left, cap_units, cap_map)
+	step = _enforce_peasants_cap(counts, g_left, w_left, i_left, cap_units, cap_map, max_tier)
 	counts = step.counts; g_left = step.g_left; w_left = step.w_left; i_left = step.i_left
 
-	step = _seed_diversity(counts, req, g_left, w_left, i_left, rmin, rmax, cap_map)
+	step = _seed_diversity(counts, diversity_req, g_left, w_left, i_left, rmin, rmax, cap_map)
 	counts = step.counts; g_left = step.g_left; w_left = step.w_left; i_left = step.i_left
 
-	step = _move_toward_target(counts, target_counts, g_left, w_left, i_left, rmin, rmax, cap_map)
+	step = _move_toward_target(counts, target_counts, g_left, w_left, i_left, rmin, rmax, cap_map, max_tier)
 	counts = step.counts; g_left = step.g_left; w_left = step.w_left; i_left = step.i_left
 
-	step = _burn_budget(counts, g_left, w_left, i_left, rmin, rmax, cap_map)
+	step = _burn_budget(counts, g_left, w_left, i_left, rmin, rmax, cap_map, max_tier, target_counts, base_target_counts, gpr_actual)
 	counts = step.counts; g_left = step.g_left; w_left = step.w_left; i_left = step.i_left
 
 	counts = _trim_to_caps(counts, cap_map)
 
-	var spent: Dictionary = _totals(counts)
-	var spent_g: int = int(spent["gold"])
-	var left_g: int = gold_budget - spent_g
-	var left_w: int = wood_av - int(spent["wood"])
-	var left_i: int = iron_av - int(spent["iron"])
+	var totals_after: Dictionary = _totals(counts)
+	g_left = gold_budget - int(totals_after["gold"])
+	w_left = wood_budget - int(totals_after["wood"])
+	i_left = iron_budget - int(totals_after["iron"])
+
+	return {
+		"counts": counts,
+		"g_left": g_left,
+		"w_left": w_left,
+		"i_left": i_left,
+		"biased_ideal": biased_ideal,
+		"base_target_counts": base_target_counts,
+		"diversity_req": diversity_req,
+		"rmin": rmin,
+		"rmax": rmax,
+		"gpr": gpr_actual,
+		"notes": bias_res.get("notes", [])
+	}
+
+func _simulate_for_T(
+	T: int,
+	gold_budget: int,
+	wood_av: int,
+	iron_av: int,
+	pea_cap_share: float,
+	rmin_share: float,
+	rmax_share: float,
+	mapped_ideal: Dictionary,
+	special_caps: Dictionary,
+	max_tier: int
+) -> Dictionary:
+	# Equivalent to recruitment.py simulate_for_T
+
+	var plan := _build_counts_for_T(
+		T,
+		gold_budget,
+		wood_av,
+		iron_av,
+		pea_cap_share,
+		rmin_share,
+		rmax_share,
+		mapped_ideal,
+		special_caps,
+		max_tier
+	)
+	var counts: Dictionary = plan.counts
+	var g_left: int = plan.g_left
+	var w_left: int = plan.w_left
+	var i_left: int = plan.i_left
+	var rmin: int = plan.rmin
+	var rmax: int = plan.rmax
+	var biased_ideal: Dictionary = plan.biased_ideal
+	var base_target_counts: Dictionary = plan.base_target_counts
+	var req: Dictionary = plan.diversity_req
+	var cap_units: int = int(floor(pea_cap_share * float(T) + 1e-6))
+
+	var spent_g: int = gold_budget - g_left
+	var left_g: int = g_left
+	var left_w: int = w_left
+	var left_i: int = i_left
 
 	var peasants_ok: bool = int(counts.get(SoldierTypeEnum.Type.PEASANTS, 0)) <= cap_units
 	var ranged_final: int = _ranged_units(counts)
@@ -396,6 +515,20 @@ func _simulate_for_T(
 			div_ok += 1
 
 	var dist: float = _ideal_l1_nonpeasants(counts, biased_ideal)
+	if T == 25:
+		var total_units := 0
+		for k in counts.keys():
+			total_units += int(counts[k])
+
+		DebugLogger.log(
+			"UnitRecruitment",
+			"[sim][OUT] T=" + str(T) +
+			" total_units=" + str(total_units) +
+			" counts=" + str(counts) +
+			" g_left=" + str(g_left) +
+			" w_left=" + str(w_left) +
+			" i_left=" + str(i_left)
+		)
 
 	return {
 		"hard_ok": peasants_ok and ranged_ok and budgets_ok,
@@ -582,30 +715,38 @@ func _enforce_ranged_min(counts: Dictionary, g_left: int, w_left: int, i_left: i
 	var needed: int = max(0, rmin - ranged_now)
 	var cheapest_ranged = _get_cheapest_unit(RANGED_TYPES)
 	var cost = _unit_cost(cheapest_ranged)
+	var donor_cost = _unit_cost(SoldierTypeEnum.Type.PEASANTS)
 	var peasants: int = counts.get(SoldierTypeEnum.Type.PEASANTS, 0)
-	while needed > 0 and peasants > 0 and _can_afford_delta(g_left, w_left, i_left, int(cost["gold"]), int(cost["wood"]), int(cost["iron"])):
+	var dg: int = int(cost["gold"]) - int(donor_cost["gold"])
+	var dw: int = int(cost["wood"]) - int(donor_cost["wood"])
+	var di: int = int(cost["iron"]) - int(donor_cost["iron"])
+	while needed > 0 and peasants > 0 and _can_afford_delta(g_left, w_left, i_left, dg, dw, di):
 		peasants -= 1
 		counts[SoldierTypeEnum.Type.PEASANTS] = peasants
 		counts[cheapest_ranged] = counts.get(cheapest_ranged, 0) + 1
-		g_left -= int(cost["gold"])
-		w_left -= int(cost["wood"])
-		i_left -= int(cost["iron"])
+		g_left -= dg
+		w_left -= dw
+		i_left -= di
 		needed -= 1
 	return {"counts": counts, "g_left": g_left, "w_left": w_left, "i_left": i_left}
 
-func _enforce_peasants_cap(counts: Dictionary, g_left: int, w_left: int, i_left: int, cap: int, special_caps: Dictionary) -> Dictionary:
+func _enforce_peasants_cap(counts: Dictionary, g_left: int, w_left: int, i_left: int, cap: int, special_caps: Dictionary, max_tier: int) -> Dictionary:
 	var peasants: int = counts.get(SoldierTypeEnum.Type.PEASANTS, 0)
-	var cheapest_nonpea = _get_cheapest_paid_unit()
+	var cheapest_nonpea = _get_cheapest_paid_unit_upto(max_tier)
 	var cost = _unit_cost(cheapest_nonpea)
-	while peasants > cap and _can_afford_delta(g_left, w_left, i_left, int(cost["gold"]), int(cost["wood"]), int(cost["iron"])):
+	var donor_cost = _unit_cost(SoldierTypeEnum.Type.PEASANTS)
+	var dg: int = int(cost["gold"]) - int(donor_cost["gold"])
+	var dw: int = int(cost["wood"]) - int(donor_cost["wood"])
+	var di: int = int(cost["iron"]) - int(donor_cost["iron"])
+	while peasants > cap and _can_afford_delta(g_left, w_left, i_left, dg, dw, di):
 		if special_caps.has(cheapest_nonpea) and counts.get(cheapest_nonpea, 0) >= int(special_caps[cheapest_nonpea]):
 			break
 		peasants -= 1
 		counts[SoldierTypeEnum.Type.PEASANTS] = peasants
 		counts[cheapest_nonpea] = counts.get(cheapest_nonpea, 0) + 1
-		g_left -= int(cost["gold"])
-		w_left -= int(cost["wood"])
-		i_left -= int(cost["iron"])
+		g_left -= dg
+		w_left -= dw
+		i_left -= di
 	return {"counts": counts, "g_left": g_left, "w_left": w_left, "i_left": i_left}
 
 func _seed_diversity(counts: Dictionary, diversity_req: Dictionary, g_left: int, w_left: int, i_left: int, rmin: int, rmax: int, special_caps: Dictionary) -> Dictionary:
@@ -639,7 +780,7 @@ func _seed_diversity(counts: Dictionary, diversity_req: Dictionary, g_left: int,
 			need -= 1
 	return {"counts": counts, "g_left": g_left, "w_left": w_left, "i_left": i_left}
 
-func _move_toward_target(counts: Dictionary, target_counts: Dictionary, g_left: int, w_left: int, i_left: int, rmin: int, rmax: int, special_caps: Dictionary) -> Dictionary:
+func _move_toward_target(counts: Dictionary, target_counts: Dictionary, g_left: int, w_left: int, i_left: int, rmin: int, rmax: int, special_caps: Dictionary, max_tier: int) -> Dictionary:
 	var guard: int = 0
 	while guard < 200000:
 		guard += 1
@@ -652,6 +793,9 @@ func _move_toward_target(counts: Dictionary, target_counts: Dictionary, g_left: 
 			if counts.get(donor, 0) <= 0:
 				continue
 			if special_caps.has(to) and counts.get(to, 0) >= int(special_caps[to]):
+				continue
+
+			if GameParameters.UNIT_TIERS.get(to, 99) > max_tier:
 				continue
 			if _ranged_move_breaks_bounds(counts, donor, to, rmin, rmax):
 				continue
@@ -684,7 +828,7 @@ func _move_toward_target(counts: Dictionary, target_counts: Dictionary, g_left: 
 		i_left -= int(best["di"])
 	return {"counts": counts, "g_left": g_left, "w_left": w_left, "i_left": i_left}
 
-func _burn_budget(counts: Dictionary, g_left: int, w_left: int, i_left: int, rmin: int, rmax: int, special_caps: Dictionary) -> Dictionary:
+func _burn_budget(counts: Dictionary, g_left: int, w_left: int, i_left: int, rmin: int, rmax: int, special_caps: Dictionary, max_tier: int, target_counts: Dictionary, base_target_counts: Dictionary, gpr: float) -> Dictionary:
 	var guard: int = 0
 	while guard < 200000:
 		guard += 1
@@ -696,9 +840,19 @@ func _burn_budget(counts: Dictionary, g_left: int, w_left: int, i_left: int, rmi
 			var to = up["to"]
 			if counts.get(donor, 0) <= 0:
 				continue
+			if counts.get(donor, 0) <= int(target_counts.get(donor, 0)):
+				continue
+			if counts.get(donor, 0) <= int(base_target_counts.get(donor, 0)):
+				continue
 			if special_caps.has(to) and counts.get(to, 0) >= int(special_caps[to]):
 				continue
+			if GameParameters.UNIT_TIERS.get(to, 99) > max_tier:
+				continue
 			if _ranged_move_breaks_bounds(counts, donor, to, rmin, rmax):
+				continue
+			if donor == SoldierTypeEnum.Type.PEASANTS and gpr < 1.0:
+				continue
+			if donor == SoldierTypeEnum.Type.SPEARMEN and gpr < 0.8:
 				continue
 			var donor_cost = _unit_cost(donor)
 			var to_cost = _unit_cost(to)
@@ -861,3 +1015,25 @@ func _deduct_player_resources(player_id: int, gold: int, wood: int, iron: int) -
 		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.WOOD, wood)
 	if iron > 0:
 		pm.remove_resources_from_player(player_id, ResourcesEnum.Type.IRON, iron)
+
+func _get_cheapest_paid_unit_upto(max_tier: int) -> SoldierTypeEnum.Type:
+	var cheapest: SoldierTypeEnum.Type = SoldierTypeEnum.Type.SPEARMEN
+	var cheapest_cost: Dictionary = _unit_cost(cheapest)
+
+	for t in UNIT_ORDER:
+		if t == SoldierTypeEnum.Type.PEASANTS:
+			continue
+		if GameParameters.UNIT_TIERS.get(t, 99) > max_tier:
+			continue
+		var c = _unit_cost(t)
+		if int(c["gold"]) < int(cheapest_cost["gold"]) or (int(c["gold"]) == int(cheapest_cost["gold"]) and int(c["power"]) > int(cheapest_cost["power"])):
+			cheapest = t
+			cheapest_cost = c
+
+	return cheapest
+
+func _sum_counts(counts: Dictionary) -> int:
+	var total := 0
+	for k in counts.keys():
+		total += int(counts[k])
+	return total

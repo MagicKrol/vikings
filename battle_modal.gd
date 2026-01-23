@@ -712,7 +712,6 @@ func _on_withdraw_pressed() -> void:
 		withdrawal_in_progress = true
 		attacker_manual_withdraw_requested = true
 		gm.get_battle_manager().mark_attacker_manual_withdrawal()
-		animated_simulator.defender_can_withdraw = false
 		_set_message("Your army is withdrawing")
 		_play_retreat_sound()
 		_update_action_button()

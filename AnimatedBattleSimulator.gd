@@ -10,6 +10,7 @@ var battle_simulator: BattleSimulator
 var battle_timer: Timer
 var is_battle_running: bool = false
 var battle_session: BattleSimulator.BattleSession = null
+var defender_can_withdraw: bool = false
 
 func _ready():
 	battle_simulator = BattleSimulator.new()
@@ -29,6 +30,7 @@ func start_animated_battle(attacking_armies: Array, defending_armies: Array, reg
 		DebugLogger.log("BattleAnimation", "Battle already running!")
 		return
 	battle_session = battle_simulator.start_battle_session(attacking_armies, defending_armies, region_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, attacker_can_withdraw, defender_can_withdraw, castle_defense_bonus_override, attacker_effectiveness_ratio, siege_payload)
+	self.defender_can_withdraw = battle_session != null and battle_session.defender_can_withdraw
 	is_battle_running = battle_session != null and battle_session.is_battle_running
 	if not is_battle_running:
 		return
