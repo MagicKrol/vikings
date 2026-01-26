@@ -2,7 +2,7 @@ extends Control
 class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
-const USE_DEMO_MENU: bool = false
+const USE_DEMO_MENU: bool = true
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -278,19 +278,19 @@ func _on_demo_map_pressed():
 	DebugLogger.log("UISystem", "Demo Map button pressed")
 	# Disable button to prevent re-triggering
 	# demo_map_button.disabled = true
-	var map_path := "res://mapdata/demo-999-medium.json"
+	var map_path := "res://mapdata/demo-999-small.json"
 	var demo_player_settings := [
 		{"player_id": 1, "control_type": "Player"},
 		{"player_id": 2, "control_type": "Computer"},
 		{"player_id": 3, "control_type": "Computer"},
-		{"player_id": 4, "control_type": "Computer"},
-		{"player_id": 5, "control_type": "Computer"},
-		{"player_id": 6, "control_type": "Computer"}
+		{"player_id": 4, "control_type": "Off"},
+		{"player_id": 5, "control_type": "Off"},
+		{"player_id": 6, "control_type": "Off"}
 	]
 	get_tree().set_meta("start_payload", {
 		"type": "map",
 		"map_file": map_path,
-		"map_size": "medium",
+		"map_size": "small",
 		"player_settings": demo_player_settings
 	})
 	if sound_manager:

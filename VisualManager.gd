@@ -103,7 +103,7 @@ func place_castle_visual(region_container: Node) -> void:
 		var center_meta = polygon.get_meta("center")
 		if center_meta != null:
 			var center := center_meta as Vector2
-			castle.position = center + Vector2(0 * map_size_scale, -20 * map_size_scale)  # Scaled offset
+			castle.position = center + Vector2(0 * map_size_scale, -10 * map_size_scale)  # Scaled offset (10px lower)
 	
 	castle.scale = Vector2(castle_scale, castle_scale)
 	

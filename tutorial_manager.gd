@@ -24,6 +24,7 @@ func _init(region_mgr: RegionManager, tutorial_ui: TutorialModal, msg_modal: Mes
 	camera = cam
 	ai_camera_director_ref = camera_director
 	_connect_message_signal()
+	_connect_camera_signal()
 	DebugLogger.log("Tutorial", "TutorialManager initialized")
 	steps = _build_default_steps()
 
@@ -46,6 +47,7 @@ func start_tutorial(player_id: int) -> void:
 	active = true
 	step_index = -1
 	tutorial_player_id = player_id
+	_set_camera_tutorial_signal_enabled(true)
 	DebugLogger.log("Tutorial", "Starting tutorial for player " + str(player_id))
 	_advance_step()
 	return
@@ -95,6 +97,22 @@ func handle_battle_finished() -> void:
 	_battle_finished_flag = false
 	_advance_step()
 
+func _on_camera_moved(_target: Vector2) -> void:
+	if not active:
+		return
+	if expected_action != "camera_move":
+		return
+	DebugLogger.log("Tutorial", "Camera moved by player, advancing tutorial")
+	_advance_step()
+
+func _on_camera_zoomed(_zoom: Vector2) -> void:
+	if not active:
+		return
+	if expected_action != "camera_zoom":
+		return
+	DebugLogger.log("Tutorial", "Camera zoomed by player, advancing tutorial")
+	_advance_step()
+
 func _advance_step() -> void:
 	step_index += 1
 	expected_region_id = -1
@@ -114,14 +132,40 @@ func _connect_message_signal() -> void:
 		if not message_modal.continue_clicked.is_connected(cb):
 			message_modal.continue_clicked.connect(cb)
 
+func _connect_camera_signal() -> void:
+	var cam: CameraController = camera as CameraController
+	var cb = Callable(self, "_on_camera_moved")
+	if not cam.camera_moved_by_player.is_connected(cb):
+		cam.camera_moved_by_player.connect(cb)
+	var cb_zoom = Callable(self, "_on_camera_zoomed")
+	if not cam.camera_zoomed_by_player.is_connected(cb_zoom):
+		cam.camera_zoomed_by_player.connect(cb_zoom)
+
+func _set_camera_tutorial_signal_enabled(enabled: bool) -> void:
+	var cam: CameraController = camera as CameraController
+	if cam:
+		cam.set_tutorial_signal_enabled(enabled)
+
 func _finish() -> void:
 	active = false
+	_set_camera_tutorial_signal_enabled(false)
 	if tutorial_modal:
 		tutorial_modal.hide_all_arrows()
 		tutorial_modal.show_block("")  # Clear all blocks to re-enable input
 	if message_modal:
 		message_modal.hide_modal()
 		_restore_modal_state()
+	var tree: SceneTree = _get_scene_tree()
+	if tree != null:
+		tree.paused = false
+		tree.change_scene_to_file("res://scenes/main_menu.tscn")
+
+func _get_scene_tree() -> SceneTree:
+	if message_modal:
+		return message_modal.get_tree()
+	if tutorial_modal:
+		return tutorial_modal.get_tree()
+	return null
 
 func is_waiting_for_region() -> bool:
 	return active and expected_action == "region"
@@ -425,7 +469,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Let's make a camp, to heal our wounded and restore some vigor.",
+			"message": "Let's make a camp, to heal our wounded and restore some vigor. ",
 			"show_continue": false,
 			"block_input": true,
 			"expected_action": "ui",
@@ -438,7 +482,15 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,armyactions3"
 		},
 		{
-			"message": "Vigor restored!\nBut we don't have enough movement points to move our army!\n Let's cancel our move.",
+			"message": "Vigor restored!\n Any movement points left at the end of the turn is spent resting. ",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+		},
+		{
+			"message": "We don't have enough movement points to move our army!\n Let's cancel our move.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -449,6 +501,22 @@ func _build_default_steps() -> Array:
 				"anchor": "screen"
 			},
 			"block": "trade,endturn,makecamp,armyactions3"
+		},
+		{
+			"message": "You can navigate the map by holding right mouse button and moving mouse or using key arrows/WASD. Try it.",
+			"show_continue": false,
+			"block_input": true,
+			"expected_action": "camera_move",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn"
+		},
+		{
+			"message": "You can also zoom in and out. Use mouse wheel, pinch gesture on your touchpad or press Q and E keys.",
+			"show_continue": false,
+			"block_input": true,
+			"expected_action": "camera_zoom",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn"
 		},
 		{
 			"message": "We can end our turn now.",
@@ -854,7 +922,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "That's most of it. I will let you figure out the rest of it on your own.",
+			"message": "Congratulations. You finished a basic tutorial. Click continue to exit. ",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

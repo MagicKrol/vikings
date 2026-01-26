@@ -82,7 +82,7 @@ func _on_end_turn_button_pressed():
 	if ui_manager:
 		ui_manager.close_all_active_modals()
 	if game_manager:
-		game_manager.next_turn()
+		game_manager.handle_human_end_turn()
 	else:
 		DebugLogger.log("UISystem", "Error: Game manager not available")
 

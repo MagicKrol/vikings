@@ -69,6 +69,7 @@ var _trade_manager: TradeManager
 var _tutorial_manager: TutorialManager
 var _ai_camera_director: AICameraDirector
 var _message_modal: MessageModal
+var _intro_message_modal: MessageModal
 var ai_step_requires_shift: bool = false
 
 # AI system references
@@ -228,6 +229,7 @@ func initialize_managers(is_scenario: bool = false):
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
 	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
 	_message_modal = ui_node.get_node("MessageModal") as MessageModal
+	_intro_message_modal = ui_node.get_node_or_null("IntroMessageModal") as MessageModal
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
 		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
@@ -660,9 +662,12 @@ func _show_custom_start_prompt() -> void:
 		return
 	if enable_map_editor:
 		return
-	if _message_modal == null:
+	var modal_to_use: MessageModal = _message_modal
+	if not tutorial_enabled and _intro_message_modal != null:
+		modal_to_use = _intro_message_modal
+	if modal_to_use == null:
 		return
-	_message_modal.call_deferred("display_message", "Click a region to choose your starting location")
+	modal_to_use.call_deferred("display_message", "Click a region to choose your starting location")
 
 func set_region_center_markers_enabled(value: bool) -> void:
 	if show_region_center_markers == value:
@@ -3094,3 +3099,13 @@ func _on_game_menu_exit_pressed() -> void:
 	"""Handle Exit Game button from game menu"""
 	DebugLogger.log("UISystem", "Exiting game")
 	get_tree().quit()
+
+func handle_human_end_turn() -> void:
+	_auto_camp_armies_for_player(current_player)
+	next_turn()
+
+func _auto_camp_armies_for_player(player_id: int) -> void:
+	var armies: Array[Army] = _army_manager.get_player_armies(player_id)
+	for army in armies:
+		while army.get_movement_points() > 0:
+			army.make_camp()

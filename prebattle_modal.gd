@@ -61,7 +61,7 @@ const TREB_DATA = {"points": 4, "wood": 5, "defense": 5, "max": 99}
 const TREBUCHET_SHOTS: int = 4
 const TREBUCHET_HIT_CHANCE: float = 0.5
 const BOMBARD_TEXT := "Bombard"
-const CONTINUE_TEXT := "Continue"
+const CONTINUE_TEXT := "Attack"
 
 var siege_points_total: int = 0
 var siege_points_spent: int = 0
@@ -275,11 +275,15 @@ func _update_labels() -> void:
 func _update_siege_visibility(defense_bonus: int) -> void:
 	var show_siege := defense_bonus > 0
 	if show_siege:
+		if siege_panel:
+			siege_panel.visible = true
 		siege_available.visible = true
 		siege_not_available.visible = false
 		siege_points_text.visible = true
 		siege_points_value.visible = true
 	else:
+		if siege_panel:
+			siege_panel.visible = false
 		siege_available.visible = false
 		siege_not_available.visible = true
 		siege_points_text.visible = false

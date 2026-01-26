@@ -1,6 +1,8 @@
 extends Camera2D
 
 class_name CameraController
+signal camera_moved_by_player(new_target: Vector2)
+signal camera_zoomed_by_player(new_zoom: Vector2)
 
 # Camera Controller for Map Generator
 # 
@@ -21,7 +23,7 @@ class_name CameraController
 @export var pan_speed: float = 2.0
 @export var zoom_speed: float = 0.1
 @export var min_zoom: float = 0.5
-@export var max_zoom: float = 5.0
+@export var max_zoom: float = 2.0
 @export var smooth_pan: bool = true
 @export var smooth_zoom: bool = true
 @export var pan_smoothing: float = 15.0
@@ -42,6 +44,8 @@ var last_mouse_position: Vector2
 
 # Enable touch input processing
 var touch_enabled: bool = true
+var drag_button: int = 0
+var tutorial_signal_enabled: bool = false
 
 func _ready() -> void:
 	# Initialize target values to current values
@@ -103,22 +107,23 @@ func _handle_mouse_input(event: InputEventMouseButton) -> void:
 				clamp(new_zoom.x, min_zoom, max_zoom),
 				clamp(new_zoom.y, min_zoom, max_zoom)
 			)
+			_emit_camera_zoomed()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			var new_zoom = target_zoom * (1.0 - zoom_amount)
 			target_zoom = Vector2(
 				clamp(new_zoom.x, min_zoom, max_zoom),
 				clamp(new_zoom.y, min_zoom, max_zoom)
 			)
-		elif event.button_index == MOUSE_BUTTON_LEFT:
-			# Only start drag if a modifier key is held (e.g., Shift)
-			# This allows region clicking without camera interference
-			if Input.is_key_pressed(KEY_SHIFT):
-				is_mouse_dragging = true
-				last_mouse_position = event.position
+			_emit_camera_zoomed()
+		elif (event.button_index == MOUSE_BUTTON_LEFT and Input.is_key_pressed(KEY_SHIFT)) or event.button_index == MOUSE_BUTTON_RIGHT:
+			is_mouse_dragging = true
+			last_mouse_position = event.position
+			drag_button = event.button_index
 	else:
-		if event.button_index == MOUSE_BUTTON_LEFT:
+		if event.button_index == drag_button:
 			# Stop mouse drag
 			is_mouse_dragging = false
+			drag_button = 0
 
 func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 	if is_mouse_dragging:
@@ -126,22 +131,30 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 		var pan_delta = mouse_delta * pan_speed / zoom.x
 		target_position += pan_delta
 		last_mouse_position = event.position
+		_emit_camera_moved()
 	
 
 func _handle_continuous_keyboard_input(delta: float) -> void:
 	"""Handle continuous keyboard input for smooth camera movement"""
 	var pan_speed_per_second = 400.0 / zoom.x  # Pixels per second, scaled by zoom
 	var pan_amount = pan_speed_per_second * delta
+	var moved := false
 	
 	# Check for continuous movement keys
 	if Input.is_action_pressed("ui_up") or Input.is_key_pressed(KEY_W):
 		target_position.y -= pan_amount
+		moved = true
 	if Input.is_action_pressed("ui_down") or Input.is_key_pressed(KEY_S):
 		target_position.y += pan_amount
+		moved = true
 	if Input.is_action_pressed("ui_left") or Input.is_key_pressed(KEY_A):
 		target_position.x -= pan_amount
+		moved = true
 	if Input.is_action_pressed("ui_right") or Input.is_key_pressed(KEY_D):
 		target_position.x += pan_amount
+		moved = true
+	if moved:
+		_emit_camera_moved()
 
 func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 	"""Handle discrete keyboard input for zoom and reset actions"""
@@ -154,12 +167,14 @@ func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 				clamp(new_zoom.x, min_zoom, max_zoom),
 				clamp(new_zoom.y, min_zoom, max_zoom)
 			)
+			_emit_camera_zoomed()
 		KEY_E:
 			var new_zoom = target_zoom * (1.0 - zoom_amount)
 			target_zoom = Vector2(
 				clamp(new_zoom.x, min_zoom, max_zoom),
 				clamp(new_zoom.y, min_zoom, max_zoom)
 			)
+			_emit_camera_zoomed()
 		KEY_R:
 			# Reset camera
 			reset_camera()
@@ -188,6 +203,7 @@ func _handle_drag_event(event: InputEventScreenDrag) -> void:
 		if last_pan_center != Vector2.ZERO:
 			var delta_pan = (last_pan_center - current_center) * pan_speed / zoom.x
 			target_position += delta_pan
+			_emit_camera_moved()
 		last_pan_center = current_center
 
 func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
@@ -198,11 +214,13 @@ func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 		clamp(new_zoom.x, min_zoom, max_zoom),
 		clamp(new_zoom.y, min_zoom, max_zoom)
 	)
+	_emit_camera_zoomed()
 
 func _handle_pan_gesture(event: InputEventPanGesture) -> void:
 	# Handle two-finger pan gesture (macOS trackpad primary method)
 	var pan_delta = event.delta * pan_speed / zoom.x
 	target_position += pan_delta
+	_emit_camera_moved()
 
 func _update_gesture_state() -> void:
 	var touch_count = touch_points.size()
@@ -305,6 +323,8 @@ func set_instant_mode(instant: bool) -> void:
 	"""Enable/disable instant camera movement (no smoothing)"""
 	smooth_pan = not instant
 	smooth_zoom = not instant
+func set_tutorial_signal_enabled(enabled: bool) -> void:
+	tutorial_signal_enabled = enabled
 
 func center_on_army(army: Army) -> void:
 	"""Center camera on a specific army"""
@@ -336,3 +356,13 @@ func await_target_reached(position_threshold: float = 2.0, zoom_threshold: float
 		if pos_ok and zoom_ok:
 			break
 		await get_tree().process_frame
+
+func _emit_camera_moved() -> void:
+	if not tutorial_signal_enabled:
+		return
+	camera_moved_by_player.emit(target_position)
+
+func _emit_camera_zoomed() -> void:
+	if not tutorial_signal_enabled:
+		return
+	camera_zoomed_by_player.emit(target_zoom)

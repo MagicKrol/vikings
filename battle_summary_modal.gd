@@ -116,8 +116,13 @@ func _update_display() -> void:
 		"Defenders":
 			player_won = player_is_defender
 		"Withdrawal":
-			# Attackers withdrew: defenders effectively succeed
-			player_won = player_is_defender
+			# Decide winner based on withdrawing side (1=attacker withdrew, 2=defender withdrew)
+			if int(battle_report.withdrawing_side) == 1:
+				player_won = player_is_defender
+			elif int(battle_report.withdrawing_side) == 2:
+				player_won = player_is_attacker
+			else:
+				player_won = false
 		_:
 			player_won = false
 	# Set label

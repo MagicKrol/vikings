@@ -1,0 +1,333 @@
+AI Log File: battle_test
+
+Economy: Bought 5 Stone and upgrade Keep (gold change -21)
+
+Economy: Buy Food failed (insufficient_gold)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 55
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 2.833
+underpowered_ratio: 0.250
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Castle Defense Recruitment skipped: Riverberg: in danger but has minimal garrison power (Power: 98 / 30)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Ashby (#339) | total:40.0 (strategy:0.0, neighbor:40.0, distance_status:False, score:40.0<[100.0])
+- Kirkley (#270) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:False, score:30.0<[100.0])
+- Osfjell (#309) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:False, score:10.0<[100.0])
+- Torholme (#389) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:False, score:10.0<[100.0])
+
+Economy: Upgrade Castle: upgrade_started (Top-up purchases: 5 Stone (gold -21) | total gold change: -21)
+
+- Riverberg (#413) | total:100.0 (recruits:100.0, distance:100.0, dist:1, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=10.
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army II -------------
+Army II [Power: 1300, E: 100 - P:100, S:100, A:100, SW:100]
+Candidate 1: Kirkford (#272), score: 57.9 (resources: 11.2, population: 4.8, level: 1, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Kirkford (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Kirkford [MP left: 3, Vigor: 95%]
+Siege equipement
+Available points: 30
+Available wood: 35 (growth limit)
+Bought: 1 Trebuchets, 1 Battling Rams, 16 Ladders
+
+Siege purchase summary
+SP available: 30
+Ladders: 16
+Siege Rams: 1
+Trebuchets: 1
+1 Breached, 0 Damaged wall sections
+
+[BATTLE]
+Fight at Kirkford
+Battle started
+Attacker: Army I [Power: 1300 - P:100, S:100, A:100, SW:100]
+Defender Army II (known) [Power: 650 - P:50, S:50, A:50, SW:50]
+Defender Garrison (known) [Power: 24 - P:12]
+Defender Recruits (Kirkford) (unknown) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 360 - P:19, S:18, A:55, SW:12]
+Defender After: Army II (known) [Power: 0 - none]
+Defender After (Garrison): Garrison (known) [Power: 0 - none]
+Defender After (Recruits): Kirkford (unknown) [Power: 0 - none]
+
+Moving to Kirkford [MP left: 3, Vigor: 90%]
+Candidate 1: Hellaby (#188), score: 47.4 (resources: 15.0, population: 0.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hellaby (Player 1 (unknown))
+Moves to Hellaby [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Hellaby
+Battle started
+Attacker: Army I [Power: 360 - P:19, S:18, A:55, SW:12]
+Defender Garrison (known) [Power: 12 - P:6]
+Defender Recruits (Hellaby) (unknown) [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 360 - P:19, S:18, A:55, SW:12]
+Defender After (Garrison): Garrison (known) [Power: 0 - none]
+Defender After (Recruits): Hellaby (unknown) [Power: 0 - none]
+
+Moving to Hellaby [MP left: 1, Vigor: 80%]
+Army I makes camp [MP left: 0, Vigor: 90%]
+[MOVEMENT]
+No valid targets; camping
+-------------- ARMY Army V -------------
+Army V [Power: 40, E: 100 - P:20]
+[RECRUITMENT]
+No recruit castles available from Ashby
+Recruitment: Army Army V could not recruit at Ashby (reason: no_recruit_castle)
+
+Defending due to no safe recruitment path
+Army V makes camp [MP left: 4, Vigor: 100%]
+Army V makes camp [MP left: 3, Vigor: 100%]
+Army V makes camp [MP left: 2, Vigor: 100%]
+Army V makes camp [MP left: 1, Vigor: 100%]
+Army V makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY Army III -------------
+Army III [Power: 400, E: 100 - P:100, A:50]
+Candidate 1: Redham (#370), score: 81.4 (resources: 26.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Saintdon (#236), score: 65.8 (resources: 18.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Osmere (#238), score: 65.1 (resources: 18.8, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Redham (no enemy)
+Moves to Redham [MP left: 2, Vigor: 95%]
+[BATTLE]
+Fight at Redham
+Battle started
+Attacker: Army III [Power: 400 - P:100, A:50]
+Defender Garrison (unknown) [Power: 38 - P:19]
+Defender Recruits (Redham) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 396 - P:98, A:50]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Redham (unknown) [Power: 0 - none]
+
+Moving to Redham [MP left: 2, Vigor: 90%]
+Candidate 1: Woodham (#253), score: 63.8 (resources: 18.8, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Oschester (#318), score: 45.3 (resources: 11.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Woodham (no enemy)
+Moves to Woodham [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Woodham
+Battle started
+Attacker: Army III [Power: 396 - P:98, A:50]
+Defender Garrison (unknown) [Power: 28 - P:14]
+Defender Recruits (Woodham) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army III [Power: 396 - P:98, A:50]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Woodham (unknown) [Power: 0 - none]
+
+Moving to Woodham [MP left: 0, Vigor: 80%]
+-------------- ARMY Army IV -------------
+Army IV [Power: 200, E: 100 - P:100]
+Candidate 1: Westdon (#269), score: 78.2 (resources: 26.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Redchester (#185), score: 59.9 (resources: 18.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Redstadir (#390), score: 58.2 (resources: 14.2, population: 4.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Westdon (no enemy)
+Moves to Ashby [MP left: 4, Vigor: 95%]
+Moves to Kirkley [MP left: 3, Vigor: 90%]
+Moves to Westdon [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Westdon
+Battle started
+Attacker: Army IV [Power: 200 - P:100]
+Defender Garrison (unknown) [Power: 22 - P:11]
+Defender Recruits (Westdon) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army IV [Power: 192 - P:96]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westdon (unknown) [Power: 0 - none]
+
+Moving to Westdon [MP left: 1, Vigor: 80%]
+Army IV makes camp [MP left: 0, Vigor: 90%]
+Candidate 1: Redchester (#185), score: 62.8 (resources: 18.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Akrham (#337), score: 57.6 (resources: 15.0, population: 5.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hafnthorpe (#338), score: 56.5 (resources: 15.0, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Redchester (no enemy)
+Out of movement points before reaching Redchester
+Out of movement points before reaching Redchester
+Economy: Bought: 3 Stone, 2 Wood for 17 gold
+
+Resources (end):
+Gold: 2
+Food: 50
+Wood: 30
+Iron: 10
+Stone: 3
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: no_candidate.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Economy: Bought: 20 Stone, 3 Wood for 99 gold
+
+Resources (end):
+Gold: 1
+Food: 50
+Wood: 23
+Iron: 10
+Stone: 30
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: no_candidate.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Economy: Bought: 20 Stone, 3 Wood for 99 gold
+
+Resources (end):
+Gold: 1
+Food: 50
+Wood: 23
+Iron: 10
+Stone: 30
+

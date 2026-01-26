@@ -623,9 +623,17 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	
 	DebugLogger.log("UISystem", "Battle finished! Winner: " + str(report.winner))
 
-func _on_ai_withdrawal_started() -> void:
-	"""Display notice when AI attacker begins withdrawal."""
-	_set_message("Enemy is withdrawing")
+func _on_ai_withdrawal_started(side: int) -> void:
+	"""Display notice when withdrawal begins (attacker=1, defender=2)."""
+	var gm = get_node("../../GameManager") as GameManager
+	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id()) if gm and defending_region else -1
+	var human_attacker := _player_controls_attacking_army()
+	var human_defender := (gm and gm.is_player_human(region_owner)) or _player_has_defending_army()
+	var human_side := 1 if human_attacker else (2 if human_defender else 0)
+	if side == human_side:
+		_set_message("Your army is withdrawing")
+	else:
+		_set_message("Enemy is withdrawing")
 	_play_retreat_sound()
 	withdrawal_in_progress = true
 	_update_action_button()

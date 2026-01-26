@@ -40,10 +40,18 @@ const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable si
 const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
 const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
 const RECRUIT_PEA_CAP_SHARE = 0.40             # Max peasants share during recruitment composition
-const RECRUIT_RANGED_MIN_SHARE = 0.25          # Minimum ranged share (relative to recruit batch size)
-const RECRUIT_RANGED_MAX_SHARE = 0.35          # Maximum ranged share (relative to recruit batch size)
-const RECRUIT_SCARCITY_LOW = 0.5               # Gold/recruit lower bound for scarcity bias (early game nudges quality when ratio rises)
-const RECRUIT_SCARCITY_HIGH = 1.5              # Gold/recruit upper bound for full scarcity bias
+const RECRUIT_RANGED_MIN_SHARE = 0.25          # legacy (unused)
+const RECRUIT_RANGED_MAX_SHARE = 0.35          # legacy (unused)
+const RECRUIT_RANGED_SHARE_MIN = 0.20          # Gaussian ranged diversion min
+const RECRUIT_RANGED_SHARE_MAX = 0.30          # Gaussian ranged diversion max
+const RECRUIT_GAUSS_SIGMA = 1.6
+const RECRUIT_GAUSS_AMPLITUDE = 10.0
+const RECRUIT_GAUSS_CUTOFF_X = 7.0
+const RECRUIT_GAUSS_RATIO_MIN = 0.5
+const RECRUIT_GAUSS_RATIO_MAX = 5.0
+const RECRUIT_GAUSS_MAX_SHIFT = 6.0
+const RECRUIT_SCARCITY_LOW = 0.5               # Gold/recruit lower bound for scarcity bias (legacy)
+const RECRUIT_SCARCITY_HIGH = 1.5              # Gold/recruit upper bound for full scarcity bias (legacy)
 const RECRUIT_UNIT_BOOSTS: Dictionary = {      # Scarcity bias boosts (higher = more likely when gold/recruit is high)
 	SoldierTypeEnum.Type.PEASANTS: -0.9,
 	SoldierTypeEnum.Type.SPEARMEN: -0.4,

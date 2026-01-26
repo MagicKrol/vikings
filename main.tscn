@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=41 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://bimr046p3bsib" path="res://images/background4grass4.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -20,7 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://b3ovrt5dclfvx" path="res://scenes/transfer_soldiers_modal.tscn" id="20_transfer"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="22_selecttooltip"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="22_selecttooltip_nores"]
-[ext_resource type="PackedScene" uid="uid://bhsn0tiy6gyix" path="res://scenes/message_modal.tscn" id="23_messagemmodal"]
+[ext_resource type="PackedScene" uid="uid://cmhogdvkmm3mr" path="res://scenes/intromessage_modal.tscn" id="23_messagemmodal"]
+[ext_resource type="PackedScene" uid="uid://bhsn0tiy6gyix" path="res://scenes/message_modal.tscn" id="23_message_modal"]
 [ext_resource type="PackedScene" uid="uid://cuk4cfsmlpk23" path="res://scenes/next_player_modal.tscn" id="24_nextplayermodal"]
 [ext_resource type="PackedScene" uid="uid://cwr00tkaux1gm" path="res://scenes/transfer_select_modal.tscn" id="24_xybgh"]
 [ext_resource type="PackedScene" uid="uid://bsqu1omiwntnm" path="res://scenes/player_status_modal2.tscn" id="25_8wafx"]
@@ -101,7 +102,10 @@ offset_top = 330.0
 offset_right = -690.0
 offset_bottom = 530.0
 
-[node name="MessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
+[node name="IntroMessageModal" parent="UI" instance=ExtResource("23_messagemmodal")]
+visible = false
+
+[node name="MessageModal" parent="UI" instance=ExtResource("23_message_modal")]
 visible = false
 
 [node name="RegionTooltip2" parent="UI" instance=ExtResource("9_cgk76")]
@@ -185,7 +189,6 @@ offset_right = 520.0
 offset_bottom = 305.0
 
 [node name="MoveModal" parent="UI" instance=ExtResource("27_movemodal")]
-visible = false
 
 [node name="MapEditorPanel" parent="UI" instance=ExtResource("29_mapeditorpanel")]
 visible = false

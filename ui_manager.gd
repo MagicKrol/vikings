@@ -46,6 +46,7 @@ var _info_modal: InfoModal
 var _move_modal: MoveModal
 var _prebattle_modal: PrebattleModal
 var _message_modal: MessageModal
+var _intro_message_modal: MessageModal
 var _trade_modal: TradeModal
 var _recruitment_modal: RecruitmentModal
 var _transfer_select_modal: TransferSelectModal
@@ -106,6 +107,7 @@ func _ready():
 	_move_modal = get_parent().get_node("MoveModal") as MoveModal
 	_prebattle_modal = get_parent().get_node("PrebattleModal") as PrebattleModal
 	_message_modal = get_parent().get_node("MessageModal") as MessageModal
+	_intro_message_modal = get_parent().get_node_or_null("IntroMessageModal") as MessageModal
 	_trade_modal = get_parent().get_node("TradeModal") as TradeModal
 	_recruitment_modal = get_parent().get_node("RecruitmentModal") as RecruitmentModal
 	_transfer_select_modal = get_parent().get_node("TransferSelectModal") as TransferSelectModal
@@ -165,6 +167,7 @@ func _build_modal_list() -> void:
 		_info_modal,
 		_prebattle_modal,
 		_message_modal,
+		_intro_message_modal,
 		_trade_modal,
 		_recruitment_modal,
 		_transfer_select_modal,
@@ -179,7 +182,10 @@ func _build_blocking_modal_list() -> void:
 	_blocking_modal_nodes = [
 		_prebattle_modal,
 		battle_modal,
-		_battle_summary_modal
+		_battle_summary_modal,
+		_recruitment_modal,
+		_transfer_soldiers_modal,
+		_intro_message_modal
 	]
 
 func _sync_modal_state() -> void:

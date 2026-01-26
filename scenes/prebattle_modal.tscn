@@ -521,7 +521,7 @@ clip_contents = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme = ExtResource("6_qnd2b")
-text = "Continue"
+text = "Attack"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/AttackSection/HBoxContainer"]
 custom_minimum_size = Vector2(20, 0)

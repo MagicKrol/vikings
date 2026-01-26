@@ -31,7 +31,7 @@ Main (Node2D) [place_armies.gd]
 │	├ BorderManager (Node) [border_manager.gd] – centralizes noisy border creation, caches per-edge geometries, preserves ocean strokes (5.2px black) and exposes refresh helpers consumed by MapGenerator/RegionManager; MapEditor now reruns `BorderManager.setup()` (plus the noisy polygon rebuild/overlay sync) whenever a region toggles between land and ocean so the new coastline/borders appear immediately.
 │	└ TutorialWorldArrow (Sprite2D) – single world-space tutorial arrow used for region-anchored hints
 ├ Background (Sprite2D)
-├ Camera2D [camera_controller.gd]
+├ Camera2D [camera_controller.gd] – handles pan/zoom; shift+left-drag or right-drag pans; wheel zoom; Q/E zoom; R reset; emits camera_moved_by_player and camera_zoomed_by_player during tutorial
 ├ ClickManager (Node) [click_manager.gd]
 ├ GameManager (Node) [game_manager.gd]
 ├ SoundManager (Node) [sound_manager.gd]
@@ -64,9 +64,9 @@ Main (Node2D) [place_armies.gd]
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
-│	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – simple displayMessage(text) overlay with recruitment-style continue button; emits continue_clicked for restore flows
+│	├ MessageModal [scenes/intromessage_modal.tscn] [intro_message_modal.gd] – intro/custom-map message overlay; inherits MessageModal behavior (displayMessage/show_tutorial_message, continue_clicked signal)
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd] – shows turn/castle prompt; castle-placement prompt only appears for human players
-│	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open; ArmyActions button cancels move and reopens ArmySelectModal for the selected army
+│	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open; ArmyActions button cancels move and reopens ArmySelectModal for the selected army; NextArmy button and Tab (while MoveModal is visible) cycle to the player's next army, repainting modals and centering the camera
 │	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
 │	├ SpeedModal [scenes/speed_modal.tscn] [scenes/speed_modal.gd] – AI/battle speed selector (normal/fast/very fast); adjusts AI move speed multiplier during map play and battle round timing during sieges; highlighted button reflects the active context; also shown during battles
 │	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – opens from trade icon; prices start at Food/Wood 2/1, Stone 4/2, Iron 6/3 then adjust by market curve (min 0.4, k=0.01); per-player trade history decays each turn (trade_reset_rate=0.2); buttons adjust buy/sell amounts, update totals/gold delta, and continue applies trades via PlayerManager with status refresh
@@ -216,6 +216,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### RecruitmentManager.gd (RecruitmentManager)
 	- Purpose: Builds recruitment plans from ideal compositions, budgets, and recruit caps for armies/garrisons using the same pipeline for simulation and execution.
 	- Sandbox helper: `recruitment.py` is now a standalone Gaussian visualizer (Tkinter) that computes weights with sigma=1.6, amplitude=10 (cutting to zero at x≥7) for peasants→royal_guard; mu shifts linearly by gold/recruits (≤0.5 -> 0, ≥5 -> 6), diverts 20-30% of base mass into ranged (archers from x 0-2 mass, crossbowmen from x 3-5 mass), applies a user-selected tier cap (1..5) to zero higher tiers, renders the curve instead of boosts, lists the Y(x) values, and allocates recruits under gold/wood/iron budgets using those weights.
+	- RecruitmentManager.gd now mirrors the Gaussian sandbox: no ideals/upgrades/diversity; weights shift by gold/recruits, ranged diversion 20-30%, tier-capped, garrisons block cavalry, and purchases scale weights by gold cost until budgets or recruits exhaust, using GameParameters unit costs/tiers; logs continue via AILogManager.
 - Hard caps: Starts from `T` peasants, only converts/upgrades within budget left after that base cost, so total recruited never exceeds the chosen `T`; spending reports use `spent = start - left` for gold/wood/iron.
 - Castle tier gating: Ideal mapping and upgrade/burn steps drop unit types above `GameParameters.CASTLE_RECRUITMENT_TIERS` for the current castle, so keeps cannot hire Royal Guards or other over-tier units.
 - T chooser tweak: When gold-per-recruit is low, the T picker now gives a small bonus to larger T (quantity) before evaluating diversity/ideal distance; when the ratio rises toward/above 1.0, the bonus fades out so quality spending dominates again.
@@ -432,6 +433,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Stacking: `_apply_army_offsets_for_region(region)` repositions all armies in a region to avoid overlap using fixed extra offsets. Applied on create, move (both source and target), and retreat. Pattern: 1st = base; 2nd = x-15/y-10/z-1; 3rd = x-30/y-20/z-2; 4th = x+15/y-10/z-3; 5th = x+30/y-20/z-4; 6th+ same as 1st.
 - Ready highlight: Caches `_ready_highlight_player_id`, listens to `Army.movement_points_changed`, and refreshes `VisualManager.update_ready_army_highlights()` on turn start, move/camp MP spend, resets, and army removal.
 - Retreat Support: `get_previous_region_for_army()` exposes the last region so cameras can focus on withdrawal destinations.
+- Raised armies now spawn with 1 peasant token (set in `Army.setup_raised_army`) to avoid empty stacks on creation.
 
 ### ai_camera_director.gd (AICameraDirector)
 - Purpose: Coordinates AI camera focus and timing around the shared `CameraController`.

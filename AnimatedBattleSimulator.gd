@@ -4,7 +4,7 @@ class_name AnimatedBattleSimulator
 # Signals for battle events
 signal round_completed(round_data: Dictionary)
 signal battle_finished(report: BattleSimulator.BattleReport)
-signal ai_withdrawal_started
+signal ai_withdrawal_started(side: int)
 
 var battle_simulator: BattleSimulator
 var battle_timer: Timer
@@ -47,7 +47,7 @@ func _emit_battle_step(step_result: Dictionary) -> void:
 		return
 	var withdrawing_side: int = int(step_result.get("withdrawing_side", 0))
 	if withdrawing_side != 0:
-		ai_withdrawal_started.emit()
+		ai_withdrawal_started.emit(withdrawing_side)
 	var round_data: Dictionary = {}
 	var maybe_round = step_result.get("round_data")
 	if maybe_round is Dictionary:
@@ -84,6 +84,6 @@ func start_withdrawal_round(side: int) -> void:
 	if battle_session == null or not battle_session.is_battle_running or battle_session.is_withdrawing or side == 0:
 		return
 	battle_simulator._start_withdrawal_round_session(battle_session, side)
-	ai_withdrawal_started.emit()
+	ai_withdrawal_started.emit(side)
 	is_battle_running = true
 	battle_timer.start()

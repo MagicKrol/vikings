@@ -70,8 +70,8 @@ var retreat_horn: AudioStream
 var battle_sound: AudioStream
 
 # Music state
-var music_enabled: bool = false
-var sound_enabled: bool = false
+var music_enabled: bool = true
+var sound_enabled: bool = true
 var _current_playlist: Playlist = null
 var _audio_cache: Dictionary = {}
 

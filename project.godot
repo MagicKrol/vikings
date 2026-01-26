@@ -27,6 +27,13 @@ window/size/mode=2
 window/size/resizable=false
 window/stretch/mode="canvas_items"
 
+[input]
+
+ui_focus_next={
+"deadzone": 0.5,
+"events": []
+}
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=2

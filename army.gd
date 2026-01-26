@@ -95,9 +95,7 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	
 	# Set player-specific warrior texture
 	_set_warrior_texture(player_id)
-	
-	# Raised armies start empty - no soldiers
-	# Players need to recruit soldiers separately
+	composition.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, 1)
 	
 	z_index = 125 + player_id
 	DebugLogger.log("ArmyManagement", "[Army] Raised army setup complete - movement_points: " + str(movement_points) + ", soldiers: " + str(composition.get_total_soldiers()))

@@ -1,0 +1,123 @@
+AI Log File: battle_test
+
+Economy: Bought 5 Stone and upgrade Keep (gold change -21)
+
+Economy: Buy Food failed (insufficient_gold)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 55
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 2.833
+underpowered_ratio: 0.250
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Castle Defense Recruitment skipped: Riverberg: in danger but has minimal garrison power (Power: 98 / 30)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Ashby (#339) | total:40.0 (strategy:0.0, neighbor:40.0, distance_status:False, score:40.0<[100.0])
+- Kirkley (#270) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:False, score:30.0<[100.0])
+- Osfjell (#309) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:False, score:10.0<[100.0])
+- Torholme (#389) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:False, score:10.0<[100.0])
+
+Economy: Upgrade Castle: upgrade_started (Top-up purchases: 5 Stone (gold -21) | total gold change: -21)
+
+- Riverberg (#413) | total:100.0 (recruits:100.0, distance:100.0, dist:1, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=10.
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army IV -------------
+Army IV [Power: 200, E: 100 - P:100]
+Candidate 1: Redstadir (#390), score: 95.1 (resources: 30.2, population: 4.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Westdon (#269), score: 80.7 (resources: 26.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Redchester (#185), score: 60.2 (resources: 18.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Redstadir (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Redstadir [MP left: 2, Vigor: 95%]
+[BATTLE]
+Fight at Redstadir
+Withdrew to Torholme
+Battle started
+Attacker: Army IV [Power: 200 - P:100]
+Defender Army VII (known) [Power: 600 - SW:150]
+Defender Garrison (known) [Power: 26 - P:13]
+Defender Recruits (Redstadir) (unknown) [Power: 22 - P:11]
+Battle Result: withdrawal (pre-battle)
+Reason: post_siege_power_check
+
+Candidate 1: Hafnthorpe (#338), score: 56.4 (resources: 15.0, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hafnthorpe (no enemy)
+Moves to Hafnthorpe [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Hafnthorpe
+Battle started
+Attacker: Army IV [Power: 200 - P:100]
+Defender Garrison (unknown) [Power: 24 - P:12]
+Defender Recruits (Hafnthorpe) (unknown) [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army IV [Power: 190 - P:95]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hafnthorpe (unknown) [Power: 0 - none]
+
+Moving to Hafnthorpe [MP left: 0, Vigor: 80%]
+-------------- ARMY Army II -------------
+Army II [Power: 1300, E: 100 - P:100, S:100, A:100, SW:100]
+Candidate 1: Kirkford (#272), score: 57.1 (resources: 11.2, population: 4.8, level: 1, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Kirkford (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Kirkford [MP left: 3, Vigor: 95%]

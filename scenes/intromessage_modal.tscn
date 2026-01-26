@@ -1,0 +1,79 @@
+[gd_scene load_steps=5 format=3 uid="uid://cmhogdvkmm3mr"]
+
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="1_22bth"]
+[ext_resource type="Script" path="res://intro_message_modal.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d35ft56cc1sw" path="res://images/intromessage.png" id="3_tm4to"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_dy870"]
+
+[node name="IntroMessageModal" type="Control"]
+z_as_relative = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_22bth")
+script = ExtResource("1_script")
+
+[node name="PanelRoot" type="Control" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 450.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="PanelRoot"]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 200.0
+texture = ExtResource("3_tm4to")
+
+[node name="ContentContainer" type="VBoxContainer" parent="PanelRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MessageLabel" type="Label" parent="PanelRoot/ContentContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+theme = ExtResource("1_22bth")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "My Lord,
+These lands await a ruler bold enough to claim them. Before banners are raised and swords drawn, choose wisely where your first castle shall stand. A strong position - rich in resources and open to expansion - will decide the fate of your realm.
+
+Grow your power by claiming new territories, securing key resources, and strengthening your castles. Wealth fuels armies, and armies decide wars. Strike when your rivals are weak, but never leave your own lands exposed.
+
+The path to victory is simple in words, but hard in steel.
+
+Your goal:
+Conquer every enemy castle and crush all opposing armies."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Spacer2" type="Control" parent="PanelRoot/ContentContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="PanelRoot/ContentContainer"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("4_dy870")
+text = "Place Castle"

@@ -694,6 +694,18 @@ func get_player_armies(player_id: int) -> Array[Army]:
 				player_armies.append(army)
 	return player_armies
 
+func select_next_army_for_player(player_id: int) -> Army:
+	"""Cycle selection to the next army owned by the player and return it"""
+	var player_armies: Array[Army] = get_player_armies(player_id)
+	if player_armies.is_empty():
+		return null
+	var current_index: int = player_armies.find(selected_army)
+	var next_index: int = (current_index + 1) % player_armies.size() if current_index != -1 else 0
+	var next_army: Army = player_armies[next_index]
+	var region_container: Node = next_army.get_parent()
+	select_army(next_army, region_container, player_id)
+	return next_army
+
 func get_armies_in_region(region_container: Node) -> Array[Army]:
 	"""Collect all armies currently in the region."""
 	var armies: Array[Army] = []
