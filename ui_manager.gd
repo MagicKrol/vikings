@@ -195,6 +195,8 @@ func _sync_modal_state() -> void:
 
 func _is_any_tracked_modal_visible() -> bool:
 	for modal in _modal_nodes:
+		if modal == _move_modal and _move_selection_active:
+			continue
 		if modal != null and _is_modal_forcing_active(modal):
 			return true
 	return false

@@ -922,7 +922,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Congratulations. You finished a basic tutorial. Click continue to exit. ",
+			"message": "Congratulations!\n You have finished the tutorial. Click continue to exit. ",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

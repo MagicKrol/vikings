@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=17 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="5_background"]
 [ext_resource type="FontFile" uid="uid://cavdsubauup7v" path="res://fonts/Viking.TTF" id="7_viking_font"]
 [ext_resource type="FontFile" uid="uid://pclcml0fh6k3" path="res://fonts/Cardo-Bold.ttf" id="8_cardo_bold_font"]
+[ext_resource type="Texture2D" uid="uid://dcxj542ybccbq" path="res://images/battlemodal.png" id="9_eayh6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -91,6 +92,7 @@ grow_vertical = 2
 texture = ExtResource("2_background")
 
 [node name="TextureRect1" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 720.0
 offset_top = 260.0
@@ -100,6 +102,7 @@ texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 720.0
 offset_top = 371.0
@@ -109,6 +112,7 @@ texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect3" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 720.0
 offset_top = 482.0
@@ -118,6 +122,7 @@ texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect4" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 720.0
 offset_top = 593.0
@@ -127,6 +132,7 @@ texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect5" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 720.0
 offset_top = 704.0
@@ -178,6 +184,7 @@ theme = ExtResource("3_theme")
 text = "Exit"
 
 [node name="Demo" type="VBoxContainer" parent="."]
+visible = false
 z_index = 10
 layout_mode = 1
 anchors_preset = 8
@@ -589,8 +596,12 @@ mouse_filter = 2
 theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
-[node name="MapPreview" type="Control" parent="."]
-visible = false
+[node name="CustomMap2" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MapPreview" type="Control" parent="CustomMap2"]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 100.0
@@ -599,7 +610,7 @@ offset_right = 600.0
 offset_bottom = 740.0
 mouse_filter = 2
 
-[node name="InnerPanel" type="Panel" parent="MapPreview"]
+[node name="InnerPanel" type="Panel" parent="CustomMap2/MapPreview"]
 clip_children = 1
 layout_mode = 1
 anchors_preset = 15
@@ -611,7 +622,7 @@ scale = Vector2(0.997566, 0.999408)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1o4cw")
 
-[node name="TextureRect" type="TextureRect" parent="MapPreview/InnerPanel"]
+[node name="TextureRect" type="TextureRect" parent="CustomMap2/MapPreview/InnerPanel"]
 modulate = Color(1, 1, 1, 0.941176)
 layout_mode = 0
 offset_right = 500.0
@@ -620,7 +631,7 @@ mouse_filter = 2
 texture = ExtResource("4_jiisd")
 expand_mode = 2
 
-[node name="MapScreenshot" type="TextureRect" parent="MapPreview/InnerPanel"]
+[node name="MapScreenshot" type="TextureRect" parent="CustomMap2/MapPreview/InnerPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -631,7 +642,7 @@ mouse_filter = 2
 expand_mode = 2
 stretch_mode = 6
 
-[node name="Border" type="Panel" parent="MapPreview"]
+[node name="Border" type="Panel" parent="CustomMap2/MapPreview"]
 layout_mode = 0
 offset_right = 500.0
 offset_bottom = 500.0
@@ -639,8 +650,7 @@ mouse_filter = 2
 theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
-[node name="CustomMap" type="VBoxContainer" parent="."]
-visible = false
+[node name="CustomMap" type="VBoxContainer" parent="CustomMap2"]
 z_index = 10
 layout_mode = 1
 anchors_preset = 8
@@ -648,34 +658,34 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -300.0
-offset_right = 200.0
-offset_bottom = 300.0
+offset_left = 740.0
+offset_top = 220.0
+offset_right = 1140.0
+offset_bottom = 820.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Spacer1" type="Control" parent="CustomMap"]
+[node name="Spacer1" type="Control" parent="CustomMap2/CustomMap"]
 custom_minimum_size = Vector2(0, 53)
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="CustomMap"]
+[node name="BackButton" type="Button" parent="CustomMap2/CustomMap"]
 layout_mode = 2
 theme = ExtResource("3_theme")
 text = "Back"
 
-[node name="Spacer3" type="Control" parent="CustomMap"]
+[node name="Spacer3" type="Control" parent="CustomMap2/CustomMap"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="MapContainer" type="TextureRect" parent="CustomMap"]
+[node name="MapContainer" type="TextureRect" parent="CustomMap2/CustomMap"]
 custom_minimum_size = Vector2(400, 350)
 layout_mode = 2
 size_flags_horizontal = 4
-texture = ExtResource("5_background")
+texture = ExtResource("9_eayh6")
 expand_mode = 2
 
-[node name="InnerMargin" type="MarginContainer" parent="CustomMap/MapContainer"]
+[node name="InnerMargin" type="MarginContainer" parent="CustomMap2/CustomMap/MapContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -687,26 +697,25 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CustomMap/MapContainer/InnerMargin"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CustomMap2/CustomMap/MapContainer/InnerMargin"]
 layout_mode = 2
 
-[node name="MapList" type="VBoxContainer" parent="CustomMap/MapContainer/InnerMargin/ScrollContainer"]
+[node name="MapList" type="VBoxContainer" parent="CustomMap2/CustomMap/MapContainer/InnerMargin/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="Spacer2" type="Control" parent="CustomMap"]
+[node name="Spacer2" type="Control" parent="CustomMap2/CustomMap"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="PlayButton" type="Button" parent="CustomMap"]
+[node name="PlayButton" type="Button" parent="CustomMap2/CustomMap"]
 layout_mode = 2
 theme = SubResource("Theme_play_button")
 disabled = true
 text = "Play"
 
-[node name="CustomMapSettings" type="Control" parent="."]
-visible = false
+[node name="CustomMapSettings" type="Control" parent="CustomMap2"]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 1310.0
@@ -715,7 +724,7 @@ offset_right = 1810.0
 offset_bottom = 640.0
 mouse_filter = 2
 
-[node name="InnerPanel" type="Panel" parent="CustomMapSettings"]
+[node name="InnerPanel" type="Panel" parent="CustomMap2/CustomMapSettings"]
 clip_children = 1
 layout_mode = 1
 anchors_preset = 15
@@ -726,7 +735,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1o4cw")
 
-[node name="TextureRect" type="TextureRect" parent="CustomMapSettings/InnerPanel"]
+[node name="TextureRect" type="TextureRect" parent="CustomMap2/CustomMapSettings/InnerPanel"]
 modulate = Color(1, 1, 1, 0.941176)
 layout_mode = 0
 offset_right = 500.0
@@ -735,7 +744,7 @@ mouse_filter = 2
 texture = ExtResource("4_jiisd")
 expand_mode = 2
 
-[node name="PlayerSettings" type="VBoxContainer" parent="CustomMapSettings/InnerPanel"]
+[node name="PlayerSettings" type="VBoxContainer" parent="CustomMap2/CustomMapSettings/InnerPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -748,15 +757,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 10
 
-[node name="Border" type="Panel" parent="CustomMapSettings"]
+[node name="Border" type="Panel" parent="CustomMap2/CustomMapSettings"]
 layout_mode = 0
 offset_right = 500.0
 offset_bottom = 400.0
 mouse_filter = 2
 theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0

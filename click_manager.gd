@@ -172,6 +172,13 @@ func _handle_region_click(region_container: Node) -> void:
 		_handle_editor_region_click(region_container)
 		return
 	var tutorial_region_matched := false
+	if _is_move_flow_active():
+		var visual_manager = _game_manager.get_visual_manager()
+		if visual_manager and visual_manager.has_move_region_highlights():
+			var allowed_ids = visual_manager.get_move_region_highlight_ids()
+			var region = region_container as Region
+			if region and not allowed_ids.has(region.get_region_id()):
+				return
 
 	# Get region script to check if it's a mountain
 	var region = region_container as Region
