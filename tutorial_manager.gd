@@ -457,7 +457,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Vigor represents your's army morale and stamina. It replesh upon resting. It affects army's battle effectiveness.",
+			"message": "Vigor represents your's army morale and stamina. It replenishes upon resting. It affects army's battle effectiveness.",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

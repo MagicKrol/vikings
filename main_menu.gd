@@ -2,7 +2,7 @@ extends Control
 class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
-const USE_DEMO_MENU: bool = true
+const USE_DEMO_MENU: bool = false
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -29,12 +29,27 @@ const USE_DEMO_MENU: bool = true
 @onready var scenario_play_button: Button = $Scenario/PlayButton
 @onready var scenario_list_scenario: VBoxContainer = $Scenario/Scenario/MapContainer/InnerMargin/ScrollContainer/MapList
 
-# CustomMap menu buttons
-@onready var custom_map_back_button: Button = $CustomMap/BackButton
-@onready var custom_map_play_button: Button = $CustomMap/PlayButton
-@onready var custom_map_list: VBoxContainer = $CustomMap/MapContainer/InnerMargin/ScrollContainer/MapList
-@onready var custom_map_settings: Control = $CustomMapSettings
-@onready var player_settings_container: VBoxContainer = $CustomMapSettings/InnerPanel/PlayerSettings
+# CustomMap menu nodes
+@onready var custom_map_container: Control = $CustomMap
+@onready var custom_map_panel: Panel = $CustomMap/Panel
+@onready var custom_map_panel2: Panel = $CustomMap/Panel2
+@onready var custom_map_panel3: Panel = $CustomMap/Panel3
+@onready var custom_map_panel3_label: Label = $CustomMap/Panel3/VBoxContainer/Label
+@onready var custom_map_back_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer2/Back
+@onready var custom_map_select_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer/SelectMap
+@onready var scenario_panel: Panel = $CustomMap/Scenario
+@onready var scenario_back_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer2/Back
+@onready var scenario_select_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer/SelectMap
+@onready var custom_map_list: VBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList
+@onready var custom_map_template_row: Button = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Map1
+@onready var custom_map_preview: TextureRect = $CustomMap/Panel2/VBoxContainer/TextureRect
+@onready var custom_map_map_name_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer/MapName
+@onready var custom_map_map_size_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer2/MapSize
+@onready var map_size_button_all: Button = $CustomMap/Panel3/VBoxContainer/Sizes/All
+@onready var map_size_button_tiny: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Tiny
+@onready var map_size_button_small: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Small
+@onready var map_size_button_medium: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Medium
+@onready var map_size_button_large: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Hard
 
 # Container references
 @onready var menu_container: VBoxContainer = $MenuContainer
@@ -42,7 +57,6 @@ const USE_DEMO_MENU: bool = true
 @onready var options_container: VBoxContainer = $Options
 @onready var campaign_container: VBoxContainer = $Campaign
 @onready var scenario_container: VBoxContainer = $Scenario
-@onready var custom_map_container: VBoxContainer = $CustomMap
 @onready var demo_container: VBoxContainer = $Demo
 
 # Demo menu buttons
@@ -69,7 +83,21 @@ var sound_manager: SoundManager = null
 var selected_scenario: String = ""
 var selected_custom_map: String = ""
 var selected_scenario_button: Button = null
-var selected_custom_map_button: Button = null
+
+# Custom map/scenario selection state
+const GOLD_COLOR := Color(1.0, 0.843, 0.0, 1.0)
+const MAP_SIZE_ORDER := {"S": 0, "M": 1, "L": 2}
+var map_items: Array = []
+var scenario_items: Array = []
+var selected_map_item: Dictionary = {}
+var selected_map_button: Button = null
+var selected_scenario_item: Dictionary = {}
+var selected_scenario_button_custom: Button = null
+var map_button_group: ButtonGroup = null
+var scenario_button_group: ButtonGroup = null
+var size_filter_button_group: ButtonGroup = null
+var current_map_filter: String = "All"
+var is_scenario_mode: bool = false
 
 # Player settings for custom map
 var player_settings: Array = []  # Array of dictionaries with player configuration
@@ -118,7 +146,14 @@ func _ready():
 	
 	# Connect custom map menu button signals
 	custom_map_back_button.pressed.connect(_on_custom_map_back_pressed)
-	custom_map_play_button.pressed.connect(_on_custom_map_play_pressed)
+	custom_map_select_button.pressed.connect(_on_custom_map_select_pressed)
+	scenario_back_button_custom.pressed.connect(_on_custom_map_back_pressed)
+	scenario_select_button_custom.pressed.connect(_on_scenario_select_pressed)
+	map_size_button_all.pressed.connect(_on_size_filter_pressed.bind("All", map_size_button_all))
+	map_size_button_tiny.pressed.connect(_on_size_filter_pressed.bind("S", map_size_button_tiny))
+	map_size_button_small.pressed.connect(_on_size_filter_pressed.bind("M", map_size_button_small))
+	map_size_button_medium.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_medium))
+	map_size_button_large.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_large))
 
 	# Connect demo menu button signals
 	demo_tutorial_button.pressed.connect(_on_demo_tutorial_pressed)
@@ -128,14 +163,17 @@ func _ready():
 
 	# Hover sounds removed - no sound on mouse enter
 
+	_setup_custom_map_preview()
+	_setup_size_filter_group()
+	_setup_player_buttons()
+	_setup_difficulty_buttons()
+	_setup_victory_buttons()
+
 	# Show demo or standard menu based on USE_DEMO_MENU constant
 	if USE_DEMO_MENU:
 		_show_demo_menu()
 	else:
 		_show_main_menu()
-
-	# Initialize player settings UI
-	_initialize_player_settings()
 
 func _apply_font_outlines():
 	"""Apply black outline to all menu buttons"""
@@ -239,22 +277,37 @@ func _on_custom_map_back_pressed():
 	DebugLogger.log("UISystem", "Custom Map Back button pressed")  
 	_show_new_game_menu()
 
-func _on_custom_map_play_pressed():
-	DebugLogger.log("UISystem", "Custom Map Play button pressed with map: " + selected_custom_map)
-	if selected_custom_map != "":
-		var map_file := selected_custom_map + ".json"
-		var map_path := "res://mapdata/" + map_file
-		var parts := selected_custom_map.split("-")
-		var size_str: String = parts[parts.size() - 1]
-		get_tree().set_meta("start_payload", {
-			"type": "map",
-			"map_file": map_path,
-			"map_size": size_str,
-			"player_settings": player_settings
-		})
-		if sound_manager:
-			sound_manager.stop_main_menu_music()
-		get_tree().change_scene_to_file("res://main.tscn")
+func _on_custom_map_select_pressed():
+	if selected_map_item.is_empty():
+		return
+	var map_file: String = selected_map_item.get("file", "")
+	if map_file == "":
+		return
+	var size_code: String = selected_map_item.get("size", "S")
+	var map_path := "res://mapdata/" + map_file + ".json"
+	var size_str := _size_full_name(size_code).to_lower()
+	get_tree().set_meta("start_payload", {
+		"type": "map",
+		"map_file": map_path,
+		"map_size": size_str,
+		"player_settings": player_settings
+	})
+	if sound_manager:
+		sound_manager.stop_main_menu_music()
+	get_tree().change_scene_to_file("res://main.tscn")
+
+func _on_scenario_select_pressed():
+	if selected_scenario_item.is_empty():
+		return
+	var scenario_name: String = selected_scenario_item.get("name", "")
+	var scen_path := "res://scenarios/" + scenario_name + ".json"
+	get_tree().set_meta("start_payload", {
+		"type": "scenario",
+		"scenario_path": scen_path
+	})
+	if sound_manager:
+		sound_manager.stop_main_menu_music()
+	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_demo_tutorial_pressed():
 	DebugLogger.log("UISystem", "Demo Tutorial button pressed")
@@ -317,7 +370,6 @@ func _show_main_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
-	custom_map_settings.visible = false
 
 func _show_new_game_menu():
 	"""Show the new game menu"""
@@ -334,7 +386,6 @@ func _show_new_game_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
-	custom_map_settings.visible = false
 
 func _show_options_menu():
 	"""Show the options menu"""
@@ -373,7 +424,7 @@ func _show_campaign_menu():
 	_load_scenario_list()
 
 func _show_scenario_menu():
-	"""Show the scenario menu and load scenario list"""
+	"""Show scenario selection using the CustomMap layout"""
 	button_bg1.visible = true
 	button_bg2.visible = false
 	button_bg3.visible = false
@@ -383,17 +434,18 @@ func _show_scenario_menu():
 	new_game_container.visible = false
 	options_container.visible = false
 	campaign_container.visible = false
-	scenario_container.visible = true
-	custom_map_container.visible = false
+	scenario_container.visible = false
+	custom_map_container.visible = true
 	demo_container.visible = false
-	map_preview.visible = true
-	selected_scenario = ""
-	default_preview_item = ""
-	if selected_scenario_button:
-		selected_scenario_button.modulate = Color.WHITE
-	selected_scenario_button = null
-	scenario_play_button.disabled = true
-	_load_scenario_list_for_scenario()
+	map_preview.visible = false
+	is_scenario_mode = true
+	custom_map_panel.visible = false
+	scenario_panel.visible = true
+	custom_map_panel2.visible = true
+	custom_map_panel3.visible = true
+	custom_map_panel3_label.text = "Scenario list"
+	_clear_map_selection()
+	_load_scenario_items()
 
 func _show_custom_map_menu():
 	"""Show the custom map menu and load map list"""
@@ -409,15 +461,15 @@ func _show_custom_map_menu():
 	scenario_container.visible = false
 	custom_map_container.visible = true
 	demo_container.visible = false
-	map_preview.visible = true
-	custom_map_settings.visible = true
-	selected_custom_map = ""
-	default_preview_item = ""
-	if selected_custom_map_button:
-		selected_custom_map_button.modulate = Color.WHITE
-	selected_custom_map_button = null
-	custom_map_play_button.disabled = true
-	_load_custom_map_list()
+	map_preview.visible = false
+	is_scenario_mode = false
+	custom_map_panel.visible = true
+	scenario_panel.visible = false
+	custom_map_panel2.visible = true
+	custom_map_panel3.visible = true
+	custom_map_panel3_label.text = "Select Map"
+	_clear_map_selection()
+	_load_custom_map_items()
 
 func _show_demo_menu():
 	"""Show the demo menu"""
@@ -434,7 +486,91 @@ func _show_demo_menu():
 	custom_map_container.visible = false
 	demo_container.visible = true
 	map_preview.visible = false
-	custom_map_settings.visible = false
+	custom_map_preview.visible = false
+
+func _setup_custom_map_preview():
+	custom_map_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	custom_map_preview.expand_mode = TextureRect.EXPAND_FIT_WIDTH
+	custom_map_preview.ignore_texture_size = true
+	custom_map_preview.texture = null
+	custom_map_preview.visible = false
+	if custom_map_template_row:
+		custom_map_template_row.visible = false
+
+func _setup_size_filter_group():
+	size_filter_button_group = ButtonGroup.new()
+	var buttons: Array = [map_size_button_all, map_size_button_tiny, map_size_button_small, map_size_button_medium, map_size_button_large]
+	for i in range(buttons.size()):
+		var btn: Button = buttons[i]
+		btn.toggle_mode = true
+		btn.button_group = size_filter_button_group
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var selected := i == 0
+		btn.button_pressed = selected
+		_update_button_gold_state(btn, selected)
+	current_map_filter = "All"
+
+func _on_size_filter_pressed(filter_code: String, button: Button):
+	current_map_filter = filter_code
+	for b in size_filter_button_group.get_buttons():
+		_update_button_gold_state(b, b == button)
+	_apply_map_filter()
+
+func _setup_player_buttons():
+	player_settings.clear()
+	for i in range(6):
+		var player_num := i + 1
+		var base_path := "CustomMap/Panel/VBoxContainer/Player" + str(player_num) + "/"
+		var human_btn: Button = get_node(base_path + "Human")
+		var computer_btn: Button = get_node(base_path + "Computer")
+		var off_btn: Button = get_node(base_path + "Off")
+		var group := ButtonGroup.new()
+		for btn in [human_btn, computer_btn, off_btn]:
+			btn.toggle_mode = true
+			btn.button_group = group
+			btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var default_control := "Player" if player_num == 1 else ("Computer" if player_num <= 4 else "Off")
+		human_btn.button_pressed = default_control == "Player"
+		computer_btn.button_pressed = default_control == "Computer"
+		off_btn.button_pressed = default_control == "Off"
+		player_settings.append({"player_id": player_num, "control_type": default_control})
+		human_btn.toggled.connect(_on_player_control_changed.bind(player_num, "Player", human_btn))
+		computer_btn.toggled.connect(_on_player_control_changed.bind(player_num, "Computer", computer_btn))
+		off_btn.toggled.connect(_on_player_control_changed.bind(player_num, "Off", off_btn))
+		_update_button_gold_state(human_btn, human_btn.button_pressed)
+		_update_button_gold_state(computer_btn, computer_btn.button_pressed)
+		_update_button_gold_state(off_btn, off_btn.button_pressed)
+
+func _setup_difficulty_buttons():
+	var buttons: Array = [
+		get_node("CustomMap/Panel/VBoxContainer/Difficulty/Easy"),
+		get_node("CustomMap/Panel/VBoxContainer/Difficulty/Normal"),
+		get_node("CustomMap/Panel/VBoxContainer/Difficulty/Hard")
+	]
+	var group := ButtonGroup.new()
+	for btn in buttons:
+		btn.toggle_mode = true
+		btn.button_group = group
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	for btn in buttons:
+		var selected: bool = btn.name == "Normal"
+		btn.button_pressed = selected
+		_update_button_gold_state(btn, selected)
+
+func _setup_victory_buttons():
+	var buttons: Array = [
+		get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Conquer"),
+		get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Dominate")
+	]
+	var group := ButtonGroup.new()
+	for btn in buttons:
+		btn.toggle_mode = true
+		btn.button_group = group
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	for btn in buttons:
+		var selected: bool = btn.name == "Conquer"
+		btn.button_pressed = selected
+		_update_button_gold_state(btn, selected)
 
 func _load_scenario_list():
 	"""Load and display available scenarios"""
@@ -603,114 +739,263 @@ func _on_scenario_selected(scenario_name: String, button: Button):
 	DebugLogger.log("UISystem", "Selected scenario: " + scenario_name)
 	# no click sound in main menu
 
-func _load_custom_map_list():
-	"""Load and display available maps from mapdata folder for custom map menu"""
-	# Clear existing list
+func _load_custom_map_items():
+	map_items = _gather_map_items()
+	_apply_map_filter()
+
+func _load_scenario_items():
+	scenario_items = _gather_scenario_items()
+	_apply_map_filter()
+
+func _apply_map_filter():
+	_clear_map_selection()
+	var items: Array = []
+	if is_scenario_mode:
+		for item in scenario_items:
+			if current_map_filter == "All" or item.get("size", "S") == current_map_filter:
+				items.append(item)
+		_populate_map_list(items, true)
+	else:
+		for item in map_items:
+			if current_map_filter == "All" or item.get("size", "S") == current_map_filter:
+				items.append(item)
+		_populate_map_list(items, false)
+
+func _clear_map_list_nodes():
 	for child in custom_map_list.get_children():
-		child.queue_free()
-	
-	# Get all map files from mapdata folder (both old mapdata-* and new formats)
+		if child != custom_map_template_row:
+			child.queue_free()
+
+func _populate_map_list(items: Array, for_scenario: bool):
+	_clear_map_list_nodes()
+	if custom_map_template_row:
+		custom_map_template_row.visible = false
+	map_button_group = ButtonGroup.new()
+	for i in range(items.size()):
+		var item: Dictionary = items[i]
+		var row: Button = custom_map_template_row.duplicate(true)
+		row.name = "Entry" + str(i + 1)
+		row.toggle_mode = true
+		row.button_group = map_button_group
+		row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		row.visible = true
+		var size_label: Label = row.get_node("Row/Size")
+		var name_label: Label = row.get_node("Row/Name")
+		size_label.text = item.get("size", "S")
+		name_label.text = item.get("display_name", "Map")
+		_set_row_color(row, Color.WHITE)
+		row.pressed.connect(_on_map_row_pressed.bind(row, item, for_scenario))
+		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
+		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
+		custom_map_list.add_child(row)
+
+func _on_map_row_pressed(row: Button, item: Dictionary, for_scenario: bool):
+	var current_selected: Button = selected_scenario_button_custom if for_scenario else selected_map_button
+	if current_selected and current_selected != row:
+		_set_row_color(current_selected, Color.WHITE)
+		current_selected.button_pressed = false
+	row.button_pressed = true
+	_set_row_color(row, GOLD_COLOR)
+	if for_scenario:
+		selected_scenario_button_custom = row
+		selected_scenario_item = item
+		_update_info_labels(item)
+		_update_preview_with_item(item, true)
+		_set_scenario_select_enabled(true)
+	else:
+		selected_map_button = row
+		selected_map_item = item
+		_update_info_labels(item)
+		_update_preview_with_item(item, false)
+		_set_custom_map_select_enabled(true)
+
+func _on_map_row_hovered(row: Button, item: Dictionary, for_scenario: bool):
+	var current_selected: Button = selected_scenario_button_custom if for_scenario else selected_map_button
+	if current_selected != row:
+		_set_row_color(row, GOLD_COLOR)
+
+func _on_map_row_unhovered(row: Button, item: Dictionary, for_scenario: bool):
+	var current_selected: Button = selected_scenario_button_custom if for_scenario else selected_map_button
+	if current_selected != row:
+		_set_row_color(row, Color.WHITE)
+
+func _set_row_color(row: Button, color: Color):
+	if not row:
+		return
+	var size_label: Label = row.get_node("Row/Size")
+	var name_label: Label = row.get_node("Row/Name")
+	size_label.add_theme_color_override("font_color", color)
+	name_label.add_theme_color_override("font_color", color)
+
+func _update_button_gold_state(button: Button, selected: bool):
+	var color := GOLD_COLOR if selected else Color.WHITE
+	button.add_theme_color_override("font_color", color)
+	button.add_theme_color_override("font_hover_color", color)
+	button.add_theme_color_override("font_pressed_color", color)
+	button.add_theme_color_override("font_focus_color", color)
+
+func _update_info_labels(item: Dictionary):
+	custom_map_map_name_label.text = item.get("display_name", "Map Name")
+	var size_code: String = item.get("size", "S")
+	custom_map_map_size_label.text = _size_full_name(size_code)
+
+func _update_preview_with_item(item: Dictionary, for_scenario: bool):
+	var candidates: Array = []
+	if for_scenario:
+		var map_base: String = item.get("map_file_base", "")
+		if map_base != "":
+			candidates.append(map_base)
+		var scen_name: String = item.get("name", "")
+		if scen_name != "":
+			candidates.append(scen_name)
+	else:
+		var file_base: String = item.get("file", "")
+		if file_base != "":
+			candidates.append(file_base)
+	for base in candidates:
+		if _set_custom_map_preview_texture(base):
+			return
+	custom_map_preview.texture = null
+	custom_map_preview.visible = false
+
+func _set_custom_map_preview_texture(base_name: String) -> bool:
+	var preview_path := "res://previews/" + base_name + ".png"
+	if ResourceLoader.exists(preview_path):
+		var texture: Texture2D = load(preview_path)
+		if texture:
+			custom_map_preview.texture = texture
+			custom_map_preview.visible = true
+			return true
+	return false
+
+func _clear_map_selection():
+	selected_map_item.clear()
+	selected_scenario_item.clear()
+	if selected_map_button:
+		_set_row_color(selected_map_button, Color.WHITE)
+		selected_map_button.button_pressed = false
+	if selected_scenario_button_custom:
+		_set_row_color(selected_scenario_button_custom, Color.WHITE)
+		selected_scenario_button_custom.button_pressed = false
+	selected_map_button = null
+	selected_scenario_button_custom = null
+	_set_custom_map_select_enabled(false)
+	_set_scenario_select_enabled(false)
+	custom_map_map_name_label.text = "Map Name"
+	custom_map_map_size_label.text = "Large"
+	custom_map_preview.texture = null
+	custom_map_preview.visible = false
+
+func _set_custom_map_select_enabled(enabled: bool):
+	custom_map_select_button.disabled = not enabled
+	custom_map_select_button.text = "Start Game" if enabled else " Select Map "
+
+func _set_scenario_select_enabled(enabled: bool):
+	scenario_select_button_custom.disabled = not enabled
+	scenario_select_button_custom.text = "Start Game" if enabled else " Select Map "
+
+func _gather_map_items() -> Array:
+	var items: Array = []
 	var dir = DirAccess.open("res://mapdata")
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
+		var idx: int = 1
 		while file_name != "":
-			if file_name.ends_with(".json") and _is_valid_map_file(file_name):
-				_add_custom_map_button(file_name.trim_suffix(".json"))
+			if file_name.ends_with(".json"):
+				var base := file_name.trim_suffix(".json")
+				var size_code := _extract_size_code(base)
+				items.append({
+					"file": base,
+					"display_name": "Map " + str(idx),
+					"size": size_code
+				})
+				idx += 1
 			file_name = dir.get_next()
 		dir.list_dir_end()
+	items.sort_custom(Callable(self, "_sort_items"))
+	return items
 
-func _add_custom_map_button(map_name: String):
-	"""Add a button for a map to the custom map list"""
-	var button = Button.new()
-	var display_text = _format_map_name_for_display(map_name)
-	button.text = display_text
-	
-	# Create the map theme dynamically to match scenario theme
-	var map_theme = Theme.new()
-	var font = load("res://fonts/Cardo-Bold.ttf")
-	
-	# Set font and styling to match scenario theme
-	map_theme.set_font("font", "Button", font)
-	map_theme.set_font_size("font_size", "Button", 30)
-	map_theme.set_color("font_color", "Button", Color(1, 1, 1, 1))  # White
-	map_theme.set_color("font_hover_color", "Button", Color(0.9, 0.6, 0.4, 1))  # Even lighter orange-red
-	map_theme.set_color("font_pressed_color", "Button", Color(0.9, 0.6, 0.4, 1))  # Same as hover
-	map_theme.set_color("font_outline_color", "Button", Color(0, 0, 0, 1))  # Black outline
-	map_theme.set_color("font_shadow_color", "Button", Color(0, 0, 0, 1))  # Black shadow
-	map_theme.set_constant("outline_size", "Button", 5)
-	map_theme.set_constant("shadow_offset_x", "Button", 1)
-	map_theme.set_constant("shadow_offset_y", "Button", 1)
-	
-	# Create StyleBoxFlat with no borders for all button states
-	var style_flat = StyleBoxFlat.new()
-	style_flat.draw_center = false
-	style_flat.border_width_left = 0
-	style_flat.border_width_top = 0
-	style_flat.border_width_right = 0
-	style_flat.border_width_bottom = 0
-	map_theme.set_stylebox("normal", "Button", style_flat)
-	map_theme.set_stylebox("hover", "Button", style_flat)
-	map_theme.set_stylebox("pressed", "Button", style_flat)
-	map_theme.set_stylebox("focus", "Button", style_flat)
-	
-	button.theme = map_theme
-	button.alignment = HORIZONTAL_ALIGNMENT_LEFT  # Left align
-	button.custom_minimum_size.y = 50
-	
-	# Connect the button to select this map
-	button.pressed.connect(_on_custom_map_selected.bind(map_name, button))
-	
-	# Connect hover signals for preview
-	button.mouse_entered.connect(_on_map_hovered.bind(map_name))
-	button.mouse_exited.connect(_on_map_unhovered)
-	
-	custom_map_list.add_child(button)
+func _gather_scenario_items() -> Array:
+	var items: Array = []
+	var dir = DirAccess.open("res://scenarios")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".json"):
+				var scenario_name := file_name.trim_suffix(".json")
+				var map_file_base: String = ""
+				var size_code: String = "S"
+				var file_path: String = "res://scenarios/" + file_name
+				var content: String = FileAccess.get_file_as_string(file_path)
+				var json = JSON.new()
+				if json.parse(content) == OK:
+					var data: Variant = json.get_data()
+					if typeof(data) == TYPE_DICTIONARY and data.has("map_file"):
+						map_file_base = str(data["map_file"]).trim_suffix(".json")
+						size_code = _extract_size_code(map_file_base)
+				items.append({
+					"name": scenario_name,
+					"display_name": scenario_name.capitalize().replace("_", " "),
+					"size": size_code,
+					"map_file_base": map_file_base
+				})
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	items.sort_custom(Callable(self, "_sort_items"))
+	return items
 
-func _on_custom_map_selected(map_name: String, button: Button):
-	"""Handle custom map selection"""
-	# Reset previous selection
-	if selected_custom_map_button:
-		selected_custom_map_button.modulate = Color.WHITE
-	
-	# Set new selection
-	selected_custom_map = map_name
-	selected_custom_map_button = button
-	button.modulate = Color(0.8, 0.4, 0.2, 1)  # Selected color (darker orange-red)
-	
-	# Set as default preview
-	default_preview_item = map_name
-	_show_preview(map_name)
-	
-	# Enable play button
-	custom_map_play_button.disabled = false
-	
-	DebugLogger.log("UISystem", "Selected custom map: " + map_name)
+func _sort_items(a: Dictionary, b: Dictionary) -> bool:
+	var sa: int = MAP_SIZE_ORDER.get(a.get("size", "S"), 3)
+	var sb: int = MAP_SIZE_ORDER.get(b.get("size", "S"), 3)
+	if sa == sb:
+		return a.get("display_name", "") < b.get("display_name", "")
+	return sa < sb
+
+func _extract_size_code(base_name: String) -> String:
+	var parts = base_name.split("-")
+	var size_part = parts[parts.size() - 1].to_lower()
+	match size_part:
+		"xtiny", "tiny", "small":
+			return "S"
+		"medium":
+			return "M"
+		"large", "huge":
+			return "L"
+		_:
+			return "S"
+
+func _size_full_name(code: String) -> String:
+	match code:
+		"S":
+			return "Small"
+		"M":
+			return "Medium"
+		"L":
+			return "Large"
+		_:
+			return "Unknown"
 
 func _on_scenario_hovered(scenario_name: String):
-	"""Handle scenario hover for preview"""
 	current_hovered_item = scenario_name
 	hover_timer.stop()
 	_show_preview(scenario_name)
 
 func _on_scenario_unhovered():
-	"""Handle scenario unhover"""
 	current_hovered_item = ""
 	hover_timer.start()
 
 func _on_map_hovered(map_name: String):
-	"""Handle map hover for preview"""
 	current_hovered_item = map_name
 	hover_timer.stop()
 	_show_preview(map_name)
 
 func _on_map_unhovered():
-	"""Handle map unhover"""
 	current_hovered_item = ""
 	hover_timer.start()
 
 func _on_hover_timer_timeout():
-	"""Handle delayed return to default preview"""
 	if current_hovered_item == "":
 		if default_preview_item != "":
 			_show_preview(default_preview_item)
@@ -718,158 +1003,23 @@ func _on_hover_timer_timeout():
 			_hide_preview()
 
 func _show_preview(item_name: String):
-	"""Show preview image for scenario or map"""
 	var preview_path = "res://previews/" + item_name + ".png"
-	
-	# Check if preview image exists
 	if ResourceLoader.exists(preview_path):
 		var texture = load(preview_path)
 		if texture:
 			map_screenshot.texture = texture
 			map_screenshot.visible = true
 	else:
-		# No preview available
 		_hide_preview()
 
 func _hide_preview():
-	"""Hide preview image"""
 	map_screenshot.visible = false
 	map_screenshot.texture = null
 
-func _initialize_player_settings():
-	"""Initialize the player settings UI with 6 player rows"""
-	# Initialize player settings array with default values
-	player_settings.clear()
-	for i in range(1, 7):  # Players 1-6
-		player_settings.append({
-			"player_id": i,
-			"control_type": "Off" if i > 2 else ("Player" if i == 1 else "Computer")
-		})
-	
-	# Create UI rows for each player
-	var font = load("res://fonts/Cardo-Bold.ttf")
-	
-	for i in range(6):
-		var player_num = i + 1
-		var player_color = GameParameters.get_player_color(player_num)
-		
-		# Create horizontal container for the row
-		var row_container = HBoxContainer.new()
-		row_container.custom_minimum_size.y = 50
-		
-		# Create player label with color
-		var player_label = Label.new()
-		player_label.text = "Player " + str(player_num)
-		player_label.custom_minimum_size.x = 100
-		player_label.modulate = player_color
-		player_label.add_theme_font_override("font", font)
-		player_label.add_theme_font_size_override("font_size", 24)
-		player_label.add_theme_color_override("font_outline_color", Color.BLACK)
-		player_label.add_theme_constant_override("outline_size", 2)
-		row_container.add_child(player_label)
-		
-		# Add spacer
-		var spacer = Control.new()
-		spacer.custom_minimum_size.x = 30
-		row_container.add_child(spacer)
-		
-		# Create button group for this player
-		var button_group = ButtonGroup.new()
-		
-		# Create Player button
-		var player_button = Button.new()
-		player_button.text = "Player"
-		player_button.custom_minimum_size.x = 80
-		player_button.toggle_mode = true
-		player_button.button_group = button_group
-		player_button.add_theme_font_override("font", font)
-		player_button.add_theme_font_size_override("font_size", 20)
-		player_button.button_pressed = (player_settings[i].control_type == "Player")
-		player_button.toggled.connect(_on_player_control_changed.bind(player_num, "Player"))
-		row_container.add_child(player_button)
-		
-		# Create Computer button
-		var computer_button = Button.new()
-		computer_button.text = "Computer"
-		computer_button.custom_minimum_size.x = 100
-		computer_button.toggle_mode = true
-		computer_button.button_group = button_group
-		computer_button.add_theme_font_override("font", font)
-		computer_button.add_theme_font_size_override("font_size", 20)
-		computer_button.button_pressed = (player_settings[i].control_type == "Computer")
-		computer_button.toggled.connect(_on_player_control_changed.bind(player_num, "Computer"))
-		row_container.add_child(computer_button)
-		
-		# Create Off button
-		var off_button = Button.new()
-		off_button.text = "Off"
-		off_button.custom_minimum_size.x = 60
-		off_button.toggle_mode = true
-		off_button.button_group = button_group
-		off_button.add_theme_font_override("font", font)
-		off_button.add_theme_font_size_override("font_size", 20)
-		off_button.button_pressed = (player_settings[i].control_type == "Off")
-		off_button.toggled.connect(_on_player_control_changed.bind(player_num, "Off"))
-		row_container.add_child(off_button)
-		
-		# Add row to container
-		player_settings_container.add_child(row_container)
-
-func _convert_size_name(old_size: String) -> String:
-	"""Convert old size names to new display names: XTiny->Small, Tiny->Medium, Small->Large, Medium->Huge"""
-	var size_lower = old_size.to_lower()
-	match size_lower:
-		"xtiny":
-			return "Small"
-		"tiny":
-			return "Medium"
-		"small":
-			return "Large"
-		"medium":
-			return "Huge"
-		_:
-			# For any other size (including already new names), just capitalize
-			return old_size.capitalize()
-
-func _is_valid_map_file(filename: String) -> bool:
-	"""Check if filename follows valid map file pattern (old or new format)"""
-	var name_without_extension = filename.trim_suffix(".json")
-	var parts = name_without_extension.split("-")
-	
-	# Old format: mapdata-id-size (3 parts)
-	if parts.size() == 3 and parts[0] == "mapdata":
-		return true
-	
-	# New format: MapName-id-size (at least 3 parts, but could be more for multi-word names)
-	if parts.size() >= 3:
-		var size_part = parts[parts.size() - 1].to_lower()
-		# Check if last part is a valid size (old or new naming)
-		var valid_old_sizes = ["xtiny", "tiny", "small", "medium", "large", "huge"]
-		var valid_new_sizes = ["small", "medium", "large", "huge"]
-		return size_part in valid_old_sizes or size_part in valid_new_sizes
-	
-	return false
-
-func _format_map_name_for_display(map_name: String) -> String:
-	"""Format map name for display: MapName-id-size -> 'Size MapName' (hide ID, replace underscores with spaces)"""
-	var parts = map_name.split("-")
-	
-	if parts.size() >= 3:
-		# After file renaming, all files now use new size names (small, medium, large, huge)
-		# So we just capitalize them - no conversion needed
-		var raw_size = parts[parts.size() - 1]
-		var size_part = raw_size.capitalize()
-		
-		# Use first part as map name (before first hyphen)
-		var map_name_part = parts[0].replace("_", " ")
-		
-		return size_part + " " + map_name_part
-	else:
-		# Fallback for unexpected format
-		return map_name.capitalize().replace("_", " ").replace("-", " ")
-
-func _on_player_control_changed(toggled_on: bool, player_num: int, control_type: String):
-	"""Handle player control type change"""
-	if toggled_on:
-		player_settings[player_num - 1].control_type = control_type
-		DebugLogger.log("UISystem", "Player " + str(player_num) + " set to: " + control_type)
+func _on_player_control_changed(toggled_on: bool, player_num: int, control_type: String, button: Button):
+	if not toggled_on:
+		return
+	player_settings[player_num - 1].control_type = control_type
+	for b in button.button_group.get_buttons():
+		_update_button_gold_state(b, b == button)
+	DebugLogger.log("UISystem", "Player " + str(player_num) + " set to: " + control_type)

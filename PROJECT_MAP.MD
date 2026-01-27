@@ -7,7 +7,12 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 
 ### main_menu.tscn
 - Entry UI. Starts a new game or continues; loads `main.tscn`.
-- MapPreview: Visible only in Campaign/Scenario menus. `InnerPanel` background stays visible while menu is open; `MapScreenshot` toggled on hover. Fits height (keeps aspect), width is clipped.
+- Map preview panel (`MapPreview/InnerPanel/MapScreenshot`) handles campaign/scenario hovers; a separate CustomMap preview lives in `CustomMap/Panel2/TextureRect` and scales previews to a 450x450 frame (keep-aspect-covered, fit width).
+- Custom Map & Scenario submenus share `CustomMap`:
+  - Panel (players/difficulty/victory + Select Map) shows for custom maps; Scenario panel shows for scenario list; both Back buttons return to New Game.
+  - Player toggles are static scene nodes with defaults: P1 Human, P2-4 Computer, P5-6 Off; difficulty defaults to Normal; victory defaults to Conquer; gold highlight marks selected buttons.
+  - Map/Scenario list (Panel3) uses a scrollable template row (`Map1`) sorted by size (S/M/L) then name; size filter buttons (All/S/M/L) rebuild the list and clear selection.
+  - Selecting a row colors it gold, updates Panel2 labels (MapName = display name, MapSize = Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`.
 - Menu UX: No click sounds on button presses in main menu.
 - Demo Menu: Default visible menu with Tutorial button (loads tutorial.json scenario), Demo Map button (loads demo-999-medium.json custom game with Player 1 human, Players 2-5 computer, Player 6 off), Options and Exit buttons.
 
