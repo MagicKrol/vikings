@@ -837,12 +837,12 @@ func _update_info_labels(item: Dictionary):
 func _update_preview_with_item(item: Dictionary, for_scenario: bool):
 	var candidates: Array = []
 	if for_scenario:
-		var map_base: String = item.get("map_file_base", "")
-		if map_base != "":
-			candidates.append(map_base)
 		var scen_name: String = item.get("name", "")
 		if scen_name != "":
 			candidates.append(scen_name)
+		var map_base: String = item.get("map_file_base", "")
+		if map_base != "":
+			candidates.append(map_base)
 	else:
 		var file_base: String = item.get("file", "")
 		if file_base != "":

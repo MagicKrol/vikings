@@ -185,6 +185,7 @@ theme = ExtResource("12_oyrel")
 text = "Exit"
 
 [node name="Demo" type="VBoxContainer" parent="."]
+visible = false
 z_index = 10
 layout_mode = 1
 anchors_preset = 8
@@ -644,6 +645,7 @@ texture = ExtResource("9_ygwey")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1348,7 +1350,6 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1360,17 +1361,17 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_6xvye")
 layout_mode = 0
 offset_left = 30.0
 offset_top = 15.0
-offset_right = 590.0
+offset_right = 585.0
 offset_bottom = 595.0
 
 [node name="Label" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("15_std_modal")
+theme = ExtResource("11_pot7t")
 text = "Scenario"
 horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CustomMap/Scenario/VBoxContainer"]
@@ -1384,8 +1385,99 @@ theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back to Menu"
 
-[node name="Spacer" type="Control" parent="CustomMap/Scenario/VBoxContainer"]
-custom_minimum_size = Vector2(0, 420)
+[node name="MarginContainer2" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Scenario Description"
+
+[node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
+layout_mode = 2
+
+[node name="Description" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(20, 200)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Scenario description LOREM IPSUM"
+
+[node name="Label5" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Difficulty level"
+
+[node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
+layout_mode = 2
+
+[node name="Difficulty" type="HBoxContainer" parent="CustomMap/Scenario/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Easy" type="Button" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Easy"
+
+[node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Normal" type="Button" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_pressed = true
+text = "Normal"
+
+[node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Hard" type="Button" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Hard"
+
+[node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Victory conditions"
+
+[node name="MarginContainer7" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
+layout_mode = 2
+
+[node name="Description2" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(20, 60)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd"
+autowrap_mode = 2
+
+[node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CustomMap/Scenario/VBoxContainer"]
