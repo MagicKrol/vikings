@@ -85,7 +85,7 @@ var selected_custom_map: String = ""
 var selected_scenario_button: Button = null
 
 # Custom map/scenario selection state
-const GOLD_COLOR := Color(1.0, 0.843, 0.0, 1.0)
+const GOLD_COLOR := Color(0.945098, 0.847059, 0.568627, 1.0)
 const MAP_SIZE_ORDER := {"S": 0, "M": 1, "L": 2}
 var map_items: Array = []
 var scenario_items: Array = []
@@ -827,11 +827,7 @@ func _set_row_color(row: Control, color: Color):
 	name_label.add_theme_color_override("font_color", color)
 
 func _update_button_gold_state(button: Button, selected: bool):
-	var color := GOLD_COLOR if selected else Color.WHITE
-	button.add_theme_color_override("font_color", color)
-	button.add_theme_color_override("font_hover_color", color)
-	button.add_theme_color_override("font_pressed_color", color)
-	button.add_theme_color_override("font_focus_color", color)
+	button.button_pressed = selected
 
 func _update_info_labels(item: Dictionary):
 	custom_map_map_name_label.text = item.get("display_name", "Map Name")

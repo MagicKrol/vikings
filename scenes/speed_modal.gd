@@ -7,8 +7,6 @@ class_name SpeedModal
 
 signal speed_changed(context: String, value: float)
 
-const GOLD_COLOR: Color = Color(1.0, 0.843, 0.0, 1.0)
-
 var _button_definitions: Dictionary = {}
 var _selected_keys: Dictionary = {"ai": "normal", "battle": "normal"}
 var _context: String = "ai"
@@ -50,12 +48,6 @@ func _update_button_styles(force_focus: bool = false) -> void:
 	for key in _button_definitions.keys():
 		var button: Button = _button_definitions[key]["button"]
 		var selected: bool = key == _selected_keys.get(_context, "normal")
-		var color := GOLD_COLOR if selected else Color.WHITE
-		button.add_theme_color_override("font_color", color)
-		button.add_theme_color_override("font_hover_color", color)
-		button.add_theme_color_override("font_pressed_color", color)
-		button.add_theme_color_override("font_focus_color", color)
-		button.add_theme_color_override("font_disabled_color", color)
 		if force_focus and selected:
 			button.grab_focus()
 		button.queue_redraw()
