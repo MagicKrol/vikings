@@ -41,7 +41,7 @@ const USE_DEMO_MENU: bool = false
 @onready var scenario_back_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer2/Back
 @onready var scenario_select_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer/SelectMap
 @onready var custom_map_list: VBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList
-@onready var custom_map_template_row: Button = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Map1
+@onready var custom_map_template_row: HBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row
 @onready var custom_map_preview: TextureRect = $CustomMap/Panel2/VBoxContainer/TextureRect
 @onready var custom_map_map_name_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer/MapName
 @onready var custom_map_map_size_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer2/MapSize
@@ -90,11 +90,9 @@ const MAP_SIZE_ORDER := {"S": 0, "M": 1, "L": 2}
 var map_items: Array = []
 var scenario_items: Array = []
 var selected_map_item: Dictionary = {}
-var selected_map_button: Button = null
+var selected_map_button: Control = null
 var selected_scenario_item: Dictionary = {}
-var selected_scenario_button_custom: Button = null
-var map_button_group: ButtonGroup = null
-var scenario_button_group: ButtonGroup = null
+var selected_scenario_button_custom: Control = null
 var size_filter_button_group: ButtonGroup = null
 var current_map_filter: String = "All"
 var is_scenario_mode: bool = false
@@ -770,31 +768,32 @@ func _populate_map_list(items: Array, for_scenario: bool):
 	_clear_map_list_nodes()
 	if custom_map_template_row:
 		custom_map_template_row.visible = false
-	map_button_group = ButtonGroup.new()
 	for i in range(items.size()):
 		var item: Dictionary = items[i]
-		var row: Button = custom_map_template_row.duplicate(true)
+		var row: HBoxContainer = custom_map_template_row.duplicate(true)
 		row.name = "Entry" + str(i + 1)
-		row.toggle_mode = true
-		row.button_group = map_button_group
 		row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		row.visible = true
-		var size_label: Label = row.get_node("Row/Size")
-		var name_label: Label = row.get_node("Row/Name")
+		var size_label: Label = row.get_node("Size")
+		var name_label: Label = row.get_node("Name")
 		size_label.text = item.get("size", "S")
 		name_label.text = item.get("display_name", "Map")
+		size_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		name_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		_set_row_color(row, Color.WHITE)
-		row.pressed.connect(_on_map_row_pressed.bind(row, item, for_scenario))
+		row.gui_input.connect(_on_map_row_gui_input.bind(row, item, for_scenario))
 		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
 		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
 		custom_map_list.add_child(row)
 
-func _on_map_row_pressed(row: Button, item: Dictionary, for_scenario: bool):
-	var current_selected: Button = selected_scenario_button_custom if for_scenario else selected_map_button
+func _on_map_row_gui_input(event: InputEvent, row: Control, item: Dictionary, for_scenario: bool):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_on_map_row_pressed(row, item, for_scenario)
+
+func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
+	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected and current_selected != row:
 		_set_row_color(current_selected, Color.WHITE)
-		current_selected.button_pressed = false
-	row.button_pressed = true
 	_set_row_color(row, GOLD_COLOR)
 	if for_scenario:
 		selected_scenario_button_custom = row
@@ -810,20 +809,20 @@ func _on_map_row_pressed(row: Button, item: Dictionary, for_scenario: bool):
 		_set_custom_map_select_enabled(true)
 
 func _on_map_row_hovered(row: Button, item: Dictionary, for_scenario: bool):
-	var current_selected: Button = selected_scenario_button_custom if for_scenario else selected_map_button
+	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected != row:
 		_set_row_color(row, GOLD_COLOR)
 
 func _on_map_row_unhovered(row: Button, item: Dictionary, for_scenario: bool):
-	var current_selected: Button = selected_scenario_button_custom if for_scenario else selected_map_button
+	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected != row:
 		_set_row_color(row, Color.WHITE)
 
-func _set_row_color(row: Button, color: Color):
+func _set_row_color(row: Control, color: Color):
 	if not row:
 		return
-	var size_label: Label = row.get_node("Row/Size")
-	var name_label: Label = row.get_node("Row/Name")
+	var size_label: Label = row.get_node("Size")
+	var name_label: Label = row.get_node("Name")
 	size_label.add_theme_color_override("font_color", color)
 	name_label.add_theme_color_override("font_color", color)
 
@@ -873,10 +872,8 @@ func _clear_map_selection():
 	selected_scenario_item.clear()
 	if selected_map_button:
 		_set_row_color(selected_map_button, Color.WHITE)
-		selected_map_button.button_pressed = false
 	if selected_scenario_button_custom:
 		_set_row_color(selected_scenario_button_custom, Color.WHITE)
-		selected_scenario_button_custom.button_pressed = false
 	selected_map_button = null
 	selected_scenario_button_custom = null
 	_set_custom_map_select_enabled(false)
@@ -900,17 +897,15 @@ func _gather_map_items() -> Array:
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
-		var idx: int = 1
 		while file_name != "":
 			if file_name.ends_with(".json"):
 				var base := file_name.trim_suffix(".json")
 				var size_code := _extract_size_code(base)
 				items.append({
 					"file": base,
-					"display_name": "Map " + str(idx),
+					"display_name": _display_name_for_map(base),
 					"size": size_code
 				})
-				idx += 1
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	items.sort_custom(Callable(self, "_sort_items"))
@@ -976,6 +971,14 @@ func _size_full_name(code: String) -> String:
 			return "Large"
 		_:
 			return "Unknown"
+
+func _display_name_for_map(base: String) -> String:
+	var parts := base.split("-")
+	if parts.size() >= 2:
+		parts = parts.slice(0, parts.size() - 1)
+		var name_part := " ".join(parts)
+		return name_part.capitalize().replace("_", " ")
+	return base.capitalize().replace("_", " ")
 
 func _on_scenario_hovered(scenario_name: String):
 	current_hovered_item = scenario_name

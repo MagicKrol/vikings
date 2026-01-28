@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=22 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -7,11 +7,12 @@
 [ext_resource type="FontFile" uid="uid://pclcml0fh6k3" path="res://fonts/Cardo-Bold.ttf" id="8_cardo_bold_font"]
 [ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="9_ygwey"]
 [ext_resource type="Texture2D" uid="uid://dq0mgh25tw1fo" path="res://images/modal_bg_universal.png" id="10_3j31f"]
-[ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="11_pot7t"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="11_pot7t"]
 [ext_resource type="Theme" uid="uid://cdrs8n52og4kp" path="res://themes/main_menu_theme.tres" id="12_oyrel"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="13_cinzel_font"]
 [ext_resource type="Texture2D" uid="uid://b485vkun5q6lf" path="res://images/modal_bg_inner.png" id="14_f8n4j"]
-[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="14_r6hhc"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="15_std_modal"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="16_btn_styles"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -673,7 +674,7 @@ alignment = 1
 
 [node name="Back" type="Button" parent="CustomMap/Panel/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back to Menu"
@@ -684,7 +685,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Players"
 
 [node name="Player1" type="HBoxContainer" parent="CustomMap/Panel/VBoxContainer"]
@@ -697,7 +698,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer/Player1"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(0.670588, 0.235294, 0.0862745, 1)
 text = "Player 1"
 
@@ -708,7 +709,7 @@ layout_mode = 2
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player1"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Human"
@@ -720,7 +721,7 @@ layout_mode = 2
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player1"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Computer"
@@ -732,7 +733,7 @@ layout_mode = 2
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player1"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Off"
@@ -750,7 +751,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer/Player2"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(0.423529, 0.505882, 0.498039, 1)
 text = "Player 2"
 
@@ -761,7 +762,7 @@ layout_mode = 2
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player2"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Human"
@@ -773,7 +774,7 @@ layout_mode = 2
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player2"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Computer"
@@ -785,7 +786,7 @@ layout_mode = 2
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player2"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Off"
@@ -803,7 +804,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer/Player3"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(0.25098, 0.403922, 0.101961, 1)
 text = "Player 3"
 
@@ -814,7 +815,7 @@ layout_mode = 2
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player3"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Human"
@@ -826,7 +827,7 @@ layout_mode = 2
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player3"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Computer"
@@ -838,7 +839,7 @@ layout_mode = 2
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player3"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Off"
@@ -856,7 +857,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer/Player4"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(0.717647, 0.0470588, 0.0470588, 1)
 text = "Player 4"
 
@@ -867,7 +868,7 @@ layout_mode = 2
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player4"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Human"
@@ -879,7 +880,7 @@ layout_mode = 2
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player4"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Computer"
@@ -891,7 +892,7 @@ layout_mode = 2
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player4"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Off"
@@ -909,7 +910,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer/Player5"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 0.85098, 0.615686, 1)
 text = "Player 5"
 
@@ -920,7 +921,7 @@ layout_mode = 2
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player5"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Human"
@@ -932,7 +933,7 @@ layout_mode = 2
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player5"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Computer"
@@ -944,7 +945,7 @@ layout_mode = 2
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player5"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Off"
@@ -962,7 +963,7 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel/VBoxContainer/Player6"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(0.423529, 0.505882, 0.498039, 1)
 text = "Player 6"
 
@@ -973,7 +974,7 @@ layout_mode = 2
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player6"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Human"
@@ -985,7 +986,7 @@ layout_mode = 2
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player6"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Computer"
@@ -997,7 +998,7 @@ layout_mode = 2
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player6"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Off"
@@ -1008,7 +1009,7 @@ layout_mode = 2
 
 [node name="Label3" type="Label" parent="CustomMap/Panel/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Difficulty level"
 
 [node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
@@ -1024,7 +1025,7 @@ layout_mode = 2
 [node name="Easy" type="Button" parent="CustomMap/Panel/VBoxContainer/Difficulty"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Easy"
@@ -1036,7 +1037,7 @@ layout_mode = 2
 [node name="Normal" type="Button" parent="CustomMap/Panel/VBoxContainer/Difficulty"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Normal"
@@ -1048,7 +1049,7 @@ layout_mode = 2
 [node name="Hard" type="Button" parent="CustomMap/Panel/VBoxContainer/Difficulty"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Hard"
@@ -1059,7 +1060,7 @@ layout_mode = 2
 [node name="Label4" type="Label" parent="CustomMap/Panel/VBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Victory conditions"
 
 [node name="MarginContainer7" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
@@ -1075,7 +1076,7 @@ layout_mode = 2
 [node name="Conquer" type="Button" parent="CustomMap/Panel/VBoxContainer/VictoryConditions"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Conquer"
@@ -1087,7 +1088,7 @@ layout_mode = 2
 [node name="Dominate" type="Button" parent="CustomMap/Panel/VBoxContainer/VictoryConditions"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Dominate"
@@ -1103,7 +1104,7 @@ alignment = 1
 [node name="SelectMap" type="Button" parent="CustomMap/Panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = " Select Map "
@@ -1143,13 +1144,13 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel2/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Name"
 
 [node name="MapName" type="Label" parent="CustomMap/Panel2/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Map Name"
 
@@ -1163,13 +1164,13 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="CustomMap/Panel2/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Size"
 
 [node name="MapSize" type="Label" parent="CustomMap/Panel2/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Large"
 
@@ -1214,7 +1215,7 @@ layout_mode = 2
 [node name="Label3" type="Label" parent="CustomMap/Panel3/VBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Map size"
 
 [node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer"]
@@ -1231,7 +1232,7 @@ layout_mode = 2
 [node name="All" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "All"
@@ -1243,7 +1244,7 @@ layout_mode = 2
 [node name="Tiny" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Tiny"
@@ -1255,7 +1256,7 @@ layout_mode = 2
 [node name="Small" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Small"
@@ -1267,7 +1268,7 @@ layout_mode = 2
 [node name="Medium" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Medium"
@@ -1279,7 +1280,7 @@ layout_mode = 2
 [node name="Hard" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "Large"
@@ -1297,7 +1298,7 @@ layout_mode = 2
 [node name="Label3" type="Label" parent="CustomMap/Panel3/VBoxContainer/Headers"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Size"
 horizontal_alignment = 1
 
@@ -1308,7 +1309,7 @@ layout_mode = 2
 [node name="Label4" type="Label" parent="CustomMap/Panel3/VBoxContainer/Headers"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+theme = ExtResource("15_std_modal")
 text = "Name"
 
 [node name="MarginContainer8" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer"]
@@ -1325,31 +1326,25 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 4
 
-[node name="Map1" type="Button" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList"]
+[node name="Row" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme = ExtResource("12_oyrel")
-theme_override_fonts/font = ExtResource("13_cinzel_font")
-theme_override_font_sizes/font_size = 18
-toggle_mode = true
+theme = ExtResource("16_btn_styles")
 
-[node name="Row" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Map1"]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="Size" type="Label" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Map1/Row"]
+[node name="Size" type="Label" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+mouse_default_cursor_shape = 2
+theme = ExtResource("15_std_modal")
 text = "S"
 horizontal_alignment = 1
 
-[node name="Name" type="Label" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Map1/Row"]
+[node name="Name" type="Label" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row"]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
-theme = ExtResource("14_r6hhc")
+mouse_default_cursor_shape = 2
+theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
@@ -1370,7 +1365,7 @@ offset_bottom = 595.0
 
 [node name="Label" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("11_pot7t")
+theme = ExtResource("15_std_modal")
 text = "Scenario"
 horizontal_alignment = 1
 
@@ -1384,7 +1379,7 @@ alignment = 1
 
 [node name="Back" type="Button" parent="CustomMap/Scenario/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back to Menu"
@@ -1400,7 +1395,7 @@ alignment = 1
 [node name="SelectMap" type="Button" parent="CustomMap/Scenario/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
-theme = ExtResource("12_oyrel")
+theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = " Select Map "
