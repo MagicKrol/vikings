@@ -108,6 +108,9 @@ func _on_make_camp_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
 	if selected_army:
+		if selected_army.get_movement_points() <= 0:
+			_update_make_camp_button_state()
+			return
 		selected_army.make_camp()
 		_update_make_camp_button_state()
 		_refresh_info_modal()

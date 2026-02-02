@@ -336,7 +336,8 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			if result == "blocked":
 				_army_manager.deselect_army()
 			return
-		# If no movement points, fall through to selection/info handling
+		# If no movement points, stay in move flow and ignore region management modals
+		return
 
 	# Get all armies in this region
 	var armies_in_region: Array[Army] = []

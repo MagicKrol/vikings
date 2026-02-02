@@ -21,6 +21,9 @@ shadow_size = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_border"]
 bg_color = Color(0, 0, 0, 1)
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_speed"]
+allow_unpress = false
+
 [node name="SpeedModal" type="Control"]
 layout_mode = 3
 anchors_preset = 8
@@ -92,6 +95,8 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_w3oo4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_speed")
 text = "Normal"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/List/ButtonSection"]
@@ -124,6 +129,8 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_w3oo4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_speed")
 text = "Fast"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/List/ButtonSection"]
@@ -156,4 +163,6 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_w3oo4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_speed")
 text = "Very Fast"

@@ -48,6 +48,7 @@ func _update_button_styles(force_focus: bool = false) -> void:
 	for key in _button_definitions.keys():
 		var button: Button = _button_definitions[key]["button"]
 		var selected: bool = key == _selected_keys.get(_context, "normal")
+		button.button_pressed = selected
 		if force_focus and selected:
 			button.grab_focus()
 		button.queue_redraw()

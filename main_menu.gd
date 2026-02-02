@@ -2,7 +2,7 @@ extends Control
 class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
-const USE_DEMO_MENU: bool = false
+const USE_DEMO_MENU: bool = true
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -34,17 +34,29 @@ const USE_DEMO_MENU: bool = false
 @onready var custom_map_panel: Panel = $CustomMap/Panel
 @onready var custom_map_panel2: Panel = $CustomMap/Panel2
 @onready var custom_map_panel3: Panel = $CustomMap/Panel3
+@onready var campaign_panel: Panel = $CustomMap/Panel4
 @onready var custom_map_panel3_label: Label = $CustomMap/Panel3/VBoxContainer/Label
 @onready var custom_map_back_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer2/Back
 @onready var custom_map_select_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer/SelectMap
 @onready var scenario_panel: Panel = $CustomMap/Scenario
 @onready var scenario_back_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer2/Back
 @onready var scenario_select_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer/SelectMap
+@onready var scenario_difficulty_buttons: Array[Button] = [
+	get_node("CustomMap/Scenario/VBoxContainer/Difficulty/Easy"),
+	get_node("CustomMap/Scenario/VBoxContainer/Difficulty/Normal"),
+	get_node("CustomMap/Scenario/VBoxContainer/Difficulty/Hard")
+]
 @onready var custom_map_list: VBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList
 @onready var custom_map_template_row: HBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row
+@onready var campaign_map_list: VBoxContainer = $CustomMap/Panel4/VBoxContainer/ScrollContainer/MapList
+@onready var campaign_template_row: HBoxContainer = $CustomMap/Panel4/VBoxContainer/ScrollContainer/MapList/Row
 @onready var custom_map_preview: TextureRect = $CustomMap/Panel2/VBoxContainer/TextureRect
 @onready var custom_map_map_name_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer/MapName
 @onready var custom_map_map_size_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer2/MapSize
+@onready var scenario_header_label: Label = $CustomMap/Scenario/VBoxContainer/Label
+@onready var map_size_label: Label = $CustomMap/Panel3/VBoxContainer/MapSize
+@onready var map_size_margin1: MarginContainer = $CustomMap/Panel3/VBoxContainer/MapSizeMargin1
+@onready var map_sizes_container: HBoxContainer = $CustomMap/Panel3/VBoxContainer/Sizes
 @onready var map_size_button_all: Button = $CustomMap/Panel3/VBoxContainer/Sizes/All
 @onready var map_size_button_tiny: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Tiny
 @onready var map_size_button_small: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Small
@@ -96,6 +108,8 @@ var selected_scenario_button_custom: Control = null
 var size_filter_button_group: ButtonGroup = null
 var current_map_filter: String = "All"
 var is_scenario_mode: bool = false
+var is_campaign_mode: bool = false
+var scenario_difficulty_group: ButtonGroup
 
 # Player settings for custom map
 var player_settings: Array = []  # Array of dictionaries with player configuration
@@ -165,6 +179,7 @@ func _ready():
 	_setup_size_filter_group()
 	_setup_player_buttons()
 	_setup_difficulty_buttons()
+	_setup_scenario_difficulty_buttons()
 	_setup_victory_buttons()
 
 	# Show demo or standard menu based on USE_DEMO_MENU constant
@@ -399,7 +414,7 @@ func _show_options_menu():
 	map_preview.visible = false
 
 func _show_campaign_menu():
-	"""Show the campaign menu and load scenarios"""
+	"""Show campaign using the Scenario node layout"""
 	button_bg1.visible = true
 	button_bg2.visible = false
 	button_bg3.visible = false
@@ -408,18 +423,22 @@ func _show_campaign_menu():
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
-	campaign_container.visible = true
+	campaign_container.visible = false
 	scenario_container.visible = false
-	custom_map_container.visible = false
+	custom_map_container.visible = true
 	demo_container.visible = false
-	map_preview.visible = true
-	selected_scenario = ""
-	default_preview_item = ""
-	if selected_scenario_button:
-		selected_scenario_button.modulate = Color.WHITE
-	selected_scenario_button = null
-	campaign_play_button.disabled = true
-	_load_scenario_list()
+	map_preview.visible = false
+	is_scenario_mode = true
+	is_campaign_mode = true
+	custom_map_panel.visible = false
+	scenario_panel.visible = true
+	custom_map_panel2.visible = true
+	custom_map_panel3.visible = false
+	campaign_panel.visible = true
+	custom_map_panel3_label.text = "Campaign list"
+	_set_campaign_ui(true)
+	_clear_map_selection()
+	_load_scenario_items()
 
 func _show_scenario_menu():
 	"""Show scenario selection using the CustomMap layout"""
@@ -437,11 +456,14 @@ func _show_scenario_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	is_scenario_mode = true
+	is_campaign_mode = false
 	custom_map_panel.visible = false
 	scenario_panel.visible = true
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = true
+	campaign_panel.visible = false
 	custom_map_panel3_label.text = "Scenario list"
+	_set_campaign_ui(false)
 	_clear_map_selection()
 	_load_scenario_items()
 
@@ -465,7 +487,9 @@ func _show_custom_map_menu():
 	scenario_panel.visible = false
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = true
+	campaign_panel.visible = false
 	custom_map_panel3_label.text = "Select Map"
+	_set_campaign_ui(false)
 	_clear_map_selection()
 	_load_custom_map_items()
 
@@ -485,6 +509,13 @@ func _show_demo_menu():
 	demo_container.visible = true
 	map_preview.visible = false
 	custom_map_preview.visible = false
+
+func _set_campaign_ui(enabled: bool):
+	scenario_header_label.text = "Campaign" if enabled else "Scenario"
+	var show_sizes := not enabled
+	map_size_label.visible = show_sizes
+	map_size_margin1.visible = show_sizes
+	map_sizes_container.visible = show_sizes
 
 func _setup_custom_map_preview():
 	custom_map_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -554,6 +585,17 @@ func _setup_difficulty_buttons():
 		var selected: bool = btn.name == "Normal"
 		btn.button_pressed = selected
 		_update_button_gold_state(btn, selected)
+
+func _setup_scenario_difficulty_buttons():
+	scenario_difficulty_group = ButtonGroup.new()
+	scenario_difficulty_group.allow_unpress = false
+	for btn in scenario_difficulty_buttons:
+		btn.toggle_mode = true
+		btn.button_group = scenario_difficulty_group
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	for btn in scenario_difficulty_buttons:
+		var selected: bool = btn.name == "Normal"
+		btn.button_pressed = selected
 
 func _setup_victory_buttons():
 	var buttons: Array = [
@@ -742,7 +784,7 @@ func _load_custom_map_items():
 	_apply_map_filter()
 
 func _load_scenario_items():
-	scenario_items = _gather_scenario_items()
+	scenario_items = _gather_scenario_items(is_campaign_mode)
 	_apply_map_filter()
 
 func _apply_map_filter():
@@ -759,18 +801,30 @@ func _apply_map_filter():
 				items.append(item)
 		_populate_map_list(items, false)
 
-func _clear_map_list_nodes():
-	for child in custom_map_list.get_children():
-		if child != custom_map_template_row:
+func _get_list_container(for_scenario: bool) -> VBoxContainer:
+	if for_scenario and is_campaign_mode:
+		return campaign_map_list
+	return custom_map_list
+
+func _get_template_row(for_scenario: bool) -> HBoxContainer:
+	if for_scenario and is_campaign_mode:
+		return campaign_template_row
+	return custom_map_template_row
+
+func _clear_map_list_nodes(container: VBoxContainer, template_row: HBoxContainer):
+	for child in container.get_children():
+		if child != template_row:
 			child.queue_free()
 
 func _populate_map_list(items: Array, for_scenario: bool):
-	_clear_map_list_nodes()
-	if custom_map_template_row:
-		custom_map_template_row.visible = false
+	var container := _get_list_container(for_scenario)
+	var template_row := _get_template_row(for_scenario)
+	_clear_map_list_nodes(container, template_row)
+	if template_row:
+		template_row.visible = false
 	for i in range(items.size()):
 		var item: Dictionary = items[i]
-		var row: HBoxContainer = custom_map_template_row.duplicate(true)
+		var row: HBoxContainer = template_row.duplicate(true)
 		row.name = "Entry" + str(i + 1)
 		row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		row.visible = true
@@ -784,7 +838,7 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		row.gui_input.connect(_on_map_row_gui_input.bind(row, item, for_scenario))
 		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
 		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
-		custom_map_list.add_child(row)
+		container.add_child(row)
 
 func _on_map_row_gui_input(event: InputEvent, row: Control, item: Dictionary, for_scenario: bool):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -896,6 +950,9 @@ func _gather_map_items() -> Array:
 		while file_name != "":
 			if file_name.ends_with(".json"):
 				var base := file_name.trim_suffix(".json")
+				if base.begins_with("mission"):
+					file_name = dir.get_next()
+					continue
 				var size_code := _extract_size_code(base)
 				items.append({
 					"file": base,
@@ -907,7 +964,7 @@ func _gather_map_items() -> Array:
 	items.sort_custom(Callable(self, "_sort_items"))
 	return items
 
-func _gather_scenario_items() -> Array:
+func _gather_scenario_items(require_mission_prefix: bool) -> Array:
 	var items: Array = []
 	var dir = DirAccess.open("res://scenarios")
 	if dir:
@@ -916,6 +973,13 @@ func _gather_scenario_items() -> Array:
 		while file_name != "":
 			if file_name.ends_with(".json"):
 				var scenario_name := file_name.trim_suffix(".json")
+				var has_prefix := scenario_name.begins_with("mission")
+				if require_mission_prefix and not has_prefix:
+					file_name = dir.get_next()
+					continue
+				if not require_mission_prefix and has_prefix:
+					file_name = dir.get_next()
+					continue
 				var map_file_base: String = ""
 				var size_code: String = "S"
 				var file_path: String = "res://scenarios/" + file_name

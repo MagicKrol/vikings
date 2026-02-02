@@ -115,10 +115,11 @@ func spend_movement_points(cost: int) -> void:
 
 func make_camp() -> void:
 	"""Make camp - reduces movement points and restores efficiency"""
+	if movement_points <= 0:
+		return
 	# Spend 1 movement point for making camp
-	if movement_points > 0:
-		movement_points -= 1
-		_emit_movement_points_changed()
+	movement_points -= 1
+	_emit_movement_points_changed()
 	
 	# Restore 10 efficiency (capped at 100%)
 	restore_efficiency(10)

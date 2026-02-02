@@ -302,7 +302,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(150, 500),
+			"panel_position": Vector2(750, 850),
 			"arrow": {
 				"id": "9",
 				"anchor": "screen"
@@ -315,7 +315,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "RecruitmentModal/continue",
-			"panel_position": Vector2(150, 500),
+			"panel_position": Vector2(750, 850),
 			"arrow": {
 				"id": "3",
 				"anchor": "screen"
@@ -328,7 +328,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "ArmySelectModal/move_army",
-			"panel_position": Vector2(350, 700),
+			"panel_position": Vector2(750, 850),
 			"arrow": {
 				"id": "4",
 				"anchor": "screen"
@@ -457,7 +457,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Vigor represents your's army morale and stamina. It replenishes upon resting. It affects army's battle effectiveness.",
+			"message": "Vigor represents army's morale and stamina. It replenishes upon resting. It affects army's battle effectiveness.",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -585,7 +585,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "14",
@@ -597,7 +597,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "24",
@@ -609,7 +609,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "27",
@@ -621,7 +621,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "25",
@@ -633,7 +633,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "26",
@@ -645,7 +645,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "13",
@@ -658,7 +658,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(750, 850),
 			"block": "trade,withdraw,endturn,continue3,nonladders",
 		},
 		{
@@ -886,7 +886,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "But also information about available recruits. Recruits pool slowly replenish every turn.",
+			"message": "But also information about available recruits. Recruits pool slowly replenishes every turn.",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
