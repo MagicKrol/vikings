@@ -115,9 +115,7 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 		return null
 	
 	# Create army instance with Roman numeral naming
-	var army := Sprite2D.new()
-	# Explicitly attach the Army script
-	army.set_script(load("res://army.gd"))
+	var army := Army.new()
 	var roman_number = _get_next_army_roman_numeral(player_id)
 	army.name = "Army " + roman_number
 	
@@ -442,8 +440,11 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	var gm := _get_game_manager()
 	var is_ai_player := gm != null and gm.is_player_computer(moving_army.get_player_id())
 	var move_duration := GameParameters.get_move_animation_duration(is_ai_player)
+	var move_speed_multiplier: float = GameParameters.MOVE_ANIMATION_DURATION / move_duration
+	moving_army.play_walking(move_speed_multiplier)
 	var tween: Tween = moving_army.animate_move_to(target_global, move_duration, true)
 	await tween.finished
+	moving_army.play_idle()
 	# Do not re-apply offsets for the moving army here; let the tween finish
 	
 	# After animation completes, check if we should change ownership (only for already owned regions or friendly moves)
@@ -1027,8 +1028,11 @@ func retreat_army_to_previous_region(army: Army) -> void:
 	var gm: GameManager = _get_game_manager()
 	var is_ai_player: bool = gm.is_player_computer(army.get_player_id())
 	var retreat_duration: float = GameParameters.get_move_animation_duration(is_ai_player)
+	var retreat_speed_multiplier: float = GameParameters.MOVE_ANIMATION_DURATION / retreat_duration
+	army.play_walking(retreat_speed_multiplier)
 	var retreat_tween: Tween = army.animate_move_to(target_global, retreat_duration, true)
 	await retreat_tween.finished
+	army.play_idle()
 	
 	DebugLogger.log("ArmyManagement", "Army " + army.name + " retreated to " + previous_region.name)
 	
@@ -1052,8 +1056,11 @@ func reposition_army_in_region_with_animation(army: Army) -> void:
 	var gm: GameManager = _get_game_manager()
 	var is_ai_player: bool = gm.is_player_computer(army.get_player_id())
 	var move_duration: float = GameParameters.get_move_animation_duration(is_ai_player)
+	var move_speed_multiplier: float = GameParameters.MOVE_ANIMATION_DURATION / move_duration
+	army.play_walking(move_speed_multiplier)
 	var tween := army.animate_move_to(target_global, move_duration, true)
 	await tween.finished
+	army.play_idle()
 	_apply_army_offsets_for_region(region)
 
 

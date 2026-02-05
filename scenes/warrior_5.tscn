@@ -1,6 +1,5 @@
-[gd_scene load_steps=58 format=3 uid="uid://bit7xpsk0abvy"]
+[gd_scene load_steps=57 format=3 uid="uid://bit7xpsk0abvy"]
 
-[ext_resource type="Script" path="res://animation.gd" id="1_0tu5n"]
 [ext_resource type="Texture2D" uid="uid://bta1a6wtiigju" path="res://animation/warrior_1/viking_1_001.png" id="2_srfps"]
 [ext_resource type="Texture2D" uid="uid://icd7omvlly3p" path="res://animation/warrior_1/viking_1_002.png" id="3_1oybk"]
 [ext_resource type="Texture2D" uid="uid://cjxr17npd8ggf" path="res://animation/warrior_1/viking_1_003.png" id="4_rh4ad"]
@@ -190,7 +189,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("41_1fh4l")
 }],
-"loop": true,
+"loop": false,
 "name": &"victory",
 "speed": 10.0
 }, {
@@ -245,8 +244,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Warrior_1" type="Node2D"]
-script = ExtResource("1_0tu5n")
+[node name="Warrior_5" type="Node2D"]
 
 [node name="Animations" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0.992157, 1, 1)

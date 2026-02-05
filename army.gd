@@ -1,4 +1,4 @@
-extends Sprite2D
+extends Node2D
 class_name Army
 
 signal movement_points_changed(army: Army, new_points: int)
@@ -13,7 +13,7 @@ signal movement_points_changed(army: Army, new_points: int)
 # - Army properties storage (player ID, movement points, composition)
 # - Movement point tracking for turn-based systems
 # - Army composition integration and soldier management
-# - Visual representation as map sprite
+# - Visual representation as animated map icon
 # - Player ownership and identification
 # 
 # Required Functions:
@@ -31,6 +31,15 @@ signal movement_points_changed(army: Army, new_points: int)
 # ============================================================================
 
 # Army properties - all data here
+const WARRIOR_SCENE_PATHS: Dictionary = {
+	1: "res://scenes/warrior_1.tscn",
+	2: "res://scenes/warrior_2.tscn",
+	3: "res://scenes/warrior_3.tscn",
+	4: "res://scenes/warrior_4.tscn",
+	5: "res://scenes/warrior_5.tscn",
+	6: "res://scenes/warrior_6.tscn"
+}
+
 var player_id: int = 1
 var movement_points: int = GameParameters.MOVEMENT_POINTS_PER_TURN
 var number: String = ""
@@ -44,21 +53,19 @@ var just_raised: bool = false  # Marks freshly raised AI armies for instant recr
 # Army composition - soldiers in this army
 var composition: ArmyComposition
 var wounded_composition: ArmyComposition
+var _animations: AnimatedSprite2D
+var _victory: AnimatedSprite2D
+var _animation_speed_scale: float = 1.0
+var _victory_speed_scale: float = 1.0
 
-func _init():
-	# Set up the army sprite with default warrior image (will be updated in setup)
-	texture = load("res://images/warrior_1.png")  # Default to player 1 warrior
-	scale = Vector2(0.06, 0.06)
+func _init() -> void:
 	z_index = 125
+	scale = Vector2(0.5, 0.5)
 
 func apply_map_size_scaling(map_generator: MapGenerator) -> void:
 	"""Apply map size scaling to the army visual"""
-	if map_generator == null:
-		return
-	
-	var map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
-	var base_scale = 0.05
-	scale = Vector2(base_scale * map_size_scale, base_scale * map_size_scale)
+	var map_size_scale: float = Utils.get_map_size_icon_scale(map_generator.map_size)
+	scale = Vector2.ONE * map_size_scale * 0.4
 
 func setup_army(new_player_id: int, roman_number: String, starting_composition: Dictionary = {}) -> void:
 	"""Setup the army with player ID and default composition"""
@@ -70,8 +77,8 @@ func setup_army(new_player_id: int, roman_number: String, starting_composition: 
 	number = roman_number
 	just_raised = false
 	
-	# Set player-specific warrior texture
-	_set_warrior_texture(player_id)
+	# Set player-specific warrior visual
+	_set_warrior_visual(player_id)
 	
 	# Start with a basic army composition
 	var starting_comp = starting_composition
@@ -93,8 +100,8 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	number = roman_number
 	just_raised = true
 	
-	# Set player-specific warrior texture
-	_set_warrior_texture(player_id)
+	# Set player-specific warrior visual
+	_set_warrior_visual(player_id)
 	composition.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, 1)
 	
 	z_index = 125 + player_id
@@ -241,7 +248,7 @@ func get_army_composition_string() -> String:
 func get_display_name() -> String:
 	"""Get a stable label for logging/UI, falling back to roman number when the node name is default"""
 	var label := String(name)
-	if label == "" or label.begins_with("@") or label.begins_with("Sprite2D"):
+	if label == "" or label.begins_with("@") or label.begins_with("Sprite2D") or label.begins_with("Node2D"):
 		if number != "":
 			return "Army " + str(number)
 		return "Army"
@@ -261,18 +268,50 @@ func animate_move_to(target_pos: Vector2, duration: float, use_global: bool = fa
 	)
 	return tween
 
-func _set_warrior_texture(player_number: int) -> void:
-	"""Set the warrior texture based on player number"""
-	var texture_path = "res://images/warrior_" + str(player_number) + ".png"
-	var new_texture = load(texture_path)
-	
-	if new_texture != null:
-		texture = new_texture
-		DebugLogger.log("ArmyManagement", "[Army] Set warrior texture for Player " + str(player_number) + " to: " + str(texture_path))
-	else:
-		DebugLogger.log("ArmyManagement", "[Army] Warning: Could not load warrior texture for Player " + str(player_number) + " at: " + str(texture_path))
-		# Fallback to default warrior image
-		texture = load("res://images/warrior_1.png")
+func _set_warrior_visual(player_number: int) -> void:
+	"""Set the warrior visual scene based on player number"""
+	for child: Node in get_children():
+		child.queue_free()
+	var scene_path: String = WARRIOR_SCENE_PATHS.get(player_number, WARRIOR_SCENE_PATHS[1])
+	var warrior_scene: PackedScene = load(scene_path) as PackedScene
+	var warrior_instance: Node2D = warrior_scene.instantiate() as Node2D
+	add_child(warrior_instance)
+	_animations = warrior_instance.get_node("Animations") as AnimatedSprite2D
+	_victory = warrior_instance.get_node("Victory") as AnimatedSprite2D
+	_animation_speed_scale = _animations.speed_scale
+	_victory_speed_scale = _victory.speed_scale
+	_animations.visible = true
+	_victory.visible = false
+	var hidden_modulate: Color = _animations.modulate
+	hidden_modulate.a = 0.0
+	_victory.modulate = hidden_modulate
+	_victory.animation_finished.connect(_on_victory_animation_finished)
+	_animations.play("idle")
+	DebugLogger.log("ArmyManagement", "[Army] Set warrior scene for Player " + str(player_number) + " to: " + str(scene_path))
+
+func play_walking(speed_multiplier: float) -> void:
+	_animations.visible = true
+	_victory.visible = false
+	_animations.speed_scale = _animation_speed_scale * speed_multiplier
+	_animations.play("walking")
+
+func play_idle() -> void:
+	_animations.visible = true
+	_victory.visible = false
+	_animations.speed_scale = _animation_speed_scale
+	_animations.play("idle")
+
+func play_victory() -> void:
+	_animations.visible = false
+	_victory.visible = true
+	_victory.speed_scale = _victory_speed_scale
+	var victory_modulate: Color = _animations.modulate
+	victory_modulate.a = 1.0
+	_victory.modulate = victory_modulate
+	_victory.play("victory")
+
+func _on_victory_animation_finished() -> void:
+	play_idle()
 
 # Recruitment system methods
 func request_recruitment() -> void:

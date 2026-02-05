@@ -2483,6 +2483,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			await _army_manager.reposition_army_in_region_with_animation(army)
 		# Attackers won - handle conquest
 		if army and is_instance_valid(army) and target_region_id != -1:
+			army.play_victory()
 			var player_id = army.get_player_id()
 			_region_manager.set_region_ownership(target_region_id, player_id)
 			var conquered_region = _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
