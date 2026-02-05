@@ -110,7 +110,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	var has_castle := current_region != null and current_region.get_castle_type() != CastleTypeEnum.Type.NONE
 	definitions.append({
-		"text": "Call To Arms",
+		"text": tr("Call to Arms"),
 		"name": "call_to_arms",
 		"enabled": has_castle,
 		"action": "_on_call_to_arms_pressed",
@@ -179,7 +179,7 @@ func _prepare_button(button: Button) -> void:
 	button.add_theme_color_override("font_color", Color.WHITE)
 	button.add_theme_color_override("font_hover_color", Color.WHITE)
 	button.add_theme_color_override("font_pressed_color", Color.WHITE)
-	button.add_theme_color_override("font_disabled_color", Color.WHITE)
+	button.add_theme_color_override("font_disabled_color", Color.html("#b4b4b4"))
 	button.add_theme_font_size_override("font_size", 22)
 
 
@@ -499,7 +499,7 @@ func _on_castle_tooltip_hovered(tooltip_key: String) -> void:
 func _on_call_to_arms_tooltip_hovered() -> void:
 	if current_region != null:
 		var context_data = {"current_region": current_region}
-		show_message_tooltip("call_to_arms", context_data)
+		show_resource_tooltip("call_to_arms", context_data)
 
 func _on_raise_army_tooltip_hovered() -> void:
 	if current_region != null:
@@ -511,7 +511,10 @@ func _on_raise_army_tooltip_hovered() -> void:
 func _on_ore_search_tooltip_hovered() -> void:
 	if current_region != null:
 		var context_data = {"current_region": current_region}
-		show_resource_tooltip("ore_search", context_data)
+		if not current_region.get_discovered_ores().is_empty():
+			show_message_tooltip("ore_search", context_data)
+		else:
+			show_resource_tooltip("ore_search", context_data)
 
 func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 	if player_manager == null:

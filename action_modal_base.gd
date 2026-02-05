@@ -3,7 +3,7 @@ class_name ActionModalBase
 
 # Palette / styling - consistent across all action modals
 const FRAME_COLOR      = Color("#b7975e")     # warm brass for borders
-const TEXT_COLOR       = Color(0.996, 0.918, 0.765)
+const TEXT_COLOR       = Color("#b4b4b4")
 const TEXT_COLOR_DISABLED = Color(1, 1, 1, 1.0)  # lighter/faded text for disabled
 const BTN_BG           = Color(0, 0, 0, 0)
 const BTN_BG_HOVER     = Color(0.18, 0.125, 0.047, 0.7)
@@ -99,7 +99,7 @@ func _make_disabled_action_button(text: String, is_first: bool, is_last: bool, f
 	b.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4))  # Dark gray
 	b.add_theme_color_override("font_hover_color", Color(0.4, 0.4, 0.4))
 	b.add_theme_color_override("font_pressed_color", Color(0.4, 0.4, 0.4))
-	b.add_theme_color_override("font_disabled_color", Color(0.4, 0.4, 0.4))
+	b.add_theme_color_override("font_disabled_color", Color.html("#b4b4b4"))
 	if font:
 		b.add_theme_font_override("font", font)
 		b.add_theme_font_size_override("font_size", 20)

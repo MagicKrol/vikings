@@ -1,0 +1,69 @@
+key,explanation or purpose,en,de,pl,br
+demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
+Options,,Options,Optionen,Opcje,Opções
+Exit,,Exit,Ausfrahrt,Wyjdź,Sair
+Population:,Number of people in the region,Population:,Bevölkerung,Ludność,População
+Food:,Resource type,Food:,Nahrung,Żywność,Alimentos
+Wood:,Resource type,Wood:,Holz,Drewno,Madeira
+Stone:,Resource type,Stone:,Stein,Kamień,Pedra
+Iron:,Resource type,Iron:,Eisen,Żelazo,Ferro
+Gold:,Resource type,Gold:,Gold,Złoto,Ouro
+Select Target,Selecting either region or army to perform action,Select Target,Ziel wählen,Wybierz cel,Selecionar alvo
+Growth:,Region's growth in %,Growth:,Wachstum,Rozwój,Crescimento
+Region Level:,Region's upgrade level,Region Level:,Gebietsstufe,Poziom krainy,Nível da região
+Income:,Amount of gold earned per turn,Income:,Einkommen,Dochód,Renda
+Garrison:,"Local soldiers, defenders",Garrison:,Garnison:,Garnizon,Guarnição
+Garrison,"Local soldiers, defenders",Garrison,Garnison,Garnizon,Guarnição
+Defenses:,"Forticiation type, like castle, keep",Defenses:,Befestigungen,Umocnienia,Fortificações
+Defense score:,How strong is defense in %,Defense score:,Abwehrwert,Siła obrony,Força defensiva
+Recruits:,Number of soldiers to hire,Recruits:,Rekruten,Rekruci,Recrutas
+Move Points:,Number of points army can use to move,Move Points:,Bewegungspunkte,Punkty ruchu,Pontos de movimento
+Vigor:,"Represents stamina, will to fight",Vigor:,Kampfmoral,Zapał,Vigor
+Men:,Number of soldiers in total,Men:,Mannstärke,Liczebność,Efetivo
+Peasants:,Unit type,Peasants:,Bauern,Chłopi,Camponeses
+Spearmen:,Unit type,Spearmen:,Speerträger,Włócznicy,Lanceiros
+Archers:,Unit type,Archers:,Bogenschützen,Łucznicy,Arqueiros
+Swordsmen:,Unit type,Swordsmen:,Schwertkämpfer,Miecznicy,Espadachins
+Crossbowmen:,Unit type,Crossbowmen:,Armbrustschützen,Kusznicy,Besteiros
+Horsemen:,Unit type,Horsemen:,Reiter,Jeźdźcy,Cavaleiros
+Knights:,Unit type,Knights:,Ritter,Rycerze,Cavaleiros
+Mounted Knights:,Unit type,Mounted Knights:,Berittene Ritter,Rycerze konni,Cavaleiros a cavalo
+Royal Guard:,Unit type,Royal Guard:,Königsgarde,Gwardia,Guarda Real
+Turn,Game Turn,Turn,Runde,Tura,Turno
+End Turn,Button to end the game turn,End Turn,Zug beenden,Zakończ turę,Encerrar turno
+Player,"Player 1, Player 2 etc.",Player,Spieler,Gracz,Jogador
+Region Actions,"Available actions for the region like promote, build",Region Actions,Gebietsaktionen,Akcje krainy,Ações da região
+Army Actions,"Available actions for the army like recruit, move",Army Actions,Armeeaktionen,Akcje armii,Ações do exército
+Promote Region,"Upgrade, growth region to the next adiministrative level",Promote Region,Gebiet aufwerten,Awansuj krainę,Promover região
+Recruit Soldiers,Button to hire new units,Recruit Soldiers,Soldaten rekrutieren,Zwerbuj żołnierzy,Recrutar soldados
+Build Castle,Button to build castles,Build Castle,Burg errichten,Wznieś zamek,Construir castelo
+Call to Arms,Action to gather units from neighbouring regions,Call to Arms,Aufgebot,Wezwanie do broni,Chamado às armas
+Raise Army,Creating a new Army,Raise Army,Armee aufstellen,Wystaw armię,Erguer exército
+Back,Button to move to the previous menu,Back,Zurück,Wstecz,Voltar
+Make Camp,Action for the army to rest,Make Camp,Lager errichten,Rozbij obóz,Montar acampamento
+Cancel Move,Button to cancel army's move,Cancel Move,Bewegung abbrechen,Anuluj ruch,Cancelar movimento
+Next Army,Button to cycle between armies,Next Army,Nächste Armee,Następna armia,Próximo exército
+(Press Tab),suggestion to press a keyboard Tab,(Press Tab),(Tab drücken),(Naciśnij Tab),(Pressione Tab)
+Move Army,Action to order army to move,Move Army,Armee bewegen,Przemieść armię,Mover exército
+Transfer Soldiers,Action to move units between armies,Transfer Soldiers,Soldaten verlegen,Przenieś żołnierzy,Transferir soldados
+Recruits Available:,How many recruits player can hire,Recruits Available: ,Verfügbare Rekruten:,Dostępni rekruci:,Recrutas disponíveis:
+Region,"Basic name for the piece of territory that can be owned or conquered, managed.",Region,Gebiet,Kraina,Região
+Called,"To represent number of ""called recruits""",Called,Einberufen,Powołani,Convocados
+Call,Label for action buttons to call recruits,Call,Rufen,Powołaj,Convocar
+Available,Label for number of available recruits,Available,Verfügbar,Dostępni,Disponíveis
+Total:,Total number of recruits,Total:,Gesamt:,Razem:,Total:
+Cost,Cost of soldiers to hire,Cost,Kosten,Koszt,Custo
+Outpost,Palisade with a small tower type of structure,Outpost,Außenposten,Posterunek,Posto avançado
+Keep,"A stronger type of defense structure, palisade and stone tower",Keep,Bergfried,Donżon,Torre de menagem
+Castle,Castle as a defense building,Castle,Burg,Zamek,Castelo
+Stronghold,Huge type of castle,Stronghold,Festung,Twierdza,Fortaleza
+Requires Outpost,Palisade with a small tower type of structure,Requires Outpost,Erfordert Außenposten,Wymaga posterunku,Requer posto avançado
+Requires Keep,"A stronger type of defense structure, palisade and stone tower",Requires Keep,Erfordert Bergfried,Wymaga donżonu,Requer torre de menagem
+Requires Castle,Castle as a defense building,Requires Castle,Erfordert Burg,Wymaga zamku,Requer castelo
+Requires Strongold,Huge type of castle,Requires Strongold,Erfordert Festung,Wymaga twierdzy,Requer fortaleza
+Continue,Button to continue action/close window,Continue,Fortfahren,Kontynuuj,Continuar
+Shire,"Lowest level of regions administrative level, very poor region",Shire,Grafschaft,Ziemia,Condado
+County,"Low level of regions administrative level, poor region",County,Grafschaft,Hrabstwo,Condado
+March,"Average level of regions administrative level, medium wealth",March,Mark,Marchia,Marca
+Duchy,"High level of regions administrative level, high wealth",Duchy,Herzogtum,Księstwo,Ducado
+Province,"Very high level of regions administrative level, rich wealth",Province,Provinz,Prowincja,Província

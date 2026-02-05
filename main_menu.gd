@@ -115,6 +115,8 @@ var scenario_difficulty_group: ButtonGroup
 var player_settings: Array = []  # Array of dictionaries with player configuration
 
 func _ready():
+	
+	TranslationServer.set_locale("pl")
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)

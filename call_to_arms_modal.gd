@@ -134,7 +134,7 @@ func _update_display() -> void:
 		return
 
 	# Update title
-	call_to_arms_title_label.text = "Call to Arms"
+	call_to_arms_title_label.text = tr("Call to Arms")
 
 	# Update headers
 	regions_header_label.text = "Region"

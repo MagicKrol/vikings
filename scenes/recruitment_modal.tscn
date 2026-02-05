@@ -114,7 +114,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/Army/AvailableRecruits/HBoxContainer"]
 layout_mode = 2
-text = "Available recruits:"
+text = "Recruits Available:"
 horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/AvailableRecruits/HBoxContainer"]

@@ -1,0 +1,261 @@
+[gd_scene load_steps=58 format=3 uid="uid://bit7xpsk0abvy"]
+
+[ext_resource type="Script" path="res://animation.gd" id="1_0tu5n"]
+[ext_resource type="Texture2D" uid="uid://bta1a6wtiigju" path="res://animation/warrior_1/viking_1_001.png" id="2_srfps"]
+[ext_resource type="Texture2D" uid="uid://icd7omvlly3p" path="res://animation/warrior_1/viking_1_002.png" id="3_1oybk"]
+[ext_resource type="Texture2D" uid="uid://cjxr17npd8ggf" path="res://animation/warrior_1/viking_1_003.png" id="4_rh4ad"]
+[ext_resource type="Texture2D" uid="uid://n3m8mgcw55fy" path="res://animation/warrior_1/viking_1_004.png" id="5_3bi4a"]
+[ext_resource type="Texture2D" uid="uid://cn2in3q7t34l1" path="res://animation/warrior_1/viking_1_005.png" id="6_xqtjj"]
+[ext_resource type="Texture2D" uid="uid://dfn520mneqa1w" path="res://animation/warrior_1/viking_1_006.png" id="7_daktr"]
+[ext_resource type="Texture2D" uid="uid://c85h5urrnjlkb" path="res://animation/warrior_1/viking_1_007.png" id="8_in2r3"]
+[ext_resource type="Texture2D" uid="uid://dt4lkohono3qj" path="res://animation/warrior_1/viking_1_008.png" id="9_uw5ol"]
+[ext_resource type="Texture2D" uid="uid://b82c53kf2jltd" path="res://animation/warrior_1/viking_1_009.png" id="10_7jd0m"]
+[ext_resource type="Texture2D" uid="uid://xx5o0bcldjcc" path="res://animation/warrior_1/viking_1_010.png" id="11_r14p7"]
+[ext_resource type="Texture2D" uid="uid://ltn4i3gfeacd" path="res://animation/warrior_1/viking_1_011.png" id="12_ce61j"]
+[ext_resource type="Texture2D" uid="uid://be8qip680bne7" path="res://animation/warrior_1/viking_1_012.png" id="13_a7qd2"]
+[ext_resource type="Texture2D" uid="uid://dcyakx5srfncd" path="res://animation/warrior_1/viking_1_013.png" id="14_tyj3o"]
+[ext_resource type="Texture2D" uid="uid://c8hyb0005fs2f" path="res://animation/warrior_1/viking_1_014.png" id="15_luibp"]
+[ext_resource type="Texture2D" uid="uid://c8nrofhk1y3p7" path="res://animation/warrior_1/viking_1_015.png" id="16_5xh1g"]
+[ext_resource type="Texture2D" uid="uid://5eataiupohmp" path="res://animation/warrior_1/viking_1_016.png" id="17_4470e"]
+[ext_resource type="Texture2D" uid="uid://d3oqhkivy6ly5" path="res://animation/warrior_1/viking_1_017.png" id="18_i67s2"]
+[ext_resource type="Texture2D" uid="uid://id6tml5ygqvo" path="res://animation/warrior_1/viking_1_018.png" id="19_brrey"]
+[ext_resource type="Texture2D" uid="uid://b0hdvj25rgrgq" path="res://animation/warrior_1/viking_1_019.png" id="20_5rgcl"]
+[ext_resource type="Texture2D" uid="uid://mpgpqdq04ias" path="res://animation/warrior_1/viking_1_020.png" id="21_xx28b"]
+[ext_resource type="Texture2D" uid="uid://bgeb2s0akgrtr" path="res://animation/warrior_1/victory2/viking_001.png" id="22_uhtpc"]
+[ext_resource type="Texture2D" uid="uid://d2pnhx7nsgp4y" path="res://animation/warrior_1/victory2/viking_002.png" id="23_t2sas"]
+[ext_resource type="Texture2D" uid="uid://6s5ora0qai5i" path="res://animation/warrior_1/victory2/viking_003.png" id="24_ljy5k"]
+[ext_resource type="Texture2D" uid="uid://b3x77albcd5ix" path="res://animation/warrior_1/victory2/viking_004.png" id="25_21unp"]
+[ext_resource type="Texture2D" uid="uid://bjm045nt540bf" path="res://animation/warrior_1/victory2/viking_005.png" id="26_805yw"]
+[ext_resource type="Texture2D" uid="uid://dg8qqwh4isaab" path="res://animation/warrior_1/victory2/viking_006.png" id="27_knb07"]
+[ext_resource type="Texture2D" uid="uid://tuexgwr6dr5x" path="res://animation/warrior_1/victory2/viking_007.png" id="28_1xwwv"]
+[ext_resource type="Texture2D" uid="uid://cgv42pveogqhf" path="res://animation/warrior_1/victory2/viking_008.png" id="29_u452u"]
+[ext_resource type="Texture2D" uid="uid://flavcysfr8yq" path="res://animation/warrior_1/victory2/viking_009.png" id="30_wtdvr"]
+[ext_resource type="Texture2D" uid="uid://bkn045x6ahuet" path="res://animation/warrior_1/victory2/viking_010.png" id="31_avs0u"]
+[ext_resource type="Texture2D" uid="uid://bu3v017nnfrgu" path="res://animation/warrior_1/victory2/viking_011.png" id="32_6jjo2"]
+[ext_resource type="Texture2D" uid="uid://cjicjxmmwkec8" path="res://animation/warrior_1/victory2/viking_012.png" id="33_jg5qg"]
+[ext_resource type="Texture2D" uid="uid://c8jkuwwk83pof" path="res://animation/warrior_1/victory2/viking_013.png" id="34_cl1yx"]
+[ext_resource type="Texture2D" uid="uid://buf4yftema743" path="res://animation/warrior_1/victory2/viking_014.png" id="35_t67t1"]
+[ext_resource type="Texture2D" uid="uid://bjy7i3me4q55p" path="res://animation/warrior_1/victory2/viking_015.png" id="36_q15cx"]
+[ext_resource type="Texture2D" uid="uid://cqy31xec38vhl" path="res://animation/warrior_1/victory2/viking_016.png" id="37_i6p6k"]
+[ext_resource type="Texture2D" uid="uid://butfboxc2vbqb" path="res://animation/warrior_1/victory2/viking_017.png" id="38_xwg8b"]
+[ext_resource type="Texture2D" uid="uid://d063oxsk23lc" path="res://animation/warrior_1/victory2/viking_018.png" id="39_j7lnr"]
+[ext_resource type="Texture2D" uid="uid://bewrv0eapux3j" path="res://animation/warrior_1/victory2/viking_019.png" id="40_jdrch"]
+[ext_resource type="Texture2D" uid="uid://chfo7bd3q0rgc" path="res://animation/warrior_1/victory2/viking_020.png" id="41_1fh4l"]
+[ext_resource type="Texture2D" uid="uid://b1is1by5xj314" path="res://animation/warrior_1/walking/viking_1_walking_001.png" id="42_4rb1i"]
+[ext_resource type="Texture2D" uid="uid://btrj3bqeikx76" path="res://animation/warrior_1/walking/viking_1_walking_002.png" id="43_rlx4b"]
+[ext_resource type="Texture2D" uid="uid://cjxf0e7p0tuib" path="res://animation/warrior_1/walking/viking_1_walking_003.png" id="44_4sg18"]
+[ext_resource type="Texture2D" uid="uid://buj6dj8wctd64" path="res://animation/warrior_1/walking/viking_1_walking_004.png" id="45_wrtbt"]
+[ext_resource type="Texture2D" uid="uid://dkqybajy6ay24" path="res://animation/warrior_1/walking/viking_1_walking_005.png" id="46_vays8"]
+[ext_resource type="Texture2D" uid="uid://cteurbvd6ceao" path="res://animation/warrior_1/walking/viking_1_walking_006.png" id="47_r4g2a"]
+[ext_resource type="Texture2D" uid="uid://revvupjyttpx" path="res://animation/warrior_1/walking/viking_1_walking_007.png" id="48_nckmf"]
+[ext_resource type="Texture2D" uid="uid://t666e7lxshn8" path="res://animation/warrior_1/walking/viking_1_walking_008.png" id="49_2fl8r"]
+[ext_resource type="Texture2D" uid="uid://dynxyvatcv1s3" path="res://animation/warrior_1/walking/viking_1_walking_009.png" id="50_jpm2y"]
+[ext_resource type="Texture2D" uid="uid://dmrjw1t6heu5d" path="res://animation/warrior_1/walking/viking_1_walking_010.png" id="51_weu7o"]
+[ext_resource type="Texture2D" uid="uid://bg6bno04f0pir" path="res://animation/warrior_1/walking/viking_1_walking_011.png" id="52_m88mw"]
+[ext_resource type="Texture2D" uid="uid://dcbkuj67hhnx8" path="res://animation/warrior_1/walking/viking_1_walking_012.png" id="53_occgt"]
+[ext_resource type="Texture2D" uid="uid://cqs4daqeidmyg" path="res://animation/warrior_1/walking/viking_1_walking_013.png" id="54_lswji"]
+[ext_resource type="Texture2D" uid="uid://b1k5gtk4aug1w" path="res://animation/warrior_1/walking/viking_1_walking_014.png" id="55_s854i"]
+[ext_resource type="Texture2D" uid="uid://dklekglh4ck85" path="res://animation/warrior_1/walking/viking_1_walking_015.png" id="56_yt81h"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nx4lj"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_srfps")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_1oybk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_rh4ad")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3bi4a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_xqtjj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_daktr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_in2r3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_uw5ol")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_7jd0m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_r14p7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_ce61j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_a7qd2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_tyj3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_luibp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_5xh1g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_4470e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_i67s2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_brrey")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_5rgcl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_xx28b")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_uhtpc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_t2sas")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_ljy5k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_21unp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_805yw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_knb07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_1xwwv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_u452u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_wtdvr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_avs0u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_6jjo2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_jg5qg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_cl1yx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_t67t1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_q15cx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37_i6p6k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_xwg8b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_j7lnr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_jdrch")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_1fh4l")
+}],
+"loop": true,
+"name": &"victory",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("42_4rb1i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("43_rlx4b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("44_4sg18")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_wrtbt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_vays8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_r4g2a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_nckmf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_2fl8r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("50_jpm2y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("51_weu7o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("52_m88mw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_occgt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_lswji")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_s854i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_yt81h")
+}],
+"loop": true,
+"name": &"walking",
+"speed": 5.0
+}]
+
+[node name="Warrior_1" type="Node2D"]
+script = ExtResource("1_0tu5n")
+
+[node name="Animations" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 0.992157, 1, 1)
+scale = Vector2(0.91, 0.91)
+sprite_frames = SubResource("SpriteFrames_nx4lj")
+animation = &"idle"
+
+[node name="Victory" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 0, 1, 0)
+position = Vector2(6, 0)
+sprite_frames = SubResource("SpriteFrames_nx4lj")
+animation = &"victory"

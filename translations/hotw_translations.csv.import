@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cyjhme8q2v7p6"
+
+[deps]
+
+files=["res://translations/hotw_translations.explanation or purpose.translation", "res://translations/hotw_translations.en.translation", "res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.pl.translation", "res://translations/hotw_translations.br.translation"]
+
+source_file="res://translations/hotw_translations.csv"
+dest_files=["res://translations/hotw_translations.explanation or purpose.translation", "res://translations/hotw_translations.en.translation", "res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.pl.translation", "res://translations/hotw_translations.br.translation"]
+
+[params]
+
+compress=true
+delimiter=0

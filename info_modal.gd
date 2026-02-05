@@ -398,10 +398,7 @@ func _update_mine_status() -> void:
 	
 	var discovered_ores = current_region.get_discovered_ores()
 	if not discovered_ores.is_empty():
-		var ore_names: Array[String] = []
-		for ore in discovered_ores:
-			ore_names.append(ResourcesEnum.type_to_string(ore))
-		mine_label.text = ", ".join(ore_names) + " discovered"
+		mine_label.text = ""
 	elif current_region.get_ore_search_attempts_remaining() > 0:
 		mine_label.text = "Ore search potential!"
 	else:

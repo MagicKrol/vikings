@@ -7,6 +7,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 
 ### main_menu.tscn
 - Entry UI. Starts a new game or continues; loads `main.tscn`.
+- Main menu button theme (`themes/main_menu_theme.tres`) uses empty disabled style so Demo buttons don’t show a grey overlay after click.
 - Map preview panel (`MapPreview/InnerPanel/MapScreenshot`) handles campaign/scenario hovers; a separate CustomMap preview lives in `CustomMap/Panel2/TextureRect` and scales previews to a 450x450 frame (keep-aspect-covered, fit width).
 - Custom Map & Scenario submenus share `CustomMap`:
   - Panel (players/difficulty/victory + Select Map) shows for custom maps; Scenario panel shows for scenario list; both Back buttons return to New Game.
@@ -52,8 +53,8 @@ Main (Node2D) [place_armies.gd]
 │	├ ArmySelectModal [scenes/army_select_modal.tscn] [army_select_modal.gd] – same textured layout as region modal; header label with 40px white action buttons (move/camp/transfer/recruit/back); opened from MoveModal's ArmyActions when you cancel a move but still want actions
 │	├ GameMenuModal [scenes/game_menu_modal.tscn] [game_menu_modal.gd] – pause overlay using select-modal styling; 60px tall buttons matching other select modals; Continue resumes, Main Menu loads main_menu.tscn, Exit quits, Options disabled placeholder
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
-│	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers
-│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals; Raise Army also locks when the region already hosts `GameParameters.MAX_ARMIES_PER_REGION` armies and the tooltip surfaces the per-turn lock; castle action button only appears when build/upgrade/repair is possible and under-construction text reflects the active build target (fixes Stronghold crash)
+│	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers; mine status hides the discovered-ore line
+│	├ RegionSelectModal [scenes/region_select_modal.tscn] [region_select_modal.gd] – fixed-size layout; actions may hide this modal to show MessageModal, then restore on Continue; promotion button enforces the `AI_MIN_FOOD_AFTER_UPGRADE` buffer before enabling and both promotion/raise actions disable once used for that region with the castle-style disabled visuals; Raise Army also locks when the region already hosts `GameParameters.MAX_ARMIES_PER_REGION` armies and the tooltip surfaces the per-turn lock; Call To Arms tooltip shows the Outpost requirement; ore search tooltip switches to message-only once ore is discovered; castle action button only appears when build/upgrade/repair is possible and under-construction text reflects the active build target (fixes Stronghold crash)
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
@@ -70,7 +71,7 @@ Main (Node2D) [place_armies.gd]
 │	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer buttons move units between army/garrison while keeping each army at ≥1 soldier; labels use standard modal text theme with white value columns like recruitment
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd]
-│	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip
+│	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip; ore search displays discovered-ore message with mine output when ore exists
 │	├ MessageModal [scenes/intromessage_modal.tscn] [intro_message_modal.gd] – intro/custom-map message overlay; inherits MessageModal behavior (displayMessage/show_tutorial_message, continue_clicked signal)
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd] – shows turn/castle prompt; castle-placement prompt only appears for human players
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes InfoModal when open and is disabled (ignored) when the army has 0 MP; ArmyActions button cancels move and reopens ArmySelectModal for the selected army; NextArmy button and Tab (while MoveModal is visible) cycle to the player's next army, repainting modals and centering the camera

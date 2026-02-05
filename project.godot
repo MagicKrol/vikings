@@ -34,6 +34,10 @@ ui_focus_next={
 "events": []
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.en.translation")
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=2

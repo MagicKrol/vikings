@@ -310,7 +310,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitment,continue",
 		},
 		{
-			"message": "But for now, let's just add some archers to you army.\n\n When done. \nPress Continue button.",
+			"message": "But for now, let's just add some archers to your army.\n\n When done. \nPress Continue button.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -540,13 +540,12 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "",
+			"message": "Select your army and click on the region you'd wish to attack. ",
 			"show_continue": false,
 			"block_input": false,
-			"hide_message": true,
 			"expected_action": "region",
 			"target_region_id": 196,
-			"panel_position": Vector2(0,0),
+			"panel_position": Vector2(500, 300),
 			"block": "trade,endturn",
 			"camera_focus": {"type": "region", "region_id": 228}
 		},
@@ -571,13 +570,12 @@ func _build_default_steps() -> Array:
 		# 	"block": "trade,endturn,armyactions2",
 		# },
 		{
-			"message": "",
+			"message": "When an army is selected, movement is the default action. Simply click a region on the map to move there",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
-			"hide_message": true,
 			"target_region_id": 228,
-			"panel_position": Vector2(500, 200),
+			"panel_position": Vector2(500, 300),
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{

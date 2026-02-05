@@ -34,9 +34,9 @@ const TOOLTIP_TEXTS = {
 	
 	# Region Select Modal tooltips
 	"raise_army": "Create new army in this region.",
-	"recruit_soldiers_garrison": "Recruit soldiers to region's garison.",
+	"recruit_soldiers_garrison": "Recruit soldiers to region's local garrison.",
 	"build_castle": "Construct military outpost to improve local defenses, raise armies and recruit units.",
-	"upgrade_castle": "Upgrade the existing castle to the next level for improved defenses and capabilities.",
+	"upgrade_castle": " defensive structure to the next level for improved defenses and capabilities.",
 	"castle_construction": "Castle construction is in progress. Wait for completion before building or upgrading.",
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
 	"repair_castle": "Repair the damaged walls and gates of your defenses.",
@@ -202,30 +202,33 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 	if tooltip_key == "ore_search" and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null:
-			var search_cost = GameParameters.get_ore_search_cost()
-			var discovery_chance = int(GameParameters.get_ore_discovery_chance() * 100)
-			
-			# Display gold cost using the cost display system
-			var cost_dict = {ResourcesEnum.Type.GOLD: search_cost}
-			_display_cost(cost_dict)
-			
-			tooltip_text += "\nSuccess Chance: " + str(discovery_chance) + "%"
-			
 			# Show search status
 			if GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
 				var attempts_remaining = current_region.get_ore_search_attempts_remaining()
 				var discovered_ores = current_region.get_discovered_ores()
 				# Show discovered ores
 				if not discovered_ores.is_empty():
-					tooltip_text += "\nDiscovered: "
+					var ore_messages: Array[String] = []
 					for ore_type in discovered_ores:
-						tooltip_text += "" + ResourcesEnum.type_to_string(ore_type)
-				elif attempts_remaining > 0:
-					tooltip_text += "\nAttempts Remaining: " + str(attempts_remaining)
-					if current_region.ore_search_used_this_turn:
-						tooltip_text += ""
+						var ore_name = ResourcesEnum.type_to_string(ore_type).capitalize()
+						var ore_amount = current_region.get_resource_amount(ore_type)
+						ore_messages.append(ore_name + " was discovered\nMines extract " + str(ore_amount) + " units per turn")
+					tooltip_text = "\n\n".join(ore_messages)
 				else:
-					tooltip_text += "\nNo search attempts remaining"
+					var search_cost = GameParameters.get_ore_search_cost()
+					var discovery_chance = int(GameParameters.get_ore_discovery_chance() * 100)
+					
+					# Display gold cost using the cost display system
+					var cost_dict = {ResourcesEnum.Type.GOLD: search_cost}
+					_display_cost(cost_dict)
+					
+					tooltip_text += "\nSuccess Chance: " + str(discovery_chance) + "%"
+					if attempts_remaining > 0:
+						tooltip_text += "\nAttempts Remaining: " + str(attempts_remaining)
+						if current_region.ore_search_used_this_turn:
+							tooltip_text += ""
+					else:
+						tooltip_text += "\nNo search attempts remaining"
 			else:
 				tooltip_text += "\n\nThis region type cannot contain ores"
 	
