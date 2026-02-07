@@ -251,6 +251,7 @@ modulate = Color(1, 0.992157, 1, 1)
 scale = Vector2(0.91, 0.91)
 sprite_frames = SubResource("SpriteFrames_nx4lj")
 animation = &"idle"
+frame_progress = 0.829865
 
 [node name="Victory" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0, 1, 0)

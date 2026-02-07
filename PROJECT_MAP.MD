@@ -32,6 +32,7 @@ Start Flow
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
 ├ Map (Node2D) [map_generator.gd]
+│	├ Clouds (Node2D) [clouds.gd] – spawns clouds (cloud1.png..cloud5.png) with matching shadows, random scale/position within map size, moves left-to-right at per-cloud speed, respawns at x=-1000 after crossing x=3050; shadow blur uses `cloud_shadow_blur.gdshader`
 │	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] named `<region_name>#<region_id>` (land polygons tile `background4grass.png` and still rebuild from the stored noisy border points; ocean polygons remain hidden by default)
 │	│	└ Borders: `BorderManager` instantiates named Line2D nodes (`OceanBorder@id`, `OwnershipBorder@id`, `InternalBorder@id`) and only adjusts width/color/offset when ownership changes so counts always match adjacency.
 │	├ Ocean (Node2D) – metadata-only ocean polygons (hidden visuals)

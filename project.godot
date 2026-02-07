@@ -36,7 +36,7 @@ ui_focus_next={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.en.translation")
+locale/translations=PackedStringArray("res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.en.translation", "res://translations/hotw_translations.pl.translation")
 
 [rendering]
 
