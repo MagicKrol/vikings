@@ -1,13 +1,38 @@
-[gd_scene load_steps=12 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=37 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="3_m76og"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard_theme"]
+[ext_resource type="Texture2D" uid="uid://b5axvy02a66qj" path="res://images/modal_item.png" id="4_gp0p2"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header_theme"]
 [ext_resource type="Texture2D" uid="uid://cv3ugnuhtk8bb" path="res://images/icons/move_empty2.png" id="5_move_empty"]
 [ext_resource type="Texture2D" uid="uid://jaqa45qp3x7g" path="res://images/progressbar_empty.png" id="7_4cu83"]
 [ext_resource type="Texture2D" uid="uid://bffane37woyxx" path="res://images/progressbar_green.png" id="8_qmsyv"]
-[ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="9_modalbg"]
+[ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="9_o2cfa"]
+[ext_resource type="Texture2D" uid="uid://c3kjm73refqbr" path="res://images/icons/village2.png" id="9_tnvml"]
+[ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="11_21spt"]
+[ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="12_8s2uy"]
+[ext_resource type="Texture2D" uid="uid://4f1lhlu6nlp2" path="res://images/icons/castle_icon (4).png" id="13_4jjrl"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="14_1btl1"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="14_a8m1b"]
+[ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="14_o0xnj"]
+[ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="14_wyyde"]
+[ext_resource type="Texture2D" uid="uid://66arj6pbfow7" path="res://images/icons/shield3 (1).png" id="17_eegjp"]
+[ext_resource type="Texture2D" uid="uid://bxxrnj3omn2b2" path="res://images/icons/men_icon (1).png" id="19_g5noc"]
+[ext_resource type="Texture2D" uid="uid://culwuaj0kntfv" path="res://images/icons/pickaxe_icon.png" id="20_8hmuk"]
+[ext_resource type="Texture2D" uid="uid://b4erd65xboid4" path="res://images/icons/helmet (2).png" id="21_5b6lf"]
+[ext_resource type="Texture2D" uid="uid://qql18jjjxg5w" path="res://images/icons/peasant_icon (1).png" id="22_6lxaa"]
+[ext_resource type="Texture2D" uid="uid://cf7tkh8nta5lc" path="res://images/icons/new_population.png" id="22_eyxw0"]
+[ext_resource type="Texture2D" uid="uid://tq0lrv702naa" path="res://images/icons/gold.png" id="23_idgpw"]
+[ext_resource type="Texture2D" uid="uid://beovaykfjibgt" path="res://images/icons/spearman_icon.png" id="23_qrm1y"]
+[ext_resource type="Texture2D" uid="uid://dwty4t4p7r2el" path="res://images/icons/archer_icon (1).png" id="24_tn3sh"]
+[ext_resource type="Texture2D" uid="uid://beyb6iehw00hl" path="res://images/icons/swordsmen_icon (1).png" id="25_moxgp"]
+[ext_resource type="Texture2D" uid="uid://hx8sjqxy1pt6" path="res://images/icons/horsemen_icon.png" id="26_k23yq"]
+[ext_resource type="Texture2D" uid="uid://blmyfeyygvolu" path="res://images/icons/crossbowman_icon.png" id="27_enbrw"]
+[ext_resource type="Texture2D" uid="uid://c36hwy1ajmmce" path="res://images/icons/knight_icon.png" id="28_oncdc"]
+[ext_resource type="Texture2D" uid="uid://by03mrow4b6w6" path="res://images/icons/mounted_knight_icon.png" id="29_4psix"]
+
+[sub_resource type="Theme" id="Theme_7jnog"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1v0yp"]
 draw_center = false
@@ -24,6 +49,8 @@ texture = ExtResource("7_4cu83")
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_47uo6"]
 texture = ExtResource("8_qmsyv")
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_l3w7x"]
+
 [node name="InfoModal" type="Control"]
 layout_mode = 3
 anchors_preset = 0
@@ -35,6 +62,7 @@ theme = ExtResource("3_standard_theme")
 script = ExtResource("1_7mumj")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(520, 900)
 layout_mode = 0
 offset_right = 420.0
 offset_bottom = 520.0
@@ -43,14 +71,61 @@ expand_mode = 1
 
 [node name="ArmyTexture" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 15.0
-offset_top = 190.0
-offset_right = 380.0
-offset_bottom = 485.0
-texture = ExtResource("9_modalbg")
+offset_left = 20.0
+offset_top = 120.0
+offset_right = 497.0
+offset_bottom = 205.0
+texture = ExtResource("4_gp0p2")
+expand_mode = 1
+
+[node name="ArmyTexture2" type="TextureRect" parent="."]
+offset_left = 20.0
+offset_top = 210.0
+offset_right = 497.0
+offset_bottom = 295.0
+theme = SubResource("Theme_7jnog")
+texture = ExtResource("4_gp0p2")
+expand_mode = 1
+
+[node name="ArmyTexture3" type="TextureRect" parent="."]
+offset_left = 20.0
+offset_top = 300.0
+offset_right = 497.0
+offset_bottom = 385.0
+theme = SubResource("Theme_7jnog")
+texture = ExtResource("4_gp0p2")
+expand_mode = 1
+
+[node name="ArmyTexture4" type="TextureRect" parent="."]
+offset_left = 20.0
+offset_top = 390.0
+offset_right = 497.0
+offset_bottom = 475.0
+theme = SubResource("Theme_7jnog")
+texture = ExtResource("4_gp0p2")
+expand_mode = 1
+
+[node name="ArmyTexture5" type="TextureRect" parent="."]
+offset_left = 20.0
+offset_top = 480.0
+offset_right = 497.0
+offset_bottom = 565.0
+theme = SubResource("Theme_7jnog")
+texture = ExtResource("4_gp0p2")
+expand_mode = 1
+
+[node name="ArmyTexture6" type="TextureRect" parent="."]
+layout_mode = 2
+offset_left = 25.0
+offset_top = 630.0
+offset_right = 515.0
+offset_bottom = 830.0
+theme = SubResource("Theme_7jnog")
+texture = ExtResource("4_gp0p2")
 expand_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 420.0
 offset_bottom = 520.0
@@ -559,5 +634,1146 @@ text = "0
 "
 
 [node name="Wounded" type="Label" parent="Panel/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="."]
+offset_right = 520.0
+offset_bottom = 900.0
+theme = ExtResource("3_standard_theme")
+theme_override_styles/panel = SubResource("StyleBoxFlat_1v0yp")
+
+[node name="Region" type="VBoxContainer" parent="Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 10.0
+offset_right = -5.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="HeaderSection" type="VBoxContainer" parent="Panel2/Region"]
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="Panel2/Region/HeaderSection"]
+layout_mode = 2
+theme = ExtResource("4_header_theme")
+text = "Shire of Bornholm"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="Panel2/Region"]
+layout_mode = 2
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 22
+text = "Actions"
+horizontal_alignment = 1
+
+[node name="RegionLevel" type="HBoxContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/Region/RegionLevel"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/RegionLevel"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+texture = ExtResource("9_tnvml")
+expand_mode = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/RegionLevel"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel2/Region/RegionLevel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionLevel/VBoxContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Shire"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/Region/RegionLevel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionLevel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionLevel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel2/Region/RegionLevel"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/RegionLevel/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="NormalButton" type="Button" parent="Panel2/Region/RegionLevel/VBoxContainer2"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("9_o2cfa")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "promote"
+
+[node name="Resources" type="HBoxContainer" parent="Panel2/Region/RegionLevel/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Food" type="HBoxContainer" parent="Panel2/Region/RegionLevel/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/RegionLevel/VBoxContainer2/Resources/Food"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("11_21spt")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionLevel/VBoxContainer2/Resources/Food"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="Wood" type="HBoxContainer" parent="Panel2/Region/RegionLevel/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/RegionLevel/VBoxContainer2/Resources/Wood"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("12_8s2uy")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionLevel/VBoxContainer2/Resources/Wood"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="CastleLevel" type="HBoxContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/Region/CastleLevel"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/CastleLevel"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+texture = ExtResource("13_4jjrl")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/CastleLevel"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel2/Region/CastleLevel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer"]
+custom_minimum_size = Vector2(155, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Keep"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/Region/CastleLevel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Defense"
+
+[node name="Value" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "40%"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/CastleLevel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel2/Region/CastleLevel"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/CastleLevel/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="NormalButton" type="Button" parent="Panel2/Region/CastleLevel/VBoxContainer2"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("9_o2cfa")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "Upgrade"
+
+[node name="Resources" type="HBoxContainer" parent="Panel2/Region/CastleLevel/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Food" type="HBoxContainer" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Food"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_wyyde")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Food"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="Wood" type="HBoxContainer" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Wood"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("12_8s2uy")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Wood"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="Stone" type="HBoxContainer" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Stone"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_a8m1b")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Stone"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="Iron" type="HBoxContainer" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Iron"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_o0xnj")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/CastleLevel/VBoxContainer2/Resources/Iron"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="Mine" type="HBoxContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/Region/Mine"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Mine"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+texture = ExtResource("20_8hmuk")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/Mine"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel2/Region/Mine"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/Mine/VBoxContainer"]
+custom_minimum_size = Vector2(155, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Ore "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/Region/Mine/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/Mine/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Not found"
+
+[node name="Value" type="Label" parent="Panel2/Region/Mine/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/Mine/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel2/Region/Mine"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/Mine/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="NormalButton" type="Button" parent="Panel2/Region/Mine/VBoxContainer2"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("9_o2cfa")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "Search Ore"
+
+[node name="Resources" type="HBoxContainer" parent="Panel2/Region/Mine/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Gold" type="HBoxContainer" parent="Panel2/Region/Mine/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Mine/VBoxContainer2/Resources/Gold"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_wyyde")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Mine/VBoxContainer2/Resources/Gold"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="RaiseArmy" type="HBoxContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/Region/RaiseArmy"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/RaiseArmy"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+texture = ExtResource("21_5b6lf")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/RaiseArmy"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel2/Region/RaiseArmy"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RaiseArmy/VBoxContainer"]
+custom_minimum_size = Vector2(155, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "New army"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/Region/RaiseArmy/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RaiseArmy/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Army V"
+
+[node name="Value" type="Label" parent="Panel2/Region/RaiseArmy/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/RaiseArmy/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel2/Region/RaiseArmy"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/RaiseArmy/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="NormalButton" type="Button" parent="Panel2/Region/RaiseArmy/VBoxContainer2"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("9_o2cfa")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "Raise army"
+
+[node name="Resources" type="HBoxContainer" parent="Panel2/Region/RaiseArmy/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Gold" type="HBoxContainer" parent="Panel2/Region/RaiseArmy/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/RaiseArmy/VBoxContainer2/Resources/Gold"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_wyyde")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/RaiseArmy/VBoxContainer2/Resources/Gold"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="Garrison" type="HBoxContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Panel2/Region/Garrison"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+texture = ExtResource("17_eegjp")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(155, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Garrison"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Men"
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="NormalButton" type="Button" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(180, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("14_1btl1")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "Recruit"
+
+[node name="Resources" type="HBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Population" type="HBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2/Resources"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2/Resources/Population"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("19_g5noc")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2/Resources/Population"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="Value3" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2/Resources/Population"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "/"
+horizontal_alignment = 1
+
+[node name="Value2" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer/VBoxContainer2/Resources/Population"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("22_6lxaa")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10+3"
+horizontal_alignment = 1
+
+[node name="HBoxContainer5" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("23_qrm1y")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="HBoxContainer4" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("24_tn3sh")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="HBoxContainer3" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("25_moxgp")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="HBoxContainer6" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer6"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("26_k23yq")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer6"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="HBoxContainer7" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer7"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("27_enbrw")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer7"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="HBoxContainer8" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer8"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("28_oncdc")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer8"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="HBoxContainer9" type="VBoxContainer" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer9"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("29_4psix")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/Region/Garrison/VBoxContainer3/HBoxContainer2/HBoxContainer9"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="RegionResources" type="VBoxContainer" parent="Panel2/Region"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="Panel2/Region/RegionResources"]
+layout_mode = 2
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 22
+text = "Resources"
+horizontal_alignment = 1
+
+[node name="Population" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Population"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("22_eyxw0")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Population"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Population "
+
+[node name="Label2" type="Label" parent="Panel2/Region/RegionResources/Population"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "342 "
+
+[node name="Label3" type="Label" parent="Panel2/Region/RegionResources/Population"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "(+3%)"
+
+[node name="Food2" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Food2"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_wyyde")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Food2"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Income"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionResources/Food2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="Food" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Food"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("11_21spt")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Food"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Food"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionResources/Food"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="Wood" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Wood"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("12_8s2uy")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Wood"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Wood"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionResources/Wood"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="Stone" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Stone"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_a8m1b")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Stone"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Stone"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionResources/Stone"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="Iron" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+visible = false
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Iron"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_o0xnj")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Iron"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Iron"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionResources/Iron"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="Gold" type="HBoxContainer" parent="Panel2/Region/RegionResources"]
+visible = false
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/Region/RegionResources/Gold"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("23_idgpw")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Region/RegionResources/Gold"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Gold"
+
+[node name="Value" type="Label" parent="Panel2/Region/RegionResources/Gold"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "5"
+
+[node name="Army" type="VBoxContainer" parent="Panel2"]
+visible = false
+layout_mode = 2
+offset_left = 25.0
+offset_top = 10.0
+offset_right = 375.0
+offset_bottom = 494.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="HeaderSection" type="VBoxContainer" parent="Panel2/Army"]
+layout_mode = 2
+
+[node name="ArmyName" type="Label" parent="Panel2/Army/HeaderSection"]
+layout_mode = 2
+theme = ExtResource("4_header_theme")
+text = "Army III"
+horizontal_alignment = 1
+
+[node name="PopulationSection" type="VBoxContainer" parent="Panel2/Army"]
+layout_mode = 2
+
+[node name="MP" type="HBoxContainer" parent="Panel2/Army/PopulationSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/PopulationSection/MP"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+text = "Move Points:"
+
+[node name="MoveContainer" type="HBoxContainer" parent="Panel2/Army/PopulationSection/MP"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Move1" type="TextureRect" parent="Panel2/Army/PopulationSection/MP/MoveContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_move_empty")
+stretch_mode = 2
+
+[node name="Move2" type="TextureRect" parent="Panel2/Army/PopulationSection/MP/MoveContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_move_empty")
+stretch_mode = 2
+
+[node name="Move3" type="TextureRect" parent="Panel2/Army/PopulationSection/MP/MoveContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_move_empty")
+stretch_mode = 2
+
+[node name="Move4" type="TextureRect" parent="Panel2/Army/PopulationSection/MP/MoveContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_move_empty")
+stretch_mode = 2
+
+[node name="Move5" type="TextureRect" parent="Panel2/Army/PopulationSection/MP/MoveContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("5_move_empty")
+stretch_mode = 2
+
+[node name="Vigor" type="HBoxContainer" parent="Panel2/Army/PopulationSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/PopulationSection/Vigor"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Vigor:"
+
+[node name="Value" type="Label" parent="Panel2/Army/PopulationSection/Vigor"]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "90%"
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel2/Army/PopulationSection"]
+custom_minimum_size = Vector2(350, 15)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxTexture_ubvxf")
+theme_override_styles/fill = SubResource("StyleBoxTexture_47uo6")
+show_percentage = false
+
+[node name="Control" type="Control" parent="Panel2/Army/PopulationSection"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Men" type="HBoxContainer" parent="Panel2/Army/PopulationSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/PopulationSection/Men"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Men:"
+
+[node name="Value" type="Label" parent="Panel2/Army/PopulationSection/Men"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "83
+"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/PopulationSection/Men"]
+visible = false
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Injured"
+
+[node name="UnitsSection" type="VBoxContainer" parent="Panel2/Army"]
+layout_mode = 2
+
+[node name="Peasants" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Peasants:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4533"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Peasants"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Spearmen" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Spearmen:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "15"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Spearmen"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Archers" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Archers:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "13"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Archers"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Swordmen" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Swordsmen:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Swordmen"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Crossbowmen" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Crossbowmen:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0
+"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Crossbowmen"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Horsemen" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Horsemen:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0
+"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Horsemen"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Knights" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Knights:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2
+"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Knights"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Mounted Knights" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Mounted Knights:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Mounted Knights"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Royal Guard" type="HBoxContainer" parent="Panel2/Army/UnitsSection"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Royal Guard:"
+
+[node name="Value" type="Label" parent="Panel2/Army/UnitsSection/Royal Guard"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0
+"
+
+[node name="Wounded" type="Label" parent="Panel2/Army/UnitsSection/Royal Guard"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2

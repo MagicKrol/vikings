@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://player_status_modal2.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_t5oev"]
 [ext_resource type="Texture2D" uid="uid://bxemb3ssjri2x" path="res://images/topnav_background.png" id="3_uew83"]
-[ext_resource type="Texture2D" uid="uid://c30y8te4yqwy0" path="res://images/icons/population.png" id="4_4a7io"]
-[ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/food.png" id="5_g7hs2"]
-[ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/wood.png" id="6_5qdc5"]
+[ext_resource type="Texture2D" uid="uid://cf7tkh8nta5lc" path="res://images/icons/new_population.png" id="4_bb53o"]
+[ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="5_mewgd"]
+[ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="6_qvey3"]
 [ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="7_kkqkh"]
-[ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/iron.png" id="8_qx3i3"]
-[ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/coin.png" id="9_d0ljr"]
+[ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="8_om14m"]
+[ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="9_pkmu7"]
 
 [sub_resource type="Theme" id="Theme_fcepg"]
 default_font = ExtResource("1_t5oev")
@@ -170,7 +170,7 @@ layout_mode = 0
 offset_left = 10.0
 offset_right = 45.0
 offset_bottom = 35.0
-texture = ExtResource("4_4a7io")
+texture = ExtResource("4_bb53o")
 expand_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="Panel/Control"]
@@ -179,7 +179,7 @@ layout_mode = 0
 offset_left = 400.0
 offset_right = 435.0
 offset_bottom = 35.0
-texture = ExtResource("5_g7hs2")
+texture = ExtResource("5_mewgd")
 expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="Panel/Control"]
@@ -188,7 +188,7 @@ layout_mode = 0
 offset_left = 705.0
 offset_right = 740.0
 offset_bottom = 35.0
-texture = ExtResource("6_5qdc5")
+texture = ExtResource("6_qvey3")
 expand_mode = 2
 
 [node name="TextureRect3" type="TextureRect" parent="Panel/Control"]
@@ -206,7 +206,7 @@ layout_mode = 0
 offset_left = 1315.0
 offset_right = 1350.0
 offset_bottom = 35.0
-texture = ExtResource("8_qx3i3")
+texture = ExtResource("8_om14m")
 expand_mode = 2
 
 [node name="TextureRect5" type="TextureRect" parent="Panel/Control"]
@@ -215,5 +215,5 @@ layout_mode = 0
 offset_left = 1620.0
 offset_right = 1655.0
 offset_bottom = 35.0
-texture = ExtResource("9_d0ljr")
+texture = ExtResource("9_pkmu7")
 expand_mode = 2

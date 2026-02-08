@@ -1,15 +1,14 @@
-[gd_resource type="Theme" load_steps=8 format=3 uid="uid://opp2bi6sjwb5"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://opp2bi6sjwb5"]
 
-[ext_resource type="Texture2D" uid="uid://c1h5jli3mig24" path="res://images/buttonempty2.png" id="1_h6dbo"]
-[ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="1_tex"]
-[ext_resource type="Texture2D" uid="uid://cn4ea8nddyn0v" path="res://images/buttonemptylight.png" id="2_jup1s"]
+[ext_resource type="Texture2D" uid="uid://yjear8aac1su" path="res://images/brown_button_light (1).png" id="1_cuy38"]
+[ext_resource type="Texture2D" uid="uid://b4pnx85g035fu" path="res://images/brown_button (1).png" id="2_vmv4k"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_normal"]
 content_margin_left = 10.0
 content_margin_top = 3.0
 content_margin_right = 10.0
 content_margin_bottom = 3.0
-texture = ExtResource("1_h6dbo")
+texture = ExtResource("1_cuy38")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ur0t3"]
 
@@ -18,14 +17,14 @@ content_margin_left = 10.0
 content_margin_top = 3.0
 content_margin_right = 10.0
 content_margin_bottom = 3.0
-texture = ExtResource("1_tex")
+texture = ExtResource("2_vmv4k")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_pressed"]
 content_margin_left = 10.0
 content_margin_top = 3.0
 content_margin_right = 10.0
 content_margin_bottom = 3.0
-texture = ExtResource("2_jup1s")
+texture = ExtResource("2_vmv4k")
 
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
