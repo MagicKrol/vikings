@@ -30,6 +30,10 @@ class_name ClickManager
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		DebugLogger.log("click", "ClickManager: left click at " + str(event.position))
+		if _is_ui_click(event.position, event.global_position):
+			DebugLogger.log("click", "ClickManager: UI click detected, ignoring map click")
+			return
 		_on_left_click(event.global_position)
 	elif event is InputEventMouseMotion:
 		_handle_mouse_motion()
@@ -51,6 +55,8 @@ func _unhandled_input(event: InputEvent) -> void:
 # Core system references
 @onready var _map_script: MapGenerator = get_node("../Map") as MapGenerator
 @onready var _ui_manager: UIManager = get_node("../UI/UIManager") as UIManager
+@onready var _info_modal: InfoModal = get_node("../UI/InfoModal") as InfoModal
+@onready var _move_modal: MoveModal = get_node("../UI/MoveModal") as MoveModal
 @onready var _game_manager: GameManager = get_node("../GameManager") as GameManager
 
 # Legacy manager references for backward compatibility during transition
@@ -87,6 +93,9 @@ func get_army_manager() -> ArmyManager:
 
 
 func _on_left_click(screen_pos: Vector2) -> void:
+	if _is_ui_click(screen_pos, screen_pos):
+		DebugLogger.log("click", "ClickManager: UI click detected in _on_left_click")
+		return
 	# Check if any modal is active and close them first, but allow move flow to proceed
 	if _ui_manager and _ui_manager.is_modal_active:
 		if _ui_manager.has_blocking_modal():
@@ -94,19 +103,21 @@ func _on_left_click(screen_pos: Vector2) -> void:
 		var move_flow_active := _is_move_flow_active()
 		if not move_flow_active:
 			if _ui_manager.is_any_modal_visible():
-				if _tutorial_manager != null and _tutorial_manager.is_ui_step_active():
-					return
-				if not (_tutorial_manager != null and _tutorial_manager.is_waiting_for_region()):
-					DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
-					# Don't close modals if BattleModal is in battle mode (battle_in_progress)
-					var battle_modal = get_node("../UI/BattleModal") as BattleModal
-					if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
-						# Battle is active - don't allow closing the modal
-						DebugLogger.log("InputSystem", "Battle is active, not closing modal")
+				if not _ui_manager.is_only_info_modal_visible():
+					if _tutorial_manager != null and _tutorial_manager.is_ui_step_active():
 						return
-					_ui_manager.close_all_active_modals()
-					DebugLogger.log("InputSystem", "Closed all active modals, returning")
-					return
+					if not (_tutorial_manager != null and _tutorial_manager.is_waiting_for_region()):
+						DebugLogger.log("InputSystem", "Modal is active, attempting to close modals")
+						DebugLogger.log("click", "ClickManager: closing modals due to active modal and non-move flow")
+						# Don't close modals if BattleModal is in battle mode (battle_in_progress)
+						var battle_modal = get_node("../UI/BattleModal") as BattleModal
+						if battle_modal and battle_modal.visible and battle_modal.battle_in_progress:
+							# Battle is active - don't allow closing the modal
+							DebugLogger.log("InputSystem", "Battle is active, not closing modal")
+							return
+						_ui_manager.close_all_active_modals()
+						DebugLogger.log("InputSystem", "Closed all active modals, returning")
+						return
 			else:
 				_ui_manager.set_modal_active(false)
 		else:
@@ -166,6 +177,34 @@ func _point_in_polygon(p: Vector2, polygon: Polygon2D) -> bool:
 	var local := polygon.to_local(p)
 	return Geometry2D.is_point_in_polygon(local, polygon.polygon)
 
+func _is_ui_click(screen_pos: Vector2, global_pos: Vector2) -> bool:
+	var hovered_control = get_viewport().gui_get_hovered_control()
+	if hovered_control != null:
+		DebugLogger.log("click", "ClickManager: hovered_control=" + str(hovered_control.get_path()))
+		if hovered_control == _info_modal or _info_modal.is_ancestor_of(hovered_control):
+			DebugLogger.log("click", "ClickManager: hovered control inside InfoModal")
+			return true
+		if hovered_control == _move_modal or _move_modal.is_ancestor_of(hovered_control):
+			DebugLogger.log("click", "ClickManager: hovered control inside MoveModal")
+			return true
+	if _info_modal and _info_modal.visible:
+		if _is_point_in_control(_info_modal, screen_pos) or _is_point_in_control(_info_modal, global_pos):
+			DebugLogger.log("click", "ClickManager: point inside InfoModal via transform")
+			return true
+		if hovered_control == null:
+			DebugLogger.log("click", "ClickManager: no hovered control, screen_pos=" + str(screen_pos) + " global_pos=" + str(global_pos) + " info_rect=" + str(_info_modal.get_global_rect()))
+	if _move_modal and _move_modal.visible:
+		if _is_point_in_control(_move_modal, screen_pos) or _is_point_in_control(_move_modal, global_pos):
+			DebugLogger.log("click", "ClickManager: point inside MoveModal via transform")
+			return true
+	return false
+
+func _is_point_in_control(control: Control, screen_pos: Vector2) -> bool:
+	var xform := control.get_global_transform_with_canvas()
+	var local_pos := xform.affine_inverse() * screen_pos
+	var rect := Rect2(Vector2.ZERO, control.size)
+	return rect.has_point(local_pos)
+
 func _handle_region_click(region_container: Node) -> void:
 	# Optional guard: check if in map editor mode and handle differently
 	if _game_manager and _game_manager.enable_map_editor:
@@ -178,7 +217,14 @@ func _handle_region_click(region_container: Node) -> void:
 			var allowed_ids = visual_manager.get_move_region_highlight_ids()
 			var region = region_container as Region
 			if region and not allowed_ids.has(region.get_region_id()):
-				return
+				var current_player_id = _game_manager.get_current_player_id()
+				var region_owner = _region_manager.get_region_owner(region.get_region_id())
+				if region_owner == current_player_id:
+					_army_manager.deselect_army()
+					_info_modal.show_region_info(region)
+					return
+				else:
+					return
 
 	# Get region script to check if it's a mountain
 	var region = region_container as Region
@@ -223,7 +269,7 @@ func _handle_mouse_motion() -> void:
 		if _is_move_flow_active():
 			_ui_manager.set_modal_active(false)
 			_ui_manager.set_overlay_suppressed(true)
-		else:
+		elif not _ui_manager.is_only_info_modal_visible():
 			var vm_modal := _game_manager.get_visual_manager()
 			if vm_modal:
 				vm_modal.clear_interaction_highlights()
@@ -329,15 +375,22 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
 		var movement_points = _army_manager.selected_army.get_movement_points()
 		DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
-		if movement_points > 0:
-			var target_region = region_container as Region
-			var target_region_id = target_region.get_region_id()
+		var target_region = region_container as Region
+		var target_region_id = target_region.get_region_id()
+		var current_player_id = _game_manager.get_current_player_id()
+		var region_owner = _region_manager.get_region_owner(target_region_id)
+		var is_owned_region = region_owner == current_player_id
+		if movement_points > 0 and _army_manager.can_army_move_to_region(_army_manager.selected_army, region_container):
 			var result = await _game_manager.perform_region_entry(_army_manager.selected_army, target_region_id, "human")
 			if result == "blocked":
 				_army_manager.deselect_army()
 			return
-		# If no movement points, stay in move flow and ignore region management modals
-		return
+		if is_owned_region:
+			_army_manager.deselect_army()
+			_info_modal.show_region_info(target_region)
+			return
+		else:
+			return
 
 	# Get all armies in this region
 	var armies_in_region: Array[Army] = []
@@ -358,39 +411,17 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			_game_manager.show_prebattle_modal(player_army_in_region, region)
 			return
 
-		# If the region has current player's armies, allow choosing one (no selected army case)
-		var current_player_armies: Array[Army] = []
-		for army in armies_in_region:
-			if army.get_player_id() == current_player_id:
-				current_player_armies.append(army)
-		if not current_player_armies.is_empty():
-			var select_modal = get_node("../UI/GeneralSelectModal") as GeneralSelectModal
-			select_modal.show_selection(region, current_player_armies)
-			return
-	
-	# If no armies in region and no selected army, show region info
+	# Show region info for owned regions, otherwise hide the modal
 	var region = region_container as Region
 	if region != null:
 		var region_id = region.get_region_id()
 		var region_owner = _region_manager.get_region_owner(region_id)
-		var current_player_id = _game_manager.get_current_player_id() if _game_manager else 1
-		
-		# If region is owned by current player, open RegionSelectModal
+		var current_player_id = _game_manager.get_current_player_id()
 		if region_owner == current_player_id:
-			# If just conquered (ownership counter 0) and no armies present, block management this turn
-			if region.get_ownership_turns() == 0:
-				var message_modal = get_node("../UI/MessageModal") as MessageModal
-				var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
-				var continue_callable := Callable(region_select_modal, "_on_message_modal_continue")
-				if message_modal.continue_clicked.is_connected(continue_callable):
-					message_modal.continue_clicked.disconnect(continue_callable)
-				message_modal.displayMessage("Conquered region cannot be managed the same turn.")
-				return
-			else:
-				var region_select_modal = get_node("../UI/RegionSelectModal") as RegionSelectModal
-				region_select_modal.show_region_actions(region)
-		# Otherwise, just log for unowned/enemy regions (no modal)
+			_info_modal.show_region_info(region)
 		else:
+			if _info_modal.visible:
+				_info_modal.hide_modal()
 			DebugLogger.log("InputSystem", "Clicked on region: " + region.get_region_name() + " (Owner: " + str(region_owner) + ")")
 
 # Legacy functions kept for compatibility - these now delegate to appropriate managers

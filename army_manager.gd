@@ -333,10 +333,6 @@ func deselect_army() -> void:
 	if ui_manager:
 		ui_manager.suppress_turn_modal_for_movement(false)
 		ui_manager.set_move_selection_active(false)
-
-	# Hide army modal
-	if army_modal != null:
-		army_modal.hide_modal()
 	
 	# Hide move modal
 	if move_modal != null:
@@ -883,6 +879,9 @@ func _get_next_army_roman_numeral(player_id: int) -> String:
 	
 	# Convert to Roman numeral (next number)
 	return _int_to_roman(army_count + 1)
+
+func get_next_army_roman_numeral_for_player(player_id: int) -> String:
+	return _get_next_army_roman_numeral(player_id)
 
 func _int_to_roman(num: int) -> String:
 	"""Convert integer to Roman numeral"""

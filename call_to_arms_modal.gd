@@ -256,8 +256,6 @@ func _on_continue_pressed() -> void:
 	
 	# Hide modal
 	hide_modal()
-	if ui_manager:
-		ui_manager.restore_select_context()
 	_request_player_status_refresh()
 
 func _apply_call_to_arms() -> void:

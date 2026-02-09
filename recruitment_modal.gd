@@ -526,7 +526,6 @@ func _on_continue_pressed() -> void:
 	# Set modal mode inactive
 	if ui_manager:
 		ui_manager.set_modal_active(false)
-		ui_manager.restore_select_context()
 
 func _apply_recruitment() -> void:
 	"""Apply the recruitment to the army/garrison and region"""

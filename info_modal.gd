@@ -22,11 +22,38 @@ const MOVE_ICON_EMPTY: Texture2D = preload("res://images/icons/move_empty2.png")
 const PROGRESS_TEX_GREEN: Texture2D = preload("res://images/progressbar_green.png")
 const PROGRESS_TEX_YELLOW: Texture2D = preload("res://images/progressbar_yellow.png")
 const PROGRESS_TEX_RED: Texture2D = preload("res://images/progressbar_red.png")
+const BUTTON_GREEN_THEME: Theme = preload("res://themes/button_green_styles.tres")
+const BUTTON_DEFAULT_THEME: Theme = preload("res://themes/button_styles.tres")
+const ARMY_CARD_TEX_DEFAULT: Texture2D = preload("res://images/army_item3.png")
+const ARMY_CARD_TEX_HOVER: Texture2D = preload("res://images/army_item_selected2.png")
 
 var _progress_style_green: StyleBoxTexture
 var _progress_style_yellow: StyleBoxTexture
 var _progress_style_red: StyleBoxTexture
-@onready var army_texture: TextureRect = $ArmyTexture
+var _army_card_style_default: StyleBoxTexture
+var _army_card_style_hover: StyleBoxTexture
+var _army_card_armies: Array[Army] = []
+var _army_card_labels: Array[Label] = []
+var _army_card_label_colors: Array[Color] = []
+
+enum TabType { REGION, ARMIES }
+var _active_tab: TabType = TabType.REGION
+var _inactive_tab_color: Color = Color(0.595154, 0.595154, 0.595154, 1)
+
+@onready var _region_tab_label: Label = get_node("RegionPanel/Header/TabsSections/Container/RegionTab")
+@onready var _armies_tab_label: Label = get_node("RegionPanel/Header/TabsSections/Container/ArmiesTab")
+@onready var _region_panel_root: Panel = get_node("RegionPanel") as Panel
+@onready var _region_panel: Control = get_node("RegionPanel/Body/Region")
+@onready var _army_panel: Control = get_node("RegionPanel/Body/Army")
+@onready var _region_textures: Control = get_node("RegionTextures")
+@onready var _army_textures: Control = get_node("ArmyTextures")
+@onready var _army_cards: Array[Panel] = [
+	get_node("RegionPanel/Body/Army/Army1") as Panel,
+	get_node("RegionPanel/Body/Army/Army2") as Panel,
+	get_node("RegionPanel/Body/Army/Army3") as Panel,
+	get_node("RegionPanel/Body/Army/Army4") as Panel,
+	get_node("RegionPanel/Body/Army/Army5") as Panel
+]
 
 func _ready():
 	# Get references
@@ -34,9 +61,52 @@ func _ready():
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	game_manager = get_node("../../GameManager") as GameManager
 	_initialize_progress_bar_styles()
+	_initialize_tabs()
+	_initialize_army_cards()
+	_region_panel_root.mouse_entered.connect(_on_region_panel_mouse_entered)
 	
 	# Initially hidden
 	visible = false
+
+func _initialize_tabs() -> void:
+	if _armies_tab_label:
+		_inactive_tab_color = _armies_tab_label.get_theme_color("font_color")
+	_region_tab_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_armies_tab_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_region_tab_label.mouse_entered.connect(_on_region_tab_mouse_entered)
+	_region_tab_label.mouse_exited.connect(_on_region_tab_mouse_exited)
+	_region_tab_label.gui_input.connect(_on_region_tab_gui_input)
+	_armies_tab_label.mouse_entered.connect(_on_armies_tab_mouse_entered)
+	_armies_tab_label.mouse_exited.connect(_on_armies_tab_mouse_exited)
+	_armies_tab_label.gui_input.connect(_on_armies_tab_gui_input)
+	_set_active_tab(TabType.REGION)
+
+func _initialize_army_cards() -> void:
+	_army_card_style_default = StyleBoxTexture.new()
+	_army_card_style_default.texture = ARMY_CARD_TEX_DEFAULT
+	_army_card_style_hover = StyleBoxTexture.new()
+	_army_card_style_hover.texture = ARMY_CARD_TEX_HOVER
+	_army_card_labels.clear()
+	_army_card_label_colors.clear()
+	_army_card_armies.resize(_army_cards.size())
+	for i in range(_army_cards.size()):
+		var card = _army_cards[i]
+		card.add_theme_stylebox_override("panel", _army_card_style_default)
+		_set_cursor_shape_recursive(card, Control.CURSOR_POINTING_HAND)
+		card.mouse_entered.connect(Callable(self, "_on_army_card_mouse_entered").bind(i))
+		card.mouse_exited.connect(Callable(self, "_on_army_card_mouse_exited").bind(i))
+		card.gui_input.connect(Callable(self, "_on_army_card_gui_input").bind(i))
+		var label_path = NodePath(str(card.name) + "/HBoxContainer/ArmyName")
+		var label = card.get_node(label_path) as Label
+		_army_card_labels.append(label)
+		_army_card_label_colors.append(label.get_theme_color("font_color"))
+
+func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
+	if node is Control:
+		var control_node := node as Control
+		control_node.mouse_default_cursor_shape = shape
+	for child in node.get_children():
+		_set_cursor_shape_recursive(child, shape)
 
 func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 	"""Show the modal with army information"""
@@ -48,9 +118,12 @@ func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 		return
 	
 	current_army = army
-	current_region = null
+	current_region = army.get_parent() as Region
 	current_mode = DisplayMode.ARMY
-	_update_army_display()
+	if _active_tab == TabType.ARMIES:
+		_update_army_display()
+	else:
+		_update_region_display()
 	visible = true
 	
 	# Set modal mode active only if requested
@@ -68,8 +141,14 @@ func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	
 	current_region = region
 	current_army = null
+	if current_region != null:
+		var armies_in_region := _get_armies_in_region(current_region)
+		current_army = _find_army_with_most_movement_points(armies_in_region)
 	current_mode = DisplayMode.REGION
-	_update_region_display()
+	if _active_tab == TabType.ARMIES:
+		_update_army_display()
+	else:
+		_update_region_display()
 	visible = true
 	
 	# Set modal mode active only if requested
@@ -82,6 +161,7 @@ func _is_human_turn() -> bool:
 
 func hide_modal(manage_modal_mode: bool = true) -> void:
 	"""Hide the modal but keep content intact"""
+	DebugLogger.log("click", "InfoModal: hide_modal manage=" + str(manage_modal_mode))
 	visible = false
 	
 	# Set modal mode inactive only if requested
@@ -90,6 +170,7 @@ func hide_modal(manage_modal_mode: bool = true) -> void:
 
 func close_modal() -> void:
 	"""Close the modal and clear all content"""
+	DebugLogger.log("click", "InfoModal: close_modal")
 	current_army = null
 	current_region = null
 	current_mode = DisplayMode.NONE
@@ -101,48 +182,90 @@ func close_modal() -> void:
 
 func _update_army_display() -> void:
 	"""Update the display with current army information"""
-	if current_army == null:
-		hide_modal()
+	if current_region == null and current_army != null:
+		var parent_region: Region = current_army.get_parent() as Region
+		if parent_region != null:
+			current_region = parent_region
+	if current_region == null:
+		for card in _army_cards:
+			card.visible = false
 		return
 	
-	# Show Army node, hide Region node
-	var army_node = get_node("Panel/Army")
-	var region_node = get_node("Panel/Region")
-	army_node.visible = true
-	region_node.visible = false
-	army_texture.visible = true
-	
-	# Update army header
-	var army_name_label = get_node("Panel/Army/HeaderSection/ArmyName")
-	army_name_label.text = "Army " + str(current_army.number)
-	
-	# Update movement points icons
-	_update_move_points_icons(current_army.get_movement_points())
-	
-	# Update vigor
-	var vigor_value = get_node("Panel/Army/PopulationSection/Vigor/Value")
-	var vigor_percent = int(round(current_army.get_efficiency()))
-	vigor_value.text = str(vigor_percent) + "%"
-	_update_vigor_bar(vigor_percent)
-	
-	# Update total men count
-	var men_value = get_node("Panel/Army/PopulationSection/Men/Value")
-	men_value.text = str(current_army.get_total_soldiers())
+	_update_region_header()
 
-	# Update Wounded label for total men
-	var wounded_label_node = get_node("Panel/Army/PopulationSection/Men/Wounded") as Label
-	var wounded_total_soldiers = current_army.get_wounded_composition().get_total_soldiers()
-	if wounded_total_soldiers > 0:
-		wounded_label_node.visible = true
-		wounded_label_node.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
+	var armies: Array[Army] = _get_armies_in_region(current_region)
+
+	if current_army == null or not armies.has(current_army):
+		current_army = _find_army_with_most_movement_points(armies)
+	if current_army != null:
+		_select_army_for_move(current_army)
+
+	for i in range(_army_cards.size()):
+		var card = _army_cards[i]
+		if i < armies.size():
+			_update_army_card(card, armies[i])
+			_army_card_armies[i] = armies[i]
+		else:
+			card.visible = false
+			_army_card_armies[i] = null
+
+func _update_army_card(card: Panel, army: Army) -> void:
+	card.visible = true
+	var selection_button = card.get_node("SelectionStatus") as Button
+	if army == current_army:
+		selection_button.theme = BUTTON_GREEN_THEME
+		selection_button.text = "Selected"
+		card.add_theme_stylebox_override("panel", _army_card_style_hover)
 	else:
-		wounded_label_node.visible = false
-	
-	# Update unit composition
-	_update_army_unit_values()
+		selection_button.theme = BUTTON_DEFAULT_THEME
+		selection_button.text = "Select"
+		card.add_theme_stylebox_override("panel", _army_card_style_default)
 
-func _update_move_points_icons(move_points: int) -> void:
-	var move_container = get_node("Panel/Army/PopulationSection/MP/MoveContainer")
+	var content = card.get_node(NodePath(str(card.name))) as VBoxContainer
+	var army_name_label = content.get_node("HBoxContainer/ArmyName") as Label
+	army_name_label.text = "Army " + str(army.number)
+
+	var move_container = content.get_node("MP/MoveContainer") as HBoxContainer
+	_update_move_points_icons(move_container, army.get_movement_points())
+
+	var progress_bar = content.get_node("Vigor/ProgressBar") as ProgressBar
+	var vigor_percent = int(round(army.get_efficiency()))
+	_update_vigor_bar(progress_bar, vigor_percent)
+	var vigor_value = content.get_node("Vigor/ProgressBar/Value") as Label
+	vigor_value.text = str(vigor_percent) + "%"
+
+	var composition = army.get_composition()
+	var info_root = content.get_node("GarrisonInfo")
+	_update_army_unit_values(composition, info_root)
+
+func _find_army_with_most_movement_points(armies: Array[Army]) -> Army:
+	var best_army: Army = null
+	var best_points: int = -1
+	for army in armies:
+		var points: int = army.get_movement_points()
+		if points > best_points:
+			best_points = points
+			best_army = army
+	return best_army
+
+func _get_armies_in_region(region: Region) -> Array[Army]:
+	var armies: Array[Army] = []
+	if region == null:
+		return armies
+	for child in region.get_children():
+		if child is Army:
+			armies.append(child as Army)
+	return armies
+
+func _select_army_for_move(army: Army) -> void:
+	var army_manager = game_manager.get_army_manager()
+	if army_manager.selected_army == army:
+		return
+	var region_container: Region = army.get_parent() as Region
+	var player_id: int = game_manager.get_current_player_id()
+	army_manager.select_army(army, region_container, player_id)
+
+func _update_move_points_icons(move_container: HBoxContainer, move_points: int) -> void:
 	if move_container == null:
 		return
 	var points = int(move_points)
@@ -173,17 +296,16 @@ func _initialize_progress_bar_styles() -> void:
 	_progress_style_yellow.texture = PROGRESS_TEX_YELLOW
 	_progress_style_red = StyleBoxTexture.new()
 	_progress_style_red.texture = PROGRESS_TEX_RED
-	var progress_bar = get_node("Panel/Army/PopulationSection/ProgressBar") as ProgressBar
+	var progress_bar = get_node("RegionPanel/Body/Army/PopulationSection/ProgressBar") as ProgressBar
 	if progress_bar != null:
 		progress_bar.min_value = 0
 		progress_bar.max_value = 100
 		progress_bar.value = 0
 		progress_bar.add_theme_stylebox_override("fill", _progress_style_red)
 
-func _update_vigor_bar(vigor: int) -> void:
+func _update_vigor_bar(progress_bar: ProgressBar, vigor: int) -> void:
 	if _progress_style_green == null:
 		_initialize_progress_bar_styles()
-	var progress_bar = get_node("Panel/Army/PopulationSection/ProgressBar") as ProgressBar
 	if progress_bar == null:
 		return
 	var clamped_vigor = clamp(vigor, 0, 100)
@@ -201,205 +323,313 @@ func _update_vigor_bar(vigor: int) -> void:
 func _update_region_display() -> void:
 	"""Update the display with current region information"""
 	if current_region == null:
-		hide_modal()
 		return
 	
-	# Show Region node, hide Army node
-	var army_node = get_node("Panel/Army")
-	var region_node = get_node("Panel/Region")
-	army_node.visible = false
-	region_node.visible = true
-	army_texture.visible = false
-	
-	# Update region header with formatted name
-	var region_name_label = get_node("Panel/Region/HeaderSection/RegionName")
-	var formatted_name = current_region.get_region_level_string() + " of " + current_region.get_region_name()
+	_update_region_header()
+	_update_region_level_section()
+	_update_castle_section()
+	_update_mine_status()
+	_update_raise_army_section()
+	_update_garrison_section()
+	_update_defenders_section()
+	_update_region_resource_values()
+
+func _update_region_header() -> void:
+	"""Update the region header name"""
+	var region_name_label: Label = get_node("RegionPanel/Header/HeaderSection/RegionName")
+	var formatted_name: String = current_region.get_region_level_string() + " of " + current_region.get_region_name()
 	region_name_label.text = formatted_name
-	
-	# Update population
-	var population_value = get_node("Panel/Region/PopulationSection/Population/Value")
-	population_value.text = str(current_region.get_population())
-	
-	# Update growth rate
-	var growth_value = get_node("Panel/Region/PopulationSection/Growth/Value")
-	var growth_change = current_region.get_growth()
-	if growth_change > 0:
-		growth_value.text = "+" + str(snappedf(growth_change * 100, 0.1)) + "%"
-		growth_value.modulate = Color.html("#41b43e")
-	elif growth_change < 0:
-		growth_value.text = "-" + str(snappedf(growth_change * 100, 0.1)) + "%"
-		growth_value.modulate = Color.html("#d13131")
-	else:
-		growth_value.text = "+0%"
-		growth_value.modulate = Color.WHITE
-	
-	# Update income (gold income from population)
-	var income_value = get_node("Panel/Region/PopulationSection/Income/Value")
-	var gold_income = current_region.get_income()
-	income_value.text = str(gold_income)
-	
-	# Update region level
-	var level_value = get_node("Panel/Region/PopulationSection/Level/Value")
+
+func _update_region_level_section() -> void:
+	"""Update region level name/number and promotion cost"""
+	var level_label: Label = get_node("RegionPanel/Body/Region/RegionLevel/VBoxContainer/Label")
+	level_label.text = current_region.get_region_level_string()
+	var level_value: Label = get_node("RegionPanel/Body/Region/RegionLevel/VBoxContainer/Info/RegionLevelValue")
 	level_value.text = current_region.get_region_level_number()
-	
-	# Update castle/defenses
-	var castle_value = get_node("Panel/Region/GarisonSection/Castle/Value")
-	castle_value.text = current_region.get_castle_type_string().to_upper()
-	
-	# Update defense score
-	var defense_value = get_node("Panel/Region/GarisonSection/Growth/Value") as Label
-	var defense_bonus = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
-	var min_defense = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(current_region.get_castle_type(), 0)
-	var damage_fraction = current_region.get_defense_damage_fraction()
-	defense_value.text = str(max(min_defense, defense_bonus)) + "%"
-	defense_value.remove_theme_color_override("font_color")
-	if defense_bonus > 0:
-		if damage_fraction > 0.0:
+
+	var current_level: RegionLevelEnum.Level = current_region.get_region_level()
+	var target_level: RegionLevelEnum.Level = current_level
+	if current_level < RegionLevelEnum.Level.L5:
+		target_level = current_level + 1
+
+	var cost: Dictionary = GameParameters.get_promotion_cost(target_level)
+	var food_cost: int = int(cost.get(ResourcesEnum.Type.FOOD, 0))
+	var wood_cost: int = int(cost.get(ResourcesEnum.Type.WOOD, 0))
+	_set_cost_value("RegionPanel/Body/Region/RegionLevel/ActionSection/Resources/Food", food_cost)
+	_set_cost_value("RegionPanel/Body/Region/RegionLevel/ActionSection/Resources/Wood", wood_cost)
+
+func _update_castle_section() -> void:
+	"""Update castle name, defense, build/repair status, and cost display"""
+	var castle_name_label: Label = get_node("RegionPanel/Body/Region/CastleLevel/Info/CastleLevelName")
+	castle_name_label.text = current_region.get_castle_type_string().capitalize()
+
+	var defense_value: Label = get_node("RegionPanel/Body/Region/CastleLevel/Info/Defense/DefenseValue")
+	var base_defense: int = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
+	var effective_defense: int = game_manager.get_battle_manager().get_effective_defense_for_region(current_region)
+	defense_value.text = str(effective_defense) + "%"
+	var min_defense: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(current_region.get_castle_type(), 0)
+	defense_value.add_theme_color_override("font_color", Color.WHITE)
+	if base_defense > 0:
+		if min_defense > 0 and effective_defense <= min_defense:
+			defense_value.add_theme_color_override("font_color", Color.html("#d13131"))
+		elif effective_defense < base_defense:
 			defense_value.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
 
-	# Update local garrison total (exclude recruits; garrison is a separate composition)
-	var garrison_value = get_node("Panel/Region/GarisonSection/Garison/Value")
-	var garrison_comp = current_region.get_garrison()
-	var garrison_total: int = 0
-	if garrison_comp != null:
-		garrison_total = garrison_comp.get_total_soldiers()
-	garrison_value.text = str(garrison_total)
-	# Update garrison wounded "(n)" or empty when zero
-	var garrison_wounded_label = get_node("Panel/Region/GarisonSection/Garison/WoundedValue") as Label
-	var wg_total: int = 0
-	var wg_comp = current_region.get_wounded_garrison()
-	if wg_comp != null:
-		wg_total = wg_comp.get_total_soldiers()
-	if wg_total > 0:
-		garrison_wounded_label.text = "(" + str(wg_total) + ")"
-		garrison_wounded_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
-	else:
-		garrison_wounded_label.text = ""
-	
-	# Update recruits
-	var recruits_value = get_node("Panel/Region/GarisonSection/Recruits/Value")
-	var available = current_region.get_available_recruits()
-	var max_recruits = current_region.get_max_recruits()
-	recruits_value.text = str(available) + " / " + str(max_recruits)
-	# Update recruits wounded (peasants only) "(n)" or empty when zero
-	var recruits_wounded_label = get_node("Panel/Region/GarisonSection/Recruits/WoundedValue") as Label
-	var wr_total: int = current_region.get_wounded_recruits_total()
-	if wr_total > 0:
-		recruits_wounded_label.text = "(" + str(wr_total) + ")"
-		recruits_wounded_label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
-	else:
-		recruits_wounded_label.text = ""
-	
-	# Update resources
-	_update_region_resource_values()
-	
-	# Update construction status
 	_update_construction_status()
-	
-	# Update mine status
-	_update_mine_status()
 
-func _update_army_unit_values() -> void:
-	"""Update army unit composition values"""
-	if current_army == null:
-		return
+	var cost: Dictionary = _get_castle_cost_for_display()
+	var food_cost: int = int(cost.get(ResourcesEnum.Type.FOOD, 0))
+	var wood_cost: int = int(cost.get(ResourcesEnum.Type.WOOD, 0))
+	var stone_cost: int = int(cost.get(ResourcesEnum.Type.STONE, 0))
+	var iron_cost: int = int(cost.get(ResourcesEnum.Type.IRON, 0))
+	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Food", food_cost)
+	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Wood", wood_cost)
+	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Stone", stone_cost)
+	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Iron", iron_cost)
 
-	var composition = current_army.get_composition()
-	var wounded_comp = current_army.get_wounded_composition()
-	
-	# Update each unit type
-	var unit_nodes = [
-		"Peasants", "Spearmen", "Archers", "Swordmen", 
-		"Crossbowmen", "Horsemen", "Knights", "Mounted Knights", "Royal Guard"
+func _get_castle_cost_for_display() -> Dictionary:
+	var cost: Dictionary = {}
+	if current_region.is_castle_under_repair() or current_region.has_castle_damage():
+		return current_region.get_castle_repair_cost()
+	if current_region.is_castle_under_construction():
+		var building_type: CastleTypeEnum.Type = current_region.get_castle_under_construction()
+		if building_type != CastleTypeEnum.Type.NONE:
+			return GameParameters.get_castle_building_cost(building_type)
+		return cost
+	var current_type: CastleTypeEnum.Type = current_region.get_castle_type()
+	var next_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_type)
+	if next_type == CastleTypeEnum.Type.NONE:
+		return cost
+	return GameParameters.get_castle_building_cost(next_type)
+
+func _update_raise_army_section() -> void:
+	"""Update raise army label and cost"""
+	var owner_id: int = current_region.get_region_owner()
+	var roman_number: String = game_manager.get_army_manager().get_next_army_roman_numeral_for_player(owner_id)
+	var next_army_label: Label = get_node("RegionPanel/Body/Region/RaiseArmy/Info/Army/NextArmyName")
+	next_army_label.text = "Army " + roman_number
+
+	var gold_cost: int = GameParameters.get_raise_army_cost()
+	_set_cost_value("RegionPanel/Body/Region/RaiseArmy/ActionSection/Resources/Gold", gold_cost)
+
+func _update_garrison_section() -> void:
+	"""Update garrison totals and recruits"""
+	var garrison_value: Label = get_node("RegionPanel/Body/Region/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue")
+	var garrison_comp: ArmyComposition = current_region.get_garrison()
+	garrison_value.text = str(garrison_comp.get_total_soldiers())
+
+	var recruits_value: Label = get_node("RegionPanel/Body/Region/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Recruits")
+	var recruits_max: Label = get_node("RegionPanel/Body/Region/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/RecruitsMax")
+	recruits_value.text = str(current_region.get_available_recruits())
+	recruits_max.text = str(current_region.get_max_recruits())
+
+func _update_defenders_section() -> void:
+	"""Update garrison unit composition values"""
+	var garrison_comp: ArmyComposition = current_region.get_garrison()
+	var unit_nodes: Array[String] = [
+		"Peasants", "Spearmen", "Archers", "Swordsmen",
+		"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
 	]
-	
-	var unit_types = [
-		SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN, 
+	var unit_types: Array[SoldierTypeEnum.Type] = [
+		SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN,
 		SoldierTypeEnum.Type.ARCHERS, SoldierTypeEnum.Type.SWORDSMEN,
-		SoldierTypeEnum.Type.CROSSBOWMEN, SoldierTypeEnum.Type.HORSEMEN,
+		SoldierTypeEnum.Type.HORSEMEN, SoldierTypeEnum.Type.CROSSBOWMEN,
 		SoldierTypeEnum.Type.KNIGHTS, SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
 		SoldierTypeEnum.Type.ROYAL_GUARD
 	]
-	
 	for i in unit_nodes.size():
-		var base_path = "Panel/Army/UnitsSection/" + unit_nodes[i]
-		var value_node = get_node(base_path + "/Value")
-		var count = composition.get_soldier_count(unit_types[i])
-		value_node.text = str(count)
-		# Wounded display as "(n)" in yellow; empty if none
-		var wounded_node = get_node(base_path + "/Wounded") as Label
-		var wcount: int = wounded_comp.get_soldier_count(unit_types[i])
-		if wcount > 0:
-			wounded_node.text = "(" + str(wcount) + ")"
-			wounded_node.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
-		else:
-			wounded_node.text = ""
+		var value_node: Label = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + unit_nodes[i] + "/Value")
+		value_node.text = str(garrison_comp.get_soldier_count(unit_types[i]))
+
+func _set_cost_value(container_path: String, value: int) -> void:
+	var container: HBoxContainer = get_node(container_path)
+	container.visible = value > 0
+	var value_label: Label = get_node(container_path + "/Value")
+	value_label.text = str(value)
+
+func _update_army_unit_values(composition: ArmyComposition, info_root: Node) -> void:
+	"""Update army unit composition values"""
+	if composition == null or info_root == null:
+		return
+
+	var unit_nodes: Array[String] = [
+		"Peasants", "Spearmen", "Archers", "Swordsmen",
+		"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
+	]
+	var unit_types: Array[SoldierTypeEnum.Type] = [
+		SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN,
+		SoldierTypeEnum.Type.ARCHERS, SoldierTypeEnum.Type.SWORDSMEN,
+		SoldierTypeEnum.Type.HORSEMEN, SoldierTypeEnum.Type.CROSSBOWMEN,
+		SoldierTypeEnum.Type.KNIGHTS, SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
+		SoldierTypeEnum.Type.ROYAL_GUARD
+	]
+
+	for i in unit_nodes.size():
+		var value_node = info_root.get_node(unit_nodes[i] + "/Value") as Label
+		value_node.text = str(composition.get_soldier_count(unit_types[i]))
 
 func _update_region_resource_values() -> void:
 	"""Update region resource values"""
 	if current_region == null:
 		return
-	
-	var resource_nodes = ["Resource1", "Resource2", "Resource3"]
-	var resource_types = [ResourcesEnum.Type.FOOD, ResourcesEnum.Type.WOOD, ResourcesEnum.Type.STONE, ResourcesEnum.Type.IRON, ResourcesEnum.Type.GOLD]
-	var resource_index = 0
-	
-	# Fill resources that exist and can be collected
-	for resource_type in resource_types:
-		var amount = current_region.get_resource_amount(resource_type)
-		if amount > 0 and current_region.can_collect_resource(resource_type) and resource_index < resource_nodes.size():
-			var label_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Label")
-			var value_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Value")
-			var resource_name = ResourcesEnum.type_to_string(resource_type)
-			label_node.text = resource_name.capitalize() + ":"
-			value_node.text = str(amount)
-			resource_index += 1
-	
-	# Clear remaining resource slots
-	while resource_index < resource_nodes.size():
-		var label_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Label")
-		var value_node = get_node("Panel/Region/ResourcesSection/" + resource_nodes[resource_index] + "/Value")
-		label_node.text = ""
-		value_node.text = ""
-		resource_index += 1
+
+	var population_value = get_node("RegionPanel/Body/Region/RegionResources/Population/PopulationValue") as Label
+	population_value.text = str(current_region.get_population())
+
+	var growth_value = get_node("RegionPanel/Body/Region/RegionResources/Population/GrowthValue") as Label
+	var growth_change = current_region.get_growth()
+	if growth_change > 0:
+		growth_value.text = "(+" + str(snappedf(growth_change * 100, 0.1)) + "%)"
+		growth_value.modulate = Color.html("#41b43e")
+	elif growth_change < 0:
+		growth_value.text = "(" + str(snappedf(growth_change * 100, 0.1)) + "%)"
+		growth_value.modulate = Color.html("#d13131")
+	else:
+		growth_value.text = "(+0%)"
+		growth_value.modulate = Color.WHITE
+
+	var income_value = get_node("RegionPanel/Body/Region/RegionResources/Income/Value") as Label
+	income_value.text = str(current_region.get_income())
+
+	var food_value = get_node("RegionPanel/Body/Region/RegionResources/Food/Value") as Label
+	food_value.text = str(current_region.get_resource_amount(ResourcesEnum.Type.FOOD))
+	var wood_value = get_node("RegionPanel/Body/Region/RegionResources/Wood/Value") as Label
+	wood_value.text = str(current_region.get_resource_amount(ResourcesEnum.Type.WOOD))
+	var stone_value = get_node("RegionPanel/Body/Region/RegionResources/Stone/Value") as Label
+	stone_value.text = str(current_region.get_resource_amount(ResourcesEnum.Type.STONE))
+
+	var iron_amount: int = current_region.get_resource_amount(ResourcesEnum.Type.IRON)
+	var iron_container = get_node("RegionPanel/Body/Region/RegionResources/Iron") as HBoxContainer
+	iron_container.visible = iron_amount > 0 and current_region.can_collect_resource(ResourcesEnum.Type.IRON)
+	var iron_value = get_node("RegionPanel/Body/Region/RegionResources/Iron/Value") as Label
+	iron_value.text = str(iron_amount)
+
+	var gold_amount: int = current_region.get_resource_amount(ResourcesEnum.Type.GOLD)
+	var gold_container = get_node("RegionPanel/Body/Region/RegionResources/Gold") as HBoxContainer
+	gold_container.visible = gold_amount > 0 and current_region.can_collect_resource(ResourcesEnum.Type.GOLD)
+	var gold_value = get_node("RegionPanel/Body/Region/RegionResources/Gold/Value") as Label
+	gold_value.text = str(gold_amount)
 
 func _update_construction_status() -> void:
 	"""Update construction status label"""
-	var construction_label = get_node("Panel/Region/OtherSection/Construction")
-	
-	if current_region == null:
-		construction_label.text = ""
-		return
-	
+	var build_button = get_node("RegionPanel/Body/Region/CastleLevel/ActionSection/BuildButton") as Button
 	if current_region.is_castle_under_construction():
-		var castle_type = current_region.get_castle_under_construction()
-		var turns_remaining = current_region.get_castle_build_turns_remaining()
-		var castle_name = CastleTypeEnum.type_to_string(castle_type)
-		construction_label.text = "Building " + castle_name + " - " + str(turns_remaining) + " turn"
-		if turns_remaining > 1: 
-			construction_label.text = construction_label.text + "s"
+		build_button.text = "Building"
 	elif current_region.is_castle_under_repair():
-		construction_label.text = "Repairing castle - 1 turn"
+		build_button.text = "Repairing"
+	elif current_region.has_castle_damage():
+		build_button.text = "Repair"
+	elif current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		build_button.text = "Build"
 	else:
-		construction_label.text = ""
+		build_button.text = "Upgrade"
 
 func _update_mine_status() -> void:
 	"""Update mine status label"""
-	var mine_label = get_node("Panel/Region/OtherSection/Mine")
-	
-	if current_region == null:
-		mine_label.text = ""
-		return
-	
-	# Only show mine info for hills and forest hills
-	if not GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
-		mine_label.text = ""
-		return
-	
-	var discovered_ores = current_region.get_discovered_ores()
-	if not discovered_ores.is_empty():
-		mine_label.text = ""
-	elif current_region.get_ore_search_attempts_remaining() > 0:
-		mine_label.text = "Ore search potential!"
+	var mine_label = get_node("RegionPanel/Body/Region/Mine/Info/Search/SearchStatus") as Label
+	mine_label.text = current_region.get_ore_search_status_string()
+	var gold_cost: int = GameParameters.get_ore_search_cost()
+	_set_cost_value("RegionPanel/Body/Region/Mine/ActionSection/Resources/Gold", gold_cost)
+
+func _set_active_tab(tab: TabType) -> void:
+	_active_tab = tab
+	_apply_tab_visibility()
+	_apply_tab_colors()
+
+func _apply_tab_visibility() -> void:
+	var is_region_tab: bool = _active_tab == TabType.REGION
+	_region_panel.visible = is_region_tab
+	_army_panel.visible = not is_region_tab
+	_region_textures.visible = is_region_tab
+	_army_textures.visible = not is_region_tab
+
+func _apply_tab_colors() -> void:
+	if _active_tab == TabType.REGION:
+		_region_tab_label.remove_theme_color_override("font_color")
+		_armies_tab_label.add_theme_color_override("font_color", _inactive_tab_color)
 	else:
-		mine_label.text = "Region has no ore"
+		_armies_tab_label.remove_theme_color_override("font_color")
+		_region_tab_label.add_theme_color_override("font_color", _inactive_tab_color)
+
+func _on_region_tab_mouse_entered() -> void:
+	if _active_tab != TabType.REGION:
+		_region_tab_label.add_theme_color_override("font_color", Color.WHITE)
+
+func _on_region_tab_mouse_exited() -> void:
+	if _active_tab != TabType.REGION:
+		_region_tab_label.add_theme_color_override("font_color", _inactive_tab_color)
+
+func _on_armies_tab_mouse_entered() -> void:
+	if _active_tab != TabType.ARMIES:
+		_armies_tab_label.add_theme_color_override("font_color", Color.WHITE)
+
+func _on_armies_tab_mouse_exited() -> void:
+	if _active_tab != TabType.ARMIES:
+		_armies_tab_label.add_theme_color_override("font_color", _inactive_tab_color)
+
+func _on_region_tab_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		DebugLogger.log("click", "InfoModal: Region tab click")
+		if _active_tab != TabType.REGION:
+			current_army = null
+			game_manager.get_army_manager().deselect_army()
+			_set_active_tab(TabType.REGION)
+			_update_region_display()
+		_region_tab_label.accept_event()
+		get_viewport().set_input_as_handled()
+
+func _on_armies_tab_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		DebugLogger.log("click", "InfoModal: Armies tab click")
+		if _active_tab != TabType.ARMIES:
+			current_army = null
+			game_manager.get_army_manager().deselect_army()
+			_set_active_tab(TabType.ARMIES)
+			_update_army_display()
+		_armies_tab_label.accept_event()
+		get_viewport().set_input_as_handled()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+		current_army = null
+		game_manager.get_army_manager().deselect_army()
+		if _active_tab == TabType.REGION:
+			_set_active_tab(TabType.ARMIES)
+			_update_army_display()
+		else:
+			_set_active_tab(TabType.REGION)
+			_update_region_display()
+		get_viewport().set_input_as_handled()
+
+func _on_region_panel_mouse_entered() -> void:
+	if ui_manager:
+		ui_manager.hide_region_tooltip()
+
+func _on_army_card_mouse_entered(index: int) -> void:
+	var card = _army_cards[index]
+	card.add_theme_stylebox_override("panel", _army_card_style_hover)
+	var label = _army_card_labels[index]
+	label.add_theme_color_override("font_color", Color.WHITE)
+	if ui_manager:
+		ui_manager.hide_region_tooltip()
+
+func _on_army_card_mouse_exited(index: int) -> void:
+	var card = _army_cards[index]
+	var army = _army_card_armies[index]
+	if army != null and army == current_army:
+		card.add_theme_stylebox_override("panel", _army_card_style_hover)
+	else:
+		card.add_theme_stylebox_override("panel", _army_card_style_default)
+	var label = _army_card_labels[index]
+	label.add_theme_color_override("font_color", _army_card_label_colors[index])
+
+func _on_army_card_gui_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var army = _army_card_armies[index]
+		current_army = army
+		_select_army_for_move(army)
+		_update_army_display()
+		(_army_cards[index] as Control).accept_event()
+		get_viewport().set_input_as_handled()

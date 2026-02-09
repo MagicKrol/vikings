@@ -8,7 +8,6 @@ var source_army: Army = null
 
 # Additional references specific to transfer selection
 var transfer_soldiers_modal: TransferSoldiersModal = null
-var army_select_modal: ArmySelectModal = null
 
 const HEADER_TEXT := "Select Target"
 const BUTTON_FONT: Font = preload("res://fonts/Cinzel.ttf")
@@ -22,7 +21,6 @@ func _ready():
 
 func _setup_transfer_references():
 	transfer_soldiers_modal = get_node("../TransferSoldiersModal") as TransferSoldiersModal
-	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
 
 func show_transfer_selection(source_army_param: Army, region: Region, other_armies: Array[Army]) -> void:
 	"""Show the transfer selection modal with region and other armies"""
@@ -159,14 +157,7 @@ func _attach_tooltip(definition: Dictionary, button: Button) -> void:
 func _on_back_button_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
-
-	var region_to_show := current_region
-	var army_to_show := source_army
-
 	hide_modal()
-
-	if army_select_modal != null and region_to_show != null and army_to_show != null and is_instance_valid(army_select_modal) and is_instance_valid(region_to_show) and is_instance_valid(army_to_show):
-		army_select_modal.show_army_actions(army_to_show, region_to_show)
 
 
 func _on_back_tooltip_hovered() -> void:

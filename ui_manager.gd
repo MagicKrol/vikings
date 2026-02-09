@@ -37,9 +37,6 @@ var _turn_modal_suppressed: bool = false
 var _overlay_suppressed: bool = false
 
 # Modal references for centralized management
-var _select_modal: GeneralSelectModal
-var _army_select_modal: ArmySelectModal
-var _region_select_modal: RegionSelectModal
 var _player_status_modal2: PlayerStatusModal2
 var _turn_modal: TurnModal
 var _info_modal: InfoModal
@@ -60,16 +57,6 @@ var _game_menu_modal: Control
 var _modal_nodes: Array[Control] = []
 var _blocking_modal_nodes: Array[Control] = []
 var _move_selection_active: bool = false
-
-enum SelectContextType {
-	NONE,
-	REGION,
-	ARMY
-}
-
-var _select_context_type: int = SelectContextType.NONE
-var _select_context_region_id: int = -1
-var _select_context_army_number: String = ""
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -98,9 +85,6 @@ func _ready():
 	battle_modal = get_parent().get_node("BattleModal") as BattleModal
 	
 	# Get modal references
-	_select_modal = get_parent().get_node("GeneralSelectModal") as GeneralSelectModal
-	_army_select_modal = get_parent().get_node("ArmySelectModal") as ArmySelectModal
-	_region_select_modal = get_parent().get_node("RegionSelectModal") as RegionSelectModal
 	_player_status_modal2 = get_parent().get_node("PlayerStatusModal2") as PlayerStatusModal2
 	_turn_modal = get_parent().get_node("TurnModal") as TurnModal
 	_info_modal = get_parent().get_node("InfoModal") as InfoModal
@@ -160,9 +144,6 @@ func _apply_icons_visibility() -> void:
 
 func _build_modal_list() -> void:
 	_modal_nodes = [
-		_select_modal,
-		_army_select_modal,
-		_region_select_modal,
 		battle_modal,
 		_info_modal,
 		_prebattle_modal,
@@ -251,7 +232,7 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 		return
 
 	# Don't show tooltips when any modal is active
-	if is_modal_active:
+	if is_modal_active and not is_only_info_modal_visible():
 		if region_tooltip.visible:
 			hide_region_tooltip()
 		return
@@ -359,9 +340,6 @@ func _is_blocking_control(control: Control) -> bool:
 		_info_modal,
 		_move_modal,
 		_prebattle_modal,
-		_select_modal,
-		_army_select_modal,
-		_region_select_modal,
 		battle_modal
 	]
 	for blocker in blockers:
@@ -374,12 +352,7 @@ func _is_blocking_control(control: Control) -> bool:
 
 func close_all_active_modals(include_blocking: bool = false) -> void:
 	"""Close any active modals"""
-	if _select_modal and _select_modal.visible:
-		_select_modal.hide_modal()
-	if _army_select_modal and _army_select_modal.visible:
-		_army_select_modal.hide_modal()
-	if _region_select_modal and _region_select_modal.visible:
-		_region_select_modal.hide_modal()
+	DebugLogger.log("click", "UIManager: close_all_active_modals called include_blocking=" + str(include_blocking))
 	if include_blocking and battle_modal and battle_modal.visible:
 		battle_modal.hide_modal()
 	if _info_modal and _info_modal.visible:
@@ -403,6 +376,18 @@ func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
 	return _is_any_tracked_modal_visible()
 
+func is_only_info_modal_visible() -> bool:
+	if not _info_modal.visible:
+		return false
+	for modal in _modal_nodes:
+		if modal == _move_modal and _move_selection_active:
+			continue
+		if modal == _info_modal:
+			continue
+		if modal != null and _is_modal_forcing_active(modal):
+			return false
+	return true
+
 func get_player_status_modal2() -> PlayerStatusModal2:
 	"""Get the PlayerStatusModal2 instance"""
 	return _player_status_modal2
@@ -412,50 +397,13 @@ func get_turn_modal() -> TurnModal:
 	return _turn_modal
 
 func remember_region_select(region: Region) -> void:
-	_select_context_type = SelectContextType.REGION
-	_select_context_region_id = region.get_region_id()
-	_select_context_army_number = ""
+	pass
 
 func remember_army_select(army: Army, region: Region) -> void:
-	_select_context_type = SelectContextType.ARMY
-	_select_context_region_id = region.get_region_id()
-	_select_context_army_number = army.number
+	pass
 
 func clear_select_context() -> void:
-	_select_context_type = SelectContextType.NONE
-	_select_context_region_id = -1
-	_select_context_army_number = ""
+	pass
 
 func restore_select_context() -> void:
-	match _select_context_type:
-		SelectContextType.REGION:
-			_restore_region_select()
-		SelectContextType.ARMY:
-			if not _restore_army_select():
-				_restore_region_select()
-		_:
-			pass
-
-func _restore_region_select() -> void:
-	if _select_context_region_id == -1:
-		return
-	var region = map_generator.get_region_container_by_id(_select_context_region_id) as Region
-	_region_select_modal.show_region_actions(region)
-
-func _restore_army_select() -> bool:
-	if _select_context_region_id == -1 or _select_context_army_number == "":
-		return false
-	var region = map_generator.get_region_container_by_id(_select_context_region_id) as Region
-	var army = _find_army_in_region(region, _select_context_army_number)
-	if army == null:
-		return false
-	_army_select_modal.show_army_actions(army, region)
-	return true
-
-func _find_army_in_region(region: Region, army_number: String) -> Army:
-	for child in region.get_children():
-		if child is Army:
-			var army = child as Army
-			if army.number == army_number:
-				return army
-	return null
+	pass

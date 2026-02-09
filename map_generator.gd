@@ -249,7 +249,7 @@ func _render_from_json() -> void:
 
 	# Add background image
 	var background := Sprite2D.new()
-	background.texture = load("res://images/sea_new4.png")
+	background.texture = load("res://images/sea_new8.png")
 	var map_dimension := 1000.0 * polygon_scale
 	var frame_width_scaled := ocean_frame_width * polygon_scale
 	var background_size := map_dimension + frame_width_scaled * 2.0
@@ -569,7 +569,7 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	_update_region_center_from_polygon(rid, region_data, pg.polygon, parent_container, pg)
 
 	# Apply grass texture to all non-ocean regions
-	pg.texture = load("res://images/background4grass4.png")
+	pg.texture = load("res://images/background4grass7.png")
 	# pg.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
 	pg.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	pg.z_index = 0  # Land on same level as ocean
@@ -1099,7 +1099,7 @@ func refresh_region_visual(region_id: int) -> void:
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
 	else:
 		# Restore land grass texture
-		polygon.texture = load("res://images/background4grass4.png")
+		polygon.texture = load("res://images/background4grass7.png")
 		polygon.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
 		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 		polygon.visible = true

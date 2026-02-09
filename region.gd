@@ -852,12 +852,12 @@ func add_call_to_arms_recruits(amount: int) -> void:
 func get_ore_search_status_string() -> String:
 	"""Get a human-readable string describing ore search status"""
 	if not GameParameters.can_search_for_ore_in_region(region_type):
-		return "No ores in this region type"
+		return "No ore"
 	
 	if ore_search_attempts_remaining <= 0:
 		return "All ore search attempts exhausted"
 	
-	var status = str(ore_search_attempts_remaining) + " search attempts remaining"
+	var status = str(ore_search_attempts_remaining) + " searches"
 
 	if not discovered_ores.is_empty():
 		status += "\nDiscovered ores: "

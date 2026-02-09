@@ -957,8 +957,5 @@ func _restore_modal_state() -> void:
 	if ui_manager == null:
 		return
 	var should_enable := ui_manager.is_any_modal_visible()
-	var region_modal := ui_manager.get_node_or_null("../RegionSelectModal") as Control
-	if region_modal and region_modal.visible:
-		should_enable = true
 	ui_manager.set_modal_active(should_enable)
 	ui_manager.call_deferred("set_modal_active", should_enable)

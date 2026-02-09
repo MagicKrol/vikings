@@ -18,7 +18,6 @@ var make_camp_button: Button = null
 var cancel_button: Button = null
 var army_actions_button: Button = null
 var next_army_button: Button = null
-var army_select_modal: ArmySelectModal = null
 
 func _ready():
 	# Get button reference and connect signal
@@ -36,7 +35,6 @@ func _ready():
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
-	army_select_modal = get_node("../ArmySelectModal") as ArmySelectModal
 	game_manager = get_node("../../GameManager") as GameManager
 	camera_controller = get_node("../../Camera2D") as CameraController
 	if game_manager:
@@ -99,9 +97,8 @@ func _cancel_move() -> void:
 func _on_army_actions_pressed() -> void:
 	sound_manager.click_sound()
 	var army := selected_army
-	var region := army.get_parent() as Region
 	_cancel_move()
-	army_select_modal.show_army_actions(army, region)
+	info_modal.show_army_info(army)
 
 func _on_make_camp_pressed() -> void:
 	"""Handle Make Camp button press"""
@@ -140,7 +137,7 @@ func _on_panel_mouse_entered() -> void:
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
 		_cycle_to_next_army()
 		get_viewport().set_input_as_handled()
 		accept_event()
@@ -154,7 +151,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode == KEY_ESCAPE:
 			_cancel_move()
 			get_viewport().set_input_as_handled()
-		if event.keycode == KEY_TAB:
+		if event.keycode == KEY_SPACE:
 			_cycle_to_next_army()
 			get_viewport().set_input_as_handled()
 
