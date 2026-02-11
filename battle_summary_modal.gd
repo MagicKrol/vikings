@@ -53,6 +53,8 @@ func show_battle_summary(army: Army, region: Region, report: BattleSimulator.Bat
 	"""Show the battle summary modal with battle results"""
 	if army == null or region == null or report == null:
 		return
+	var info_modal = get_node("../InfoModal") as InfoModal
+	info_modal.hide_modal(false)
 	
 	attacking_army = army
 	defending_region = region

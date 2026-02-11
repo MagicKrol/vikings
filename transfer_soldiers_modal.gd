@@ -46,6 +46,7 @@ var unit_types = [
 # Manager references
 var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
+var info_modal: InfoModal = null
 var _ui_lock: bool = false
 
 func _ready():
@@ -66,6 +67,7 @@ func _ready():
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
+	info_modal = get_node("../InfoModal") as InfoModal
 	
 	# Initially hidden
 	visible = false
@@ -103,6 +105,8 @@ func show_transfer_to_garrison(army: Army, region: Region) -> void:
 	if army == null or region == null:
 		hide_modal()
 		return
+	ui_manager.remember_army_select(army, region)
+	info_modal.hide_modal(false)
 	
 	source_army = army
 	target_army = null  # Transfer to garrison
@@ -121,6 +125,8 @@ func show_transfer_to_army(source: Army, target: Army, region: Region) -> void:
 	if source == null or target == null or region == null:
 		hide_modal()
 		return
+	ui_manager.remember_army_select(source, region)
+	info_modal.hide_modal(false)
 	
 	source_army = source
 	target_army = target
@@ -151,6 +157,7 @@ func hide_modal() -> void:
 	# Set modal mode inactive
 	if ui_manager:
 		ui_manager.set_modal_active(false)
+		ui_manager.restore_select_context()
 
 func _update_display() -> void:
 	"""Update the display with current transfer information"""

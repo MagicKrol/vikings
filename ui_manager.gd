@@ -57,6 +57,8 @@ var _game_menu_modal: Control
 var _modal_nodes: Array[Control] = []
 var _blocking_modal_nodes: Array[Control] = []
 var _move_selection_active: bool = false
+var _remembered_region: Region = null
+var _remembered_army: Army = null
 
 func _ready():
 	# Ensure UI is on top but doesn't block input
@@ -397,13 +399,19 @@ func get_turn_modal() -> TurnModal:
 	return _turn_modal
 
 func remember_region_select(region: Region) -> void:
-	pass
+	_remembered_region = region
+	_remembered_army = null
 
 func remember_army_select(army: Army, region: Region) -> void:
-	pass
+	_remembered_army = army
+	_remembered_region = region
 
 func clear_select_context() -> void:
-	pass
+	_remembered_region = null
+	_remembered_army = null
 
 func restore_select_context() -> void:
-	pass
+	if _remembered_army != null:
+		_info_modal.show_army_info(_remembered_army)
+	elif _remembered_region != null:
+		_info_modal.show_region_info(_remembered_region)

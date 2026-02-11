@@ -244,6 +244,8 @@ func _update_ram_rows() -> void:
 func show_prebattle(army: Army, region: Region) -> void:
 	attacking_army = army
 	defending_region = region
+	var info_modal = get_node("../InfoModal") as InfoModal
+	info_modal.hide_modal(false)
 	_reset_info_panel()
 	_update_labels()
 	ui_manager.set_modal_active(true)

@@ -1,0 +1,191 @@
+[gd_scene load_steps=11 format=3 uid="uid://t3wm6ddxyc66"]
+
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="1_fs6b2"]
+[ext_resource type="Texture2D" uid="uid://qql18jjjxg5w" path="res://images/icons/peasant_icon (1).png" id="2_03gie"]
+[ext_resource type="Texture2D" uid="uid://beovaykfjibgt" path="res://images/icons/spearman_icon.png" id="3_c6nh6"]
+[ext_resource type="Texture2D" uid="uid://dwty4t4p7r2el" path="res://images/icons/archer_icon (1).png" id="4_c0o7h"]
+[ext_resource type="Texture2D" uid="uid://beyb6iehw00hl" path="res://images/icons/swordsmen_icon (1).png" id="5_fipol"]
+[ext_resource type="Texture2D" uid="uid://hx8sjqxy1pt6" path="res://images/icons/horsemen_icon.png" id="6_v8acg"]
+[ext_resource type="Texture2D" uid="uid://blmyfeyygvolu" path="res://images/icons/crossbowman_icon.png" id="7_sok0q"]
+[ext_resource type="Texture2D" uid="uid://c36hwy1ajmmce" path="res://images/icons/knight_icon.png" id="8_hwwsn"]
+[ext_resource type="Texture2D" uid="uid://by03mrow4b6w6" path="res://images/icons/mounted_knight_icon.png" id="9_eh0fo"]
+[ext_resource type="Texture2D" uid="uid://cqrxrtvdnpkx6" path="res://images/icons/royal_guard_icon.png" id="10_d4rdd"]
+
+[node name="DefendersSection" type="VBoxContainer"]
+
+[node name="RegionName" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("1_fs6b2")
+theme_override_font_sizes/font_size = 22
+text = "Defenders"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+
+[node name="GarrisonInfo" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Peasants" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Peasants"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("2_03gie")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Peasants"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "23"
+horizontal_alignment = 1
+
+[node name="Spearmen" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Spearmen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("3_c6nh6")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Spearmen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Archers" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Archers"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("4_c0o7h")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Archers"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Swordsmen" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Swordsmen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("5_fipol")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Swordsmen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "22"
+horizontal_alignment = 1
+
+[node name="Horsemen" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Horsemen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("6_v8acg")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Horsemen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Crossbowmen" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Crossbowmen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("7_sok0q")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Crossbowmen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Knights" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Knights"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("8_hwwsn")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Knights"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="MountedKnights" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/MountedKnights"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("9_eh0fo")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/MountedKnights"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="RoyalGuard" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/RoyalGuard"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("10_d4rdd")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/RoyalGuard"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1

@@ -6,6 +6,11 @@ var ui_manager: UIManager = null
 # Sound manager reference
 var sound_manager: SoundManager = null
 var game_manager: GameManager = null
+var recruitment_modal: RecruitmentModal = null
+var message_modal: MessageModal = null
+var army_manager: ArmyManager = null
+var player_manager: PlayerManagerNode = null
+var region_manager: RegionManager = null
 
 # Current display mode
 enum DisplayMode { NONE, ARMY, REGION }
@@ -35,6 +40,7 @@ var _army_card_style_hover: StyleBoxTexture
 var _army_card_armies: Array[Army] = []
 var _army_card_labels: Array[Label] = []
 var _army_card_label_colors: Array[Color] = []
+var _suppress_auto_select: bool = false
 
 enum TabType { REGION, ARMIES }
 var _active_tab: TabType = TabType.REGION
@@ -47,6 +53,11 @@ var _inactive_tab_color: Color = Color(0.595154, 0.595154, 0.595154, 1)
 @onready var _army_panel: Control = get_node("RegionPanel/Body/Army")
 @onready var _region_textures: Control = get_node("RegionTextures")
 @onready var _army_textures: Control = get_node("ArmyTextures")
+@onready var _promote_button: Button = get_node("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/PromoteButton")
+@onready var _build_button: Button = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/BuildButton")
+@onready var _search_ore_button: Button = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection/SearchOreButton")
+@onready var _raise_army_button: Button = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/RaiseArmyButton")
+@onready var _recruit_button: Button = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/RecruitButton")
 @onready var _army_cards: Array[Panel] = [
 	get_node("RegionPanel/Body/Army/Army1") as Panel,
 	get_node("RegionPanel/Body/Army/Army2") as Panel,
@@ -60,9 +71,15 @@ func _ready():
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	game_manager = get_node("../../GameManager") as GameManager
+	recruitment_modal = get_node("../RecruitmentModal") as RecruitmentModal
+	message_modal = get_node("../MessageModal") as MessageModal
+	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
+	army_manager = game_manager.get_army_manager()
+	region_manager = game_manager.get_region_manager()
 	_initialize_progress_bar_styles()
 	_initialize_tabs()
 	_initialize_army_cards()
+	_initialize_region_actions()
 	_region_panel_root.mouse_entered.connect(_on_region_panel_mouse_entered)
 	
 	# Initially hidden
@@ -101,6 +118,13 @@ func _initialize_army_cards() -> void:
 		_army_card_labels.append(label)
 		_army_card_label_colors.append(label.get_theme_color("font_color"))
 
+func _initialize_region_actions() -> void:
+	_promote_button.pressed.connect(_on_promote_region_pressed)
+	_build_button.pressed.connect(_on_build_button_pressed)
+	_search_ore_button.pressed.connect(_on_ore_search_pressed)
+	_raise_army_button.pressed.connect(_on_raise_army_pressed)
+	_recruit_button.pressed.connect(_on_recruit_soldiers_pressed)
+
 func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
 	if node is Control:
 		var control_node := node as Control
@@ -118,6 +142,7 @@ func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 		return
 	
 	current_army = army
+	_suppress_auto_select = false
 	current_region = army.get_parent() as Region
 	current_mode = DisplayMode.ARMY
 	if _active_tab == TabType.ARMIES:
@@ -144,6 +169,7 @@ func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	if current_region != null:
 		var armies_in_region := _get_armies_in_region(current_region)
 		current_army = _find_army_with_most_movement_points(armies_in_region)
+	_suppress_auto_select = false
 	current_mode = DisplayMode.REGION
 	if _active_tab == TabType.ARMIES:
 		_update_army_display()
@@ -196,8 +222,9 @@ func _update_army_display() -> void:
 	var armies: Array[Army] = _get_armies_in_region(current_region)
 
 	if current_army == null or not armies.has(current_army):
-		current_army = _find_army_with_most_movement_points(armies)
-	if current_army != null:
+		if not _suppress_auto_select:
+			current_army = _find_army_with_most_movement_points(armies)
+	if current_army != null and not _suppress_auto_select:
 		_select_army_for_move(current_army)
 
 	for i in range(_army_cards.size()):
@@ -235,8 +262,9 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	vigor_value.text = str(vigor_percent) + "%"
 
 	var composition = army.get_composition()
+	var wounded_composition = army.get_wounded_composition()
 	var info_root = content.get_node("GarrisonInfo")
-	_update_army_unit_values(composition, info_root)
+	_update_army_unit_values(composition, wounded_composition, info_root)
 
 func _find_army_with_most_movement_points(armies: Array[Army]) -> Army:
 	var best_army: Army = null
@@ -296,7 +324,7 @@ func _initialize_progress_bar_styles() -> void:
 	_progress_style_yellow.texture = PROGRESS_TEX_YELLOW
 	_progress_style_red = StyleBoxTexture.new()
 	_progress_style_red.texture = PROGRESS_TEX_RED
-	var progress_bar = get_node("RegionPanel/Body/Army/PopulationSection/ProgressBar") as ProgressBar
+	var progress_bar = get_node("RegionPanel/Body/Army/Army1/Army1/Vigor/ProgressBar") as ProgressBar
 	if progress_bar != null:
 		progress_bar.min_value = 0
 		progress_bar.max_value = 100
@@ -342,9 +370,9 @@ func _update_region_header() -> void:
 
 func _update_region_level_section() -> void:
 	"""Update region level name/number and promotion cost"""
-	var level_label: Label = get_node("RegionPanel/Body/Region/RegionLevel/VBoxContainer/Label")
+	var level_label: Label = get_node("RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer/Label")
 	level_label.text = current_region.get_region_level_string()
-	var level_value: Label = get_node("RegionPanel/Body/Region/RegionLevel/VBoxContainer/Info/RegionLevelValue")
+	var level_value: Label = get_node("RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer/Info/RegionLevelValue")
 	level_value.text = current_region.get_region_level_number()
 
 	var current_level: RegionLevelEnum.Level = current_region.get_region_level()
@@ -355,15 +383,18 @@ func _update_region_level_section() -> void:
 	var cost: Dictionary = GameParameters.get_promotion_cost(target_level)
 	var food_cost: int = int(cost.get(ResourcesEnum.Type.FOOD, 0))
 	var wood_cost: int = int(cost.get(ResourcesEnum.Type.WOOD, 0))
-	_set_cost_value("RegionPanel/Body/Region/RegionLevel/ActionSection/Resources/Food", food_cost)
-	_set_cost_value("RegionPanel/Body/Region/RegionLevel/ActionSection/Resources/Wood", wood_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Food", food_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Wood", wood_cost)
+	var promotion_available: bool = not current_region.has_promoted_this_turn()
+	var can_afford_promotion: bool = _can_player_afford_promotion(target_level)
+	_promote_button.disabled = current_level >= RegionLevelEnum.Level.L5 or not promotion_available or not can_afford_promotion
 
 func _update_castle_section() -> void:
 	"""Update castle name, defense, build/repair status, and cost display"""
-	var castle_name_label: Label = get_node("RegionPanel/Body/Region/CastleLevel/Info/CastleLevelName")
+	var castle_name_label: Label = get_node("RegionPanel/Body/Region/Actions/CastleLevel/Info/CastleLevelName")
 	castle_name_label.text = current_region.get_castle_type_string().capitalize()
 
-	var defense_value: Label = get_node("RegionPanel/Body/Region/CastleLevel/Info/Defense/DefenseValue")
+	var defense_value: Label = get_node("RegionPanel/Body/Region/Actions/CastleLevel/Info/Defense/DefenseValue")
 	var base_defense: int = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
 	var effective_defense: int = game_manager.get_battle_manager().get_effective_defense_for_region(current_region)
 	defense_value.text = str(effective_defense) + "%"
@@ -382,10 +413,10 @@ func _update_castle_section() -> void:
 	var wood_cost: int = int(cost.get(ResourcesEnum.Type.WOOD, 0))
 	var stone_cost: int = int(cost.get(ResourcesEnum.Type.STONE, 0))
 	var iron_cost: int = int(cost.get(ResourcesEnum.Type.IRON, 0))
-	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Food", food_cost)
-	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Wood", wood_cost)
-	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Stone", stone_cost)
-	_set_cost_value("RegionPanel/Body/Region/CastleLevel/ActionSection/Resources/Iron", iron_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Food", food_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Wood", wood_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Stone", stone_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Iron", iron_cost)
 
 func _get_castle_cost_for_display() -> Dictionary:
 	var cost: Dictionary = {}
@@ -406,26 +437,34 @@ func _update_raise_army_section() -> void:
 	"""Update raise army label and cost"""
 	var owner_id: int = current_region.get_region_owner()
 	var roman_number: String = game_manager.get_army_manager().get_next_army_roman_numeral_for_player(owner_id)
-	var next_army_label: Label = get_node("RegionPanel/Body/Region/RaiseArmy/Info/Army/NextArmyName")
+	var next_army_label: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName")
 	next_army_label.text = "Army " + roman_number
 
 	var gold_cost: int = GameParameters.get_raise_army_cost()
-	_set_cost_value("RegionPanel/Body/Region/RaiseArmy/ActionSection/Resources/Gold", gold_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/Resources/Gold", gold_cost)
+	var castle_type := current_region.get_castle_type()
+	var has_keep_or_higher: bool = castle_type >= CastleTypeEnum.Type.KEEP
+	var can_afford_army: bool = _can_player_afford_raise_army()
+	var has_used_raise_army: bool = current_region.has_raised_army_this_turn()
+	var army_capacity_available: bool = _region_has_army_capacity()
+	_raise_army_button.disabled = not has_keep_or_higher or not can_afford_army or has_used_raise_army or not army_capacity_available
 
 func _update_garrison_section() -> void:
 	"""Update garrison totals and recruits"""
-	var garrison_value: Label = get_node("RegionPanel/Body/Region/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue")
+	var garrison_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue")
 	var garrison_comp: ArmyComposition = current_region.get_garrison()
 	garrison_value.text = str(garrison_comp.get_total_soldiers())
 
-	var recruits_value: Label = get_node("RegionPanel/Body/Region/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Recruits")
-	var recruits_max: Label = get_node("RegionPanel/Body/Region/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/RecruitsMax")
+	var recruits_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Recruits")
+	var recruits_max: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/RecruitsMax")
 	recruits_value.text = str(current_region.get_available_recruits())
 	recruits_max.text = str(current_region.get_max_recruits())
+	_recruit_button.disabled = false
 
 func _update_defenders_section() -> void:
 	"""Update garrison unit composition values"""
 	var garrison_comp: ArmyComposition = current_region.get_garrison()
+	var wounded_comp: ArmyComposition = current_region.get_wounded_garrison()
 	var unit_nodes: Array[String] = [
 		"Peasants", "Spearmen", "Archers", "Swordsmen",
 		"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
@@ -439,7 +478,11 @@ func _update_defenders_section() -> void:
 	]
 	for i in unit_nodes.size():
 		var value_node: Label = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + unit_nodes[i] + "/Value")
-		value_node.text = str(garrison_comp.get_soldier_count(unit_types[i]))
+		var healthy: int = garrison_comp.get_soldier_count(unit_types[i])
+		var wounded: int = 0
+		if wounded_comp != null:
+			wounded = wounded_comp.get_soldier_count(unit_types[i])
+		_set_unit_value_with_wounded(value_node, healthy, wounded)
 
 func _set_cost_value(container_path: String, value: int) -> void:
 	var container: HBoxContainer = get_node(container_path)
@@ -447,7 +490,7 @@ func _set_cost_value(container_path: String, value: int) -> void:
 	var value_label: Label = get_node(container_path + "/Value")
 	value_label.text = str(value)
 
-func _update_army_unit_values(composition: ArmyComposition, info_root: Node) -> void:
+func _update_army_unit_values(composition: ArmyComposition, wounded_composition: ArmyComposition, info_root: Node) -> void:
 	"""Update army unit composition values"""
 	if composition == null or info_root == null:
 		return
@@ -465,8 +508,18 @@ func _update_army_unit_values(composition: ArmyComposition, info_root: Node) -> 
 	]
 
 	for i in unit_nodes.size():
-		var value_node = info_root.get_node(unit_nodes[i] + "/Value") as Label
-		value_node.text = str(composition.get_soldier_count(unit_types[i]))
+		var value_node: Label = info_root.get_node(unit_nodes[i] + "/Value")
+		var healthy: int = composition.get_soldier_count(unit_types[i])
+		var wounded: int = 0
+		if wounded_composition != null:
+			wounded = wounded_composition.get_soldier_count(unit_types[i])
+		_set_unit_value_with_wounded(value_node, healthy, wounded)
+
+func _set_unit_value_with_wounded(value_node: Label, healthy: int, wounded: int) -> void:
+	if wounded > 0:
+		value_node.text = str(healthy) + "+" + str(wounded)
+	else:
+		value_node.text = str(healthy)
 
 func _update_region_resource_values() -> void:
 	"""Update region resource values"""
@@ -512,24 +565,234 @@ func _update_region_resource_values() -> void:
 
 func _update_construction_status() -> void:
 	"""Update construction status label"""
-	var build_button = get_node("RegionPanel/Body/Region/CastleLevel/ActionSection/BuildButton") as Button
+	var build_button = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/BuildButton") as Button
 	if current_region.is_castle_under_construction():
 		build_button.text = "Building"
+		build_button.disabled = true
 	elif current_region.is_castle_under_repair():
 		build_button.text = "Repairing"
+		build_button.disabled = true
 	elif current_region.has_castle_damage():
 		build_button.text = "Repair"
+		var can_repair: bool = _can_player_afford_repair() and current_region.has_castle()
+		build_button.disabled = not can_repair
 	elif current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
 		build_button.text = "Build"
+		build_button.disabled = not (_can_player_afford_any_castle() and current_region.can_build_castle())
 	else:
 		build_button.text = "Upgrade"
+		var next_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_region.get_castle_type())
+		if next_type == CastleTypeEnum.Type.NONE:
+			build_button.disabled = true
+		else:
+			build_button.disabled = not (_can_player_afford_castle(next_type) and current_region.can_upgrade_castle())
 
 func _update_mine_status() -> void:
 	"""Update mine status label"""
-	var mine_label = get_node("RegionPanel/Body/Region/Mine/Info/Search/SearchStatus") as Label
+	var mine_label = get_node("RegionPanel/Body/Region/Actions/Mine/Info/Search/SearchStatus") as Label
 	mine_label.text = current_region.get_ore_search_status_string()
 	var gold_cost: int = GameParameters.get_ore_search_cost()
-	_set_cost_value("RegionPanel/Body/Region/Mine/ActionSection/Resources/Gold", gold_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/Mine/ActionSection/Resources/Gold", gold_cost)
+	var can_search_region: bool = GameParameters.can_search_for_ore_in_region(current_region.get_region_type())
+	var can_search: bool = current_region.can_search_for_ore()
+	var can_afford: bool = _can_player_afford_ore_search()
+	_search_ore_button.disabled = not (can_search_region and can_search and can_afford)
+
+func _on_promote_region_pressed() -> void:
+	sound_manager.click_sound()
+	if current_region.get_region_level() >= RegionLevelEnum.Level.L5:
+		return
+	var next_level: RegionLevelEnum.Level = current_region.get_region_level() + 1
+	if not _can_player_afford_promotion(next_level):
+		return
+	var promotion_cost: Dictionary = GameParameters.get_promotion_cost(next_level)
+	var current_player: Player = player_manager.get_player(1)
+	if not current_player.pay_cost(promotion_cost):
+		return
+	current_region.promote_region()
+	current_region.mark_promoted_this_turn()
+	var level_name = RegionLevelEnum.level_to_string(next_level)
+	var promotion_message = "Region promoted to " + level_name + " (level " + str(int(next_level) + 1) + ")"
+	message_modal.display_message(promotion_message)
+	_refresh_current_region()
+	_request_player_status_refresh()
+
+func _on_recruit_soldiers_pressed() -> void:
+	sound_manager.click_sound()
+	ui_manager.remember_region_select(current_region)
+	hide_modal(false)
+	recruitment_modal.show_region_recruitment(current_region)
+
+func _on_build_button_pressed() -> void:
+	if current_region.is_castle_under_construction():
+		return
+	if current_region.is_castle_under_repair():
+		return
+	if current_region.has_castle_damage():
+		_on_repair_castle_pressed()
+		return
+	if current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		_on_build_castle_pressed()
+	else:
+		_on_upgrade_castle_pressed()
+
+func _on_build_castle_pressed() -> void:
+	sound_manager.click_sound()
+	if not current_region.can_build_castle():
+		return
+	if not _can_player_afford_any_castle():
+		return
+	_start_castle_construction(CastleTypeEnum.Type.OUTPOST)
+
+func _on_upgrade_castle_pressed() -> void:
+	sound_manager.click_sound()
+	if not current_region.can_upgrade_castle():
+		return
+	var current_castle_type = current_region.get_castle_type()
+	var next_castle_type = CastleTypeEnum.get_next_level(current_castle_type)
+	if next_castle_type == CastleTypeEnum.Type.NONE:
+		return
+	if not _can_player_afford_castle(next_castle_type):
+		return
+	_start_castle_construction(next_castle_type)
+
+func _on_repair_castle_pressed() -> void:
+	sound_manager.click_sound()
+	if current_region.is_castle_under_repair() or not current_region.has_castle_damage():
+		return
+	if not _can_player_afford_repair():
+		return
+	var current_player = player_manager.get_player(1)
+	if not region_manager.try_repair_castle(current_region, current_player):
+		return
+	message_modal.display_message("Repair started", "Repairs will finish in 1 turn.")
+	_refresh_current_region()
+	_request_player_status_refresh()
+
+func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
+	var construction_cost = GameParameters.get_castle_building_cost(castle_type)
+	var current_player = player_manager.get_player(1)
+	if not current_player.pay_cost(construction_cost):
+		return
+	current_region.start_castle_construction(castle_type)
+	var turns_left = current_region.get_castle_build_turns_remaining()
+	var building_name = CastleTypeEnum.type_to_string(castle_type)
+	message_modal.display_message(building_name + " will be done in " + str(turns_left) + " turn(s).")
+	_refresh_current_region()
+	_request_player_status_refresh()
+
+func _on_ore_search_pressed() -> void:
+	sound_manager.click_sound()
+	if not GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
+		return
+	if not current_region.can_search_for_ore():
+		return
+	if not _can_player_afford_ore_search():
+		return
+	var search_result = region_manager.perform_ore_search(current_region, 1, player_manager)
+	if search_result.success and search_result.has("ore_type"):
+		var ore_type = search_result.ore_type
+		var ore_type_string = ResourcesEnum.type_to_string(ore_type)
+		var ore_amount = current_region.get_resource_amount(ore_type)
+		var header = ore_type_string.capitalize() + " Found!"
+		var message = "Ore size was estimated to " + str(ore_amount) + " units."
+		message_modal.display_message(header, message)
+	elif not search_result.success:
+		var header = "Ore Search"
+		var remaining_attempts = current_region.get_ore_search_attempts_remaining()
+		var message: String
+		if remaining_attempts > 0:
+			message = "No luck this turn."
+		else:
+			message = "Ore searches exhausted."
+		message_modal.display_message(header, message)
+	_refresh_current_region()
+	_request_player_status_refresh()
+
+func _on_raise_army_pressed() -> void:
+	sound_manager.click_sound()
+	if not _region_has_army_capacity():
+		return
+	if not _can_player_afford_raise_army():
+		return
+	var current_player = player_manager.get_player(game_manager.get_current_player())
+	var raise_army_cost = GameParameters.get_raise_army_cost()
+	if current_player.get_resource_amount(ResourcesEnum.Type.GOLD) < raise_army_cost:
+		return
+	current_player.remove_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
+	var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
+	if new_army != null:
+		current_region.mark_raise_army_used()
+		var army_name = new_army.name if new_army.name else "New Army"
+		message_modal.display_message(army_name + " is being raised")
+		_refresh_current_region()
+		_request_player_status_refresh()
+	else:
+		current_player.add_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
+
+func _calculate_repair_cost() -> Dictionary:
+	return current_region.get_castle_repair_cost()
+
+func _can_player_afford_repair() -> bool:
+	var current_player = player_manager.get_player(1)
+	var repair_cost = _calculate_repair_cost()
+	return current_player.can_afford_cost(repair_cost)
+
+func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
+	var promotion_cost = GameParameters.get_promotion_cost(target_level)
+	var current_player = player_manager.get_player(1)
+	var player_resources = {
+		ResourcesEnum.Type.GOLD: current_player.get_resource_amount(ResourcesEnum.Type.GOLD),
+		ResourcesEnum.Type.FOOD: current_player.get_resource_amount(ResourcesEnum.Type.FOOD),
+		ResourcesEnum.Type.WOOD: current_player.get_resource_amount(ResourcesEnum.Type.WOOD),
+		ResourcesEnum.Type.IRON: current_player.get_resource_amount(ResourcesEnum.Type.IRON),
+		ResourcesEnum.Type.STONE: current_player.get_resource_amount(ResourcesEnum.Type.STONE)
+	}
+	if not GameParameters.can_afford_promotion(target_level, player_resources):
+		return false
+	if game_manager.is_player_computer(current_player.get_player_id()):
+		return _passes_food_upgrade_safeguard(current_player.get_player_id(), promotion_cost)
+	return true
+
+func _passes_food_upgrade_safeguard(player_id: int, promotion_cost: Dictionary) -> bool:
+	var food_cost = int(promotion_cost.get(ResourcesEnum.Type.FOOD, 0))
+	return player_manager.meets_food_upgrade_safeguard(player_id, food_cost)
+
+func _can_player_afford_castle(castle_type: CastleTypeEnum.Type) -> bool:
+	var current_player = player_manager.get_player(1)
+	var player_resources = {
+		ResourcesEnum.Type.GOLD: current_player.get_resource_amount(ResourcesEnum.Type.GOLD),
+		ResourcesEnum.Type.FOOD: current_player.get_resource_amount(ResourcesEnum.Type.FOOD),
+		ResourcesEnum.Type.WOOD: current_player.get_resource_amount(ResourcesEnum.Type.WOOD),
+		ResourcesEnum.Type.IRON: current_player.get_resource_amount(ResourcesEnum.Type.IRON),
+		ResourcesEnum.Type.STONE: current_player.get_resource_amount(ResourcesEnum.Type.STONE)
+	}
+	return GameParameters.can_afford_castle(castle_type, player_resources)
+
+func _can_player_afford_any_castle() -> bool:
+	return _can_player_afford_castle(CastleTypeEnum.Type.OUTPOST)
+
+func _can_player_afford_ore_search() -> bool:
+	var current_player = player_manager.get_player(1)
+	var search_cost = GameParameters.get_ore_search_cost()
+	return current_player.get_resource_amount(ResourcesEnum.Type.GOLD) >= search_cost
+
+func _can_player_afford_raise_army() -> bool:
+	var current_player = player_manager.get_player(1)
+	var raise_army_cost = GameParameters.get_raise_army_cost()
+	return current_player.get_resource_amount(ResourcesEnum.Type.GOLD) >= raise_army_cost
+
+func _region_has_army_capacity() -> bool:
+	return not army_manager.is_region_at_army_cap(current_region)
+
+func _request_player_status_refresh() -> void:
+	GlobalSignals.emit_signal("player_status_refresh_requested")
+
+func _refresh_current_region() -> void:
+	if _active_tab == TabType.ARMIES:
+		_update_army_display()
+	else:
+		_update_region_display()
 
 func _set_active_tab(tab: TabType) -> void:
 	_active_tab = tab
@@ -628,8 +891,15 @@ func _on_army_card_mouse_exited(index: int) -> void:
 func _on_army_card_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var army = _army_card_armies[index]
-		current_army = army
-		_select_army_for_move(army)
-		_update_army_display()
+		if army != null and army == current_army:
+			game_manager.get_army_manager().deselect_army()
+			current_army = null
+			_suppress_auto_select = true
+			_update_army_display()
+		else:
+			current_army = army
+			_suppress_auto_select = false
+			_select_army_for_move(army)
+			_update_army_display()
 		(_army_cards[index] as Control).accept_event()
 		get_viewport().set_input_as_handled()

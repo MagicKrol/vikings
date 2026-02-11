@@ -1,7 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://bus48vblq4ked"]
+[gd_scene load_steps=34 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
-[ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="2_yfl7o"]
+[ext_resource type="Texture2D" uid="uid://kcqi5jylsy6k" path="res://images/recruitment_modal.png" id="3_2n1n3"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header"]
 [ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="4_ufnl7"]
@@ -9,6 +9,21 @@
 [ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="6_gu7nv"]
 [ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/coin.png" id="7_m17ys"]
 [ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="9_xnj5v"]
+[ext_resource type="Texture2D" uid="uid://bj411futpqxj7" path="res://images/new_recruitment_item3.png" id="10_sawkk"]
+[ext_resource type="Texture2D" uid="uid://u84o41hg3ngl" path="res://images/units/peasant_card.png" id="11_i2qjs"]
+[ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="13_o875k"]
+[ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="14_oxw3w"]
+[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark (1).png" id="15_4tey2"]
+[ext_resource type="Texture2D" uid="uid://kpebeht8jn54" path="res://images/button_plus_dark.png" id="16_heyhc"]
+[ext_resource type="Texture2D" uid="uid://daw8fprkn5114" path="res://images/units/spearman_card.png" id="17_jug5e"]
+[ext_resource type="Texture2D" uid="uid://c4yugdvbtfvki" path="res://images/units/archer_card.png" id="18_dlgff"]
+[ext_resource type="Texture2D" uid="uid://b0yhn8q75k3ni" path="res://images/shield (2).png" id="18_dsg2i"]
+[ext_resource type="Texture2D" uid="uid://c7vvxbxkp7qnl" path="res://images/units/swordsman_card.png" id="19_j3j4q"]
+[ext_resource type="Texture2D" uid="uid://bi0meu6e2ofxx" path="res://images/units/crossbowman_card.png" id="20_r6a6k"]
+[ext_resource type="Texture2D" uid="uid://xtg07sirbvr0" path="res://images/units/horseman_card.png" id="21_t2bb5"]
+[ext_resource type="Texture2D" uid="uid://i4g0vdrs5eah" path="res://images/units/knight_card.png" id="22_cjcal"]
+[ext_resource type="Texture2D" uid="uid://7b50i8wxawo3" path="res://images/units/mounted_knight_card.png" id="23_kijub"]
+[ext_resource type="Texture2D" uid="uid://8ubbu3b34ola" path="res://images/units/royal_guard_card.png" id="24_nlqxe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
 draw_center = false
@@ -44,6 +59,16 @@ Button/styles/hover = SubResource("StyleBoxTexture_earim")
 Button/styles/normal = SubResource("StyleBoxTexture_earim")
 Button/styles/pressed = SubResource("StyleBoxTexture_508s8")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o7hpw"]
+bg_color = Color(0.6, 0.6, 0.6, 0.027451)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qltq3"]
+texture = ExtResource("10_sawkk")
+
+[sub_resource type="Theme" id="Theme_ghglp"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_q5a5e"]
+
 [node name="RecruitmentModal" type="Control"]
 layout_mode = 3
 anchors_preset = 8
@@ -51,10 +76,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -400.0
-offset_top = -300.0
-offset_right = 500.0
-offset_bottom = 300.0
+offset_left = -440.0
+offset_top = -540.0
+offset_right = 460.0
+offset_bottom = 60.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("3_standard")
@@ -62,12 +87,15 @@ script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 900.0
-offset_bottom = 600.0
-texture = ExtResource("2_yfl7o")
-expand_mode = 3
+offset_left = 50.0
+offset_top = 100.0
+offset_right = 1350.0
+offset_bottom = 1030.0
+texture = ExtResource("3_2n1n3")
+expand_mode = 2
 
 [node name="ArmyTexture" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 15.0
 offset_top = 150.0
@@ -77,6 +105,7 @@ texture = ExtResource("4_ufnl7")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 900.0
 offset_bottom = 600.0
@@ -703,6 +732,7 @@ theme = ExtResource("5_s8e3m")
 text = "Continue"
 
 [node name="Info" type="Control" parent="."]
+visible = false
 z_index = 1050
 anchors_preset = 0
 offset_left = -350.0
@@ -1123,3 +1153,1712 @@ theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "50% attack bonus when defending"
 autowrap_mode = 2
+
+[node name="Panel2" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 110.0
+offset_right = 1350.0
+offset_bottom = 1010.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_o7hpw")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="Panel2"]
+layout_mode = 0
+offset_right = 1300.0
+offset_bottom = 900.0
+
+[node name="Header" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderSection" type="VBoxContainer" parent="Panel2/HBoxContainer/Header"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/Header/HeaderSection"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="Panel2/HBoxContainer/Header/HeaderSection"]
+layout_mode = 2
+theme = ExtResource("4_header")
+text = "Recruitment at Bornholm"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/Header"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[node name="AvailableRecruits" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits"]
+custom_minimum_size = Vector2(50, 10)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/HBoxContainer/AvailableRecruits"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+layout_mode = 2
+text = "Recruits Available:"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1203"
+horizontal_alignment = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Body" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+layout_mode = 2
+
+[node name="Units" type="VBoxContainer" parent="Panel2/HBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="FirstRow" type="HBoxContainer" parent="Panel2/HBoxContainer/Body/Units"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Peasants" type="Panel" parent="Panel2/HBoxContainer/Body/Units/FirstRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("11_i2qjs")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Peasants"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="Spearmen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/FirstRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("17_jug5e")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Spearmen"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="Archers" type="Panel" parent="Panel2/HBoxContainer/Body/Units/FirstRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("18_dlgff")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Archers"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="SecondRow" type="HBoxContainer" parent="Panel2/HBoxContainer/Body/Units"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Swordsmen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/SecondRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("19_j3j4q")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Swordsmen"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="Crossbowmen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/SecondRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("20_r6a6k")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Crossbowmen"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="Horsemen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/SecondRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("21_t2bb5")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Horsemen"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="ThirdRow" type="HBoxContainer" parent="Panel2/HBoxContainer/Body/Units"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Knights" type="Panel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("22_cjcal")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Knights"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="MountedKnights" type="Panel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("23_kijub")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Mounted Knights"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="RoyalGuard" type="Panel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
+
+[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 0
+offset_left = 12.0
+offset_top = 45.0
+offset_right = 127.0
+offset_bottom = 215.0
+texture = ExtResource("24_nlqxe")
+
+[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 125.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Royal Guard"
+
+[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_left = 295.0
+offset_top = 8.0
+offset_right = 319.0
+offset_bottom = 32.0
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 7.0
+offset_right = 368.0
+offset_bottom = 31.0
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 208.0
+offset_right = 131.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 208.0
+offset_right = 67.0
+offset_bottom = 239.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 22
+text = "10"
+
+[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 196.0
+offset_right = 89.0
+offset_bottom = 338.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
+theme_override_font_sizes/normal_font_size = 100
+text = "⚔"
+
+[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+modulate = Color(0.836755, 0.836755, 0.836755, 1)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 206.0
+offset_right = 238.0
+offset_bottom = 392.0
+scale = Vector2(0.17, 0.17)
+texture = ExtResource("18_dsg2i")
+
+[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 45.0
+offset_right = 292.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Abilities:
+"
+
+[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("15_4tey2")
+
+[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_ghglp")
+texture = ExtResource("16_heyhc")
+
+[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("5_s8e3m")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_q5a5e")
+text = "Recruit"
+
+[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+offset_left = 146.0
+offset_top = 73.0
+offset_right = 293.0
+offset_bottom = 151.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "• Mobility
+• Siege
+• Charge"
+
+[node name="TotalSection" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/TotalSection"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/HBoxContainer/TotalSection"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+text = "Total Cost:"
+
+[node name="TextureRect2" type="TextureRect" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("14_oxw3w")
+expand_mode = 2
+
+[node name="TotalValue" type="Label" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1231
+"
+
+[node name="TextureRect3" type="TextureRect" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("13_o875k")
+expand_mode = 2
+
+[node name="TotalHiredValue" type="Label" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "343"
+
+[node name="MarginContainer3" type="MarginContainer" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+
+[node name="MarginContainer4" type="MarginContainer" parent="Panel2/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ButtonSection" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/HBoxContainer/ButtonSection"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Panel2"]
+clip_contents = true
+custom_minimum_size = Vector2(150, 0)
+offset_left = 1122.0
+offset_top = 8.0
+offset_right = 1272.0
+offset_bottom = 47.0
+theme = ExtResource("5_s8e3m")
+text = "Close"

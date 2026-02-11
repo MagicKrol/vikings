@@ -27,6 +27,8 @@ func show_transfer_selection(source_army_param: Army, region: Region, other_armi
 	if source_army_param == null or region == null:
 		hide_modal()
 		return
+	ui_manager.remember_army_select(source_army_param, region)
+	info_modal.hide_modal(false)
 	
 	source_army = source_army_param
 	current_region = region
@@ -158,6 +160,7 @@ func _on_back_button_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
 	hide_modal()
+	ui_manager.restore_select_context()
 
 
 func _on_back_tooltip_hovered() -> void:

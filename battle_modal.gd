@@ -120,6 +120,8 @@ func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> 
 	if army == null or region == null:
 		hide_modal()
 		return
+	var info_modal = get_node("../InfoModal") as InfoModal
+	info_modal.hide_modal(false)
 	
 	DebugLogger.log("Withdrawal", "BattleModal.show_battle attacker=" + str(army.get_display_name()) + " defender_region=" + str(region.get_region_name()))
 	attacker_manual_withdraw_requested = false

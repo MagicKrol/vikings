@@ -1,0 +1,162 @@
+[gd_scene load_steps=10 format=3 uid="uid://bus8spxhrs0li"]
+
+[ext_resource type="Texture2D" uid="uid://qql18jjjxg5w" path="res://images/icons/peasant_icon (1).png" id="1_xtvpx"]
+[ext_resource type="Texture2D" uid="uid://beovaykfjibgt" path="res://images/icons/spearman_icon.png" id="2_hbhx4"]
+[ext_resource type="Texture2D" uid="uid://dwty4t4p7r2el" path="res://images/icons/archer_icon (1).png" id="3_u7no7"]
+[ext_resource type="Texture2D" uid="uid://beyb6iehw00hl" path="res://images/icons/swordsmen_icon (1).png" id="4_kqpiy"]
+[ext_resource type="Texture2D" uid="uid://hx8sjqxy1pt6" path="res://images/icons/horsemen_icon.png" id="5_r87a7"]
+[ext_resource type="Texture2D" uid="uid://blmyfeyygvolu" path="res://images/icons/crossbowman_icon.png" id="6_cc7h3"]
+[ext_resource type="Texture2D" uid="uid://c36hwy1ajmmce" path="res://images/icons/knight_icon.png" id="7_o4cbr"]
+[ext_resource type="Texture2D" uid="uid://by03mrow4b6w6" path="res://images/icons/mounted_knight_icon.png" id="8_qbf6u"]
+[ext_resource type="Texture2D" uid="uid://cqrxrtvdnpkx6" path="res://images/icons/royal_guard_icon.png" id="9_gctnt"]
+
+[node name="GarrisonInfo" type="HBoxContainer"]
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Peasants" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Peasants"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("1_xtvpx")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Peasants"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "23"
+horizontal_alignment = 1
+
+[node name="Spearmen" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="Spearmen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("2_hbhx4")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Spearmen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+
+[node name="Archers" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Archers"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("3_u7no7")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Archers"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+
+[node name="Swordsmen" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Swordsmen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("4_kqpiy")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Swordsmen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "22"
+horizontal_alignment = 1
+
+[node name="Horsemen" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Horsemen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("5_r87a7")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Horsemen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+
+[node name="Crossbowmen" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Crossbowmen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("6_cc7h3")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Crossbowmen"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+
+[node name="Knights" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="Knights"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("7_o4cbr")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="Knights"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+
+[node name="MountedKnights" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="MountedKnights"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("8_qbf6u")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="MountedKnights"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1
+
+[node name="RoyalGuard" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="RoyalGuard"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("9_gctnt")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="RoyalGuard"]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+text = "10"
+horizontal_alignment = 1

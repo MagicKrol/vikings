@@ -853,19 +853,23 @@ func get_ore_search_status_string() -> String:
 	"""Get a human-readable string describing ore search status"""
 	if not GameParameters.can_search_for_ore_in_region(region_type):
 		return "No ore"
-	
-	if ore_search_attempts_remaining <= 0:
-		return "All ore search attempts exhausted"
-	
-	var status = str(ore_search_attempts_remaining) + " searches"
 
-	if not discovered_ores.is_empty():
-		status += "\nDiscovered ores: "
+	if ore_search_attempts_remaining <= 0:
+		if discovered_ores.is_empty():
+			return "No ore"
 		var ore_names: Array[String] = []
 		for ore in discovered_ores:
 			ore_names.append(ResourcesEnum.type_to_string(ore))
-		status += ", ".join(ore_names)
-	
+		return ", ".join(ore_names) + " Found"
+
+	var status = str(ore_search_attempts_remaining) + " searches"
+
+	if not discovered_ores.is_empty():
+		var ore_names: Array[String] = []
+		for ore in discovered_ores:
+			ore_names.append(ResourcesEnum.type_to_string(ore))
+		status = ", ".join(ore_names) + " Found"
+
 	return status
 
 # Ownership tracking methods

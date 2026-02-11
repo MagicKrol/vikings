@@ -170,6 +170,8 @@ func show_recruitment(army: Army, region: Region) -> void:
 	if army == null or region == null:
 		hide_modal()
 		return
+	ui_manager.remember_army_select(army, region)
+	info_modal.hide_modal(false)
 	
 	target_army = army
 	target_region = region
@@ -192,6 +194,8 @@ func show_region_recruitment(region: Region) -> void:
 	if region == null:
 		hide_modal()
 		return
+	ui_manager.remember_region_select(region)
+	info_modal.hide_modal(false)
 	
 	target_army = null  # No specific army, recruiting to garrison
 	target_region = region
@@ -231,6 +235,7 @@ func hide_modal() -> void:
 	
 	if ui_manager:
 		ui_manager.set_modal_active(false)
+		ui_manager.restore_select_context()
 
 func _update_display() -> void:
 	"""Update the display with current recruitment information"""
@@ -526,6 +531,7 @@ func _on_continue_pressed() -> void:
 	# Set modal mode inactive
 	if ui_manager:
 		ui_manager.set_modal_active(false)
+		ui_manager.restore_select_context()
 
 func _apply_recruitment() -> void:
 	"""Apply the recruitment to the army/garrison and region"""
