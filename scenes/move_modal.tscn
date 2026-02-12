@@ -161,18 +161,18 @@ text = "Cancel MoVE"
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = -820.0
-offset_top = 100.0
-offset_right = -570.0
-offset_bottom = 200.0
+offset_left = 800.0
+offset_top = -800.0
+offset_right = 1050.0
+offset_bottom = -700.0
 texture = ExtResource("5_qply4")
 
 [node name="Panel2" type="Panel" parent="."]
 layout_mode = 0
-offset_left = -820.0
-offset_top = 100.0
-offset_right = -570.0
-offset_bottom = 200.0
+offset_left = 800.0
+offset_top = -800.0
+offset_right = 1050.0
+offset_bottom = -700.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
@@ -223,5 +223,5 @@ text = "Next army"
 
 [node name="Label" type="Label" parent="Panel2/List/ButtonSection"]
 layout_mode = 2
-text = "(Press Tab)"
+text = "(Press Space)"
 horizontal_alignment = 1

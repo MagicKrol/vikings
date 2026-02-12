@@ -145,6 +145,7 @@ offset_right = 247.0
 offset_bottom = 285.0
 
 [node name="RecruitmentModal" parent="UI" instance=ExtResource("18_recru")]
+visible = false
 
 [node name="CallToArmsModal" parent="UI" instance=ExtResource("19_callarms")]
 visible = false

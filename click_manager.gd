@@ -212,6 +212,9 @@ func _handle_region_click(region_container: Node) -> void:
 		return
 	var tutorial_region_matched := false
 	if _is_move_flow_active():
+		if _army_manager != null and region_container == _army_manager.selected_region_container:
+			_army_manager.deselect_army()
+			return
 		var visual_manager = _game_manager.get_visual_manager()
 		if visual_manager and visual_manager.has_move_region_highlights():
 			var allowed_ids = visual_manager.get_move_region_highlight_ids()
@@ -373,6 +376,9 @@ func _handle_editor_region_click(region_container: Node) -> void:
 func _handle_army_selection_and_movement(region_container: Node) -> void:
 	# If we have a selected army, prioritize movement to the clicked region
 	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
+		if region_container == _army_manager.selected_region_container:
+			_army_manager.deselect_army()
+			return
 		var movement_points = _army_manager.selected_army.get_movement_points()
 		DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
 		var target_region = region_container as Region

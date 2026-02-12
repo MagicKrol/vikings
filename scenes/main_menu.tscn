@@ -1497,6 +1497,7 @@ text = " Select Map "
 
 [node name="Panel4" type="Panel" parent="CustomMap"]
 visible = false
+layout_mode = 0
 offset_left = 1360.0
 offset_top = 200.0
 offset_right = 1895.0

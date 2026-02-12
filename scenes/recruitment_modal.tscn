@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://bus48vblq4ked"]
+[gd_scene load_steps=35 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
 [ext_resource type="Texture2D" uid="uid://kcqi5jylsy6k" path="res://images/recruitment_modal.png" id="3_2n1n3"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://xtg07sirbvr0" path="res://images/units/horseman_card.png" id="21_t2bb5"]
 [ext_resource type="Texture2D" uid="uid://i4g0vdrs5eah" path="res://images/units/knight_card.png" id="22_cjcal"]
 [ext_resource type="Texture2D" uid="uid://7b50i8wxawo3" path="res://images/units/mounted_knight_card.png" id="23_kijub"]
+[ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="23_t7glg"]
 [ext_resource type="Texture2D" uid="uid://8ubbu3b34ola" path="res://images/units/royal_guard_card.png" id="24_nlqxe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
@@ -1154,7 +1155,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "50% attack bonus when defending"
 autowrap_mode = 2
 
-[node name="Panel2" type="Panel" parent="."]
+[node name="Recruitment" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 50.0
 offset_top = 110.0
@@ -1162,82 +1163,82 @@ offset_right = 1350.0
 offset_bottom = 1010.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_o7hpw")
 
-[node name="HBoxContainer" type="VBoxContainer" parent="Panel2"]
+[node name="HBoxContainer" type="VBoxContainer" parent="Recruitment"]
 layout_mode = 0
 offset_right = 1300.0
 offset_bottom = 900.0
 
-[node name="Header" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+[node name="Header" type="VBoxContainer" parent="Recruitment/HBoxContainer"]
 layout_mode = 2
 
-[node name="HeaderSection" type="VBoxContainer" parent="Panel2/HBoxContainer/Header"]
+[node name="HeaderSection" type="VBoxContainer" parent="Recruitment/HBoxContainer/Header"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/Header/HeaderSection"]
+[node name="MarginContainer" type="MarginContainer" parent="Recruitment/HBoxContainer/Header/HeaderSection"]
 custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 
-[node name="RegionName" type="Label" parent="Panel2/HBoxContainer/Header/HeaderSection"]
+[node name="RegionName" type="Label" parent="Recruitment/HBoxContainer/Header/HeaderSection"]
 layout_mode = 2
 theme = ExtResource("4_header")
 text = "Recruitment at Bornholm"
 horizontal_alignment = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/Header"]
+[node name="MarginContainer2" type="MarginContainer" parent="Recruitment/HBoxContainer/Header"]
 custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 
-[node name="AvailableRecruits" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+[node name="AvailableRecruits" type="VBoxContainer" parent="Recruitment/HBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits"]
+[node name="MarginContainer" type="MarginContainer" parent="Recruitment/HBoxContainer/AvailableRecruits"]
 custom_minimum_size = Vector2(50, 10)
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/HBoxContainer/AvailableRecruits"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Recruitment/HBoxContainer/AvailableRecruits"]
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+[node name="Label" type="Label" parent="Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer"]
 layout_mode = 2
 text = "Recruits Available:"
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer"]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="Value" type="Label" parent="Panel2/HBoxContainer/AvailableRecruits/HBoxContainer"]
+[node name="Value" type="Label" parent="Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "1203"
 horizontal_alignment = 1
 
-[node name="MarginContainer3" type="MarginContainer" parent="Panel2/HBoxContainer/AvailableRecruits"]
+[node name="MarginContainer3" type="MarginContainer" parent="Recruitment/HBoxContainer/AvailableRecruits"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="Body" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+[node name="Body" type="VBoxContainer" parent="Recruitment/HBoxContainer"]
 layout_mode = 2
 
-[node name="Units" type="VBoxContainer" parent="Panel2/HBoxContainer/Body"]
+[node name="Units" type="VBoxContainer" parent="Recruitment/HBoxContainer/Body"]
 layout_mode = 2
 theme_override_constants/separation = 7
 
-[node name="FirstRow" type="HBoxContainer" parent="Panel2/HBoxContainer/Body/Units"]
+[node name="FirstRow" type="HBoxContainer" parent="Recruitment/HBoxContainer/Body/Units"]
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="Peasants" type="Panel" parent="Panel2/HBoxContainer/Body/Units/FirstRow"]
+[node name="Peasants" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -1246,7 +1247,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("11_i2qjs")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -1256,7 +1257,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Peasants"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
+visible = false
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
@@ -1266,17 +1268,18 @@ offset_bottom = 32.0
 texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
+visible = false
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -1287,7 +1290,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -1297,7 +1300,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -1307,7 +1310,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -1317,7 +1320,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -1328,7 +1331,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -1338,7 +1341,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -1349,7 +1352,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -1358,7 +1361,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -1368,7 +1371,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -1382,7 +1385,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -1393,23 +1396,21 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• Siege Laborer"
 
-[node name="Spearmen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/FirstRow"]
+[node name="Spearmen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -1418,7 +1419,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("17_jug5e")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -1428,7 +1429,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Spearmen"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+visible = false
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
@@ -1438,17 +1440,18 @@ offset_bottom = 32.0
 texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+visible = false
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -1459,7 +1462,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -1469,7 +1472,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -1479,7 +1482,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -1489,7 +1492,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -1500,7 +1503,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -1510,7 +1513,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -1521,7 +1524,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -1530,7 +1533,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -1540,7 +1543,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -1554,7 +1557,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -1565,23 +1568,23 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• Long spears
+• Siege Laborer
+• Defender"
 
-[node name="Archers" type="Panel" parent="Panel2/HBoxContainer/Body/Units/FirstRow"]
+[node name="Archers" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -1590,7 +1593,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("18_dlgff")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -1600,27 +1603,27 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Archers"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
 offset_top = 8.0
 offset_right = 319.0
 offset_bottom = 32.0
-texture = ExtResource("14_oxw3w")
+texture = ExtResource("13_o875k")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -1631,7 +1634,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -1641,7 +1644,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -1651,7 +1654,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -1661,7 +1664,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -1672,7 +1675,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -1682,7 +1685,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -1693,7 +1696,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -1702,7 +1705,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -1712,7 +1715,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -1726,7 +1729,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -1737,28 +1740,27 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/FirstRow/Archers"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• Ranged
+• Back Rank"
 
-[node name="SecondRow" type="HBoxContainer" parent="Panel2/HBoxContainer/Body/Units"]
+[node name="SecondRow" type="HBoxContainer" parent="Recruitment/HBoxContainer/Body/Units"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Swordsmen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/SecondRow"]
+[node name="Swordsmen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -1767,7 +1769,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("19_j3j4q")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -1777,7 +1779,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Swordsmen"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+visible = false
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
@@ -1787,17 +1790,18 @@ offset_bottom = 32.0
 texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+visible = false
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -1808,7 +1812,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -1818,7 +1822,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -1828,7 +1832,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -1838,7 +1842,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -1849,7 +1853,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -1859,7 +1863,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -1870,7 +1874,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -1879,7 +1883,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -1889,7 +1893,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -1903,7 +1907,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -1914,23 +1918,21 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• Siege Laborer"
 
-[node name="Crossbowmen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/SecondRow"]
+[node name="Crossbowmen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -1939,7 +1941,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("20_r6a6k")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -1949,27 +1951,27 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Crossbowmen"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
 offset_top = 8.0
 offset_right = 319.0
 offset_bottom = 32.0
-texture = ExtResource("14_oxw3w")
+texture = ExtResource("13_o875k")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -1980,7 +1982,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -1990,7 +1992,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -2000,7 +2002,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -2010,7 +2012,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -2021,7 +2023,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -2031,7 +2033,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -2042,7 +2044,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -2051,7 +2053,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -2061,7 +2063,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -2075,7 +2077,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -2086,23 +2088,23 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• Ranged
+• Back Rank
+• Armor Piercing"
 
-[node name="Horsemen" type="Panel" parent="Panel2/HBoxContainer/Body/Units/SecondRow"]
+[node name="Horsemen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -2111,7 +2113,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("21_t2bb5")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -2121,7 +2123,8 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Horsemen"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+visible = false
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
@@ -2131,17 +2134,18 @@ offset_bottom = 32.0
 texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+visible = false
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -2152,7 +2156,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -2162,7 +2166,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -2172,7 +2176,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -2182,7 +2186,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -2193,7 +2197,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -2203,7 +2207,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -2214,7 +2218,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -2223,7 +2227,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -2233,7 +2237,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -2247,7 +2251,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -2258,7 +2262,7 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2266,20 +2270,20 @@ offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 text = "• Mobility
-• Siege
+• Flanker
 • Charge"
 
-[node name="ThirdRow" type="HBoxContainer" parent="Panel2/HBoxContainer/Body/Units"]
+[node name="ThirdRow" type="HBoxContainer" parent="Recruitment/HBoxContainer/Body/Units"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Knights" type="Panel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow"]
+[node name="Knights" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -2288,7 +2292,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("22_cjcal")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -2298,27 +2302,27 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Knights"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
 offset_top = 8.0
 offset_right = 319.0
 offset_bottom = 32.0
-texture = ExtResource("14_oxw3w")
+texture = ExtResource("23_t7glg")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -2329,7 +2333,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -2339,7 +2343,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -2349,7 +2353,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -2359,7 +2363,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -2370,7 +2374,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -2380,7 +2384,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -2391,7 +2395,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -2400,7 +2404,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -2410,7 +2414,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -2424,7 +2428,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -2435,23 +2439,21 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/Knights"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• None"
 
-[node name="MountedKnights" type="Panel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow"]
+[node name="MountedKnights" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -2460,7 +2462,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("23_kijub")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -2470,27 +2472,27 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Mounted Knights"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
 offset_top = 8.0
 offset_right = 319.0
 offset_bottom = 32.0
-texture = ExtResource("14_oxw3w")
+texture = ExtResource("23_t7glg")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -2501,7 +2503,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -2511,7 +2513,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -2521,7 +2523,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -2531,7 +2533,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -2542,7 +2544,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -2552,7 +2554,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -2563,7 +2565,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -2572,7 +2574,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -2582,7 +2584,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -2596,7 +2598,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -2607,23 +2609,22 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
+text = "• Flanker
 • Charge"
 
-[node name="RoyalGuard" type="Panel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow"]
+[node name="RoyalGuard" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow"]
 custom_minimum_size = Vector2(400, 245)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qltq3")
 
-[node name="UnitImage" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="UnitImage" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(50, 100)
 layout_mode = 0
 offset_left = 12.0
@@ -2632,7 +2633,7 @@ offset_right = 127.0
 offset_bottom = 215.0
 texture = ExtResource("24_nlqxe")
 
-[node name="UnitName" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="UnitName" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
@@ -2642,27 +2643,27 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Royal Guard"
 
-[node name="Resource1" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="Resource1" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 0
 offset_left = 295.0
 offset_top = 8.0
 offset_right = 319.0
 offset_bottom = 32.0
-texture = ExtResource("14_oxw3w")
+texture = ExtResource("23_t7glg")
 expand_mode = 2
 
-[node name="Resource2" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="Resource2" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 0
 offset_left = 344.0
 offset_top = 7.0
 offset_right = 368.0
 offset_bottom = 31.0
-texture = ExtResource("13_o875k")
+texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="Resource1Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="Resource1Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 324.0
 offset_top = 5.0
@@ -2673,7 +2674,7 @@ theme_override_font_sizes/font_size = 24
 text = "1
 "
 
-[node name="Resource2Cost" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="Resource2Cost" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 5.0
@@ -2683,7 +2684,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 24
 text = "1"
 
-[node name="DefenseValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="DefenseValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 112.0
 offset_top = 208.0
@@ -2693,7 +2694,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "15"
 
-[node name="AttackValue" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="AttackValue" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 208.0
@@ -2703,7 +2704,7 @@ theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 22
 text = "10"
 
-[node name="AttackIcon" type="RichTextLabel" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="AttackIcon" type="RichTextLabel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 196.0
@@ -2714,7 +2715,7 @@ theme_override_colors/default_color = Color(0.835294, 0.835294, 0.835294, 1)
 theme_override_font_sizes/normal_font_size = 100
 text = "⚔"
 
-[node name="DefenseIcon" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="DefenseIcon" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 modulate = Color(0.836755, 0.836755, 0.836755, 1)
 layout_mode = 0
 offset_left = 82.0
@@ -2724,7 +2725,7 @@ offset_bottom = 392.0
 scale = Vector2(0.17, 0.17)
 texture = ExtResource("18_dsg2i")
 
-[node name="AbilitiesLabel" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="AbilitiesLabel" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 145.0
 offset_top = 45.0
@@ -2735,7 +2736,7 @@ theme_override_font_sizes/font_size = 20
 text = "Abilities:
 "
 
-[node name="ButtonMinus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(35, 25)
 offset_left = 218.0
 offset_top = 167.0
@@ -2744,7 +2745,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("15_4tey2")
 
-[node name="ButtonPlus" type="TextureRect" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="ButtonPlus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(35, 25)
 layout_mode = 0
 offset_left = 327.0
@@ -2754,7 +2755,7 @@ offset_bottom = 194.0
 theme = SubResource("Theme_ghglp")
 texture = ExtResource("16_heyhc")
 
-[node name="RecruitButton" type="Button" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="RecruitButton" type="Button" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 offset_left = 219.0
@@ -2768,7 +2769,7 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_q5a5e")
 text = "Recruit"
 
-[node name="Count" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="Count" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 layout_mode = 0
 offset_left = 277.0
 offset_top = 166.0
@@ -2779,81 +2780,80 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Panel2/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Siege
-• Charge"
+text = "• Multi attack
+• Armor Piercing"
 
-[node name="TotalSection" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+[node name="TotalSection" type="VBoxContainer" parent="Recruitment/HBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/TotalSection"]
+[node name="MarginContainer2" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/HBoxContainer/TotalSection"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Recruitment/HBoxContainer/TotalSection"]
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="TotalLabel" type="Label" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TotalLabel" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 text = "Total Cost:"
 
-[node name="TextureRect2" type="TextureRect" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TextureRect2" type="TextureRect" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="TotalValue" type="Label" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TotalValue" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "1231
 "
 
-[node name="TextureRect3" type="TextureRect" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TextureRect3" type="TextureRect" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("13_o875k")
 expand_mode = 2
 
-[node name="TotalHiredValue" type="Label" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TotalHiredValue" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "343"
 
-[node name="MarginContainer3" type="MarginContainer" parent="Panel2/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 
-[node name="MarginContainer4" type="MarginContainer" parent="Panel2/HBoxContainer"]
+[node name="MarginContainer4" type="MarginContainer" parent="Recruitment/HBoxContainer"]
 visible = false
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="ButtonSection" type="VBoxContainer" parent="Panel2/HBoxContainer"]
+[node name="ButtonSection" type="VBoxContainer" parent="Recruitment/HBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel2/HBoxContainer/ButtonSection"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Recruitment/HBoxContainer/ButtonSection"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Panel2/HBoxContainer/ButtonSection/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Recruitment/HBoxContainer/ButtonSection/HBoxContainer"]
 custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Panel2"]
+[node name="Button" type="Button" parent="Recruitment"]
 clip_contents = true
 custom_minimum_size = Vector2(150, 0)
 offset_left = 1122.0

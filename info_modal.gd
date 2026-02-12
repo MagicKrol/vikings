@@ -620,7 +620,6 @@ func _on_promote_region_pressed() -> void:
 func _on_recruit_soldiers_pressed() -> void:
 	sound_manager.click_sound()
 	ui_manager.remember_region_select(current_region)
-	hide_modal(false)
 	recruitment_modal.show_region_recruitment(current_region)
 
 func _on_build_button_pressed() -> void:

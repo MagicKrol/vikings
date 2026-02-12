@@ -206,7 +206,8 @@ func suppress_turn_modal_for_movement(enabled: bool) -> void:
 
 func _update_turn_modal_visibility() -> void:
 	if _turn_modal:
-		_turn_modal.visible = not is_modal_active and not _turn_modal_suppressed and not _overlay_suppressed and not _move_selection_active
+		var allow_info_modal: bool = is_only_info_modal_visible()
+		_turn_modal.visible = (not is_modal_active or allow_info_modal) and not _turn_modal_suppressed and not _overlay_suppressed and not _move_selection_active
 
 func hide_region_tooltip() -> void:
 	DebugLogger.log("UIManager", "hide_region_tooltip called. visible=" + str(region_tooltip.visible))

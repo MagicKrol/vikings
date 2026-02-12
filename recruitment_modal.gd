@@ -3,10 +3,6 @@ class_name RecruitmentModal
 
 # UI elements - references to static nodes from scene
 var recruitment_title_label: Label
-var army_header_label: Label
-var recruit_header_label: Label
-var cost_header_label: Label
-var army_units_container: VBoxContainer
 var total_count_label: Label
 var total_recruit_label: Label
 var available_recruits_label: Label
@@ -14,16 +10,25 @@ var continue_button: Button
 var tutorial_manager: TutorialManager = null
 
 const UNIT_SECTIONS := [
-	{"path": "Panel/Army/UnitsSection/Peasants", "type": SoldierTypeEnum.Type.PEASANTS},
-	{"path": "Panel/Army/UnitsSection/Spearmen", "type": SoldierTypeEnum.Type.SPEARMEN},
-	{"path": "Panel/Army/UnitsSection/Archers", "type": SoldierTypeEnum.Type.ARCHERS},
-	{"path": "Panel/Army/UnitsSection/Swordmen", "type": SoldierTypeEnum.Type.SWORDSMEN},
-	{"path": "Panel/Army/UnitsSection/Crossbowmen", "type": SoldierTypeEnum.Type.CROSSBOWMEN},
-	{"path": "Panel/Army/UnitsSection/Horsemen", "type": SoldierTypeEnum.Type.HORSEMEN},
-	{"path": "Panel/Army/UnitsSection/Knights", "type": SoldierTypeEnum.Type.KNIGHTS},
-	{"path": "Panel/Army/UnitsSection/Mounted Knights", "type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS},
-	{"path": "Panel/Army/UnitsSection/Royal Guard", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
+	{"path": "Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants", "type": SoldierTypeEnum.Type.PEASANTS},
+	{"path": "Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen", "type": SoldierTypeEnum.Type.SPEARMEN},
+	{"path": "Recruitment/HBoxContainer/Body/Units/FirstRow/Archers", "type": SoldierTypeEnum.Type.ARCHERS},
+	{"path": "Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen", "type": SoldierTypeEnum.Type.SWORDSMEN},
+	{"path": "Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen", "type": SoldierTypeEnum.Type.CROSSBOWMEN},
+	{"path": "Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen", "type": SoldierTypeEnum.Type.HORSEMEN},
+	{"path": "Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights", "type": SoldierTypeEnum.Type.KNIGHTS},
+	{"path": "Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights", "type": SoldierTypeEnum.Type.MOUNTED_KNIGHTS},
+	{"path": "Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
 ]
+
+const BUTTON_MINUS_DARK = preload("res://images/button_minus_dark.png")
+const BUTTON_MINUS_LIGHT = preload("res://images/button_minus_light.png")
+const BUTTON_PLUS_DARK = preload("res://images/button_plus_dark.png")
+const BUTTON_PLUS_LIGHT = preload("res://images/button_plus_light.png")
+
+const ICON_GOLD = preload("res://images/icons/new_coin.png")
+const ICON_WOOD = preload("res://images/icons/new_forest.png")
+const ICON_IRON = preload("res://images/icons/new_iron.png")
 
 # Recruitment data
 var target_army: Army = null
@@ -66,15 +71,11 @@ func _ready():
 	visible = false
 	
 	# Get references to static UI elements from scene
-	recruitment_title_label = get_node("Panel/Army/Header/RecruitmentRegion")
-	army_header_label = get_node("Panel/Army/HeaderSection/HBoxContainer/ArmyName")
-	recruit_header_label = get_node("Panel/Army/HeaderSection/HBoxContainer/RecruitmentLabel")
-	cost_header_label = get_node("Panel/Army/HeaderSection/HBoxContainer/CostLabel")
-	army_units_container = get_node("Panel/Army/UnitsSection")
-	total_count_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalValue")
-	total_recruit_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalHiredValue")
-	available_recruits_label = get_node("Panel/Army/AvailableRecruits/HBoxContainer/Value")
-	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
+	recruitment_title_label = get_node("Recruitment/HBoxContainer/Header/HeaderSection/RegionName")
+	total_count_label = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TotalValue")
+	total_recruit_label = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TotalHiredValue")
+	available_recruits_label = get_node("Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer/Value")
+	continue_button = get_node("Recruitment/Button")
 	continue_button.name = "continue"
 	
 	# Connect button signal
@@ -83,34 +84,41 @@ func _ready():
 		continue_button.pressed.connect(func(): tutorial_manager.handle_ui_click("RecruitmentModal/" + continue_button.name))
 	
 	# Connect unit adjustment buttons
-	_connect_button_signals()
-	_setup_info_nodes()
-	_connect_info_signals()
+	#_connect_button_signals()
+	#_setup_info_nodes()
+	#_connect_info_signals()
 	
 	# Get additional manager reference
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 
 func _connect_button_signals() -> void:
 	for section_data in UNIT_SECTIONS:
-		var section = get_node(section_data.path)
-		(section.get_node("Button10") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, 10))
-		(section.get_node("Button1") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, 1))
-		(section.get_node("Button1m") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, -1))
-		(section.get_node("Button10m") as Button).pressed.connect(_on_unit_button_pressed.bind(section_data.type, -10))
+		var section: Control = get_node(section_data.path)
+		var button_minus: TextureRect = section.get_node("ButtonMinus")
+		var button_plus: TextureRect = section.get_node("ButtonPlus")
+		var recruit_button: Button = section.get_node("RecruitButton")
+		button_minus.gui_input.connect(_on_adjust_button_input.bind(section_data.type, -1))
+		button_plus.gui_input.connect(_on_adjust_button_input.bind(section_data.type, 1))
+		button_minus.mouse_entered.connect(_on_adjust_button_hover.bind(button_minus, false))
+		button_minus.mouse_exited.connect(_on_adjust_button_exit.bind(button_minus, false))
+		button_plus.mouse_entered.connect(_on_adjust_button_hover.bind(button_plus, true))
+		button_plus.mouse_exited.connect(_on_adjust_button_exit.bind(button_plus, true))
+		recruit_button.pressed.connect(_on_recruit_button_pressed.bind(section_data.type))
 
 func _connect_info_signals() -> void:
 	for section_data in UNIT_SECTIONS:
-		var section = get_node(section_data.path)
+		var section: Control = get_node(section_data.path)
+		var button_minus: Control = section.get_node("ButtonMinus")
+		var button_plus: Control = section.get_node("ButtonPlus")
+		var recruit_button: Control = section.get_node("RecruitButton")
 		section.mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
 		section.mouse_exited.connect(_on_unit_section_exit)
-		section.get_node("Button10").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
-		section.get_node("Button10").mouse_exited.connect(_on_unit_section_exit)
-		section.get_node("Button1").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
-		section.get_node("Button1").mouse_exited.connect(_on_unit_section_exit)
-		section.get_node("Button1m").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
-		section.get_node("Button1m").mouse_exited.connect(_on_unit_section_exit)
-		section.get_node("Button10m").mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
-		section.get_node("Button10m").mouse_exited.connect(_on_unit_section_exit)
+		button_minus.mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		button_minus.mouse_exited.connect(_on_unit_section_exit)
+		button_plus.mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		button_plus.mouse_exited.connect(_on_unit_section_exit)
+		recruit_button.mouse_entered.connect(_on_unit_section_hover.bind(section_data.type))
+		recruit_button.mouse_exited.connect(_on_unit_section_exit)
 
 func _setup_info_nodes() -> void:
 	info_panel = get_node("Info")
@@ -132,7 +140,7 @@ func _setup_info_nodes() -> void:
 		info_trait_desc_rows.append(trait_desc_row)
 		info_trait_name_labels.append(trait_row_label)
 		info_trait_desc_labels.append(trait_desc_label)
-	_reset_info_panel()
+	#_reset_info_panel()
 
 func _reset_info_panel() -> void:
 	for i in range(info_trait_rows.size()):
@@ -165,13 +173,34 @@ func _populate_traits(traits: Array) -> void:
 		info_trait_desc_labels[i].text = trait_desc_templates.get(display_name, UnitTraitEnum.get_description(trait_type))
 	info_panel.visible = true
 
+func _on_adjust_button_input(event: InputEvent, unit_type: SoldierTypeEnum.Type, delta: int) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_adjust_recruitment(unit_type, delta)
+
+func _on_adjust_button_hover(button: TextureRect, is_plus: bool) -> void:
+	_set_adjust_button_texture(button, is_plus, true)
+
+func _on_adjust_button_exit(button: TextureRect, is_plus: bool) -> void:
+	_set_adjust_button_texture(button, is_plus, false)
+
+func _set_adjust_button_texture(button: TextureRect, is_plus: bool, is_hover: bool) -> void:
+	if is_plus:
+		button.texture = BUTTON_PLUS_LIGHT if is_hover else BUTTON_PLUS_DARK
+	else:
+		button.texture = BUTTON_MINUS_LIGHT if is_hover else BUTTON_MINUS_DARK
+
+func _is_mouse_over_control(control: Control) -> bool:
+	return control.get_global_rect().has_point(control.get_viewport().get_mouse_position())
+
+func _set_adjust_button_enabled(button: TextureRect, enabled: bool) -> void:
+	button.mouse_filter = Control.MOUSE_FILTER_STOP if enabled else Control.MOUSE_FILTER_IGNORE
+
 func show_recruitment(army: Army, region: Region) -> void:
 	"""Show the recruitment modal with army and region information"""
 	if army == null or region == null:
 		hide_modal()
 		return
 	ui_manager.remember_army_select(army, region)
-	info_modal.hide_modal(false)
 	
 	target_army = army
 	target_region = region
@@ -195,7 +224,6 @@ func show_region_recruitment(region: Region) -> void:
 		hide_modal()
 		return
 	ui_manager.remember_region_select(region)
-	info_modal.hide_modal(false)
 	
 	target_army = null  # No specific army, recruiting to garrison
 	target_region = region
@@ -203,7 +231,7 @@ func show_region_recruitment(region: Region) -> void:
 	# Reset recruitment state
 	recruitment_counts.clear()
 	total_cost.clear()
-	_reset_info_panel()
+	#_reset_info_panel()
 	
 	# Update display
 	_update_display()
@@ -227,9 +255,7 @@ func hide_modal() -> void:
 	recruitment_counts.clear()
 	total_cost.clear()
 	
-	if info_modal != null and info_modal.visible:
-		info_modal.hide_modal(false)
-	_reset_info_panel()
+	#_reset_info_panel()
 	
 	visible = false
 	
@@ -244,14 +270,7 @@ func _update_display() -> void:
 		return
 	
 	# Update title with castle level info
-	var castle_type = target_region.get_castle_type()
-	recruitment_title_label.text = "Recruitment in " + target_region.get_region_name()
-	
-	# Update header based on recruitment type
-	if target_army != null:
-		army_header_label.text = "Army " + str(target_army.number)
-	else:
-		army_header_label.text = "Garrison"
+	recruitment_title_label.text = "Recruitment at " + target_region.get_region_name()
 	
 	# Update recruitment rows using static elements
 	_update_recruitment_display()
@@ -265,120 +284,101 @@ func _update_recruitment_display() -> void:
 		return
 	
 	var castle_type = target_region.get_castle_type()
-	
-	# Update existing unit sections (Peasants, Spearmen, Archers, etc.)
-	_update_unit_section("Peasants", SoldierTypeEnum.Type.PEASANTS, castle_type)
-	_update_unit_section("Spearmen", SoldierTypeEnum.Type.SPEARMEN, castle_type)
-	_update_unit_section("Archers", SoldierTypeEnum.Type.ARCHERS, castle_type)
-	_update_unit_section("Swordmen", SoldierTypeEnum.Type.SWORDSMEN, castle_type)
-	_update_unit_section("Crossbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, castle_type)
-	_update_unit_section("Horsemen", SoldierTypeEnum.Type.HORSEMEN, castle_type)
-	_update_unit_section("Knights", SoldierTypeEnum.Type.KNIGHTS, castle_type)
-	_update_unit_section("Mounted Knights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, castle_type)
-	_update_unit_section("Royal Guard", SoldierTypeEnum.Type.ROYAL_GUARD, castle_type)
+	for section_data in UNIT_SECTIONS:
+		_update_unit_section(section_data.path, section_data.type, castle_type)
 
-func _update_unit_section(section_name: String, unit_type: SoldierTypeEnum.Type, castle_type: CastleTypeEnum.Type) -> void:
+func _update_unit_section(section_path: String, unit_type: SoldierTypeEnum.Type, castle_type: CastleTypeEnum.Type) -> void:
 	"""Update a static unit section with current values"""
 	var is_available = GameParameters.can_recruit_unit_with_castle(unit_type, castle_type)
-	var section = get_node("Panel/Army/UnitsSection/" + section_name)
+	var section: Control = get_node(section_path)
 	
-	# Update current count
-	var current_count: int
-	if target_army != null:
-		var army_comp = target_army.get_composition()
-		current_count = army_comp.get_soldier_count(unit_type)
+	var resource1_icon: TextureRect = section.get_node("Resource1")
+	var resource2_icon: TextureRect = section.get_node("Resource2")
+	var resource1_cost_label: Label = section.get_node("Resource1Cost")
+	var resource2_cost_label: Label = section.get_node("Resource2Cost")
+	var attack_value: Label = section.get_node("AttackValue")
+	var defense_value: Label = section.get_node("DefenseValue")
+	var abilities_label: Label = section.get_node("Label10")
+	var count_label: Label = section.get_node("Count")
+	var button_minus: TextureRect = section.get_node("ButtonMinus")
+	var button_plus: TextureRect = section.get_node("ButtonPlus")
+	var recruit_button: Button = section.get_node("RecruitButton")
+	
+	attack_value.text = str(GameParameters.get_unit_stat(unit_type, "attack"))
+	defense_value.text = str(GameParameters.get_unit_stat(unit_type, "defense"))
+	
+	var count_to_hire: int = recruitment_counts.get(unit_type, 0) if is_available else 0
+	count_label.text = str(count_to_hire)
+	
+	var gold_cost: int = GameParameters.get_unit_gold_cost(unit_type)
+	var wood_cost: int = GameParameters.get_unit_wood_cost(unit_type)
+	var iron_cost: int = GameParameters.get_unit_iron_cost(unit_type)
+	
+	resource2_icon.texture = ICON_GOLD
+	resource2_cost_label.text = str(gold_cost)
+	
+	if iron_cost > 0:
+		resource1_icon.texture = ICON_IRON
+		resource1_cost_label.text = str(iron_cost)
+		resource1_icon.visible = true
+		resource1_cost_label.visible = true
+	elif wood_cost > 0:
+		resource1_icon.texture = ICON_WOOD
+		resource1_cost_label.text = str(wood_cost)
+		resource1_icon.visible = true
+		resource1_cost_label.visible = true
 	else:
-		current_count = target_region.garrison.get_soldier_count(unit_type)
+		resource1_icon.visible = false
+		resource1_cost_label.visible = false
 	
-	var value_label = section.get_node("Value")
-	value_label.text = str(current_count)
+	_set_adjust_button_texture(button_minus, false, _is_mouse_over_control(button_minus))
+	_set_adjust_button_texture(button_plus, true, _is_mouse_over_control(button_plus))
 	
-	# Update hired count
-	var hired_label = section.get_node("HiredRecruits")
-	var count_to_hire = recruitment_counts.get(unit_type, 0) if is_available else 0
-	hired_label.text = str(count_to_hire)
-	
-	# Update cost
-	var cost_label = section.get_node("Cost")
-	if is_available:
-		var unit_costs = _get_unit_costs(unit_type)
-		var cost_parts: Array[String] = []
-		if unit_costs.has(ResourcesEnum.Type.GOLD):
-			cost_parts.append("Gold: " + str(unit_costs[ResourcesEnum.Type.GOLD]))
-		if unit_costs.has(ResourcesEnum.Type.WOOD):
-			cost_parts.append("Wood: " + str(unit_costs[ResourcesEnum.Type.WOOD]))
-		if unit_costs.has(ResourcesEnum.Type.IRON):
-			cost_parts.append("Iron: " + str(unit_costs[ResourcesEnum.Type.IRON]))
-		cost_label.text = " | ".join(cost_parts) if not cost_parts.is_empty() else "Free"
-	else:
-		var unit_tier = GameParameters.get_unit_tier(unit_type)
-		var required_castle = ""
-		match unit_tier:
-			1: required_castle = "No castle required"
-			2: required_castle = "Requires Outpost"
-			3: required_castle = "Requires Keep"
-			4: required_castle = "Requires Castle"
-			5: required_castle = "Requires Stronghold"
-			_: required_castle = "Requires Castle Tier " + str(unit_tier)
-		cost_label.text = required_castle
-	
-	var button_increase_large = section.get_node("Button10") as Button
-	var button_increase_small = section.get_node("Button1") as Button
-	var button_decrease_small = section.get_node("Button1m") as Button
-	var button_decrease_large = section.get_node("Button10m") as Button
-
 	if not is_available:
-		button_increase_large.disabled = true
-		button_increase_small.disabled = true
-		button_decrease_small.disabled = true
-		button_decrease_large.disabled = true
-		button_increase_large.focus_mode = Control.FOCUS_NONE
-		button_increase_small.focus_mode = Control.FOCUS_NONE
-		button_decrease_small.focus_mode = Control.FOCUS_NONE
-		button_decrease_large.focus_mode = Control.FOCUS_NONE
+		_set_adjust_button_enabled(button_minus, false)
+		_set_adjust_button_enabled(button_plus, false)
+		recruit_button.disabled = true
+		count_label.text = "0"
 		return
-
+	
 	var can_hire_one = _can_hire_amount(unit_type, 1)
-	button_increase_small.disabled = not can_hire_one
-	button_increase_large.disabled = not can_hire_one
-	button_decrease_small.disabled = count_to_hire <= 0
-	button_decrease_large.disabled = count_to_hire <= 0
-
-	button_increase_small.focus_mode = Control.FOCUS_ALL
-	button_increase_large.focus_mode = Control.FOCUS_ALL
-	button_decrease_small.focus_mode = Control.FOCUS_ALL
-	button_decrease_large.focus_mode = Control.FOCUS_ALL
+	_set_adjust_button_enabled(button_plus, can_hire_one)
+	_set_adjust_button_enabled(button_minus, count_to_hire > 0)
+	recruit_button.disabled = count_to_hire <= 0
 
 func _update_total_row() -> void:
 	"""Update the total row with army/garrison totals and recruitment totals"""
-	# Calculate total units (army or garrison) - count all units, not just available for recruitment
-	var total_units = 0
-	if target_army != null:
-		var army_comp = target_army.get_composition()
-		for unit_type in SoldierTypeEnum.get_all_types():
-			total_units += army_comp.get_soldier_count(unit_type)
-	else:
-		# Calculate garrison totals
-		for unit_type in SoldierTypeEnum.get_all_types():
-			total_units += target_region.garrison.get_soldier_count(unit_type)
-	
-	# Calculate total recruitment
-	var total_to_hire = 0
+	var total_to_hire: int = 0
 	for count in recruitment_counts.values():
 		total_to_hire += count
 	
-	var available_recruits = target_region.get_available_recruits()
-	var remaining_recruits = max(0, available_recruits - total_to_hire)
+	var available_recruits: int = target_region.get_available_recruits()
+	var remaining_recruits: int = max(0, available_recruits - total_to_hire)
 
 	# Update labels
-	total_count_label.text = str(total_units)
-	total_recruit_label.text = str(total_to_hire)
+	var gold_total: int = total_cost.get(ResourcesEnum.Type.GOLD, 0)
+	var wood_total: int = total_cost.get(ResourcesEnum.Type.WOOD, 0)
+	var iron_total: int = total_cost.get(ResourcesEnum.Type.IRON, 0)
+	total_count_label.text = str(gold_total)
+	
+	var total_resource_icon: TextureRect = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TextureRect3")
+	if iron_total > 0:
+		total_recruit_label.text = str(iron_total)
+		total_resource_icon.texture = ICON_IRON
+		total_resource_icon.visible = true
+		total_recruit_label.visible = true
+	elif wood_total > 0:
+		total_recruit_label.text = str(wood_total)
+		total_resource_icon.texture = ICON_WOOD
+		total_resource_icon.visible = true
+		total_recruit_label.visible = true
+	else:
+		total_recruit_label.text = "0"
+		total_resource_icon.visible = false
+		total_recruit_label.visible = false
 
 	if available_recruits_label:
 		available_recruits_label.text = str(remaining_recruits)
-
-func _on_unit_button_pressed(unit_type: SoldierTypeEnum.Type, amount: int) -> void:
-	_adjust_recruitment(unit_type, amount)
 
 func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	if target_region == null or delta == 0 or player_manager == null:
@@ -387,6 +387,8 @@ func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	var castle_type = target_region.get_castle_type()
 	if not GameParameters.can_recruit_unit_with_castle(unit_type, castle_type):
 		return
+
+	_clear_other_counts(unit_type)
 
 	var current_count = recruitment_counts.get(unit_type, 0)
 	if delta > 0:
@@ -416,6 +418,29 @@ func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	_update_costs()
 	_update_recruitment_display()
 	_update_total_row()
+
+func _clear_other_counts(active_unit: SoldierTypeEnum.Type) -> void:
+	var to_clear: Array[SoldierTypeEnum.Type] = []
+	for unit_type: SoldierTypeEnum.Type in recruitment_counts.keys():
+		if unit_type != active_unit:
+			to_clear.append(unit_type)
+	for unit_type: SoldierTypeEnum.Type in to_clear:
+		var count: int = recruitment_counts[unit_type]
+		if count > 0:
+			_refund_unit_cost(unit_type, count)
+	for unit_type: SoldierTypeEnum.Type in to_clear:
+		recruitment_counts.erase(unit_type)
+
+func _get_unit_abilities_text(unit_type: SoldierTypeEnum.Type) -> String:
+	var traits: Array = GameParameters.get_unit_traits(unit_type)
+	var abilities: Array[String] = []
+	if traits.has(UnitTraitEnum.Type.UNIT_TRAIT_3):
+		abilities.append("• Mobility")
+	if traits.has(UnitTraitEnum.Type.UNIT_TRAIT_8):
+		abilities.append("• Siege")
+	if traits.has(UnitTraitEnum.Type.UNIT_TRAIT_5):
+		abilities.append("• Charge")
+	return "\n".join(abilities)
 
 func _max_affordable_units(unit_costs: Dictionary, desired: int) -> int:
 	var result = desired
@@ -503,35 +528,33 @@ func _update_costs() -> void:
 	# Update player status modal to show resource changes
 	_update_player_status_modal()
 
+func _on_recruit_button_pressed(unit_type: SoldierTypeEnum.Type) -> void:
+	var count: int = recruitment_counts.get(unit_type, 0)
+	if count <= 0:
+		return
+	_apply_recruitment_for_unit(unit_type, count)
+	if target_army != null:
+		target_army.spend_movement_points(1)
+		DebugLogger.log("UISystem", "Army " + str(target_army.number) + " spent 1 movement point for recruitment (remaining: " + str(target_army.get_movement_points()) + ")")
+	recruitment_counts.clear()
+	total_cost.clear()
+	_update_recruitment_display()
+	_update_total_row()
+	_update_player_status_modal()
+
+func _apply_recruitment_for_unit(unit_type: SoldierTypeEnum.Type, count: int) -> void:
+	if target_army != null:
+		target_army.add_soldiers(unit_type, count)
+	else:
+		target_region.garrison.add_soldiers(unit_type, count)
+	target_region.hire_recruits(count)
+
 func _on_continue_pressed() -> void:
 	"""Handle Continue button press"""
 	# Play click sound
 	if sound_manager:
 		sound_manager.click_sound()
-	
-	# Apply recruitment if any units were selected
-	if not recruitment_counts.is_empty():
-		_apply_recruitment()
-		# Spend 1 movement point from army for recruitment operation (only if recruiting to specific army)
-		if target_army != null:
-			target_army.spend_movement_points(1)
-			DebugLogger.log("UISystem", "Army " + str(target_army.number) + " spent 1 movement point for recruitment (remaining: " + str(target_army.get_movement_points()) + ")")
-	
-	# Update player status modal after recruitment
-	_update_player_status_modal()
-	
-	# Clear recruitment state without refunding (since we finalized the purchase)
-	target_army = null
-	target_region = null
-	recruitment_counts.clear()
-	total_cost.clear()
-	
-	visible = false
-	
-	# Set modal mode inactive
-	if ui_manager:
-		ui_manager.set_modal_active(false)
-		ui_manager.restore_select_context()
+	hide_modal()
 
 func _apply_recruitment() -> void:
 	"""Apply the recruitment to the army/garrison and region"""
