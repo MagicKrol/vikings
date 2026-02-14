@@ -1,20 +1,17 @@
-[gd_scene load_steps=29 format=3 uid="uid://ro1oniwb0py8"]
+[gd_scene load_steps=23 format=3 uid="uid://ro1oniwb0py8"]
 
 [ext_resource type="Script" path="res://battle_modal.gd" id="1_42aob"]
 [ext_resource type="Texture2D" uid="uid://dcxj542ybccbq" path="res://images/battlemodal.png" id="2_xc5rj"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard_theme"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header_theme"]
 [ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="4_p6ehi"]
+[ext_resource type="Texture2D" uid="uid://fgx6oamjmj1w" path="res://images/transfer_modal.png" id="4_ywfvp"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="5_button_theme"]
 [ext_resource type="PackedScene" uid="uid://cl1t8s52kxq11" path="res://scenes/siege.tscn" id="7_v3a36"]
 [ext_resource type="Texture2D" uid="uid://culyo7rvrn44o" path="res://images/logo.png" id="8_0t75e"]
 [ext_resource type="Texture2D" uid="uid://bodl3ksa0bdvo" path="res://images/unit_box.png" id="9_m4w6o"]
 [ext_resource type="Texture2D" uid="uid://jeobvfp8cxvs" path="res://images/units/peasant_new_card.png" id="10_4v6q4"]
 [ext_resource type="Texture2D" uid="uid://cvc8qhag5eq35" path="res://images/test5.png" id="11_ru6sp"]
-[ext_resource type="Theme" uid="uid://bsjv66mowig4c" path="res://themes/slider.tres" id="12_hw205"]
-[ext_resource type="Texture2D" uid="uid://cth1fx4fidyub" path="res://images/slider_grab3.png" id="13_p85jm"]
-[ext_resource type="Texture2D" uid="uid://djudvcqdiwy2c" path="res://images/slider_grab_disabled.png" id="14_gn28l"]
-[ext_resource type="Texture2D" uid="uid://d1meyxtfmg24q" path="res://images/slider2.png" id="15_2w10k"]
 [ext_resource type="Texture2D" uid="uid://c5wlokly7g3c4" path="res://images/units/spearman_new_card.png" id="16_spkw5"]
 [ext_resource type="Texture2D" uid="uid://cx8o8ee63ea2f" path="res://images/units/archer_new_card.png" id="17_wkahg"]
 [ext_resource type="Texture2D" uid="uid://uciaqo58a3qa" path="res://images/units/swordman_new_card.png" id="18_gli65"]
@@ -35,18 +32,6 @@ shadow_size = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ylk8"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gui43"]
-content_margin_left = 5.0
-content_margin_top = 10.0
-content_margin_right = 5.0
-content_margin_bottom = 10.0
-texture = ExtResource("15_2w10k")
-region_rect = Rect2(-0.0961876, -0.077363, 299.121, 21.3567)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bf2p8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2b273"]
-
 [node name="BattleModal" type="Control"]
 layout_mode = 3
 anchors_preset = 8
@@ -54,22 +39,31 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -300.0
-offset_right = 370.0
-offset_bottom = 350.0
+offset_left = -390.0
+offset_top = -540.0
+offset_right = 260.0
+offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("3_standard_theme")
 script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 560.0
 offset_bottom = 650.0
 texture = ExtResource("2_xc5rj")
 
+[node name="TextureRect3" type="TextureRect" parent="."]
+offset_top = 100.0
+offset_right = 900.0
+offset_bottom = 1030.0
+texture = ExtResource("4_ywfvp")
+expand_mode = 1
+
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 50.0
 offset_top = 187.0
@@ -78,7 +72,16 @@ offset_bottom = 532.0
 texture = ExtResource("4_p6ehi")
 expand_mode = 2
 
+[node name="ArmyTexture" type="TextureRect" parent="."]
+offset_left = 20.0
+offset_top = 260.0
+offset_right = 880.0
+offset_bottom = 900.0
+texture = ExtResource("4_p6ehi")
+expand_mode = 2
+
 [node name="Panel" type="Panel" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 650.0
 offset_bottom = 650.0
@@ -597,86 +600,169 @@ text = "Continue"
 layout_mode = 2
 
 [node name="Siege" parent="." instance=ExtResource("7_v3a36")]
+offset_left = 901.0
+offset_top = 100.0
+offset_right = 1231.0
+offset_bottom = 700.0
 
-[node name="Transfer" type="Panel" parent="."]
+[node name="Battle" type="Panel" parent="."]
 custom_minimum_size = Vector2(900, 0)
 offset_top = 100.0
 offset_right = 900.0
 offset_bottom = 700.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_1ylk8")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle"]
 layout_mode = 0
 offset_right = 900.0
 offset_bottom = 600.0
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer"]
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
-[node name="Header" type="VBoxContainer" parent="Transfer/VBoxContainer"]
+[node name="Header" type="VBoxContainer" parent="Battle/VBoxContainer"]
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Header"]
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Header"]
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 text = "Soldiers Transfer"
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="SubHeader" type="VBoxContainer" parent="Transfer/VBoxContainer"]
+[node name="SubHeader" type="VBoxContainer" parent="Battle/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/SubHeader"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/SubHeader"]
 layout_mode = 2
 theme_override_constants/separation = 100
 alignment = 1
 
-[node name="Target" type="Label" parent="Transfer/VBoxContainer/SubHeader/HBoxContainer"]
+[node name="Target" type="Label" parent="Battle/VBoxContainer/SubHeader/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 text = "Army 1"
 horizontal_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/SubHeader/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/SubHeader/HBoxContainer"]
 layout_mode = 2
 texture = ExtResource("8_0t75e")
 
-[node name="Source" type="Label" parent="Transfer/VBoxContainer/SubHeader/HBoxContainer"]
+[node name="Source" type="Label" parent="Battle/VBoxContainer/SubHeader/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 text = "Army2"
 horizontal_alignment = 1
 
-[node name="MarginContainer3" type="MarginContainer" parent="Transfer/VBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="Battle/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Body" type="VBoxContainer" parent="Transfer/VBoxContainer"]
+[node name="Status" type="HBoxContainer" parent="Battle/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Status"]
+clip_contents = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="AttackerVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
+custom_minimum_size = Vector2(105, 0)
+layout_mode = 2
+text = "Vigor:"
+
+[node name="AttackerVigorValue" type="Label" parent="Battle/VBoxContainer/Status"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "90%"
+
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Status"]
+custom_minimum_size = Vector2(270, 0)
+layout_mode = 2
+
+[node name="DefenderVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+text = "Vigor:"
+
+[node name="DefenderVigorValue" type="Label" parent="Battle/VBoxContainer/Status"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "95%"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Battle/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer3" type="MarginContainer" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="AssaultText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(105, 0)
+layout_mode = 2
+text = "Engaged:"
+horizontal_alignment = 1
+
+[node name="AssaultValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "40%"
+
+[node name="MarginContainer6" type="MarginContainer" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+
+[node name="UnitName" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+text = "Unit"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/HBoxContainer2"]
+clip_contents = true
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+
+[node name="DefenderDefenseText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Defense:"
+horizontal_alignment = 1
+
+[node name="DefenderDefenseValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "0%"
+horizontal_alignment = 1
+
+[node name="Body" type="VBoxContainer" parent="Battle/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 11
 
-[node name="Units" type="VBoxContainer" parent="Transfer/VBoxContainer/Body"]
+[node name="Units" type="VBoxContainer" parent="Battle/VBoxContainer/Body"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = -7
 
-[node name="Peasants" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Peasants" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Peasants"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Peasants"]
+custom_minimum_size = Vector2(68, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Peasants/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -686,87 +772,76 @@ offset_bottom = 65.0
 texture = ExtResource("10_4v6q4")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Peasants"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Peasants"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Peasants"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Peasants"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
 layout_mode = 2
 
-[node name="Spearmen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Spearmen" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Spearmen"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Spearmen"]
+custom_minimum_size = Vector2(68, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Spearmen/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -776,87 +851,76 @@ offset_bottom = 65.0
 texture = ExtResource("16_spkw5")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Spearmen"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Spearmen"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Spearmen"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Spearmen"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
 layout_mode = 2
 
-[node name="Archers" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Archers" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Archers"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Archers"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Archers/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -866,87 +930,76 @@ offset_bottom = 65.0
 texture = ExtResource("17_wkahg")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Archers"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Archers"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Archers"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Archers/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Archers"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Archers/VBoxContainer"]
 layout_mode = 2
 
-[node name="Swordsmen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Swordsmen" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Swordsmen"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Swordsmen"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Swordsmen/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -956,87 +1009,76 @@ offset_bottom = 65.0
 texture = ExtResource("18_gli65")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Swordsmen"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Swordsmen"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Swordsmen"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Swordsmen"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
 layout_mode = 2
 
-[node name="Crosbowmen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Crosbowmen" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Crosbowmen"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Crosbowmen"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -1046,87 +1088,76 @@ offset_bottom = 65.0
 texture = ExtResource("19_64bf2")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Crosbowmen"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Crosbowmen"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Crossbowmen"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Crossbowmen"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
 layout_mode = 2
 
-[node name="Horsemen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Horsemen" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Horsemen"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Horsemen"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Horsemen/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -1136,87 +1167,76 @@ offset_bottom = 65.0
 texture = ExtResource("20_3ajvw")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Horsemen"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Horsemen"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Horsemen"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Horsemen"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
 layout_mode = 2
 
-[node name="Knights" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="Knights" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Knights"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Knights"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Knights/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -1226,87 +1246,76 @@ offset_bottom = 65.0
 texture = ExtResource("21_8rf0q")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Knights"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/Knights"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Knights"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/Knights/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Knights"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/Knights/VBoxContainer"]
 layout_mode = 2
 
-[node name="MountedKnights" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="MountedKnights" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/MountedKnights"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/MountedKnights"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/MountedKnights/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -1316,87 +1325,76 @@ offset_bottom = 65.0
 texture = ExtResource("22_3vli3")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/MountedKnights"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/MountedKnights"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Mounted Knights"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Mounted Knights"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
 layout_mode = 2
 
-[node name="RoyalGuard" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+[node name="RoyalGuard" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/RoyalGuard"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
-custom_minimum_size = Vector2(20, 20)
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/RoyalGuard"]
+custom_minimum_size = Vector2(20, 68)
 layout_mode = 2
 texture = ExtResource("9_m4w6o")
 expand_mode = 3
 
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/TextureRect"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 0
 offset_left = 5.0
@@ -1406,88 +1404,105 @@ offset_bottom = 65.0
 texture = ExtResource("23_csxdg")
 expand_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+[node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/RoyalGuard"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Battle/VBoxContainer/Body/Units/RoyalGuard"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
-layout_mode = 2
-theme = ExtResource("4_header_theme")
-theme_override_font_sizes/font_size = 20
-text = "Royal Guard"
-horizontal_alignment = 1
-
-[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
 layout_mode = 2
 texture = ExtResource("11_ru6sp")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
+[node name="Label" type="Label" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+offset_left = 50.0
 offset_top = 5.0
-offset_right = 60.0
-offset_bottom = 33.0
+offset_right = 110.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5022"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
-custom_minimum_size = Vector2(200, 25)
+[node name="Header" type="Label" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
 layout_mode = 2
-offset_left = 70.0
-offset_top = 5.0
-offset_right = 450.0
-offset_bottom = 35.0
-theme = ExtResource("12_hw205")
-theme_override_icons/grabber = ExtResource("13_p85jm")
-theme_override_icons/grabber_highlight = ExtResource("13_p85jm")
-theme_override_icons/grabber_disabled = ExtResource("14_gn28l")
-theme_override_styles/slider = SubResource("StyleBoxTexture_gui43")
-theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_bf2p8")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_2b273")
-value = 50.0
+offset_top = 6.0
+offset_right = 540.0
+offset_bottom = 34.0
+theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 20
+text = "Royal Guard"
+horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
+[node name="Label2" type="Label" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
 clip_contents = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-offset_left = 470.0
+offset_left = 420.0
 offset_top = 5.0
-offset_right = 530.0
-offset_bottom = 33.0
+offset_right = 480.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "20"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer4" type="MarginContainer" parent="Transfer/VBoxContainer"]
+[node name="MarginContainer4" type="MarginContainer" parent="Battle/VBoxContainer"]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Transfer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
+[node name="MessageSection" type="VBoxContainer" parent="Battle/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("5_button_theme")
-text = "Close"
 
-[node name="ArmyTexture" type="TextureRect" parent="."]
-offset_left = 20.0
-offset_top = 260.0
-offset_right = 880.0
-offset_bottom = 970.0
-texture = ExtResource("4_p6ehi")
-expand_mode = 2
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/MessageSection"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/MessageSection"]
+layout_mode = 2
+
+[node name="Message" type="Label" parent="Battle/VBoxContainer/MessageSection/HBoxContainer"]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+text = "asdasdaa"
+horizontal_alignment = 1
+
+[node name="MarginContainer5" type="MarginContainer" parent="Battle/VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="ButtonSection" type="VBoxContainer" parent="Battle/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/ButtonSection"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/ButtonSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="QuickResolve" type="Button" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_button_theme")
+text = "Quick Resolve"
+
+[node name="ButtonsMargin" type="MarginContainer" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_button_theme")
+text = "Continue"
