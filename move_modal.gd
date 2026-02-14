@@ -11,6 +11,9 @@ var selected_army: Army = null
 var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
+var recruitment_modal: RecruitmentModal = null
+var transfer_select_modal: TransferSelectModal = null
+var transfer_soldiers_modal: TransferSoldiersModal = null
 var tutorial_manager: TutorialManager = null
 var game_manager: GameManager = null
 var camera_controller: CameraController = null
@@ -35,6 +38,9 @@ func _ready():
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
+	recruitment_modal = get_node("../RecruitmentModal") as RecruitmentModal
+	transfer_select_modal = get_node("../TransferSelectModal") as TransferSelectModal
+	transfer_soldiers_modal = get_node("../TransferSoldiersModal") as TransferSoldiersModal
 	game_manager = get_node("../../GameManager") as GameManager
 	camera_controller = get_node("../../Camera2D") as CameraController
 	if game_manager:
@@ -44,10 +50,10 @@ func _ready():
 				make_camp_button.name = "make_camp"
 				make_camp_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + make_camp_button.name))
 			if cancel_button:
-				cancel_button.name = "cancel_move"
+				cancel_button.name = "transfer"
 				cancel_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + cancel_button.name))
 			if army_actions_button:
-				army_actions_button.name = "army_actions"
+				army_actions_button.name = "recruit"
 				army_actions_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + army_actions_button.name))
 	mouse_entered.connect(_on_mouse_entered)
 	var panel = get_node("Panel") as Control
@@ -82,11 +88,10 @@ func hide_move_modal() -> void:
 	ui_manager.set_overlay_suppressed(false)
 
 func _on_cancel_move_pressed() -> void:
-	"""Handle cancel move button press"""
-	# Play click sound
+	"""Handle transfer button press"""
 	if sound_manager:
 		sound_manager.click_sound()
-	_cancel_move()
+	_start_transfer_flow()
 
 func _cancel_move() -> void:
 	"""Cancel the current move operation"""
@@ -95,10 +100,41 @@ func _cancel_move() -> void:
 	hide_move_modal()
 
 func _on_army_actions_pressed() -> void:
-	sound_manager.click_sound()
-	var army := selected_army
-	_cancel_move()
-	info_modal.show_army_info(army)
+	if sound_manager:
+		sound_manager.click_sound()
+	_start_recruit_flow()
+
+func _start_recruit_flow() -> void:
+	if selected_army == null:
+		return
+	var army_to_recruit: Army = selected_army
+	var region_to_recruit: Region = army_to_recruit.get_parent() as Region
+	if region_to_recruit == null:
+		return
+	ui_manager.remember_army_select(army_to_recruit, region_to_recruit)
+	hide_move_modal()
+	if recruitment_modal != null:
+		recruitment_modal.show_recruitment(army_to_recruit, region_to_recruit)
+
+func _start_transfer_flow() -> void:
+	if selected_army == null:
+		return
+	var army_to_transfer: Army = selected_army
+	var region_to_transfer: Region = army_to_transfer.get_parent() as Region
+	if region_to_transfer == null:
+		return
+	ui_manager.remember_army_select(army_to_transfer, region_to_transfer)
+	var other_armies: Array[Army] = []
+	for child in region_to_transfer.get_children():
+		if child is Army and child != army_to_transfer:
+			other_armies.append(child as Army)
+	hide_move_modal()
+	if other_armies.size() > 0:
+		if transfer_select_modal != null:
+			transfer_select_modal.show_transfer_selection(army_to_transfer, region_to_transfer, other_armies)
+	else:
+		if transfer_soldiers_modal != null:
+			transfer_soldiers_modal.show_transfer_to_garrison(army_to_transfer, region_to_transfer)
 
 func _on_make_camp_pressed() -> void:
 	"""Handle Make Camp button press"""

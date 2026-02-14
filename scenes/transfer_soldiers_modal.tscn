@@ -1,12 +1,28 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3ovrt5dclfvx"]
+[gd_scene load_steps=33 format=3 uid="uid://b3ovrt5dclfvx"]
 
 [ext_resource type="Script" path="res://transfer_soldiers_modal.gd" id="1_42aob"]
-[ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="2_tajb3"]
+[ext_resource type="Texture2D" uid="uid://fgx6oamjmj1w" path="res://images/transfer_modal.png" id="3_1rsji"]
 [ext_resource type="Texture2D" uid="uid://uhjsa7ftu44m" path="res://images/modal_background2.png" id="3_hgr8j"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_1d8nt"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="5_5o6hl"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="6_standard"]
 [ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="7_button"]
+[ext_resource type="Texture2D" uid="uid://culyo7rvrn44o" path="res://images/logo.png" id="8_bnksq"]
+[ext_resource type="Texture2D" uid="uid://bodl3ksa0bdvo" path="res://images/unit_box.png" id="9_c1lhp"]
+[ext_resource type="Texture2D" uid="uid://cvc8qhag5eq35" path="res://images/test5.png" id="9_eevr4"]
+[ext_resource type="Texture2D" uid="uid://jeobvfp8cxvs" path="res://images/units/peasant_new_card.png" id="10_jdu2q"]
+[ext_resource type="Theme" uid="uid://bsjv66mowig4c" path="res://themes/slider.tres" id="10_o07qu"]
+[ext_resource type="Texture2D" uid="uid://crfkquyqx8dhs" path="res://images/slider.png" id="11_3okbx"]
+[ext_resource type="Texture2D" uid="uid://cth1fx4fidyub" path="res://images/slider_grab3.png" id="11_c2edr"]
+[ext_resource type="Texture2D" uid="uid://djudvcqdiwy2c" path="res://images/slider_grab_disabled.png" id="13_ont66"]
+[ext_resource type="Texture2D" uid="uid://c5wlokly7g3c4" path="res://images/units/spearman_new_card.png" id="16_0qquh"]
+[ext_resource type="Texture2D" uid="uid://cx8o8ee63ea2f" path="res://images/units/archer_new_card.png" id="17_pu1jv"]
+[ext_resource type="Texture2D" uid="uid://uciaqo58a3qa" path="res://images/units/swordman_new_card.png" id="18_vbr0m"]
+[ext_resource type="Texture2D" uid="uid://v7mnedjnhwbm" path="res://images/units/crossbowman__new_card.png" id="19_d82ca"]
+[ext_resource type="Texture2D" uid="uid://b8daoh0q7nlg4" path="res://images/units/horseman_new_card.png" id="20_o08o1"]
+[ext_resource type="Texture2D" uid="uid://bfhxpqmbmu5qp" path="res://images/units/knight_new_card.png" id="21_m0728"]
+[ext_resource type="Texture2D" uid="uid://b1aj5qqc2er37" path="res://images/units/mounted_knight_new_card.png" id="22_kn2ds"]
+[ext_resource type="Texture2D" uid="uid://bg386bpyeab36" path="res://images/units/royal_guard_new_card.png" id="23_apyqg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l353s"]
 draw_center = false
@@ -46,6 +62,20 @@ Button/styles/hover = SubResource("StyleBoxTexture_button_normal")
 Button/styles/normal = SubResource("StyleBoxTexture_button_normal")
 Button/styles/pressed = SubResource("StyleBoxTexture_button_pressed")
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfkex"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yml6v"]
+content_margin_left = 5.0
+content_margin_top = 10.0
+content_margin_right = 5.0
+content_margin_bottom = 10.0
+texture = ExtResource("11_3okbx")
+region_rect = Rect2(-0.0961876, -0.077363, 35.1557, 25.1207)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2uy5r"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_406rm"]
+
 [node name="TransferSoldiersModal" type="Control"]
 layout_mode = 3
 anchors_preset = 8
@@ -53,10 +83,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -400.0
-offset_top = -300.0
-offset_right = 500.0
-offset_bottom = 300.0
+offset_left = -440.0
+offset_top = -540.0
+offset_right = 460.0
+offset_bottom = 390.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_standard")
@@ -64,21 +94,23 @@ script = ExtResource("1_42aob")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
+offset_top = 100.0
 offset_right = 900.0
-offset_bottom = 600.0
-texture = ExtResource("2_tajb3")
+offset_bottom = 1030.0
+texture = ExtResource("3_1rsji")
 expand_mode = 1
 
 [node name="ArmyTexture" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 15.0
-offset_top = 110.0
-offset_right = 885.0
-offset_bottom = 440.0
+offset_left = 20.0
+offset_top = 260.0
+offset_right = 880.0
+offset_bottom = 970.0
 texture = ExtResource("3_hgr8j")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 900.0
 offset_bottom = 600.0
@@ -781,3 +813,863 @@ layout_mode = 2
 layout_mode = 2
 theme = ExtResource("4_1d8nt")
 text = "Continue"
+
+[node name="Transfer" type="Panel" parent="."]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 0
+offset_top = 100.0
+offset_right = 900.0
+offset_bottom = 700.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_bfkex")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer"]
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 600.0
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Header" type="VBoxContainer" parent="Transfer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Header"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+text = "Soldiers Transfer"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="SubHeader" type="VBoxContainer" parent="Transfer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/SubHeader"]
+layout_mode = 2
+theme_override_constants/separation = 100
+alignment = 1
+
+[node name="Target" type="Label" parent="Transfer/VBoxContainer/SubHeader/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+text = "Army 1"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/SubHeader/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("8_bnksq")
+
+[node name="Source" type="Label" parent="Transfer/VBoxContainer/SubHeader/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+text = "Army2"
+horizontal_alignment = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="Transfer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Body" type="VBoxContainer" parent="Transfer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 11
+
+[node name="Units" type="VBoxContainer" parent="Transfer/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Peasants" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("10_jdu2q")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Peasants"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
+layout_mode = 2
+
+[node name="Spearmen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("16_0qquh")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Spearmen"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Archers" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("17_pu1jv")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Archers"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Archers"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
+layout_mode = 2
+
+[node name="Swordsmen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("18_vbr0m")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Swordsmen"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Crosbowmen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("19_d82ca")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Crossbowmen"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Horsemen" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("20_o08o1")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Horsemen"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
+layout_mode = 2
+
+[node name="Knights" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("21_m0728")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Knights"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Knights"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
+layout_mode = 2
+
+[node name="MountedKnights" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("22_kn2ds")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Mounted Knights"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
+layout_mode = 2
+
+[node name="RoyalGuard" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("9_c1lhp")
+expand_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/TextureRect"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 65.0
+texture = ExtResource("23_apyqg")
+expand_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_5o6hl")
+theme_override_font_sizes/font_size = 20
+text = "Royal Guard"
+
+[node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+custom_minimum_size = Vector2(540, 40)
+layout_mode = 2
+texture = ExtResource("9_eevr4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_top = 5.0
+offset_right = 60.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "5022"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+offset_left = 70.0
+offset_top = 5.0
+offset_right = 450.0
+offset_bottom = 35.0
+theme = ExtResource("10_o07qu")
+theme_override_icons/grabber = ExtResource("11_c2edr")
+theme_override_icons/grabber_highlight = ExtResource("11_c2edr")
+theme_override_icons/grabber_disabled = ExtResource("13_ont66")
+theme_override_styles/slider = SubResource("StyleBoxTexture_yml6v")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_2uy5r")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_406rm")
+value = 50.0
+
+[node name="Label2" type="Label" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+offset_left = 470.0
+offset_top = 5.0
+offset_right = 530.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "20"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer4" type="MarginContainer" parent="Transfer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Transfer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("4_1d8nt")
+text = "Close"

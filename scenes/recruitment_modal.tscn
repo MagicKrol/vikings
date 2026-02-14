@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bus48vblq4ked"]
+[gd_scene load_steps=37 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
 [ext_resource type="Texture2D" uid="uid://kcqi5jylsy6k" path="res://images/recruitment_modal.png" id="3_2n1n3"]
@@ -25,6 +25,8 @@
 [ext_resource type="Texture2D" uid="uid://7b50i8wxawo3" path="res://images/units/mounted_knight_card.png" id="23_kijub"]
 [ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="23_t7glg"]
 [ext_resource type="Texture2D" uid="uid://8ubbu3b34ola" path="res://images/units/royal_guard_card.png" id="24_nlqxe"]
+[ext_resource type="Texture2D" uid="uid://cw22whcufy6lk" path="res://images/required.png" id="26_e5tqw"]
+[ext_resource type="Texture2D" uid="uid://bv3g4er4m0jh5" path="res://images/icons/lock_icon.png" id="27_onq81"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
 draw_center = false
@@ -1226,7 +1228,7 @@ layout_mode = 2
 
 [node name="Units" type="VBoxContainer" parent="Recruitment/HBoxContainer/Body"]
 layout_mode = 2
-theme_override_constants/separation = 7
+theme_override_constants/separation = 5
 
 [node name="FirstRow" type="HBoxContainer" parent="Recruitment/HBoxContainer/Body/Units"]
 layout_mode = 2
@@ -1354,6 +1356,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -1397,6 +1400,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -1526,6 +1530,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -1569,6 +1574,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -1698,6 +1704,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -1741,6 +1748,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -1876,6 +1884,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -1919,6 +1928,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2046,6 +2056,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -2089,6 +2100,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2220,6 +2232,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -2263,6 +2276,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2397,6 +2411,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -2440,6 +2455,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2567,6 +2583,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -2610,6 +2627,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2738,6 +2756,7 @@ text = "Abilities:
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 218.0
 offset_top = 167.0
 offset_right = 266.0
@@ -2781,6 +2800,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
@@ -2805,7 +2825,7 @@ custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
 [node name="TotalLabel" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Total Cost:"
 
@@ -2815,8 +2835,8 @@ layout_mode = 2
 texture = ExtResource("14_oxw3w")
 expand_mode = 2
 
-[node name="TotalValue" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(80, 0)
+[node name="TotalGold" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "1231
@@ -2828,15 +2848,34 @@ layout_mode = 2
 texture = ExtResource("13_o875k")
 expand_mode = 2
 
-[node name="TotalHiredValue" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(60, 0)
+[node name="TotalWood" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "343"
+
+[node name="TextureRect4" type="TextureRect" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("23_t7glg")
+expand_mode = 2
+
+[node name="TotalIron" type="Label" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "343"
 
 [node name="MarginContainer3" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(650, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+
+[node name="RecruitAll" type="Button" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("5_s8e3m")
+text = "Recruit All"
 
 [node name="MarginContainer4" type="MarginContainer" parent="Recruitment/HBoxContainer"]
 visible = false
@@ -2856,9 +2895,408 @@ layout_mode = 2
 [node name="Button" type="Button" parent="Recruitment"]
 clip_contents = true
 custom_minimum_size = Vector2(150, 0)
+layout_mode = 0
 offset_left = 1122.0
 offset_top = 8.0
 offset_right = 1272.0
 offset_bottom = 47.0
 theme = ExtResource("5_s8e3m")
 text = "Close"
+
+[node name="Requirements" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Outpost" type="Control" parent="Requirements"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Requires2" type="Panel" parent="Requirements/Outpost"]
+layout_mode = 0
+offset_left = 408.0
+offset_top = -500.0
+offset_right = 448.0
+offset_bottom = -460.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Outpost/Requires2"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Outpost/Requires2"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Outpost/Requires2"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Outpost/Requires2"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Outpost"
+horizontal_alignment = 1
+
+[node name="Requires3" type="Panel" parent="Requirements/Outpost"]
+layout_mode = 0
+offset_left = 816.0
+offset_top = -500.0
+offset_right = 856.0
+offset_bottom = -460.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Outpost/Requires3"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Outpost/Requires3"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Outpost/Requires3"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Outpost/Requires3"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Outpost"
+horizontal_alignment = 1
+
+[node name="Keep" type="Control" parent="Requirements"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Requires" type="Panel" parent="Requirements/Keep"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = -250.0
+offset_right = 43.0
+offset_bottom = -210.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Keep/Requires"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Keep/Requires"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Keep/Requires"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Keep/Requires"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Keep"
+horizontal_alignment = 1
+
+[node name="Requires2" type="Panel" parent="Requirements/Keep"]
+layout_mode = 0
+offset_left = 408.0
+offset_top = -249.0
+offset_right = 448.0
+offset_bottom = -209.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Keep/Requires2"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Keep/Requires2"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Keep/Requires2"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Keep/Requires2"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Keep"
+horizontal_alignment = 1
+
+[node name="Requires3" type="Panel" parent="Requirements/Keep"]
+layout_mode = 0
+offset_left = 816.0
+offset_top = -250.0
+offset_right = 856.0
+offset_bottom = -210.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Keep/Requires3"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Keep/Requires3"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Keep/Requires3"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Keep/Requires3"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Keep"
+horizontal_alignment = 1
+
+[node name="Castle" type="Control" parent="Requirements"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Requires" type="Panel" parent="Requirements/Castle"]
+layout_mode = 0
+offset_left = 408.0
+offset_right = 448.0
+offset_bottom = 40.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Castle/Requires"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Castle/Requires"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Castle/Requires"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Castle/Requires"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Castle"
+horizontal_alignment = 1
+
+[node name="Requires2" type="Panel" parent="Requirements/Castle"]
+layout_mode = 0
+offset_left = 3.0
+offset_right = 43.0
+offset_bottom = 40.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Castle/Requires2"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Castle/Requires2"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Castle/Requires2"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Castle/Requires2"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Castle"
+horizontal_alignment = 1
+
+[node name="Stronghold" type="Control" parent="Requirements"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Requires2" type="Panel" parent="Requirements/Stronghold"]
+layout_mode = 0
+offset_left = 816.0
+offset_right = 856.0
+offset_bottom = 40.0
+
+[node name="TextureRect2" type="TextureRect" parent="Requirements/Stronghold/Requires2"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 881.0
+offset_right = 484.0
+offset_bottom = 959.0
+texture = ExtResource("26_e5tqw")
+
+[node name="TextureRect" type="TextureRect" parent="Requirements/Stronghold/Requires2"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 893.0
+offset_right = 360.0
+offset_bottom = 993.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("27_onq81")
+expand_mode = 2
+
+[node name="Requires" type="Label" parent="Requirements/Stronghold/Requires2"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 889.0
+offset_right = 471.0
+offset_bottom = 922.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Requires"
+horizontal_alignment = 1
+
+[node name="CastleLevel" type="Label" parent="Requirements/Stronghold/Requires2"]
+layout_mode = 0
+offset_left = 303.0
+offset_top = 920.0
+offset_right = 478.0
+offset_bottom = 953.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Stronghold"
+horizontal_alignment = 1

@@ -1,10 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://cykx27qbqfbie"]
+[gd_scene load_steps=12 format=3 uid="uid://cykx27qbqfbie"]
 
 [ext_resource type="Script" path="res://move_modal.gd" id="1_emb2f"]
 [ext_resource type="Texture2D" uid="uid://w57tdi2mrhbw" path="res://images/movemodal3.png" id="2_n7ogd"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_6ahqv"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_button_theme"]
+[ext_resource type="Texture2D" uid="uid://hcitufmceem7" path="res://images/icons/recruit_icon3.png" id="5_0cyw5"]
 [ext_resource type="Texture2D" uid="uid://cvnr33wn44x2k" path="res://images/movemodal.png" id="5_qply4"]
+[ext_resource type="Texture2D" uid="uid://74wsov2ifw1e" path="res://images/icons/campfire.png" id="6_4t1ww"]
+[ext_resource type="Texture2D" uid="uid://cnvtacdax0yh8" path="res://images/icons/transfer_icons.png" id="6_vdrwq"]
 
 [sub_resource type="Theme" id="Theme_tx0fs"]
 default_font = ExtResource("3_6ahqv")
@@ -39,13 +42,13 @@ script = ExtResource("1_emb2f")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 250.0
+offset_right = 300.0
 offset_bottom = 200.0
 texture = ExtResource("2_n7ogd")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 250.0
+offset_right = 300.0
 offset_bottom = 200.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
@@ -54,7 +57,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 layout_mode = 2
 offset_left = 8.0
 offset_top = 7.0
-offset_right = 227.0
+offset_right = 288.0
 offset_bottom = 179.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -75,13 +78,13 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="ButtonBorder" type="Panel" parent="Panel/Army/ButtonSection/HBoxContainer3"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(250, 44)
 layout_mode = 2
 theme = ExtResource("4_button_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
 
 [node name="ArmyActions" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer3/ButtonBorder"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(230, 40)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -93,7 +96,9 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_button_theme")
-text = "Army Actions"
+text = "Recruit"
+icon = ExtResource("5_0cyw5")
+expand_icon = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection"]
 custom_minimum_size = Vector2(0, 5)
@@ -107,13 +112,13 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="ButtonBorder" type="Panel" parent="Panel/Army/ButtonSection/HBoxContainer"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(250, 44)
 layout_mode = 2
 theme = ExtResource("4_button_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
 
 [node name="MakeCamp" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer/ButtonBorder"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(250, 40)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,6 +131,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_button_theme")
 text = "Make Camp"
+icon = ExtResource("6_4t1ww")
+expand_icon = true
 
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/ButtonSection"]
 custom_minimum_size = Vector2(0, 5)
@@ -139,7 +146,7 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="ButtonBorder" type="Panel" parent="Panel/Army/ButtonSection/HBoxContainer2"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(250, 44)
 layout_mode = 2
 theme = ExtResource("4_button_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
@@ -157,7 +164,9 @@ offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4_button_theme")
-text = "Cancel MoVE"
+text = "Transfer"
+icon = ExtResource("6_vdrwq")
+expand_icon = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0

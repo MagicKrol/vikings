@@ -22,6 +22,7 @@ theme = ExtResource("4_standard")
 script = ExtResource("1_script")
 
 [node name="Top" type="TextureRect" parent="."]
+layout_mode = 0
 offset_right = 300.0
 offset_bottom = 400.0
 size_flags_horizontal = 3
