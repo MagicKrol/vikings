@@ -2,27 +2,26 @@ extends Control
 class_name TransferSoldiersModal
 
 # UI elements - references to static nodes from scene
-var army_name_label: Label
 var target_name_label: Label
+var source_name_label: Label
 const UNIT_CONTAINER_PATHS := [
-	"Panel/Army/UnitsSection/Peasants",
-	"Panel/Army/UnitsSection/Peasants2",
-	"Panel/Army/UnitsSection/Peasants3",
-	"Panel/Army/UnitsSection/Peasants4",
-	"Panel/Army/UnitsSection/Peasants5",
-	"Panel/Army/UnitsSection/Peasants6",
-	"Panel/Army/UnitsSection/Peasants7",
-	"Panel/Army/UnitsSection/Peasants8",
-	"Panel/Army/UnitsSection/Peasants9"
+	"Transfer/VBoxContainer/Body/Units/Peasants",
+	"Transfer/VBoxContainer/Body/Units/Spearmen",
+	"Transfer/VBoxContainer/Body/Units/Archers",
+	"Transfer/VBoxContainer/Body/Units/Swordsmen",
+	"Transfer/VBoxContainer/Body/Units/Crosbowmen",
+	"Transfer/VBoxContainer/Body/Units/Horsemen",
+	"Transfer/VBoxContainer/Body/Units/Knights",
+	"Transfer/VBoxContainer/Body/Units/MountedKnights",
+	"Transfer/VBoxContainer/Body/Units/RoyalGuard"
 ]
 
-var unit_value_labels: Array[Label] = []
 var unit_target_value_labels: Array[Label] = []
+var unit_source_value_labels: Array[Label] = []
+var unit_sliders: Array[HSlider] = []
 var unit_total_counts: Array[int] = []
 var unit_original_target_counts: Array[int] = []
 var unit_desired_target_counts: Array[int] = []
-var total_value_label: Label
-var total_target_value_label: Label
 var continue_button: Button
 
 # Transfer data
@@ -33,8 +32,8 @@ var target_region: Region = null
 # Unit types in order (matching scene structure)
 var unit_types = [
 	SoldierTypeEnum.Type.PEASANTS,
-	SoldierTypeEnum.Type.ARCHERS,
 	SoldierTypeEnum.Type.SPEARMEN,
+	SoldierTypeEnum.Type.ARCHERS,
 	SoldierTypeEnum.Type.SWORDSMEN,
 	SoldierTypeEnum.Type.CROSSBOWMEN,
 	SoldierTypeEnum.Type.HORSEMEN,
@@ -47,19 +46,18 @@ var unit_types = [
 var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
+var move_modal: MoveModal = null
 var _ui_lock: bool = false
 
 func _ready():
 	# Get references to static UI elements from scene
-	army_name_label = get_node("Panel/Army/HeaderSection/HBoxContainer/ArmyName")
-	target_name_label = get_node("Panel/Army/HeaderSection/HBoxContainer/TargetName")
-	total_value_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalValue")
-	total_target_value_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalTargetValue")
-	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
+	target_name_label = get_node("Transfer/VBoxContainer/SubHeader/HBoxContainer/Target")
+	source_name_label = get_node("Transfer/VBoxContainer/SubHeader/HBoxContainer/Source")
+	continue_button = get_node("Transfer/VBoxContainer/Button")
 	
 	# Get references to unit UI elements
 	_get_unit_ui_references()
-	_connect_unit_buttons()
+	_connect_unit_sliders()
 	
 	# Connect button signal
 	continue_button.pressed.connect(_on_continue_pressed)
@@ -68,14 +66,16 @@ func _ready():
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
+	move_modal = get_node("../MoveModal") as MoveModal
 	
 	# Initially hidden
 	visible = false
 
 
 func _get_unit_ui_references():
-	unit_value_labels.clear()
 	unit_target_value_labels.clear()
+	unit_source_value_labels.clear()
+	unit_sliders.clear()
 	unit_total_counts.clear()
 	unit_original_target_counts.clear()
 	unit_desired_target_counts.clear()
@@ -84,21 +84,19 @@ func _get_unit_ui_references():
 	DebugLogger.log("UISystem", "Getting UI references for " + str(UNIT_CONTAINER_PATHS.size()) + " unit containers")
 
 	for container_path in UNIT_CONTAINER_PATHS:
-		var value_label = get_node(container_path + "/Value") as Label
-		var target_value_label = get_node(container_path + "/TargetValue") as Label
-		unit_value_labels.append(value_label)
+		var target_value_label = get_node(container_path + "/VBoxContainer/TextureRect/Label") as Label
+		var source_value_label = get_node(container_path + "/VBoxContainer/TextureRect/Label2") as Label
+		var slider = get_node(container_path + "/VBoxContainer/TextureRect/HSlider") as HSlider
 		unit_target_value_labels.append(target_value_label)
+		unit_source_value_labels.append(source_value_label)
+		unit_sliders.append(slider)
 
-	DebugLogger.log("UISystem", "Cached arrays - Value labels: " + str(unit_value_labels.size()) + ", Target value labels: " + str(unit_target_value_labels.size()))
+	DebugLogger.log("UISystem", "Cached arrays - Target labels: " + str(unit_target_value_labels.size()) + ", Source labels: " + str(unit_source_value_labels.size()) + ", Sliders: " + str(unit_sliders.size()))
 
-func _connect_unit_buttons():
-	DebugLogger.log("UISystem", "Connecting transfer buttons. Unit count: " + str(UNIT_CONTAINER_PATHS.size()))
-	for i in range(UNIT_CONTAINER_PATHS.size()):
-		var base_path = UNIT_CONTAINER_PATHS[i]
-		(get_node(base_path + "/Button10") as Button).pressed.connect(_on_transfer_button_pressed.bind(i, 10))
-		(get_node(base_path + "/Button1") as Button).pressed.connect(_on_transfer_button_pressed.bind(i, 1))
-		(get_node(base_path + "/Button1m") as Button).pressed.connect(_on_transfer_button_pressed.bind(i, -1))
-		(get_node(base_path + "/Button10m") as Button).pressed.connect(_on_transfer_button_pressed.bind(i, -10))
+func _connect_unit_sliders():
+	DebugLogger.log("UISystem", "Connecting transfer sliders. Unit count: " + str(unit_sliders.size()))
+	for i in range(unit_sliders.size()):
+		unit_sliders[i].value_changed.connect(_on_unit_slider_changed.bind(i))
 
 func show_transfer_to_garrison(army: Army, region: Region) -> void:
 	"""Show the transfer soldiers modal with army to garrison transfer"""
@@ -106,11 +104,11 @@ func show_transfer_to_garrison(army: Army, region: Region) -> void:
 		hide_modal()
 		return
 	ui_manager.remember_army_select(army, region)
-	info_modal.hide_modal(false)
 	
-	source_army = army
-	target_army = null  # Transfer to garrison
+	target_army = army
+	source_army = null  # Transfer from garrison
 	target_region = region
+	move_modal.hide_move_modal()
 	
 	# Update display
 	_update_display()
@@ -126,11 +124,11 @@ func show_transfer_to_army(source: Army, target: Army, region: Region) -> void:
 		hide_modal()
 		return
 	ui_manager.remember_army_select(source, region)
-	info_modal.hide_modal(false)
 	
-	source_army = source
-	target_army = target
+	target_army = source
+	source_army = target
 	target_region = region
+	move_modal.hide_move_modal()
 	
 	# Update display
 	_update_display()
@@ -147,6 +145,7 @@ func show_transfer(army: Army, region: Region) -> void:
 
 func hide_modal() -> void:
 	"""Hide the transfer soldiers modal"""
+	var reopen_army: Army = target_army
 	# Reset state
 	source_army = null
 	target_army = null
@@ -158,29 +157,26 @@ func hide_modal() -> void:
 	if ui_manager:
 		ui_manager.set_modal_active(false)
 		ui_manager.restore_select_context()
+	if move_modal != null and reopen_army != null:
+		move_modal.show_move_modal(reopen_army)
 
 func _update_display() -> void:
 	"""Update the display with current transfer information"""
-	if target_region == null or source_army == null:
+	if target_region == null or target_army == null:
 		hide_modal()
 		return
 	
-	# Update army name
-	army_name_label.text = source_army.name
-	
 	# Update target name
-	if target_army != null:
-		# Army to army transfer
-		target_name_label.text = target_army.name
+	target_name_label.text = target_army.name
+	
+	# Update source name
+	if source_army != null:
+		source_name_label.text = source_army.name
 	else:
-		# Army to garrison transfer
-		target_name_label.text = target_region.get_region_name()
+		source_name_label.text = target_region.get_region_name()
 	
 	# Update unit displays and sliders
 	_update_unit_displays()
-	
-	# Update total row
-	_update_total_row()
 
 func _update_unit_displays() -> void:
 	"""Update all unit value labels and pending transfer data"""
@@ -190,63 +186,42 @@ func _update_unit_displays() -> void:
 	unit_desired_target_counts.clear()
 	for i in range(unit_types.size()):
 		var unit_type = unit_types[i]
-		var value_label = unit_value_labels[i]
 		var target_value_label = unit_target_value_labels[i]
-		var source_count = source_army.get_soldier_count(unit_type)
-		var target_count: int
-		if target_army != null:
-			target_count = target_army.get_soldier_count(unit_type)
+		var source_value_label = unit_source_value_labels[i]
+		var slider = unit_sliders[i]
+		var target_count: int = target_army.get_soldier_count(unit_type)
+		var source_count: int
+		if source_army != null:
+			source_count = source_army.get_soldier_count(unit_type)
 		else:
-			target_count = target_region.get_garrison().get_soldier_count(unit_type)
-		DebugLogger.log("UISystem", "Unit " + SoldierTypeEnum.type_to_string(unit_type) + ": source=" + str(source_count) + ", target=" + str(target_count))
-		value_label.text = str(source_count)
+			source_count = target_region.get_garrison().get_soldier_count(unit_type)
+		DebugLogger.log("UISystem", "Unit " + SoldierTypeEnum.type_to_string(unit_type) + ": target=" + str(target_count) + ", source=" + str(source_count))
 		target_value_label.text = str(target_count)
+		source_value_label.text = str(source_count)
 		var total_units = source_count + target_count
 		unit_total_counts.append(total_units)
 		unit_original_target_counts.append(target_count)
 		unit_desired_target_counts.append(target_count)
+		slider.step = 1.0
+		slider.min_value = 0.0
+		slider.max_value = float(total_units)
+		slider.value = float(source_count)
+		slider.editable = total_units > 0
 	_ui_lock = false
-	_update_total_row()
 
-func _update_total_row() -> void:
-	"""Update the total row using pending transfer values"""
-	var total_source = 0
-	var total_target = 0
-	for i in range(unit_desired_target_counts.size()):
-		var target_count = unit_desired_target_counts[i]
-		var total_units = unit_total_counts[i]
-		total_target += target_count
-		total_source += total_units - target_count
-	total_value_label.text = str(total_source)
-	total_target_value_label.text = str(total_target)
-
-func _on_transfer_button_pressed(unit_index: int, delta: int) -> void:
-	"""Handle transfer adjustments triggered by unit buttons"""
+func _on_unit_slider_changed(value: float, unit_index: int) -> void:
+	"""Handle transfer adjustments triggered by sliders"""
 	if _ui_lock:
 		return
-	if unit_index >= unit_desired_target_counts.size() or unit_index >= unit_value_labels.size():
-		DebugLogger.log("UISystem", "ERROR: Unit index " + str(unit_index) + " out of bounds for transfer buttons")
+	if unit_index >= unit_desired_target_counts.size() or unit_index >= unit_source_value_labels.size():
+		DebugLogger.log("UISystem", "ERROR: Unit index " + str(unit_index) + " out of bounds for transfer sliders")
 		return
 	var total_units: int = unit_total_counts[unit_index]
-	var current_target: int = unit_desired_target_counts[unit_index]
-	var current_source: int = total_units - current_target
-	var other_totals: Vector2i = _calculate_other_totals(unit_index)
-	var required_source_min: int = max(0, 1 - other_totals.x)
-	var required_target_min: int = 0
-	if target_army != null:
-		required_target_min = max(0, 1 - other_totals.y)
-	var source_min: int = min(total_units, required_source_min)
-	var source_max: int = total_units - required_target_min
-	if source_max < source_min:
-		source_max = source_min
-	var new_source: int = clamp(current_source + delta, source_min, source_max)
-	if new_source == current_source:
-		return
+	var new_source: int = clamp(int(value), 0, total_units)
 	var new_target: int = total_units - new_source
 	unit_desired_target_counts[unit_index] = new_target
-	unit_value_labels[unit_index].text = str(new_source)
 	unit_target_value_labels[unit_index].text = str(new_target)
-	_update_total_row()
+	unit_source_value_labels[unit_index].text = str(new_source)
 
 func _on_continue_pressed() -> void:
 	"""Handle Continue button press"""
@@ -262,13 +237,6 @@ func _on_continue_pressed() -> void:
 
 func _apply_transfer_changes() -> void:
 	"""Apply transfers based on current button selections"""
-	var pending_totals: Vector2i = _get_pending_totals()
-	if pending_totals.x < 1:
-		DebugLogger.log("UISystem", "Transfer blocked: source army would drop below minimum soldiers.")
-		return
-	if target_army != null and pending_totals.y < 1:
-		DebugLogger.log("UISystem", "Transfer blocked: target army would drop below minimum soldiers.")
-		return
 	var has_transfers = false
 	for i in range(unit_types.size()):
 		var unit_type = unit_types[i]
@@ -280,45 +248,23 @@ func _apply_transfer_changes() -> void:
 		has_transfers = true
 		if transfer_amount > 0:
 			# Transfer from source to target
-			source_army.remove_soldiers(unit_type, transfer_amount)
-			if target_army != null:
-				target_army.add_soldiers(unit_type, transfer_amount)
+			if source_army != null:
+				source_army.remove_soldiers(unit_type, transfer_amount)
 				DebugLogger.log("UISystem", "Transferred " + str(transfer_amount) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(source_army.number) + " to army " + str(target_army.number))
 			else:
-				target_region.get_garrison().add_soldiers(unit_type, transfer_amount)
-				DebugLogger.log("UISystem", "Transferred " + str(transfer_amount) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(source_army.number) + " to garrison")
+				target_region.get_garrison().remove_soldiers(unit_type, transfer_amount)
+				DebugLogger.log("UISystem", "Transferred " + str(transfer_amount) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from garrison to army " + str(target_army.number))
+			target_army.add_soldiers(unit_type, transfer_amount)
 		else:
 			# Transfer from target to source
 			var actual_transfer = -transfer_amount
-			if target_army != null:
-				target_army.remove_soldiers(unit_type, actual_transfer)
+			target_army.remove_soldiers(unit_type, actual_transfer)
+			if source_army != null:
+				source_army.add_soldiers(unit_type, actual_transfer)
 				DebugLogger.log("UISystem", "Transferred " + str(actual_transfer) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(target_army.number) + " to army " + str(source_army.number))
 			else:
-				target_region.get_garrison().remove_soldiers(unit_type, actual_transfer)
-				DebugLogger.log("UISystem", "Transferred " + str(actual_transfer) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from garrison to army " + str(source_army.number))
-			source_army.add_soldiers(unit_type, actual_transfer)
+				target_region.get_garrison().add_soldiers(unit_type, actual_transfer)
+				DebugLogger.log("UISystem", "Transferred " + str(actual_transfer) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(target_army.number) + " to garrison")
 	if has_transfers:
-		source_army.spend_movement_points(1)
-		DebugLogger.log("UISystem", "Army " + str(source_army.number) + " spent 1 movement point for transfer (remaining: " + str(source_army.get_movement_points()) + ")")
-
-func _calculate_other_totals(unit_index: int) -> Vector2i:
-	var source_total: int = 0
-	var target_total: int = 0
-	for i in range(unit_total_counts.size()):
-		if i == unit_index:
-			continue
-		var total_units: int = unit_total_counts[i]
-		var target_units: int = unit_desired_target_counts[i]
-		source_total += total_units - target_units
-		target_total += target_units
-	return Vector2i(source_total, target_total)
-
-func _get_pending_totals() -> Vector2i:
-	var total_source: int = 0
-	var total_target: int = 0
-	for i in range(unit_total_counts.size()):
-		var total_units: int = unit_total_counts[i]
-		var target_units: int = unit_desired_target_counts[i]
-		total_target += target_units
-		total_source += total_units - target_units
-	return Vector2i(total_source, total_target)
+		target_army.spend_movement_points(1)
+		DebugLogger.log("UISystem", "Army " + str(target_army.number) + " spent 1 movement point for transfer (remaining: " + str(target_army.get_movement_points()) + ")")

@@ -214,6 +214,8 @@ func _handle_region_click(region_container: Node) -> void:
 	if _is_move_flow_active():
 		if _army_manager != null and region_container == _army_manager.selected_region_container:
 			_army_manager.deselect_army()
+			if _info_modal and _info_modal.visible:
+				_info_modal.switch_to_region_tab()
 			return
 		var visual_manager = _game_manager.get_visual_manager()
 		if visual_manager and visual_manager.has_move_region_highlights():

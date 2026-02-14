@@ -8,6 +8,7 @@ var source_army: Army = null
 
 # Additional references specific to transfer selection
 var transfer_soldiers_modal: TransferSoldiersModal = null
+var move_modal: MoveModal = null
 
 const HEADER_TEXT := "Select Target"
 const BUTTON_FONT: Font = preload("res://fonts/Cinzel.ttf")
@@ -21,6 +22,7 @@ func _ready():
 
 func _setup_transfer_references():
 	transfer_soldiers_modal = get_node("../TransferSoldiersModal") as TransferSoldiersModal
+	move_modal = get_node("../MoveModal") as MoveModal
 
 func show_transfer_selection(source_army_param: Army, region: Region, other_armies: Array[Army]) -> void:
 	"""Show the transfer selection modal with region and other armies"""
@@ -28,19 +30,24 @@ func show_transfer_selection(source_army_param: Army, region: Region, other_armi
 		hide_modal()
 		return
 	ui_manager.remember_army_select(source_army_param, region)
-	info_modal.hide_modal(false)
 	
 	source_army = source_army_param
 	current_region = region
 	current_armies = other_armies
 	_create_buttons()
 	visible = true
+	if move_modal != null:
+		move_modal.hide_move_modal()
 	
 	if ui_manager:
 		ui_manager.set_modal_active(true)
 
 func hide_modal() -> void:
-	super.hide_modal()
+	_clear_buttons()
+	visible = false
+	if ui_manager:
+		ui_manager.set_modal_active(false)
+	hide_tooltips()
 	source_army = null
 	current_region = null
 	current_armies.clear()
@@ -66,8 +73,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	definitions.append({
 		"text": current_region.get_region_name(),
 		"enabled": true,
-		"action": "_on_region_button_pressed",
-		"tooltip": Callable(self, "_on_region_button_hovered")
+		"action": "_on_region_button_pressed"
 	})
 
 	for army in current_armies:
@@ -79,8 +85,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	definitions.append({
 		"text": "Back",
 		"enabled": true,
-		"action": "_on_back_button_pressed",
-		"tooltip": Callable(self, "_on_back_tooltip_hovered")
+		"action": "_on_back_button_pressed"
 	})
 
 	return definitions
@@ -94,8 +99,7 @@ func _create_army_definition(army: Army) -> Dictionary:
 		"text": "Army " + str(army.number),
 		"enabled": true,
 		"action": "_on_army_button_pressed",
-		"action_target": army,
-		"tooltip": Callable(self, "_on_army_button_hovered").bind(army)
+		"action_target": army
 	}
 
 
@@ -111,7 +115,6 @@ func _create_button_from_definition(definition: Dictionary, is_first: bool, is_l
 		button = _make_disabled_action_button(text, is_first, is_last, BUTTON_FONT)
 		_prepare_disabled_button(button)
 
-	_attach_tooltip(definition, button)
 	return button
 
 
@@ -143,28 +146,14 @@ func _connect_button_action(button: Button, definition: Dictionary) -> void:
 		button.pressed.connect(Callable(self, action_name))
 
 
-func _attach_tooltip(definition: Dictionary, button: Button) -> void:
-	if not definition.has("tooltip"):
-		button.mouse_exited.connect(_on_button_unhovered)
-		return
-
-	var tooltip = definition.tooltip
-	if tooltip is Callable:
-		button.mouse_entered.connect(tooltip)
-	else:
-		button.mouse_entered.connect(Callable(self, "_on_tooltip_hovered").bind(tooltip))
-	button.mouse_exited.connect(_on_button_unhovered)
-
-
 func _on_back_button_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
+	var selected_for_move: Army = source_army
 	hide_modal()
 	ui_manager.restore_select_context()
-
-
-func _on_back_tooltip_hovered() -> void:
-	show_message_tooltip("back")
+	if move_modal != null and selected_for_move != null:
+		move_modal.show_move_modal(selected_for_move)
 
 func _on_region_button_pressed() -> void:
 	# Store references before hiding modal
@@ -194,15 +183,3 @@ func _on_army_button_pressed(target_army: Army) -> void:
 	# Show TransferSoldiersModal for army to army transfer
 	if transfer_soldiers_modal != null and source_army_ref != null and target_army_ref != null and region_ref != null:
 		transfer_soldiers_modal.show_transfer_to_army(source_army_ref, target_army_ref, region_ref)
-
-func _on_region_button_hovered() -> void:
-	if info_modal != null and current_region != null and is_instance_valid(info_modal) and is_instance_valid(current_region):
-		info_modal.show_region_info(current_region, false)
-
-func _on_army_button_hovered(army: Army) -> void:
-	if info_modal != null and army != null and is_instance_valid(info_modal) and is_instance_valid(army):
-		info_modal.show_army_info(army, false)
-
-func _on_button_unhovered() -> void:
-	if info_modal != null and info_modal.visible:
-		info_modal.hide_modal(false)

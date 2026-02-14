@@ -163,6 +163,15 @@ func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	if region == null:
 		hide_modal()
 		return
+	if current_region == region and _active_tab == TabType.REGION:
+		var armies_in_region := _get_armies_in_region(region)
+		if not armies_in_region.is_empty():
+			_set_active_tab(TabType.ARMIES)
+			_update_army_display()
+			visible = true
+			if manage_modal_mode and ui_manager:
+				ui_manager.set_modal_active(true)
+			return
 	
 	current_region = region
 	current_army = null
@@ -292,6 +301,12 @@ func _select_army_for_move(army: Army) -> void:
 	var region_container: Region = army.get_parent() as Region
 	var player_id: int = game_manager.get_current_player_id()
 	army_manager.select_army(army, region_container, player_id)
+
+func switch_to_region_tab() -> void:
+	if _active_tab == TabType.REGION:
+		return
+	_set_active_tab(TabType.REGION)
+	_update_region_display()
 
 func _update_move_points_icons(move_container: HBoxContainer, move_points: int) -> void:
 	if move_container == null:
@@ -612,7 +627,7 @@ func _on_promote_region_pressed() -> void:
 	current_region.promote_region()
 	current_region.mark_promoted_this_turn()
 	var level_name = RegionLevelEnum.level_to_string(next_level)
-	var promotion_message = "Region promoted to " + level_name + " (level " + str(int(next_level) + 1) + ")"
+	var promotion_message = "Region promoted to " + level_name + " \n(level " + str(int(next_level) + 1) + ")"
 	message_modal.display_message(promotion_message)
 	_refresh_current_region()
 	_request_player_status_refresh()

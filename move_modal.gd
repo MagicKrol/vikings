@@ -114,7 +114,7 @@ func _start_recruit_flow() -> void:
 	ui_manager.remember_army_select(army_to_recruit, region_to_recruit)
 	hide_move_modal()
 	if recruitment_modal != null:
-		recruitment_modal.show_recruitment(army_to_recruit, region_to_recruit)
+		recruitment_modal.show_recruitment(army_to_recruit, region_to_recruit, true)
 
 func _start_transfer_flow() -> void:
 	if selected_army == null:

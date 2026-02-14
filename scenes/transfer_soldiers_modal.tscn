@@ -12,9 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://cvc8qhag5eq35" path="res://images/test5.png" id="9_eevr4"]
 [ext_resource type="Texture2D" uid="uid://jeobvfp8cxvs" path="res://images/units/peasant_new_card.png" id="10_jdu2q"]
 [ext_resource type="Theme" uid="uid://bsjv66mowig4c" path="res://themes/slider.tres" id="10_o07qu"]
-[ext_resource type="Texture2D" uid="uid://crfkquyqx8dhs" path="res://images/slider.png" id="11_3okbx"]
 [ext_resource type="Texture2D" uid="uid://cth1fx4fidyub" path="res://images/slider_grab3.png" id="11_c2edr"]
 [ext_resource type="Texture2D" uid="uid://djudvcqdiwy2c" path="res://images/slider_grab_disabled.png" id="13_ont66"]
+[ext_resource type="Texture2D" uid="uid://d1meyxtfmg24q" path="res://images/slider2.png" id="15_bx2bt"]
 [ext_resource type="Texture2D" uid="uid://c5wlokly7g3c4" path="res://images/units/spearman_new_card.png" id="16_0qquh"]
 [ext_resource type="Texture2D" uid="uid://cx8o8ee63ea2f" path="res://images/units/archer_new_card.png" id="17_pu1jv"]
 [ext_resource type="Texture2D" uid="uid://uciaqo58a3qa" path="res://images/units/swordman_new_card.png" id="18_vbr0m"]
@@ -69,8 +69,8 @@ content_margin_left = 5.0
 content_margin_top = 10.0
 content_margin_right = 5.0
 content_margin_bottom = 10.0
-texture = ExtResource("11_3okbx")
-region_rect = Rect2(-0.0961876, -0.077363, 35.1557, 25.1207)
+texture = ExtResource("15_bx2bt")
+region_rect = Rect2(-0.0961876, -0.077363, 299.121, 21.3567)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2uy5r"]
 
@@ -83,9 +83,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -440.0
+offset_left = -390.0
 offset_top = -540.0
-offset_right = 460.0
+offset_right = 510.0
 offset_bottom = 390.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -828,7 +828,7 @@ offset_right = 900.0
 offset_bottom = 600.0
 
 [node name="MarginContainer2" type="MarginContainer" parent="Transfer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 
 [node name="Header" type="VBoxContainer" parent="Transfer/VBoxContainer"]
@@ -919,6 +919,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Peasants"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Peasants/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1006,6 +1007,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Spearmen"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Spearmen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1093,6 +1095,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Archers"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Archers/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1180,6 +1183,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Swordsmen"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Swordsmen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1267,6 +1271,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Crossbowmen"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Crosbowmen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1354,6 +1359,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Horsemen"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Horsemen/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1441,6 +1447,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Knights"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/Knights/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1528,6 +1535,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Mounted Knights"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/MountedKnights/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)
@@ -1615,6 +1623,7 @@ layout_mode = 2
 theme = ExtResource("5_5o6hl")
 theme_override_font_sizes/font_size = 20
 text = "Royal Guard"
+horizontal_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Transfer/VBoxContainer/Body/Units/RoyalGuard/VBoxContainer"]
 custom_minimum_size = Vector2(540, 40)

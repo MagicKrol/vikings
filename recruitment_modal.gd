@@ -46,12 +46,16 @@ var player_manager: PlayerManagerNode = null
 var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
+var move_modal: MoveModal = null
 var select_tooltip_modal: SelectTooltipModal = null
+var _reopen_move_modal: bool = false
+var _reopen_move_army: Army = null
 
 func _setup_references():
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
+	move_modal = get_node("../MoveModal") as MoveModal
 	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
 	game_manager = get_node("../../GameManager") as GameManager
 	if game_manager:
@@ -68,7 +72,7 @@ func _ready():
 	total_wood_label = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TotalWood")
 	total_iron_label = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TotalIron")
 	available_recruits_label = get_node("Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer/Value")
-	continue_button = get_node("Recruitment/Button")
+	continue_button = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/Button")
 	recruit_all_button = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/RecruitAll")
 	continue_button.name = "continue"
 	
@@ -120,13 +124,15 @@ func _is_mouse_over_control(control: Control) -> bool:
 func _set_adjust_button_enabled(button: TextureRect, enabled: bool) -> void:
 	button.mouse_filter = Control.MOUSE_FILTER_STOP if enabled else Control.MOUSE_FILTER_IGNORE
 
-func show_recruitment(army: Army, region: Region) -> void:
+func show_recruitment(army: Army, region: Region, reopen_move_modal: bool = false) -> void:
 	"""Show the recruitment modal with army and region information"""
 	if army == null or region == null:
 		hide_modal()
 		return
 	ui_manager.remember_army_select(army, region)
 	
+	_reopen_move_modal = reopen_move_modal
+	_reopen_move_army = army if reopen_move_modal else null
 	target_army = army
 	target_region = region
 	
@@ -149,6 +155,8 @@ func show_region_recruitment(region: Region) -> void:
 		return
 	ui_manager.remember_region_select(region)
 	
+	_reopen_move_modal = false
+	_reopen_move_army = null
 	target_army = null  # No specific army, recruiting to garrison
 	target_region = region
 	
@@ -172,6 +180,11 @@ func hide_modal() -> void:
 			var count = recruitment_counts[unit_type]
 			_refund_unit_cost(unit_type, count)
 	
+	var reopen_move: bool = _reopen_move_modal
+	var reopen_army: Army = _reopen_move_army
+	_reopen_move_modal = false
+	_reopen_move_army = null
+
 	# Reset state
 	target_army = null
 	target_region = null
@@ -183,6 +196,8 @@ func hide_modal() -> void:
 	if ui_manager:
 		ui_manager.set_modal_active(false)
 		ui_manager.restore_select_context()
+	if reopen_move and move_modal != null and reopen_army != null:
+		move_modal.show_move_modal(reopen_army)
 
 func _update_display() -> void:
 	"""Update the display with current recruitment information"""
@@ -462,6 +477,7 @@ func _on_recruit_all_pressed() -> void:
 	_update_recruitment_display()
 	_update_total_row()
 	_update_player_status_modal()
+	hide_modal()
 
 func _apply_recruitment_for_unit(unit_type: SoldierTypeEnum.Type, count: int) -> void:
 	if target_army != null:
