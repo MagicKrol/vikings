@@ -363,8 +363,9 @@ func move_army(army: Army, target_region: Region) -> bool:
 	
 	# Restore previous selection
 	if is_instance_valid(previous_selection) and is_instance_valid(previous_region):
-		selected_army = previous_selection
-		selected_region_container = previous_region
+		if previous_selection != army:
+			selected_army = previous_selection
+			selected_region_container = previous_region
 	else:
 		selected_army = null
 		selected_region_container = null

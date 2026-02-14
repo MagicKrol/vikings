@@ -178,6 +178,8 @@ func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	if current_region != null:
 		var armies_in_region := _get_armies_in_region(current_region)
 		current_army = _find_army_with_most_movement_points(armies_in_region)
+		if armies_in_region.is_empty():
+			_set_active_tab(TabType.REGION)
 	_suppress_auto_select = false
 	current_mode = DisplayMode.REGION
 	if _active_tab == TabType.ARMIES:

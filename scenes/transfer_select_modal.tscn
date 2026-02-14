@@ -65,7 +65,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("3_8g2pb")
-text = "Select Action"
+text = "Select Target"
 horizontal_alignment = 1
 vertical_alignment = 1
 

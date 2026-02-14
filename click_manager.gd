@@ -381,17 +381,20 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		if region_container == _army_manager.selected_region_container:
 			_army_manager.deselect_army()
 			return
-		var movement_points = _army_manager.selected_army.get_movement_points()
-		DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
 		var target_region = region_container as Region
 		var target_region_id = target_region.get_region_id()
 		var current_player_id = _game_manager.get_current_player_id()
 		var region_owner = _region_manager.get_region_owner(target_region_id)
 		var is_owned_region = region_owner == current_player_id
-		if movement_points > 0 and _army_manager.can_army_move_to_region(_army_manager.selected_army, region_container):
-			var result = await _game_manager.perform_region_entry(_army_manager.selected_army, target_region_id, "human")
-			if result == "blocked":
-				_army_manager.deselect_army()
+		var is_potential_target := _is_potential_move_target(_army_manager.selected_region_container, region_container)
+		if is_potential_target:
+			var movement_points = _army_manager.selected_army.get_movement_points()
+			DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
+			if movement_points > 0 and _army_manager.can_army_move_to_region(_army_manager.selected_army, region_container):
+				var result = await _game_manager.perform_region_entry(_army_manager.selected_army, target_region_id, "human")
+				if result == "blocked":
+					_army_manager.deselect_army()
+				return
 			return
 		if is_owned_region:
 			_army_manager.deselect_army()
@@ -431,6 +434,20 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 			if _info_modal.visible:
 				_info_modal.hide_modal()
 			DebugLogger.log("InputSystem", "Clicked on region: " + region.get_region_name() + " (Owner: " + str(region_owner) + ")")
+
+func _is_potential_move_target(source_region_container: Node, target_region_container: Node) -> bool:
+	var source_region := source_region_container as Region
+	var target_region := target_region_container as Region
+	var source_region_id = source_region.get_region_id()
+	var target_region_id = target_region.get_region_id()
+	var neighbors := _region_manager.get_neighbor_regions(source_region_id)
+	if not neighbors.has(target_region_id):
+		return false
+	if not target_region.is_passable():
+		return false
+	if _army_manager.is_region_at_army_cap(target_region_container):
+		return false
+	return true
 
 # Legacy functions kept for compatibility - these now delegate to appropriate managers
 func reset_army_moves() -> void:
