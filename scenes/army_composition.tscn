@@ -1,15 +1,15 @@
 [gd_scene load_steps=11 format=3 uid="uid://t3wm6ddxyc66"]
 
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="1_fs6b2"]
-[ext_resource type="Texture2D" uid="uid://qql18jjjxg5w" path="res://images/icons/peasant_icon (1).png" id="2_03gie"]
-[ext_resource type="Texture2D" uid="uid://beovaykfjibgt" path="res://images/icons/spearman_icon.png" id="3_c6nh6"]
-[ext_resource type="Texture2D" uid="uid://dwty4t4p7r2el" path="res://images/icons/archer_icon (1).png" id="4_c0o7h"]
-[ext_resource type="Texture2D" uid="uid://beyb6iehw00hl" path="res://images/icons/swordsmen_icon (1).png" id="5_fipol"]
-[ext_resource type="Texture2D" uid="uid://hx8sjqxy1pt6" path="res://images/icons/horsemen_icon.png" id="6_v8acg"]
-[ext_resource type="Texture2D" uid="uid://blmyfeyygvolu" path="res://images/icons/crossbowman_icon.png" id="7_sok0q"]
-[ext_resource type="Texture2D" uid="uid://c36hwy1ajmmce" path="res://images/icons/knight_icon.png" id="8_hwwsn"]
-[ext_resource type="Texture2D" uid="uid://by03mrow4b6w6" path="res://images/icons/mounted_knight_icon.png" id="9_eh0fo"]
-[ext_resource type="Texture2D" uid="uid://cqrxrtvdnpkx6" path="res://images/icons/royal_guard_icon.png" id="10_d4rdd"]
+[ext_resource type="Texture2D" uid="uid://jeobvfp8cxvs" path="res://images/units/peasant_new_card.png" id="2_ri87r"]
+[ext_resource type="Texture2D" uid="uid://c5wlokly7g3c4" path="res://images/units/spearman_new_card.png" id="3_v1xby"]
+[ext_resource type="Texture2D" uid="uid://cx8o8ee63ea2f" path="res://images/units/archer_new_card.png" id="4_6no1e"]
+[ext_resource type="Texture2D" uid="uid://uciaqo58a3qa" path="res://images/units/swordman_new_card.png" id="5_p1s80"]
+[ext_resource type="Texture2D" uid="uid://b8daoh0q7nlg4" path="res://images/units/horseman_new_card.png" id="6_ninwb"]
+[ext_resource type="Texture2D" uid="uid://v7mnedjnhwbm" path="res://images/units/crossbowman__new_card.png" id="7_y1pfp"]
+[ext_resource type="Texture2D" uid="uid://bfhxpqmbmu5qp" path="res://images/units/knight_new_card.png" id="8_xce0y"]
+[ext_resource type="Texture2D" uid="uid://b1aj5qqc2er37" path="res://images/units/mounted_knight_new_card.png" id="9_gisdl"]
+[ext_resource type="Texture2D" uid="uid://bg386bpyeab36" path="res://images/units/royal_guard_new_card.png" id="10_ujbck"]
 
 [node name="DefendersSection" type="VBoxContainer"]
 
@@ -35,15 +35,40 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Peasants"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("2_03gie")
+texture = ExtResource("2_ri87r")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="GarrisonInfo/Peasants"]
-custom_minimum_size = Vector2(52, 0)
+[node name="Healthy" type="Control" parent="GarrisonInfo/Peasants"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
 layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/Peasants/Healthy"]
+custom_minimum_size = Vector2(52, 0)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "23"
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Peasants"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Peasants/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "123"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Peasants/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+99"
 horizontal_alignment = 1
 
 [node name="Spearmen" type="VBoxContainer" parent="GarrisonInfo"]
@@ -53,15 +78,49 @@ theme_override_constants/separation = 0
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Spearmen"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("3_c6nh6")
+texture = ExtResource("3_v1xby")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/Spearmen"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/Spearmen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/Spearmen/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Spearmen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Spearmen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Spearmen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1
 
 [node name="Archers" type="VBoxContainer" parent="GarrisonInfo"]
@@ -71,15 +130,49 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Archers"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("4_c0o7h")
+texture = ExtResource("4_6no1e")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/Archers"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/Archers"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/Archers/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Archers"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Archers/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Archers/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1
 
 [node name="Swordsmen" type="VBoxContainer" parent="GarrisonInfo"]
@@ -89,10 +182,11 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Swordsmen"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("5_fipol")
+texture = ExtResource("5_p1s80")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/Swordsmen"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -100,22 +194,37 @@ theme_override_font_sizes/font_size = 18
 text = "22"
 horizontal_alignment = 1
 
-[node name="Horsemen" type="VBoxContainer" parent="GarrisonInfo"]
+[node name="Healthy" type="Control" parent="GarrisonInfo/Swordsmen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
 layout_mode = 2
-theme_override_constants/separation = -1
 
-[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Horsemen"]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 2
-texture = ExtResource("6_v8acg")
-expand_mode = 4
-
-[node name="Value" type="Label" parent="GarrisonInfo/Horsemen"]
+[node name="Value" type="Label" parent="GarrisonInfo/Swordsmen/Healthy"]
 custom_minimum_size = Vector2(52, 0)
-layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Swordsmen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Swordsmen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Swordsmen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1
 
 [node name="Crossbowmen" type="VBoxContainer" parent="GarrisonInfo"]
@@ -125,15 +234,101 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Crossbowmen"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("7_sok0q")
+texture = ExtResource("7_y1pfp")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/Crossbowmen"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/Crossbowmen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/Crossbowmen/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Crossbowmen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Crossbowmen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Crossbowmen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
+horizontal_alignment = 1
+
+[node name="Horsemen" type="VBoxContainer" parent="GarrisonInfo"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Horsemen"]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+texture = ExtResource("6_ninwb")
+expand_mode = 4
+
+[node name="Value" type="Label" parent="GarrisonInfo/Horsemen"]
+visible = false
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/Horsemen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/Horsemen/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Horsemen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Horsemen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Horsemen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1
 
 [node name="Knights" type="VBoxContainer" parent="GarrisonInfo"]
@@ -143,15 +338,49 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/Knights"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("8_hwwsn")
+texture = ExtResource("8_xce0y")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/Knights"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/Knights"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/Knights/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/Knights"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/Knights/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/Knights/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1
 
 [node name="MountedKnights" type="VBoxContainer" parent="GarrisonInfo"]
@@ -161,15 +390,49 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/MountedKnights"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("9_eh0fo")
+texture = ExtResource("9_gisdl")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/MountedKnights"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/MountedKnights"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/MountedKnights/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/MountedKnights"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/MountedKnights/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/MountedKnights/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1
 
 [node name="RoyalGuard" type="VBoxContainer" parent="GarrisonInfo"]
@@ -179,13 +442,47 @@ theme_override_constants/separation = -1
 [node name="TextureRect" type="TextureRect" parent="GarrisonInfo/RoyalGuard"]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
-texture = ExtResource("10_d4rdd")
+texture = ExtResource("10_ujbck")
 expand_mode = 4
 
 [node name="Value" type="Label" parent="GarrisonInfo/RoyalGuard"]
+visible = false
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Healthy" type="Control" parent="GarrisonInfo/RoyalGuard"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="GarrisonInfo/RoyalGuard/Healthy"]
+custom_minimum_size = Vector2(52, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="GarrisonInfo/RoyalGuard"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="GarrisonInfo/RoyalGuard/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "12"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="GarrisonInfo/RoyalGuard/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+9"
 horizontal_alignment = 1

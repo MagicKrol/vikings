@@ -4,11 +4,11 @@
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="2_theme"]
 [ext_resource type="Texture2D" uid="uid://cubi6y6po34ew" path="res://images/SelectTooltipModalNew.png" id="2_y0530"]
 [ext_resource type="Texture2D" uid="uid://bd6s1e8mr3cpa" path="res://images/icons/time.png" id="3_8rk5j"]
-[ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/food.png" id="4_qlo7v"]
-[ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/wood.png" id="5_y7hg1"]
-[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="6_ib42q"]
-[ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/iron.png" id="7_efheu"]
-[ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/coin.png" id="8_svy5y"]
+[ext_resource type="Texture2D" uid="uid://d7aaun3y8iy2" path="res://images/icons/new_food.png" id="4_qlo7v"]
+[ext_resource type="Texture2D" uid="uid://bjkb4wlryvdl" path="res://images/icons/new_wood.png" id="5_y7hg1"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/new_stone.png" id="6_ib42q"]
+[ext_resource type="Texture2D" uid="uid://bo8ksqcmcfjgr" path="res://images/icons/new_iron.png" id="7_efheu"]
+[ext_resource type="Texture2D" uid="uid://clxwjlur6bk4t" path="res://images/icons/new_coin.png" id="8_svy5y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shadow"]
 bg_color = Color(0, 0, 0, 0.3)

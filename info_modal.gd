@@ -494,12 +494,12 @@ func _update_defenders_section() -> void:
 		SoldierTypeEnum.Type.ROYAL_GUARD
 	]
 	for i in unit_nodes.size():
-		var value_node: Label = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + unit_nodes[i] + "/Value")
+		var unit_node: Node = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + unit_nodes[i])
 		var healthy: int = garrison_comp.get_soldier_count(unit_types[i])
 		var wounded: int = 0
 		if wounded_comp != null:
 			wounded = wounded_comp.get_soldier_count(unit_types[i])
-		_set_unit_value_with_wounded(value_node, healthy, wounded)
+		_set_unit_value_with_wounded(unit_node, healthy, wounded)
 
 func _set_cost_value(container_path: String, value: int) -> void:
 	var container: HBoxContainer = get_node(container_path)
@@ -525,18 +525,35 @@ func _update_army_unit_values(composition: ArmyComposition, wounded_composition:
 	]
 
 	for i in unit_nodes.size():
-		var value_node: Label = info_root.get_node(unit_nodes[i] + "/Value")
+		var unit_node: Node = info_root.get_node(unit_nodes[i])
 		var healthy: int = composition.get_soldier_count(unit_types[i])
 		var wounded: int = 0
 		if wounded_composition != null:
 			wounded = wounded_composition.get_soldier_count(unit_types[i])
-		_set_unit_value_with_wounded(value_node, healthy, wounded)
+		_set_unit_value_with_wounded(unit_node, healthy, wounded)
 
-func _set_unit_value_with_wounded(value_node: Label, healthy: int, wounded: int) -> void:
+func _set_unit_value_with_wounded(unit_node: Node, healthy: int, wounded: int) -> void:
+	var healthy_node: Control = unit_node.get_node("Healthy") as Control
+	var wounded_node: HBoxContainer = unit_node.get_node("Wounded") as HBoxContainer
+	var healthy_value: Label = healthy_node.get_node("Value") as Label
+	var wounded_value: Label = wounded_node.get_node("Value") as Label
+	var wounded_label: Label = wounded_node.get_node("Wounded") as Label
 	if wounded > 0:
-		value_node.text = str(healthy) + "+" + str(wounded)
+		healthy_node.visible = false
+		wounded_node.visible = true
+		wounded_value.text = str(healthy)
+		wounded_value.add_theme_color_override("font_color", Color.WHITE)
+		wounded_label.text = "+" + str(wounded)
+		wounded_label.add_theme_color_override("font_color", Color.YELLOW)
+		if wounded < 10:
+			wounded_label.add_theme_font_size_override("font_size", 17)
+		else:
+			wounded_label.add_theme_font_size_override("font_size", 12)
 	else:
-		value_node.text = str(healthy)
+		wounded_node.visible = false
+		healthy_node.visible = true
+		healthy_value.text = str(healthy)
+		healthy_value.add_theme_color_override("font_color", Color.WHITE)
 
 func _update_region_resource_values() -> void:
 	"""Update region resource values"""

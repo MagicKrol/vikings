@@ -27,10 +27,38 @@ layout_mode = 2
 texture = ExtResource("1_bx6go")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Peasants"]
+[node name="Healthy" type="Control" parent="Peasants"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Peasants/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "23"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Peasants"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Peasants/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "123"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Peasants/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "+1"
 horizontal_alignment = 1
 
 [node name="Spearmen" type="VBoxContainer" parent="."]
@@ -43,10 +71,38 @@ layout_mode = 2
 texture = ExtResource("2_68ybd")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Spearmen"]
+[node name="Healthy" type="Control" parent="Spearmen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Spearmen/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Spearmen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Spearmen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Spearmen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="Archers" type="VBoxContainer" parent="."]
@@ -59,10 +115,38 @@ layout_mode = 2
 texture = ExtResource("3_s5a4m")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Archers"]
+[node name="Healthy" type="Control" parent="Archers"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Archers/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Archers"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Archers/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Archers/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="Swordsmen" type="VBoxContainer" parent="."]
@@ -75,10 +159,38 @@ layout_mode = 2
 texture = ExtResource("4_72j4i")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Swordsmen"]
+[node name="Healthy" type="Control" parent="Swordsmen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Swordsmen/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "22"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Swordsmen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Swordsmen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Swordsmen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="Horsemen" type="VBoxContainer" parent="."]
@@ -91,10 +203,38 @@ layout_mode = 2
 texture = ExtResource("5_ygvi6")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Horsemen"]
+[node name="Healthy" type="Control" parent="Horsemen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Horsemen/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Horsemen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Horsemen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Horsemen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="Crossbowmen" type="VBoxContainer" parent="."]
@@ -107,10 +247,38 @@ layout_mode = 2
 texture = ExtResource("6_7hf3u")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Crossbowmen"]
+[node name="Healthy" type="Control" parent="Crossbowmen"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Crossbowmen/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Crossbowmen"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Crossbowmen/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Crossbowmen/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="Knights" type="VBoxContainer" parent="."]
@@ -123,10 +291,38 @@ layout_mode = 2
 texture = ExtResource("7_njhi5")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="Knights"]
+[node name="Healthy" type="Control" parent="Knights"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="Knights/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="Knights"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="Knights/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="Knights/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="MountedKnights" type="VBoxContainer" parent="."]
@@ -139,10 +335,38 @@ layout_mode = 2
 texture = ExtResource("8_ibj5k")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="MountedKnights"]
+[node name="Healthy" type="Control" parent="MountedKnights"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="MountedKnights/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="MountedKnights"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="MountedKnights/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="MountedKnights/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
 
 [node name="RoyalGuard" type="VBoxContainer" parent="."]
@@ -155,8 +379,36 @@ layout_mode = 2
 texture = ExtResource("9_rae7u")
 expand_mode = 4
 
-[node name="Value" type="Label" parent="RoyalGuard"]
+[node name="Healthy" type="Control" parent="RoyalGuard"]
+visible = false
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="RoyalGuard/Healthy"]
 custom_minimum_size = Vector2(52, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "10"
+horizontal_alignment = 1
+
+[node name="Wounded" type="HBoxContainer" parent="RoyalGuard"]
+custom_minimum_size = Vector2(52, 26)
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Value" type="Label" parent="RoyalGuard/Wounded"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wounded" type="Label" parent="RoyalGuard/Wounded"]
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "+0"
 horizontal_alignment = 1
