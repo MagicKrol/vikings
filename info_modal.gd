@@ -474,8 +474,11 @@ func _update_garrison_section() -> void:
 
 	var recruits_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Recruits")
 	var recruits_max: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/RecruitsMax")
-	recruits_value.text = str(current_region.get_available_recruits())
-	recruits_max.text = str(current_region.get_max_recruits())
+	var owner_id: int = current_region.get_region_owner()
+	var pooled_available: int = region_manager.get_available_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
+	var pooled_max: int = region_manager.get_max_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
+	recruits_value.text = str(pooled_available)
+	recruits_max.text = str(pooled_max)
 	_recruit_button.disabled = false
 
 func _update_defenders_section() -> void:

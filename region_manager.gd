@@ -658,6 +658,58 @@ func get_available_recruits_from_region_and_neighbors(region_id: int, player_id:
 	
 	return recruit_sources
 
+func get_available_recruits_total_from_region_and_neighbors(region_id: int, player_id: int) -> int:
+	"""Total available recruits from a region and all owned neighboring regions."""
+	var recruit_sources: Array = get_available_recruits_from_region_and_neighbors(region_id, player_id)
+	var total: int = 0
+	for source in recruit_sources:
+		total += int(source.amount)
+	return total
+
+func get_max_recruits_total_from_region_and_neighbors(region_id: int, player_id: int) -> int:
+	"""Total max recruits from a region and all owned neighboring regions."""
+	var total: int = 0
+	var main_owner: int = get_region_owner(region_id)
+	if main_owner == player_id:
+		var main_region: Region = map_generator.get_region_container_by_id(region_id)
+		total += main_region.get_max_recruits()
+	var neighbors = get_neighbor_regions(region_id)
+	for neighbor_id in neighbors:
+		var neighbor_owner: int = get_region_owner(neighbor_id)
+		if neighbor_owner == player_id:
+			var neighbor_region: Region = map_generator.get_region_container_by_id(neighbor_id)
+			total += neighbor_region.get_max_recruits()
+	return total
+
+func deduct_recruits_proportionally_from_region_and_neighbors(region_id: int, player_id: int, total_to_deduct: int) -> void:
+	"""Deduct recruits proportionally from a region and all owned neighboring regions."""
+	if total_to_deduct <= 0:
+		return
+	var recruit_sources: Array = get_available_recruits_from_region_and_neighbors(region_id, player_id)
+	_deduct_recruits_proportionally(total_to_deduct, recruit_sources)
+
+func _deduct_recruits_proportionally(total_to_deduct: int, recruit_sources: Array) -> void:
+	if recruit_sources.is_empty() or total_to_deduct <= 0:
+		return
+	var total_available: int = 0
+	for s in recruit_sources:
+		total_available += int(s.amount)
+	if total_available <= 0:
+		return
+	var remaining: int = total_to_deduct
+	for i in range(recruit_sources.size()):
+		var src = recruit_sources[i]
+		var reg: Region = map_generator.get_region_container_by_id(src.region_id)
+		var to_deduct: int = 0
+		if i == recruit_sources.size() - 1:
+			to_deduct = remaining
+		else:
+			var proportion: float = float(src.amount) / float(total_available)
+			to_deduct = int(proportion * float(total_to_deduct))
+		if to_deduct > 0:
+			var actual: int = reg.hire_recruits(to_deduct)
+			remaining -= actual
+
 func perform_ore_search(region: Region, player_id: int, player_manager: PlayerManagerNode) -> Dictionary:
 	"""Perform ore search in a region for a player. Returns search result."""
 	if region == null:

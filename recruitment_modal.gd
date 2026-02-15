@@ -33,6 +33,9 @@ const ICON_WOOD = preload("res://images/icons/new_forest.png")
 const ICON_IRON = preload("res://images/icons/new_iron.png")
 const ABILITIES_TOOLTIP_OFFSET: Vector2 = Vector2(20, 30)
 const ABILITIES_TOOLTIP_MAX_X: float = 1520.0
+const HOLD_DELAY_SECONDS: float = 0.5
+const HOLD_INTERVAL_SECONDS: float = 0.7
+const HOLD_STEP: int = 10
 const TRAIT_KEY_ALIASES := {
 	"multi attack": "master-at-arms",
 	"multiattack": "master-at-arms",
@@ -49,6 +52,7 @@ var total_cost: Dictionary = {} # resource_type -> total cost
 
 # Additional manager reference
 var game_manager: GameManager = null
+var region_manager: RegionManager = null
 var player_manager: PlayerManagerNode = null
 
 # Common references
@@ -62,6 +66,12 @@ var abilities_tooltip_label: Label = null
 var _reopen_move_modal: bool = false
 var _reopen_move_army: Army = null
 var _trait_descriptions: Dictionary = {}
+var _hold_active: bool = false
+var _hold_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.Type.PEASANTS
+var _hold_delta: int = 0
+var _hold_elapsed: float = 0.0
+var _hold_interval_elapsed: float = 0.0
+var _hold_after_delay_started: bool = false
 
 func _setup_references():
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -73,6 +83,7 @@ func _setup_references():
 	if abilities_tooltip != null:
 		abilities_tooltip_label = abilities_tooltip.get_node("TooltipLabel") as Label
 	game_manager = get_node("../../GameManager") as GameManager
+	region_manager = game_manager.get_region_manager()
 	if game_manager:
 		tutorial_manager = game_manager.get_tutorial_manager()
 
@@ -109,6 +120,7 @@ func _ready():
 func _process(_delta: float) -> void:
 	if abilities_tooltip != null and abilities_tooltip.visible:
 		_update_abilities_tooltip_position(get_viewport().get_mouse_position())
+	_process_hold(_delta)
 
 func _connect_button_signals() -> void:
 	for section_data in UNIT_SECTIONS:
@@ -204,8 +216,13 @@ func _update_abilities_tooltip_position(mouse_pos: Vector2) -> void:
 	abilities_tooltip.global_position = pos
 
 func _on_adjust_button_input(event: InputEvent, unit_type: SoldierTypeEnum.Type, delta: int) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_adjust_recruitment(unit_type, delta)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			var step: int = HOLD_STEP if event.shift_pressed else 1
+			_adjust_recruitment(unit_type, delta * step)
+			_start_hold(unit_type, delta)
+		else:
+			_stop_hold()
 
 func _on_adjust_button_hover(button: TextureRect, is_plus: bool) -> void:
 	_set_adjust_button_texture(button, is_plus, true)
@@ -224,6 +241,39 @@ func _is_mouse_over_control(control: Control) -> bool:
 
 func _set_adjust_button_enabled(button: TextureRect, enabled: bool) -> void:
 	button.mouse_filter = Control.MOUSE_FILTER_STOP if enabled else Control.MOUSE_FILTER_IGNORE
+
+func _start_hold(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
+	_hold_active = true
+	_hold_unit_type = unit_type
+	_hold_delta = delta
+	_hold_elapsed = 0.0
+	_hold_interval_elapsed = 0.0
+	_hold_after_delay_started = false
+
+func _stop_hold() -> void:
+	_hold_active = false
+	_hold_elapsed = 0.0
+	_hold_interval_elapsed = 0.0
+	_hold_after_delay_started = false
+
+func _process_hold(delta: float) -> void:
+	if not _hold_active:
+		return
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_stop_hold()
+		return
+	_hold_elapsed += delta
+	if _hold_elapsed < HOLD_DELAY_SECONDS:
+		return
+	if not _hold_after_delay_started:
+		_hold_after_delay_started = true
+		_hold_interval_elapsed = 0.0
+		_adjust_recruitment(_hold_unit_type, _hold_delta * HOLD_STEP)
+		return
+	_hold_interval_elapsed += delta
+	while _hold_interval_elapsed >= HOLD_INTERVAL_SECONDS:
+		_hold_interval_elapsed -= HOLD_INTERVAL_SECONDS
+		_adjust_recruitment(_hold_unit_type, _hold_delta * HOLD_STEP)
 
 func show_recruitment(army: Army, region: Region, reopen_move_modal: bool = false) -> void:
 	"""Show the recruitment modal with army and region information"""
@@ -280,6 +330,7 @@ func hide_modal() -> void:
 		for unit_type in recruitment_counts:
 			var count = recruitment_counts[unit_type]
 			_refund_unit_cost(unit_type, count)
+	_stop_hold()
 	if abilities_tooltip != null:
 		abilities_tooltip.hide_tooltip()
 	
@@ -412,7 +463,7 @@ func _update_total_row() -> void:
 	for count in recruitment_counts.values():
 		total_to_hire += count
 	
-	var available_recruits: int = target_region.get_available_recruits()
+	var available_recruits: int = _get_pooled_available_recruits()
 	var remaining_recruits: int = max(0, available_recruits - total_to_hire)
 
 	# Update labels
@@ -436,7 +487,7 @@ func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 
 	var current_count = recruitment_counts.get(unit_type, 0)
 	if delta > 0:
-		var free_recruits = target_region.get_available_recruits() - _get_total_hired()
+		var free_recruits = _get_pooled_available_recruits() - _get_total_hired()
 		if free_recruits <= 0:
 			return
 		var desired = min(delta, free_recruits)
@@ -500,7 +551,7 @@ func _can_hire_amount(unit_type: SoldierTypeEnum.Type, amount: int) -> bool:
 	var castle_type = target_region.get_castle_type()
 	if not GameParameters.can_recruit_unit_with_castle(unit_type, castle_type):
 		return false
-	var free_recruits = target_region.get_available_recruits() - _get_total_hired()
+	var free_recruits = _get_pooled_available_recruits() - _get_total_hired()
 	if free_recruits < amount:
 		return false
 	var unit_costs = _get_unit_costs(unit_type)
@@ -593,7 +644,7 @@ func _apply_recruitment_for_unit(unit_type: SoldierTypeEnum.Type, count: int) ->
 		target_army.add_soldiers(unit_type, count)
 	else:
 		target_region.garrison.add_soldiers(unit_type, count)
-	target_region.hire_recruits(count)
+	_deduct_recruits_from_pool(count)
 	_refresh_info_modal_after_recruit()
 
 func _refresh_info_modal_after_recruit() -> void:
@@ -628,7 +679,7 @@ func _apply_recruitment() -> void:
 	for count in recruitment_counts.values():
 		total_recruited += count
 	
-	target_region.hire_recruits(total_recruited)
+	_deduct_recruits_from_pool(total_recruited)
 	_refresh_info_modal_after_recruit()
 	
 	# Resources have already been deducted in real-time, no need to deduct again
@@ -658,6 +709,19 @@ func _refund_unit_cost(unit_type: SoldierTypeEnum.Type, count: int) -> void:
 func _update_player_status_modal() -> void:
 	"""Update the player status modal to reflect current resource costs"""
 	GlobalSignals.emit_signal("player_status_refresh_requested")
+
+func _get_recruit_owner_id() -> int:
+	if target_army != null:
+		return target_army.get_player_id()
+	return target_region.get_region_owner()
+
+func _get_pooled_available_recruits() -> int:
+	var owner_id: int = _get_recruit_owner_id()
+	return region_manager.get_available_recruits_total_from_region_and_neighbors(target_region.get_region_id(), owner_id)
+
+func _deduct_recruits_from_pool(total_recruited: int) -> void:
+	var owner_id: int = _get_recruit_owner_id()
+	region_manager.deduct_recruits_proportionally_from_region_and_neighbors(target_region.get_region_id(), owner_id, total_recruited)
 
 func _apply_standard_theme(label: Label) -> void:
 	"""Apply standard theme to a label"""
