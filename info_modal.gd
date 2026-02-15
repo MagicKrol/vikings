@@ -889,6 +889,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+		if ui_manager.is_recruitment_or_transfer_modal_visible():
+			get_viewport().set_input_as_handled()
+			return
 		current_army = null
 		game_manager.get_army_manager().deselect_army()
 		if _active_tab == TabType.REGION:

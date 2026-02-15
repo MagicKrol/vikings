@@ -379,6 +379,9 @@ func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
 	return _is_any_tracked_modal_visible()
 
+func is_recruitment_or_transfer_modal_visible() -> bool:
+	return _recruitment_modal.visible or _transfer_select_modal.visible or _transfer_soldiers_modal.visible
+
 func is_only_info_modal_visible() -> bool:
 	if not _info_modal.visible:
 		return false

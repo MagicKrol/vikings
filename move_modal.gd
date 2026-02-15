@@ -174,6 +174,10 @@ func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+		if ui_manager.is_recruitment_or_transfer_modal_visible():
+			get_viewport().set_input_as_handled()
+			accept_event()
+			return
 		_cycle_to_next_army()
 		get_viewport().set_input_as_handled()
 		accept_event()
@@ -188,6 +192,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_cancel_move()
 			get_viewport().set_input_as_handled()
 		if event.keycode == KEY_SPACE:
+			if ui_manager.is_recruitment_or_transfer_modal_visible():
+				get_viewport().set_input_as_handled()
+				return
 			_cycle_to_next_army()
 			get_viewport().set_input_as_handled()
 

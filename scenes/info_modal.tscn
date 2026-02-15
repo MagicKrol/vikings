@@ -659,8 +659,6 @@ custom_minimum_size = Vector2(180, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("14_1btl1")
-toggle_mode = true
-button_group = SubResource("ButtonGroup_l3w7x")
 text = "Recruit"
 
 [node name="Resources" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection"]

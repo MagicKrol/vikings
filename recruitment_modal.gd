@@ -31,6 +31,15 @@ const BUTTON_PLUS_LIGHT = preload("res://images/button_plus_light.png")
 const ICON_GOLD = preload("res://images/icons/new_coin.png")
 const ICON_WOOD = preload("res://images/icons/new_forest.png")
 const ICON_IRON = preload("res://images/icons/new_iron.png")
+const ABILITIES_TOOLTIP_OFFSET: Vector2 = Vector2(20, 30)
+const ABILITIES_TOOLTIP_MAX_X: float = 1520.0
+const TRAIT_KEY_ALIASES := {
+	"multi attack": "master-at-arms",
+	"multiattack": "master-at-arms",
+	"armor piercing": "armour piercing",
+	"armorpiercing": "armour piercing",
+	"armor-piercing": "armour piercing"
+}
 
 # Recruitment data
 var target_army: Army = null
@@ -48,8 +57,11 @@ var ui_manager: UIManager = null
 var info_modal: InfoModal = null
 var move_modal: MoveModal = null
 var select_tooltip_modal: SelectTooltipModal = null
+var abilities_tooltip: SelectTooltipModalNoRes = null
+var abilities_tooltip_label: Label = null
 var _reopen_move_modal: bool = false
 var _reopen_move_army: Army = null
+var _trait_descriptions: Dictionary = {}
 
 func _setup_references():
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -57,6 +69,9 @@ func _setup_references():
 	info_modal = get_node("../InfoModal") as InfoModal
 	move_modal = get_node("../MoveModal") as MoveModal
 	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
+	abilities_tooltip = get_node("AbilitiesTooltip") as SelectTooltipModalNoRes
+	if abilities_tooltip != null:
+		abilities_tooltip_label = abilities_tooltip.get_node("TooltipLabel") as Label
 	game_manager = get_node("../../GameManager") as GameManager
 	if game_manager:
 		tutorial_manager = game_manager.get_tutorial_manager()
@@ -84,9 +99,16 @@ func _ready():
 	
 	# Connect unit adjustment buttons
 	_connect_button_signals()
+	_build_trait_descriptions()
+	_connect_trait_tooltips()
 	
 	# Get additional manager reference
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
+	set_process(true)
+
+func _process(_delta: float) -> void:
+	if abilities_tooltip != null and abilities_tooltip.visible:
+		_update_abilities_tooltip_position(get_viewport().get_mouse_position())
 
 func _connect_button_signals() -> void:
 	for section_data in UNIT_SECTIONS:
@@ -101,6 +123,85 @@ func _connect_button_signals() -> void:
 		button_plus.mouse_entered.connect(_on_adjust_button_hover.bind(button_plus, true))
 		button_plus.mouse_exited.connect(_on_adjust_button_exit.bind(button_plus, true))
 		recruit_button.pressed.connect(_on_recruit_button_pressed.bind(section_data.type))
+
+func _build_trait_descriptions() -> void:
+	_trait_descriptions.clear()
+	var info_node: Control = get_node("Info") as Control
+	for i in range(1, 11):
+		var trait_name: Label = info_node.get_node("Header/Trait" + str(i) + "/Name") as Label
+		var trait_desc: Label = info_node.get_node("Header/TraitDesc" + str(i) + "/Name") as Label
+		var key := _normalize_trait_key(trait_name.text)
+		if key != "":
+			_trait_descriptions[key] = trait_desc.text
+
+func _connect_trait_tooltips() -> void:
+	for section_data in UNIT_SECTIONS:
+		var section: Control = get_node(section_data.path)
+		var labels: Array = section.find_children("*", "Label", true, false)
+		for label in labels:
+			var key := _get_label_trait_key(label)
+			if key == "":
+				continue
+			label.mouse_filter = Control.MOUSE_FILTER_STOP
+			label.mouse_entered.connect(_on_trait_label_mouse_entered.bind(key))
+			label.mouse_exited.connect(_on_trait_label_mouse_exited)
+
+func _normalize_trait_key(text: String) -> String:
+	var key := text.strip_edges().to_lower()
+	key = key.replace("•", "")
+	key = key.replace(":", "")
+	key = key.replace("\n", " ")
+	while key.find("  ") != -1:
+		key = key.replace("  ", " ")
+	return key.strip_edges()
+
+func _get_label_trait_key(label: Label) -> String:
+	var key := _normalize_trait_key(label.text)
+	if key == "" or key == "none":
+		return ""
+	if _trait_descriptions.has(key):
+		return key
+	var name_key := _normalize_trait_key(label.name)
+	if _trait_descriptions.has(name_key):
+		return name_key
+	if TRAIT_KEY_ALIASES.has(key):
+		var alias_key: String = TRAIT_KEY_ALIASES[key]
+		if _trait_descriptions.has(alias_key):
+			return alias_key
+	if TRAIT_KEY_ALIASES.has(name_key):
+		var alias_name_key: String = TRAIT_KEY_ALIASES[name_key]
+		if _trait_descriptions.has(alias_name_key):
+			return alias_name_key
+	return ""
+
+func _on_trait_label_mouse_entered(trait_key: String) -> void:
+	if abilities_tooltip_label == null or abilities_tooltip == null:
+		return
+	var desc: String = _trait_descriptions.get(trait_key, "")
+	if desc == "":
+		abilities_tooltip.hide_tooltip()
+		return
+	abilities_tooltip_label.text = desc
+	_update_abilities_tooltip_position(get_viewport().get_mouse_position())
+	abilities_tooltip.visible = true
+
+func _on_trait_label_mouse_exited() -> void:
+	if abilities_tooltip != null:
+		abilities_tooltip.hide_tooltip()
+
+func _update_abilities_tooltip_position(mouse_pos: Vector2) -> void:
+	if abilities_tooltip == null:
+		return
+	var pos := mouse_pos + ABILITIES_TOOLTIP_OFFSET
+	var screen_size = get_viewport().get_visible_rect().size
+	if pos.x + abilities_tooltip.size.x > screen_size.x:
+		pos.x = screen_size.x - abilities_tooltip.size.x - 10.0
+	if pos.y + abilities_tooltip.size.y > screen_size.y:
+		pos.y = screen_size.y - abilities_tooltip.size.y - 10.0
+	pos.x = max(10.0, pos.x)
+	pos.y = max(10.0, pos.y)
+	pos.x = min(pos.x, ABILITIES_TOOLTIP_MAX_X)
+	abilities_tooltip.global_position = pos
 
 func _on_adjust_button_input(event: InputEvent, unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -179,6 +280,8 @@ func hide_modal() -> void:
 		for unit_type in recruitment_counts:
 			var count = recruitment_counts[unit_type]
 			_refund_unit_cost(unit_type, count)
+	if abilities_tooltip != null:
+		abilities_tooltip.hide_tooltip()
 	
 	var reopen_move: bool = _reopen_move_modal
 	var reopen_army: Army = _reopen_move_army
@@ -256,7 +359,6 @@ func _update_unit_section(section_path: String, unit_type: SoldierTypeEnum.Type,
 	var resource2_cost_label: Label = section.get_node("Resource2Cost")
 	var attack_value: Label = section.get_node("AttackValue")
 	var defense_value: Label = section.get_node("DefenseValue")
-	var abilities_label: Label = section.get_node("Label10")
 	var count_label: Label = section.get_node("Count")
 	var button_minus: TextureRect = section.get_node("ButtonMinus")
 	var button_plus: TextureRect = section.get_node("ButtonPlus")
