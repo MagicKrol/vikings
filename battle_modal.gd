@@ -66,20 +66,20 @@ var _is_siege_battle: bool = false
 
 func _ready():
 	# Get references to static UI elements from updated scene structure
-	battle_title_label = get_node("Panel/Army/Header/Region")
-	attacker_header = get_node("Panel/Army/HeaderSection/HBoxContainer/AttackerName")
-	defender_header = get_node("Panel/Army/HeaderSection/HBoxContainer/DefenderName")
-	attacker_effectiveness = get_node("Panel/Army/HeaderSection/Status/AttackerVigorValue")
-	defender_effectiveness = get_node("Panel/Army/HeaderSection/Status/DefenderVigorValue")
-	assault_value_label = get_node("Panel/Army/HeaderSection/HBoxContainer2/AssaultValue")
-	attacker_units_container = get_node("Panel/Army/UnitsSection")
-	defender_units_container = get_node("Panel/Army/UnitsSection")
-	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
-	quick_resolve_button = get_node("Panel/Army/ButtonSection/HBoxContainer/QuickResolve")
-	withdraw_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Button")
-	message_label = get_node("Panel/Army/MessageSection/HBoxContainer/Message")
-	defender_defense_value = get_node("Panel/Army/HeaderSection/HBoxContainer2/DefenderDefenseValue")
-	buttons_margin = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonsMargin") as MarginContainer
+	battle_title_label = get_node("Battle/VBoxContainer/Header/Header")
+	attacker_header = get_node("Battle/VBoxContainer/SubHeader/HBoxContainer/Target")
+	defender_header = get_node("Battle/VBoxContainer/SubHeader/HBoxContainer/Source")
+	attacker_effectiveness = get_node("Battle/VBoxContainer/Status/AttackerVigorValue")
+	defender_effectiveness = get_node("Battle/VBoxContainer/Status/DefenderVigorValue")
+	assault_value_label = get_node("Battle/VBoxContainer/HBoxContainer2/AssaultValue")
+	attacker_units_container = get_node("Battle/VBoxContainer/Body/Units")
+	defender_units_container = get_node("Battle/VBoxContainer/Body/Units")
+	continue_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/Button")
+	quick_resolve_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/QuickResolve")
+	withdraw_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/Button")
+	message_label = get_node("Battle/VBoxContainer/MessageSection/HBoxContainer/Message")
+	defender_defense_value = get_node("Battle/VBoxContainer/HBoxContainer2/DefenderDefenseValue")
+	buttons_margin = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/ButtonsMargin") as MarginContainer
 	siege_panel = get_node("Siege") as SiegePanel
 
 	# Connect button signals - single button handles both continue and withdraw
@@ -291,7 +291,9 @@ func _display_army_losses() -> void:
 	"""Display losses for both armies in the report format"""
 	# Update unit labels to show losses instead of remaining counts
 	for unit_type in SoldierTypeEnum.get_all_types():
-		var unit_name = SoldierTypeEnum.type_to_string(unit_type).to_lower().capitalize() + "s"
+		var unit_name = _get_unit_section_name(unit_type)
+		if unit_name == "":
+			continue
 		
 		# Update attacker losses
 		var attacker_losses = battle_report.attacker_losses.get(unit_type, 0)
@@ -318,24 +320,44 @@ func _display_army_losses() -> void:
 
 func _update_loss_label(unit_section_name: String, loss_count: int, is_attacker: bool) -> void:
 	"""Update loss labels in the static scene structure"""
-	var section_path = "Panel/Army/UnitsSection/" + unit_section_name
 	if unit_section_name == "Total":
-		section_path = "Panel/Army/TotalSection/Total"
-	
-	var section_node = get_node_or_null(section_path)
-	if not section_node:
 		return
+	var section_path = "Battle/VBoxContainer/Body/Units/" + unit_section_name
 	
-	var attacker_label = section_node.get_node_or_null("AttackerRemaining")
-	var defender_label = section_node.get_node_or_null("DefenderRemaining")
+	var section_node = get_node(section_path)
 	
-	if is_attacker and attacker_label:
+	var attacker_label: Label = section_node.get_node("VBoxContainer/TextureRect/Label") as Label
+	var defender_label: Label = section_node.get_node("VBoxContainer/TextureRect/Label2") as Label
+	
+	if is_attacker:
 		attacker_label.text = str(loss_count)
 		attacker_label.add_theme_color_override("font_color", Color.RED)
 	
-	if not is_attacker and defender_label:
+	if not is_attacker:
 		defender_label.text = str(loss_count)
 		defender_label.add_theme_color_override("font_color", Color.RED)
+
+func _get_unit_section_name(unit_type: int) -> String:
+	match unit_type:
+		SoldierTypeEnum.Type.PEASANTS:
+			return "Peasants"
+		SoldierTypeEnum.Type.ARCHERS:
+			return "Archers"
+		SoldierTypeEnum.Type.SPEARMEN:
+			return "Spearmen"
+		SoldierTypeEnum.Type.SWORDSMEN:
+			return "Swordsmen"
+		SoldierTypeEnum.Type.CROSSBOWMEN:
+			return "Crosbowmen"
+		SoldierTypeEnum.Type.HORSEMEN:
+			return "Horsemen"
+		SoldierTypeEnum.Type.KNIGHTS:
+			return "Knights"
+		SoldierTypeEnum.Type.MOUNTED_KNIGHTS:
+			return "MountedKnights"
+		SoldierTypeEnum.Type.ROYAL_GUARD:
+			return "RoyalGuard"
+	return ""
 
 
 
@@ -363,11 +385,11 @@ func _update_attacker_units() -> void:
 	_update_unit_count_label("Archers", SoldierTypeEnum.Type.ARCHERS, composition_to_show, initial_composition, true)
 	_update_unit_count_label("Spearmen", SoldierTypeEnum.Type.SPEARMEN, composition_to_show, initial_composition, true)
 	_update_unit_count_label("Swordsmen", SoldierTypeEnum.Type.SWORDSMEN, composition_to_show, initial_composition, true)
-	_update_unit_count_label("Crossbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, composition_to_show, initial_composition, true)
+	_update_unit_count_label("Crosbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, composition_to_show, initial_composition, true)
 	_update_unit_count_label("Horsemen", SoldierTypeEnum.Type.HORSEMEN, composition_to_show, initial_composition, true)
 	_update_unit_count_label("Knights", SoldierTypeEnum.Type.KNIGHTS, composition_to_show, initial_composition, true)
-	_update_unit_count_label("Mounted Knights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, composition_to_show, initial_composition, true)
-	_update_unit_count_label("Royal Guard", SoldierTypeEnum.Type.ROYAL_GUARD, composition_to_show, initial_composition, true)
+	_update_unit_count_label("MountedKnights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, composition_to_show, initial_composition, true)
+	_update_unit_count_label("RoyalGuard", SoldierTypeEnum.Type.ROYAL_GUARD, composition_to_show, initial_composition, true)
 	
 	# Update total
 	var total_current = 0
@@ -416,11 +438,11 @@ func _update_defender_units() -> void:
 	_update_unit_count_label("Archers", SoldierTypeEnum.Type.ARCHERS, composition_to_show, initial_composition, false)
 	_update_unit_count_label("Spearmen", SoldierTypeEnum.Type.SPEARMEN, composition_to_show, initial_composition, false)
 	_update_unit_count_label("Swordsmen", SoldierTypeEnum.Type.SWORDSMEN, composition_to_show, initial_composition, false)
-	_update_unit_count_label("Crossbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, composition_to_show, initial_composition, false)
+	_update_unit_count_label("Crosbowmen", SoldierTypeEnum.Type.CROSSBOWMEN, composition_to_show, initial_composition, false)
 	_update_unit_count_label("Horsemen", SoldierTypeEnum.Type.HORSEMEN, composition_to_show, initial_composition, false)
 	_update_unit_count_label("Knights", SoldierTypeEnum.Type.KNIGHTS, composition_to_show, initial_composition, false)
-	_update_unit_count_label("Mounted Knights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, composition_to_show, initial_composition, false)
-	_update_unit_count_label("Royal Guard", SoldierTypeEnum.Type.ROYAL_GUARD, composition_to_show, initial_composition, false)
+	_update_unit_count_label("MountedKnights", SoldierTypeEnum.Type.MOUNTED_KNIGHTS, composition_to_show, initial_composition, false)
+	_update_unit_count_label("RoyalGuard", SoldierTypeEnum.Type.ROYAL_GUARD, composition_to_show, initial_composition, false)
 	
 	# Update total
 	var total_current = 0
@@ -433,18 +455,16 @@ func _update_defender_units() -> void:
 
 func _update_unit_count_label(unit_section_name: String, unit_type, current_composition: Dictionary, initial_composition: Dictionary, is_attacker: bool) -> void:
 	"""Update unit count labels in the static scene structure"""
-	var section_path = "Panel/Army/UnitsSection/" + unit_section_name
 	if unit_section_name == "Total":
-		section_path = "Panel/Army/TotalSection/Total"
-	
-	var section_node = get_node_or_null(section_path)
-	if not section_node:
 		return
+	var section_path = "Battle/VBoxContainer/Body/Units/" + unit_section_name
 	
-	var attacker_label = section_node.get_node_or_null("AttackerRemaining")
-	var defender_label = section_node.get_node_or_null("DefenderRemaining")
+	var section_node = get_node(section_path)
 	
-	if is_attacker and attacker_label:
+	var attacker_label: Label = section_node.get_node("VBoxContainer/TextureRect/Label") as Label
+	var defender_label: Label = section_node.get_node("VBoxContainer/TextureRect/Label2") as Label
+	
+	if is_attacker:
 		var current_count = 0
 		var initial_count = 0
 		
@@ -458,14 +478,16 @@ func _update_unit_count_label(unit_section_name: String, unit_type, current_comp
 		attacker_label.text = str(current_count)
 		
 		# Apply color coding
-		if current_count == 0 and initial_count > 0:
+		if initial_count == 0:
+			attacker_label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4, 1))
+		elif current_count == 0:
 			attacker_label.add_theme_color_override("font_color", Color.RED)
 		elif current_count < initial_count:
 			attacker_label.add_theme_color_override("font_color", Color.YELLOW)
 		else:
-			attacker_label.remove_theme_color_override("font_color")
+			attacker_label.add_theme_color_override("font_color", Color.WHITE)
 	
-	if not is_attacker and defender_label:
+	if not is_attacker:
 		var current_count = 0
 		var initial_count = 0
 		
@@ -479,12 +501,14 @@ func _update_unit_count_label(unit_section_name: String, unit_type, current_comp
 		defender_label.text = str(current_count)
 		
 		# Apply color coding
-		if current_count == 0 and initial_count > 0:
+		if initial_count == 0:
+			defender_label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4, 1))
+		elif current_count == 0:
 			defender_label.add_theme_color_override("font_color", Color.RED)
 		elif current_count < initial_count:
 			defender_label.add_theme_color_override("font_color", Color.YELLOW)
 		else:
-			defender_label.remove_theme_color_override("font_color")
+			defender_label.add_theme_color_override("font_color", Color.WHITE)
 
 
 func _run_battle_simulation() -> void:
@@ -813,7 +837,9 @@ func _update_defense_bonus_display() -> void:
 
 func _update_assault_value() -> void:
 	var percent := 0
-	if assault_ratio_override >= 0.0:
+	if not _is_siege_battle:
+		percent = 100
+	elif assault_ratio_override >= 0.0:
 		percent = int(round(clampf(assault_ratio_override, 0.0, 1.0) * 100.0))
 	else:
 		var gm = get_node("../../GameManager") as GameManager

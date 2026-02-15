@@ -138,11 +138,7 @@ offset_right = 337.0
 offset_bottom = 285.0
 
 [node name="BattleModal" parent="UI" instance=ExtResource("16_dtrwa")]
-visible = false
-offset_left = -313.0
-offset_top = -365.0
-offset_right = 247.0
-offset_bottom = 285.0
+offset_right = 170.0
 
 [node name="RecruitmentModal" parent="UI" instance=ExtResource("18_recru")]
 visible = false

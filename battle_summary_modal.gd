@@ -213,10 +213,12 @@ func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int
 	var attacker_dead_label = unit_node.get_node_or_null("AttackerDead")
 	if attacker_dead_label:
 		attacker_dead_label.text = str(attacker_dead)
+		_apply_nonremain_color(attacker_dead_label, attacker_dead, attacker_initial)
 	
 	var attacker_wounded_label = unit_node.get_node_or_null("AttackerWounded")
 	if attacker_wounded_label:
 		attacker_wounded_label.text = str(attacker_wounded)
+		_apply_nonremain_color(attacker_wounded_label, attacker_wounded, attacker_initial)
 	
 	var attacker_remain_label = unit_node.get_node_or_null("AttackerRemaining")
 	if attacker_remain_label:
@@ -229,10 +231,12 @@ func _update_unit_row(unit_node: Node, attacker_dead: int, attacker_wounded: int
 	var defender_dead_label = unit_node.get_node_or_null("DefenderDead")
 	if defender_dead_label:
 		defender_dead_label.text = str(defender_dead)
+		_apply_nonremain_color(defender_dead_label, defender_dead, defender_initial)
 	
 	var defender_wounded_label = unit_node.get_node_or_null("DefenderWounded")
 	if defender_wounded_label:
 		defender_wounded_label.text = str(defender_wounded)
+		_apply_nonremain_color(defender_wounded_label, defender_wounded, defender_initial)
 	
 	var defender_remain_label = unit_node.get_node_or_null("DefenderRemaining")
 	if defender_remain_label:
@@ -288,10 +292,12 @@ func _update_totals() -> void:
 	var attacker_dead_label = total_node.get_node_or_null("AttackerDead")
 	if attacker_dead_label:
 		attacker_dead_label.text = str(total_attacker_dead)
+		_apply_nonremain_color(attacker_dead_label, total_attacker_dead, total_attacker_initial)
 	
 	var attacker_wounded_label = total_node.get_node_or_null("AttackerWounded")
 	if attacker_wounded_label:
 		attacker_wounded_label.text = str(total_attacker_wounded)
+		_apply_nonremain_color(attacker_wounded_label, total_attacker_wounded, total_attacker_initial)
 	
 	var attacker_remain_label = total_node.get_node_or_null("AttackerRemaining")
 	if attacker_remain_label:
@@ -303,10 +309,12 @@ func _update_totals() -> void:
 	var defender_dead_label = total_node.get_node_or_null("DefenderDead")
 	if defender_dead_label:
 		defender_dead_label.text = str(total_defender_dead)
+		_apply_nonremain_color(defender_dead_label, total_defender_dead, total_defender_initial)
 	
 	var defender_wounded_label = total_node.get_node_or_null("DefenderWounded")
 	if defender_wounded_label:
 		defender_wounded_label.text = str(total_defender_wounded)
+		_apply_nonremain_color(defender_wounded_label, total_defender_wounded, total_defender_initial)
 	
 	var defender_remain_label = total_node.get_node_or_null("DefenderRemaining")
 	if defender_remain_label:
@@ -318,7 +326,7 @@ func _update_totals() -> void:
 func _apply_remain_color(label: Label, remaining: int, had_losses: bool, initial_count: int) -> void:
 	"""Apply color based on remaining count and initial presence."""
 	if initial_count <= 0:
-		label.add_theme_color_override("font_color", Color(1, 1, 1))
+		label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4, 1))
 		return
 	if remaining == 0:
 		label.add_theme_color_override("font_color", GameParameters.UI_COLOR_DEAD)
@@ -326,9 +334,14 @@ func _apply_remain_color(label: Label, remaining: int, had_losses: bool, initial
 	if had_losses:
 		label.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
 		return
-	# Reset to default when no losses
-	if label.has_theme_color_override("font_color"):
-		label.remove_theme_color_override("font_color")
+	# Default color
+	label.add_theme_color_override("font_color", Color.WHITE)
+
+func _apply_nonremain_color(label: Label, value: int, initial_count: int) -> void:
+	if initial_count <= 0:
+		label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4, 1))
+		return
+	label.add_theme_color_override("font_color", Color.WHITE)
 
 func _on_continue_pressed() -> void:
 	"""Handle continue button press"""

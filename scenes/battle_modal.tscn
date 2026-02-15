@@ -639,12 +639,13 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Battle/VBoxContainer/SubHeader"]
 layout_mode = 2
-theme_override_constants/separation = 100
 alignment = 1
 
 [node name="Target" type="Label" parent="Battle/VBoxContainer/SubHeader/HBoxContainer"]
+custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 24
 text = "Army 1"
 horizontal_alignment = 1
 
@@ -653,8 +654,10 @@ layout_mode = 2
 texture = ExtResource("8_0t75e")
 
 [node name="Source" type="Label" parent="Battle/VBoxContainer/SubHeader/HBoxContainer"]
+custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
+theme_override_font_sizes/font_size = 24
 text = "Army2"
 horizontal_alignment = 1
 
