@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bus48vblq4ked"]
+[gd_scene load_steps=32 format=3 uid="uid://bus48vblq4ked"]
 
 [ext_resource type="Script" path="res://recruitment_modal.gd" id="1_42aob"]
 [ext_resource type="Texture2D" uid="uid://kcqi5jylsy6k" path="res://images/recruitment_modal.png" id="3_2n1n3"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="23_t7glg"]
 [ext_resource type="Texture2D" uid="uid://8ubbu3b34ola" path="res://images/units/royal_guard_card.png" id="24_nlqxe"]
 [ext_resource type="Texture2D" uid="uid://cw22whcufy6lk" path="res://images/required.png" id="26_e5tqw"]
+[ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="26_erxbg"]
 [ext_resource type="Texture2D" uid="uid://bv3g4er4m0jh5" path="res://images/icons/lock_icon.png" id="27_onq81"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o7hpw"]
@@ -35,6 +36,8 @@ texture = ExtResource("10_sawkk")
 [sub_resource type="Theme" id="Theme_ghglp"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_q5a5e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qwa04"]
 
 [node name="RecruitmentModal" type="Control"]
 layout_mode = 3
@@ -72,7 +75,6 @@ texture = ExtResource("4_ufnl7")
 expand_mode = 2
 
 [node name="Info" type="Control" parent="."]
-visible = false
 z_index = 1050
 anchors_preset = 0
 offset_left = -350.0
@@ -177,7 +179,6 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="Trait1" type="HBoxContainer" parent="Info/Header"]
-visible = false
 layout_mode = 2
 theme = ExtResource("4_header")
 
@@ -736,14 +737,14 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
+[node name="SiegeLaborer" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 95.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 text = "• Siege Laborer"
 
 [node name="Spearmen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow"]
@@ -910,17 +911,33 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+[node name="LongSpears" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 layout_mode = 0
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "• Long spears
-• Siege Laborer
-• Defender"
+theme_override_font_sizes/font_size = 18
+text = "• Long spears"
+
+[node name="Defender" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+offset_left = 146.0
+offset_top = 100.0
+offset_right = 293.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Defender"
+
+[node name="SiegeLaborer" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
+offset_left = 146.0
+offset_top = 127.0
+offset_right = 293.0
+offset_bottom = 152.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Siege Laborer"
 
 [node name="Archers" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/FirstRow"]
 custom_minimum_size = Vector2(400, 245)
@@ -1084,16 +1101,23 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
-layout_mode = 0
+[node name="Ranged" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "• Ranged
-• Back Rank"
+theme_override_font_sizes/font_size = 18
+text = "• Ranged"
+
+[node name="BackRank" type="Label" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
+offset_left = 146.0
+offset_top = 100.0
+offset_right = 293.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Back rank"
 
 [node name="SecondRow" type="HBoxContainer" parent="Recruitment/HBoxContainer/Body/Units"]
 layout_mode = 2
@@ -1264,14 +1288,13 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
-layout_mode = 0
+[node name="SiegeLaborer" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 text = "• Siege Laborer"
 
 [node name="Crossbowmen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow"]
@@ -1436,17 +1459,32 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
-layout_mode = 0
+[node name="Ranged" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "• Ranged
-• Back Rank
-• Armor Piercing"
+theme_override_font_sizes/font_size = 18
+text = "• Ranged"
+
+[node name="BackRank" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+offset_left = 146.0
+offset_top = 100.0
+offset_right = 293.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Back Rank"
+
+[node name="ArmorPiercing" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
+offset_left = 146.0
+offset_top = 127.0
+offset_right = 293.0
+offset_bottom = 152.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Armor Piercing"
 
 [node name="Horsemen" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/SecondRow"]
 custom_minimum_size = Vector2(400, 245)
@@ -1612,17 +1650,32 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
-layout_mode = 0
+[node name="Mobility" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "• Mobility
-• Flanker
-• Charge"
+theme_override_font_sizes/font_size = 18
+text = "• Mobility"
+
+[node name="Flanker" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+offset_left = 146.0
+offset_top = 100.0
+offset_right = 293.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Flanker"
+
+[node name="Charge" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
+offset_left = 146.0
+offset_top = 127.0
+offset_right = 293.0
+offset_bottom = 152.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Charge"
 
 [node name="ThirdRow" type="HBoxContainer" parent="Recruitment/HBoxContainer/Body/Units"]
 layout_mode = 2
@@ -1798,7 +1851,7 @@ offset_top = 73.0
 offset_right = 293.0
 offset_bottom = 151.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 text = "• None"
 
 [node name="MountedKnights" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow"]
@@ -1963,16 +2016,23 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
-layout_mode = 0
+[node name="Flanker" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "• Flanker
-• Charge"
+theme_override_font_sizes/font_size = 18
+text = "• Flanker"
+
+[node name="Charge" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
+offset_left = 146.0
+offset_top = 100.0
+offset_right = 293.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Charge"
 
 [node name="RoyalGuard" type="Panel" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow"]
 custom_minimum_size = Vector2(400, 245)
@@ -2136,16 +2196,23 @@ theme_override_font_sizes/font_size = 24
 text = "2"
 horizontal_alignment = 1
 
-[node name="Label10" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
-layout_mode = 0
+[node name="MultiAttack" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 offset_left = 146.0
 offset_top = 73.0
 offset_right = 293.0
-offset_bottom = 151.0
+offset_bottom = 98.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "• Multi attack
-• Armor Piercing"
+theme_override_font_sizes/font_size = 18
+text = "• Multi attack"
+
+[node name="ArmorPiercing" type="Label" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
+offset_left = 146.0
+offset_top = 100.0
+offset_right = 293.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "• Defender"
 
 [node name="TotalSection" type="VBoxContainer" parent="Recruitment/HBoxContainer"]
 layout_mode = 2
@@ -2637,3 +2704,16 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "Stronghold"
 horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = -530.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qwa04")
+
+[node name="AbilitiesTooltip" parent="." instance=ExtResource("26_erxbg")]
+layout_mode = 1
+offset_left = -807.0
+offset_top = -200.0
+offset_right = -407.0
+offset_bottom = -50.0

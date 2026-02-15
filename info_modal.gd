@@ -155,7 +155,7 @@ func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 	if manage_modal_mode and ui_manager:
 		ui_manager.set_modal_active(true)
 
-func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
+func show_region_info(region: Region, manage_modal_mode: bool = true, allow_tab_switch: bool = true) -> void:
 	"""Show the modal with region information"""
 	# Prevent showing during AI/computer turns
 	if not _is_human_turn():
@@ -163,7 +163,7 @@ func show_region_info(region: Region, manage_modal_mode: bool = true) -> void:
 	if region == null:
 		hide_modal()
 		return
-	if current_region == region and _active_tab == TabType.REGION:
+	if allow_tab_switch and current_region == region and _active_tab == TabType.REGION:
 		var armies_in_region := _get_armies_in_region(region)
 		if not armies_in_region.is_empty():
 			_set_active_tab(TabType.ARMIES)

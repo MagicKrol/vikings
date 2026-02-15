@@ -182,6 +182,8 @@ func hide_modal() -> void:
 	
 	var reopen_move: bool = _reopen_move_modal
 	var reopen_army: Army = _reopen_move_army
+	var remembered_army: Army = target_army
+	var remembered_region: Region = target_region
 	_reopen_move_modal = false
 	_reopen_move_army = null
 
@@ -195,7 +197,12 @@ func hide_modal() -> void:
 	
 	if ui_manager:
 		ui_manager.set_modal_active(false)
-		ui_manager.restore_select_context()
+		if remembered_army == null and remembered_region != null:
+			ui_manager.clear_select_context()
+			if info_modal:
+				info_modal.show_region_info(remembered_region, false, false)
+		else:
+			ui_manager.restore_select_context()
 	if reopen_move and move_modal != null and reopen_army != null:
 		move_modal.show_move_modal(reopen_army)
 
@@ -493,7 +500,7 @@ func _refresh_info_modal_after_recruit() -> void:
 	if target_army != null:
 		info_modal.show_army_info(target_army, false)
 	else:
-		info_modal.show_region_info(target_region, false)
+		info_modal.show_region_info(target_region, false, false)
 
 func _on_continue_pressed() -> void:
 	"""Handle Continue button press"""
