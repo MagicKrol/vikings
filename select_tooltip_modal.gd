@@ -36,7 +36,7 @@ const TOOLTIP_TEXTS = {
 	"raise_army": "Create new army in this region.",
 	"recruit_soldiers_garrison": "Recruit soldiers to region's local garrison.",
 	"build_castle": "Construct military outpost to improve local defenses, raise armies and recruit units.",
-	"upgrade_castle": " defensive structure to the next level for improved defenses and capabilities.",
+	"upgrade_castle": " Upgrade defensive structure to the next level for improved defenses and capabilities.",
 	"castle_construction": "Castle construction is in progress. Wait for completion before building or upgrading.",
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
 	"repair_castle": "Repair the damaged walls and gates of your defenses.",

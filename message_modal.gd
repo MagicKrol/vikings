@@ -42,6 +42,7 @@ func show_tutorial_message(text: String, show_continue: bool, block_input: bool)
 	message_label.text = text
 	continue_button.visible = show_continue
 	_set_mouse_block(block_input)
+	_move_modal_to_front()
 	visible = true
 	if block_input:
 		ui_manager.set_modal_active(true)
@@ -52,6 +53,7 @@ func hide_modal() -> void:
 	_hide_modal()
 
 func _show_modal() -> void:
+	_move_modal_to_front()
 	visible = true
 	ui_manager.set_modal_active(true)
 
@@ -72,6 +74,9 @@ func _set_mouse_block(blocked: bool) -> void:
 	mouse_filter = mode
 	if panel_root:
 		panel_root.mouse_filter = mode
+
+func _move_modal_to_front() -> void:
+	move_to_front()
 
 func set_panel_position(pos: Vector2) -> void:
 	panel_root.position = pos

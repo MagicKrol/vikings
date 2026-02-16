@@ -7,14 +7,15 @@ const RESOURCE_TYPES := [
 	ResourcesEnum.Type.STONE,
 	ResourcesEnum.Type.IRON
 ]
+const HOLD_DELAY_SECONDS: float = 0.5
+const HOLD_INTERVAL_SECONDS: float = 1.0
+const HOLD_STEP: int = 10
 
 var ui_manager: UIManager
 var player_manager: PlayerManagerNode
 var trade_manager: TradeManager
 var gold_value_label: Label
-var balance_gold_label: Label
-var continue_button: Button
-var cancel_button: Button
+var close_button: Button
 var game_manager: GameManager
 var allow_for_current_turn: bool = true
 
@@ -28,19 +29,30 @@ var color_green := Color.html("#41b43e")
 var color_red := Color.html("#d13131")
 var color_yellow := Color.YELLOW
 var color_white := Color.WHITE
+var _hold_active: bool = false
+var _hold_resource_type: ResourcesEnum.Type = ResourcesEnum.Type.FOOD
+var _hold_delta: int = 0
+var _hold_is_buy: bool = true
+var _hold_elapsed: float = 0.0
+var _hold_interval_elapsed: float = 0.0
+var _hold_after_delay_started: bool = false
 
 func _ready() -> void:
 	ui_manager = get_node("../UIManager") as UIManager
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 	game_manager = get_node("../../GameManager") as GameManager
 	trade_manager = TradeManager.new(player_manager)
-	gold_value_label = get_node("Panel/Army/AvailableRecruits/HBoxContainer/Value") as Label
-	balance_gold_label = get_node("Panel/Army/TotalSection/HBoxContainer/TotalValue") as Label
-	continue_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Continue") as Button
-	cancel_button = get_node("Panel/Army/ButtonSection/HBoxContainer/Cancel") as Button
+	gold_value_label = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TotalGold") as Label
+	close_button = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/Button") as Button
 	_init_sections()
 	_connect_buttons()
 	_reset_trade_state()
+	set_process(true)
+
+func _process(delta: float) -> void:
+	if not visible:
+		return
+	_process_hold(delta)
 
 func show_modal() -> void:
 	if not allow_for_current_turn:
@@ -54,6 +66,7 @@ func show_modal() -> void:
 
 func hide_modal() -> void:
 	visible = false
+	_stop_hold()
 	if ui_manager:
 		ui_manager.set_modal_active(false)
 
@@ -66,54 +79,44 @@ func set_allowed_for_turn(is_allowed: bool) -> void:
 		hide_modal()
 
 func _init_sections() -> void:
-	resource_sections[ResourcesEnum.Type.FOOD] = _build_section("Food", "FoodPrice")
-	resource_sections[ResourcesEnum.Type.WOOD] = _build_section("Wood", "FoodPrice2")
-	resource_sections[ResourcesEnum.Type.STONE] = _build_section("Stone", "FoodPrice3")
-	resource_sections[ResourcesEnum.Type.IRON] = _build_section("Iron", "FoodPrice4")
+	resource_sections[ResourcesEnum.Type.FOOD] = _build_section("Trade/HBoxContainer/Body/Units/FirstRow/Food")
+	resource_sections[ResourcesEnum.Type.WOOD] = _build_section("Trade/HBoxContainer/Body/Units/FirstRow/Wood")
+	resource_sections[ResourcesEnum.Type.STONE] = _build_section("Trade/HBoxContainer/Body/Units/SecondRow/Stone")
+	resource_sections[ResourcesEnum.Type.IRON] = _build_section("Trade/HBoxContainer/Body/Units/SecondRow/Iron")
 
-func _build_section(section_name: String, price_container_name: String) -> Dictionary:
-	var section_path = "Panel/Army/UnitsSection/" + section_name
-	var price_path = "Panel/Army/UnitsSection/" + price_container_name
+func _build_section(section_path: String) -> Dictionary:
 	return {
-		"value_label": get_node(section_path + "/Value") as Label,
-		"buy_label": get_node(section_path + "/Buy") as Label,
-		"sell_label": get_node(section_path + "/Sell") as Label,
-		"price_buy_label": get_node(price_path + "/Buy") as Label,
-		"price_sell_label": get_node(price_path + "/Sell") as Label,
+		"owned_label": get_node(section_path + "/OwnedCount") as Label,
+		"buy_count_label": get_node(section_path + "/BuyCount") as Label,
+		"sell_count_label": get_node(section_path + "/SellCount") as Label,
+		"price_buy_label": get_node(section_path + "/BuyPrice") as Label,
+		"price_sell_label": get_node(section_path + "/SellPrice") as Label,
 		"section_path": section_path,
-		"buy_buttons": [
-			{"button": get_node(section_path + "/Button100") as Button, "amount": 100},
-			{"button": get_node(section_path + "/Button10") as Button, "amount": 10},
-			{"button": get_node(section_path + "/Button1") as Button, "amount": 1}
-		],
-		"sell_buttons": [
-			{"button": get_node(section_path + "/Button1m") as Button, "amount": 1},
-			{"button": get_node(section_path + "/Button10m") as Button, "amount": 10},
-			{"button": get_node(section_path + "/Button100m") as Button, "amount": 100}
-		]
+		"buy_minus": get_node(section_path + "/BuyMinus") as TextureRect,
+		"buy_plus": get_node(section_path + "/BuyPlus") as TextureRect,
+		"sell_minus": get_node(section_path + "/SellMinus") as TextureRect,
+		"sell_plus": get_node(section_path + "/SellPlus") as TextureRect,
+		"buy_button": get_node(section_path + "/BuyButton") as Button,
+		"sell_button": get_node(section_path + "/SellButton") as Button
 	}
 
 func _connect_buttons() -> void:
-	continue_button.pressed.connect(_on_continue_pressed)
-	cancel_button.pressed.connect(_on_cancel_pressed)
-	_connect_resource_buttons(ResourcesEnum.Type.FOOD)
-	_connect_resource_buttons(ResourcesEnum.Type.WOOD)
-	_connect_resource_buttons(ResourcesEnum.Type.STONE)
-	_connect_resource_buttons(ResourcesEnum.Type.IRON)
+	close_button.pressed.connect(_on_close_pressed)
+	for resource_type in RESOURCE_TYPES:
+		_connect_resource_buttons(resource_type)
 
 func _connect_resource_buttons(resource_type: ResourcesEnum.Type) -> void:
 	var section: Dictionary = resource_sections[resource_type]
-	for buy_entry in section["buy_buttons"]:
-		(buy_entry["button"] as Button).pressed.connect(_on_buy_pressed.bind(resource_type, buy_entry["amount"]))
-	for sell_entry in section["sell_buttons"]:
-		(sell_entry["button"] as Button).pressed.connect(_on_sell_pressed.bind(resource_type, sell_entry["amount"]))
+	(section["buy_minus"] as TextureRect).gui_input.connect(_on_buy_adjust_input.bind(resource_type, -1))
+	(section["buy_plus"] as TextureRect).gui_input.connect(_on_buy_adjust_input.bind(resource_type, 1))
+	(section["sell_minus"] as TextureRect).gui_input.connect(_on_sell_adjust_input.bind(resource_type, -1))
+	(section["sell_plus"] as TextureRect).gui_input.connect(_on_sell_adjust_input.bind(resource_type, 1))
+	(section["buy_button"] as Button).pressed.connect(_on_buy_button_pressed.bind(resource_type))
+	(section["sell_button"] as Button).pressed.connect(_on_sell_button_pressed.bind(resource_type))
 
 func _refresh_state() -> void:
 	_reset_trade_state()
-	var player = player_manager.get_current_player()
-	base_gold = player.get_resource_amount(ResourcesEnum.Type.GOLD)
-	for resource_type in RESOURCE_TYPES:
-		base_resources[resource_type] = player.get_resource_amount(resource_type)
+	_sync_base_state()
 	_update_all_displays()
 
 func _reset_trade_state() -> void:
@@ -126,32 +129,102 @@ func _reset_trade_state() -> void:
 		sell_amounts[resource_type] = 0
 
 func _on_buy_pressed(resource_type: ResourcesEnum.Type, amount: int) -> void:
-	var remaining = amount
-	var current_sell = sell_amounts.get(resource_type, 0)
-	if current_sell > 0:
-		var canceled = min(current_sell, remaining)
-		sell_amounts[resource_type] -= canceled
-		remaining -= canceled
-	if remaining > 0:
-		var available_gold = _get_gold_balance()
-		var affordable = _calculate_affordable_buy(resource_type, remaining, available_gold)
-		if affordable > 0:
-			buy_amounts[resource_type] += affordable
-	_update_after_change(resource_type)
+	pass
 
 func _on_sell_pressed(resource_type: ResourcesEnum.Type, amount: int) -> void:
-	var remaining = amount
-	var current_buy = buy_amounts.get(resource_type, 0)
-	if current_buy > 0:
-		var canceled = min(current_buy, remaining)
-		buy_amounts[resource_type] -= canceled
-		remaining -= canceled
-	if remaining > 0:
-		var available_to_sell = _get_current_resource_total(resource_type)
-		var applied = min(remaining, available_to_sell)
-		if applied > 0:
-			sell_amounts[resource_type] += applied
+	pass
+
+func _on_buy_adjust_input(event: InputEvent, resource_type: ResourcesEnum.Type, delta: int) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			var step: int = HOLD_STEP if event.shift_pressed else 1
+			_adjust_buy_amount(resource_type, delta * step)
+			_start_hold(resource_type, delta, true)
+		else:
+			_stop_hold()
+
+func _on_sell_adjust_input(event: InputEvent, resource_type: ResourcesEnum.Type, delta: int) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			var step: int = HOLD_STEP if event.shift_pressed else 1
+			_adjust_sell_amount(resource_type, delta * step)
+			_start_hold(resource_type, delta, false)
+		else:
+			_stop_hold()
+
+func _adjust_buy_amount(resource_type: ResourcesEnum.Type, delta: int) -> void:
+	if delta == 0:
+		return
+	if sell_amounts.get(resource_type, 0) > 0:
+		sell_amounts[resource_type] = 0
+	var current_buy: int = buy_amounts.get(resource_type, 0)
+	if delta > 0:
+		var available_gold = _get_gold_balance()
+		var affordable = _calculate_affordable_buy(resource_type, delta, available_gold)
+		if affordable <= 0:
+			return
+		buy_amounts[resource_type] = current_buy + affordable
+	else:
+		var new_buy = max(0, current_buy + delta)
+		buy_amounts[resource_type] = new_buy
 	_update_after_change(resource_type)
+
+func _adjust_sell_amount(resource_type: ResourcesEnum.Type, delta: int) -> void:
+	if delta == 0:
+		return
+	if buy_amounts.get(resource_type, 0) > 0:
+		buy_amounts[resource_type] = 0
+	var current_sell: int = sell_amounts.get(resource_type, 0)
+	if delta > 0:
+		var available_to_sell = _get_current_resource_total(resource_type)
+		var applied = min(delta, available_to_sell)
+		if applied <= 0:
+			return
+		sell_amounts[resource_type] = current_sell + applied
+	else:
+		var new_sell = max(0, current_sell + delta)
+		sell_amounts[resource_type] = new_sell
+	_update_after_change(resource_type)
+
+func _start_hold(resource_type: ResourcesEnum.Type, delta: int, is_buy: bool) -> void:
+	_hold_active = true
+	_hold_resource_type = resource_type
+	_hold_delta = delta
+	_hold_is_buy = is_buy
+	_hold_elapsed = 0.0
+	_hold_interval_elapsed = 0.0
+	_hold_after_delay_started = false
+
+func _stop_hold() -> void:
+	_hold_active = false
+	_hold_elapsed = 0.0
+	_hold_interval_elapsed = 0.0
+	_hold_after_delay_started = false
+
+func _process_hold(delta: float) -> void:
+	if not _hold_active:
+		return
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_stop_hold()
+		return
+	_hold_elapsed += delta
+	if _hold_elapsed < HOLD_DELAY_SECONDS:
+		return
+	if not _hold_after_delay_started:
+		_hold_after_delay_started = true
+		_hold_interval_elapsed = 0.0
+		_apply_hold_step()
+		return
+	_hold_interval_elapsed += delta
+	while _hold_interval_elapsed >= HOLD_INTERVAL_SECONDS:
+		_hold_interval_elapsed -= HOLD_INTERVAL_SECONDS
+		_apply_hold_step()
+
+func _apply_hold_step() -> void:
+	if _hold_is_buy:
+		_adjust_buy_amount(_hold_resource_type, _hold_delta * HOLD_STEP)
+	else:
+		_adjust_sell_amount(_hold_resource_type, _hold_delta * HOLD_STEP)
 
 func _update_after_change(resource_type: ResourcesEnum.Type) -> void:
 	_update_price_display(resource_type)
@@ -167,10 +240,10 @@ func _update_all_displays() -> void:
 func _update_resource_display(resource_type: ResourcesEnum.Type) -> void:
 	var total_amount = _get_current_resource_total(resource_type)
 	var section: Dictionary = resource_sections[resource_type]
-	(section["value_label"] as Label).text = str(total_amount)
-	(section["buy_label"] as Label).text = str(buy_amounts.get(resource_type, 0))
-	(section["sell_label"] as Label).text = str(sell_amounts.get(resource_type, 0))
-	_set_label_color(section["value_label"] as Label, total_amount - base_resources.get(resource_type, 0), false, total_amount)
+	(section["owned_label"] as Label).text = str(total_amount)
+	(section["buy_count_label"] as Label).text = str(buy_amounts.get(resource_type, 0))
+	(section["sell_count_label"] as Label).text = str(sell_amounts.get(resource_type, 0))
+	_set_label_color(section["owned_label"] as Label, total_amount - base_resources.get(resource_type, 0), false, total_amount)
 
 func _update_price_display(resource_type: ResourcesEnum.Type) -> void:
 	var section: Dictionary = resource_sections[resource_type]
@@ -185,9 +258,7 @@ func _update_price_display(resource_type: ResourcesEnum.Type) -> void:
 func _update_gold_display() -> void:
 	var gold_after_trades = _get_gold_balance()
 	gold_value_label.text = str(gold_after_trades)
-	var balance = gold_after_trades - base_gold
-	balance_gold_label.text = str(balance)
-	_set_label_color(balance_gold_label, balance, true, gold_after_trades)
+	_set_label_color(gold_value_label, gold_after_trades - base_gold, true, gold_after_trades)
 
 func _get_gold_balance() -> int:
 	return base_gold - _get_total_buy_cost() + _get_total_sell_income()
@@ -224,6 +295,34 @@ func _apply_trade() -> void:
 	if not result.get("success", false):
 		return
 
+func _on_buy_button_pressed(resource_type: ResourcesEnum.Type) -> void:
+	var amount: int = buy_amounts.get(resource_type, 0)
+	if amount <= 0:
+		return
+	var result = trade_manager.buy(player_manager.current_player_id, resource_type, amount)
+	if not result.get("success", false):
+		return
+	buy_amounts[resource_type] = 0
+	_sync_base_state()
+	_update_all_displays()
+
+func _on_sell_button_pressed(resource_type: ResourcesEnum.Type) -> void:
+	var amount: int = sell_amounts.get(resource_type, 0)
+	if amount <= 0:
+		return
+	var result = trade_manager.sell(player_manager.current_player_id, resource_type, amount)
+	if not result.get("success", false):
+		return
+	sell_amounts[resource_type] = 0
+	_sync_base_state()
+	_update_all_displays()
+
+func _sync_base_state() -> void:
+	var player = player_manager.get_current_player()
+	base_gold = player.get_resource_amount(ResourcesEnum.Type.GOLD)
+	for resource_type in RESOURCE_TYPES:
+		base_resources[resource_type] = player.get_resource_amount(resource_type)
+
 func _set_label_color(label: Label, delta: int, balance: bool, current_total: int) -> void:
 	if not balance:
 		if current_total == 0:
@@ -244,9 +343,5 @@ func _set_label_color(label: Label, delta: int, balance: bool, current_total: in
 	else:
 		label.modulate = color_white
 
-func _on_continue_pressed() -> void:
-	_apply_trade()
-	hide_modal()
-
-func _on_cancel_pressed() -> void:
+func _on_close_pressed() -> void:
 	hide_modal()

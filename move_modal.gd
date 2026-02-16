@@ -1,6 +1,8 @@
 extends Control
 class_name MoveModal
 
+signal army_deselect_target_reached
+
 # Reference to ArmyManager for canceling moves
 var army_manager: ArmyManager = null
 
@@ -21,6 +23,7 @@ var make_camp_button: Button = null
 var cancel_button: Button = null
 var army_actions_button: Button = null
 var next_army_button: Button = null
+const TUTORIAL_TARGET_ARMY_DESELECT: String = "MoveModal/army_deselect"
 
 func _ready():
 	# Get button reference and connect signal
@@ -53,8 +56,11 @@ func _ready():
 				cancel_button.name = "transfer"
 				cancel_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + cancel_button.name))
 			if army_actions_button:
-				army_actions_button.name = "recruit"
+				army_actions_button.name = "recruit_soldiers"
 				army_actions_button.pressed.connect(func(): tutorial_manager.handle_ui_click("MoveModal/" + army_actions_button.name))
+			var army_deselect_cb: Callable = Callable(self, "_on_army_deselect_target_reached")
+			if not army_deselect_target_reached.is_connected(army_deselect_cb):
+				army_deselect_target_reached.connect(army_deselect_cb)
 	mouse_entered.connect(_on_mouse_entered)
 	var panel = get_node("Panel") as Control
 	panel.mouse_entered.connect(_on_panel_mouse_entered)
@@ -75,6 +81,7 @@ func show_move_modal(army: Army) -> void:
 	ui_manager.set_modal_active(false)
 	visible = true
 	ui_manager.set_overlay_suppressed(true)
+	army_manager.ensure_selected_move_targets_highlighted()
 	
 	# Position at bottom center of screen
 	# Modal is already positioned in the scene file at offset_top = 360
@@ -98,6 +105,12 @@ func _cancel_move() -> void:
 	if army_manager:
 		army_manager.deselect_army()
 	hide_move_modal()
+
+func emit_army_deselect_target_reached() -> void:
+	emit_signal("army_deselect_target_reached")
+
+func _on_army_deselect_target_reached() -> void:
+	tutorial_manager.handle_ui_click(TUTORIAL_TARGET_ARMY_DESELECT)
 
 func _on_army_actions_pressed() -> void:
 	if sound_manager:
@@ -145,6 +158,7 @@ func _on_make_camp_pressed() -> void:
 			_update_make_camp_button_state()
 			return
 		selected_army.make_camp()
+		army_manager.refresh_selected_move_targets()
 		_update_make_camp_button_state()
 		_refresh_info_modal()
 

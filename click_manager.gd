@@ -210,7 +210,18 @@ func _handle_region_click(region_container: Node) -> void:
 	if _game_manager and _game_manager.enable_map_editor:
 		_handle_editor_region_click(region_container)
 		return
-	var tutorial_region_matched := false
+	var tutorial_region_matched: bool = false
+	var region: Region = region_container as Region
+	if _tutorial_manager != null and _tutorial_manager.is_active() and _tutorial_manager.get_expected_action() == "region":
+		if region == null:
+			return
+		if region.is_ocean_region():
+			return
+		if _is_mountain_region(region):
+			return
+		if not _tutorial_manager.handle_region_click(region):
+			return
+		tutorial_region_matched = true
 	if _is_move_flow_active():
 		if _army_manager != null and region_container == _army_manager.selected_region_container:
 			_army_manager.deselect_army()
@@ -220,7 +231,6 @@ func _handle_region_click(region_container: Node) -> void:
 		var visual_manager = _game_manager.get_visual_manager()
 		if visual_manager and visual_manager.has_move_region_highlights():
 			var allowed_ids = visual_manager.get_move_region_highlight_ids()
-			var region = region_container as Region
 			if region and not allowed_ids.has(region.get_region_id()):
 				var current_player_id = _game_manager.get_current_player_id()
 				var region_owner = _region_manager.get_region_owner(region.get_region_id())
@@ -232,7 +242,6 @@ func _handle_region_click(region_container: Node) -> void:
 					return
 
 	# Get region script to check if it's a mountain
-	var region = region_container as Region
 	if region != null:
 		# Ignore ocean regions in gameplay
 		if region.is_ocean_region():
@@ -240,10 +249,6 @@ func _handle_region_click(region_container: Node) -> void:
 		# Check if this is a mountain region - if so, ignore clicks
 		if _is_mountain_region(region):
 			return
-		if _tutorial_manager != null and _tutorial_manager.is_active() and _tutorial_manager.get_expected_action() == "region":
-			if not _tutorial_manager.handle_region_click(region):
-				return
-			tutorial_region_matched = true
 	
 	# Delegate to GameManager based on game state
 	if _game_manager:

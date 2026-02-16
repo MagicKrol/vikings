@@ -23,39 +23,39 @@ texture = ExtResource("2")
 
 [node name="Arrow3" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(1030, 580)
-rotation = -1.89019
+position = Vector2(1770, 512)
+rotation = -1.5708
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
+flip_v = true
 
 [node name="Arrow4" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(730, 450)
+position = Vector2(1004, 1012)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow5" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(800, 800)
+position = Vector2(840, 1000)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow6" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(570, 270)
-rotation = 1.22173
+position = Vector2(617, 260)
+rotation = 1.5708
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow7" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(470, 270)
-rotation = 1.22173
+position = Vector2(514, 256)
+rotation = 1.57429
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow8" type="Sprite2D" parent="Arrows"]
-visible = false
 position = Vector2(550, 200)
 rotation = 3.14159
 scale = Vector2(0.4, 0.4)
@@ -64,8 +64,8 @@ flip_v = true
 
 [node name="Arrow9" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(533, 345)
-rotation = 0.832522
+position = Vector2(1092, 656)
+rotation = -0.53058
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
@@ -203,6 +203,20 @@ position = Vector2(650, 661)
 rotation = -0.879646
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
+
+[node name="Arrow28" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(622, 167)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow29" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(622, 255)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
 
 [node name="Blocks" type="Control" parent="."]
 top_level = true

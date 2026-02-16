@@ -4,6 +4,7 @@ class_name TutorialManager
 var region_manager: RegionManager
 var tutorial_modal: TutorialModal
 var message_modal: MessageModal
+var info_modal: InfoModal
 var camera: Camera2D
 var ai_camera_director_ref: AICameraDirector
 
@@ -21,9 +22,11 @@ func _init(region_mgr: RegionManager, tutorial_ui: TutorialModal, msg_modal: Mes
 	region_manager = region_mgr
 	tutorial_modal = tutorial_ui
 	message_modal = msg_modal
+	info_modal = message_modal.get_parent().get_node("InfoModal") as InfoModal
 	camera = cam
 	ai_camera_director_ref = camera_director
 	_connect_message_signal()
+	_connect_info_modal_signal()
 	_connect_camera_signal()
 	DebugLogger.log("Tutorial", "TutorialManager initialized")
 	steps = _build_default_steps()
@@ -97,6 +100,14 @@ func handle_battle_finished() -> void:
 	_battle_finished_flag = false
 	_advance_step()
 
+func _on_info_modal_closed() -> void:
+	if not active:
+		return
+	if expected_action != "closed_info_modal":
+		return
+	DebugLogger.log("Tutorial", "Info modal closed, advancing tutorial")
+	_advance_step()
+
 func _on_camera_moved(_target: Vector2) -> void:
 	if not active:
 		return
@@ -120,6 +131,7 @@ func _advance_step() -> void:
 	if tutorial_modal:
 		tutorial_modal.hide_all_arrows()
 	_connect_message_signal()
+	_connect_info_modal_signal()
 	DebugLogger.log("Tutorial", "Advancing to step " + str(step_index))
 	if step_index >= steps.size():
 		_finish()
@@ -131,6 +143,12 @@ func _connect_message_signal() -> void:
 		var cb = Callable(self, "_on_continue_clicked")
 		if not message_modal.continue_clicked.is_connected(cb):
 			message_modal.continue_clicked.connect(cb)
+
+func _connect_info_modal_signal() -> void:
+	if info_modal:
+		var cb: Callable = Callable(self, "_on_info_modal_closed")
+		if not info_modal.closed_info_modal.is_connected(cb):
+			info_modal.closed_info_modal.connect(cb)
 
 func _connect_camera_signal() -> void:
 	var cam: CameraController = camera as CameraController
@@ -242,12 +260,12 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "This is your home region.\n Click on it",
+			"message": "This is your home region.\n Click it",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
 			"target_region_id": 190,
-			"panel_position": Vector2(300, 450),
+			"panel_position": Vector2(200, 450),
 			"arrow": {
 				"id": "1",
 				"anchor": "world",
@@ -259,25 +277,35 @@ func _build_default_steps() -> Array:
 			"camera_focus": {"type": "region", "region_id": 190}
 		},
 		{
-			"message": "Now, select your army from the region's list.",
+			"message": "This panel shows information and actions for the selected region. \n\n Now switch to the Armies tab.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "GeneralSelectModal/ArmyButton0",
-			"panel_position": Vector2(350, 700),
+			"ui_target": "InfoModal/armies_tab",
 			"arrow": {
-				"id": "1",
+				"id": "28",
+				"anchor": "screen",
+			},
+			"block": "trade,endturn,firstelement",
+		},
+		{
+			"message": "This is your army. Armies allow you to conquer other regions.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"arrow": {
+				"id": "29",
 				"anchor": "screen"
 			},
 			"block": "trade,endturn,firstelement",
 		},
 		{
-			"message": "Before we jump into battle let's recruit additional soldiers. \nSelect army actions.",
+			"message": "Before we march to battle, we need more soldiers. Click Recruit button for the selected army.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "MoveModal/army_actions",
-			"panel_position": Vector2(350, 700),
+			"ui_target": "MoveModal/recruit_soldiers",
+			"panel_position": Vector2(300, 600),
 			"arrow": {
 				"id": "23",
 				"anchor": "screen"
@@ -285,24 +313,19 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,makecamp,cancelmove",
 		},
 		{
-			"message": "Here is the list of all actions available to the army. Click on the Recruit Soldiers.",
-			"show_continue": false,
-			"block_input": false,
-			"expected_action": "ui",
-			"ui_target": "ArmySelectModal/recruit_soldiers",
-			"panel_position": Vector2(350, 700),
-			"arrow": {
-				"id": "2",
-				"anchor": "screen"
-			},
+			"message": "Here you can recruit different types of soldiers to strengthen your forces.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(100, 400),
 			"block": "trade,endturn,armyactions,cancelmove,makecamp",
 		},
 		{
-			"message": "Every unit has it's role on the battlefield. You can learn more about it by hovering over the unit name.",
+			"message": "Each unit has its strengths and purpose. Hover over their abilities to learn how to use them effectively.",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(750, 850),
+			"panel_position": Vector2(100, 400),
 			"arrow": {
 				"id": "9",
 				"anchor": "screen"
@@ -310,12 +333,12 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitment,continue",
 		},
 		{
-			"message": "But for now, let's just add some archers to your army.\n\n When done. \nPress Continue button.",
+			"message": "Add 10 archers to your army.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "RecruitmentModal/continue",
-			"panel_position": Vector2(750, 850),
+			"ui_target": "RecruitmentModal/1archers",
+			"panel_position": Vector2(100, 400),
 			"arrow": {
 				"id": "3",
 				"anchor": "screen"
@@ -323,12 +346,25 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitment",
 		},
 		{
-			"message": "We are ready to battle. \nClick Move Army button.",
+			"message": "Tip: Hold Shift while clicking to recruit 10 at once. \nYou can also hold the + button to increase faster.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "ArmySelectModal/move_army",
-			"panel_position": Vector2(750, 850),
+			"ui_target": "RecruitmentModal/10archers",
+			"panel_position": Vector2(100, 400),
+			"arrow": {
+				"id": "3",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn,recruitment",
+		},
+		{
+			"message": "Perfect. This button will recruit all selected units and close the recruitment screen.",
+			"show_continue": false,
+			"block_input": false,
+			"expected_action": "ui",
+			"ui_target": "RecruitmentModal/recruit_all",
+			"panel_position": Vector2(100, 400),
 			"arrow": {
 				"id": "4",
 				"anchor": "screen"
@@ -350,7 +386,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(100, 500),
 			"block": "endturn,trade,withdraw"
 		},
 		{
@@ -358,7 +394,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(100, 500),
 			"block": "endturn,continue3, continue2"
 		},
 		{
@@ -366,7 +402,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(100, 500),
 			"block": "endturn,continue3"
 		},
 		{
@@ -375,7 +411,7 @@ func _build_default_steps() -> Array:
 			"hide_message": true,
 			"block_input": false,
 			"expected_action": "battle_finished",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(100, 500),
 			"block": "endturn,continue3"
 		},
 		{
@@ -383,7 +419,7 @@ func _build_default_steps() -> Array:
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"panel_position": Vector2(200, 500),
+			"panel_position": Vector2(100, 500),
 			"ui_target": "BattleModal/continue",
 			"arrow": {
 				"id": "5",
@@ -396,7 +432,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(20, 300),
+			"panel_position": Vector2(0, 50),
 			"block": "endturn,trade,continue"
 		},
 		{
@@ -404,7 +440,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(20, 300),
+			"panel_position": Vector2(0, 50),
 			"arrow": {
 				"id": "6",
 				"anchor": "screen"
@@ -416,7 +452,7 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(20, 300),
+			"panel_position": Vector2(0, 50),
 			"arrow": {
 				"id": "7",
 				"anchor": "screen"
@@ -424,11 +460,11 @@ func _build_default_steps() -> Array:
 			"block": "endturn,trade,continue"
 		},
 		{
-			"message": "Let's click continue.",
+			"message": "Click continue.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"panel_position": Vector2(20, 300),
+			"panel_position": Vector2(0, 50),
 			"ui_target": "BattleSummaryModal/continue",
 			"block": "endturn,trade"
 		},
@@ -437,9 +473,9 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
-			"panel_position": Vector2(500, 300),
+			"panel_position": Vector2(800, 100),
 			"arrow": {
-				"id": "8",
+				"id": "29",
 				"anchor": "screen"
 			},
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
@@ -449,9 +485,9 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
-			"panel_position": Vector2(500, 300),
+			"panel_position": Vector2(800, 100),
 			"arrow": {
-				"id": "8",
+				"id": "29",
 				"anchor": "screen"
 			},
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
@@ -461,9 +497,9 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
-			"panel_position": Vector2(500, 300),
+			"panel_position": Vector2(800, 100),
 			"arrow": {
-				"id": "8",
+				"id": "29",
 				"anchor": "screen"
 			},
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
@@ -471,10 +507,10 @@ func _build_default_steps() -> Array:
 		{
 			"message": "Let's make a camp, to heal our wounded and restore some vigor. ",
 			"show_continue": false,
-			"block_input": true,
+			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "MoveModal/make_camp",
-			"panel_position": Vector2(500, 300),
+			"panel_position": Vector2(800, 100),
 			"arrow": {
 				"id": "10",
 				"anchor": "screen"
@@ -486,21 +522,41 @@ func _build_default_steps() -> Array:
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
-			"panel_position": Vector2(500, 300),
+			"panel_position": Vector2(800, 100),
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "We don't have enough movement points to move our army!\n Let's cancel our move.",
+			"message": "We don't have enough movement points to move this turn.",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(800, 100),
+			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+		},
+		{
+			"message": "Let's cancel our move by deselecting the army. To do that, either can click region with the army, or army box on the list.",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
-			"ui_target": "MoveModal/cancel_move",
-			"panel_position": Vector2(500, 300),
+			"ui_target": "MoveModal/army_deselect",
+			"target_region_id": 196,
+			"panel_position": Vector2(800, 100),
 			"arrow": {
-				"id": "11",
-				"anchor": "screen"
+				"id": "1",
+				"anchor": "world",
+				"region_id": 196,
+				"offset": Vector2(-150, 0),
+				"rotation": -25.0
 			},
 			"block": "trade,endturn,makecamp,armyactions3"
+		},
+		{
+			"message": "You can close Region or Armies window by pressing Esc, or click a region on the map that's not your own.",
+			"show_continue": false,
+			"block_input": true,
+			"expected_action": "ui",
+			"panel_position": Vector2(500, 300),
+			"block": "trade,endturn"
 		},
 		{
 			"message": "You can navigate the map by holding right mouse button and moving mouse or using key arrows/WASD. Try it.",
@@ -549,26 +605,6 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn",
 			"camera_focus": {"type": "region", "region_id": 228}
 		},
-		{
-			"message": "",
-			"show_continue": false,
-			"block_input": false,
-			"hide_message": true,
-			"expected_action": "ui",
-			"ui_target": "GeneralSelectModal/ArmyButton0",
-			"panel_position": Vector2(350, 700),
-			"block": "trade,endturn,firstelement",
-		},
-		# {
-		# 	"message": "",
-		# 	"show_continue": false,
-		# 	"block_input": false,
-		# 	"expected_action": "ui",
-		# 	"hide_message": true,
-		# 	"ui_target": "ArmySelectModal/move_army",
-		# 	"panel_position": Vector2(350, 700),
-		# 	"block": "trade,endturn,armyactions2",
-		# },
 		{
 			"message": "When an army is selected, movement is the default action. Simply click a region on the map to move there",
 			"show_continue": false,

@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_buttonstyle"]
 
 [node name="MessageModal" type="Control"]
+z_index = 1000
 z_as_relative = false
 layout_mode = 3
 anchors_preset = 15
@@ -24,17 +25,17 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="PanelRoot"]
 layout_mode = 0
-offset_right = 400.0
-offset_bottom = 200.0
+offset_right = 500.0
+offset_bottom = 250.0
 texture = ExtResource("2_6hv5j")
 
 [node name="ContentContainer" type="VBoxContainer" parent="PanelRoot"]
@@ -50,10 +51,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MessageLabel" type="Label" parent="PanelRoot/ContentContainer"]
-custom_minimum_size = Vector2(0, 122)
+custom_minimum_size = Vector2(0, 170)
 layout_mode = 2
 theme = ExtResource("3_standardtheme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 text = "Message text goes here. Message text goes here. Message text goes here. Message text goes here. Message text goes here. 
 "
 horizontal_alignment = 1

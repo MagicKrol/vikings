@@ -1,6 +1,10 @@
 extends Control
 class_name RecruitmentModal
 
+signal ten_archers_target_reached
+signal one_archer_target_reached
+signal recruit_all_target_reached
+
 # UI elements - references to static nodes from scene
 var recruitment_title_label: Label
 var total_gold_label: Label
@@ -36,6 +40,9 @@ const ABILITIES_TOOLTIP_MAX_X: float = 1520.0
 const HOLD_DELAY_SECONDS: float = 0.5
 const HOLD_INTERVAL_SECONDS: float = 0.7
 const HOLD_STEP: int = 10
+const TUTORIAL_TARGET_TEN_ARCHERS: String = "RecruitmentModal/10archers"
+const TUTORIAL_TARGET_ONE_ARCHER: String = "RecruitmentModal/1archers"
+const TUTORIAL_TARGET_RECRUIT_ALL: String = "RecruitmentModal/recruit_all"
 const TRAIT_KEY_ALIASES := {
 	"multi attack": "master-at-arms",
 	"multiattack": "master-at-arms",
@@ -107,6 +114,15 @@ func _ready():
 	recruit_all_button.pressed.connect(_on_recruit_all_pressed)
 	if tutorial_manager != null:
 		continue_button.pressed.connect(func(): tutorial_manager.handle_ui_click("RecruitmentModal/" + continue_button.name))
+		var ten_archers_cb: Callable = Callable(self, "_on_ten_archers_target_reached")
+		if not ten_archers_target_reached.is_connected(ten_archers_cb):
+			ten_archers_target_reached.connect(ten_archers_cb)
+		var one_archer_cb: Callable = Callable(self, "_on_one_archer_target_reached")
+		if not one_archer_target_reached.is_connected(one_archer_cb):
+			one_archer_target_reached.connect(one_archer_cb)
+		var recruit_all_cb: Callable = Callable(self, "_on_recruit_all_target_reached")
+		if not recruit_all_target_reached.is_connected(recruit_all_cb):
+			recruit_all_target_reached.connect(recruit_all_cb)
 	
 	# Connect unit adjustment buttons
 	_connect_button_signals()
@@ -513,6 +529,27 @@ func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	_update_costs()
 	_update_recruitment_display()
 	_update_total_row()
+	var updated_count: int = int(recruitment_counts.get(unit_type, 0))
+	_notify_tutorial_archer_target(unit_type, current_count, updated_count, delta)
+
+func _notify_tutorial_archer_target(unit_type: SoldierTypeEnum.Type, previous_count: int, updated_count: int, delta: int) -> void:
+	if unit_type != SoldierTypeEnum.Type.ARCHERS:
+		return
+	if delta > 0 and previous_count == 0 and updated_count >= 1:
+		emit_signal("one_archer_target_reached")
+	if updated_count == 10:
+		emit_signal("ten_archers_target_reached")
+
+func _on_ten_archers_target_reached() -> void:
+	if tutorial_manager == null:
+		return
+	tutorial_manager.handle_ui_click(TUTORIAL_TARGET_TEN_ARCHERS)
+
+func _on_one_archer_target_reached() -> void:
+	tutorial_manager.handle_ui_click(TUTORIAL_TARGET_ONE_ARCHER)
+
+func _on_recruit_all_target_reached() -> void:
+	tutorial_manager.handle_ui_click(TUTORIAL_TARGET_RECRUIT_ALL)
 
 func _get_unit_abilities_text(unit_type: SoldierTypeEnum.Type) -> String:
 	var traits: Array = GameParameters.get_unit_traits(unit_type)
@@ -628,6 +665,7 @@ func _on_recruit_button_pressed(unit_type: SoldierTypeEnum.Type) -> void:
 func _on_recruit_all_pressed() -> void:
 	if recruitment_counts.is_empty():
 		return
+	emit_signal("recruit_all_target_reached")
 	_apply_recruitment()
 	if target_army != null:
 		target_army.spend_movement_points(1)
@@ -715,11 +753,19 @@ func _get_recruit_owner_id() -> int:
 		return target_army.get_player_id()
 	return target_region.get_region_owner()
 
+func _uses_neighbor_recruits() -> bool:
+	return target_region.get_castle_type() != CastleTypeEnum.Type.NONE
+
 func _get_pooled_available_recruits() -> int:
+	if not _uses_neighbor_recruits():
+		return target_region.get_available_recruits()
 	var owner_id: int = _get_recruit_owner_id()
 	return region_manager.get_available_recruits_total_from_region_and_neighbors(target_region.get_region_id(), owner_id)
 
 func _deduct_recruits_from_pool(total_recruited: int) -> void:
+	if not _uses_neighbor_recruits():
+		target_region.hire_recruits(total_recruited)
+		return
 	var owner_id: int = _get_recruit_owner_id()
 	region_manager.deduct_recruits_proportionally_from_region_and_neighbors(target_region.get_region_id(), owner_id, total_recruited)
 

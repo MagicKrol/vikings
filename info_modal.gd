@@ -1,5 +1,6 @@
 extends Control
 class_name InfoModal
+signal closed_info_modal
 
 # UI manager reference for modal mode
 var ui_manager: UIManager = null
@@ -11,6 +12,8 @@ var message_modal: MessageModal = null
 var army_manager: ArmyManager = null
 var player_manager: PlayerManagerNode = null
 var region_manager: RegionManager = null
+var select_tooltip_modal_nores: SelectTooltipModalNoRes = null
+var tutorial_manager: TutorialManager = null
 
 # Current display mode
 enum DisplayMode { NONE, ARMY, REGION }
@@ -31,6 +34,8 @@ const BUTTON_GREEN_THEME: Theme = preload("res://themes/button_green_styles.tres
 const BUTTON_DEFAULT_THEME: Theme = preload("res://themes/button_styles.tres")
 const ARMY_CARD_TEX_DEFAULT: Texture2D = preload("res://images/army_item3.png")
 const ARMY_CARD_TEX_HOVER: Texture2D = preload("res://images/army_item_selected2.png")
+const ACTION_TOOLTIP_X: float = 550.0
+const ACTION_TOOLTIP_BASE_Y: float = 175.0
 
 var _progress_style_green: StyleBoxTexture
 var _progress_style_yellow: StyleBoxTexture
@@ -41,6 +46,10 @@ var _army_card_armies: Array[Army] = []
 var _army_card_labels: Array[Label] = []
 var _army_card_label_colors: Array[Color] = []
 var _suppress_auto_select: bool = false
+var _action_tooltip_base_pos_nores: Vector2 = Vector2.ZERO
+var _action_tooltip_base_button_y: float = 0.0
+var _action_tooltip_base_nores_ready: bool = false
+var _action_tooltip_base_button_ready: bool = false
 
 enum TabType { REGION, ARMIES }
 var _active_tab: TabType = TabType.REGION
@@ -74,12 +83,15 @@ func _ready():
 	recruitment_modal = get_node("../RecruitmentModal") as RecruitmentModal
 	message_modal = get_node("../MessageModal") as MessageModal
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
+	select_tooltip_modal_nores = get_node("../SelectTooltipModalNoRes") as SelectTooltipModalNoRes
+	tutorial_manager = game_manager.get_tutorial_manager()
 	army_manager = game_manager.get_army_manager()
 	region_manager = game_manager.get_region_manager()
 	_initialize_progress_bar_styles()
 	_initialize_tabs()
 	_initialize_army_cards()
 	_initialize_region_actions()
+	_initialize_action_tooltips()
 	_region_panel_root.mouse_entered.connect(_on_region_panel_mouse_entered)
 	
 	# Initially hidden
@@ -125,12 +137,86 @@ func _initialize_region_actions() -> void:
 	_raise_army_button.pressed.connect(_on_raise_army_pressed)
 	_recruit_button.pressed.connect(_on_recruit_soldiers_pressed)
 
+func _initialize_action_tooltips() -> void:
+	_promote_button.mouse_entered.connect(_on_promote_tooltip_hovered)
+	_promote_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_build_button.mouse_entered.connect(_on_castle_tooltip_hovered)
+	_build_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_search_ore_button.mouse_entered.connect(_on_ore_search_tooltip_hovered)
+	_search_ore_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_raise_army_button.mouse_entered.connect(_on_raise_army_tooltip_hovered)
+	_raise_army_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_recruit_button.mouse_entered.connect(_on_recruit_garrison_tooltip_hovered)
+	_recruit_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+
 func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
 	if node is Control:
 		var control_node := node as Control
 		control_node.mouse_default_cursor_shape = shape
 	for child in node.get_children():
 		_set_cursor_shape_recursive(child, shape)
+
+func _on_promote_tooltip_hovered() -> void:
+	var context_data = {"current_region": current_region}
+	_cache_action_tooltip_base()
+	_show_message_action_tooltip("promote_region", context_data, _promote_button)
+
+func _on_castle_tooltip_hovered() -> void:
+	var tooltip_key: String = _get_castle_tooltip_key()
+	var context_data = {"current_region": current_region}
+	_show_message_action_tooltip(tooltip_key, context_data, _build_button)
+
+func _on_ore_search_tooltip_hovered() -> void:
+	var context_data = {"current_region": current_region}
+	_show_message_action_tooltip("ore_search", context_data, _search_ore_button)
+
+func _on_raise_army_tooltip_hovered() -> void:
+	var context_data = {
+		"current_region": current_region,
+		"army_capacity_available": _region_has_army_capacity(),
+		"raise_used": current_region.has_raised_army_this_turn()
+	}
+	_show_message_action_tooltip("raise_army", context_data, _raise_army_button)
+
+func _on_recruit_garrison_tooltip_hovered() -> void:
+	_show_message_action_tooltip("recruit_soldiers_garrison", {}, _recruit_button)
+
+func _on_action_tooltip_unhovered() -> void:
+	_hide_action_tooltips()
+
+func _show_message_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
+	_position_action_tooltip(select_tooltip_modal_nores, button)
+	select_tooltip_modal_nores.show_tooltip(tooltip_key, context_data)
+
+func _hide_action_tooltips() -> void:
+	select_tooltip_modal_nores.hide_tooltip()
+
+func _cache_action_tooltip_base() -> void:
+	if not _action_tooltip_base_button_ready:
+		_action_tooltip_base_button_y = _promote_button.global_position.y
+		_action_tooltip_base_button_ready = true
+	if not _action_tooltip_base_nores_ready:
+		_action_tooltip_base_pos_nores = Vector2(ACTION_TOOLTIP_X, ACTION_TOOLTIP_BASE_Y)
+		_action_tooltip_base_nores_ready = true
+
+func _position_action_tooltip(tooltip: Control, button: Control) -> void:
+	if not _action_tooltip_base_button_ready or not _action_tooltip_base_nores_ready:
+		_cache_action_tooltip_base()
+	var base_y: float = _action_tooltip_base_pos_nores.y
+	var delta_y: float = button.global_position.y - _action_tooltip_base_button_y
+	tooltip.global_position = Vector2(ACTION_TOOLTIP_X, base_y + delta_y)
+
+func _get_castle_tooltip_key() -> String:
+	if current_region.is_castle_under_construction():
+		return "castle_construction"
+	if current_region.is_castle_under_repair() or current_region.has_castle_damage():
+		return "repair_castle"
+	if current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		return "build_castle"
+	var next_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_region.get_castle_type())
+	if next_type == CastleTypeEnum.Type.NONE:
+		return "castle_max_level"
+	return "upgrade_castle"
 
 func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 	"""Show the modal with army information"""
@@ -198,24 +284,32 @@ func _is_human_turn() -> bool:
 
 func hide_modal(manage_modal_mode: bool = true) -> void:
 	"""Hide the modal but keep content intact"""
+	var was_visible: bool = visible
 	DebugLogger.log("click", "InfoModal: hide_modal manage=" + str(manage_modal_mode))
 	visible = false
+	_hide_action_tooltips()
 	
 	# Set modal mode inactive only if requested
 	if manage_modal_mode and ui_manager:
 		ui_manager.set_modal_active(false)
+	if was_visible:
+		closed_info_modal.emit()
 
 func close_modal() -> void:
 	"""Close the modal and clear all content"""
+	var was_visible: bool = visible
 	DebugLogger.log("click", "InfoModal: close_modal")
 	current_army = null
 	current_region = null
 	current_mode = DisplayMode.NONE
 	visible = false
+	_hide_action_tooltips()
 	
 	# Always set modal mode inactive when fully closing
 	if ui_manager:
 		ui_manager.set_modal_active(false)
+	if was_visible:
+		closed_info_modal.emit()
 
 func _update_army_display() -> void:
 	"""Update the display with current army information"""
@@ -474,11 +568,15 @@ func _update_garrison_section() -> void:
 
 	var recruits_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Recruits")
 	var recruits_max: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/RecruitsMax")
-	var owner_id: int = current_region.get_region_owner()
-	var pooled_available: int = region_manager.get_available_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
-	var pooled_max: int = region_manager.get_max_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
-	recruits_value.text = str(pooled_available)
-	recruits_max.text = str(pooled_max)
+	if current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		recruits_value.text = str(current_region.get_available_recruits())
+		recruits_max.text = str(current_region.get_max_recruits())
+	else:
+		var owner_id: int = current_region.get_region_owner()
+		var pooled_available: int = region_manager.get_available_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
+		var pooled_max: int = region_manager.get_max_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
+		recruits_value.text = str(pooled_available)
+		recruits_max.text = str(pooled_max)
 	_recruit_button.disabled = false
 
 func _update_defenders_section() -> void:
@@ -880,6 +978,8 @@ func _on_region_tab_gui_input(event: InputEvent) -> void:
 func _on_armies_tab_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		DebugLogger.log("click", "InfoModal: Armies tab click")
+		tutorial_manager.handle_ui_click("InfoModal/armies_tab")
+		tutorial_manager.handle_ui_click("InfoModal/Armies")
 		if _active_tab != TabType.ARMIES:
 			current_army = null
 			game_manager.get_army_manager().deselect_army()

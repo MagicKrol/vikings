@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxmedb6o3yrb7"]
+[gd_scene load_steps=25 format=3 uid="uid://cxmedb6o3yrb7"]
 
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="1_dkv22"]
 [ext_resource type="Texture2D" uid="uid://beqh13gts6a66" path="res://images/850x600modal.png" id="3_svfyk"]
@@ -6,7 +6,15 @@
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="5_2xk0f"]
 [ext_resource type="Texture2D" uid="uid://cv3uptrsplkyc" path="res://images/buttonempty.png" id="6_2cs4o"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="8_2dxbd"]
+[ext_resource type="Texture2D" uid="uid://cd5j3l8i6bduu" path="res://images/trade_item.png" id="8_h4slp"]
+[ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="9_byqak"]
 [ext_resource type="Script" path="res://trade_modal.gd" id="9_trademodal"]
+[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark (1).png" id="10_csf5y"]
+[ext_resource type="Texture2D" uid="uid://kpebeht8jn54" path="res://images/button_plus_dark.png" id="11_gd01y"]
+[ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="12_boxd3"]
+[ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="13_jfehy"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="14_a7lna"]
+[ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="15_cixd8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wgf6c"]
 draw_center = false
@@ -42,6 +50,15 @@ Button/styles/hover = SubResource("StyleBoxTexture_earim")
 Button/styles/normal = SubResource("StyleBoxTexture_earim")
 Button/styles/pressed = SubResource("StyleBoxTexture_508s8")
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hne25"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hs6g5"]
+texture = ExtResource("8_h4slp")
+
+[sub_resource type="Theme" id="Theme_2iufs"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_bj80o"]
+
 [node name="TradeModal" type="Control"]
 visible = false
 layout_mode = 3
@@ -62,11 +79,12 @@ script = ExtResource("9_trademodal")
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 900.0
-offset_bottom = 600.0
+offset_bottom = 680.0
 texture = ExtResource("3_svfyk")
-expand_mode = 3
+expand_mode = 1
 
 [node name="ArmyTexture" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 15.0
 offset_top = 150.0
@@ -76,6 +94,7 @@ texture = ExtResource("4_k7ktn")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="."]
+visible = false
 layout_mode = 0
 offset_right = 900.0
 offset_bottom = 600.0
@@ -668,3 +687,943 @@ custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("8_2dxbd")
 text = "Cancel"
+
+[node name="Trade" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 600.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hne25")
+
+[node name="HBoxContainer" type="VBoxContainer" parent="Trade"]
+offset_right = 900.0
+offset_bottom = 654.0
+
+[node name="Header" type="VBoxContainer" parent="Trade/HBoxContainer"]
+layout_mode = 2
+
+[node name="HeaderSection" type="VBoxContainer" parent="Trade/HBoxContainer/Header"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Trade/HBoxContainer/Header/HeaderSection"]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="Trade/HBoxContainer/Header/HeaderSection"]
+layout_mode = 2
+theme = ExtResource("5_2xk0f")
+text = "TRADE"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/Header"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="AvailableRecruits" type="VBoxContainer" parent="Trade/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Trade/HBoxContainer/AvailableRecruits"]
+custom_minimum_size = Vector2(50, 10)
+layout_mode = 2
+
+[node name="MarginContainer3" type="MarginContainer" parent="Trade/HBoxContainer/AvailableRecruits"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="Body" type="VBoxContainer" parent="Trade/HBoxContainer"]
+layout_mode = 2
+
+[node name="Units" type="VBoxContainer" parent="Trade/HBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="FirstRow" type="HBoxContainer" parent="Trade/HBoxContainer/Body/Units"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Food" type="Panel" parent="Trade/HBoxContainer/Body/Units/FirstRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
+
+[node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 223.0
+offset_top = 103.0
+offset_right = 373.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Sell price"
+horizontal_alignment = 1
+
+[node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 31.0
+offset_top = 103.0
+offset_right = 181.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Buy Price"
+horizontal_alignment = 1
+
+[node name="UnitName" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 4.0
+offset_right = 129.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Food"
+
+[node name="Resource2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 85.0
+offset_top = 45.0
+offset_right = 135.0
+offset_bottom = 95.0
+texture = ExtResource("9_byqak")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+visible = false
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+visible = false
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="SellMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="SellPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="SellButton" type="Button" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Sell"
+
+[node name="SellCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 228.0
+offset_top = 43.0
+offset_right = 369.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Owned"
+horizontal_alignment = 1
+
+[node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 294.0
+offset_top = 130.0
+offset_right = 325.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "1.53"
+
+[node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 97.0
+offset_top = 130.0
+offset_right = 137.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "3.03"
+
+[node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 290.0
+offset_top = 69.0
+offset_right = 340.0
+offset_bottom = 102.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "50"
+
+[node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 266.0
+offset_top = 130.0
+offset_right = 290.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 71.0
+offset_top = 130.0
+offset_right = 95.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 26.0
+offset_top = 167.0
+offset_right = 74.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 135.0
+offset_top = 167.0
+offset_right = 187.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+custom_minimum_size = Vector2(20, 20)
+offset_left = 27.0
+offset_top = 196.0
+offset_right = 186.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Buy"
+
+[node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+offset_left = 85.0
+offset_top = 166.0
+offset_right = 124.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Wood" type="Panel" parent="Trade/HBoxContainer/Body/Units/FirstRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
+
+[node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 223.0
+offset_top = 103.0
+offset_right = 373.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Sell price"
+horizontal_alignment = 1
+
+[node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 31.0
+offset_top = 103.0
+offset_right = 181.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Buy Price"
+horizontal_alignment = 1
+
+[node name="UnitName" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 4.0
+offset_right = 129.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Wood"
+
+[node name="Resource2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 85.0
+offset_top = 45.0
+offset_right = 135.0
+offset_bottom = 95.0
+texture = ExtResource("13_jfehy")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+visible = false
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+visible = false
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="SellMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="SellPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="SellButton" type="Button" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Sell"
+
+[node name="SellCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 228.0
+offset_top = 43.0
+offset_right = 369.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Owned"
+horizontal_alignment = 1
+
+[node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 294.0
+offset_top = 130.0
+offset_right = 325.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "1.53"
+
+[node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 97.0
+offset_top = 130.0
+offset_right = 137.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "3.03"
+
+[node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 290.0
+offset_top = 69.0
+offset_right = 340.0
+offset_bottom = 102.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "50"
+
+[node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 266.0
+offset_top = 130.0
+offset_right = 290.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 71.0
+offset_top = 130.0
+offset_right = 95.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 26.0
+offset_top = 167.0
+offset_right = 74.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 135.0
+offset_top = 167.0
+offset_right = 187.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+custom_minimum_size = Vector2(20, 20)
+offset_left = 27.0
+offset_top = 196.0
+offset_right = 186.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Buy"
+
+[node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+offset_left = 85.0
+offset_top = 166.0
+offset_right = 124.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="SecondRow" type="HBoxContainer" parent="Trade/HBoxContainer/Body/Units"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Stone" type="Panel" parent="Trade/HBoxContainer/Body/Units/SecondRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
+
+[node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 223.0
+offset_top = 103.0
+offset_right = 373.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Sell price"
+horizontal_alignment = 1
+
+[node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 31.0
+offset_top = 103.0
+offset_right = 181.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Buy Price"
+horizontal_alignment = 1
+
+[node name="UnitName" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 4.0
+offset_right = 129.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Stone"
+
+[node name="Resource2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 85.0
+offset_top = 45.0
+offset_right = 135.0
+offset_bottom = 95.0
+texture = ExtResource("14_a7lna")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+visible = false
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+visible = false
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="SellMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="SellPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="SellButton" type="Button" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Sell"
+
+[node name="SellCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 228.0
+offset_top = 43.0
+offset_right = 369.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Owned"
+horizontal_alignment = 1
+
+[node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 294.0
+offset_top = 130.0
+offset_right = 325.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "1.53"
+
+[node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 97.0
+offset_top = 130.0
+offset_right = 137.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "3.03"
+
+[node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 290.0
+offset_top = 69.0
+offset_right = 340.0
+offset_bottom = 102.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "50"
+
+[node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 266.0
+offset_top = 130.0
+offset_right = 290.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 71.0
+offset_top = 130.0
+offset_right = 95.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 26.0
+offset_top = 167.0
+offset_right = 74.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 135.0
+offset_top = 167.0
+offset_right = 187.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+custom_minimum_size = Vector2(20, 20)
+offset_left = 27.0
+offset_top = 196.0
+offset_right = 186.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Buy"
+
+[node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+offset_left = 85.0
+offset_top = 166.0
+offset_right = 124.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="Iron" type="Panel" parent="Trade/HBoxContainer/Body/Units/SecondRow"]
+custom_minimum_size = Vector2(400, 245)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
+
+[node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 223.0
+offset_top = 103.0
+offset_right = 373.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Sell price"
+horizontal_alignment = 1
+
+[node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 31.0
+offset_top = 103.0
+offset_right = 181.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Buy Price"
+horizontal_alignment = 1
+
+[node name="UnitName" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 4.0
+offset_right = 129.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Iron"
+
+[node name="Resource2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
+offset_left = 85.0
+offset_top = 45.0
+offset_right = 135.0
+offset_bottom = 95.0
+texture = ExtResource("15_cixd8")
+expand_mode = 2
+
+[node name="Resource1Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+visible = false
+layout_mode = 0
+offset_left = 324.0
+offset_top = 5.0
+offset_right = 341.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1
+"
+
+[node name="Resource2Cost" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+visible = false
+layout_mode = 0
+offset_left = 372.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 24
+text = "1"
+
+[node name="SellMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 218.0
+offset_top = 167.0
+offset_right = 266.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="SellPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
+offset_left = 327.0
+offset_top = 167.0
+offset_right = 379.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="SellButton" type="Button" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+offset_left = 219.0
+offset_top = 196.0
+offset_right = 378.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Sell"
+
+[node name="SellCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
+offset_left = 277.0
+offset_top = 166.0
+offset_right = 316.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 228.0
+offset_top = 43.0
+offset_right = 369.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_font_sizes/font_size = 20
+text = "Owned"
+horizontal_alignment = 1
+
+[node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 294.0
+offset_top = 130.0
+offset_right = 325.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "1.53"
+
+[node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 97.0
+offset_top = 130.0
+offset_right = 137.0
+offset_bottom = 163.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "3.03"
+
+[node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 290.0
+offset_top = 69.0
+offset_right = 340.0
+offset_bottom = 102.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "50"
+
+[node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 266.0
+offset_top = 130.0
+offset_right = 290.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(24, 24)
+offset_left = 71.0
+offset_top = 130.0
+offset_right = 95.0
+offset_bottom = 154.0
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 26.0
+offset_top = 167.0
+offset_right = 74.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("10_csf5y")
+
+[node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(35, 25)
+offset_left = 135.0
+offset_top = 167.0
+offset_right = 187.0
+offset_bottom = 194.0
+theme = SubResource("Theme_2iufs")
+texture = ExtResource("11_gd01y")
+
+[node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+custom_minimum_size = Vector2(20, 20)
+offset_left = 27.0
+offset_top = 196.0
+offset_right = 186.0
+offset_bottom = 227.0
+size_flags_horizontal = 0
+theme = ExtResource("8_2dxbd")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bj80o")
+text = "Buy"
+
+[node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+offset_left = 85.0
+offset_top = 166.0
+offset_right = 124.0
+offset_bottom = 202.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Trade/HBoxContainer"]
+layout_mode = 2
+
+[node name="TotalSection" type="VBoxContainer" parent="Trade/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Trade/HBoxContainer/TotalSection"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Gold Balance"
+
+[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("12_boxd3")
+expand_mode = 2
+
+[node name="TotalGold" type="Label" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1231
+"
+
+[node name="MarginContainer3" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme = ExtResource("8_2dxbd")
+text = "Close"

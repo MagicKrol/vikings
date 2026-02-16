@@ -336,6 +336,7 @@ func deselect_army() -> void:
 	
 	# Hide move modal
 	if move_modal != null:
+		move_modal.emit_army_deselect_target_reached()
 		move_modal.hide_move_modal()
 
 	_clear_move_arrows()
@@ -501,6 +502,24 @@ func move_army_to_region(target_region_container: Node) -> bool:
 		update_ready_highlights_for_player(_ready_highlight_player_id)
 	
 	return true
+
+func ensure_selected_move_targets_highlighted() -> void:
+	"""Restore move target highlights if they were cleared while the selected army stayed active."""
+	if selected_army == null or selected_region_container == null:
+		return
+	if not _should_show_human_arrows():
+		return
+	if visual_manager.has_move_region_highlights():
+		return
+	refresh_selected_move_targets()
+
+func refresh_selected_move_targets() -> void:
+	"""Rebuild selected army move targets using current movement points."""
+	if selected_army == null or selected_region_container == null:
+		return
+	if not _should_show_human_arrows():
+		return
+	_show_move_arrows(selected_region_container)
 
 func _show_move_arrows(region_container: Node) -> void:
 	"""Show arrows pointing to all available move destinations"""
