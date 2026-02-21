@@ -1,0 +1,234 @@
+[gd_scene load_steps=15 format=3 uid="uid://d0hu4g0lacpku"]
+
+[ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="1_safmw"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="2_hkvyl"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="3_fvux6"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="4_w5b6b"]
+[ext_resource type="Theme" uid="uid://bsjv66mowig4c" path="res://themes/slider.tres" id="5_ljhmw"]
+[ext_resource type="Texture2D" uid="uid://cth1fx4fidyub" path="res://images/slider_grab3.png" id="6_nwkux"]
+[ext_resource type="Texture2D" uid="uid://djudvcqdiwy2c" path="res://images/slider_grab_disabled.png" id="7_r0edf"]
+[ext_resource type="Texture2D" uid="uid://d1meyxtfmg24q" path="res://images/slider2.png" id="8_iiwo2"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="9_2ix74"]
+[ext_resource type="Script" path="res://options.gd" id="10_1v6i0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6xvye"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ubsr0"]
+content_margin_left = 5.0
+content_margin_top = 10.0
+content_margin_right = 5.0
+content_margin_bottom = 10.0
+texture = ExtResource("8_iiwo2")
+region_rect = Rect2(-0.0961876, -0.077363, 299.121, 21.3567)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1kmah"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_45w28"]
+
+[node name="Options" type="Control"]
+process_mode = 2
+z_index = 200
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("10_1v6i0")
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 197.0
+offset_right = 2216.0
+offset_bottom = 1733.0
+scale = Vector2(0.4, 0.41)
+mouse_filter = 2
+texture = ExtResource("1_safmw")
+expand_mode = 2
+
+[node name="Scenario" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 200.0
+offset_right = 1290.0
+offset_bottom = 800.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_6xvye")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Scenario"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 15.0
+offset_right = 585.0
+offset_bottom = 595.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_hkvyl")
+text = "Options"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="Scenario/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme = ExtResource("3_fvux6")
+theme_override_fonts/font = ExtResource("4_w5b6b")
+theme_override_font_sizes/font_size = 24
+text = "Back to Menu"
+
+[node name="Sound" type="VBoxContainer" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Scenario/VBoxContainer/Sound"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Labels" type="HBoxContainer" parent="Scenario/VBoxContainer/Sound"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Header" type="Label" parent="Scenario/VBoxContainer/Sound/Labels"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("2_hkvyl")
+theme_override_font_sizes/font_size = 20
+text = "Sound Volume"
+
+[node name="MarginContainer" type="MarginContainer" parent="Scenario/VBoxContainer/Sound/Labels"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Header2" type="Label" parent="Scenario/VBoxContainer/Sound/Labels"]
+layout_mode = 2
+theme = ExtResource("2_hkvyl")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "20%"
+
+[node name="HSlider" type="HSlider" parent="Scenario/VBoxContainer/Sound"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+theme = ExtResource("5_ljhmw")
+theme_override_icons/grabber = ExtResource("6_nwkux")
+theme_override_icons/grabber_highlight = ExtResource("6_nwkux")
+theme_override_icons/grabber_disabled = ExtResource("7_r0edf")
+theme_override_styles/slider = SubResource("StyleBoxTexture_ubsr0")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_1kmah")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_45w28")
+value = 50.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Scenario/VBoxContainer/Sound"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Music" type="VBoxContainer" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Scenario/VBoxContainer/Music"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Labels" type="HBoxContainer" parent="Scenario/VBoxContainer/Music"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Header" type="Label" parent="Scenario/VBoxContainer/Music/Labels"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("2_hkvyl")
+theme_override_font_sizes/font_size = 20
+text = "Music Volume"
+
+[node name="MarginContainer" type="MarginContainer" parent="Scenario/VBoxContainer/Music/Labels"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Header2" type="Label" parent="Scenario/VBoxContainer/Music/Labels"]
+layout_mode = 2
+theme = ExtResource("2_hkvyl")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "20%"
+
+[node name="HSlider" type="HSlider" parent="Scenario/VBoxContainer/Music"]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+theme = ExtResource("5_ljhmw")
+theme_override_icons/grabber = ExtResource("6_nwkux")
+theme_override_icons/grabber_highlight = ExtResource("6_nwkux")
+theme_override_icons/grabber_disabled = ExtResource("7_r0edf")
+theme_override_styles/slider = SubResource("StyleBoxTexture_ubsr0")
+theme_override_styles/grabber_area = SubResource("StyleBoxEmpty_1kmah")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxEmpty_45w28")
+value = 50.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Scenario/VBoxContainer/Music"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label2" type="Label" parent="Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme = ExtResource("9_2ix74")
+text = "Clouds"
+
+[node name="Clouds" type="HBoxContainer" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MarginContainer6" type="MarginContainer" parent="Scenario/VBoxContainer/Clouds"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Show" type="Button" parent="Scenario/VBoxContainer/Clouds"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("3_fvux6")
+theme_override_fonts/font = ExtResource("4_w5b6b")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Show"
+
+[node name="MarginContainer4" type="MarginContainer" parent="Scenario/VBoxContainer/Clouds"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Hide" type="Button" parent="Scenario/VBoxContainer/Clouds"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("3_fvux6")
+theme_override_fonts/font = ExtResource("4_w5b6b")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_pressed = true
+text = "Hide"
+
+[node name="MarginContainer4" type="MarginContainer" parent="Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2

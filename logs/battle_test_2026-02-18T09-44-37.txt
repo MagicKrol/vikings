@@ -1,0 +1,135 @@
+AI Log File: battle_test
+
+Recruitment: Garrison recruited 10 (g:50 w:4 i:5) at Blackham
+
+Recruitment: Garrison recruited 8 (g:44 w:3 i:5) at Westford
+
+Economy: Insufficient funds to upgrade Outpost.
+
+Economy: Buy Food failed (insufficient_gold)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 55
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 0.200
+castle_spacing: 1.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Danger castles checked: 2.
+
+Castle Defense Recruitment:
+- Blackham: 10 units (A: 4, SW: 1, K: 5) - gold spent: 50, recruits left: 10
+- Westford: 8 units (A: 3, K: 5) - gold spent: 44, recruits left: 9
+
+Economy: Castle Defense Recruitment skipped: Hellawich: in danger but has minimal garrison power (Power: 1700 / 150)
+
+Economy: Castle Defense Recruitment skipped: Akrfell: in danger but has minimal garrison power (Power: 1700 / 60)
+
+Economy: Castle Defense Recruitment skipped: Eastmere: in danger but has minimal garrison power (Power: 1100 / 150)
+
+Economy: Castle Defense Recruitment skipped: Torwich: in danger but has minimal garrison power (Power: 620 / 60)
+
+Economy: Castle Defense Recruitment skipped: Redstadir: in danger but has minimal garrison power (Power: 740 / 150)
+
+Economy: Castle Defense Recruitment skipped: Blackwich: in danger but has minimal garrison power (Power: 1100 / 60)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Ashby (#339) | total:40.0 (strategy:0.0, neighbor:40.0, distance_status:True, score:40.0<[100.0])
+- Kirkley (#270) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:True, score:30.0<[100.0])
+- Osfjell (#309) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:False, score:10.0<[100.0])
+- Torholme (#389) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:True, score:10.0<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up purchases: 1 Stone (gold -4) | total gold change: -4)
+
+- Riverberg (#413) | total:59.1 (recruits:18.2, distance:100.0, dist:1, next:Keep)
+- Blackwich (#460) | total:55.6 (recruits:100.0, distance:11.1, dist:9, next:Castle)
+- Torwich (#424) | total:46.5 (recruits:81.8, distance:11.1, dist:9, next:Castle)
+- Akrfell (#376) | total:45.9 (recruits:81.8, distance:10.0, dist:10, next:Castle)
+- Blackham (#443) | total:29.9 (recruits:45.5, distance:14.3, dist:7, next:Stronghold)
+- Westford (#462) | total:26.0 (recruits:40.9, distance:11.1, dist:9, next:Stronghold)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army II -------------
+Army II [Power: 1300, E: 100 - P:100, S:100, A:100, SW:100]
+Candidate 1: Kirkford (#272), score: 56.3 (resources: 11.2, population: 4.8, level: 1, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Kirkford (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Kirkford [MP left: 3, Vigor: 95%]
+Siege breach rolls - Sim vs Kirkford
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 3 Trebuchets, 2 Battling Rams, 14 Ladders
+Assault: 33%
+Defense: 34%
+Simulation started
+Attacker: Army I [Power: 1300 - P:100, S:100, A:100, SW:100]
+Defender Army II (unknown) [Power: 650 - P:50, S:50, A:50, SW:50]
+Defender Garrison (unknown) [Power: 24 - P:12]
+Defender Recruits (Kirkford) (unknown) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 1300 - P:100, S:100, A:100, SW:100]
+Army II: Army II [Power: 0 - none]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Kirkford): Recruits (Kirkford) [Power: 0 - none]
+
+Siege equipement
+Available points: 30
+Available wood: 48 (growth limit)
+Bought: 3 Trebuchets, 2 Battling Rams, 14 Ladders
+Breached sections: 3, Damaged sections: 1
+

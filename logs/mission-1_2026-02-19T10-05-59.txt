@@ -1,0 +1,449 @@
+AI Log File: mission-1
+
+Recruitment: Score: 0.75 (r=42, a=3, dist=11.0, rec=57, gold=100) vs thr=0.50; Frontier2Army=5.33
+
+Economy: Bought 5 Stone and upgrade Keep (gold change -21)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.381
+underpowered_ratio: 0.000
+castle_spacing: 21.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Castle Defense Recruitment skipped: Oswich: in danger but has minimal garrison power (Power: 60 / 60)
+
+Economy: Raise Army: raised (Score: 0.75 (r=42, a=3, dist=11.0, rec=57, gold=100) vs thr=0.50; Frontier2Army=5.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Fossberg (#191) | total:90.0 (strategy:0.0, neighbor:90.0, distance_status:True, score:90.0<[100.0])
+- Saintwich (#188) | total:80.0 (strategy:0.0, neighbor:80.0, distance_status:True, score:80.0<[100.0])
+- Reddal (#146) | total:65.0 (strategy:0.0, neighbor:65.0, distance_status:True, score:65.0<[100.0])
+- Blackfjell (#141) | total:50.0 (strategy:0.0, neighbor:50.0, distance_status:False, score:50.0<[100.0])
+- Reykhavn (#156) | total:50.0 (strategy:0.0, neighbor:50.0, distance_status:True, score:50.0<[100.0])
+- Whitvik (#142) | total:45.0 (strategy:0.0, neighbor:45.0, distance_status:False, score:45.0<[100.0])
+- Bergvik (#151) | total:45.0 (strategy:0.0, neighbor:45.0, distance_status:False, score:45.0<[100.0])
+- Hellaoy (#225) | total:45.0 (strategy:0.0, neighbor:45.0, distance_status:True, score:45.0<[100.0])
+- Eastnes (#187) | total:35.0 (strategy:0.0, neighbor:35.0, distance_status:False, score:35.0<[100.0])
+- Oakfjord (#241) | total:35.0 (strategy:0.0, neighbor:35.0, distance_status:True, score:35.0<[100.0])
+- Blackvik (#224) | total:35.0 (strategy:0.0, neighbor:35.0, distance_status:True, score:35.0<[100.0])
+- Reykthwaite (#98) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:True, score:30.0<[100.0])
+- Hvitfell (#136) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:False, score:30.0<[100.0])
+- Rednes (#263) | total:25.0 (strategy:0.0, neighbor:25.0, distance_status:True, score:25.0<[100.0])
+- Bergfjell (#250) | total:25.0 (strategy:0.0, neighbor:25.0, distance_status:True, score:25.0<[100.0])
+- Hellanes (#228) | total:25.0 (strategy:0.0, neighbor:25.0, distance_status:True, score:25.0<[100.0])
+- Blackfjell (#216) | total:25.0 (strategy:0.0, neighbor:25.0, distance_status:True, score:25.0<[100.0])
+- Blackvik (#201) | total:25.0 (strategy:0.0, neighbor:25.0, distance_status:True, score:25.0<[100.0])
+- Vatnberg (#172) | total:20.0 (strategy:0.0, neighbor:20.0, distance_status:True, score:20.0<[100.0])
+- Reykthwaite (#229) | total:5.0 (strategy:0.0, neighbor:5.0, distance_status:True, score:5.0<[100.0])
+- Vatnchester (#213) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Akrfell (#243) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Redton (#247) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Blackdal (#248) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Vatnoy (#249) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Redhavn (#251) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Oakham (#261) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Whitholme (#262) | total:-5.0 (strategy:0.0, neighbor:-5.0, distance_status:True, score:-5.0<[100.0])
+- Torthorpe (#112) | total:-5.0 (strategy:0.0, neighbor:-5.0, distance_status:True, score:-5.0<[100.0])
+
+Economy: Upgrade Castle: upgrade_started (Top-up purchases: 5 Stone (gold -21) | total gold change: -21)
+
+- Kingley (#226) | total:100.0 (recruits:100.0, distance:100.0, dist:4, next:Keep)
+- Oswich (#166) | total:87.5 (recruits:95.0, distance:80.0, dist:5, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 270, E: 100 - P:30, S:25, A:10, SW:10, H:5, K:3]
+Candidate 1: Vatnworth (#206), score: 36.1 (resources: 7.5, population: 3.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Vatnworth (Player 3 (unknown))
+Moves to Vatnworth [MP left: 3, Vigor: 95%]
+[BATTLE]
+Fight at Vatnworth
+Battle started
+Attacker: Army I [Power: 270 - P:30, S:25, A:10, SW:10, H:5, K:3]
+Defender Garrison (unknown) [Power: 40 - P:20]
+Defender Recruits (Vatnworth) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army I [Power: 254 - P:29, S:23, A:10, SW:8, H:5, K:3]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatnworth (unknown) [Power: 0 - none]
+
+Moving to Vatnworth [MP left: 3, Vigor: 90%]
+Candidate 1: Hafnford (#237), score: 38.5 (resources: 6.2, population: 3.7, level: 1, castle_bonus: 5.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Woodhavn (#170), score: 33.2 (resources: 6.2, population: 3.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Ashton (#211), score: 32.6 (resources: 5.0, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hafnford (Player 3 (unknown - UnknownArmies:1 (total:0)))
+Moves to Hafnford [MP left: 0, Vigor: 85%]
+Siege breach rolls - Sim vs Hafnford
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 0 Trebuchets, 1 Battling Rams, 4 Ladders
+Assault: 29%
+Defense: 40%
+Simulation started
+Attacker: Army I [Power: 254 - P:29, S:23, A:10, SW:8, H:5, K:3]
+Defender Army III (unknown) [Power: 315 - P:30, S:20, A:15, SW:10, C:5, H:5, K:5]
+Defender Garrison (unknown) [Power: 26 - P:13]
+Defender Recruits (Hafnford) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army I [Power: 254 - P:29, S:23, A:10, SW:8, H:5, K:3]
+Army III: Army III [Power: 0 - none]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Hafnford): Recruits (Hafnford) [Power: 0 - none]
+
+Siege equipement
+Available points: 6
+Available wood: 5 (growth limit)
+Bought: 0 Trebuchets, 1 Battling Rams, 4 Ladders
+Breached sections: 0, Damaged sections: 0
+
+[BATTLE]
+Fight at Hafnford
+Withdrew to Vatnworth
+Battle started
+Attacker: Army I [Power: 254 - P:29, S:23, A:10, SW:8, H:5, K:3]
+Defender Army III (unknown) [Power: 315 - P:30, S:20, A:15, SW:10, C:5, H:5, K:5]
+Defender Garrison (unknown) [Power: 26 - P:13]
+Defender Recruits (Hafnford) (unknown) [Power: 18 - P:9]
+Battle Result: Withdrew
+Withdrawal: Attacker
+Attacker After: Army I [Power: 188 - P:18, S:19, A:10, SW:5, H:1, K:3]
+Defender After: Army III (unknown) [Power: 310 - P:30, S:20, A:15, SW:10, C:5, H:4, K:5]
+Defender After (Garrison): Garrison (unknown) [Power: 26 - P:13]
+Defender After (Recruits): Hafnford (unknown) [Power: 18 - P:9]
+
+-------------- ARMY Army II -------------
+Army II [Power: 220, E: 100 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Candidate 1: Reykley (#196), score: 36.6 (resources: 7.5, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Woodvik (#220), score: 35.7 (resources: 6.5, population: 4.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Greenvik (#255), score: 31.6 (resources: 6.2, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Reykley (Player 1 (unknown))
+Moves to Hellanes [MP left: 3, Vigor: 95%]
+Moves to Reykley [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Reykley
+Battle started
+Attacker: Army II [Power: 220 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Reykley) (unknown) [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army II [Power: 220 - P:30, S:15, A:5, SW:5, H:5, K:5]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Reykley (unknown) [Power: 0 - none]
+
+Moving to Reykley [MP left: 1, Vigor: 85%]
+Candidate 1: Oakbury (#155), score: 39.1 (resources: 8.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Kirkfjell (#258), score: 34.0 (resources: 9.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Weststadir (#190), score: 33.6 (resources: 6.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Weststadir (Player 1 (unknown))
+Out of movement points before reaching Weststadir
+Movement blocked near Weststadir
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army III -------------
+Army III [Power: 205, E: 100 - P:20, S:10, A:10, SW:5, C:5, H:5, K:3]
+Candidate 1: Oakbury (#155), score: 40.9 (resources: 8.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Kirkfjell (#258), score: 39.1 (resources: 9.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Woodford (#254), score: 32.5 (resources: 6.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Oakbury (Player 1 (unknown))
+Moves to Blackfjell [MP left: 3, Vigor: 95%]
+Moves to Fossberg [MP left: 2, Vigor: 90%]
+Moves to Reykhavn [MP left: 1, Vigor: 85%]
+Out of movement points before reaching Oakbury
+Movement blocked near Oakbury
+Army III makes camp [MP left: 0, Vigor: 95%]
+Economy: Bought: 1 Stone, 2 Wood for 8 gold
+
+Resources (end):
+Gold: 1
+Food: 50
+Wood: 5
+Iron: 10
+Stone: 1
+
+Recruitment: Score: 0.73 (r=42, a=3, dist=8.3, rec=75, gold=100) vs thr=0.50; Frontier2Army=3.33
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.238
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Castle Defense Recruitment skipped: Hafnford: in danger but has minimal garrison power (Power: 65 / 30)
+
+Economy: Raise Army: raised (Score: 0.73 (r=42, a=3, dist=8.3, rec=75, gold=100) vs thr=0.50; Frontier2Army=3.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Ashthorpe (#222) | total:95.0 (strategy:0.0, neighbor:95.0, distance_status:False, score:95.0<[100.0])
+- Whitchester (#202) | total:75.0 (strategy:0.0, neighbor:75.0, distance_status:False, score:75.0<[100.0])
+- Saintwich (#174) | total:65.0 (strategy:0.0, neighbor:65.0, distance_status:False, score:65.0<[100.0])
+- Northfell (#217) | total:65.0 (strategy:0.0, neighbor:65.0, distance_status:True, score:65.0<[100.0])
+- Saintberg (#173) | total:60.0 (strategy:0.0, neighbor:60.0, distance_status:False, score:60.0<[100.0])
+- Akrfjord (#183) | total:60.0 (strategy:0.0, neighbor:60.0, distance_status:False, score:60.0<[100.0])
+- Eastthwaite (#205) | total:60.0 (strategy:0.0, neighbor:60.0, distance_status:True, score:60.0<[100.0])
+- Sanddon (#232) | total:60.0 (strategy:0.0, neighbor:60.0, distance_status:True, score:60.0<[100.0])
+- Eydon (#253) | total:50.0 (strategy:0.0, neighbor:50.0, distance_status:True, score:50.0<[100.0])
+- Sandhavn (#184) | total:50.0 (strategy:0.0, neighbor:50.0, distance_status:False, score:50.0<[100.0])
+- Whitfjell (#194) | total:50.0 (strategy:0.0, neighbor:50.0, distance_status:False, score:50.0<[100.0])
+- Sanddal (#238) | total:50.0 (strategy:0.0, neighbor:50.0, distance_status:True, score:50.0<[100.0])
+- Torhavn (#256) | total:45.0 (strategy:0.0, neighbor:45.0, distance_status:True, score:45.0<[100.0])
+- Blackley (#160) | total:45.0 (strategy:0.0, neighbor:45.0, distance_status:False, score:45.0<[100.0])
+- Woodford (#254) | total:35.0 (strategy:0.0, neighbor:35.0, distance_status:True, score:35.0<[100.0])
+- Eythorpe (#246) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:True, score:30.0<[100.0])
+- Vatnvik (#181) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:False, score:30.0<[100.0])
+- Redmere (#124) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:False, score:30.0<[100.0])
+- Stonewich (#140) | total:20.0 (strategy:0.0, neighbor:20.0, distance_status:False, score:20.0<[100.0])
+- Kirkfjell (#258) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:True, score:10.0<[100.0])
+- Woodhavn (#170) | total:5.0 (strategy:0.0, neighbor:5.0, distance_status:False, score:5.0<[100.0])
+- Ashoy (#231) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Fossoy (#230) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Southham (#233) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Oakby (#236) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Woodvik (#220) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:True, score:0.0<[100.0])
+- Vatnhaug (#239) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Whithavn (#240) | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:False, score:0.0<[100.0])
+- Greenvik (#255) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:True, score:-15.0<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Eastberg (#203) | total:83.3 (recruits:100.0, distance:66.7, dist:6, next:Castle)
+- Hafnford (#237) | total:82.0 (recruits:64.0, distance:100.0, dist:4, next:Keep)
+- Whitbury (#252) | total:6.0 (recruits:12.0, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region actions: Upgrading Eastberg to County (score: 6.0), Upgrading Whitbury to County (score: 3.0), Upgrading Hafnford to County (score: 3.0), Upgrading Oswich to County (score: 1.0), Upgrading Ashfjell to County (score: 1.0)
+
+Economy: Ore search: attempts=2, discoveries=2, gold_spent=20.
+
+Economy: Ore discoveries: Eydon, Kirkfjell
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 320, E: 100 - P:30, S:20, A:10, SW:10, C:5, H:10, K:5]
+Candidate 1: Rednes (#263), score: 47.7 (resources: 11.2, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Whitholme (#262), score: 38.3 (resources: 6.2, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Rednes (Player 2 (unknown))
+Moves to Rednes [MP left: 2, Vigor: 95%]
+[BATTLE]
+Fight at Rednes
+Battle started
+Attacker: Army I [Power: 320 - P:30, S:20, A:10, SW:10, C:5, H:10, K:5]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Rednes) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army I [Power: 313 - P:29, S:20, A:10, SW:10, C:5, H:9, K:5]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Rednes (unknown) [Power: 0 - none]
+
+Moving to Rednes [MP left: 2, Vigor: 90%]
+Candidate 1: Vatnworth (#206), score: 45.5 (resources: 7.5, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 5.0, strategy: 0.0)
+Candidate 2: Eydon (#260), score: 42.3 (resources: 9.5, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Whitholme (#262), score: 37.5 (resources: 6.2, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Whitholme (Player 2 (unknown))
+Out of movement points before reaching Whitholme
+Movement blocked near Whitholme
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY Army III -------------
+Army III [Power: 310, E: 100 - P:30, S:20, A:15, SW:10, C:5, H:4, K:5]
+Candidate 1: Vatnworth (#206), score: 50.4 (resources: 7.5, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 5.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Vatnworth (Player 2 (known - Army I:188 (total:188)))
+Moves to Vatnworth [MP left: 3, Vigor: 95%]
+[BATTLE]
+Fight at Vatnworth
+Battle started
+Attacker: Army III [Power: 310 - P:30, S:20, A:15, SW:10, C:5, H:4, K:5]
+Defender Army I (known) [Power: 188 - P:18, S:19, A:10, SW:5, H:1, K:3]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Vatnworth) (unknown) [Power: 0 - none]
+Battle Result: Withdrew
+Withdrawal: Defender
+Attacker After: Army III [Power: 276 - P:25, S:17, A:15, SW:10, C:5, H:3, K:4]
+Defender After: Army I (known) [Power: 88 - P:8, S:7, A:7, SW:2, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatnworth (unknown) [Power: 0 - none]
+
+Candidate 1: Reykthwaite (#229), score: 49.7 (resources: 6.2, population: 4.4, level: 1, castle_bonus: 0.0, pursue_bonus: 5.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Reykthwaite (Player 2 (known - Army I:88 (total:88)))
+Moves to Reykthwaite [MP left: 0, Vigor: 90%]
+[BATTLE]
+Fight at Reykthwaite
+Battle started
+Attacker: Army III [Power: 276 - P:25, S:17, A:15, SW:10, C:5, H:3, K:4]
+Defender Army I (known) [Power: 88 - P:8, S:7, A:7, SW:2, H:1, K:1]
+Defender Garrison (unknown) [Power: 28 - P:14]
+Defender Recruits (Reykthwaite) (unknown) [Power: 22 - P:11]
+Battle Result: Withdrew
+Withdrawal: Defender
+Attacker After: Army III [Power: 274 - P:24, S:17, A:15, SW:10, C:5, H:3, K:4]
+Defender After: Army I (known) [Power: 65 - P:6, S:5, A:5, SW:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 20 - P:10]
+Defender After (Recruits): Reykthwaite (unknown) [Power: 16 - P:8]
+
+-------------- ARMY Army II -------------
+Army II [Power: 270, E: 100 - P:25, S:15, A:10, SW:10, C:5, H:5, K:5]
+[MOVEMENT]
+No valid targets; camping
+Army II makes camp [MP left: 4, Vigor: 100%]
+Army II makes camp [MP left: 3, Vigor: 100%]
+Army II makes camp [MP left: 2, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 100%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+Resources (end):
+Gold: 0
+Food: 0
+Wood: 25
+Iron: 10
+Stone: 10
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: no_candidate.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Economy: Bought: 20 Stone, 3 Wood for 99 gold
+
+Resources (end):
+Gold: 1
+Food: 50
+Wood: 23
+Iron: 10
+Stone: 30
+
