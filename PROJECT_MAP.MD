@@ -12,8 +12,8 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 - Custom Map & Scenario submenus share `CustomMap`:
   - Panel (players/difficulty/victory + Select Map) shows for custom maps; Scenario panel shows for scenario list; both Back buttons return to New Game.
   - Player toggles are static scene nodes with defaults: P1 Human, P2-4 Computer, P5-6 Off; difficulty defaults to Normal; victory defaults to Conquer; selection uses default button styling (no font color override).
-  - Map/Scenario list (Panel3) uses a scrollable template row (`Map1`) sorted by size (S/M/L) then name; size filter buttons (All/S/M/L) rebuild the list and clear selection; row hover/unhover callbacks are wired to `Control` rows duplicated from the `Map1` `HBoxContainer` template.
-  - Selecting a row colors it header-gold, updates Panel2 labels (MapName = display name, MapSize = Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`.
+  - Map/Scenario list (Panel3) uses a scrollable template row (`Map1`) sorted by size (T/S/M/L) then name; size filter buttons (All/T/S/M/L) rebuild the list and clear selection; row hover/unhover callbacks are wired to `Control` rows duplicated from the `Map1` `HBoxContainer` template.
+  - Selecting a row colors it header-gold, updates Panel2 labels (MapName = display name, MapSize = Tiny/Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`.
   - Campaign button now opens the Scenario panel with "Campaign" header, hides Panel3 and shows Panel4 (mission list without size filters), and lists only scenarios named `mission*`; custom map list skips mapdata files starting with `mission`.
   - Scenario/Campaign difficulty buttons are mutually exclusive via a shared ButtonGroup (Normal preselected).
 - Menu UX: No click sounds on button presses in main menu.
@@ -24,7 +24,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 Start Flow
 - Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
   - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
-- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <small|medium|large|huge>, player_settings: [...] }` (size inferred from filename suffix; new names map internally to legacy values)
+- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <tiny|small|medium|large>, player_settings: [...] }` (size inferred from filename suffix)
 - `GameManager._ready()` reads `start_payload`:
   - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file).
   - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, then `generate_map()`.
@@ -411,7 +411,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains ignore map-size scale, match the closest aspect-ratio variant, and fit their dominant dimension to the region bounds while clamping to the smaller dimension.
 - RegionIconManager.gd: MapGenerator delegates all biome icon placement here; it randomizes hill/forest/hill_forest variants (`<biome>_1..3.png`), offsets standard icons, and picks the mountain sprite with the nearest proportions before fitting it inside the region; internal-mountain detection from `MapGenerator` is kept for potential scaling adjustments but currently applies a neutral 1.0 multiplier.
 - Starting armies use `GameParameters.STARTING_ARMY_COMPOSITION_HUMAN`/`_AI` selected through `GameManager.get_starting_army_composition_for_player()` and passed into `Army.setup_army()`.
- - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (TINY baseline). This keeps double borders (ocean/owned and enemy borders) aligned across sizes.
+- Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (SMALL baseline). Tiny/Small/Medium/Large use checked size ratios from 504/1040/2104/4077 to keep icons, units, and borders aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).
 - Center markers: `MapGenerator.set_center_markers_enabled(true)` adds a `CenterMarkers` Node2D full of small red Polygon2D squares at each non-ocean region center (used by the GameManager debug toggle).
 - Polygon centroids: Every time MapGenerator loads JSON or BorderManager rebuilds noisy polygons it recomputes the centroid for each region polygon (shoelace method with degenerate average fallback), stores it back into `region_by_id`, pushes it into `Region.center`, and writes it to each Polygon2D’s `center` metadata so castles/armies/icons/debug dots always anchor to the real geometric center instead of stale JSON values.

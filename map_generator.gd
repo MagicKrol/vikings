@@ -29,10 +29,10 @@ enum MapSize {
 
 # Map size scaling factors (SMALL is baseline 1.0)
 const MAP_SIZE_SCALES := {
-	MapSize.TINY: 38.0/26.0,     # ~1.461538
+	MapSize.TINY: 1.436486,      # Tiny map size: 504
 	MapSize.SMALL: 1.0,          # Baseline
-	MapSize.MEDIUM: 18.0/26.0,   # ~0.692308
-	MapSize.LARGE: 12.8/26.0,    # ~0.492308
+	MapSize.MEDIUM: 0.703062,    # Medium map size: 2104
+	MapSize.LARGE: 0.505064,     # Large map size: 4077
 	MapSize.HUGE: 9.0/26.0,      # ~0.346154
 	MapSize.XTINY: 55.0/26.0     # ~2.115385
 }

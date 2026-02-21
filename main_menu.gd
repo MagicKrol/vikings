@@ -95,7 +95,7 @@ var selected_scenario_button: Button = null
 
 # Custom map/scenario selection state
 const GOLD_COLOR := Color(0.945098, 0.847059, 0.568627, 1.0)
-const MAP_SIZE_ORDER := {"S": 0, "M": 1, "L": 2}
+const MAP_SIZE_ORDER := {"T": 0, "S": 1, "M": 2, "L": 3}
 var map_items: Array = []
 var scenario_items: Array = []
 var selected_map_item: Dictionary = {}
@@ -161,9 +161,9 @@ func _ready():
 	scenario_back_button_custom.pressed.connect(_on_custom_map_back_pressed)
 	scenario_select_button_custom.pressed.connect(_on_scenario_select_pressed)
 	map_size_button_all.pressed.connect(_on_size_filter_pressed.bind("All", map_size_button_all))
-	map_size_button_tiny.pressed.connect(_on_size_filter_pressed.bind("S", map_size_button_tiny))
-	map_size_button_small.pressed.connect(_on_size_filter_pressed.bind("M", map_size_button_small))
-	map_size_button_medium.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_medium))
+	map_size_button_tiny.pressed.connect(_on_size_filter_pressed.bind("T", map_size_button_tiny))
+	map_size_button_small.pressed.connect(_on_size_filter_pressed.bind("S", map_size_button_small))
+	map_size_button_medium.pressed.connect(_on_size_filter_pressed.bind("M", map_size_button_medium))
 	map_size_button_large.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_large))
 
 	# Connect demo menu button signals
@@ -1003,8 +1003,8 @@ func _gather_scenario_items(require_mission_prefix: bool) -> Array:
 	return items
 
 func _sort_items(a: Dictionary, b: Dictionary) -> bool:
-	var sa: int = MAP_SIZE_ORDER.get(a.get("size", "S"), 3)
-	var sb: int = MAP_SIZE_ORDER.get(b.get("size", "S"), 3)
+	var sa: int = MAP_SIZE_ORDER.get(a.get("size", "S"), 4)
+	var sb: int = MAP_SIZE_ORDER.get(b.get("size", "S"), 4)
 	if sa == sb:
 		return a.get("display_name", "") < b.get("display_name", "")
 	return sa < sb
@@ -1013,7 +1013,9 @@ func _extract_size_code(base_name: String) -> String:
 	var parts = base_name.split("-")
 	var size_part = parts[parts.size() - 1].to_lower()
 	match size_part:
-		"xtiny", "tiny", "small":
+		"xtiny", "tiny":
+			return "T"
+		"small":
 			return "S"
 		"medium":
 			return "M"
@@ -1024,6 +1026,8 @@ func _extract_size_code(base_name: String) -> String:
 
 func _size_full_name(code: String) -> String:
 	match code:
+		"T":
+			return "Tiny"
 		"S":
 			return "Small"
 		"M":

@@ -185,12 +185,12 @@ static func get_map_size_icon_scale(map_size: int) -> float:
 	"""Get the icon scale factor based on the current map size setting"""
 	# Map size scaling factors (SMALL is baseline 1.0)
 	# Must match MAP_SIZE_SCALES in map_generator.gd
-	# Old ratios (TINY baseline) adjusted by (38/26) to make SMALL = 1.0
+	# Tiny/Small/Medium/Large derived from checked map sizes: 504/1040/2104/4077
 	var map_size_scales := {
-		0: 38.0/26.0,     # TINY   ~1.461538
+		0: 1.436486,      # TINY
 		1: 1.0,           # SMALL  ~1.0 (baseline)
-		2: 18.0/26.0,     # MEDIUM ~0.692308
-		3: 12.8/26.0,     # LARGE  ~0.492308
+		2: 0.703062,      # MEDIUM
+		3: 0.505064,      # LARGE
 		4: 9.0/26.0,      # HUGE   ~0.346154
 		5: 55.0/26.0      # XTINY  ~2.115385
 	}
