@@ -222,11 +222,49 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
 		return
-	# Allow closing active modals with ESC
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		if is_modal_active:
-			close_all_active_modals()
-			set_modal_active(false)
+		handle_escape_action()
+
+func handle_escape_action() -> bool:
+	var game_manager_tutorial: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
+	if game_manager_tutorial.tutorial_enabled:
+		var tutorial_manager: TutorialManager = game_manager_tutorial.get_tutorial_manager()
+		if tutorial_manager.is_active() and tutorial_manager.get_expected_action() != "closed_info_modal":
+			get_viewport().set_input_as_handled()
+			return true
+	if _recruitment_modal.visible:
+		_recruitment_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _transfer_soldiers_modal.visible:
+		_transfer_soldiers_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _transfer_select_modal.visible:
+		_transfer_select_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _move_modal.visible:
+		var game_manager: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
+		var army_manager: ArmyManager = game_manager.get_army_manager()
+		army_manager.deselect_army()
+		get_viewport().set_input_as_handled()
+		return true
+	if _trade_modal.visible:
+		_trade_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	var game_manager_selected: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
+	var army_manager_selected: ArmyManager = game_manager_selected.get_army_manager()
+	if army_manager_selected.selected_army != null:
+		army_manager_selected.deselect_army()
+		get_viewport().set_input_as_handled()
+		return true
+	if is_only_info_modal_visible():
+		_info_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	return false
 			
 
 func _handle_mouse_motion(event: InputEventMouseMotion):

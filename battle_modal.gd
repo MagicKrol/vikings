@@ -1,13 +1,6 @@
 extends Control
 class_name BattleModal
 
-# Styling constants (same as other modals)
-const FRAME_COLOR = Color("#b7975e")
-const BORDER_COLOR = Color.BLACK
-const SHADOW_OFFSET = Vector2(4, 4)
-const SHADOW_COLOR = Color(0, 0, 0, 0.3)
-const BORDER_WIDTH = 4.0
-
 # UI elements - references to static nodes from updated scene
 var battle_title_label: Label
 var attacker_header: Label
@@ -114,6 +107,26 @@ func _ready():
 	
 	# Try to find or create battle summary modal
 	_setup_battle_summary_modal()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if battle_in_progress:
+		return
+	if battle_report == null:
+		return
+	if _is_continue_hotkey(event):
+		_on_button_pressed()
+		get_viewport().set_input_as_handled()
+
+func _is_continue_hotkey(event: InputEvent) -> bool:
+	if event.is_action_pressed("ui_accept"):
+		return true
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event.pressed and not key_event.echo:
+			return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER or key_event.keycode == KEY_SPACE
+	return false
 
 func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> void:
 	"""Show the battle modal with army vs region information"""
@@ -906,15 +919,3 @@ func _on_summary_closed() -> void:
 	"""Called when battle summary modal is closed"""
 	# Hide the battle modal completely and notify closure
 	hide_modal()
-
-func _draw():
-	# Draw shadow first (behind everything)
-	var shadow_rect = Rect2(SHADOW_OFFSET, size)
-	draw_rect(shadow_rect, SHADOW_COLOR)
-	
-	# Draw background fill
-	var bg_rect = Rect2(Vector2.ZERO, size)
-	draw_rect(bg_rect, FRAME_COLOR)
-	
-	# Draw black border on top
-	draw_rect(Rect2(Vector2.ZERO, size), BORDER_COLOR, false, BORDER_WIDTH)

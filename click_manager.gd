@@ -49,8 +49,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				_editor_ownership_mode = false
 				# fallthrough to any deselection below
 		if event.keycode == KEY_ESCAPE:
-			if _army_manager != null:
-				_army_manager.deselect_army()
+			_ui_manager.handle_escape_action()
 
 # Core system references
 @onready var _map_script: MapGenerator = get_node("../Map") as MapGenerator

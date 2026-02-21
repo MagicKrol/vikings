@@ -406,12 +406,7 @@ func _get_siege_wood_budget() -> int:
 	if player == null:
 		return 0
 	var available: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
-	var growth: int = int(floor(player_manager.get_player_resource_growth(attacking_army.get_player_id(), ResourcesEnum.Type.WOOD)))
-	var growth_cap: int = max(0, growth)
-	if available <= 30:
-		return min(available, growth_cap)
-	var spendable: int = max(0, available - 30) + growth_cap
-	return min(available, spendable)
+	return max(0, available)
 
 func _get_current_siege_wood_spent() -> int:
 	var total: int = 0

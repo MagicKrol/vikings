@@ -1,4 +1,5 @@
 extends Node2D
+class_name Clouds
 
 const CLOUD_COUNT: int = 40
 const SCALE_MIN: float = 0.3
@@ -12,6 +13,7 @@ const SHADOW_X_OFFSET: float = 50.0
 const SHADOW_Y_BASE: float = 100.0
 const SHADOW_Y_RANDOM: float = 100.0
 const SHADOW_BLUR_RADIUS: float = 18.0
+static var _global_clouds_enabled: bool = true
 
 var _cloud_textures: Array[Texture2D] = []
 var _shadow_material: ShaderMaterial
@@ -24,7 +26,9 @@ func _ready() -> void:
 	_map_size = 3000.0
 	_load_cloud_textures()
 	_setup_shadow_material()
-	_spawn_clouds()
+	if _global_clouds_enabled:
+		_spawn_clouds()
+	set_clouds_enabled(_global_clouds_enabled)
 
 func _process(delta: float) -> void:
 	var respawn_count: int = 0
@@ -80,3 +84,16 @@ func _spawn_cloud_pair_at(x_pos: float, y_pos: float) -> void:
 	cloud.modulate = cloud_modulate
 
 	add_child(cloud_pair)
+
+func set_clouds_enabled(enabled: bool) -> void:
+	_global_clouds_enabled = enabled
+	visible = enabled
+	set_process(enabled)
+	if enabled and get_child_count() == 0:
+		_spawn_clouds()
+
+static func set_global_clouds_enabled(enabled: bool) -> void:
+	_global_clouds_enabled = enabled
+
+static func is_global_clouds_enabled() -> bool:
+	return _global_clouds_enabled

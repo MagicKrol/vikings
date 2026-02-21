@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=40 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://bimr046p3bsib" path="res://images/background4grass4.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -38,6 +38,7 @@
 [ext_resource type="Texture2D" uid="uid://cef4a8vfbpqtt" path="res://images/icons/arrow.png" id="37_arrow"]
 [ext_resource type="PackedScene" uid="uid://cs8o70rk3hgp4" path="res://scenes/game_menu_modal.tscn" id="38_gamemenu"]
 [ext_resource type="Script" path="res://clouds.gd" id="39_clouds"]
+[ext_resource type="PackedScene" uid="uid://d0hu4g0lacpku" path="res://scenes/options.tscn" id="40_options"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -189,6 +190,9 @@ offset_right = 450.0
 [node name="TutorialModal" parent="UI" instance=ExtResource("36_tutorial")]
 
 [node name="GameMenuModal" parent="UI" instance=ExtResource("38_gamemenu")]
+visible = false
+
+[node name="Options" parent="UI" instance=ExtResource("40_options")]
 visible = false
 
 [node name="Players" type="Node2D" parent="."]

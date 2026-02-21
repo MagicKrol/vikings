@@ -2,7 +2,7 @@ extends Control
 class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
-const USE_DEMO_MENU: bool = true
+const USE_DEMO_MENU: bool = false
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -20,9 +20,6 @@ const USE_DEMO_MENU: bool = true
 @onready var campaign_back_button: Button = $Campaign/BackButton
 @onready var campaign_play_button: Button = $Campaign/PlayButton
 @onready var scenario_list: VBoxContainer = $Campaign/ScenarioContainer/InnerMargin/ScrollContainer/ScenarioList
-
-# Options menu buttons  
-@onready var options_back_button: Button = $Options/BackButton
 
 # Scenario menu buttons
 @onready var scenario_back_button: Button = $Scenario/BackButton
@@ -66,7 +63,7 @@ const USE_DEMO_MENU: bool = true
 # Container references
 @onready var menu_container: VBoxContainer = $MenuContainer
 @onready var new_game_container: VBoxContainer = $NewGame
-@onready var options_container: VBoxContainer = $Options
+@onready var options_container: OptionsPanel = $Options
 @onready var campaign_container: VBoxContainer = $Campaign
 @onready var scenario_container: VBoxContainer = $Scenario
 @onready var demo_container: VBoxContainer = $Demo
@@ -154,7 +151,7 @@ func _ready():
 	campaign_play_button.pressed.connect(_on_campaign_play_pressed)
 	
 	# Connect options and scenario menu button signals
-	options_back_button.pressed.connect(_on_options_back_pressed)
+	options_container.back_requested.connect(_on_options_back_pressed)
 	scenario_back_button.pressed.connect(_on_scenario_back_pressed)
 	scenario_play_button.pressed.connect(_on_scenario_play_pressed)
 	
@@ -183,6 +180,7 @@ func _ready():
 	_setup_difficulty_buttons()
 	_setup_scenario_difficulty_buttons()
 	_setup_victory_buttons()
+	options_container.configure(sound_manager, false, "Back to Menu")
 
 	# Show demo or standard menu based on USE_DEMO_MENU constant
 	if USE_DEMO_MENU:
@@ -404,6 +402,7 @@ func _show_new_game_menu():
 
 func _show_options_menu():
 	"""Show the options menu"""
+	options_container.configure(sound_manager, false, "Back to Menu")
 	button_bg4.visible = false
 	button_bg5.visible = false
 	menu_container.visible = false
@@ -864,12 +863,12 @@ func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 		_update_preview_with_item(item, false)
 		_set_custom_map_select_enabled(true)
 
-func _on_map_row_hovered(row: Button, item: Dictionary, for_scenario: bool):
+func _on_map_row_hovered(row: Control, item: Dictionary, for_scenario: bool):
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected != row:
 		_set_row_color(row, GOLD_COLOR)
 
-func _on_map_row_unhovered(row: Button, item: Dictionary, for_scenario: bool):
+func _on_map_row_unhovered(row: Control, item: Dictionary, for_scenario: bool):
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected != row:
 		_set_row_color(row, Color.WHITE)

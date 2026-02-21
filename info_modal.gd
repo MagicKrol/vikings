@@ -492,8 +492,10 @@ func _update_region_level_section() -> void:
 		target_level = current_level + 1
 
 	var cost: Dictionary = GameParameters.get_promotion_cost(target_level)
+	var gold_cost: int = int(cost.get(ResourcesEnum.Type.GOLD, 0))
 	var food_cost: int = int(cost.get(ResourcesEnum.Type.FOOD, 0))
 	var wood_cost: int = int(cost.get(ResourcesEnum.Type.WOOD, 0))
+	_set_cost_value("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Gold", gold_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Food", food_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Wood", wood_cost)
 	var promotion_available: bool = not current_region.has_promoted_this_turn()
@@ -520,11 +522,11 @@ func _update_castle_section() -> void:
 	_update_construction_status()
 
 	var cost: Dictionary = _get_castle_cost_for_display()
-	var food_cost: int = int(cost.get(ResourcesEnum.Type.FOOD, 0))
+	var gold_cost: int = int(cost.get(ResourcesEnum.Type.GOLD, 0))
 	var wood_cost: int = int(cost.get(ResourcesEnum.Type.WOOD, 0))
 	var stone_cost: int = int(cost.get(ResourcesEnum.Type.STONE, 0))
 	var iron_cost: int = int(cost.get(ResourcesEnum.Type.IRON, 0))
-	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Food", food_cost)
+	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Gold", gold_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Wood", wood_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Stone", stone_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Iron", iron_cost)
@@ -978,8 +980,9 @@ func _on_region_tab_gui_input(event: InputEvent) -> void:
 func _on_armies_tab_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		DebugLogger.log("click", "InfoModal: Armies tab click")
-		tutorial_manager.handle_ui_click("InfoModal/armies_tab")
-		tutorial_manager.handle_ui_click("InfoModal/Armies")
+		if game_manager.tutorial_enabled:
+			tutorial_manager.handle_ui_click("InfoModal/armies_tab")
+			tutorial_manager.handle_ui_click("InfoModal/Armies")
 		if _active_tab != TabType.ARMIES:
 			current_army = null
 			game_manager.get_army_manager().deselect_army()

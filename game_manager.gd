@@ -414,6 +414,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_ESCAPE:
+			if _ui_manager.handle_escape_action():
+				return
 			if _game_menu_modal and not enable_map_editor:
 				if _game_menu_modal.visible:
 					_game_menu_modal.hide_modal()

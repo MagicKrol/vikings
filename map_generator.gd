@@ -249,7 +249,7 @@ func _render_from_json() -> void:
 
 	# Add background image
 	var background := Sprite2D.new()
-	background.texture = load("res://images/sea_new8.png")
+	background.texture = load("res://images/sea_new8_opt.png")
 	var map_dimension := 1000.0 * polygon_scale
 	var frame_width_scaled := ocean_frame_width * polygon_scale
 	var background_size := map_dimension + frame_width_scaled * 2.0

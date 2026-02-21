@@ -19,7 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="14_a8m1b"]
 [ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="14_o0xnj"]
 [ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="14_wyyde"]
-[ext_resource type="Texture2D" uid="uid://66arj6pbfow7" path="res://images/icons/shield3 (1).png" id="17_eegjp"]
+[ext_resource type="Texture2D" uid="uid://dt35wlx63s4at" path="res://images/shield3.png" id="18_r62ta"]
 [ext_resource type="Texture2D" uid="uid://bxxrnj3omn2b2" path="res://images/icons/men_icon (1).png" id="19_g5noc"]
 [ext_resource type="Texture2D" uid="uid://culwuaj0kntfv" path="res://images/icons/pickaxe_icon.png" id="20_8hmuk"]
 [ext_resource type="Texture2D" uid="uid://b4erd65xboid4" path="res://images/icons/helmet (2).png" id="21_5b6lf"]
@@ -302,6 +302,23 @@ text = "promote"
 layout_mode = 2
 theme_override_constants/separation = -1
 
+[node name="Gold" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("14_wyyde")
+expand_mode = 2
+
+[node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
 [node name="Food" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources"]
 layout_mode = 2
 theme_override_constants/separation = 1
@@ -395,17 +412,17 @@ text = "Upgrade"
 layout_mode = 2
 theme_override_constants/separation = -1
 
-[node name="Food" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources"]
+[node name="Gold" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources"]
 layout_mode = 2
 theme_override_constants/separation = -1
 
-[node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Food"]
+[node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Gold"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("14_wyyde")
 expand_mode = 2
 
-[node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Food"]
+[node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Gold"]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -620,7 +637,7 @@ layout_mode = 2
 [node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer"]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-texture = ExtResource("17_eegjp")
+texture = ExtResource("18_r62ta")
 expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer"]

@@ -56,7 +56,8 @@ scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow8" type="Sprite2D" parent="Arrows"]
-position = Vector2(550, 200)
+visible = false
+position = Vector2(601, 235)
 rotation = 3.14159
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
@@ -218,9 +219,57 @@ scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 flip_h = true
 
+[node name="Arrow30" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(582, 255)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow31" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(582, 351)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow32" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(582, 439)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow33" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(582, 519)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow34" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(582, 607)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow35" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(598, 743)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
+[node name="Arrow36" type="Sprite2D" parent="Arrows"]
+position = Vector2(558, 823)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+flip_h = true
+
 [node name="Blocks" type="Control" parent="."]
 top_level = true
-z_index = 500
+z_index = 1000
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -232,7 +281,6 @@ grow_vertical = 2
 mouse_filter = 1
 
 [node name="trade" type="Control" parent="Blocks"]
-visible = false
 anchors_preset = 0
 mouse_filter = 1
 
@@ -249,7 +297,6 @@ grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
 [node name="endturn" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -267,93 +314,101 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
-[node name="firstelement" type="Control" parent="Blocks"]
+[node name="regionactions" type="Control" parent="Blocks"]
 visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
 
-[node name="ColorRect" type="ColorRect" parent="Blocks/firstelement"]
+[node name="ColorRect" type="ColorRect" parent="Blocks/regionactions"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 800.0
-offset_top = 400.0
-offset_right = 1120.0
-offset_bottom = 460.0
+offset_left = 20.0
+offset_top = 205.0
+offset_right = 567.0
+offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
-[node name="armyactions" type="Control" parent="Blocks"]
-visible = false
+[node name="recruitmentall" type="Control" parent="Blocks"]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
 
-[node name="ColorRect" type="ColorRect" parent="Blocks/armyactions"]
+[node name="ColorRect" type="ColorRect" parent="Blocks/recruitmentall"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 800.0
-offset_top = 400.0
-offset_right = 1120.0
-offset_bottom = 570.0
+offset_left = 750.0
+offset_top = 362.0
+offset_right = 1849.0
+offset_bottom = 506.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
-[node name="ColorRect2" type="ColorRect" parent="Blocks/armyactions"]
+[node name="ColorRect2" type="ColorRect" parent="Blocks/recruitmentall"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 800.0
-offset_top = 620.0
-offset_right = 1120.0
-offset_bottom = 680.0
+offset_left = 750.0
+offset_top = 626.0
+offset_right = 1849.0
+offset_bottom = 770.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
-[node name="recruitment" type="Control" parent="Blocks"]
-visible = false
+[node name="ColorRect3" type="ColorRect" parent="Blocks/recruitmentall"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 750.0
+offset_top = 866.0
+offset_right = 1849.0
+offset_bottom = 962.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ColorRect4" type="ColorRect" parent="Blocks/recruitmentall"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1461.0
+offset_top = 962.0
+offset_right = 1849.0
+offset_bottom = 1058.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="recruitmentrecruit" type="Control" parent="Blocks"]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
 
-[node name="ColorRect" type="ColorRect" parent="Blocks/recruitment"]
+[node name="ColorRect3" type="ColorRect" parent="Blocks/recruitmentrecruit"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 950.0
-offset_top = 400.0
-offset_right = 1270.0
-offset_bottom = 465.0
+offset_left = 750.0
+offset_top = 962.0
+offset_right = 1849.0
+offset_bottom = 1058.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
-color = Color(1, 1, 1, 0)
-
-[node name="ColorRect2" type="ColorRect" parent="Blocks/recruitment"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 950.0
-offset_top = 500.0
-offset_right = 1270.0
-offset_bottom = 750.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="continue" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -373,7 +428,6 @@ mouse_filter = 1
 color = Color(0.537255, 1, 1, 0)
 
 [node name="armyactions2" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -407,7 +461,6 @@ mouse_filter = 1
 color = Color(1, 1, 1, 0)
 
 [node name="withdraw" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -418,15 +471,14 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 960.0
-offset_top = 750.0
-offset_right = 1160.0
-offset_bottom = 805.0
+offset_top = 742.0
+offset_right = 1305.0
+offset_bottom = 837.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
 [node name="cancelmove" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -436,16 +488,15 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 840.0
+offset_left = 872.0
 offset_top = 1000.0
-offset_right = 1100.0
+offset_right = 1132.0
 offset_bottom = 1060.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.83, 0.2573, 0.2573, 0)
+color = Color(0.831373, 0.258824, 0.258824, 0)
 
 [node name="regionsactions" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -474,16 +525,15 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 840.0
+offset_left = 872.0
 offset_top = 940.0
-offset_right = 1100.0
+offset_right = 1132.0
 offset_bottom = 1000.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
 [node name="armyactions3" type="Control" parent="Blocks"]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
@@ -493,9 +543,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 840.0
+offset_left = 872.0
 offset_top = 880.0
-offset_right = 1100.0
+offset_right = 1132.0
 offset_bottom = 935.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -576,3 +626,107 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 color = Color(0.537255, 1, 1, 0)
+
+[node name="regionactionsfull" type="Control" parent="Blocks"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="Blocks/regionactionsfull"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = 567.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="recruitmentarchers" type="Control" parent="Blocks"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="Blocks/recruitmentarchers"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 750.0
+offset_top = 362.0
+offset_right = 1575.0
+offset_bottom = 506.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ColorRect2" type="ColorRect" parent="Blocks/recruitmentarchers"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 750.0
+offset_top = 626.0
+offset_right = 1849.0
+offset_bottom = 770.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ColorRect3" type="ColorRect" parent="Blocks/recruitmentarchers"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 750.0
+offset_top = 866.0
+offset_right = 1849.0
+offset_bottom = 962.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="battlewithdraw" type="Control" parent="Blocks"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="Blocks/battlewithdraw"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1040.0
+offset_top = 958.0
+offset_right = 1240.0
+offset_bottom = 1013.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="battlecontinue" type="Control" parent="Blocks"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="Blocks/battlecontinue"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 936.0
+offset_top = 958.0
+offset_right = 1136.0
+offset_bottom = 1013.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)

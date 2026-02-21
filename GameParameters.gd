@@ -120,7 +120,7 @@ const REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA = 0.2
 const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
 
 ## Region Level Bonuses
-const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.15   # Resource bonus per level: +25% per level above 1
+const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
 
 ## Promotion Growth Bonus by Turn (added to base growth rate)
@@ -251,8 +251,8 @@ const AI_NEED_MIN_STOCK = {
 const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per resource
 
 ## AI Handicap Bonuses
-const AI_RESOURCE_GROWTH_BONUS = 0.20          # Multiplier bonus for non-gold resource income (e.g., +25%)
-const AI_INCOME_GROWTH_BONUS = 0.20            # Multiplier bonus for gold income (e.g., +20%)
+const AI_RESOURCE_GROWTH_BONUS = 0.0          # Multiplier bonus for non-gold resource income (e.g., +25%)
+const AI_INCOME_GROWTH_BONUS = 0.0           # Multiplier bonus for gold income (e.g., +20%)
 
 
 ## AI Peasants-Only Recruitment Parameters
@@ -751,24 +751,24 @@ const POPULATION_BY_LEVEL = {
 const REGION_PROMOTION_COSTS = {
 	RegionLevelEnum.Level.L2: {  # Cost to promote from L1 to L2
 		ResourcesEnum.Type.GOLD: 10,
-		ResourcesEnum.Type.FOOD: 20
+		ResourcesEnum.Type.FOOD: 10
 	},
 	RegionLevelEnum.Level.L3: {  # Cost to promote from L2 to L3
 		ResourcesEnum.Type.GOLD: 15,
-		ResourcesEnum.Type.FOOD: 30,
+		ResourcesEnum.Type.FOOD: 20,
 		ResourcesEnum.Type.WOOD: 10,
 	},
 	RegionLevelEnum.Level.L4: {  # Cost to promote from L3 to L4
 		ResourcesEnum.Type.GOLD: 20,
-		ResourcesEnum.Type.FOOD: 40,
-		ResourcesEnum.Type.WOOD: 20,
+		ResourcesEnum.Type.FOOD: 30,
+		ResourcesEnum.Type.WOOD: 10,
 		ResourcesEnum.Type.STONE: 0,
 	},
 	RegionLevelEnum.Level.L5: {  # Cost to promote from L4 to L5
 		ResourcesEnum.Type.GOLD: 25,
-		ResourcesEnum.Type.FOOD: 50,
-		ResourcesEnum.Type.WOOD: 25,
-		ResourcesEnum.Type.STONE: 5,
+		ResourcesEnum.Type.FOOD: 40,
+		ResourcesEnum.Type.WOOD: 15,
+		ResourcesEnum.Type.STONE: 0,
 		ResourcesEnum.Type.IRON: 0
 	}
 }
@@ -779,14 +779,14 @@ const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.OUTPOST: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 30,
-			ResourcesEnum.Type.WOOD: 30
+			ResourcesEnum.Type.WOOD: 25
 		},
 		"build_time": 2  # 2 turns to complete
 	},
 	CastleTypeEnum.Type.KEEP: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 50,
-			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.WOOD: 15,
 			ResourcesEnum.Type.STONE: 15
 		},
 		"build_time": 2  # 3 turns to complete
