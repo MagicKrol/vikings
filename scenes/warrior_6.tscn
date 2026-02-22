@@ -236,6 +236,4 @@ frame_progress = 0.502708
 modulate = Color(1, 0, 1, 0)
 position = Vector2(6, 0)
 sprite_frames = SubResource("SpriteFrames_nx4lj")
-animation = &"victory"
-frame = 19
-frame_progress = 1.0
+animation = &"walking"

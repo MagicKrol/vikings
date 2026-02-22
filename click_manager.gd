@@ -272,7 +272,7 @@ func _handle_region_click(region_container: Node) -> void:
 
 func _handle_mouse_motion() -> void:
 	if _game_manager == null:
-		_move_tooltip.hide_tooltip()
+		_hide_move_hover_tooltips()
 		return
 	if _ui_manager and _ui_manager.is_modal_active:
 		if _is_move_flow_active():
@@ -282,11 +282,11 @@ func _handle_mouse_motion() -> void:
 			var vm_modal := _game_manager.get_visual_manager()
 			if vm_modal:
 				vm_modal.clear_interaction_highlights()
-			_move_tooltip.hide_tooltip()
+			_hide_move_hover_tooltips()
 			return
 	var visual_manager = _game_manager.get_visual_manager()
 	if visual_manager == null:
-		_move_tooltip.hide_tooltip()
+		_hide_move_hover_tooltips()
 		return
 	var camera := get_node("../Camera2D") as Camera2D
 	var world_pos = camera.get_global_mouse_position()
@@ -294,7 +294,7 @@ func _handle_mouse_motion() -> void:
 	if regions_node == null:
 		visual_manager.clear_move_region_hover()
 		visual_manager.set_map_hover_region(-1)
-		_move_tooltip.hide_tooltip()
+		_hide_move_hover_tooltips()
 		return
 	var highlighted_ids = visual_manager.get_move_region_highlight_ids()
 	var hovered_move_region_id = -1
@@ -320,12 +320,15 @@ func _handle_mouse_motion() -> void:
 		if hovered_move_region_id != -1:
 			visual_manager.set_move_region_hover(hovered_move_region_id)
 			_show_move_tooltip(hovered_move_region)
+			var tooltip_offset: Vector2 = Vector2(-2, 35)
+			var region_tooltip_anchor_pos: Vector2 = _move_tooltip.position + tooltip_offset
+			_ui_manager.show_region_tooltip_for_move(hovered_move_region, region_tooltip_anchor_pos)
 		else:
 			visual_manager.clear_move_region_hover()
-			_move_tooltip.hide_tooltip()
+			_hide_move_hover_tooltips()
 	else:
 		visual_manager.clear_move_region_hover()
-		_move_tooltip.hide_tooltip()
+		_hide_move_hover_tooltips()
 	if not visual_manager.has_move_region_highlights():
 		if hovered_general_region_id != -1:
 			visual_manager.set_map_hover_region(hovered_general_region_id)
@@ -343,6 +346,11 @@ func _show_move_tooltip(region: Region) -> void:
 	var terrain_cost := _army_manager.get_terrain_cost(region, selected_army.get_player_id())
 	var mouse_pos := get_viewport().get_mouse_position()
 	_move_tooltip.show_move_tooltip(terrain_cost, mouse_pos)
+
+func _hide_move_hover_tooltips() -> void:
+	_move_tooltip.hide_tooltip()
+	if _is_move_flow_active():
+		_ui_manager.hide_region_tooltip()
 
 func _is_mountain_region(region: Region) -> bool:
 	"""Check if a region is a mountain region (unclickable)"""

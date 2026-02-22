@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cd5j3l8i6bduu" path="res://images/trade_item.png" id="8_h4slp"]
 [ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="9_byqak"]
 [ext_resource type="Script" path="res://trade_modal.gd" id="9_trademodal"]
-[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark (1).png" id="10_csf5y"]
+[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark.png" id="10_csf5y"]
 [ext_resource type="Texture2D" uid="uid://kpebeht8jn54" path="res://images/button_plus_dark.png" id="11_gd01y"]
 [ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="12_boxd3"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="13_jfehy"]

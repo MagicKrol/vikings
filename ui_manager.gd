@@ -126,7 +126,8 @@ func set_modal_active(active: bool) -> void:
 	_apply_icons_visibility()
 	_update_turn_modal_visibility()
 	if is_modal_active and region_tooltip and region_tooltip.visible:
-		hide_region_tooltip()
+		if not _move_selection_active:
+			hide_region_tooltip()
 
 func set_overlay_suppressed(active: bool) -> void:
 	_overlay_suppressed = active
@@ -218,6 +219,14 @@ func hide_tooltip_due_to(control: Control) -> void:
 	DebugLogger.log("UIManager", "hide_tooltip_due_to called by " + control.name)
 	hide_region_tooltip()
 
+func show_region_tooltip_for_move(region: Region, mouse_pos: Vector2) -> void:
+	region_tooltip.show_region_tooltip(region, mouse_pos)
+	region_tooltip.position = mouse_pos
+	if region_tooltip.has_method("_clamp_to_screen"):
+		region_tooltip._clamp_to_screen()
+	region_tooltip.move_to_front()
+	last_hovered_region = region
+
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		_handle_mouse_motion(event)
@@ -270,6 +279,8 @@ func handle_escape_action() -> bool:
 func _handle_mouse_motion(event: InputEventMouseMotion):
 	"""Handle mouse movement to show/hide region tooltips"""
 	if not region_tooltip or not map_generator:
+		return
+	if _move_selection_active:
 		return
 
 	# Don't show tooltips when any modal is active

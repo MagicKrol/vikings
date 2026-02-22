@@ -227,6 +227,8 @@ func initialize_managers(is_scenario: bool = false):
 	_battle_modal = ui_node.get_node("BattleModal") as BattleModal
 	_prebattle_modal = ui_node.get_node("PrebattleModal") as PrebattleModal
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
+	if not _next_player_modal.continue_acknowledged.is_connected(_on_next_player_modal_continue_acknowledged):
+		_next_player_modal.continue_acknowledged.connect(_on_next_player_modal_continue_acknowledged)
 	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
 	_message_modal = ui_node.get_node("MessageModal") as MessageModal
 	_intro_message_modal = ui_node.get_node_or_null("IntroMessageModal") as MessageModal
@@ -395,7 +397,7 @@ func _start_scenario() -> void:
 
 	# Set game state for immediate play
 	castle_placing_mode = false
-	current_player = 1
+	current_player = _get_first_active_player()
 	player_manager.set_current_player(current_player)
 	# Allow a frame for UI to be ready, then show status modals
 	await get_tree().process_frame
@@ -450,8 +452,9 @@ func next_turn():
 		_army_manager.set_ready_highlight_player(-1)
 	
 	# Get next active player in sequence (skips OFF players)
-	var next_player_id = _get_next_active_player()
-	var is_new_round = (next_player_id == players_per_round[0])
+	var next_player_id: int = _get_next_active_player()
+	var round_start_player_id: int = _get_first_active_player()
+	var is_new_round: bool = next_player_id == round_start_player_id
 	
 	if is_new_round:
 		# Starting a new round - increment turn counter
@@ -705,13 +708,17 @@ func _get_next_active_player() -> int:
 	
 	return next_player if is_player_active(next_player) else starting_player
 
+func _get_first_active_player() -> int:
+	"""Get the first active player in configured turn order."""
+	for player_id: int in players_per_round:
+		if is_player_active(player_id):
+			return player_id
+	return players_per_round[0]
+
 
 func _initialize_castle_placement_sequence() -> void:
 	"""Initialize castle placement sequence, starting with first active player"""
-	# Find the first active player to start castle placement
-	current_player = 1
-	if not is_player_active(current_player):
-		current_player = _get_next_active_player()
+	current_player = _get_first_active_player()
 	
 	player_manager.set_current_player(current_player)
 	DebugLogger.log("GameInit", "Castle placement starting with Player " + str(current_player) + " (" + PlayerTypeEnum.type_to_string(get_player_type(current_player)) + ")")
@@ -724,7 +731,7 @@ func _initialize_castle_placement_sequence() -> void:
 		await _handle_ai_castle_placement(current_player)
 
 func _process_round_start_actions():
-	"""Process actions that happen once per round (when Player 1 starts)"""
+	"""Process actions that happen once per round (when first active player starts)."""
 	DebugLogger.log("TurnProcessing", "Processing round start actions...")
 	_update_average_army_power()
 	
@@ -1061,13 +1068,20 @@ func _on_current_player_changed(player_id: int) -> void:
 	if is_player_human(player_id) and not castle_placing_mode and _active_battles == 0:
 		_center_camera_on_player_assets(player_id)
 	
-	# Show next player modal only for active players
-	if _next_player_modal and is_player_active(player_id):
-		var allow_castle_modal := not castle_placing_mode or is_player_human(player_id)
-		if allow_castle_modal:
-			_next_player_modal.show_next_player(player_id, castle_placing_mode)
+	# Show next player modal only for human turns when 2+ humans are active.
+	if _next_player_modal and not castle_placing_mode and is_player_active(player_id) and is_player_human(player_id) and _should_show_next_player_modal():
+		var require_ack: bool = _should_require_next_player_modal_ack(player_id)
+		if require_ack:
+			var ui_node = get_node("../UI")
+			var player_status_modal2 = ui_node.get_node("PlayerStatusModal2") as PlayerStatusModal2
+			player_status_modal2.set_panel_visible(false)
+		_next_player_modal.show_next_player(player_id, current_turn, require_ack)
 	
 	DebugLogger.log("TurnProcessing", "Round " + str(current_turn) + " - Player " + str(player_id) + "'s turn")
+
+func _on_next_player_modal_continue_acknowledged(player_id: int) -> void:
+	var ui_node = get_node("../UI")
+	_set_player_status_panel_visibility(player_id, ui_node)
 
 func get_current_turn() -> int:
 	"""Get the current turn number"""
@@ -1103,6 +1117,19 @@ func is_player_human(player_id: int) -> bool:
 func is_player_computer(player_id: int) -> bool:
 	"""Check if a player is AI controlled"""
 	return get_player_type(player_id) == PlayerTypeEnum.Type.COMPUTER
+
+func _get_human_player_count() -> int:
+	var human_players: int = 0
+	for player_id in range(1, total_players + 1):
+		if is_player_human(player_id):
+			human_players += 1
+	return human_players
+
+func _should_show_next_player_modal() -> bool:
+	return _get_human_player_count() > 1
+
+func _should_require_next_player_modal_ack(player_id: int) -> bool:
+	return is_player_human(player_id) and _should_show_next_player_modal()
 
 func is_player_ai(player_id: int) -> bool:
 	"""Check if a player is AI controlled (alias for is_player_computer)"""
@@ -1344,8 +1371,8 @@ func handle_castle_placement(region: Region) -> void:
 			_ai_debug_visualizer.switch_to_army_target_mode()
 		DebugLogger.log("GameInit", "Switched AI debug visualizer to army target scoring mode")
 
-		# Set current player to Player 1 to start normal gameplay
-		current_player = 1
+		# Set current player to first active player to start normal gameplay
+		current_player = _get_first_active_player()
 		player_manager.set_current_player(current_player)
 		_set_player_status_panel_visibility(current_player, ui_node)
 		
@@ -1364,11 +1391,7 @@ func _advance_castle_placement_turn() -> void:
 	DebugLogger.log("GameInit", "Next player to place castle: Player " + str(current_player) + " (" + PlayerTypeEnum.type_to_string(get_player_type(current_player)) + ")")
 	
 	# Handle different player types
-	if is_player_human(current_player):
-		# Show next player modal for human player
-		if _next_player_modal:
-			_next_player_modal.show_next_player(current_player, true)
-	elif is_player_computer(current_player):
+	if is_player_computer(current_player):
 		# AI player - automatically place castle using AI system
 		DebugLogger.log("GameInit", "AI Player " + str(current_player) + " placing castle automatically...")
 		# Use a short delay to allow visuals to update

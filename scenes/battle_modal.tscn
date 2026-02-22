@@ -971,6 +971,20 @@ layout_mode = 2
 layout_mode = 2
 alignment = 1
 
+[node name="SecondPlayer" type="HBoxContainer" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("5_button_theme")
+
+[node name="Withdraw" type="Button" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer/SecondPlayer"]
+layout_mode = 2
+theme = ExtResource("5_button_theme")
+text = "Withdraw"
+
+[node name="ButtonsMargin" type="MarginContainer" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer/SecondPlayer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
 [node name="QuickResolve" type="Button" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer"]
 layout_mode = 2
 theme = ExtResource("5_button_theme")

@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://u84o41hg3ngl" path="res://images/units/peasant_card.png" id="11_i2qjs"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="13_o875k"]
 [ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="14_oxw3w"]
-[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark (1).png" id="15_4tey2"]
+[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark.png" id="15_4tey2"]
 [ext_resource type="Texture2D" uid="uid://kpebeht8jn54" path="res://images/button_plus_dark.png" id="16_heyhc"]
 [ext_resource type="Texture2D" uid="uid://daw8fprkn5114" path="res://images/units/spearman_card.png" id="17_jug5e"]
 [ext_resource type="Texture2D" uid="uid://c4yugdvbtfvki" path="res://images/units/archer_card.png" id="18_dlgff"]

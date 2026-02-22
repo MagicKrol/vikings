@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://cuk4cfsmlpk23"]
+[gd_scene load_steps=7 format=3 uid="uid://cuk4cfsmlpk23"]
 
 [ext_resource type="Script" path="res://next_player_modal.gd" id="1_nextplayerscript"]
 [ext_resource type="Texture2D" uid="uid://dlo764bowoxd8" path="res://images/MessageModal.png" id="2_ed50s"]
 [ext_resource type="Theme" uid="uid://bcxgrsdr0omxj" path="res://themes/header_text_theme.tres" id="2_headertheme"]
 [ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_standardtheme"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="4_modaltheme"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="5_hgk1j"]
 
 [node name="NextPlayerModal" type="Control"]
 z_index = 150
@@ -19,6 +21,7 @@ offset_right = 250.0
 offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("4_modaltheme")
 script = ExtResource("1_nextplayerscript")
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -49,12 +52,23 @@ text = "Player 1"
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="ContentContainer"]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="HeaderLabel" type="Label" parent="ContentContainer"]
 layout_mode = 2
 theme = ExtResource("2_headertheme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Next Turn"
+text = "Turn 1"
 horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="ContentContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_hgk1j")
+text = "Continue"
+
+[node name="HideTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true

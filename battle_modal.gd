@@ -12,6 +12,8 @@ var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
 var withdraw_button: Button
+var second_player_container: HBoxContainer
+var second_player_withdraw_button: Button
 var quick_resolve_button: Button
 var message_label: Label
 var defender_defense_value: Label
@@ -68,6 +70,8 @@ func _ready():
 	attacker_units_container = get_node("Battle/VBoxContainer/Body/Units")
 	defender_units_container = get_node("Battle/VBoxContainer/Body/Units")
 	continue_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/Button")
+	second_player_container = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/SecondPlayer")
+	second_player_withdraw_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/SecondPlayer/Withdraw")
 	quick_resolve_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/QuickResolve")
 	withdraw_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/Button")
 	message_label = get_node("Battle/VBoxContainer/MessageSection/HBoxContainer/Message")
@@ -77,6 +81,7 @@ func _ready():
 
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
+	second_player_withdraw_button.pressed.connect(_on_second_player_withdraw_pressed)
 	quick_resolve_button.pressed.connect(_on_quick_resolve_pressed)
 	withdraw_button = continue_button  # Both reference the same button
 	continue_button.name = "continue"
@@ -689,11 +694,21 @@ func _on_button_pressed() -> void:
 		sound_manager.click_sound()
 	
 	if battle_in_progress:
-		# During battle, button acts as withdraw
-		_on_withdraw_pressed()
+		if _is_dual_human_battle():
+			# In dual-human battle, this button withdraws Source/defender side.
+			_on_withdraw_pressed_for_side(2, false)
+		else:
+			# Legacy behavior: button withdraws whichever human side is active.
+			_on_withdraw_pressed()
 	else:
 		# After battle, button acts as continue
 		_on_ok_pressed()
+
+func _on_second_player_withdraw_pressed() -> void:
+	"""Handle Target-side withdraw in dual-human battles."""
+	if sound_manager:
+		sound_manager.click_sound()
+	_on_withdraw_pressed_for_side(1, false)
 
 func _on_ok_pressed() -> void:
 	"""Handle Continue button press"""
@@ -741,10 +756,31 @@ func _on_withdraw_pressed() -> void:
 	
 	# Defender (human): retreat not simulated with attacker-only withdrawal rounds
 	if human_controls_defender and not human_controls_attacker:
-		# If not allowed, ignore
-		if not _is_withdraw_allowed_for_current_role():
-			DebugLogger.log("Withdrawal", "Defender withdraw denied by eligibility")
-			return
+		_on_withdraw_pressed_for_side(2, false)
+		return
+	elif human_controls_attacker:
+		_on_withdraw_pressed_for_side(1, false)
+	else:
+		# No human-controlled side detected; ignore button
+		DebugLogger.log("Withdrawal", "Withdraw click ignored: no human-controlled side")
+		return
+
+func _on_withdraw_pressed_for_side(side: int, play_click_sound: bool = true) -> void:
+	"""Start withdrawal for explicit side (1=attacker/Target, 2=defender/Source)."""
+	if not battle_in_progress:
+		DebugLogger.log("Withdrawal", "Withdraw click ignored: battle not in progress")
+		return
+	if withdrawal_in_progress:
+		DebugLogger.log("Withdrawal", "Withdraw click ignored: already withdrawing")
+		return
+	if play_click_sound and sound_manager:
+		sound_manager.click_sound()
+	if not _is_withdraw_allowed_for_side(side):
+		DebugLogger.log("Withdrawal", "Withdraw denied by eligibility for side " + str(side))
+		return
+
+	var gm = get_node("../../GameManager") as GameManager
+	if side == 2:
 		withdrawal_in_progress = true
 		_set_message("Your army is withdrawing")
 		_play_retreat_sound()
@@ -754,8 +790,7 @@ func _on_withdraw_pressed() -> void:
 		DebugLogger.log("UISystem", "Starting withdrawal...")
 		DebugLogger.log("Withdrawal", "Defender withdrawal started")
 		return
-	elif human_controls_attacker:
-		# Attacker withdrawal: use animated simulator flow (defender free hits), then finalize to previous region
+	if side == 1:
 		withdrawal_in_progress = true
 		attacker_manual_withdraw_requested = true
 		gm.get_battle_manager().mark_attacker_manual_withdrawal()
@@ -766,9 +801,6 @@ func _on_withdraw_pressed() -> void:
 			animated_simulator.start_withdrawal_round(1)
 		DebugLogger.log("UISystem", "Starting withdrawal...")
 		DebugLogger.log("Withdrawal", "Attacker withdrawal started; def_withdraw_allowed=" + str(animated_simulator.defender_can_withdraw) + " timer=" + str(animated_simulator.battle_timer.wait_time))
-	else:
-		# No human-controlled side detected; ignore button
-		DebugLogger.log("Withdrawal", "Withdraw click ignored: no human-controlled side")
 		return
 
 func _is_withdraw_allowed_for_current_role() -> bool:
@@ -776,7 +808,17 @@ func _is_withdraw_allowed_for_current_role() -> bool:
 	if gm == null:
 		return false
 	if _player_controls_attacking_army():
-		return true
+		return _is_withdraw_allowed_for_side(1)
+	return _is_withdraw_allowed_for_side(2)
+
+func _is_withdraw_allowed_for_side(side: int) -> bool:
+	var gm = get_node("../../GameManager") as GameManager
+	if gm == null:
+		return false
+	if side == 1:
+		return _player_controls_attacking_army()
+	if side != 2:
+		return false
 	if not _player_has_defending_army():
 		return false
 	if defending_region == null:
@@ -799,18 +841,29 @@ func _update_action_button() -> void:
 	if battle_in_progress:
 		if not _player_has_army_in_battle():
 			continue_button.visible = false
+			second_player_container.visible = false
 			return
 		continue_button.visible = true
+		var dual_human: bool = _is_dual_human_battle()
+		second_player_container.visible = dual_human
 		if withdrawal_in_progress:
 			continue_button.text = "Continue"
 			continue_button.disabled = true
+			second_player_withdraw_button.disabled = true
 		else:
 			continue_button.text = "Withdraw"
-			continue_button.disabled = not _is_withdraw_allowed_for_current_role()
+			if dual_human:
+				continue_button.disabled = not _is_withdraw_allowed_for_side(2)
+				second_player_withdraw_button.disabled = not _is_withdraw_allowed_for_side(1)
+			else:
+				continue_button.disabled = not _is_withdraw_allowed_for_current_role()
+				second_player_withdraw_button.disabled = true
 	else:
 		continue_button.visible = true
 		continue_button.text = "Continue"
 		continue_button.disabled = false
+		second_player_container.visible = false
+		second_player_withdraw_button.disabled = false
 
 func _set_message(text: String) -> void:
 	message_label.text = text
@@ -885,12 +938,23 @@ func _player_has_defending_army() -> bool:
 	for child in defending_region.get_children():
 		if child is Army:
 			var army_child := child as Army
+			if army_child == attacking_army:
+				continue
 			if gm.is_player_human(army_child.get_player_id()):
 				return true
 	return false
 
 func _player_has_army_in_battle() -> bool:
 	return _player_controls_attacking_army() or _player_has_defending_army()
+
+func _is_dual_human_battle() -> bool:
+	if attacking_army == null or defending_region == null:
+		return false
+	var gm = get_node("../../GameManager") as GameManager
+	if gm == null:
+		return false
+	var region_owner := gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	return _player_controls_attacking_army() and region_owner != -1 and gm.is_player_human(region_owner)
 
 
 
