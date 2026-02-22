@@ -34,6 +34,8 @@ func _ready():
 		return
 	# Make visible by default as a status bar (non-editor). GameManager triggers updates.
 	visible = true
+	GlobalSignals.player_status_refresh_requested.connect(_on_player_status_refresh_requested)
+	call_deferred("refresh_from_game_state")
 
 func _on_mouse_entered() -> void:
 	DebugLogger.log("UIManager", "PlayerStatusModal2 mouse entered. Hiding tooltip")
@@ -141,3 +143,6 @@ func show_and_update() -> void:
 
 func set_panel_visible(is_visible: bool) -> void:
 	get_node("Panel").visible = is_visible
+
+func _on_player_status_refresh_requested() -> void:
+	refresh_from_game_state()

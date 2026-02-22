@@ -53,6 +53,7 @@ var ui_manager: UIManager
 var game_manager: GameManager
 var sound_manager: SoundManager
 var player_manager: PlayerManagerNode
+var move_tooltip: MoveTooltip
 var tutorial_manager: TutorialManager = null
 
 const LADDER_DATA = {"points": 1, "wood": 0, "defense": 0, "max": 99, "effectiveness": GameParameters.LADDER_EFFECTIVENESS_PER}
@@ -99,6 +100,7 @@ func _ready():
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	player_manager = game_manager.player_manager
+	move_tooltip = get_node("../MoveTooltip") as MoveTooltip
 	if game_manager:
 		tutorial_manager = game_manager.get_tutorial_manager()
 	withdraw_button.pressed.connect(_on_withdraw_pressed)
@@ -246,6 +248,8 @@ func show_prebattle(army: Army, region: Region) -> void:
 	defending_region = region
 	var info_modal = get_node("../InfoModal") as InfoModal
 	info_modal.hide_modal(false)
+	move_tooltip.hide_tooltip()
+	ui_manager.hide_region_tooltip()
 	_reset_info_panel()
 	_update_labels()
 	ui_manager.set_modal_active(true)

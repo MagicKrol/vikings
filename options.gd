@@ -94,6 +94,7 @@ func _on_sound_slider_changed(value: float) -> void:
 	sound_manager.horn_player.volume_db = volume_db
 	sound_manager.battle_player.volume_db = volume_db
 	_update_sound_label(clamped_value)
+	SaveGameManager.save_settings(sound_manager)
 
 func _on_music_slider_changed(value: float) -> void:
 	var clamped_value: float = clampf(value, 0.0, 100.0)
@@ -108,6 +109,7 @@ func _on_music_slider_changed(value: float) -> void:
 		else:
 			sound_manager.play_game_music()
 	_update_music_label(clamped_value)
+	SaveGameManager.save_settings(sound_manager)
 
 func _on_clouds_show_pressed() -> void:
 	_set_clouds_enabled(true)
@@ -121,6 +123,7 @@ func _set_clouds_enabled(enabled: bool) -> void:
 		var runtime_clouds: Node = get_tree().current_scene.get_node("Map/Clouds") as Node
 		runtime_clouds.call("set_clouds_enabled", enabled)
 	_set_cloud_buttons_state(enabled)
+	SaveGameManager.save_settings(sound_manager)
 
 func _set_cloud_buttons_state(show_clouds: bool) -> void:
 	clouds_show_button.button_pressed = show_clouds
@@ -147,10 +150,12 @@ func _on_battle_speed_very_fast_pressed() -> void:
 func _set_ai_turn_speed(multiplier: float) -> void:
 	GameParameters.set_ai_move_speed_multiplier(multiplier)
 	_sync_ai_speed_buttons()
+	SaveGameManager.save_settings(sound_manager)
 
 func _set_battle_speed(seconds: float) -> void:
 	GameParameters.set_battle_round_time(seconds)
 	_sync_battle_speed_buttons()
+	SaveGameManager.save_settings(sound_manager)
 
 func _sync_ai_speed_buttons() -> void:
 	var current_value: float = GameParameters.get_ai_move_speed_multiplier()

@@ -112,6 +112,8 @@ var game_mode: String = "scenario"  # "custom" | "scenario"
 var scenario_path: String = ""
 # var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
+var _loaded_from_save: bool = false
+var _pending_loaded_save_data: Dictionary = {}
 var _ai_log_manager: AILogManager = AILogManager.new()
 var _ai_log_started: bool = false
 var _ai_battle_log_queue: Dictionary = {}
@@ -156,11 +158,17 @@ func _ready():
 				_apply_custom_map_player_settings(payload.get("player_settings"))
 			
 			map_generator.generate_map()
+		elif kind == "save":
+			var save_data: Dictionary = SaveGameManager.load_game()
+			if not save_data.is_empty():
+				_loaded_from_save = true
+				_pending_loaded_save_data = save_data
+				_prepare_loaded_game_source(save_data, map_generator)
 		# Clear payload to avoid reuse
 		get_tree().set_meta("start_payload", null)
 
 	# Scenario pre-load: if scenario mode, set map file upfront and regenerate map
-	if game_mode == "scenario" and scenario_path != "":
+	if not _loaded_from_save and game_mode == "scenario" and scenario_path != "":
 		var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 		# Normalize scenario path to res://scenarios/<file>
 		var scen_file := String(scenario_path).get_file()
@@ -179,7 +187,10 @@ func _ready():
 			map_generator.generate_map()
 
 	# Initialize all game systems
-	initialize_managers(game_mode == "scenario")
+	initialize_managers(game_mode == "scenario" and not _loaded_from_save, _loaded_from_save)
+	if _loaded_from_save:
+		SaveGameManager.apply_save_data(self, _pending_loaded_save_data)
+		_pending_loaded_save_data = {}
 	_apply_initial_camera_zoom()
 	_apply_center_marker_setting()
 	_show_custom_start_prompt()
@@ -196,7 +207,7 @@ func _ready():
 	else:
 		DebugLogger.log("GameInit", "Error: Sound manager not found!")
 
-func initialize_managers(is_scenario: bool = false):
+func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = false):
 	"""Initialize all game managers and establish dependencies"""
 	# Get core components - these are required
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
@@ -235,6 +246,7 @@ func initialize_managers(is_scenario: bool = false):
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
 		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
+		_game_menu_modal.connect("save_game_pressed", _on_game_menu_save_game_pressed)
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	var tutorial_modal = get_node("../UI/TutorialModal") as TutorialModal
 	var tutorial_world_arrow = get_node("../Map/TutorialWorldArrow") as Sprite2D
@@ -253,6 +265,9 @@ func initialize_managers(is_scenario: bool = false):
 		_army_manager.set_ui_manager(_ui_manager)
 	
 	_sound_manager = get_node("../SoundManager") as SoundManager
+	SaveGameManager.load_settings(_sound_manager)
+	var runtime_clouds: Clouds = get_node("../Map/Clouds") as Clouds
+	runtime_clouds.set_clouds_enabled(Clouds.is_global_clouds_enabled())
 	
 	# Connect sound manager to ArmyManager
 	if _army_manager:
@@ -322,11 +337,12 @@ func initialize_managers(is_scenario: bool = false):
 	if enable_map_editor:
 		DebugLogger.log("GameInit", "Map editor enabled: skipping heatmap and castle placement initialization")
 		return
-	var heat_calc := StrategicPointsHeatmap.new()
-	heat_calc.initialize(_region_manager, map_generator)
-	heat_calc.enable_key_toggle = false
-	heat_calc.compute_and_store()
-	_initialize_castle_placement_sequence()
+	if not skip_initial_flow:
+		var heat_calc := StrategicPointsHeatmap.new()
+		heat_calc.initialize(_region_manager, map_generator)
+		heat_calc.enable_key_toggle = false
+		heat_calc.compute_and_store()
+		_initialize_castle_placement_sequence()
 	
 	# Initialize AI system (now with proper PlayerManagerNode reference)
 	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
@@ -665,6 +681,8 @@ func _apply_center_marker_setting() -> void:
 func _show_custom_start_prompt() -> void:
 	if game_mode != "custom":
 		return
+	if _loaded_from_save:
+		return
 	if enable_map_editor:
 		return
 	var modal_to_use: MessageModal = _message_modal
@@ -673,6 +691,19 @@ func _show_custom_start_prompt() -> void:
 	if modal_to_use == null:
 		return
 	modal_to_use.call_deferred("display_message", "Click a region to choose your starting location")
+
+func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenerator) -> void:
+	var source: Dictionary = save_data.get("source", {})
+	game_mode = "custom"
+	scenario_path = ""
+	loaded_scenario_name = ""
+	var map_file: String = String(source.get("map_file", map_generator.data_file_path))
+	var map_size: String = String(source.get("map_size", "small"))
+	map_generator.data_file_path = map_file.get_file()
+	_map_set_size_from_string(map_generator, map_size)
+	if source.has("player_settings"):
+		_apply_custom_map_player_settings(source.get("player_settings"))
+	map_generator.generate_map()
 
 func set_region_center_markers_enabled(value: bool) -> void:
 	if show_region_center_markers == value:
@@ -3120,6 +3151,13 @@ func _on_game_menu_main_menu_pressed() -> void:
 	DebugLogger.log("UISystem", "Returning to main menu")
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
+func _on_game_menu_save_game_pressed() -> void:
+	var save_ok: bool = SaveGameManager.save_game(self)
+	if save_ok:
+		DebugLogger.log("SaveGame", "Game saved to " + SaveGameManager.SAVE_FILE_PATH)
+	else:
+		DebugLogger.log("SaveGame", "ERROR: Failed to save game")
 
 func _on_game_menu_exit_pressed() -> void:
 	"""Handle Exit Game button from game menu"""

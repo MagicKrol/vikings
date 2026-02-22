@@ -294,7 +294,8 @@ func from_dictionary(data: Dictionary) -> void:
 	player_color = Color(color_array[0], color_array[1], color_array[2], color_array[3])
 	
 	_resources_from_dict(data.get("resources", {}))
-	regions_owned = data.get("regions_owned", [])
+	var raw_regions: Array = data.get("regions_owned", [])
+	regions_owned = _to_int_array(raw_regions)
 	total_population = data.get("total_population", 0)
 
 func set_is_computer(enabled: bool) -> void:
@@ -319,3 +320,9 @@ func _resources_from_dict(data: Dictionary) -> void:
 	for key in data:
 		var resource_type = ResourcesEnum.string_to_type(key)
 		resources[resource_type] = int(data[key])
+
+func _to_int_array(raw: Array) -> Array[int]:
+	var values: Array[int] = []
+	for value in raw:
+		values.append(int(value))
+	return values

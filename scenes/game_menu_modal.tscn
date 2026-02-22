@@ -193,6 +193,29 @@ layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.392157, 0.294118, 0.133333, 1)
 
+[node name="SaveGameButton" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxMidHover")
+theme_override_styles/disabled = SubResource("StyleBoxMidNormal")
+theme_override_styles/hover = SubResource("StyleBoxMidHover")
+theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
+theme_override_styles/normal = SubResource("StyleBoxMidNormal")
+text = "Save Game"
+
+[node name="SeparatorSave" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
 [node name="MainMenuButton" type="Button" parent="InnerPanel/ButtonContainer"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2

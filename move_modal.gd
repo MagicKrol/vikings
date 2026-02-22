@@ -70,6 +70,7 @@ func _ready():
 
 func show_move_modal(army: Army) -> void:
 	"""Show the move modal for the given army"""
+	var modal_ui_manager: UIManager = get_node("../UIManager") as UIManager
 	var previous_army: Army = selected_army
 	if previous_army and previous_army.movement_points_changed.is_connected(_on_army_movement_points_changed):
 		previous_army.movement_points_changed.disconnect(_on_army_movement_points_changed)
@@ -78,9 +79,9 @@ func show_move_modal(army: Army) -> void:
 		selected_army.movement_points_changed.connect(_on_army_movement_points_changed)
 	
 	_update_make_camp_button_state()
-	ui_manager.set_modal_active(false)
+	modal_ui_manager.set_modal_active(false)
 	visible = true
-	ui_manager.set_overlay_suppressed(true)
+	modal_ui_manager.set_overlay_suppressed(true)
 	army_manager.ensure_selected_move_targets_highlighted()
 	
 	# Position at bottom center of screen
@@ -88,11 +89,12 @@ func show_move_modal(army: Army) -> void:
 
 func hide_move_modal() -> void:
 	"""Hide the move modal"""
+	var modal_ui_manager: UIManager = get_node("../UIManager") as UIManager
 	if selected_army and selected_army.movement_points_changed.is_connected(_on_army_movement_points_changed):
 		selected_army.movement_points_changed.disconnect(_on_army_movement_points_changed)
 	visible = false
 	selected_army = null
-	ui_manager.set_overlay_suppressed(false)
+	modal_ui_manager.set_overlay_suppressed(false)
 
 func _on_cancel_move_pressed() -> void:
 	"""Handle transfer button press"""

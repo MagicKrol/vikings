@@ -117,6 +117,7 @@ func _ready():
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
+	SaveGameManager.load_settings(sound_manager)
 	
 	# Create hover timer for delayed hide
 	hover_timer = Timer.new()
@@ -222,6 +223,15 @@ func _on_new_game_pressed():
 
 func _on_load_game_pressed():
 	DebugLogger.log("UISystem", "Load Game button pressed")
+	if not SaveGameManager.has_save_file():
+		return
+	get_tree().set_meta("start_payload", {
+		"type": "save",
+		"save_path": SaveGameManager.SAVE_FILE_PATH
+	})
+	if sound_manager:
+		sound_manager.stop_main_menu_music()
+	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_options_pressed():
 	DebugLogger.log("UISystem", "Options button pressed")
