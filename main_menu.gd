@@ -309,11 +309,13 @@ func _on_custom_map_select_pressed():
 	var size_code: String = selected_map_item.get("size", "S")
 	var map_path := "res://mapdata/" + map_file + ".json"
 	var size_str := _size_full_name(size_code).to_lower()
+	var selected_victory: String = _get_selected_custom_map_victory()
 	get_tree().set_meta("start_payload", {
 		"type": "map",
 		"map_file": map_path,
 		"map_size": size_str,
-		"player_settings": player_settings
+		"player_settings": player_settings,
+		"victory_condition": selected_victory
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -367,7 +369,8 @@ func _on_demo_map_pressed():
 		"type": "map",
 		"map_file": map_path,
 		"map_size": "small",
-		"player_settings": demo_player_settings
+		"player_settings": demo_player_settings,
+		"victory_condition": "conquer"
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -622,6 +625,12 @@ func _setup_victory_buttons():
 		var selected: bool = btn.name == "Conquer"
 		btn.button_pressed = selected
 		_update_button_gold_state(btn, selected)
+
+func _get_selected_custom_map_victory() -> String:
+	var conquer_button: Button = get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Conquer")
+	if conquer_button.button_pressed:
+		return "conquer"
+	return "dominate"
 
 func _load_scenario_list():
 	"""Load and display available scenarios"""

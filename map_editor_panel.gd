@@ -59,6 +59,14 @@ var _player_resource_fields: Dictionary = {}
 var player_resources: Array = []  # Array of dictionaries storing starting resources per player
 var _current_resource_player_index: int = 0
 var _is_updating_player_resources_ui: bool = false
+var _victory_type_option: OptionButton
+var _victory_target_player_row: HBoxContainer
+var _victory_target_player_option: OptionButton
+var _victory_region_row: HBoxContainer
+var _victory_region_value: LineEdit
+var _victory_turns_row: HBoxContainer
+var _victory_turns_value: LineEdit
+var _victory_type_keys: Array[String] = ["conquer", "dominate", "own_region", "survive_turns"]
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
@@ -171,16 +179,25 @@ func _ready() -> void:
 		ResourcesEnum.Type.STONE: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow/StoneValue") as LineEdit,
 		ResourcesEnum.Type.IRON: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow/IronValue") as LineEdit
 	}
+	_victory_type_option = get_node("Panel/TabContainer/Scenario/VictoryTypeRow/VictoryTypeOption") as OptionButton
+	_victory_target_player_row = get_node("Panel/TabContainer/Scenario/VictoryTargetPlayerRow") as HBoxContainer
+	_victory_target_player_option = get_node("Panel/TabContainer/Scenario/VictoryTargetPlayerRow/VictoryTargetPlayerOption") as OptionButton
+	_victory_region_row = get_node("Panel/TabContainer/Scenario/VictoryRegionRow") as HBoxContainer
+	_victory_region_value = get_node("Panel/TabContainer/Scenario/VictoryRegionRow/VictoryRegionValue") as LineEdit
+	_victory_turns_row = get_node("Panel/TabContainer/Scenario/VictoryTurnsRow") as HBoxContainer
+	_victory_turns_value = get_node("Panel/TabContainer/Scenario/VictoryTurnsRow/VictoryTurnsValue") as LineEdit
 	
 	# Initialize player settings and resource UI
 	_initialize_player_settings()
 	_initialize_player_resources()
+	_initialize_victory_condition_ui()
 	
 	_player_resource_selector.item_selected.connect(_on_player_resource_selected)
 	for rt in _player_resource_fields.keys():
 		var field := _player_resource_fields[rt] as LineEdit
 		field.text_submitted.connect(_on_player_resource_value_submitted.bind(rt))
 		field.focus_exited.connect(_on_player_resource_focus_exited.bind(rt))
+	_victory_type_option.item_selected.connect(_on_victory_type_selected)
 	
 	# Check for loaded scenario name after a short delay to ensure GameManager is ready
 	call_deferred("_check_and_populate_scenario_name")
@@ -234,6 +251,111 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 		if loaded_resources is Array:
 			_apply_loaded_player_resources(loaded_resources)
 			DebugLogger.log("MapEditorPanel", "Loaded player resources from scenario")
+	_load_victory_conditions_from_scenario(data)
+
+func _initialize_victory_condition_ui() -> void:
+	_victory_type_option.clear()
+	_victory_type_option.add_item("Conquer")
+	_victory_type_option.add_item("Dominate")
+	_victory_type_option.add_item("Own Region")
+	_victory_type_option.add_item("Survive Turns")
+	_victory_target_player_option.clear()
+	for i in range(1, 7):
+		_victory_target_player_option.add_item("Player " + str(i))
+	_victory_target_player_option.select(0)
+	_victory_region_value.text = "0"
+	_victory_turns_value.text = "1"
+	_select_victory_type("conquer")
+
+func _on_victory_type_selected(index: int) -> void:
+	var victory_key: String = _victory_type_keys[index]
+	_update_victory_condition_fields(victory_key)
+
+func _select_victory_type(victory_key: String) -> void:
+	var index: int = 0
+	for i in range(_victory_type_keys.size()):
+		if _victory_type_keys[i] == victory_key:
+			index = i
+			break
+	_victory_type_option.select(index)
+	_update_victory_condition_fields(victory_key)
+
+func _update_victory_condition_fields(victory_key: String) -> void:
+	_victory_target_player_row.visible = victory_key == "own_region" or victory_key == "survive_turns"
+	_victory_region_row.visible = victory_key == "own_region"
+	_victory_turns_row.visible = victory_key == "survive_turns"
+
+func _get_selected_victory_type_key() -> String:
+	var index: int = _victory_type_option.selected
+	if index < 0 or index >= _victory_type_keys.size():
+		return "conquer"
+	return _victory_type_keys[index]
+
+func _load_victory_conditions_from_scenario(data: Dictionary) -> void:
+	if not data.has("victory_conditions"):
+		_select_victory_type("conquer")
+		return
+	var victory_conditions: Array = data.get("victory_conditions", [])
+	if victory_conditions.is_empty():
+		_select_victory_type("conquer")
+		return
+	var first_condition: Variant = victory_conditions[0]
+	if first_condition is String:
+		var key: String = String(first_condition).to_lower()
+		if key == "conquer" or key == "dominate":
+			_select_victory_type(key)
+		else:
+			_select_victory_type("conquer")
+		return
+	if not (first_condition is Dictionary):
+		_select_victory_type("conquer")
+		return
+	var condition: Dictionary = first_condition as Dictionary
+	var type_key: String = String(condition.get("type", "conquer")).to_lower()
+	match type_key:
+		"conquer":
+			_select_victory_type("conquer")
+		"dominate":
+			_select_victory_type("dominate")
+		"own_region":
+			_select_victory_type("own_region")
+			var player_id: int = maxi(1, mini(6, int(condition.get("player_id", 1))))
+			_victory_target_player_option.select(player_id - 1)
+			_victory_region_value.text = str(maxi(0, int(condition.get("region_id", 0))))
+		"survive", "survive_turns":
+			_select_victory_type("survive_turns")
+			var player_id: int = maxi(1, mini(6, int(condition.get("player_id", 1))))
+			_victory_target_player_option.select(player_id - 1)
+			var turns: int = int(condition.get("turns", condition.get("required_turns", 1)))
+			_victory_turns_value.text = str(maxi(1, turns))
+		_:
+			_select_victory_type("conquer")
+
+func _build_victory_conditions_for_save() -> Array:
+	var victory_type: String = _get_selected_victory_type_key()
+	match victory_type:
+		"conquer":
+			return ["conquer"]
+		"dominate":
+			return ["dominate"]
+		"own_region":
+			var player_id: int = _victory_target_player_option.selected + 1
+			var region_id: int = maxi(0, int(_victory_region_value.text))
+			return [{
+				"type": "own_region",
+				"player_id": player_id,
+				"region_id": region_id
+			}]
+		"survive_turns":
+			var player_id: int = _victory_target_player_option.selected + 1
+			var turns: int = maxi(1, int(_victory_turns_value.text))
+			return [{
+				"type": "survive_turns",
+				"player_id": player_id,
+				"turns": turns
+			}]
+		_:
+			return ["conquer"]
 
 func _update_player_settings_ui() -> void:
 	"""Update the player settings UI to reflect current player_settings array"""
@@ -552,7 +674,8 @@ func _on_save_scenario_pressed() -> void:
 		"regions": regions_data,
 		"armies": armies_data,
 		"player_settings": player_settings,
-		"player_resources": player_resources
+		"player_resources": player_resources,
+		"victory_conditions": _build_victory_conditions_for_save()
 	}
 	_write_scenario(scenario)
 

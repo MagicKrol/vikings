@@ -188,6 +188,63 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
+[node name="VictoryConditionsHeader" type="Label" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+text = "Victory Condition"
+
+[node name="VictoryTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+
+[node name="VictoryTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryTypeRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Type:"
+
+[node name="VictoryTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryTypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VictoryTargetPlayerRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryTargetPlayerLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryTargetPlayerRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Target Player:"
+
+[node name="VictoryTargetPlayerOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryTargetPlayerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VictoryRegionRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryRegionLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryRegionRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Region ID:"
+
+[node name="VictoryRegionValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryRegionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="VictoryTurnsRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryTurnsLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryTurnsRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Turns:"
+
+[node name="VictoryTurnsValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryTurnsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "1"
+
 [node name="Region" type="VBoxContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2

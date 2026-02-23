@@ -217,11 +217,47 @@ func _on_unit_slider_changed(value: float, unit_index: int) -> void:
 		DebugLogger.log("UISystem", "ERROR: Unit index " + str(unit_index) + " out of bounds for transfer sliders")
 		return
 	var total_units: int = unit_total_counts[unit_index]
-	var new_source: int = clamp(int(value), 0, total_units)
+	var new_source: int = clampi(int(value), 0, total_units)
 	var new_target: int = total_units - new_source
+	var clamped_target: int = _clamp_target_count_for_army_constraints(unit_index, new_target)
+	if clamped_target != new_target:
+		new_target = clamped_target
+		new_source = total_units - new_target
+		_ui_lock = true
+		unit_sliders[unit_index].value = float(new_source)
+		_ui_lock = false
 	unit_desired_target_counts[unit_index] = new_target
 	unit_target_value_labels[unit_index].text = str(new_target)
 	unit_source_value_labels[unit_index].text = str(new_source)
+
+func _clamp_target_count_for_army_constraints(unit_index: int, proposed_target_count: int) -> int:
+	var total_units_for_type: int = unit_total_counts[unit_index]
+	var clamped_target_count: int = clampi(proposed_target_count, 0, total_units_for_type)
+	var other_target_total: int = _sum_desired_target_counts_excluding(unit_index)
+	var min_target_for_row: int = maxi(0, 1 - other_target_total)
+	if clamped_target_count < min_target_for_row:
+		clamped_target_count = min_target_for_row
+	if source_army != null:
+		var max_total_target_units: int = _sum_all_unit_totals() - 1
+		var max_target_for_row: int = max_total_target_units - other_target_total
+		max_target_for_row = clampi(max_target_for_row, 0, total_units_for_type)
+		if clamped_target_count > max_target_for_row:
+			clamped_target_count = max_target_for_row
+	return clamped_target_count
+
+func _sum_desired_target_counts_excluding(skip_index: int) -> int:
+	var total: int = 0
+	for i in range(unit_desired_target_counts.size()):
+		if i == skip_index:
+			continue
+		total += int(unit_desired_target_counts[i])
+	return total
+
+func _sum_all_unit_totals() -> int:
+	var total: int = 0
+	for count in unit_total_counts:
+		total += int(count)
+	return total
 
 func _on_continue_pressed() -> void:
 	"""Handle Continue button press"""

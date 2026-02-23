@@ -98,6 +98,8 @@ func _get_current_turn() -> int:
 
 func start_turn(player_id: int) -> void:
 	"""Start a player's turn using the unified pipeline"""
+	if game_manager.has_victory_been_declared():
+		return
 	current_player_id = player_id
 	moved_armies.clear()
 
@@ -143,6 +145,8 @@ func _process_army_turns(player_id: int) -> void:
 	var armies := _get_available_armies(player_id)
 	armies.shuffle()
 	for army in armies:
+		if game_manager.has_victory_been_declared():
+			return
 		await _process_single_army(army)
 
 func _execute_ai_resource_top_up(player_id: int) -> void:
@@ -236,6 +240,8 @@ func _process_single_army(army: Army) -> void:
 	var turn_number := _get_current_turn()
 	_log_army_separator(army)
 	while is_instance_valid(army) and army.get_movement_points() > 0:
+		if game_manager.has_victory_been_declared():
+			return
 		if await _handle_recruitment_cycle(army, turn_number):
 			continue
 		if await _handle_peasant_cycle(army, turn_number):
@@ -465,6 +471,7 @@ func _ensure_vigor_before_move(army: Army) -> bool:
 func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra_log: Dictionary) -> bool:
 	if not _ensure_vigor_before_move(army):
 		return false
+	var acting_player_id: int = army.get_player_id()
 	var current_region := army.get_parent() as Region
 	var current_region_id: int = current_region.get_region_id()
 	var friendly_only := goal == "reinforce" or goal == "peasants"
@@ -502,6 +509,8 @@ func _move_army_to_region(army: Army, target_region_id: int, goal: String, extra
 	if result == "battle_withdrawal" or result == "battle_defeat":
 		if is_instance_valid(army):
 			await _retreat_to_strong_friendly_region(army)
+	if game_manager.check_victory_conditions_for_player(acting_player_id):
+		return false
 	if not is_instance_valid(army):
 		return false
 	return army.get_movement_points() > 0
@@ -511,6 +520,7 @@ func _emit_move_prepared(army: Army, target_id: int, move: Dictionary) -> void:
 	emit_signal("move_prepared", army, target_id, score)
 
 func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
+	var acting_player_id: int = army.get_player_id()
 	var target_id: int = move["target_id"]
 	move["suppress_summary"] = true
 	_emit_move_prepared(army, target_id, move)
@@ -538,6 +548,8 @@ func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
 	if result == "out_of_movement_points":
 		if is_instance_valid(army):
 			_spend_all_on_camp(army)
+		return false
+	if game_manager.check_victory_conditions_for_player(acting_player_id):
 		return false
 	if not is_instance_valid(army):
 		return false

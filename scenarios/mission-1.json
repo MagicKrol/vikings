@@ -3722,8 +3722,20 @@
 			"biome": "ocean",
 			"castle_type": "None",
 			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 2,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
 			"id": 177,
 			"level": "Shire",
+			"name": "Torholme",
 			"ocean": true,
 			"owner": 0,
 			"population": 0,
@@ -3734,7 +3746,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Hills"
 		},
 		{
 			"biome": "ocean",
@@ -3920,8 +3932,20 @@
 			"biome": "ocean",
 			"castle_type": "None",
 			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 3,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
 			"id": 186,
 			"level": "Shire",
+			"name": "Vatnthwaite",
 			"ocean": true,
 			"owner": 0,
 			"population": 0,
@@ -3932,7 +3956,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest"
 		},
 		{
 			"biome": "grassland",
@@ -4202,8 +4226,20 @@
 			"biome": "ocean",
 			"castle_type": "None",
 			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 7,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
 			"id": 197,
 			"level": "Shire",
+			"name": "Norththorpe",
 			"ocean": true,
 			"owner": 0,
 			"population": 0,
@@ -4214,7 +4250,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Hills"
 		},
 		{
 			"biome": "ocean",
@@ -4784,8 +4820,20 @@
 			"biome": "ocean",
 			"castle_type": "None",
 			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 8,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
 			"id": 218,
 			"level": "Shire",
+			"name": "Oakfjell",
 			"ocean": true,
 			"owner": 0,
 			"population": 0,
@@ -4796,7 +4844,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest Hills"
 		},
 		{
 			"biome": "ocean",
@@ -6123,6 +6171,13 @@
 				"Wood": 0
 			},
 			"type_display": "Hills"
+		}
+	],
+	"victory_conditions": [
+		{
+			"player_id": 1,
+			"region_id": 171,
+			"type": "own_region"
 		}
 	]
 }

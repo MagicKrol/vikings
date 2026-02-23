@@ -104,6 +104,7 @@ var click_manager: Node = null
 
 const FAMINE_MIN_POPULATION: int = 30
 const FAMINE_POP_PER_FOOD: float = 0.1
+const DOMINATE_DEFAULT_THRESHOLD: float = 0.7
 
 var _player_initial_turn_completed: Dictionary = {}
 
@@ -118,11 +119,15 @@ var _ai_log_manager: AILogManager = AILogManager.new()
 var _ai_log_started: bool = false
 var _ai_battle_log_queue: Dictionary = {}
 var average_army_power: float = 0.0
+var victory_conditions: Array[Dictionary] = []
+var victory_declared: bool = false
+var winning_player_id: int = -1
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
 	if get_tree().has_meta("editor_start_payload") and get_tree().get_meta("editor_start_payload") != null:
 		enable_map_editor = true
+	_set_victory_conditions_from_raw(["conquer"])
 
 	# Early init gate: check if map editor is enabled BEFORE normal init
 	if enable_map_editor:
@@ -156,6 +161,7 @@ func _ready():
 			# Apply player settings from CustomMap
 			if payload.has("player_settings"):
 				_apply_custom_map_player_settings(payload.get("player_settings"))
+			_initialize_victory_conditions_from_custom_payload(payload)
 			
 			map_generator.generate_map()
 		elif kind == "save":
@@ -174,6 +180,7 @@ func _ready():
 		var scen_file := String(scenario_path).get_file()
 		var scen_full := "res://scenarios/" + scen_file
 		var scen := ScenarioManager.new().load_scenario(scen_full)
+		_initialize_victory_conditions_from_scenario_data(scen)
 		if scen.has("map_file"):
 			# Expect bare filename; normalize to file name
 			var map_file_only := String(scen.get("map_file")).get_file()
@@ -386,6 +393,7 @@ func _start_scenario() -> void:
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 	var scen_mgr := ScenarioManager.new()
 	var scen := scen_mgr.load_scenario(scenario_path)
+	_initialize_victory_conditions_from_scenario_data(scen)
 	# Apply to runtime
 	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager)
 
@@ -461,6 +469,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
+	if victory_declared:
+		DebugLogger.log("Victory", "next_turn ignored after victory")
+		return
 	if debug_heatmap:
 		DebugLogger.log("TurnProcessing", "Debug heatmap mode active - next_turn ignored")
 		return
@@ -487,6 +498,8 @@ func next_turn():
 	# Process player-specific turn start actions (only for active players)
 	if is_player_active(current_player):
 		_process_player_turn_start(current_player)
+		if check_victory_conditions_for_player(current_player):
+			return
 	
 	# Check if current player is AI and handle AI turn processing
 	DebugLogger.log("TurnProcessing", "Checking AI turn: castle_placing_mode=" + str(castle_placing_mode) + ", current_player=" + str(current_player) + ", is_computer=" + str(is_player_computer(current_player)))
@@ -703,7 +716,233 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 	_map_set_size_from_string(map_generator, map_size)
 	if source.has("player_settings"):
 		_apply_custom_map_player_settings(source.get("player_settings"))
+	load_victory_conditions_from_source(source)
 	map_generator.generate_map()
+
+func _initialize_victory_conditions_from_custom_payload(payload: Dictionary) -> void:
+	var selected_condition: String = String(payload.get("victory_condition", "conquer")).to_lower()
+	_set_victory_conditions_from_raw([selected_condition])
+
+func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary) -> void:
+	if scenario_data.has("victory_conditions"):
+		var raw_conditions: Array = scenario_data.get("victory_conditions", [])
+		_set_victory_conditions_from_raw(raw_conditions)
+		return
+	_set_victory_conditions_from_raw(["conquer", "dominate"])
+
+func load_victory_conditions_from_source(source: Dictionary) -> void:
+	if source.has("victory_conditions"):
+		var raw_conditions: Array = source.get("victory_conditions", [])
+		_set_victory_conditions_from_raw(raw_conditions)
+		return
+	if game_mode == "scenario":
+		_set_victory_conditions_from_raw(["conquer", "dominate"])
+		return
+	_set_victory_conditions_from_raw(["conquer"])
+
+func get_victory_conditions_for_save() -> Array:
+	var serialized: Array = []
+	for condition: Dictionary in victory_conditions:
+		serialized.append(condition.duplicate(true))
+	return serialized
+
+func has_victory_been_declared() -> bool:
+	return victory_declared
+
+func check_victory_conditions_for_player(player_id: int) -> bool:
+	if victory_declared:
+		return true
+	if not is_player_active(player_id):
+		return false
+	for condition: Dictionary in victory_conditions:
+		if not _victory_condition_applies_to_player(condition, player_id):
+			continue
+		if _is_victory_condition_met(player_id, condition):
+			_declare_victory(player_id, condition)
+			return true
+	return false
+
+func _set_victory_conditions_from_raw(raw_conditions: Array) -> void:
+	var normalized_conditions: Array[Dictionary] = []
+	for raw_condition in raw_conditions:
+		var normalized: Dictionary = _normalize_victory_condition(raw_condition)
+		if normalized.is_empty():
+			continue
+		normalized_conditions.append(normalized)
+	if normalized_conditions.is_empty():
+		normalized_conditions.append({"type": "conquer"})
+	victory_conditions.clear()
+	for condition: Dictionary in normalized_conditions:
+		victory_conditions.append(condition.duplicate(true))
+	victory_declared = false
+	winning_player_id = -1
+
+func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
+	if raw_condition is String:
+		var condition_type_from_string: String = String(raw_condition).to_lower()
+		match condition_type_from_string:
+			"conquer":
+				return {"type": "conquer"}
+			"dominate":
+				return {
+					"type": "dominate",
+					"required_ratio": DOMINATE_DEFAULT_THRESHOLD
+				}
+			_:
+				return {}
+	if not (raw_condition is Dictionary):
+		return {}
+	var source_condition: Dictionary = raw_condition
+	var condition_type: String = String(source_condition.get("type", "")).to_lower()
+	var target_player_id: int = int(source_condition.get("player_id", 0))
+	match condition_type:
+		"conquer":
+			return {
+				"type": "conquer",
+				"player_id": target_player_id
+			}
+		"dominate":
+			var threshold: float = float(source_condition.get("required_ratio", source_condition.get("threshold", DOMINATE_DEFAULT_THRESHOLD)))
+			return {
+				"type": "dominate",
+				"player_id": target_player_id,
+				"required_ratio": threshold
+			}
+		"own_region":
+			var required_region_id: int = int(source_condition.get("region_id", -1))
+			if required_region_id < 0:
+				return {}
+			return {
+				"type": "own_region",
+				"player_id": target_player_id,
+				"region_id": required_region_id
+			}
+		"survive", "survive_turns":
+			var required_turns: int = int(source_condition.get("turns", source_condition.get("required_turns", 0)))
+			if required_turns <= 0:
+				return {}
+			return {
+				"type": "survive_turns",
+				"player_id": target_player_id,
+				"turns": required_turns
+			}
+		_:
+			return {}
+
+func _victory_condition_applies_to_player(condition: Dictionary, player_id: int) -> bool:
+	var target_player_id: int = int(condition.get("player_id", 0))
+	if target_player_id <= 0:
+		return true
+	return target_player_id == player_id
+
+func _is_victory_condition_met(player_id: int, condition: Dictionary) -> bool:
+	var condition_type: String = String(condition.get("type", ""))
+	match condition_type:
+		"conquer":
+			return _is_conquer_victory_met(player_id)
+		"dominate":
+			return _is_dominate_victory_met(player_id, condition)
+		"own_region":
+			return _is_own_region_victory_met(player_id, condition)
+		"survive_turns":
+			return _is_survive_turns_victory_met(player_id, condition)
+		_:
+			return false
+
+func _is_conquer_victory_met(player_id: int) -> bool:
+	for other_player_id in range(1, total_players + 1):
+		if other_player_id == player_id:
+			continue
+		if not is_player_active(other_player_id):
+			continue
+		if _player_has_any_castle(other_player_id):
+			return false
+		if _player_has_any_army(other_player_id):
+			return false
+	return true
+
+func _is_dominate_victory_met(player_id: int, condition: Dictionary) -> bool:
+	var required_ratio: float = float(condition.get("required_ratio", DOMINATE_DEFAULT_THRESHOLD))
+	if required_ratio <= 0.0:
+		required_ratio = DOMINATE_DEFAULT_THRESHOLD
+	var total_conquerable_regions: int = _count_all_conquerable_regions()
+	if total_conquerable_regions <= 0:
+		return false
+	var owned_conquerable_regions: int = _count_player_conquerable_regions(player_id)
+	var controlled_ratio: float = float(owned_conquerable_regions) / float(total_conquerable_regions)
+	return controlled_ratio >= required_ratio
+
+func _is_own_region_victory_met(player_id: int, condition: Dictionary) -> bool:
+	var required_region_id: int = int(condition.get("region_id", -1))
+	if required_region_id < 0:
+		return false
+	var owner_id: int = _region_manager.get_region_owner(required_region_id)
+	return owner_id == player_id
+
+func _is_survive_turns_victory_met(_player_id: int, condition: Dictionary) -> bool:
+	var required_turns: int = int(condition.get("turns", 0))
+	if required_turns <= 0:
+		return false
+	return current_turn >= required_turns
+
+func _player_has_any_castle(player_id: int) -> bool:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var owned_region_ids: Array[int] = _region_manager.get_player_regions(player_id)
+	for region_id: int in owned_region_ids:
+		var region: Region = map_generator.get_region_container_by_id(region_id) as Region
+		if region.has_castle():
+			return true
+	return false
+
+func _player_has_any_army(player_id: int) -> bool:
+	var armies: Array[Army] = _army_manager.get_player_armies(player_id)
+	for army: Army in armies:
+		if is_instance_valid(army):
+			return true
+	return false
+
+func _count_all_conquerable_regions() -> int:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var regions_node: Node = map_generator.get_node("Regions")
+	var count: int = 0
+	for child in regions_node.get_children():
+		if not (child is Region):
+			continue
+		var region: Region = child as Region
+		if _is_region_conquerable(region):
+			count += 1
+	return count
+
+func _count_player_conquerable_regions(player_id: int) -> int:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var regions_node: Node = map_generator.get_node("Regions")
+	var count: int = 0
+	for child in regions_node.get_children():
+		if not (child is Region):
+			continue
+		var region: Region = child as Region
+		if not _is_region_conquerable(region):
+			continue
+		var owner_id: int = _region_manager.get_region_owner(region.get_region_id())
+		if owner_id == player_id:
+			count += 1
+	return count
+
+func _is_region_conquerable(region: Region) -> bool:
+	if region.is_ocean_region():
+		return false
+	if region.get_region_type() == RegionTypeEnum.Type.MOUNTAINS:
+		return false
+	return true
+
+func _declare_victory(player_id: int, condition: Dictionary) -> void:
+	if victory_declared:
+		return
+	victory_declared = true
+	winning_player_id = player_id
+	var condition_type: String = String(condition.get("type", ""))
+	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
+	_message_modal.display_message("Player " + str(player_id) + " Won")
 
 func set_region_center_markers_enabled(value: bool) -> void:
 	if show_region_center_markers == value:
@@ -1516,12 +1755,14 @@ func perform_region_entry(army: Army, target_region_id: int, source: String) -> 
 			# For AI: use non-UI resolution (direct battle handling)
 			var result: String = await handle_army_battle(army, target_region.get_region_id())
 			if result == "victory":
+				check_victory_conditions_for_player(army.get_player_id())
 				return "battle_victory"
 			elif result == "withdrawal":
 				return "battle_withdrawal"
 			else:
 				return "battle_defeat"
 
+	check_victory_conditions_for_player(army.get_player_id())
 	return "moved"
 
 # Battle coordination - unified system for both Human and AI players
@@ -2613,6 +2854,8 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
 
 	_update_player_status_display()
+	if attacker_player_id != -1:
+		check_victory_conditions_for_player(attacker_player_id)
 
 	if _visual_manager:
 		_visual_manager.clear_interaction_highlights()
@@ -3084,6 +3327,8 @@ func _start_first_turn() -> void:
 
 	# Process player-specific turn start actions
 	_process_player_turn_start(current_player)
+	if check_victory_conditions_for_player(current_player):
+		return
 	
 	if _tutorial_manager and not is_player_computer(current_player) and not _tutorial_manager.is_active():
 		_tutorial_manager.start_tutorial(current_player)

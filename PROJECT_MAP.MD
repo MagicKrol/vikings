@@ -25,11 +25,11 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 Start Flow
 - Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
   - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
-- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <tiny|small|medium|large>, player_settings: [...] }` (size inferred from filename suffix)
+- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <tiny|small|medium|large>, player_settings: [...], victory_condition: <conquer|dominate> }` (size inferred from filename suffix)
 - Saved game: `{ type: "save", save_path: user://savegame.json }` (single-slot overwrite file).
 - `GameManager._ready()` reads `start_payload`:
-  - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file).
-  - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, then `generate_map()`.
+  - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file) and loads scenario-defined `victory_conditions` (fallback defaults: conquer + dominate).
+  - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, reads `victory_condition`, then `generate_map()`.
   - Save: loads `user://savegame.json`, regenerates map from saved source (`map_file` + `map_size`), initializes managers without castle-placement bootstrap, then applies full runtime state (regions/ownership/castles/armies/player/game turn state).
   - Payload is cleared after consumption.
 - Custom map start shows `MessageModal` prompt "Click a region to choose your starting location" during castle placement.
@@ -72,7 +72,7 @@ Main (Node2D) [place_armies.gd]
 │	├ TurnModal [scenes/turn_modal.tscn] [turn_modal.gd] – turn display; mouse enter hides RegionTooltip2; player label clamps HSV value to 60% with 2px outline
 │	├ RecruitmentModal [scenes/recruitment_modal.tscn] [recruitment_modal.gd] – per-unit cards with plus/minus count, per-unit Recruit button, and cost/attack/defense/abilities from GameParameters/UnitTraitEnum; available recruits are pooled from owned neighbors and recruitment deducts proportionally; all unit cards now use the same `TextureRect`-based `AttackIcon` as Peasants; unit hover shows stat/trait panel; tutorial UI targets `RecruitmentModal/1archers` (first Archer added, 0->>=1), `RecruitmentModal/10archers` (staged Archer count reaches exactly 10), and `RecruitmentModal/recruit_all` (Recruit All press with staged units) are fired
 │	├ CallToArmsModal [scenes/call_to_arms_modal.tscn] [call_to_arms_modal.gd] – transfer-modal layout; region rows use +/-10/1 buttons to shift recruits into target; buttons styled via themes/number_buttons_theme.tres and total row tracks remaining recruits; moved recruits now increase target population so later recruitment doesn’t overdraw population
-│	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer buttons move units between army/garrison while keeping each army at ≥1 soldier; labels use standard modal text theme with white value columns like recruitment
+│	├ TransferSoldiersModal [scenes/transfer_soldiers_modal.tscn] [transfer_soldiers_modal.gd] – transfer sliders/buttons move units between army/garrison while keeping each involved army at ≥1 soldier (cannot transfer all units out of an army); garrison is allowed to reach 0; labels use standard modal text theme with white value columns like recruitment
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd] – resource icon paths use existing textures (`new_food`, `new_forest`, `stone`, `new_iron`, `new_coin`)
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip; ore search displays discovered-ore message with mine output when ore exists
@@ -105,7 +105,7 @@ Map Editor Panel (editor mode)
     - `player_resources`: six entries (player_id + resource dictionary for Gold/Wood/Food/Stone/Iron). Applied to `PlayerManagerNode` by `ScenarioManager.apply_to_runtime()` when the scenario starts.
   - Load Scenario: Lists all `res://scenarios/*.json` in a select box with "Load" button (no-op for now)
   - Save Map: Persists edited base map biomes and ocean flags back to the selected `res://mapdata/<file>.json`.
-- Scenario Tab: Player control toggles plus starting resource editor (dropdown for Player 1–6, rows for Gold/Wood/Food/Stone/Iron with editable amounts saved to `player_resources`).
+- Scenario Tab: Player control toggles plus starting resource editor (dropdown for Player 1–6, rows for Gold/Wood/Food/Stone/Iron with editable amounts saved to `player_resources`) and a victory-condition editor with 4 types (`Conquer`, `Dominate`, `Own Region`, `Survive Turns`). Condition-specific fields appear by selection (Own Region: target player + region id; Survive Turns: target player + turns) and save into scenario `victory_conditions`.
 - Region Tab: ID, Name, Type, Level, Population, Castle, Resources, Ore, Ownership
   - Ownership: OptionButton with Neutral (0) and Players 1–6. Emits `region_type_changed` with `OWNER:<id>`
 - Army Tab: Army management with two states
@@ -138,6 +138,8 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Purpose: High-level orchestration (castle placement, turns, resource ticks, AI start, battle finalization).
 - Key: `initialize_managers()`, `next_turn()`, `_process_round_start_actions()`, `_process_player_turn_start()`, `handle_castle_placement()`, `finalize_battle_result(...)`.
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
+- Victory system: stores normalized `victory_conditions`; checks at turn start and after movement/battle; currently supports `conquer` (others have no castles and no armies) and `dominate` (>=70% conquerable regions: non-ocean, non-mountain), with parser support for scenario-targeted `own_region` and `survive_turns`.
+- Win flow: sets `victory_declared`, blocks further `next_turn()` progression, and shows `MessageModal` text `Player X Won`.
 - Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
 - `debug_mode`: when false, AI turns hide the PlayerStatus panel, IconsModal (trade/map icons), and TurnModal end-turn button (keeps AI HUD minimal).
 - Camera: Sets initial zoom by map size at startup (Small=1.0, Medium=1.5, Large=2.0) and clamps zoom-out to 0.5.
@@ -176,13 +178,14 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 
 ### save_game_manager.gd (SaveGameManager)
 - Purpose: Single-slot runtime persistence (`user://savegame.json`) plus global settings persistence (`user://settings.cfg`).
-- Save payload: source descriptor (`mode`, `scenario_path`, `map_file`, `map_size`, player settings) + game state (turn/current player/player types/castle placement flags) + player manager snapshot + full mutable region/army snapshots.
+- Save payload: source descriptor (`mode`, `scenario_path`, `map_file`, `map_size`, player settings, `victory_conditions`) + game state (turn/current player/player types/castle placement flags) + player manager snapshot + full mutable region/army snapshots.
 - Load flow: map is rebuilt from saved source first, then SaveGameManager reapplies runtime state (regions/ownership/castles/armies/player state and current turn pointers), reapplies player resource dictionaries explicitly, and forces an immediate `PlayerStatusModal2` refresh.
 - Settings: persists sound/music enabled + dB values, clouds toggle, AI speed, and battle speed; loaded in both main menu and in-game startup.
 
 ### TurnController.gd (TurnController)
 - Purpose: Unified turn pipeline for AI (and fits human pipeline shape).
 - Flow: frontier discovery → target scoring → build candidates → execute with step-gate → handle battle → continue/recalc.
+- Victory integration: aborts AI turn/move loops when `GameManager` reports victory and runs `check_victory_conditions_for_player()` after each completed AI move action.
 - Movement: Each AI army picks the best single frontier target to attack; if no valid target exists or merge policy halts on a stronger/unknown enemy, it logs defense and spends the turn camping.
 - Frontier fallback: when no targets are reachable this turn, the AI now picks the closest distant frontier target (mp_cost) with score as tie-breaker.
 - Enemy intel logging: Target lines mark enemies as “known” only when tracked power exists (tracked armies or garrison memory); first-turn unseen enemies remain unknown.
