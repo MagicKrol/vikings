@@ -15,9 +15,13 @@ var ui_manager: UIManager
 var player_manager: PlayerManagerNode
 var trade_manager: TradeManager
 var gold_value_label: Label
+var total_label: Label
+var total_icon: TextureRect
 var close_button: Button
 var game_manager: GameManager
 var allow_for_current_turn: bool = true
+var units_container: VBoxContainer
+var trade_disabled_label: Label
 
 var base_resources: Dictionary = {}
 var buy_amounts: Dictionary = {}
@@ -42,10 +46,15 @@ func _ready() -> void:
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 	game_manager = get_node("../../GameManager") as GameManager
 	trade_manager = TradeManager.new(player_manager)
+	units_container = get_node("Trade/HBoxContainer/Body/Units") as VBoxContainer
+	trade_disabled_label = get_node("Trade/HBoxContainer/Body/TradeDisabledLabel") as Label
+	total_label = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TotalLabel") as Label
+	total_icon = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TextureRect2") as TextureRect
 	gold_value_label = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TotalGold") as Label
 	close_button = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/Button") as Button
 	_init_sections()
 	_connect_buttons()
+	_apply_trade_disabled_view(false)
 	_reset_trade_state()
 	set_process(true)
 
@@ -59,7 +68,10 @@ func show_modal() -> void:
 		return
 	if not game_manager.debug_mode and game_manager.is_player_computer(game_manager.get_current_player()):
 		return
-	_refresh_state()
+	var trade_disabled: bool = game_manager.is_trade_disabled_for_current_game()
+	_apply_trade_disabled_view(trade_disabled)
+	if not trade_disabled:
+		_refresh_state()
 	visible = true
 	if ui_manager:
 		ui_manager.set_modal_active(true)
@@ -322,6 +334,15 @@ func _sync_base_state() -> void:
 	base_gold = player.get_resource_amount(ResourcesEnum.Type.GOLD)
 	for resource_type in RESOURCE_TYPES:
 		base_resources[resource_type] = player.get_resource_amount(resource_type)
+
+func _apply_trade_disabled_view(trade_disabled: bool) -> void:
+	if trade_disabled:
+		_stop_hold()
+	units_container.visible = not trade_disabled
+	trade_disabled_label.visible = trade_disabled
+	total_label.visible = not trade_disabled
+	total_icon.visible = not trade_disabled
+	gold_value_label.visible = not trade_disabled
 
 func _set_label_color(label: Label, delta: int, balance: bool, current_total: int) -> void:
 	if not balance:

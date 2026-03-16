@@ -40,6 +40,7 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var tier_cap: int = GameParameters.CASTLE_RECRUITMENT_TIERS.get(castle_type, 1)
 	var result := _compute_plan(budget, recruits_available, tier_cap, false)
 	_apply_hires_to_composition(army.get_composition(), result.get("hired", {}))
+	game_manager.record_hired_units(player_id, result.get("hired", {}))
 	_deduct_recruits_proportionally(int(result.get("total_recruited", 0)), recruit_sources)
 	_deduct_player_resources(player_id, int(result.get("spent_gold", 0)), int(result.get("spent_wood", 0)), int(result.get("spent_iron", 0)))
 	army.clear_recruitment_request()
@@ -63,6 +64,7 @@ func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, de
 	# Garrison never hires cavalry per request.
 	var result := _compute_plan(budget, recruits_available, tier_cap, true)
 	_apply_hires_to_composition(region.get_garrison(), result.get("hired", {}))
+	game_manager.record_hired_units(player_id, result.get("hired", {}))
 	_deduct_recruits_proportionally(int(result.get("total_recruited", 0)), recruit_sources)
 	_deduct_player_resources(player_id, int(result.get("spent_gold", 0)), int(result.get("spent_wood", 0)), int(result.get("spent_iron", 0)))
 	result["recruits_left"] = _count_recruits_remaining(recruit_sources)

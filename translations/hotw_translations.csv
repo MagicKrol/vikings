@@ -1,7 +1,7 @@
 key,explanation or purpose,en,de,pl,br
 demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
 Options,,Options,Optionen,Opcje,Opções
-Exit,,Exit,Ausfrahrt,Wyjdź,Sair
+Exit,,Exit,Ausfrahrt,Zamknij,Sair
 Population:,Number of people in the region,Population:,Bevölkerung,Ludność,População
 Food:,Resource type,Food:,Nahrung,Żywność,Alimentos
 Wood:,Resource type,Wood:,Holz,Drewno,Madeira
@@ -67,3 +67,43 @@ County,"Low level of regions administrative level, poor region",County,Grafschaf
 March,"Average level of regions administrative level, medium wealth",March,Mark,Marchia,Marca
 Duchy,"High level of regions administrative level, high wealth",Duchy,Herzogtum,Księstwo,Ducado
 Province,"Very high level of regions administrative level, rich wealth",Province,Provinz,Prowincja,Província
+New Game,Game Main Menu option,New Game,Neues Spiel,Nowa gra,Novo jogo
+Load Game,Game Main Menu option,Load Game,Spiel laden,Wczytaj,Carregar
+Campaign,"Game Main Menu option, campaign maps",Campaign,Kampagne,Kampania,Campanha
+Scenario,"Game Main Menu option, scenario maps",Scenario,Szenario,Scenariusz,Cenário
+Custom,"Game Main Menu option, custom game player can setup",Skirmish,Skirmish,Potyczka,Livre
+Map Preview,A window title where player can see a preview of the map,Map Preview,Kartenansicht,Podgląd mapy,Pré-visualização do mapa
+Select Map,A window title where player can select a map,Select Map,Karte auswählen,Wybierz mapę,Selecionar mapa
+Select Map2,A button a that tells player to select a map,Select Map,Karte auswählen,Wybierz mapę,Selecionar mapa
+Back to Menu,A button a that tells player to select a map,Back to Menu,Zurück zum Menü,Powrót do menu,Voltar ao menu
+Scenario Description,A header title for section with a description of a scenario of the game,Scenario Description,Szenariobeschreibung,Opis scenariusza,Descrição do cenário
+Difficulty Level,A header title for section where player select game difficulty,Difficulty Level,Schwierigkeitsgrad,Poziom trudności,Nível de dificuldade
+Easy,A game difficulty,Easy,Leicht,Łatwy,Fácil
+Normal,A game difficulty,Normal,Normal,Normalny,Normal
+Hard,A game difficulty,Hard,Schwer,Trudny,Difícil
+Victory Conditions,A header title for section with a description of win condition for select game scenario,Victory Conditions,Siegbedingungen,Warunki zwycięstwa,Condições de vitória
+Start Game,Button to start the game,Start Game,Spiel starten,Rozpocznij grę,Iniciar jogo
+Name,Map Name,Name,Name,Nazwa,Nome
+Size,Map Size,Size,Größe,Rozmiar,Tamanho
+Tiny,Map Size ,Tiny ,Sehr klein,Bardzo mała,Muito pequeno
+Small,Map Size ,Small,Klein,Mała,Pequeno
+Medium,Map Size ,Medium ,Mittel,Średnia,Médio
+Large,Map Size ,Large,Groß,Duża,Grande
+All,All maps,All,Alle,Wszystkie,Todos
+Map Size,Title to select map sizes,Map Size,Kartengröße,Rozmiar mapy,Tamanho do mapa
+Map Settings,Window title for selecting settings,Map Settings,Karteneinstellungen,Ustawienia mapy,Configurações do mapa
+Human,Option for a player type,Human,Mensch,Człowiek,Humano
+Computer,Option for a player type,Computer,Computer,Komputer,Computador
+Off,Option for a player type,Off,Aus,Brak,Nenhum
+Conquer,"A victory condition type, conquering all regions",Conquer,Erobern,Podbój,Conquistar
+Dominate,"A victory condition type, domiante most of the map",Dominate,Dominanz,Dominacja,Dominar
+Clouds,Graphic effect that display Clouds,Clouds,Wolken,Chmury,Nuvens
+Show,option to show something,Show,Anzeigen,Pokaż,Mostrar
+Hide,Option to hide something,Hide,Ausblenden,Ukryj,Ocultar
+AI Turn Speed,Title for the option to control turn speed of the AI player,AI Turn Speed,KI-Zuggeschwindigkeit,Szybkość tury AI,Velocidade do turno da IA
+Battle Speed,Title for the option to control speed of the battle,Battle Speed,Kampfgeschwindigkeit,Szybkość walki,Velocidade da batalha
+Normal2,Normal speed of the game,Normal,Normal,Normalna,Normal
+Fast,Speed level of the game,Fast,Schnell,Szybka,Rápido
+Very Fast,Speed level of the game,Very Fast,Sehr schnell,Bardzo szybka,Muito rápido
+Sound Volume,option to set sound volume level,Sound Volume,Lautstärke,Głośność dźwięku,Volume do som
+Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Głośność muzyki,Volume da música

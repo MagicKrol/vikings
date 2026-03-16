@@ -24,6 +24,8 @@ var _name_edit: LineEdit
 var _level_option: OptionButton
 var _castle_option: OptionButton
 var _ore_check: CheckBox
+var _ore_guarantee_attempt_edit: LineEdit
+var _ore_guarantee_type_option: OptionButton
 var _resource_edits: Dictionary = {}
 var _id_value: Label
 var _population_edit: LineEdit
@@ -43,6 +45,12 @@ var _save_scenario_button: Button
 var _save_map_button: Button
 var _exit_button: Button
 var _scenario_name_edit: LineEdit
+var _intro_message_edit: LineEdit
+var _scenario_description_edit: LineEdit
+var _objectives_edit: LineEdit
+var _scenario_type_option: OptionButton
+var _mission_number_row: HBoxContainer
+var _mission_number_option: OptionButton
 var _tab_container: TabContainer
 var _army_default_content: VBoxContainer
 var _army_edit_panel: VBoxContainer
@@ -66,7 +74,33 @@ var _victory_region_row: HBoxContainer
 var _victory_region_value: LineEdit
 var _victory_turns_row: HBoxContainer
 var _victory_turns_value: LineEdit
-var _victory_type_keys: Array[String] = ["conquer", "dominate", "own_region", "survive_turns"]
+var _victory_region_level_row: HBoxContainer
+var _victory_region_level_option: OptionButton
+var _victory_castle_level_row: HBoxContainer
+var _victory_castle_level_option: OptionButton
+var _victory_unit_type_row: HBoxContainer
+var _victory_unit_type_option: OptionButton
+var _victory_units_hired_row: HBoxContainer
+var _victory_units_hired_value: LineEdit
+var _scenario_trade_disabled_check: CheckBox
+var _victory_type_keys: Array[String] = ["conquer", "dominate", "own_region", "survive_turns", "economy"]
+var _event_name_add_edit: LineEdit
+var _event_add_button: Button
+var _event_list_view: VBoxContainer
+var _event_list_container: VBoxContainer
+var _event_editor_view: VBoxContainer
+var _event_back_button: Button
+var _event_save_button: Button
+var _event_edit_name: LineEdit
+var _event_regions_edit: LineEdit
+var _event_turn_start_edit: LineEdit
+var _event_turn_end_edit: LineEdit
+var _event_player_option: OptionButton
+var _event_message_text: TextEdit
+var _event_units_container: VBoxContainer
+var _event_unit_edits: Dictionary = {}
+var _events: Array[Dictionary] = []
+var _editing_event_index: int = -1
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
@@ -80,6 +114,8 @@ func _ready() -> void:
 	_population_edit = get_node("Panel/TabContainer/Region/PopulationRow/PopulationEdit") as LineEdit
 	_castle_option = get_node("Panel/TabContainer/Region/CastleRow/CastleOption") as OptionButton
 	_ore_check = get_node("Panel/TabContainer/Region/OreRow/OreCheck") as CheckBox
+	_ore_guarantee_attempt_edit = get_node("Panel/TabContainer/Region/OreGuaranteeAttemptRow/OreGuaranteeAttemptEdit") as LineEdit
+	_ore_guarantee_type_option = get_node("Panel/TabContainer/Region/OreGuaranteeTypeRow/OreGuaranteeTypeOption") as OptionButton
 	_ownership_option = get_node("Panel/TabContainer/Region/OwnershipRow/OwnershipOption") as OptionButton
 	_army_toggle_button = get_node("Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow/ArmyToggleButton") as Button
 	_region_panel = get_node("Panel")
@@ -94,6 +130,12 @@ func _ready() -> void:
 	_save_scenario_button = get_node("Panel/TabContainer/Main/SaveButtonRow/SaveScenarioButton") as Button
 	_save_map_button = get_node("Panel/TabContainer/Main/SaveMapButtonRow/SaveMapButton") as Button
 	_scenario_name_edit = get_node("Panel/TabContainer/Main/SaveRow/ScenarioNameEdit") as LineEdit
+	_intro_message_edit = get_node("Panel/TabContainer/Main/IntroMessageRow/IntroMessageEdit") as LineEdit
+	_scenario_description_edit = get_node("Panel/TabContainer/Main/DescriptionRow/DescriptionEdit") as LineEdit
+	_objectives_edit = get_node("Panel/TabContainer/Main/ObjectivesRow/ObjectivesEdit") as LineEdit
+	_scenario_type_option = get_node("Panel/TabContainer/Main/ScenarioTypeRow/ScenarioTypeOption") as OptionButton
+	_mission_number_row = get_node("Panel/TabContainer/Main/MissionNumberRow") as HBoxContainer
+	_mission_number_option = get_node("Panel/TabContainer/Main/MissionNumberRow/MissionNumberOption") as OptionButton
 	_exit_button = get_node("Panel/TabContainer/Main/ExitButtonRow/ExitButton") as Button
 	_unit_edits = {
 		SoldierTypeEnum.Type.PEASANTS: get_node("Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow/PeasantsEdit") as LineEdit,
@@ -129,6 +171,8 @@ func _ready() -> void:
 		get_node("Panel/TabContainer/Region/IronRow"),
 		get_node("Panel/TabContainer/Region/GoldRow"),
 		get_node("Panel/TabContainer/Region/OreRow"),
+		get_node("Panel/TabContainer/Region/OreGuaranteeAttemptRow"),
+		get_node("Panel/TabContainer/Region/OreGuaranteeTypeRow"),
 		get_node("Panel/TabContainer/Region/GarrisonEditRow")
 	]
 	# Garrison UI nodes
@@ -153,12 +197,15 @@ func _ready() -> void:
 	_level_option.item_selected.connect(_on_level_selected)
 	_populate_castles()
 	_castle_option.item_selected.connect(_on_castle_selected)
+	_populate_ore_guarantee_types()
 	_populate_ownership()
 	_ownership_option.item_selected.connect(_on_ownership_selected)
 	for rt in _resource_edits.keys():
 		(_resource_edits[rt] as LineEdit).text_submitted.connect(Callable(self, "_on_resource_changed").bind(rt))
 	_population_edit.text_submitted.connect(_on_population_changed)
 	_ore_check.toggled.connect(_on_ore_toggled)
+	_ore_guarantee_attempt_edit.text_submitted.connect(_on_ore_guarantee_attempt_changed)
+	_ore_guarantee_type_option.item_selected.connect(_on_ore_guarantee_type_selected)
 	_name_edit.text_submitted.connect(_on_name_changed)
 	_army_toggle_button.pressed.connect(_on_army_toggle_pressed)
 	_edit_army_button.pressed.connect(_on_edit_army_pressed)
@@ -186,11 +233,36 @@ func _ready() -> void:
 	_victory_region_value = get_node("Panel/TabContainer/Scenario/VictoryRegionRow/VictoryRegionValue") as LineEdit
 	_victory_turns_row = get_node("Panel/TabContainer/Scenario/VictoryTurnsRow") as HBoxContainer
 	_victory_turns_value = get_node("Panel/TabContainer/Scenario/VictoryTurnsRow/VictoryTurnsValue") as LineEdit
+	_victory_region_level_row = get_node("Panel/TabContainer/Scenario/VictoryRegionLevelRow") as HBoxContainer
+	_victory_region_level_option = get_node("Panel/TabContainer/Scenario/VictoryRegionLevelRow/VictoryRegionLevelOption") as OptionButton
+	_victory_castle_level_row = get_node("Panel/TabContainer/Scenario/VictoryCastleLevelRow") as HBoxContainer
+	_victory_castle_level_option = get_node("Panel/TabContainer/Scenario/VictoryCastleLevelRow/VictoryCastleLevelOption") as OptionButton
+	_victory_unit_type_row = get_node("Panel/TabContainer/Scenario/VictoryUnitTypeRow") as HBoxContainer
+	_victory_unit_type_option = get_node("Panel/TabContainer/Scenario/VictoryUnitTypeRow/VictoryUnitTypeOption") as OptionButton
+	_victory_units_hired_row = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow") as HBoxContainer
+	_victory_units_hired_value = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow/VictoryUnitsHiredValue") as LineEdit
+	_scenario_trade_disabled_check = get_node("Panel/TabContainer/Scenario/TradeDisabledRow/TradeDisabledCheck") as CheckBox
+	_event_name_add_edit = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/EventNameEdit") as LineEdit
+	_event_add_button = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/AddEventButton") as Button
+	_event_list_view = get_node("Panel/TabContainer/Event/EventListView") as VBoxContainer
+	_event_list_container = get_node("Panel/TabContainer/Event/EventListView/EventListContainer") as VBoxContainer
+	_event_editor_view = get_node("Panel/TabContainer/Event/EventEditorView") as VBoxContainer
+	_event_back_button = get_node("Panel/TabContainer/Event/EventEditorView/EventEditorHeaderRow/BackButton") as Button
+	_event_save_button = get_node("Panel/TabContainer/Event/EventEditorView/EventSaveRow/SaveEventButton") as Button
+	_event_edit_name = get_node("Panel/TabContainer/Event/EventEditorView/EventNameRow/EventNameValue") as LineEdit
+	_event_regions_edit = get_node("Panel/TabContainer/Event/EventEditorView/EventRegionsRow/EventRegionsValue") as LineEdit
+	_event_turn_start_edit = get_node("Panel/TabContainer/Event/EventEditorView/EventTurnStartRow/EventTurnStartValue") as LineEdit
+	_event_turn_end_edit = get_node("Panel/TabContainer/Event/EventEditorView/EventTurnEndRow/EventTurnEndValue") as LineEdit
+	_event_player_option = get_node("Panel/TabContainer/Event/EventEditorView/EventPlayerRow/EventPlayerOption") as OptionButton
+	_event_message_text = get_node("Panel/TabContainer/Event/EventEditorView/EventMessageValue") as TextEdit
+	_event_units_container = get_node("Panel/TabContainer/Event/EventEditorView/EventUnitsContainer") as VBoxContainer
 	
 	# Initialize player settings and resource UI
 	_initialize_player_settings()
 	_initialize_player_resources()
+	_initialize_scenario_type_ui()
 	_initialize_victory_condition_ui()
+	_initialize_events_ui()
 	
 	_player_resource_selector.item_selected.connect(_on_player_resource_selected)
 	for rt in _player_resource_fields.keys():
@@ -198,6 +270,10 @@ func _ready() -> void:
 		field.text_submitted.connect(_on_player_resource_value_submitted.bind(rt))
 		field.focus_exited.connect(_on_player_resource_focus_exited.bind(rt))
 	_victory_type_option.item_selected.connect(_on_victory_type_selected)
+	_scenario_type_option.item_selected.connect(_on_scenario_type_selected)
+	_event_add_button.pressed.connect(_on_event_add_pressed)
+	_event_back_button.pressed.connect(_on_event_back_pressed)
+	_event_save_button.pressed.connect(_on_event_save_pressed)
 	
 	# Check for loaded scenario name after a short delay to ensure GameManager is ready
 	call_deferred("_check_and_populate_scenario_name")
@@ -251,7 +327,46 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 		if loaded_resources is Array:
 			_apply_loaded_player_resources(loaded_resources)
 			DebugLogger.log("MapEditorPanel", "Loaded player resources from scenario")
+	_intro_message_edit.text = String(data.get("intro_message", ""))
+	_scenario_description_edit.text = String(data.get("description", ""))
+	_objectives_edit.text = String(data.get("objectives", ""))
+	_set_scenario_type_from_data(String(data.get("scenario_type", "scenario")))
+	var mission_number: int = maxi(1, int(data.get("mission_number", 1)))
+	var mission_index: int = mini(_mission_number_option.item_count - 1, mission_number - 1)
+	_mission_number_option.select(maxi(0, mission_index))
+	_scenario_trade_disabled_check.button_pressed = bool(data.get("trade_disabled", false))
 	_load_victory_conditions_from_scenario(data)
+	_load_events_from_scenario(data)
+
+func _initialize_scenario_type_ui() -> void:
+	_scenario_type_option.clear()
+	_scenario_type_option.add_item("Scenario")
+	_scenario_type_option.add_item("Campaign")
+	_scenario_type_option.select(0)
+	_mission_number_option.clear()
+	for i in range(1, 31):
+		_mission_number_option.add_item(str(i))
+	_mission_number_option.select(0)
+	_update_mission_number_visibility()
+
+func _on_scenario_type_selected(_index: int) -> void:
+	_update_mission_number_visibility()
+
+func _set_scenario_type_from_data(type_value: String) -> void:
+	var normalized: String = type_value.to_lower()
+	if normalized == "campaign":
+		_scenario_type_option.select(1)
+	else:
+		_scenario_type_option.select(0)
+	_update_mission_number_visibility()
+
+func _get_selected_scenario_type() -> String:
+	if _scenario_type_option.selected == 1:
+		return "campaign"
+	return "scenario"
+
+func _update_mission_number_visibility() -> void:
+	_mission_number_row.visible = _get_selected_scenario_type() == "campaign"
 
 func _initialize_victory_condition_ui() -> void:
 	_victory_type_option.clear()
@@ -259,12 +374,26 @@ func _initialize_victory_condition_ui() -> void:
 	_victory_type_option.add_item("Dominate")
 	_victory_type_option.add_item("Own Region")
 	_victory_type_option.add_item("Survive Turns")
+	_victory_type_option.add_item("Economy")
 	_victory_target_player_option.clear()
 	for i in range(1, 7):
 		_victory_target_player_option.add_item("Player " + str(i))
 	_victory_target_player_option.select(0)
+	_victory_region_level_option.clear()
+	for level in RegionLevelEnum.get_all_levels():
+		_victory_region_level_option.add_item(RegionLevelEnum.level_to_string(level))
+	_victory_region_level_option.select(0)
+	_victory_castle_level_option.clear()
+	for castle_type in CastleTypeEnum.get_all_types():
+		_victory_castle_level_option.add_item(CastleTypeEnum.type_to_string(castle_type))
+	_victory_castle_level_option.select(0)
+	_victory_unit_type_option.clear()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		_victory_unit_type_option.add_item(SoldierTypeEnum.type_to_string(unit_type))
+	_victory_unit_type_option.select(0)
 	_victory_region_value.text = "0"
 	_victory_turns_value.text = "1"
+	_victory_units_hired_value.text = "1"
 	_select_victory_type("conquer")
 
 func _on_victory_type_selected(index: int) -> void:
@@ -281,9 +410,13 @@ func _select_victory_type(victory_key: String) -> void:
 	_update_victory_condition_fields(victory_key)
 
 func _update_victory_condition_fields(victory_key: String) -> void:
-	_victory_target_player_row.visible = victory_key == "own_region" or victory_key == "survive_turns"
-	_victory_region_row.visible = victory_key == "own_region"
+	_victory_target_player_row.visible = victory_key == "own_region" or victory_key == "survive_turns" or victory_key == "economy"
+	_victory_region_row.visible = victory_key == "own_region" or victory_key == "economy"
 	_victory_turns_row.visible = victory_key == "survive_turns"
+	_victory_region_level_row.visible = victory_key == "economy"
+	_victory_castle_level_row.visible = victory_key == "economy"
+	_victory_unit_type_row.visible = victory_key == "economy"
+	_victory_units_hired_row.visible = victory_key == "economy"
 
 func _get_selected_victory_type_key() -> String:
 	var index: int = _victory_type_option.selected
@@ -328,6 +461,19 @@ func _load_victory_conditions_from_scenario(data: Dictionary) -> void:
 			_victory_target_player_option.select(player_id - 1)
 			var turns: int = int(condition.get("turns", condition.get("required_turns", 1)))
 			_victory_turns_value.text = str(maxi(1, turns))
+		"economy":
+			_select_victory_type("economy")
+			var player_id: int = maxi(1, mini(6, int(condition.get("player_id", 1))))
+			_victory_target_player_option.select(player_id - 1)
+			_victory_region_value.text = str(maxi(0, int(condition.get("region_id", 0))))
+			var required_region_level: String = String(condition.get("required_region_level", condition.get("region_level", "Shire")))
+			var required_castle_level: String = String(condition.get("required_castle_level", condition.get("castle_level", "Outpost")))
+			var unit_type_name: String = String(condition.get("unit_type", "Peasants"))
+			var units_hired: int = int(condition.get("units_hired", condition.get("required_units_hired", condition.get("unit_count", 1))))
+			_select_option_by_text(_victory_region_level_option, required_region_level)
+			_select_option_by_text(_victory_castle_level_option, required_castle_level)
+			_select_option_by_text(_victory_unit_type_option, unit_type_name)
+			_victory_units_hired_value.text = str(maxi(1, units_hired))
 		_:
 			_select_victory_type("conquer")
 
@@ -354,8 +500,237 @@ func _build_victory_conditions_for_save() -> Array:
 				"player_id": player_id,
 				"turns": turns
 			}]
+		"economy":
+			var player_id: int = _victory_target_player_option.selected + 1
+			var region_id: int = maxi(0, int(_victory_region_value.text))
+			var required_region_level: String = _victory_region_level_option.get_item_text(_victory_region_level_option.selected)
+			var required_castle_level: String = _victory_castle_level_option.get_item_text(_victory_castle_level_option.selected)
+			var unit_type_name: String = _victory_unit_type_option.get_item_text(_victory_unit_type_option.selected)
+			var units_hired: int = maxi(1, int(_victory_units_hired_value.text))
+			return [{
+				"type": "economy",
+				"player_id": player_id,
+				"region_id": region_id,
+				"required_region_level": required_region_level,
+				"required_castle_level": required_castle_level,
+				"unit_type": unit_type_name,
+				"units_hired": units_hired
+			}]
 		_:
 			return ["conquer"]
+
+func _select_option_by_text(option: OptionButton, text_value: String) -> void:
+	for i in range(option.item_count):
+		var item_text: String = option.get_item_text(i)
+		if item_text.to_lower() == text_value.to_lower():
+			option.select(i)
+			return
+	option.select(0)
+
+func _initialize_events_ui() -> void:
+	_event_player_option.clear()
+	for i in range(1, 7):
+		_event_player_option.add_item("Player " + str(i))
+	_event_player_option.select(0)
+	_build_event_unit_inputs()
+	_event_list_view.visible = true
+	_event_editor_view.visible = false
+	_events.clear()
+	_refresh_events_list()
+
+func _build_event_unit_inputs() -> void:
+	_event_unit_edits.clear()
+	for child in _event_units_container.get_children():
+		child.queue_free()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var row := HBoxContainer.new()
+		var label := Label.new()
+		label.custom_minimum_size = Vector2(140, 0)
+		label.text = SoldierTypeEnum.type_to_string(unit_type)
+		row.add_child(label)
+		var edit := LineEdit.new()
+		edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		edit.placeholder_text = "0"
+		edit.text = "0"
+		row.add_child(edit)
+		_event_unit_edits[unit_type] = edit
+		_event_units_container.add_child(row)
+
+func _on_event_add_pressed() -> void:
+	var name: String = _event_name_add_edit.text.strip_edges()
+	if name == "":
+		name = "Event " + str(_events.size() + 1)
+	var event_data: Dictionary = _build_default_event(name)
+	_events.append(event_data)
+	_event_name_add_edit.text = ""
+	_refresh_events_list()
+
+func _build_default_event(name: String) -> Dictionary:
+	var composition: Dictionary = {}
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		composition[unit_name] = 0
+	return {
+		"name": name,
+		"regions": [0],
+		"turn_start": 1,
+		"turn_end": 1,
+		"player_id": 1,
+		"composition": composition,
+		"message": ""
+	}
+
+func _refresh_events_list() -> void:
+	for child in _event_list_container.get_children():
+		child.queue_free()
+	for i in range(_events.size()):
+		var event_data: Dictionary = _events[i]
+		var row := HBoxContainer.new()
+		row.custom_minimum_size.y = 34
+		var label := Label.new()
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.text = String(event_data.get("name", "Event " + str(i + 1)))
+		row.add_child(label)
+		var edit_button := Button.new()
+		edit_button.text = "Edit"
+		edit_button.pressed.connect(_on_event_edit_pressed.bind(i))
+		row.add_child(edit_button)
+		var delete_button := Button.new()
+		delete_button.text = "Delete"
+		delete_button.pressed.connect(_on_event_delete_pressed.bind(i))
+		row.add_child(delete_button)
+		_event_list_container.add_child(row)
+
+func _on_event_edit_pressed(index: int) -> void:
+	if index < 0 or index >= _events.size():
+		return
+	_editing_event_index = index
+	_show_event_editor(_events[index])
+
+func _on_event_delete_pressed(index: int) -> void:
+	if index < 0 or index >= _events.size():
+		return
+	_events.remove_at(index)
+	if _editing_event_index == index:
+		_editing_event_index = -1
+		_event_list_view.visible = true
+		_event_editor_view.visible = false
+	elif _editing_event_index > index:
+		_editing_event_index -= 1
+	_refresh_events_list()
+
+func _show_event_editor(event_data: Dictionary) -> void:
+	_event_list_view.visible = false
+	_event_editor_view.visible = true
+	_event_edit_name.text = String(event_data.get("name", ""))
+	_event_regions_edit.text = _regions_to_csv(event_data.get("regions", []))
+	_event_turn_start_edit.text = str(int(event_data.get("turn_start", 1)))
+	_event_turn_end_edit.text = str(int(event_data.get("turn_end", 1)))
+	var player_id: int = maxi(1, mini(6, int(event_data.get("player_id", 1))))
+	_event_player_option.select(player_id - 1)
+	_event_message_text.text = String(event_data.get("message", ""))
+	var composition: Dictionary = event_data.get("composition", {})
+	for unit_type in _event_unit_edits.keys():
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		var edit: LineEdit = _event_unit_edits[unit_type] as LineEdit
+		edit.text = str(maxi(0, int(composition.get(unit_name, 0))))
+
+func _on_event_back_pressed() -> void:
+	_editing_event_index = -1
+	_event_list_view.visible = true
+	_event_editor_view.visible = false
+
+func _on_event_save_pressed() -> void:
+	if _editing_event_index < 0 or _editing_event_index >= _events.size():
+		return
+	var start_turn: int = maxi(1, int(_event_turn_start_edit.text))
+	var end_turn: int = maxi(1, int(_event_turn_end_edit.text))
+	if end_turn < start_turn:
+		var tmp: int = start_turn
+		start_turn = end_turn
+		end_turn = tmp
+	var event_data: Dictionary = _events[_editing_event_index]
+	event_data["name"] = _event_edit_name.text.strip_edges()
+	if String(event_data.get("name", "")) == "":
+		event_data["name"] = "Event " + str(_editing_event_index + 1)
+	event_data["regions"] = _parse_regions_csv(_event_regions_edit.text)
+	event_data["turn_start"] = start_turn
+	event_data["turn_end"] = end_turn
+	event_data["player_id"] = _event_player_option.selected + 1
+	event_data["message"] = _event_message_text.text.strip_edges()
+	var composition: Dictionary = {}
+	for unit_type in _event_unit_edits.keys():
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		var value: int = maxi(0, int((_event_unit_edits[unit_type] as LineEdit).text))
+		composition[unit_name] = value
+	event_data["composition"] = composition
+	_events[_editing_event_index] = event_data
+	_refresh_events_list()
+	_on_event_back_pressed()
+
+func _regions_to_csv(regions: Variant) -> String:
+	if not (regions is Array):
+		return ""
+	var values: Array = regions as Array
+	var parts: Array[String] = []
+	for value in values:
+		parts.append(str(int(value)))
+	return ",".join(parts)
+
+func _parse_regions_csv(value: String) -> Array[int]:
+	var result: Array[int] = []
+	var chunks: PackedStringArray = value.split(",", false)
+	for raw in chunks:
+		var trimmed: String = raw.strip_edges()
+		if trimmed == "":
+			continue
+		var region_id: int = int(trimmed)
+		if region_id < 0:
+			continue
+		result.append(region_id)
+	if result.is_empty():
+		result.append(0)
+	return result
+
+func _load_events_from_scenario(data: Dictionary) -> void:
+	_events.clear()
+	if not data.has("events"):
+		_refresh_events_list()
+		return
+	var loaded_events: Variant = data.get("events", [])
+	if not (loaded_events is Array):
+		_refresh_events_list()
+		return
+	for raw_event in loaded_events:
+		if not (raw_event is Dictionary):
+			continue
+		var event_data: Dictionary = _build_default_event("Event " + str(_events.size() + 1))
+		event_data["name"] = String(raw_event.get("name", event_data["name"]))
+		event_data["regions"] = _parse_regions_csv(_regions_to_csv(raw_event.get("regions", [])))
+		var start_turn: int = maxi(1, int(raw_event.get("turn_start", 1)))
+		var end_turn: int = maxi(1, int(raw_event.get("turn_end", start_turn)))
+		if end_turn < start_turn:
+			var tmp: int = start_turn
+			start_turn = end_turn
+			end_turn = tmp
+		event_data["turn_start"] = start_turn
+		event_data["turn_end"] = end_turn
+		event_data["player_id"] = maxi(1, mini(6, int(raw_event.get("player_id", 1))))
+		event_data["message"] = String(raw_event.get("message", ""))
+		var source_comp: Dictionary = raw_event.get("composition", {})
+		var composition: Dictionary = {}
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+			composition[unit_name] = maxi(0, int(source_comp.get(unit_name, 0)))
+		event_data["composition"] = composition
+		_events.append(event_data)
+	_refresh_events_list()
+
+func _build_events_for_save() -> Array:
+	var output: Array = []
+	for event_data in _events:
+		output.append(event_data.duplicate(true))
+	return output
 
 func _update_player_settings_ui() -> void:
 	"""Update the player settings UI to reflect current player_settings array"""
@@ -499,6 +874,16 @@ func update_from_region(region: Region) -> void:
 		e.text = str(region.get_resource_amount(rt))
 	# Ore
 	_ore_check.button_pressed = not region.get_discovered_ores().is_empty()
+	_ore_guarantee_attempt_edit.text = str(region.get_ore_guaranteed_discovery_attempt())
+	if region.get_ore_guaranteed_discovery_attempt() <= 0:
+		_ore_guarantee_type_option.select(0)
+	else:
+		var ore_type_name: String = ResourcesEnum.type_to_string(region.get_ore_guaranteed_discovery_type())
+		for i in range(_ore_guarantee_type_option.item_count):
+			var item_text: String = _ore_guarantee_type_option.get_item_text(i)
+			if item_text.to_lower() == ore_type_name.to_lower():
+				_ore_guarantee_type_option.select(i)
+				break
 	# Population
 	_population_edit.text = str(region.get_population())
 	# Ownership
@@ -557,6 +942,13 @@ func _populate_castles() -> void:
 	_castle_option.add_item("Castle")
 	_castle_option.add_item("Stronghold")
 
+func _populate_ore_guarantee_types() -> void:
+	_ore_guarantee_type_option.clear()
+	_ore_guarantee_type_option.add_item("None")
+	_ore_guarantee_type_option.add_item("Iron")
+	_ore_guarantee_type_option.add_item("Gold")
+	_ore_guarantee_type_option.select(0)
+
 func _populate_ownership() -> void:
 	_ownership_option.clear()
 	_ownership_option.add_item("Neutral")
@@ -598,6 +990,20 @@ func _on_resource_changed(text: String, rt: ResourcesEnum.Type) -> void:
 
 func _on_ore_toggled(pressed: bool) -> void:
 	emit_signal("region_type_changed", _current_region_id, "ORE:" + ("1" if pressed else "0"))
+
+func _on_ore_guarantee_attempt_changed(text: String) -> void:
+	var attempt: int = maxi(0, int(text))
+	var selected_type: String = _ore_guarantee_type_option.get_item_text(_ore_guarantee_type_option.selected)
+	if selected_type == "None":
+		attempt = 0
+		_ore_guarantee_attempt_edit.text = "0"
+	emit_signal("region_type_changed", _current_region_id, "ORECFG_ATTEMPT:" + str(attempt))
+
+func _on_ore_guarantee_type_selected(index: int) -> void:
+	var ore_type: String = _ore_guarantee_type_option.get_item_text(index)
+	if ore_type == "None":
+		_ore_guarantee_attempt_edit.text = "0"
+	emit_signal("region_type_changed", _current_region_id, "ORECFG_TYPE:" + ore_type)
 
 func _on_population_changed(text: String) -> void:
 	emit_signal("region_type_changed", _current_region_id, "POP:" + str(int(text)))
@@ -669,14 +1075,23 @@ func _on_save_scenario_pressed() -> void:
 			for sub in region.get_children():
 				if sub is Army:
 					armies_data.append(_serialize_army(sub as Army, region.get_region_id()))
+	var scenario_type: String = _get_selected_scenario_type()
 	var scenario := {
 		"map_file": mg.data_file_path,
 		"regions": regions_data,
 		"armies": armies_data,
+		"intro_message": _intro_message_edit.text.strip_edges(),
+		"description": _scenario_description_edit.text.strip_edges(),
+		"objectives": _objectives_edit.text.strip_edges(),
+		"scenario_type": scenario_type,
 		"player_settings": player_settings,
 		"player_resources": player_resources,
-		"victory_conditions": _build_victory_conditions_for_save()
+		"trade_disabled": _scenario_trade_disabled_check.button_pressed,
+		"victory_conditions": _build_victory_conditions_for_save(),
+		"events": _build_events_for_save()
 	}
+	if scenario_type == "campaign":
+		scenario["mission_number"] = _mission_number_option.selected + 1
 	_write_scenario(scenario)
 
 func _serialize_region(region: Region) -> Dictionary:
@@ -712,6 +1127,10 @@ func _serialize_region(region: Region) -> Dictionary:
 	for ore in region.get_discovered_ores():
 		ores.append(ResourcesEnum.type_to_string(ore))
 	data["discovered_ores"] = ores
+	var guaranteed_attempt: int = region.get_ore_guaranteed_discovery_attempt()
+	if guaranteed_attempt > 0:
+		data["ore_guaranteed_discovery_attempt"] = guaranteed_attempt
+		data["ore_guaranteed_discovery_type"] = ResourcesEnum.type_to_string(region.get_ore_guaranteed_discovery_type())
 	return data
 
 func _serialize_army(army: Army, region_id: int) -> Dictionary:

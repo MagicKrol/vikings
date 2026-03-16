@@ -7,15 +7,18 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 
 ### main_menu.tscn
 - Entry UI. Starts a new game or continues; loads `main.tscn`.
+- Runtime localization loads both `hotw_translations.*.translation` and `missions.*.translation` from project internationalization settings, so scenario keys like `mission1-intro`/`mission1-description` resolve via `tr(...)`.
 - Main menu button theme (`themes/main_menu_theme.tres`) uses empty disabled style so Demo buttons don’t show a grey overlay after click.
 - Map preview panel (`MapPreview/InnerPanel/MapScreenshot`) handles campaign/scenario hovers; a separate CustomMap preview lives in `CustomMap/Panel2/TextureRect` and scales previews to a 450x450 frame (keep-aspect-covered, fit width).
 - Custom Map & Scenario submenus share `CustomMap`:
   - Panel (players/difficulty/victory + Select Map) shows for custom maps; Scenario panel shows for scenario list; both Back buttons return to New Game.
   - Player toggles are static scene nodes with defaults: P1 Human, P2-4 Computer, P5-6 Off; difficulty defaults to Normal; victory defaults to Conquer; selection uses default button styling (no font color override).
   - Map/Scenario list (Panel3) uses a scrollable template row (`Map1`) sorted by size (T/S/M/L) then name; size filter buttons (All/T/S/M/L) rebuild the list and clear selection; row hover/unhover callbacks are wired to `Control` rows duplicated from the `Map1` `HBoxContainer` template.
-  - Selecting a row colors it header-gold, updates Panel2 labels (MapName = display name, MapSize = Tiny/Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`.
-  - Campaign button now opens the Scenario panel with "Campaign" header, hides Panel3 and shows Panel4 (mission list without size filters), and lists only scenarios named `mission*`; custom map list skips mapdata files starting with `mission`.
+  - Selecting a row colors it header-gold, updates Panel2 labels (MapName = display name, MapSize = Tiny/Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`; Custom Map, Scenario, and Campaign lists auto-select the first newly created row after list build/filter.
+  - List selection now clears stale row references before recoloring so reopening lists after Back does not hit freed-node crashes.
+  - Campaign button now opens the Scenario panel with "Campaign" header, hides Panel3 and shows Panel4 (campaign list without size filters), and lists only scenarios with JSON `scenario_type = "campaign"`; Scenario button lists `scenario_type = "scenario"` and defaults missing `scenario_type` to scenario.
   - Scenario/Campaign difficulty buttons are mutually exclusive via a shared ButtonGroup (Normal preselected).
+  - Scenario side panel now fills `Scenario Description` and `Victory conditions` text from selected scenario JSON keys `description` and `objectives` (falls back to panel defaults when empty), and applies `tr(...)` when displaying.
 - Menu UX: No click sounds on button presses in main menu.
 - Options button now opens the shared `Options` panel (`scenes/options.tscn`) instead of the old inline submenu; Back returns to Main/Demo menu.
 - `Load Game` uses a single-slot save file (`user://savegame.json`) and starts `main.tscn` with `start_payload.type = "save"`.
@@ -58,7 +61,7 @@ Main (Node2D) [place_armies.gd]
 │	├ GameMenuModal [scenes/game_menu_modal.tscn] [game_menu_modal.gd] – pause overlay using select-modal styling; 60px tall buttons matching other select modals; Continue resumes, Save Game overwrites the single-slot save (`user://savegame.json`), Main Menu loads main_menu.tscn, Exit quits; Options opens shared `Options` panel (`scenes/options.tscn`) and Back returns to the pause menu
 │	├ Options [scenes/options.tscn] [options.gd] – shared options window used by both main menu and in-game pause menu; controls sound/music volumes through `SoundManager`, cloud show/hide via `clouds.gd`, plus `AI Turn Speed` and `Battle Speed` (`Normal/Fast/Very Fast`) bound to the same `GameParameters` values used by `SpeedModal`
 │	├ InfoModal [scenes/info_modal.tscn] [info_modal.gd]
-│	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers; Region/Armies tabs toggle Body panels + RegionTextures/ArmyTextures, update hover cursor + inactive label color, and Tab key cycles tabs; active tab is preserved across show calls (region/army updates follow the active tab); Armies tab renders Army1-5 cards per region (MP, vigor, composition, selection status) with hover panel texture/label color and auto-selects the first army with MP>0 (clicking a card selects on-map and opens MoveModal); RegionPanel drives region header, level/promotion cost (including gold), castle defense + build/repair cost (gold/wood/stone/iron), mine status + cost, raise army name + cost, garrison/recruits (pooled from owned neighbors), defenders, and resources (zero-cost resources hide); region action buttons show SelectTooltip tooltips aligned to Promote’s Y offset; Armies-tab tutorial UI click events are sent only when tutorial mode is enabled; emits `closed_info_modal` when the panel transitions from visible to hidden
+│	│	└ Uses `themes/standard_text_modal_theme.tres` for body text (#f1d891) and `themes/header_modal_theme.tres` for headers; Region/Armies tabs toggle Body panels + RegionTextures/ArmyTextures, update hover cursor + inactive label color, and Tab key cycles tabs; active tab is preserved across show calls (region/army updates follow the active tab); Armies tab renders Army1-5 cards per region (MP, vigor, composition, selection status) with hover panel texture/label color and auto-selects the first army with MP>0 (clicking a card selects on-map and opens MoveModal); RegionPanel drives region header, level/promotion cost (including gold), castle defense + build/repair cost (gold/wood/stone/iron), mine status + cost, raise army name + cost, garrison/recruits (pooled from owned neighbors), defenders, and resources (zero-cost resources hide); region action buttons show SelectTooltip tooltips aligned to Promote’s Y offset and are hard-disabled for the rest of the turn when `current_region.just_conquered_this_turn` is true (tooltip key: `conquered_region_blocked`); Armies-tab tutorial UI click events are sent only when tutorial mode is enabled; emits `closed_info_modal` when the panel transitions from visible to hidden
 │	├ RegionTooltip [scenes/region_tooltip.tscn] [region_tooltip.gd]
 │	├ RegionTooltip2 [scenes/region_tooltip2.tscn] [region_tooltip_2.gd] – compact hover panel that now shows a combined Gold/Iron icon with `?` whenever the region can still discover ore (ore attempts left, eligible biome, nothing discovered yet)
 │	├ MoveTooltip [scenes/move_tooltip.tscn] [move_tooltip.gd] – hover cost badge shown only during army move target previews (MP text with 20px cursor offset)
@@ -76,13 +79,13 @@ Main (Node2D) [place_armies.gd]
 │	├ TransferSelectModal [scenes/transfer_select_modal.tscn] [transfer_select_modal.gd] – mirrors select modal layout; header + 40px white buttons for garrison/army targets
 │	├ SelectTooltipModal [scenes/select_tooltip_modal.tscn] [select_tooltip_modal.gd] – resource icon paths use existing textures (`new_food`, `new_forest`, `stone`, `new_iron`, `new_coin`)
 │	├ SelectTooltipModalNoRes [scenes/select_tooltip_modal_nores.tscn] [select_tooltip_modal_nores.gd] – message-only tooltip; ore search displays discovered-ore message with mine output when ore exists
-│	├ IntroMessageModal [scenes/intromessage_modal.tscn] [intro_message_modal.gd] – intro/custom-map message overlay; inherits MessageModal behavior
+│	├ IntroMessageModal [scenes/intromessage_modal.tscn] [intro_message_modal.gd] – intro/custom-map message overlay; uses `Place Castle` in custom-map flow and `Continue` for scenario intro text
 │	├ MessageModal [scenes/message_modal.tscn] [message_modal.gd] – tutorial/general message overlay; calls `move_to_front()` when shown so Continue can be clicked above InfoModal
 │	├ NextPlayerModal [scenes/next_player_modal.tscn] [next_player_modal.gd] – shows turn prompt with `HeaderLabel` as `Turn <n>`; hidden entirely when only one human is active; with 2+ humans it is shown only for human players (never for AI) outside castle placement, and blocks normal human turns (shows Continue button and waits for click)
 │	├ MoveModal [scenes/move_modal.tscn] [move_modal.gd] – cancel move UI; hides region tooltip on hover; make-camp button refreshes move target highlights after MP changes, refreshes InfoModal when open, and is disabled (ignored) when the army has 0 MP; ArmyActions button cancels move and opens InfoModal for the selected army; emits tutorial action `MoveModal/army_deselect` when ArmyManager deselects the active army; reopening MoveModal restores missing selected-army move target highlights; `show_move_modal()`/`hide_move_modal()` resolve `UIManager` directly so overlay suppression also works during early load-time deselection; NextArmy button and Space (while MoveModal is visible) cycle to the player's next army unless recruitment/transfer modals are open, repainting modals and centering the camera
 │	├ IconsModal [scenes/icons_modal.tscn] [icons_modal.gd] – swaps map/scale icon textures on hover; trade icon opens TradeModal
 │	├ SpeedModal [scenes/speed_modal.tscn] [scenes/speed_modal.gd] – AI/battle speed selector (normal/fast/very fast); adjusts AI move speed multiplier during map play and battle round timing during sieges; selected option stays visibly pressed via grouped toggle buttons; also shown during battles
-│	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – new Trade layout; plus/minus adjust staged buy/sell counts and gold balance, sell adjustments reset staged buy for that resource, Buy/Sell buttons apply trades immediately via TradeManager, Close just hides the modal
+│	├ TradeModal [scenes/trade_modal.tscn] [trade_modal.gd] – new Trade layout; plus/minus adjust staged buy/sell counts and gold balance, sell adjustments reset staged buy for that resource, Buy/Sell buttons apply trades immediately via TradeManager, Close just hides the modal. When scenario `trade_disabled=true`, unit trade controls are hidden and a message `Trade is disabled in this scenario` is shown.
 │	└ MapEditorPanel [scenes/map_editor_panel.tscn] [map_editor_panel.gd]
 └ Players (Node2D)
 	├ Player1..Player6 (Node2D) – reserved containers
@@ -95,23 +98,28 @@ Notes
 - Ownership borders render as solid Line2D strokes.
 
 Map Editor Panel (editor mode)
-- Uses TabContainer with 4 tabs: Main, Scenario, Region, Army
-- Main Tab: Save/Load scenario functionality
+- Uses TabContainer with 5 tabs: Main, Scenario, Region, Army, Event
+  - Main Tab: Save/Load scenario functionality
   - Save Scenario: Input + button. Writes JSON to `res://scenarios/<scenario_name>.json` (or `last_saved_scenario.json` if empty) with:
     - `map_file` (source mapdata JSON path)
+    - `intro_message`, `description`, and `objectives` (scenario metadata entered on Main tab; objectives are used by main-menu scenario panel)
+    - `scenario_type` (`scenario` or `campaign`, defaults to `scenario` when missing) and `mission_number` (saved for campaign type from Main tab mission selector)
     - `regions`: list with id, name, biome/ocean/type_display, level, castle_type, population, owner, resources, discovered_ores
     - `armies`: list with region_id, player_id, name, composition (per unit type)
     - `player_settings`: six entries (player_id + control_type: Player/Computer/Off)
     - `player_resources`: six entries (player_id + resource dictionary for Gold/Wood/Food/Stone/Iron). Applied to `PlayerManagerNode` by `ScenarioManager.apply_to_runtime()` when the scenario starts.
   - Load Scenario: Lists all `res://scenarios/*.json` in a select box with "Load" button (no-op for now)
   - Save Map: Persists edited base map biomes and ocean flags back to the selected `res://mapdata/<file>.json`.
-- Scenario Tab: Player control toggles plus starting resource editor (dropdown for Player 1–6, rows for Gold/Wood/Food/Stone/Iron with editable amounts saved to `player_resources`) and a victory-condition editor with 4 types (`Conquer`, `Dominate`, `Own Region`, `Survive Turns`). Condition-specific fields appear by selection (Own Region: target player + region id; Survive Turns: target player + turns) and save into scenario `victory_conditions`.
+- Scenario Tab: Player control toggles plus starting resource editor (dropdown for Player 1–6, rows for Gold/Wood/Food/Stone/Iron with editable amounts saved to `player_resources`), `Disable Trade` checkbox (saved as scenario `trade_disabled`), and a victory-condition editor with 5 types (`Conquer`, `Dominate`, `Own Region`, `Survive Turns`, `Economy`). Condition-specific fields appear by selection (Own Region: target player + region id; Survive Turns: target player + turns; Economy: target player + region id + required region level + required castle level + required unit type + units hired target) and save into scenario `victory_conditions`.
+- Event Tab: scenario-only event editor with Add/Event list (name + Edit/Delete) and in-panel editor view (Back, event name, comma-separated region IDs, turn range start/end, player select, army composition, custom message, Save). Saved into scenario `events`.
 - Region Tab: ID, Name, Type, Level, Population, Castle, Resources, Ore, Ownership
   - Ownership: OptionButton with Neutral (0) and Players 1–6. Emits `region_type_changed` with `OWNER:<id>`
+  - Ore editor: per-region guaranteed ore discovery controls for scenarios (`ore_guaranteed_discovery_attempt`, `ore_guaranteed_discovery_type`) saved in scenario region data; guaranteed ore type has `None` default and when selected forces attempt to `0` (normal non-guaranteed behavior).
 - Army Tab: Army management with two states
   - Default state: Army toggle button (Add Army/Remove Army when owner > 0; hidden for Neutral), Edit Army button
   - Edit state: Shows Region ID/Name, Army Name, and per-unit counts (editable). "Close" saves changes and returns to default
 - MapEditor handles signals by delegating to `RegionManager.set_region_ownership` (creates/removes overlays, regenerates borders) and `ArmyManager.create_raised_army` / removal. Region resources are generated by `RegionManager` after the map is generated in editor mode.
+- Region type changes in editor now reinitialize region runtime state immediately (population, recruits, ore-search state, and resources): ocean resets to zero-state; land regenerates population/resources by current level and biome.
  - Quick ownership mode: Press number keys `1..6` in editor to enable ownership mode for that player; next region click assigns ownership. Press `ESC` to exit ownership mode.
 - When editing army, Army tab stays active with edit panel visible until closed
  - Save Map: persists per-region `biome` and `ocean` flags to the source `mapdata-*.json` so ocean/land edits load correctly.
@@ -138,8 +146,12 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Purpose: High-level orchestration (castle placement, turns, resource ticks, AI start, battle finalization).
 - Key: `initialize_managers()`, `next_turn()`, `_process_round_start_actions()`, `_process_player_turn_start()`, `handle_castle_placement()`, `finalize_battle_result(...)`.
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
-- Victory system: stores normalized `victory_conditions`; checks at turn start and after movement/battle; currently supports `conquer` (others have no castles and no armies) and `dominate` (>=70% conquerable regions: non-ocean, non-mountain), with parser support for scenario-targeted `own_region` and `survive_turns`.
+- Victory system: stores normalized `victory_conditions`; checks at turn start and after movement/battle; supports `conquer` (others have no castles and no armies), `dominate` (>=70% conquerable regions: non-ocean, non-mountain), scenario-targeted `own_region`, `survive_turns`, and `economy` (player owns target region, reaches required region level and castle level there, and has hired required count of a specific unit type).
+- Economy tracking: `record_hired_units()` tracks per-player hired totals by unit type (shared across human and AI recruitment flows), used by `economy` victory and persisted in saves as `player_hired_units`.
+- Scenario rule: `scenario_trade_disabled` is loaded from scenario JSON `trade_disabled` and exposed via `is_trade_disabled_for_current_game()` for TradeModal rendering.
 - Win flow: sets `victory_declared`, blocks further `next_turn()` progression, and shows `MessageModal` text `Player X Won`.
+- Scenario events: on scenario init, each event pre-rolls a single `turn` from `[turn_start, turn_end]` and shuffles candidate region IDs once. At matching player turn start (before normal turn-start economy/actions), event shows optional message, moves camera to the selected event region, spawns the configured army (0 movement points) in the first non-full valid region from the shuffled pool, and if the region owner is another player it immediately triggers battle resolution.
+- Scenario intro: when scenario JSON contains non-empty `intro_message`, `IntroMessageModal` is shown before the first turn starts with `tr(...)` on intro text; `objectives` is persisted in scenario JSON and shown on main-menu scenario panel.
 - Debug: `debug_disable_battle_modal` — when true, AI battles run instantly in background (no modal, no delays).
 - `debug_mode`: when false, AI turns hide the PlayerStatus panel, IconsModal (trade/map icons), and TurnModal end-turn button (keeps AI HUD minimal).
 - Camera: Sets initial zoom by map size at startup (Small=1.0, Medium=1.5, Large=2.0) and clamps zoom-out to 0.5.
@@ -172,13 +184,14 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Purpose: Data-driven loader for premade scenarios (map + region overrides + ownership + castles + armies).
 - API: `load_scenario(path) -> Dictionary`, `apply_to_runtime(map_generator, region_manager, army_manager, visual_manager, scenario, player_manager)`.
 - Order of application: regions (type/ocean, level, population, resources, ores, name) → ownership (via RegionManager) → castles (via VisualManager) → armies (via ArmyManager).
+- Scenario ore rules: enables region-level constrained ore discovery (`ore_scenario_rules_enabled=true`) so ore results respect scenario resource potentials; optional region keys `ore_guaranteed_discovery_attempt` + `ore_guaranteed_discovery_type` enforce guaranteed discovery on an exact attempt.
 - Ownership setup treats scenario-owned regions as fully established: `set_initial_region_ownership()` is used for player IDs > 0 so they start turn one with full recruit availability.
 - Region setup now refills recruit pools to the current max after applying population and castle overrides so scenario starts never begin partially depleted.
 - Keeps base map geometry in the referenced `map_file`; scenario stores only deltas.
 
 ### save_game_manager.gd (SaveGameManager)
 - Purpose: Single-slot runtime persistence (`user://savegame.json`) plus global settings persistence (`user://settings.cfg`).
-- Save payload: source descriptor (`mode`, `scenario_path`, `map_file`, `map_size`, player settings, `victory_conditions`) + game state (turn/current player/player types/castle placement flags) + player manager snapshot + full mutable region/army snapshots.
+- Save payload: source descriptor (`mode`, `scenario_path`, `map_file`, `map_size`, player settings, `victory_conditions`, `trade_disabled`) + game state (turn/current player/player types/castle placement flags, `scenario_events_runtime`, `player_hired_units`) + player manager snapshot + full mutable region/army snapshots (includes ore discovery state and scenario ore guarantee fields per region).
 - Load flow: map is rebuilt from saved source first, then SaveGameManager reapplies runtime state (regions/ownership/castles/armies/player state and current turn pointers), reapplies player resource dictionaries explicitly, and forces an immediate `PlayerStatusModal2` refresh.
 - Settings: persists sound/music enabled + dB values, clouds toggle, AI speed, and battle speed; loaded in both main menu and in-game startup.
 
@@ -422,7 +435,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Dynamic nodes: `Region` instances under `Map/Regions` (land + ocean; ocean `Polygon` hidden, visuals from `Map/Ocean`), `Army` nodes parented to regions, `Castle` sprites under regions, border/overlay visuals.
 - Border widths: In `MapGenerator`, all Line2D borders scale by map size using `Utils.get_map_size_icon_scale()`.
 - Icon scaling: Map-size scale uses SMALL as baseline (1.0) to match tuned icon sizes. Mountains ignore map-size scale, match the closest aspect-ratio variant, and fit their dominant dimension to the region bounds while clamping to the smaller dimension.
-- RegionIconManager.gd: MapGenerator delegates all biome icon placement here; it randomizes hill/forest/hill_forest variants (`<biome>_1..3.png`), offsets standard icons, and picks the mountain sprite with the nearest proportions before fitting it inside the region; internal-mountain detection from `MapGenerator` is kept for potential scaling adjustments but currently applies a neutral 1.0 multiplier.
+- RegionIconManager.gd: MapGenerator delegates all biome icon placement here; it randomizes hill/forest/hill_forest variants (`<biome>_1..3.png`), supports both `hill_forest` and `forest_hills` biome naming aliases for the same icon family, offsets standard icons, and picks the mountain sprite with the nearest proportions before fitting it inside the region; internal-mountain detection from `MapGenerator` is kept for potential scaling adjustments but currently applies a neutral 1.0 multiplier.
 - Starting armies use `GameParameters.STARTING_ARMY_COMPOSITION_HUMAN`/`_AI` selected through `GameManager.get_starting_army_composition_for_player()` and passed into `Army.setup_army()`.
 - Border widths and offsets: In `MapGenerator`, both Line2D widths and offset distances scale by map size (SMALL baseline). Tiny/Small/Medium/Large use checked size ratios from 504/1040/2104/4077 to keep icons, units, and borders aligned across sizes.
  - XTINY scale: Uses 2.0 as the current visual scale factor for icons/borders (subject to tuning).

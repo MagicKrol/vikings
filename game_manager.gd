@@ -69,7 +69,7 @@ var _trade_manager: TradeManager
 var _tutorial_manager: TutorialManager
 var _ai_camera_director: AICameraDirector
 var _message_modal: MessageModal
-var _intro_message_modal: MessageModal
+var _intro_message_modal: IntroMessageModal
 var ai_step_requires_shift: bool = false
 
 # AI system references
@@ -122,12 +122,18 @@ var average_army_power: float = 0.0
 var victory_conditions: Array[Dictionary] = []
 var victory_declared: bool = false
 var winning_player_id: int = -1
+var _scenario_events_runtime: Array[Dictionary] = []
+var scenario_trade_disabled: bool = false
+var _player_hired_units: Dictionary = {}
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
 	if get_tree().has_meta("editor_start_payload") and get_tree().get_meta("editor_start_payload") != null:
 		enable_map_editor = true
 	_set_victory_conditions_from_raw(["conquer"])
+	_scenario_events_runtime.clear()
+	scenario_trade_disabled = false
+	_reset_player_hired_units_tracking()
 
 	# Early init gate: check if map editor is enabled BEFORE normal init
 	if enable_map_editor:
@@ -249,7 +255,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 		_next_player_modal.continue_acknowledged.connect(_on_next_player_modal_continue_acknowledged)
 	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
 	_message_modal = ui_node.get_node("MessageModal") as MessageModal
-	_intro_message_modal = ui_node.get_node_or_null("IntroMessageModal") as MessageModal
+	_intro_message_modal = ui_node.get_node("IntroMessageModal") as IntroMessageModal
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
 		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
@@ -394,8 +400,10 @@ func _start_scenario() -> void:
 	var scen_mgr := ScenarioManager.new()
 	var scen := scen_mgr.load_scenario(scenario_path)
 	_initialize_victory_conditions_from_scenario_data(scen)
+	_initialize_trade_rules_from_scenario_data(scen)
 	# Apply to runtime
 	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager)
+	_initialize_scenario_events_from_data(scen)
 
 	# Initialize AI system (now with proper PlayerManagerNode reference)
 	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
@@ -433,7 +441,24 @@ func _start_scenario() -> void:
 	turn_modal.show_and_update()
 	if icons_modal:
 		icons_modal.visible = true
-	# Start first turn immediately
+	# Start first turn after optional scenario intro message
+	if _show_scenario_intro_message_if_any(scen):
+		return
+	_start_first_turn()
+
+func _show_scenario_intro_message_if_any(scenario_data: Dictionary) -> bool:
+	var intro_text: String = String(scenario_data.get("intro_message", "")).strip_edges()
+	if intro_text == "":
+		return false
+	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
+		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
+	_intro_message_modal.continue_clicked.connect(_on_scenario_intro_continue)
+	_intro_message_modal.display_intro_text(intro_text)
+	return true
+
+func _on_scenario_intro_continue() -> void:
+	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
+		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
 	_start_first_turn()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -447,8 +472,6 @@ func _unhandled_input(event: InputEvent) -> void:
 					_game_menu_modal.hide_modal()
 				else:
 					_game_menu_modal.show_modal()
-		elif event.keycode == KEY_ENTER:
-			next_turn()
 		elif event.keycode == KEY_0:
 			# Toggle AI debug visualization
 			if _ai_debug_visualizer:
@@ -497,6 +520,9 @@ func next_turn():
 	
 	# Process player-specific turn start actions (only for active players)
 	if is_player_active(current_player):
+		await _process_scenario_events_for_turn_start(current_player)
+		if victory_declared:
+			return
 		_process_player_turn_start(current_player)
 		if check_victory_conditions_for_player(current_player):
 			return
@@ -572,6 +598,7 @@ func _initialize_map_editor() -> void:
 
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")
+	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	var player_status_modal2 = ui_node.get_node("PlayerStatusModal2")
 	var turn_modal = ui_node.get_node("TurnModal") 
 	var next_player_modal = ui_node.get_node("NextPlayerModal")
@@ -710,6 +737,7 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 	game_mode = "custom"
 	scenario_path = ""
 	loaded_scenario_name = ""
+	scenario_trade_disabled = false
 	var map_file: String = String(source.get("map_file", map_generator.data_file_path))
 	var map_size: String = String(source.get("map_size", "small"))
 	map_generator.data_file_path = map_file.get_file()
@@ -729,6 +757,12 @@ func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary
 		_set_victory_conditions_from_raw(raw_conditions)
 		return
 	_set_victory_conditions_from_raw(["conquer", "dominate"])
+
+func _initialize_trade_rules_from_scenario_data(scenario_data: Dictionary) -> void:
+	if game_mode != "scenario":
+		scenario_trade_disabled = false
+		return
+	scenario_trade_disabled = bool(scenario_data.get("trade_disabled", false))
 
 func load_victory_conditions_from_source(source: Dictionary) -> void:
 	if source.has("victory_conditions"):
@@ -826,6 +860,25 @@ func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
 				"player_id": target_player_id,
 				"turns": required_turns
 			}
+		"economy":
+			var required_region_id: int = int(source_condition.get("region_id", -1))
+			if required_region_id < 0:
+				return {}
+			var required_units_hired: int = int(source_condition.get("units_hired", source_condition.get("required_units_hired", source_condition.get("unit_count", 0))))
+			if required_units_hired <= 0:
+				return {}
+			var required_region_level: RegionLevelEnum.Level = RegionLevelEnum.string_to_level(String(source_condition.get("required_region_level", source_condition.get("region_level", "shire"))))
+			var required_castle_level: CastleTypeEnum.Type = CastleTypeEnum.string_to_type(String(source_condition.get("required_castle_level", source_condition.get("castle_level", "none"))))
+			var required_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.string_to_type(String(source_condition.get("unit_type", source_condition.get("required_unit_type", "peasants"))))
+			return {
+				"type": "economy",
+				"player_id": target_player_id,
+				"region_id": required_region_id,
+				"required_region_level": RegionLevelEnum.level_to_string(required_region_level),
+				"required_castle_level": CastleTypeEnum.type_to_string(required_castle_level),
+				"unit_type": SoldierTypeEnum.type_to_string(required_unit_type),
+				"units_hired": required_units_hired
+			}
 		_:
 			return {}
 
@@ -846,6 +899,8 @@ func _is_victory_condition_met(player_id: int, condition: Dictionary) -> bool:
 			return _is_own_region_victory_met(player_id, condition)
 		"survive_turns":
 			return _is_survive_turns_victory_met(player_id, condition)
+		"economy":
+			return _is_economy_victory_met(player_id, condition)
 		_:
 			return false
 
@@ -884,6 +939,78 @@ func _is_survive_turns_victory_met(_player_id: int, condition: Dictionary) -> bo
 	if required_turns <= 0:
 		return false
 	return current_turn >= required_turns
+
+func _is_economy_victory_met(player_id: int, condition: Dictionary) -> bool:
+	var required_region_id: int = int(condition.get("region_id", -1))
+	if required_region_id < 0:
+		return false
+	if _region_manager.get_region_owner(required_region_id) != player_id:
+		return false
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var region: Region = map_generator.get_region_container_by_id(required_region_id) as Region
+	var required_region_level: RegionLevelEnum.Level = RegionLevelEnum.string_to_level(String(condition.get("required_region_level", "shire")))
+	var required_castle_level: CastleTypeEnum.Type = CastleTypeEnum.string_to_type(String(condition.get("required_castle_level", "none")))
+	if int(region.get_region_level()) < int(required_region_level):
+		return false
+	if int(region.get_castle_type()) < int(required_castle_level):
+		return false
+	var required_units_hired: int = int(condition.get("units_hired", 0))
+	if required_units_hired <= 0:
+		return false
+	var unit_type_name: String = SoldierTypeEnum.type_to_string(SoldierTypeEnum.string_to_type(String(condition.get("unit_type", "peasants"))))
+	var hired_units: int = _get_player_hired_unit_count(player_id, unit_type_name)
+	return hired_units >= required_units_hired
+
+func _create_empty_hired_units_entry() -> Dictionary:
+	var entry: Dictionary = {}
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		entry[unit_name] = 0
+	return entry
+
+func _reset_player_hired_units_tracking() -> void:
+	_player_hired_units.clear()
+	for player_id in range(1, 7):
+		_player_hired_units[player_id] = _create_empty_hired_units_entry()
+
+func record_hired_units(player_id: int, hired_counts: Dictionary) -> void:
+	if not _player_hired_units.has(player_id):
+		_player_hired_units[player_id] = _create_empty_hired_units_entry()
+	var player_data: Dictionary = _player_hired_units[player_id]
+	for key in hired_counts.keys():
+		var amount: int = maxi(0, int(hired_counts[key]))
+		if amount <= 0:
+			continue
+		var unit_type_name: String
+		if key is int:
+			unit_type_name = SoldierTypeEnum.type_to_string(key)
+		else:
+			unit_type_name = SoldierTypeEnum.type_to_string(SoldierTypeEnum.string_to_type(String(key)))
+		player_data[unit_type_name] = int(player_data.get(unit_type_name, 0)) + amount
+	_player_hired_units[player_id] = player_data
+
+func _get_player_hired_unit_count(player_id: int, unit_type_name: String) -> int:
+	if not _player_hired_units.has(player_id):
+		return 0
+	var player_data: Dictionary = _player_hired_units[player_id]
+	return int(player_data.get(unit_type_name, 0))
+
+func get_player_hired_units_for_save() -> Dictionary:
+	var serialized: Dictionary = {}
+	for player_id in _player_hired_units.keys():
+		serialized[str(player_id)] = (_player_hired_units[player_id] as Dictionary).duplicate(true)
+	return serialized
+
+func set_player_hired_units_from_save(raw_data: Dictionary) -> void:
+	_reset_player_hired_units_tracking()
+	for key in raw_data.keys():
+		var player_id: int = int(key)
+		var source_entry: Dictionary = raw_data.get(key, {})
+		var normalized_entry: Dictionary = _create_empty_hired_units_entry()
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+			normalized_entry[unit_name] = maxi(0, int(source_entry.get(unit_name, 0)))
+		_player_hired_units[player_id] = normalized_entry
 
 func _player_has_any_castle(player_id: int) -> bool:
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
@@ -943,6 +1070,197 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
 	_message_modal.display_message("Player " + str(player_id) + " Won")
+
+func _initialize_scenario_events_from_data(scenario_data: Dictionary) -> void:
+	_scenario_events_runtime.clear()
+	if game_mode != "scenario":
+		return
+	if not scenario_data.has("events"):
+		return
+	var source_events: Array = scenario_data.get("events", [])
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	for raw_event in source_events:
+		if not (raw_event is Dictionary):
+			continue
+		var event_definition: Dictionary = _normalize_scenario_event_definition(raw_event)
+		var turn_start: int = int(event_definition.get("turn_start", 1))
+		var turn_end: int = int(event_definition.get("turn_end", turn_start))
+		var selected_turn: int = rng.randi_range(turn_start, turn_end)
+		var region_pool: Array[int] = _normalize_event_regions(event_definition.get("regions", []))
+		region_pool.shuffle()
+		var selected_region_id: int = -1
+		if not region_pool.is_empty():
+			selected_region_id = region_pool[0]
+		var runtime_event: Dictionary = {
+			"name": String(event_definition.get("name", "Event")),
+			"player_id": int(event_definition.get("player_id", 1)),
+			"turn": selected_turn,
+			"turn_start": turn_start,
+			"turn_end": turn_end,
+			"regions": _normalize_event_regions(event_definition.get("regions", [])),
+			"region_pool": region_pool,
+			"selected_region_id": selected_region_id,
+			"composition": _normalize_event_composition(event_definition.get("composition", {})),
+			"message": String(event_definition.get("message", "")),
+			"triggered": false
+		}
+		_scenario_events_runtime.append(runtime_event)
+
+func _normalize_scenario_event_definition(raw_event: Dictionary) -> Dictionary:
+	var event_name: String = String(raw_event.get("name", "Event")).strip_edges()
+	if event_name == "":
+		event_name = "Event"
+	var turn_start: int = maxi(1, int(raw_event.get("turn_start", 1)))
+	var turn_end: int = maxi(1, int(raw_event.get("turn_end", turn_start)))
+	if turn_end < turn_start:
+		var tmp_turn: int = turn_start
+		turn_start = turn_end
+		turn_end = tmp_turn
+	return {
+		"name": event_name,
+		"regions": _normalize_event_regions(raw_event.get("regions", [])),
+		"turn_start": turn_start,
+		"turn_end": turn_end,
+		"player_id": maxi(1, mini(6, int(raw_event.get("player_id", 1)))),
+		"composition": _normalize_event_composition(raw_event.get("composition", {})),
+		"message": String(raw_event.get("message", ""))
+	}
+
+func _normalize_event_regions(raw_regions: Variant) -> Array[int]:
+	var result: Array[int] = []
+	if not (raw_regions is Array):
+		return result
+	var regions_array: Array = raw_regions
+	for raw_region in regions_array:
+		var region_id: int = int(raw_region)
+		if region_id < 0:
+			continue
+		if result.has(region_id):
+			continue
+		result.append(region_id)
+	return result
+
+func _normalize_event_composition(raw_composition: Variant) -> Dictionary:
+	var result: Dictionary = {}
+	var source: Dictionary = {}
+	if raw_composition is Dictionary:
+		source = raw_composition
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		result[unit_name] = maxi(0, int(source.get(unit_name, 0)))
+	return result
+
+func _process_scenario_events_for_turn_start(player_id: int) -> void:
+	if game_mode != "scenario":
+		return
+	for i in range(_scenario_events_runtime.size()):
+		var event_data: Dictionary = _scenario_events_runtime[i]
+		if bool(event_data.get("triggered", false)):
+			continue
+		if int(event_data.get("player_id", 0)) != player_id:
+			continue
+		if int(event_data.get("turn", -1)) != current_turn:
+			continue
+		await _execute_scenario_event(i)
+		if victory_declared:
+			return
+
+func _execute_scenario_event(event_index: int) -> void:
+	if event_index < 0 or event_index >= _scenario_events_runtime.size():
+		return
+	var event_data: Dictionary = _scenario_events_runtime[event_index]
+	var event_message: String = String(event_data.get("message", "")).strip_edges()
+	if event_message != "":
+		_message_modal.display_message(event_message)
+		await _message_modal.continue_clicked
+	var spawn_plan: Dictionary = _resolve_scenario_event_spawn_region(event_data)
+	event_data = spawn_plan.get("event", event_data)
+	if bool(spawn_plan.get("spawnable", false)):
+		var region_id: int = int(spawn_plan.get("region_id", -1))
+		var region: Region = spawn_plan.get("region") as Region
+		await _ai_camera_director.await_focus_on_region(region)
+		var composition: Dictionary = _normalize_event_composition(event_data.get("composition", {}))
+		var player_id: int = int(event_data.get("player_id", 1))
+		var spawned_army: Army = _spawn_scenario_event_army_in_region(region, player_id, composition)
+		var region_owner: int = _region_manager.get_region_owner(region_id)
+		var army_player_id: int = spawned_army.get_player_id()
+		if region_owner != -1 and region_owner != army_player_id:
+			await handle_army_battle(spawned_army, region_id)
+			await _await_pending_battles()
+			check_victory_conditions_for_player(army_player_id)
+	event_data["triggered"] = true
+	_scenario_events_runtime[event_index] = event_data
+
+func _resolve_scenario_event_spawn_region(event_data: Dictionary) -> Dictionary:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var region_pool: Array[int] = _normalize_event_regions(event_data.get("region_pool", []))
+	if region_pool.is_empty():
+		region_pool = _normalize_event_regions(event_data.get("regions", []))
+		region_pool.shuffle()
+	while not region_pool.is_empty():
+		var region_id: int = int(region_pool.pop_front())
+		if not map_generator.region_container_by_id.has(region_id):
+			continue
+		var region: Region = map_generator.region_container_by_id[region_id] as Region
+		if _army_manager.is_region_at_army_cap(region):
+			continue
+		event_data["region_pool"] = region_pool
+		event_data["selected_region_id"] = region_id
+		return {
+			"spawnable": true,
+			"region": region,
+			"region_id": region_id,
+			"event": event_data
+		}
+	event_data["region_pool"] = region_pool
+	event_data["selected_region_id"] = -1
+	return {
+		"spawnable": false,
+		"region_id": -1,
+		"event": event_data
+	}
+
+func _spawn_scenario_event_army_in_region(region: Region, player_id: int, composition: Dictionary) -> Army:
+	var spawned_army: Army = _army_manager.create_army(region, player_id)
+	_apply_scenario_event_army_composition(spawned_army, composition)
+	spawned_army.movement_points = 0
+	spawned_army.just_raised = false
+	return spawned_army
+
+func _apply_scenario_event_army_composition(army: Army, composition: Dictionary) -> void:
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		var amount: int = maxi(0, int(composition.get(unit_name, 0)))
+		army.get_composition().set_soldier_count(unit_type, amount)
+		army.get_wounded_composition().set_soldier_count(unit_type, 0)
+
+func get_scenario_events_runtime_for_save() -> Array:
+	var copied: Array = []
+	for event_data in _scenario_events_runtime:
+		copied.append((event_data as Dictionary).duplicate(true))
+	return copied
+
+func set_scenario_events_runtime_from_save(raw_events: Array) -> void:
+	_scenario_events_runtime.clear()
+	for raw_event in raw_events:
+		if not (raw_event is Dictionary):
+			continue
+		var event_data: Dictionary = raw_event.duplicate(true)
+		var normalized_regions: Array[int] = _normalize_event_regions(event_data.get("regions", []))
+		var normalized_region_pool: Array[int] = _normalize_event_regions(event_data.get("region_pool", normalized_regions))
+		event_data["name"] = String(event_data.get("name", "Event"))
+		event_data["player_id"] = maxi(1, mini(6, int(event_data.get("player_id", 1))))
+		event_data["turn"] = maxi(1, int(event_data.get("turn", 1)))
+		event_data["turn_start"] = maxi(1, int(event_data.get("turn_start", event_data.get("turn", 1))))
+		event_data["turn_end"] = maxi(1, int(event_data.get("turn_end", event_data.get("turn", 1))))
+		event_data["regions"] = normalized_regions
+		event_data["region_pool"] = normalized_region_pool
+		event_data["selected_region_id"] = int(event_data.get("selected_region_id", -1))
+		event_data["composition"] = _normalize_event_composition(event_data.get("composition", {}))
+		event_data["message"] = String(event_data.get("message", ""))
+		event_data["triggered"] = bool(event_data.get("triggered", false))
+		_scenario_events_runtime.append(event_data)
 
 func set_region_center_markers_enabled(value: bool) -> void:
 	if show_region_center_markers == value:
@@ -2877,6 +3195,9 @@ func get_tutorial_manager() -> TutorialManager:
 func get_trade_manager() -> TradeManager:
 	return _trade_manager
 
+func is_trade_disabled_for_current_game() -> bool:
+	return game_mode == "scenario" and scenario_trade_disabled
+
 func get_region_manager() -> RegionManager:
 	"""Get the RegionManager instance"""
 	return _region_manager
@@ -3326,6 +3647,9 @@ func _start_first_turn() -> void:
 			DebugLogger.log("TurnProcessing", "Set IconsModal.visible = true")
 
 	# Process player-specific turn start actions
+	await _process_scenario_events_for_turn_start(current_player)
+	if victory_declared:
+		return
 	_process_player_turn_start(current_player)
 	if check_victory_conditions_for_player(current_player):
 		return

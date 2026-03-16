@@ -51,6 +51,8 @@ const USE_DEMO_MENU: bool = false
 @onready var custom_map_map_name_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer/MapName
 @onready var custom_map_map_size_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer2/MapSize
 @onready var scenario_header_label: Label = $CustomMap/Scenario/VBoxContainer/Label
+@onready var scenario_description_label: Label = $CustomMap/Scenario/VBoxContainer/Description
+@onready var scenario_objectives_label: Label = $CustomMap/Scenario/VBoxContainer/Description2
 @onready var map_size_label: Label = $CustomMap/Panel3/VBoxContainer/MapSize
 @onready var map_size_margin1: MarginContainer = $CustomMap/Panel3/VBoxContainer/MapSizeMargin1
 @onready var map_sizes_container: HBoxContainer = $CustomMap/Panel3/VBoxContainer/Sizes
@@ -107,13 +109,15 @@ var current_map_filter: String = "All"
 var is_scenario_mode: bool = false
 var is_campaign_mode: bool = false
 var scenario_difficulty_group: ButtonGroup
+var default_scenario_description_text: String = ""
+var default_scenario_objectives_text: String = ""
 
 # Player settings for custom map
 var player_settings: Array = []  # Array of dictionaries with player configuration
 
 func _ready():
 	
-	TranslationServer.set_locale("en")
+	TranslationServer.set_locale("pl")
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
@@ -181,6 +185,8 @@ func _ready():
 	_setup_difficulty_buttons()
 	_setup_scenario_difficulty_buttons()
 	_setup_victory_buttons()
+	default_scenario_description_text = scenario_description_label.text
+	default_scenario_objectives_text = scenario_objectives_label.text
 	options_container.configure(sound_manager, false, "Back to Menu")
 
 	# Show demo or standard menu based on USE_DEMO_MENU constant
@@ -804,7 +810,8 @@ func _load_custom_map_items():
 	_apply_map_filter()
 
 func _load_scenario_items():
-	scenario_items = _gather_scenario_items(is_campaign_mode)
+	var requested_type: String = "campaign" if is_campaign_mode else "scenario"
+	scenario_items = _gather_scenario_items(requested_type)
 	_apply_map_filter()
 
 func _apply_map_filter():
@@ -839,6 +846,8 @@ func _clear_map_list_nodes(container: VBoxContainer, template_row: HBoxContainer
 func _populate_map_list(items: Array, for_scenario: bool):
 	var container := _get_list_container(for_scenario)
 	var template_row := _get_template_row(for_scenario)
+	var first_created_row: HBoxContainer = null
+	var first_created_item: Dictionary = {}
 	_clear_map_list_nodes(container, template_row)
 	if template_row:
 		template_row.visible = false
@@ -859,6 +868,11 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
 		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
 		container.add_child(row)
+		if i == 0:
+			first_created_row = row
+			first_created_item = item
+	if first_created_row:
+		_on_map_row_pressed(first_created_row, first_created_item, for_scenario)
 
 func _on_map_row_gui_input(event: InputEvent, row: Control, item: Dictionary, for_scenario: bool):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -866,6 +880,12 @@ func _on_map_row_gui_input(event: InputEvent, row: Control, item: Dictionary, fo
 
 func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
+	if current_selected and not is_instance_valid(current_selected):
+		current_selected = null
+		if for_scenario:
+			selected_scenario_button_custom = null
+		else:
+			selected_map_button = null
 	if current_selected and current_selected != row:
 		_set_row_color(current_selected, Color.WHITE)
 	_set_row_color(row, GOLD_COLOR)
@@ -884,11 +904,23 @@ func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 
 func _on_map_row_hovered(row: Control, item: Dictionary, for_scenario: bool):
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
+	if current_selected and not is_instance_valid(current_selected):
+		current_selected = null
+		if for_scenario:
+			selected_scenario_button_custom = null
+		else:
+			selected_map_button = null
 	if current_selected != row:
 		_set_row_color(row, GOLD_COLOR)
 
 func _on_map_row_unhovered(row: Control, item: Dictionary, for_scenario: bool):
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
+	if current_selected and not is_instance_valid(current_selected):
+		current_selected = null
+		if for_scenario:
+			selected_scenario_button_custom = null
+		else:
+			selected_map_button = null
 	if current_selected != row:
 		_set_row_color(row, Color.WHITE)
 
@@ -907,6 +939,16 @@ func _update_info_labels(item: Dictionary):
 	custom_map_map_name_label.text = item.get("display_name", "Map Name")
 	var size_code: String = item.get("size", "S")
 	custom_map_map_size_label.text = _size_full_name(size_code)
+	if is_scenario_mode:
+		_update_scenario_details_labels(item)
+
+func _update_scenario_details_labels(item: Dictionary) -> void:
+	var description: String = String(item.get("description", ""))
+	var objectives: String = String(item.get("objectives", ""))
+	var resolved_description: String = description if description != "" else default_scenario_description_text
+	var resolved_objectives: String = objectives if objectives != "" else default_scenario_objectives_text
+	scenario_description_label.text = tr(resolved_description)
+	scenario_objectives_label.text = tr(resolved_objectives)
 
 func _update_preview_with_item(item: Dictionary, for_scenario: bool):
 	var candidates: Array = []
@@ -940,6 +982,10 @@ func _set_custom_map_preview_texture(base_name: String) -> bool:
 func _clear_map_selection():
 	selected_map_item.clear()
 	selected_scenario_item.clear()
+	if selected_map_button and not is_instance_valid(selected_map_button):
+		selected_map_button = null
+	if selected_scenario_button_custom and not is_instance_valid(selected_scenario_button_custom):
+		selected_scenario_button_custom = null
 	if selected_map_button:
 		_set_row_color(selected_map_button, Color.WHITE)
 	if selected_scenario_button_custom:
@@ -950,6 +996,8 @@ func _clear_map_selection():
 	_set_scenario_select_enabled(false)
 	custom_map_map_name_label.text = "Map Name"
 	custom_map_map_size_label.text = "Large"
+	scenario_description_label.text = tr(default_scenario_description_text)
+	scenario_objectives_label.text = tr(default_scenario_objectives_text)
 	custom_map_preview.texture = null
 	custom_map_preview.visible = false
 
@@ -984,7 +1032,7 @@ func _gather_map_items() -> Array:
 	items.sort_custom(Callable(self, "_sort_items"))
 	return items
 
-func _gather_scenario_items(require_mission_prefix: bool) -> Array:
+func _gather_scenario_items(requested_type: String) -> Array:
 	var items: Array = []
 	var dir = DirAccess.open("res://scenarios")
 	if dir:
@@ -993,28 +1041,34 @@ func _gather_scenario_items(require_mission_prefix: bool) -> Array:
 		while file_name != "":
 			if file_name.ends_with(".json"):
 				var scenario_name := file_name.trim_suffix(".json")
-				var has_prefix := scenario_name.begins_with("mission")
-				if require_mission_prefix and not has_prefix:
-					file_name = dir.get_next()
-					continue
-				if not require_mission_prefix and has_prefix:
-					file_name = dir.get_next()
-					continue
 				var map_file_base: String = ""
 				var size_code: String = "S"
+				var scenario_type: String = "scenario"
+				var description: String = ""
+				var objectives: String = ""
 				var file_path: String = "res://scenarios/" + file_name
 				var content: String = FileAccess.get_file_as_string(file_path)
 				var json = JSON.new()
 				if json.parse(content) == OK:
 					var data: Variant = json.get_data()
-					if typeof(data) == TYPE_DICTIONARY and data.has("map_file"):
-						map_file_base = str(data["map_file"]).trim_suffix(".json")
-						size_code = _extract_size_code(map_file_base)
+					if typeof(data) == TYPE_DICTIONARY:
+						var dict_data: Dictionary = data
+						if dict_data.has("map_file"):
+							map_file_base = str(dict_data["map_file"]).trim_suffix(".json")
+							size_code = _extract_size_code(map_file_base)
+						scenario_type = String(dict_data.get("scenario_type", "scenario")).to_lower()
+						description = String(dict_data.get("description", ""))
+						objectives = String(dict_data.get("objectives", ""))
+				if scenario_type != requested_type:
+					file_name = dir.get_next()
+					continue
 				items.append({
 					"name": scenario_name,
 					"display_name": scenario_name.capitalize().replace("_", " "),
 					"size": size_code,
-					"map_file_base": map_file_base
+					"map_file_base": map_file_base,
+					"description": description,
+					"objectives": objectives
 				})
 			file_name = dir.get_next()
 		dir.list_dir_end()

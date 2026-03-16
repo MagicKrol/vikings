@@ -8,7 +8,10 @@ const VARIANT_BASE_BY_BIOME := {
 	"hills": "hill",
 	"hill": "hill",
 	"hill_forest": "hill_forest",
-	"hill forest": "hill_forest"
+	"hill forest": "hill_forest",
+	"forest_hills": "hill_forest",
+	"forest hills": "hill_forest",
+	"hills_forest": "hill_forest"
 }
 const VARIANT_COUNT := 3
 const STANDARD_ICON_ALPHA := 0.85

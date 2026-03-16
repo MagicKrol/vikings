@@ -682,6 +682,7 @@ func _apply_recruitment_for_unit(unit_type: SoldierTypeEnum.Type, count: int) ->
 		target_army.add_soldiers(unit_type, count)
 	else:
 		target_region.garrison.add_soldiers(unit_type, count)
+	game_manager.record_hired_units(_get_recruit_owner_id(), {unit_type: count})
 	_deduct_recruits_from_pool(count)
 	_refresh_info_modal_after_recruit()
 
@@ -703,6 +704,7 @@ func _on_continue_pressed() -> void:
 func _apply_recruitment() -> void:
 	"""Apply the recruitment to the army/garrison and region"""
 	# Add soldiers to army or garrison
+	game_manager.record_hired_units(_get_recruit_owner_id(), recruitment_counts)
 	for unit_type in recruitment_counts:
 		var count = recruitment_counts[unit_type]
 		if target_army != null:

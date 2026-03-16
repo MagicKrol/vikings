@@ -159,16 +159,16 @@ func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
 func _on_promote_tooltip_hovered() -> void:
 	var context_data = {"current_region": current_region}
 	_cache_action_tooltip_base()
-	_show_message_action_tooltip("promote_region", context_data, _promote_button)
+	_show_message_action_tooltip(_get_region_action_tooltip_key("promote_region"), context_data, _promote_button)
 
 func _on_castle_tooltip_hovered() -> void:
 	var tooltip_key: String = _get_castle_tooltip_key()
 	var context_data = {"current_region": current_region}
-	_show_message_action_tooltip(tooltip_key, context_data, _build_button)
+	_show_message_action_tooltip(_get_region_action_tooltip_key(tooltip_key), context_data, _build_button)
 
 func _on_ore_search_tooltip_hovered() -> void:
 	var context_data = {"current_region": current_region}
-	_show_message_action_tooltip("ore_search", context_data, _search_ore_button)
+	_show_message_action_tooltip(_get_region_action_tooltip_key("ore_search"), context_data, _search_ore_button)
 
 func _on_raise_army_tooltip_hovered() -> void:
 	var context_data = {
@@ -176,10 +176,10 @@ func _on_raise_army_tooltip_hovered() -> void:
 		"army_capacity_available": _region_has_army_capacity(),
 		"raise_used": current_region.has_raised_army_this_turn()
 	}
-	_show_message_action_tooltip("raise_army", context_data, _raise_army_button)
+	_show_message_action_tooltip(_get_region_action_tooltip_key("raise_army"), context_data, _raise_army_button)
 
 func _on_recruit_garrison_tooltip_hovered() -> void:
-	_show_message_action_tooltip("recruit_soldiers_garrison", {}, _recruit_button)
+	_show_message_action_tooltip(_get_region_action_tooltip_key("recruit_soldiers_garrison"), {}, _recruit_button)
 
 func _on_action_tooltip_unhovered() -> void:
 	_hide_action_tooltips()
@@ -217,6 +217,23 @@ func _get_castle_tooltip_key() -> String:
 	if next_type == CastleTypeEnum.Type.NONE:
 		return "castle_max_level"
 	return "upgrade_castle"
+
+func _is_region_management_blocked() -> bool:
+	return current_region != null and current_region.just_conquered_this_turn
+
+func _get_region_action_tooltip_key(default_key: String) -> String:
+	if _is_region_management_blocked():
+		return "conquered_region_blocked"
+	return default_key
+
+func _apply_conquered_region_action_lock() -> void:
+	if not _is_region_management_blocked():
+		return
+	_promote_button.disabled = true
+	_build_button.disabled = true
+	_search_ore_button.disabled = true
+	_raise_army_button.disabled = true
+	_recruit_button.disabled = true
 
 func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 	"""Show the modal with army information"""
@@ -472,6 +489,7 @@ func _update_region_display() -> void:
 	_update_garrison_section()
 	_update_defenders_section()
 	_update_region_resource_values()
+	_apply_conquered_region_action_lock()
 
 func _update_region_header() -> void:
 	"""Update the region header name"""

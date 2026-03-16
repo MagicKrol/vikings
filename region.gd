@@ -70,6 +70,9 @@ var castle_repair_in_progress: bool = false
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
 var discovered_ores: Array[ResourcesEnum.Type] = []  # Which ores have been discovered
 var ore_search_used_this_turn: bool = false  # Track if ore search was used this turn
+var ore_scenario_rules_enabled: bool = false
+var ore_guaranteed_discovery_attempt: int = 0
+var ore_guaranteed_discovery_type: ResourcesEnum.Type = ResourcesEnum.Type.IRON
 var raise_army_used_this_turn: bool = false  # Track if raise army was used this turn
 var promotion_used_this_turn: bool = false  # Track if promotion was used this turn
 
@@ -775,6 +778,33 @@ func get_ore_search_attempts_remaining() -> int:
 	"""Get the number of ore search attempts remaining"""
 	return ore_search_attempts_remaining
 
+func set_scenario_ore_rules_enabled(enabled: bool) -> void:
+	ore_scenario_rules_enabled = enabled
+
+func set_ore_guaranteed_discovery(attempt: int, ore_type: ResourcesEnum.Type) -> void:
+	ore_guaranteed_discovery_attempt = maxi(0, attempt)
+	ore_guaranteed_discovery_type = ore_type
+
+func get_ore_guaranteed_discovery_attempt() -> int:
+	return ore_guaranteed_discovery_attempt
+
+func get_ore_guaranteed_discovery_type() -> ResourcesEnum.Type:
+	return ore_guaranteed_discovery_type
+
+func _get_available_ore_types_for_discovery() -> Array[ResourcesEnum.Type]:
+	var ore_types: Array[ResourcesEnum.Type] = []
+	if get_resource_amount(ResourcesEnum.Type.GOLD) > 0:
+		ore_types.append(ResourcesEnum.Type.GOLD)
+	if get_resource_amount(ResourcesEnum.Type.IRON) > 0:
+		ore_types.append(ResourcesEnum.Type.IRON)
+	return ore_types
+
+func _resolve_ore_type_for_discovery(available_ore_types: Array[ResourcesEnum.Type]) -> ResourcesEnum.Type:
+	if ore_scenario_rules_enabled:
+		if available_ore_types.size() == 1:
+			return available_ore_types[0]
+	return GameParameters.roll_ore_type()
+
 func search_for_ore() -> Dictionary:
 	"""Perform ore search. Returns {success: bool, ore_type: ResourcesEnum.Type, message: String}"""
 	if not can_search_for_ore():
@@ -783,13 +813,29 @@ func search_for_ore() -> Dictionary:
 	# Use up one attempt
 	ore_search_attempts_remaining -= 1
 	ore_search_used_this_turn = true
-	
-	# Roll for discovery
-	var discovery_successful = GameParameters.roll_ore_discovery()
+
+	var discovery_successful: bool = false
+	var ore_type: ResourcesEnum.Type = ResourcesEnum.Type.IRON
+	var attempts_used: int = GameParameters.ORE_SEARCH_CHANCES_PER_REGION - ore_search_attempts_remaining
+	var is_forced_attempt: bool = ore_guaranteed_discovery_attempt > 0 and attempts_used == ore_guaranteed_discovery_attempt
+	var available_ore_types: Array[ResourcesEnum.Type] = _get_available_ore_types_for_discovery()
+
+	if ore_scenario_rules_enabled and available_ore_types.is_empty():
+		discovery_successful = false
+	elif is_forced_attempt:
+		if ore_scenario_rules_enabled and not available_ore_types.has(ore_guaranteed_discovery_type):
+			discovery_successful = false
+		else:
+			discovery_successful = true
+			ore_type = ore_guaranteed_discovery_type
+	else:
+		discovery_successful = GameParameters.roll_ore_discovery()
+		if discovery_successful:
+			ore_type = _resolve_ore_type_for_discovery(available_ore_types)
+			if ore_scenario_rules_enabled and not available_ore_types.has(ore_type):
+				discovery_successful = false
 	
 	if discovery_successful:
-		# Roll for ore type
-		var ore_type = GameParameters.roll_ore_type()
 		
 		# Add to discovered ores if not already found
 		if ore_type not in discovered_ores:

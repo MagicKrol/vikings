@@ -57,6 +57,13 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 	for r in regions:
 		var region_id: int = int(r.get("id", -1))
 		var region := map_generator.get_region_container_by_id(region_id) as Region
+		region.set_scenario_ore_rules_enabled(true)
+		var guaranteed_attempt: int = maxi(0, int(r.get("ore_guaranteed_discovery_attempt", 0)))
+		var guaranteed_type_name: String = String(r.get("ore_guaranteed_discovery_type", "None"))
+		if guaranteed_type_name.to_lower() == "none":
+			guaranteed_attempt = 0
+		var guaranteed_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(guaranteed_type_name)
+		region.set_ore_guaranteed_discovery(guaranteed_attempt, guaranteed_type)
 		# Name: assign only if non-empty; otherwise generate for non-ocean regions
 		if r.has("name"):
 			var nm := String(r.get("name")).strip_edges()

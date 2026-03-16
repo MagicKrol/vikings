@@ -85,6 +85,7 @@ func set_current_region(region: Region) -> void:
 func _on_region_type_changed(region_id: int, selection: String) -> void:
 	var gm: GameManager = get_node("../GameManager") as GameManager
 	var mg: MapGenerator = get_node("../Map") as MapGenerator
+	var region_manager: RegionManager = gm.get_region_manager()
 	var region_container = mg.get_region_container_by_id(region_id)
 	var region := region_container as Region
 	# Ownership change via editor
@@ -121,8 +122,10 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 			"ocean": true,
 			"biome": "ocean"
 		})
+		_reinitialize_region_for_type_change(region, region_manager)
 		mg.refresh_region_visual(region_id)
 		_rebuild_border_geometry(mg)
+		(map_editor_panel as MapEditorPanel).update_from_region(region)
 		return
 	# Land selection
 	if selection.begins_with("LEVEL:"):
@@ -177,6 +180,18 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		var flag = selection.substr(4, selection.length())
 		region.set_any_ore_discovered(flag == "1")
 		return
+	if selection.begins_with("ORECFG_ATTEMPT:"):
+		var attempt: int = maxi(0, int(selection.substr(15, selection.length())))
+		region.set_ore_guaranteed_discovery(attempt, region.get_ore_guaranteed_discovery_type())
+		return
+	if selection.begins_with("ORECFG_TYPE:"):
+		var ore_type_name: String = selection.substr(12, selection.length()).strip_edges()
+		if ore_type_name.to_lower() == "none":
+			region.set_ore_guaranteed_discovery(0, region.get_ore_guaranteed_discovery_type())
+			return
+		var ore_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(ore_type_name)
+		region.set_ore_guaranteed_discovery(region.get_ore_guaranteed_discovery_attempt(), ore_type)
+		return
 	# Region type change (land)
 	region.set_ocean(false)
 	var t := _display_to_enum(selection)
@@ -188,8 +203,39 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		"biome": biome_str
 	})
 	region.set_region_type(t)
+	_reinitialize_region_for_type_change(region, region_manager)
 	mg.refresh_region_visual(region_id)
 	_rebuild_border_geometry(mg)
+	(map_editor_panel as MapEditorPanel).update_from_region(region)
+
+func _reinitialize_region_for_type_change(region: Region, region_manager: RegionManager) -> void:
+	if region.is_ocean_region():
+		_reset_ocean_region_state(region)
+		return
+	_initialize_land_region_state(region, region_manager)
+
+func _reset_ocean_region_state(region: Region) -> void:
+	region.set_population(0)
+	region.available_recruits = 0
+	region.ore_search_attempts_remaining = 0
+	region.discovered_ores.clear()
+	var empty_resources := ResourceComposition.new()
+	region.set_base_resources(empty_resources)
+
+func _initialize_land_region_state(region: Region, region_manager: RegionManager) -> void:
+	var generated_population: int = GameParameters.generate_population_size(region.get_region_level())
+	region.set_population(generated_population)
+	region.available_recruits = GameParameters.calculate_max_recruits(generated_population, region.get_region_level())
+	region.discovered_ores.clear()
+	region.ore_search_used_this_turn = false
+	if GameParameters.can_search_for_ore_in_region(region.get_region_type()):
+		region.ore_search_attempts_remaining = GameParameters.ORE_SEARCH_CHANCES_PER_REGION
+	else:
+		region.ore_search_attempts_remaining = 0
+	var empty_resources := ResourceComposition.new()
+	region.set_base_resources(empty_resources)
+	if region.get_region_type() != RegionTypeEnum.Type.MOUNTAINS:
+		region_manager.generate_region_resources(region)
 
 func _display_to_enum(txt: String) -> RegionTypeEnum.Type:
 	match txt:

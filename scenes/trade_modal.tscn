@@ -736,6 +736,12 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 5
 
+[node name="TradeDisabledLabel" type="Label" parent="Trade/HBoxContainer/Body"]
+visible = false
+layout_mode = 2
+text = "Trade is disabled in this scenario"
+horizontal_alignment = 1
+
 [node name="FirstRow" type="HBoxContainer" parent="Trade/HBoxContainer/Body/Units"]
 layout_mode = 2
 theme_override_constants/separation = 25

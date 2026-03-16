@@ -129,6 +129,30 @@
 			"region_id": 258
 		}
 	],
+	"events": [
+		{
+			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 10,
+				"Horsemen": 0,
+				"Knights": 10,
+				"Mounted Knights": 0,
+				"Peasants": 20,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 10
+			},
+			"message": "Hello",
+			"name": "spawn",
+			"player_id": 1,
+			"regions": [
+				124,
+				160
+			],
+			"turn_end": 2,
+			"turn_start": 2
+		}
+	],
 	"map_file": "mapdata-207-small.json",
 	"player_resources": [
 		{

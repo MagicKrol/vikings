@@ -97,8 +97,12 @@ static func apply_save_data(game_manager: GameManager, save_data: Dictionary) ->
 	game_manager.players_per_round = _to_int_array(game_state.get("players_per_round", [1, 2, 3, 4, 5, 6]))
 	game_manager.player_types = _deserialize_player_types(game_state.get("player_types", []))
 	game_manager._player_initial_turn_completed = _deserialize_initial_turn_flags(game_state.get("player_initial_turn_completed", {}))
+	game_manager.set_scenario_events_runtime_from_save(game_state.get("scenario_events_runtime", []))
+	var hired_units_data: Dictionary = game_state.get("player_hired_units", {})
+	game_manager.set_player_hired_units_from_save(hired_units_data)
 	game_manager.game_mode = String(source.get("mode", "custom"))
 	game_manager.scenario_path = String(source.get("scenario_path", ""))
+	game_manager.scenario_trade_disabled = bool(source.get("trade_disabled", false))
 	game_manager.load_victory_conditions_from_source(source)
 
 	var player_manager: PlayerManagerNode = game_manager.get_player_manager()
@@ -152,6 +156,7 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"map_file": map_generator.data_file_path,
 		"map_size": _map_size_to_string(map_generator.map_size),
 		"player_settings": _player_types_to_settings(game_manager.player_types),
+		"trade_disabled": game_manager.scenario_trade_disabled,
 		"victory_conditions": game_manager.get_victory_conditions_for_save()
 	}
 	var game_state: Dictionary = {
@@ -164,7 +169,9 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"armies_per_castle": game_manager.armies_per_castle,
 		"players_per_round": game_manager.players_per_round.duplicate(),
 		"player_types": _serialize_player_types(game_manager.player_types),
-		"player_initial_turn_completed": _serialize_initial_turn_flags(game_manager._player_initial_turn_completed)
+		"player_initial_turn_completed": _serialize_initial_turn_flags(game_manager._player_initial_turn_completed),
+		"scenario_events_runtime": game_manager.get_scenario_events_runtime_for_save(),
+		"player_hired_units": game_manager.get_player_hired_units_for_save()
 	}
 
 	var regions_data: Array = []
@@ -242,6 +249,13 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	for ore_name in ores_payload:
 		discovered_ores.append(ResourcesEnum.string_to_type(String(ore_name)))
 	region.discovered_ores = discovered_ores
+	region.ore_scenario_rules_enabled = bool(payload.get("ore_scenario_rules_enabled", false))
+	var guaranteed_attempt: int = int(payload.get("ore_guaranteed_discovery_attempt", 0))
+	var guaranteed_type_name: String = String(payload.get("ore_guaranteed_discovery_type", "None"))
+	if guaranteed_type_name.to_lower() == "none":
+		guaranteed_attempt = 0
+	var guaranteed_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(guaranteed_type_name)
+	region.set_ore_guaranteed_discovery(guaranteed_attempt, guaranteed_type)
 
 	region.ore_search_attempts_remaining = int(payload.get("ore_search_attempts_remaining", region.ore_search_attempts_remaining))
 	region.ore_search_used_this_turn = bool(payload.get("ore_search_used_this_turn", false))
@@ -327,6 +341,9 @@ static func _serialize_region(region: Region, region_manager: RegionManager) -> 
 		"just_conquered_this_turn": region.just_conquered_this_turn,
 		"base_resources": base_resources,
 		"discovered_ores": discovered_ores,
+		"ore_scenario_rules_enabled": region.ore_scenario_rules_enabled,
+		"ore_guaranteed_discovery_attempt": region.get_ore_guaranteed_discovery_attempt(),
+		"ore_guaranteed_discovery_type": ResourcesEnum.type_to_string(region.get_ore_guaranteed_discovery_type()),
 		"ore_search_attempts_remaining": region.ore_search_attempts_remaining,
 		"ore_search_used_this_turn": region.ore_search_used_this_turn,
 		"raise_army_used_this_turn": region.raise_army_used_this_turn,

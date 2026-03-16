@@ -635,7 +635,6 @@ theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
 [node name="CustomMap" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -705,7 +704,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
-text = "Back to Menu"
+text = "Back"
 
 [node name="MarginContainer2" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
 layout_mode = 2
@@ -1038,7 +1037,7 @@ layout_mode = 2
 [node name="Label3" type="Label" parent="CustomMap/Panel/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Difficulty level"
+text = "Difficulty Level"
 
 [node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
 layout_mode = 2
@@ -1089,7 +1088,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Victory conditions"
+text = "Victory Conditions"
 
 [node name="MarginContainer7" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
 layout_mode = 2
@@ -1244,7 +1243,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Map size"
+text = "Map Size"
 
 [node name="MapSizeMargin1" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
@@ -1275,7 +1274,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
-text = "Tiny"
+text = "XS"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(5, 0)
@@ -1287,7 +1286,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
-text = "Small"
+text = "S"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(5, 0)
@@ -1299,7 +1298,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
-text = "Medium"
+text = "M"
 
 [node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(5, 0)
@@ -1311,7 +1310,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
-text = "Large"
+text = "L"
 
 [node name="MapSizesMargin2" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
@@ -1413,7 +1412,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
-text = "Back to Menu"
+text = "Back"
 
 [node name="MarginContainer2" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
@@ -1438,7 +1437,7 @@ text = "Scenario description LOREM IPSUM"
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Difficulty level"
+text = "Difficulty Level"
 
 [node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
@@ -1493,7 +1492,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Victory conditions"
+text = "Victory Conditions"
 
 [node name="MarginContainer7" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
@@ -1625,6 +1624,7 @@ offset_bottom = 40.0
 script = ExtResource("14_vbg0f")
 
 [node name="TextureRect3" type="TextureRect" parent="Options"]
+layout_mode = 0
 offset_left = 680.0
 offset_top = 197.0
 offset_right = 2216.0
@@ -1635,6 +1635,7 @@ texture = ExtResource("9_ygwey")
 expand_mode = 2
 
 [node name="Scenario" type="Panel" parent="Options"]
+layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
 offset_right = 1290.0
@@ -1671,7 +1672,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
-text = "Back to Menu"
+text = "Back"
 
 [node name="Sound" type="VBoxContainer" parent="Options/Scenario/VBoxContainer"]
 layout_mode = 2
@@ -1841,7 +1842,7 @@ theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 toggle_mode = true
 button_pressed = true
-text = "Normal"
+text = "Normal2"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Options/Scenario/VBoxContainer/AiTurnSpeed"]
 custom_minimum_size = Vector2(12, 0)
@@ -1899,7 +1900,7 @@ theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 toggle_mode = true
 button_pressed = true
-text = "Normal"
+text = "Normal2"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Options/Scenario/VBoxContainer/BattleSpeed"]
 custom_minimum_size = Vector2(12, 0)

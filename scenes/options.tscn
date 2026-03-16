@@ -86,7 +86,7 @@ layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
 theme_override_font_sizes/font_size = 24
-text = "Back to Menu"
+text = "Back"
 
 [node name="Sound" type="VBoxContainer" parent="Scenario/VBoxContainer"]
 layout_mode = 2

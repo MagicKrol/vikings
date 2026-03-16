@@ -55,6 +55,70 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "scenario_name"
 
+[node name="IntroMessageRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="IntroMessageLabel" type="Label" parent="Panel/TabContainer/Main/IntroMessageRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Intro message:"
+
+[node name="IntroMessageEdit" type="LineEdit" parent="Panel/TabContainer/Main/IntroMessageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Scenario intro message"
+
+[node name="DescriptionRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="Panel/TabContainer/Main/DescriptionRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Description:"
+
+[node name="DescriptionEdit" type="LineEdit" parent="Panel/TabContainer/Main/DescriptionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Scenario description"
+
+[node name="ObjectivesRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="ObjectivesLabel" type="Label" parent="Panel/TabContainer/Main/ObjectivesRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Objectives:"
+
+[node name="ObjectivesEdit" type="LineEdit" parent="Panel/TabContainer/Main/ObjectivesRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Scenario objectives"
+
+[node name="ScenarioTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="ScenarioTypeLabel" type="Label" parent="Panel/TabContainer/Main/ScenarioTypeRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Scenario type:"
+
+[node name="ScenarioTypeOption" type="OptionButton" parent="Panel/TabContainer/Main/ScenarioTypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MissionNumberRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+visible = false
+layout_mode = 2
+
+[node name="MissionNumberLabel" type="Label" parent="Panel/TabContainer/Main/MissionNumberRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Mission number:"
+
+[node name="MissionNumberOption" type="OptionButton" parent="Panel/TabContainer/Main/MissionNumberRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="SaveButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
@@ -188,6 +252,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
+[node name="TradeDisabledRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+
+[node name="TradeDisabledLabel" type="Label" parent="Panel/TabContainer/Scenario/TradeDisabledRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Disable Trade:"
+
+[node name="TradeDisabledCheck" type="CheckBox" parent="Panel/TabContainer/Scenario/TradeDisabledRow"]
+layout_mode = 2
+text = ""
+
 [node name="VictoryConditionsHeader" type="Label" parent="Panel/TabContainer/Scenario"]
 layout_mode = 2
 text = "Victory Condition"
@@ -241,6 +317,59 @@ layout_mode = 2
 text = "Turns:"
 
 [node name="VictoryTurnsValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryTurnsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "1"
+
+[node name="VictoryRegionLevelRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryRegionLevelLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryRegionLevelRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Region Level:"
+
+[node name="VictoryRegionLevelOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryRegionLevelRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VictoryCastleLevelRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryCastleLevelLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryCastleLevelRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Castle Level:"
+
+[node name="VictoryCastleLevelOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryCastleLevelRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VictoryUnitTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryUnitTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryUnitTypeRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Unit Type:"
+
+[node name="VictoryUnitTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryUnitTypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VictoryUnitsHiredRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryUnitsHiredLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryUnitsHiredRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Units Hired:"
+
+[node name="VictoryUnitsHiredValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryUnitsHiredRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "1"
@@ -415,6 +544,31 @@ text = "Ore discovered:"
 
 [node name="OreCheck" type="CheckBox" parent="Panel/TabContainer/Region/OreRow"]
 layout_mode = 2
+
+[node name="OreGuaranteeAttemptRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
+layout_mode = 2
+
+[node name="OreGuaranteeAttemptLabel" type="Label" parent="Panel/TabContainer/Region/OreGuaranteeAttemptRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Guaranteed Attempt:"
+
+[node name="OreGuaranteeAttemptEdit" type="LineEdit" parent="Panel/TabContainer/Region/OreGuaranteeAttemptRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
+[node name="OreGuaranteeTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
+layout_mode = 2
+
+[node name="OreGuaranteeTypeLabel" type="Label" parent="Panel/TabContainer/Region/OreGuaranteeTypeRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Guaranteed Ore:"
+
+[node name="OreGuaranteeTypeOption" type="OptionButton" parent="Panel/TabContainer/Region/OreGuaranteeTypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="GarrisonEditRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
@@ -775,3 +929,141 @@ text = "Royal Guard"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
+
+[node name="Event" type="VBoxContainer" parent="Panel/TabContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 4
+
+[node name="EventListView" type="VBoxContainer" parent="Panel/TabContainer/Event"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EventAddRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventListView"]
+layout_mode = 2
+
+[node name="EventNameLabel" type="Label" parent="Panel/TabContainer/Event/EventListView/EventAddRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Event name:"
+
+[node name="EventNameEdit" type="LineEdit" parent="Panel/TabContainer/Event/EventListView/EventAddRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "event_name"
+
+[node name="AddEventButton" type="Button" parent="Panel/TabContainer/Event/EventListView/EventAddRow"]
+layout_mode = 2
+text = "Add Event"
+
+[node name="EventListLabel" type="Label" parent="Panel/TabContainer/Event/EventListView"]
+layout_mode = 2
+text = "Events:"
+
+[node name="EventListContainer" type="VBoxContainer" parent="Panel/TabContainer/Event/EventListView"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="EventEditorView" type="VBoxContainer" parent="Panel/TabContainer/Event"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EventEditorHeaderRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Panel/TabContainer/Event/EventEditorView/EventEditorHeaderRow"]
+layout_mode = 2
+text = "Back"
+
+[node name="EventEditorTitle" type="Label" parent="Panel/TabContainer/Event/EventEditorView/EventEditorHeaderRow"]
+layout_mode = 2
+text = "Edit Event"
+
+[node name="EventNameRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="EventNameKey" type="Label" parent="Panel/TabContainer/Event/EventEditorView/EventNameRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Event Name:"
+
+[node name="EventNameValue" type="LineEdit" parent="Panel/TabContainer/Event/EventEditorView/EventNameRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EventRegionsRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="EventRegionsKey" type="Label" parent="Panel/TabContainer/Event/EventEditorView/EventRegionsRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Region IDs:"
+
+[node name="EventRegionsValue" type="LineEdit" parent="Panel/TabContainer/Event/EventEditorView/EventRegionsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "1,5,20"
+
+[node name="EventTurnStartRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="EventTurnStartKey" type="Label" parent="Panel/TabContainer/Event/EventEditorView/EventTurnStartRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Start Turn:"
+
+[node name="EventTurnStartValue" type="LineEdit" parent="Panel/TabContainer/Event/EventEditorView/EventTurnStartRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "1"
+
+[node name="EventTurnEndRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="EventTurnEndKey" type="Label" parent="Panel/TabContainer/Event/EventEditorView/EventTurnEndRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "End Turn:"
+
+[node name="EventTurnEndValue" type="LineEdit" parent="Panel/TabContainer/Event/EventEditorView/EventTurnEndRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "1"
+
+[node name="EventPlayerRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="EventPlayerKey" type="Label" parent="Panel/TabContainer/Event/EventEditorView/EventPlayerRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Player:"
+
+[node name="EventPlayerOption" type="OptionButton" parent="Panel/TabContainer/Event/EventEditorView/EventPlayerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EventUnitsLabel" type="Label" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+text = "Army Composition:"
+
+[node name="EventUnitsContainer" type="VBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="EventMessageLabel" type="Label" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+text = "Message:"
+
+[node name="EventMessageValue" type="TextEdit" parent="Panel/TabContainer/Event/EventEditorView"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EventSaveRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
+layout_mode = 2
+
+[node name="SaveEventButton" type="Button" parent="Panel/TabContainer/Event/EventEditorView/EventSaveRow"]
+layout_mode = 2
+text = "Save"

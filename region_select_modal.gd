@@ -83,6 +83,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var definitions: Array[Dictionary] = []
 	var armies_in_region: Array[Army] = _get_armies_in_current_region()
 	var army_capacity_available := _region_has_army_capacity()
+	var management_blocked: bool = _is_region_management_blocked()
 
 	if current_region != null and current_region.get_region_level() < RegionLevelEnum.Level.L5:
 		var can_afford_promotion = _can_player_afford_promotion(current_region.get_region_level() + 1)
@@ -90,21 +91,21 @@ func _build_button_definitions() -> Array[Dictionary]:
 		definitions.append({
 			"text": "Promote Region",
 			"name": "promote_region",
-			"enabled": promotion_available and can_afford_promotion,
+			"enabled": not management_blocked and promotion_available and can_afford_promotion,
 			"action": "_on_promote_region_pressed",
-			"tooltip": Callable(self, "_on_promote_tooltip_hovered")
+			"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_promote_tooltip_hovered")
 		})
 
 	definitions.append({
 		"text": "Recruit Soldiers",
 		"name": "recruit_soldiers",
-		"enabled": true,
+		"enabled": not management_blocked,
 		"action": "_on_recruit_soldiers_pressed",
-		"tooltip": Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers_garrison")
+		"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_tooltip_hovered").bind("recruit_soldiers_garrison")
 	})
 
 	if current_region != null:
-		var castle_button_data = _get_castle_button_data()
+		var castle_button_data = _get_castle_button_data(management_blocked)
 		if not castle_button_data.is_empty():
 			definitions.append(castle_button_data)
 
@@ -112,9 +113,9 @@ func _build_button_definitions() -> Array[Dictionary]:
 	definitions.append({
 		"text": tr("Call to Arms"),
 		"name": "call_to_arms",
-		"enabled": has_castle,
+		"enabled": not management_blocked and has_castle,
 		"action": "_on_call_to_arms_pressed",
-		"tooltip": Callable(self, "_on_call_to_arms_tooltip_hovered")
+		"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_call_to_arms_tooltip_hovered")
 	})
 
 	if current_region != null and GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
@@ -123,9 +124,9 @@ func _build_button_definitions() -> Array[Dictionary]:
 		definitions.append({
 			"text": "Ore Search",
 			"name": "ore_search",
-			"enabled": can_search and can_afford_ore,
+			"enabled": not management_blocked and can_search and can_afford_ore,
 			"action": "_on_ore_search_pressed",
-			"tooltip": Callable(self, "_on_ore_search_tooltip_hovered")
+			"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_ore_search_tooltip_hovered")
 		})
 
 	var castle_type := current_region.get_castle_type() if current_region != null else CastleTypeEnum.Type.NONE
@@ -135,9 +136,9 @@ func _build_button_definitions() -> Array[Dictionary]:
 	definitions.append({
 		"text": "Raise Army",
 		"name": "raise_army",
-		"enabled": has_keep_or_higher and can_afford_army and not has_used_raise_army and army_capacity_available,
+		"enabled": not management_blocked and has_keep_or_higher and can_afford_army and not has_used_raise_army and army_capacity_available,
 		"action": "_on_raise_army_pressed",
-		"tooltip": Callable(self, "_on_raise_army_tooltip_hovered")
+		"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_raise_army_tooltip_hovered")
 	})
 
 	if not armies_in_region.is_empty():
@@ -201,7 +202,7 @@ func _attach_tooltip(button_data: Dictionary, button: Button) -> void:
 		button.mouse_entered.connect(Callable(self, "_on_tooltip_hovered").bind(tooltip_value))
 	button.mouse_exited.connect(_on_tooltip_unhovered)
 
-func _get_castle_button_data() -> Dictionary:
+func _get_castle_button_data(management_blocked: bool) -> Dictionary:
 	var castle_type = current_region.get_castle_type()
 	var under_construction = current_region.is_castle_under_construction()
 	var needs_repair = _region_has_damage()
@@ -214,16 +215,16 @@ func _get_castle_button_data() -> Dictionary:
 		return {
 			"text": "Build " + CastleTypeEnum.type_to_string(building_type),
 			"enabled": false,
-			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
+			"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
 		}
 	if needs_repair or under_repair:
 		var can_repair = _can_player_afford_repair() and not under_repair and current_region.has_castle()
 		var label = "Repair " + CastleTypeEnum.type_to_string(castle_type)
 		return {
 			"text": label,
-			"enabled": can_repair,
+			"enabled": not management_blocked and can_repair,
 			"action": "_on_repair_castle_pressed",
-			"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("repair_castle")
+			"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_castle_tooltip_hovered").bind("repair_castle")
 		}
 	var next_castle_type: CastleTypeEnum.Type
 	var can_afford: bool
@@ -237,9 +238,9 @@ func _get_castle_button_data() -> Dictionary:
 		can_afford = _can_player_afford_castle(next_castle_type)
 	return {
 		"text": "Build " + CastleTypeEnum.type_to_string(next_castle_type),
-		"enabled": can_afford and ((castle_type == CastleTypeEnum.Type.NONE and current_region.can_build_castle()) or current_region.can_upgrade_castle()),
+		"enabled": not management_blocked and can_afford and ((castle_type == CastleTypeEnum.Type.NONE and current_region.can_build_castle()) or current_region.can_upgrade_castle()),
 		"action": "_on_build_castle_pressed" if castle_type == CastleTypeEnum.Type.NONE else "_on_upgrade_castle_pressed",
-		"tooltip": Callable(self, "_on_castle_tooltip_hovered").bind("upgrade_castle" if castle_type != CastleTypeEnum.Type.NONE else "build_castle")
+		"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_castle_tooltip_hovered").bind("upgrade_castle" if castle_type != CastleTypeEnum.Type.NONE else "build_castle")
 	}
 
 func _on_promote_region_pressed() -> void:
@@ -515,6 +516,12 @@ func _on_ore_search_tooltip_hovered() -> void:
 			show_message_tooltip("ore_search", context_data)
 		else:
 			show_resource_tooltip("ore_search", context_data)
+
+func _on_conquered_region_tooltip_hovered() -> void:
+	show_message_tooltip("conquered_region_blocked", {})
+
+func _is_region_management_blocked() -> bool:
+	return current_region != null and current_region.just_conquered_this_turn
 
 func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 	if player_manager == null:
