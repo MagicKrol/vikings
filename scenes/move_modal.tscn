@@ -172,7 +172,7 @@ expand_icon = true
 layout_mode = 0
 offset_left = 800.0
 offset_top = -800.0
-offset_right = 1050.0
+offset_right = 1070.0
 offset_bottom = -700.0
 texture = ExtResource("5_qply4")
 
@@ -180,16 +180,17 @@ texture = ExtResource("5_qply4")
 layout_mode = 0
 offset_left = 800.0
 offset_top = -800.0
-offset_right = 1050.0
+offset_right = 1070.0
 offset_bottom = -700.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
 [node name="List" type="VBoxContainer" parent="Panel2"]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 offset_left = 8.0
 offset_top = 7.0
-offset_right = 227.0
+offset_right = 258.0
 offset_bottom = 179.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -207,18 +208,17 @@ layout_mode = 2
 alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel2/List/ButtonSection/HBoxContainer3"]
-custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ButtonBorder" type="Panel" parent="Panel2/List/ButtonSection/HBoxContainer3"]
-custom_minimum_size = Vector2(225, 44)
+custom_minimum_size = Vector2(240, 44)
 layout_mode = 2
 theme = ExtResource("4_button_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
 
 [node name="NextArmy" type="Button" parent="Panel2/List/ButtonSection/HBoxContainer3/ButtonBorder"]
 clip_contents = true
-custom_minimum_size = Vector2(220, 40)
+custom_minimum_size = Vector2(235, 40)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

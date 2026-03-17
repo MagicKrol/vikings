@@ -117,7 +117,7 @@ var player_settings: Array = []  # Array of dictionaries with player configurati
 
 func _ready():
 	
-	TranslationServer.set_locale("pl")
+	TranslationServer.set_locale("br")
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)

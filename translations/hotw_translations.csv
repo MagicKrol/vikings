@@ -38,10 +38,10 @@ Promote Region,"Upgrade, growth region to the next adiministrative level",Promot
 Recruit Soldiers,Button to hire new units,Recruit Soldiers,Soldaten rekrutieren,Zwerbuj żołnierzy,Recrutar soldados
 Build Castle,Button to build castles,Build Castle,Burg errichten,Wznieś zamek,Construir castelo
 Call to Arms,Action to gather units from neighbouring regions,Call to Arms,Aufgebot,Wezwanie do broni,Chamado às armas
-Raise Army,Creating a new Army,Raise Army,Armee aufstellen,Wystaw armię,Erguer exército
+Raise Army,Creating a new Army,Raise Army,Armee heben,Wystaw armię,Erguer exército
 Back,Button to move to the previous menu,Back,Zurück,Wstecz,Voltar
-Make Camp,Action for the army to rest,Make Camp,Lager errichten,Rozbij obóz,Montar acampamento
-Cancel Move,Button to cancel army's move,Cancel Move,Bewegung abbrechen,Anuluj ruch,Cancelar movimento
+Make Camp,Action for the army to rest,Make Camp,Rasten,Rozbij obóz,Acampar
+Cancel Move,Button to cancel army's move,Cancel Move,Abbrechen,Anuluj ruch,Cancelar
 Next army,Button to cycle between armies,Next army,Nächste Armee,Następna armia,Próximo exército
 (Press Tab),suggestion to press a keyboard Tab,(Press Tab),(Tab drücken),(Naciśnij Tab),(Pressione Tab)
 Move Army,Action to order army to move,Move Army,Armee bewegen,Przemieść armię,Mover exército
@@ -92,7 +92,7 @@ Large,Map Size ,Large,Groß,Duża,Grande
 No.,Short version for Number. ,No.,Nr.,Nr,Nº
 Human,Option for a player type,Human,Mensch,Człowiek,Humano
 Computer,Option for a player type,Computer,Computer,Komputer,Computador
-Off,Option for a player type,Off,Aus,Wyłączone,Desativado
+Off,Option for a player type,Off,Aus,Brak,Nenhum
 Conquer,"A victory condition type, conquering all regions",Conquer,Erobern,Podbój,Conquistar
 Dominate,"A victory condition type, domiante most of the map",Dominate,Dominanz,Dominacja,Dominar
 T,Short version of Map size: Tiny,T,SK,BM,MP
@@ -184,7 +184,7 @@ Player %d Won,Victory popup message format naming the winning player.,Player %d 
 Population: %d,Player status label format showing current population value.,Population: %d,Bevölkerung: %d,Populacja: %d,População: %d
 Promote Region,Region action label for administrative region level upgrade.,Promote Region,Region aufwerten,Awansuj region,Promover Região
 Promote the region to the next administrative level to increase growth and production.,Tooltip text explaining region promotion benefits.,Promote the region to the next administrative level to increase growth and production.,"Erhöhe die Verwaltungsstufe der Region, um Wachstum und Produktion zu steigern.","Podnieś poziom administracyjny regionu, aby zwiększyć wzrost i produkcję.",Promova a região ao próximo nível administrativo para aumentar crescimento e produção.
-Raise Army,Region action label for creating a new army in the region.,Raise Army,Armee aufstellen,Wystaw armię,Levantar Exército
+Raise Army,Region action label for creating a new army in the region.,Raise Army,Armee heben,Wystaw armię,Formar Exército
 Recruit Soldiers,Action label for opening recruitment flow in army or region context.,Recruit Soldiers,Soldaten rekrutieren,Rekrutuj żołnierzy,Recrutar Soldados
 Recruit new soldiers for this army using regional population and resources.,Tooltip text explaining army recruitment from regional resources.,Recruit new soldiers for this army using regional population and resources.,Rekrutiere neue Soldaten für diese Armee mit regionaler Bevölkerung und Ressourcen.,"Rekrutuj nowych żołnierzy do tej armii, używając populacji i zasobów regionu.",Recrute novos soldados para este exército usando população e recursos regionais.
 Recruit soldiers for this region's local garrison.,Tooltip text explaining garrison recruitment in the region modal.,Recruit soldiers for this region's local garrison.,Rekrutiere Soldaten für die Garnison dieser Region.,Rekrutuj żołnierzy do garnizonu regionu.,Recrute soldados para a guarnição desta região.
@@ -280,7 +280,7 @@ Sell,Sell,Sell,Verkaufen,Sprzedaj,Vender
 • Charge,Ability name,• Charge,• Sturmangriff,• Szarża,• Investida
 • None,Ability name,• None,• Keine,• Brak,• Nenhuma
 • Multi attack,Ability name,• Multi attack,• Mehrfachangriff,• Wielokrotny atak,• Ataque Múltiplo
-Your scouts estimate enemy force to,Prebattle static scene header text introducing the enemy strength estimate.,Your scouts estimate enemy force to,Deine Späher schätzen die feindliche Streitmacht auf,Twoi zwiadowcy szacują siły wroga na,Seus batedores estimam as forças inimigas em
+Your scouts estimate enemy force to,Your scouts estimate enemy force to,Your scouts estimate enemy force to,Deine Späher schätzen die feindliche Stärke auf,Twoi zwiadowcy szacują siły wroga na,Seus batedores estimam a força inimiga em
 Map Size,Map Size,Map Size,Kartengröße,Rozmiar mapy,Tamanho do mapa
 Engaged,Engaged,Engaged,Im Gefecht,W walce,Em combate
 Siege Equipment,Siege Equipment,Siege Equipment,Belagerungsgerät,Machiny oblężnicze,Equipamento de cerco

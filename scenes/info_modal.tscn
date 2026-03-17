@@ -229,6 +229,7 @@ offset_right = 500.0
 offset_bottom = 1021.0
 
 [node name="Region" type="VBoxContainer" parent="RegionPanel/Body"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -258,7 +259,6 @@ texture = ExtResource("9_tnvml")
 expand_mode = 4
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel"]
-custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel"]
@@ -271,6 +271,7 @@ theme_override_font_sizes/font_size = 20
 text = "Shire"
 
 [node name="Info" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer"]
+custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer/Info"]
@@ -290,7 +291,7 @@ text = "5"
 layout_mode = 2
 
 [node name="PromoteButton" type="Button" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection"]
-custom_minimum_size = Vector2(200, 40)
+custom_minimum_size = Vector2(195, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -368,7 +369,6 @@ texture = ExtResource("13_4jjrl")
 expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel"]
-custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Info" type="VBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel"]
@@ -381,13 +381,14 @@ theme_override_font_sizes/font_size = 20
 text = "Keep"
 
 [node name="Defense" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/Info"]
+custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/Info/Defense"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Defense"
+text = "Verteidigung"
 
 [node name="DefenseValue" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/Info/Defense"]
 custom_minimum_size = Vector2(40, 0)
@@ -400,7 +401,7 @@ text = "40%"
 layout_mode = 2
 
 [node name="BuildButton" type="Button" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
-custom_minimum_size = Vector2(200, 40)
+custom_minimum_size = Vector2(195, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -495,7 +496,6 @@ texture = ExtResource("20_8hmuk")
 expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Mine"]
-custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Info" type="VBoxContainer" parent="RegionPanel/Body/Region/Actions/Mine"]
@@ -508,6 +508,7 @@ theme_override_font_sizes/font_size = 20
 text = "Ore"
 
 [node name="Search" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Mine/Info"]
+custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 
 [node name="SearchStatus" type="Label" parent="RegionPanel/Body/Region/Actions/Mine/Info/Search"]
@@ -521,7 +522,7 @@ text = "Search"
 layout_mode = 2
 
 [node name="SearchOreButton" type="Button" parent="RegionPanel/Body/Region/Actions/Mine/ActionSection"]
-custom_minimum_size = Vector2(200, 40)
+custom_minimum_size = Vector2(195, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -565,7 +566,6 @@ texture = ExtResource("21_5b6lf")
 expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RaiseArmy"]
-custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Info" type="VBoxContainer" parent="RegionPanel/Body/Region/Actions/RaiseArmy"]
@@ -578,6 +578,7 @@ theme_override_font_sizes/font_size = 20
 text = "New army"
 
 [node name="Army" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RaiseArmy/Info"]
+custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 
 [node name="NextArmyName" type="Label" parent="RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army"]
@@ -591,7 +592,7 @@ text = "Army V"
 layout_mode = 2
 
 [node name="RaiseArmyButton" type="Button" parent="RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection"]
-custom_minimum_size = Vector2(200, 40)
+custom_minimum_size = Vector2(195, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -641,7 +642,6 @@ texture = ExtResource("18_r62ta")
 expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer"]
-custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Info" type="VBoxContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer"]
@@ -654,6 +654,7 @@ theme_override_font_sizes/font_size = 20
 text = "Garrison"
 
 [node name="Men" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info"]
+custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men"]
@@ -673,7 +674,7 @@ text = "5"
 layout_mode = 2
 
 [node name="RecruitButton" type="Button" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection"]
-custom_minimum_size = Vector2(200, 40)
+custom_minimum_size = Vector2(195, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("14_1btl1")
@@ -978,7 +979,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="Army" type="VBoxContainer" parent="RegionPanel/Body"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -1076,7 +1076,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Vigor:"
+text = "Vigor"
 
 [node name="ProgressBar" type="ProgressBar" parent="RegionPanel/Body/Army/Army1/Army1/Vigor"]
 custom_minimum_size = Vector2(270, 15)
@@ -1198,7 +1198,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Vigor:"
+text = "Vigor"
 
 [node name="ProgressBar" type="ProgressBar" parent="RegionPanel/Body/Army/Army2/Army2/Vigor"]
 custom_minimum_size = Vector2(270, 15)
@@ -1317,7 +1317,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Vigor:"
+text = "Vigor"
 
 [node name="ProgressBar" type="ProgressBar" parent="RegionPanel/Body/Army/Army3/Army3/Vigor"]
 custom_minimum_size = Vector2(270, 15)
@@ -1436,7 +1436,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Vigor:"
+text = "Vigor"
 
 [node name="ProgressBar" type="ProgressBar" parent="RegionPanel/Body/Army/Army4/Army4/Vigor"]
 custom_minimum_size = Vector2(270, 15)
@@ -1555,7 +1555,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Vigor:"
+text = "Vigor"
 
 [node name="ProgressBar" type="ProgressBar" parent="RegionPanel/Body/Army/Army5/Army5/Vigor"]
 custom_minimum_size = Vector2(270, 15)

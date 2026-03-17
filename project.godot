@@ -37,7 +37,7 @@ ui_focus_next={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.en.translation", "res://translations/hotw_translations.pl.translation", "res://translations/missions.de.translation", "res://translations/missions.en.translation", "res://translations/missions.pl.translation")
+locale/translations=PackedStringArray("res://translations/hotw_translations.de.translation", "res://translations/hotw_translations.en.translation", "res://translations/hotw_translations.pl.translation", "res://translations/missions.de.translation", "res://translations/missions.en.translation", "res://translations/missions.pl.translation", "res://translations/hotw_translations.br.translation", "res://translations/missions.br.translation")
 
 [rendering]
 
