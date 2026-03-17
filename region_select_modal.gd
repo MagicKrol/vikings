@@ -63,7 +63,7 @@ func hide_modal() -> void:
 
 func _create_action_buttons() -> void:
 	_clear_buttons()
-	header_label.text = HEADER_TEXT
+	header_label.text = tr(HEADER_TEXT)
 
 	var button_definitions := _build_button_definitions()
 	if button_definitions.is_empty():
@@ -89,7 +89,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 		var can_afford_promotion = _can_player_afford_promotion(current_region.get_region_level() + 1)
 		var promotion_available := not current_region.has_promoted_this_turn()
 		definitions.append({
-			"text": "Promote Region",
+			"text": tr("Promote Region"),
 			"name": "promote_region",
 			"enabled": not management_blocked and promotion_available and can_afford_promotion,
 			"action": "_on_promote_region_pressed",
@@ -97,7 +97,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 		})
 
 	definitions.append({
-		"text": "Recruit Soldiers",
+		"text": tr("Recruit Soldiers"),
 		"name": "recruit_soldiers",
 		"enabled": not management_blocked,
 		"action": "_on_recruit_soldiers_pressed",
@@ -122,7 +122,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 		var can_search := current_region.can_search_for_ore()
 		var can_afford_ore := _can_player_afford_ore_search()
 		definitions.append({
-			"text": "Ore Search",
+			"text": tr("Ore Search"),
 			"name": "ore_search",
 			"enabled": not management_blocked and can_search and can_afford_ore,
 			"action": "_on_ore_search_pressed",
@@ -134,7 +134,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var can_afford_army := _can_player_afford_raise_army()
 	var has_used_raise_army := current_region != null and current_region.has_raised_army_this_turn()
 	definitions.append({
-		"text": "Raise Army",
+		"text": tr("Raise Army"),
 		"name": "raise_army",
 		"enabled": not management_blocked and has_keep_or_higher and can_afford_army and not has_used_raise_army and army_capacity_available,
 		"action": "_on_raise_army_pressed",
@@ -143,7 +143,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 
 	if not armies_in_region.is_empty():
 		definitions.append({
-			"text": "Back",
+			"text": tr("Back"),
 			"name": "back",
 			"enabled": true,
 			"action": "_on_back_pressed",
@@ -213,13 +213,13 @@ func _get_castle_button_data(management_blocked: bool) -> Dictionary:
 		if building_type == CastleTypeEnum.Type.NONE:
 			return {}
 		return {
-			"text": "Build " + CastleTypeEnum.type_to_string(building_type),
+			"text": tr("Build %s") % CastleTypeEnum.type_to_display_string(building_type),
 			"enabled": false,
 			"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_castle_tooltip_hovered").bind("castle_construction")
 		}
 	if needs_repair or under_repair:
 		var can_repair = _can_player_afford_repair() and not under_repair and current_region.has_castle()
-		var label = "Repair " + CastleTypeEnum.type_to_string(castle_type)
+		var label = tr("Repair %s") % CastleTypeEnum.type_to_display_string(castle_type)
 		return {
 			"text": label,
 			"enabled": not management_blocked and can_repair,
@@ -237,7 +237,7 @@ func _get_castle_button_data(management_blocked: bool) -> Dictionary:
 			return {}
 		can_afford = _can_player_afford_castle(next_castle_type)
 	return {
-		"text": "Build " + CastleTypeEnum.type_to_string(next_castle_type),
+		"text": tr("Build %s") % CastleTypeEnum.type_to_display_string(next_castle_type),
 		"enabled": not management_blocked and can_afford and ((castle_type == CastleTypeEnum.Type.NONE and current_region.can_build_castle()) or current_region.can_upgrade_castle()),
 		"action": "_on_build_castle_pressed" if castle_type == CastleTypeEnum.Type.NONE else "_on_upgrade_castle_pressed",
 		"tooltip": Callable(self, "_on_conquered_region_tooltip_hovered") if management_blocked else Callable(self, "_on_castle_tooltip_hovered").bind("upgrade_castle" if castle_type != CastleTypeEnum.Type.NONE else "build_castle")
@@ -271,8 +271,14 @@ func _on_promote_region_pressed() -> void:
 	
 	current_region.promote_region()
 	current_region.mark_promoted_this_turn()
-	var level_name = RegionLevelEnum.level_to_string(next_level)
-	var promotion_message = "Region promoted to " + level_name + " \n(level " + str(int(next_level) + 1) + ")"
+	var level_name = RegionLevelEnum.level_to_display_string(next_level)
+	var promoted_line: String = tr("Region promoted to {level}").format({
+		"level": level_name
+	})
+	var level_line: String = tr("(level {level_number})").format({
+		"level_number": int(next_level) + 1
+	})
+	var promotion_message: String = promoted_line + "\n" + level_line
 	visible = false
 	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
@@ -359,7 +365,7 @@ func _on_repair_castle_pressed() -> void:
 	visible = false
 	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
-	message_modal.display_message("Repair started", "Repairs will finish in 1 turn.")
+	message_modal.display_message(tr("Repair started"), tr("Repairs will finish in 1 turn."))
 	if info_modal != null and info_modal.visible:
 		info_modal.show_region_info(current_region, false)
 	_create_action_buttons()
@@ -376,11 +382,12 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	
 	current_region.start_castle_construction(castle_type)
 	var turns_left = current_region.get_castle_build_turns_remaining()
-	var building_name = CastleTypeEnum.type_to_string(castle_type)
+	var building_name = CastleTypeEnum.type_to_display_string(castle_type)
 	visible = false
 	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
-	message_modal.display_message(building_name + " will be done in " + str(turns_left) + " turn(s).")
+	var turn_word: String = tr("turn") if turns_left == 1 else tr("turns")
+	message_modal.display_message(tr("%s will be done in %d %s.") % [building_name, turns_left, turn_word])
 	
 	if info_modal != null and info_modal.visible:
 		info_modal.show_region_info(current_region, false)
@@ -410,23 +417,23 @@ func _on_ore_search_pressed() -> void:
 	
 	if search_result.success and search_result.has("ore_type"):
 		var ore_type = search_result.ore_type
-		var ore_type_string = ResourcesEnum.type_to_string(ore_type)
+		var ore_type_string = ResourcesEnum.type_to_display_string(ore_type)
 		var ore_amount = current_region.get_resource_amount(ore_type)
-		var header = ore_type_string.capitalize() + " Found!"
-		var message = "Ore size was estimated to " + str(ore_amount) + " units."
+		var header = tr("%s Found!") % ore_type_string.capitalize()
+		var message = tr("Ore size was estimated at %d units.") % ore_amount
 		visible = false
 		if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 			message_modal.continue_clicked.connect(_on_message_modal_continue)
 		message_modal.display_message(header, message)
 	elif not search_result.success:
-		var header = "Ore Search"
+		var header = tr("Ore Search")
 		var remaining_attempts = current_region.get_ore_search_attempts_remaining()
 		var message: String
 		
 		if remaining_attempts > 0:
-			message = "No luck this turn."
+			message = tr("No luck this turn.")
 		else:
-			message = "Ore searches exhausted."
+			message = tr("Ore searches exhausted.")
 		
 		visible = false
 		if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
@@ -462,10 +469,10 @@ func _on_raise_army_pressed() -> void:
 	
 	if new_army != null:
 		current_region.mark_raise_army_used()
-		var army_name = new_army.name if new_army.name else "New Army"
+		var army_name = new_army.name if new_army.name else tr("New Army")
 		visible = false
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
-		message_modal.display_message(army_name + " is being raised")
+		message_modal.display_message(tr("%s is being raised.") % army_name)
 		
 		if info_modal != null and info_modal.visible:
 			info_modal.show_region_info(current_region, false)

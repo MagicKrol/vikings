@@ -363,16 +363,16 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	var selection_button = card.get_node("SelectionStatus") as Button
 	if army == current_army:
 		selection_button.theme = BUTTON_GREEN_THEME
-		selection_button.text = "Selected"
+		selection_button.text = tr("Selected")
 		card.add_theme_stylebox_override("panel", _army_card_style_hover)
 	else:
 		selection_button.theme = BUTTON_DEFAULT_THEME
-		selection_button.text = "Select"
+		selection_button.text = tr("Select")
 		card.add_theme_stylebox_override("panel", _army_card_style_default)
 
 	var content = card.get_node(NodePath(str(card.name))) as VBoxContainer
 	var army_name_label = content.get_node("HBoxContainer/ArmyName") as Label
-	army_name_label.text = "Army " + str(army.number)
+	army_name_label.text = tr("Army %s") % army.number
 
 	var move_container = content.get_node("MP/MoveContainer") as HBoxContainer
 	_update_move_points_icons(move_container, army.get_movement_points())
@@ -494,13 +494,14 @@ func _update_region_display() -> void:
 func _update_region_header() -> void:
 	"""Update the region header name"""
 	var region_name_label: Label = get_node("RegionPanel/Header/HeaderSection/RegionName")
-	var formatted_name: String = current_region.get_region_level_string() + " of " + current_region.get_region_name()
+	var level_text: String = RegionLevelEnum.level_to_display_string(current_region.get_region_level())
+	var formatted_name: String = tr("%s of %s") % [level_text, current_region.get_region_name()]
 	region_name_label.text = formatted_name
 
 func _update_region_level_section() -> void:
 	"""Update region level name/number and promotion cost"""
 	var level_label: Label = get_node("RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer/Label")
-	level_label.text = current_region.get_region_level_string()
+	level_label.text = RegionLevelEnum.level_to_display_string(current_region.get_region_level())
 	var level_value: Label = get_node("RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer/Info/RegionLevelValue")
 	level_value.text = current_region.get_region_level_number()
 
@@ -523,7 +524,7 @@ func _update_region_level_section() -> void:
 func _update_castle_section() -> void:
 	"""Update castle name, defense, build/repair status, and cost display"""
 	var castle_name_label: Label = get_node("RegionPanel/Body/Region/Actions/CastleLevel/Info/CastleLevelName")
-	castle_name_label.text = current_region.get_castle_type_string().capitalize()
+	castle_name_label.text = CastleTypeEnum.type_to_display_string(current_region.get_castle_type())
 
 	var defense_value: Label = get_node("RegionPanel/Body/Region/Actions/CastleLevel/Info/Defense/DefenseValue")
 	var base_defense: int = GameParameters.get_castle_defense_bonus(current_region.get_castle_type())
@@ -569,7 +570,7 @@ func _update_raise_army_section() -> void:
 	var owner_id: int = current_region.get_region_owner()
 	var roman_number: String = game_manager.get_army_manager().get_next_army_roman_numeral_for_player(owner_id)
 	var next_army_label: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName")
-	next_army_label.text = "Army " + roman_number
+	next_army_label.text = tr("Army %s") % roman_number
 
 	var gold_cost: int = GameParameters.get_raise_army_cost()
 	_set_cost_value("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/Resources/Gold", gold_cost)
@@ -722,20 +723,20 @@ func _update_construction_status() -> void:
 	"""Update construction status label"""
 	var build_button = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/BuildButton") as Button
 	if current_region.is_castle_under_construction():
-		build_button.text = "Building"
+		build_button.text = tr("Building")
 		build_button.disabled = true
 	elif current_region.is_castle_under_repair():
-		build_button.text = "Repairing"
+		build_button.text = tr("Repairing")
 		build_button.disabled = true
 	elif current_region.has_castle_damage():
-		build_button.text = "Repair"
+		build_button.text = tr("Repair")
 		var can_repair: bool = _can_player_afford_repair() and current_region.has_castle()
 		build_button.disabled = not can_repair
 	elif current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
-		build_button.text = "Build"
+		build_button.text = tr("Build")
 		build_button.disabled = not (_can_player_afford_any_castle() and current_region.can_build_castle())
 	else:
-		build_button.text = "Upgrade"
+		build_button.text = tr("Upgrade")
 		var next_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_region.get_castle_type())
 		if next_type == CastleTypeEnum.Type.NONE:
 			build_button.disabled = true
@@ -766,8 +767,14 @@ func _on_promote_region_pressed() -> void:
 		return
 	current_region.promote_region()
 	current_region.mark_promoted_this_turn()
-	var level_name = RegionLevelEnum.level_to_string(next_level)
-	var promotion_message = "Region promoted to " + level_name + " \n(level " + str(int(next_level) + 1) + ")"
+	var level_name = RegionLevelEnum.level_to_display_string(next_level)
+	var promoted_line: String = tr("Region promoted to {level}").format({
+		"level": level_name
+	})
+	var level_line: String = tr("(level {level_number})").format({
+		"level_number": int(next_level) + 1
+	})
+	var promotion_message: String = promoted_line + "\n" + level_line
 	message_modal.display_message(promotion_message)
 	_refresh_current_region()
 	_request_player_status_refresh()
@@ -819,7 +826,7 @@ func _on_repair_castle_pressed() -> void:
 	var current_player = player_manager.get_player(1)
 	if not region_manager.try_repair_castle(current_region, current_player):
 		return
-	message_modal.display_message("Repair started", "Repairs will finish in 1 turn.")
+	message_modal.display_message(tr("Repair started"), tr("Repairs will finish in 1 turn."))
 	_refresh_current_region()
 	_request_player_status_refresh()
 
@@ -830,8 +837,9 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 		return
 	current_region.start_castle_construction(castle_type)
 	var turns_left = current_region.get_castle_build_turns_remaining()
-	var building_name = CastleTypeEnum.type_to_string(castle_type)
-	message_modal.display_message(building_name + " will be done in " + str(turns_left) + " turn(s).")
+	var building_name = CastleTypeEnum.type_to_display_string(castle_type)
+	var turn_word: String = tr("turn") if turns_left == 1 else tr("turns")
+	message_modal.display_message(tr("%s will be done in %d %s.") % [building_name, turns_left, turn_word])
 	_refresh_current_region()
 	_request_player_status_refresh()
 
@@ -846,19 +854,19 @@ func _on_ore_search_pressed() -> void:
 	var search_result = region_manager.perform_ore_search(current_region, 1, player_manager)
 	if search_result.success and search_result.has("ore_type"):
 		var ore_type = search_result.ore_type
-		var ore_type_string = ResourcesEnum.type_to_string(ore_type)
+		var ore_type_string = ResourcesEnum.type_to_display_string(ore_type)
 		var ore_amount = current_region.get_resource_amount(ore_type)
-		var header = ore_type_string.capitalize() + " Found!"
-		var message = "Ore size was estimated to " + str(ore_amount) + " units."
+		var header = tr("%s Found!") % ore_type_string.capitalize()
+		var message = tr("Ore size was estimated at %d units.") % ore_amount
 		message_modal.display_message(header, message)
 	elif not search_result.success:
-		var header = "Ore Search"
+		var header = tr("Ore Search")
 		var remaining_attempts = current_region.get_ore_search_attempts_remaining()
 		var message: String
 		if remaining_attempts > 0:
-			message = "No luck this turn."
+			message = tr("No luck this turn.")
 		else:
-			message = "Ore searches exhausted."
+			message = tr("Ore searches exhausted.")
 		message_modal.display_message(header, message)
 	_refresh_current_region()
 	_request_player_status_refresh()
@@ -877,8 +885,8 @@ func _on_raise_army_pressed() -> void:
 	var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
 	if new_army != null:
 		current_region.mark_raise_army_used()
-		var army_name = new_army.name if new_army.name else "New Army"
-		message_modal.display_message(army_name + " is being raised")
+		var army_name = new_army.name if new_army.name else tr("New Army")
+		message_modal.display_message(tr("%s is being raised.") % army_name)
 		_refresh_current_region()
 		_request_player_status_refresh()
 	else:

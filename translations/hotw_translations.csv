@@ -1,34 +1,34 @@
 key,explanation or purpose,en,de,pl,br
 demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
 Options,,Options,Optionen,Opcje,Opções
-Exit,,Exit,Ausfrahrt,Zamknij,Sair
-Population:,Number of people in the region,Population:,Bevölkerung,Ludność,População
-Food:,Resource type,Food:,Nahrung,Żywność,Alimentos
-Wood:,Resource type,Wood:,Holz,Drewno,Madeira
-Stone:,Resource type,Stone:,Stein,Kamień,Pedra
-Iron:,Resource type,Iron:,Eisen,Żelazo,Ferro
-Gold:,Resource type,Gold:,Gold,Złoto,Ouro
+Exit,,Exit,Ausfrahrt,Wyjdź,Sair
+Population,Number of people in the region,Population:,Bevölkerung,Ludność,População
+Food,Resource type,Food,Nahrung,Żywność,Alimentos
+Wood,Resource type,Wood,Holz,Drewno,Madeira
+Stone,Resource type,Stone,Stein,Kamień,Pedra
+Iron,Resource type,Iron,Eisen,Żelazo,Ferro
+Gold,Resource type,Gold,Gold,Złoto,Ouro
 Select Target,Selecting either region or army to perform action,Select Target,Ziel wählen,Wybierz cel,Selecionar alvo
 Growth:,Region's growth in %,Growth:,Wachstum,Rozwój,Crescimento
 Region Level:,Region's upgrade level,Region Level:,Gebietsstufe,Poziom krainy,Nível da região
-Income:,Amount of gold earned per turn,Income:,Einkommen,Dochód,Renda
+Income,Amount of gold earned per turn,Income,Einkommen,Dochód,Renda
 Garrison:,"Local soldiers, defenders",Garrison:,Garnison:,Garnizon,Guarnição
 Garrison,"Local soldiers, defenders",Garrison,Garnison,Garnizon,Guarnição
-Defenses:,"Forticiation type, like castle, keep",Defenses:,Befestigungen,Umocnienia,Fortificações
+Defense,"Forticiation type, like castle, keep",Defense,Verteidigung,Obrona,Defesa
 Defense score:,How strong is defense in %,Defense score:,Abwehrwert,Siła obrony,Força defensiva
 Recruits:,Number of soldiers to hire,Recruits:,Rekruten,Rekruci,Recrutas
 Move Points:,Number of points army can use to move,Move Points:,Bewegungspunkte,Punkty ruchu,Pontos de movimento
-Vigor:,"Represents stamina, will to fight",Vigor:,Kampfmoral,Zapał,Vigor
-Men:,Number of soldiers in total,Men:,Mannstärke,Liczebność,Efetivo
-Peasants:,Unit type,Peasants:,Bauern,Chłopi,Camponeses
-Spearmen:,Unit type,Spearmen:,Speerträger,Włócznicy,Lanceiros
-Archers:,Unit type,Archers:,Bogenschützen,Łucznicy,Arqueiros
-Swordsmen:,Unit type,Swordsmen:,Schwertkämpfer,Miecznicy,Espadachins
-Crossbowmen:,Unit type,Crossbowmen:,Armbrustschützen,Kusznicy,Besteiros
-Horsemen:,Unit type,Horsemen:,Reiter,Jeźdźcy,Cavaleiros
-Knights:,Unit type,Knights:,Ritter,Rycerze,Cavaleiros
-Mounted Knights:,Unit type,Mounted Knights:,Berittene Ritter,Rycerze konni,Cavaleiros a cavalo
-Royal Guard:,Unit type,Royal Guard:,Königsgarde,Gwardia,Guarda Real
+Vigor,"Represents stamina, will to fight",Vigor:,Kampfmoral,Zapał,Vigor
+Men,Number of soldiers in total,Men,Mannstärke,Ludzi,Efetivo
+Peasants,Unit type,Peasants,Bauern,Chłopi,Camponeses
+Spearmen,Unit type,Spearmen,Speerträger,Włócznicy,Lanceiros
+Archers,Unit type,Archers,Bogenschützen,Łucznicy,Arqueiros
+Swordsmen,Unit type,Swordsmen,Schwertkämpfer,Miecznicy,Espadachins
+Crossbowmen,Unit type,Crossbowmen,Armbrustschützen,Kusznicy,Besteiros
+Horsemen,Unit type,Horsemen,Reiter,Jeźdźcy,Cavaleiros
+Knights,Unit type,Knights,Ritter,Rycerze,Cavaleiros
+Mounted Knights,Unit type,Mounted Knightss,Berittene Ritter,Rycerze konni,Cavaleiros a cavalo
+Royal Guards,Unit type,Royal Guards,Königsgarde,Gwardia,Guarda Real
 Turn,Game Turn,Turn,Runde,Tura,Turno
 End Turn,Button to end the game turn,End Turn,Zug beenden,Zakończ turę,Encerrar turno
 Player,"Player 1, Player 2 etc.",Player,Spieler,Gracz,Jogador
@@ -42,7 +42,7 @@ Raise Army,Creating a new Army,Raise Army,Armee aufstellen,Wystaw armię,Erguer 
 Back,Button to move to the previous menu,Back,Zurück,Wstecz,Voltar
 Make Camp,Action for the army to rest,Make Camp,Lager errichten,Rozbij obóz,Montar acampamento
 Cancel Move,Button to cancel army's move,Cancel Move,Bewegung abbrechen,Anuluj ruch,Cancelar movimento
-Next Army,Button to cycle between armies,Next Army,Nächste Armee,Następna armia,Próximo exército
+Next army,Button to cycle between armies,Next army,Nächste Armee,Następna armia,Próximo exército
 (Press Tab),suggestion to press a keyboard Tab,(Press Tab),(Tab drücken),(Naciśnij Tab),(Pressione Tab)
 Move Army,Action to order army to move,Move Army,Armee bewegen,Przemieść armię,Mover exército
 Transfer Soldiers,Action to move units between armies,Transfer Soldiers,Soldaten verlegen,Przenieś żołnierzy,Transferir soldados
@@ -51,7 +51,7 @@ Region,"Basic name for the piece of territory that can be owned or conquered, ma
 Called,"To represent number of ""called recruits""",Called,Einberufen,Powołani,Convocados
 Call,Label for action buttons to call recruits,Call,Rufen,Powołaj,Convocar
 Available,Label for number of available recruits,Available,Verfügbar,Dostępni,Disponíveis
-Total:,Total number of recruits,Total:,Gesamt:,Razem:,Total:
+Total,Total number of recruits,Total,Gesamt,Razem,Total
 Cost,Cost of soldiers to hire,Cost,Kosten,Koszt,Custo
 Outpost,Palisade with a small tower type of structure,Outpost,Außenposten,Posterunek,Posto avançado
 Keep,"A stronger type of defense structure, palisade and stone tower",Keep,Bergfried,Donżon,Torre de menagem
@@ -62,7 +62,7 @@ Requires Keep,"A stronger type of defense structure, palisade and stone tower",R
 Requires Castle,Castle as a defense building,Requires Castle,Erfordert Burg,Wymaga zamku,Requer castelo
 Requires Strongold,Huge type of castle,Requires Strongold,Erfordert Festung,Wymaga twierdzy,Requer fortaleza
 Continue,Button to continue action/close window,Continue,Fortfahren,Kontynuuj,Continuar
-Shire,"Lowest level of regions administrative level, very poor region",Shire,Grafschaft,Ziemia,Condado
+Shire,"Lowest level of regions administrative level, very poor region",Shire,Grafschaft,Ziemia,Domínio
 County,"Low level of regions administrative level, poor region",County,Grafschaft,Hrabstwo,Condado
 March,"Average level of regions administrative level, medium wealth",March,Mark,Marchia,Marca
 Duchy,"High level of regions administrative level, high wealth",Duchy,Herzogtum,Księstwo,Ducado
@@ -71,7 +71,7 @@ New Game,Game Main Menu option,New Game,Neues Spiel,Nowa gra,Novo jogo
 Load Game,Game Main Menu option,Load Game,Spiel laden,Wczytaj,Carregar
 Campaign,"Game Main Menu option, campaign maps",Campaign,Kampagne,Kampania,Campanha
 Scenario,"Game Main Menu option, scenario maps",Scenario,Szenario,Scenariusz,Cenário
-Custom,"Game Main Menu option, custom game player can setup",Skirmish,Skirmish,Potyczka,Livre
+Custom,"Game Main Menu option, custom game player can setup",Skirmish,Scharmützel,Potyczka,Escaramuça
 Map Preview,A window title where player can see a preview of the map,Map Preview,Kartenansicht,Podgląd mapy,Pré-visualização do mapa
 Select Map,A window title where player can select a map,Select Map,Karte auswählen,Wybierz mapę,Selecionar mapa
 Select Map2,A button a that tells player to select a map,Select Map,Karte auswählen,Wybierz mapę,Selecionar mapa
@@ -82,28 +82,225 @@ Easy,A game difficulty,Easy,Leicht,Łatwy,Fácil
 Normal,A game difficulty,Normal,Normal,Normalny,Normal
 Hard,A game difficulty,Hard,Schwer,Trudny,Difícil
 Victory Conditions,A header title for section with a description of win condition for select game scenario,Victory Conditions,Siegbedingungen,Warunki zwycięstwa,Condições de vitória
-Start Game,Button to start the game,Start Game,Spiel starten,Rozpocznij grę,Iniciar jogo
+Start Game,Button to start a game,Start Game,Spiel starten,Rozpocznij grę,Iniciar jogo
 Name,Map Name,Name,Name,Nazwa,Nome
 Size,Map Size,Size,Größe,Rozmiar,Tamanho
-Tiny,Map Size ,Tiny ,Sehr klein,Bardzo mała,Muito pequeno
+Tiny ,Map Size ,Tiny ,Sehr klein,Bardzo mała,Muito pequeno
 Small,Map Size ,Small,Klein,Mała,Pequeno
-Medium,Map Size ,Medium ,Mittel,Średnia,Médio
+Medium ,Map Size ,Medium ,Mittel,Średnia,Médio
 Large,Map Size ,Large,Groß,Duża,Grande
-All,All maps,All,Alle,Wszystkie,Todos
-Map Size,Title to select map sizes,Map Size,Kartengröße,Rozmiar mapy,Tamanho do mapa
-Map Settings,Window title for selecting settings,Map Settings,Karteneinstellungen,Ustawienia mapy,Configurações do mapa
+No.,Short version for Number. ,No.,Nr.,Nr,Nº
 Human,Option for a player type,Human,Mensch,Człowiek,Humano
 Computer,Option for a player type,Computer,Computer,Komputer,Computador
-Off,Option for a player type,Off,Aus,Brak,Nenhum
+Off,Option for a player type,Off,Aus,Wyłączone,Desativado
 Conquer,"A victory condition type, conquering all regions",Conquer,Erobern,Podbój,Conquistar
 Dominate,"A victory condition type, domiante most of the map",Dominate,Dominanz,Dominacja,Dominar
-Clouds,Graphic effect that display Clouds,Clouds,Wolken,Chmury,Nuvens
+T,Short version of Map size: Tiny,T,SK,BM,MP
+S,Short version of Map size: Small,S,K,M,P
+M,Short version of Map size: Medium,M,M,Ś,M
+L,Short version of Map size: Large,L,G,D,G
+Clouds ,Graphic effect that display Clouds,Clouds ,Wolken,Chmury,Nuvens
 Show,option to show something,Show,Anzeigen,Pokaż,Mostrar
 Hide,Option to hide something,Hide,Ausblenden,Ukryj,Ocultar
 AI Turn Speed,Title for the option to control turn speed of the AI player,AI Turn Speed,KI-Zuggeschwindigkeit,Szybkość tury AI,Velocidade do turno da IA
 Battle Speed,Title for the option to control speed of the battle,Battle Speed,Kampfgeschwindigkeit,Szybkość walki,Velocidade da batalha
-Normal2,Normal speed of the game,Normal,Normal,Normalna,Normal
-Fast,Speed level of the game,Fast,Schnell,Szybka,Rápido
-Very Fast,Speed level of the game,Very Fast,Sehr schnell,Bardzo szybka,Muito rápido
+Fast,Speed level of the game,Fast,Schnell,Szybko,Rápido
+Very Fast,Speed level of the game,Very Fast,Sehr schnell,Bardzo szybko,Muito rápido
 Sound Volume,option to set sound volume level,Sound Volume,Lautstärke,Głośność dźwięku,Volume do som
 Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Głośność muzyki,Volume da música
+"%d wall sections destroyed, %d damaged by trebuchets.",Prebattle bombardment summary format showing destroyed and damaged wall section counts.,"%d wall sections destroyed, %d damaged by trebuchets.","%d Mauerabschnitte zerstört, %d durch Triboke beschädigt.","%d odcinków murów zniszczonych, %d uszkodzonych przez trebusze.","%d seções da muralha destruídas, %d danificadas por trabucos."
+%s Found,Ore search status format listing discovered ore names.,%s Found,%s gefunden,%s znaleziono,%s encontrado
+%s Found!,Ore discovery popup header format showing the discovered ore type.,%s Found!,%s gefunden!,%s znaleziono!,%s encontrado!
+%s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,%s obrońców,%s defensores
+%s is being raised.,Notification format shown when a new army begins raising.,%s is being raised.,%s wird aufgestellt.,%s jest formowana.,%s está sendo levantado.
+%s of %s,Region title format combining region level display name and region name.,%s of %s,%s von %s,%s %s,%s de %s
+%s was discovered,Tooltip format indicating that a specific ore type has been discovered.,%s was discovered,%s wurde entdeckt,%s został odkryty,%s foi descoberto
+%s will be done in %d %s.,Construction or repair completion message format using building name and remaining turns.,%s will be done in %d %s.,%s wird in %d %s fertig sein.,%s będzie gotowe za %d %s.,%s ficará pronto em %d %s.
+%s: %d,Player status resource line format showing resource name and amount.,%s: %d,%s: %d,%s: %d,%s: %d
+Army %d,Army label format showing army number in selection and summary screens.,Army %d,Armee %d,Armia %d,Exército %d
+Army %d (%s),Battle header format showing army number and owning player label.,Army %d (%s),Armee %d (%s),Armia %d (%s),Exército %d (%s)
+Army %d (Player %d),Prebattle army label format showing army number and player number.,Army %d (Player %d),Armee %d (Spieler %d),Armia %d (Gracz %d),Exército %d (Jogador %d)
+Army %s,Army label format using roman numeral naming for newly raised armies.,Army %s,Armee %s,Armia %s,Exército %s
+Army Actions,Header shown in the army action selection modal.,Army Actions,Armeeaktionen,Akcje armii,Ações do Exército
+Attack,Primary prebattle action button text when direct attack is available.,Attack,Angreifen,Atak,Atacar
+Attempts Remaining: %d,Tooltip line showing remaining ore search attempts for the region.,Attempts Remaining: %d,Verbleibende Suchversuche: %d,Pozostałe próby poszukiwań: %d,Tentativas restantes: %d
+Available,Column header for available recruits in the call to arms modal.,Available,Verfügbar,Dostępne,Disponível
+Back,Generic back button label used across gameplay modals.,Back,Zurück,Wstecz,Voltar
+Back to Menu,Button label used in main menu flow to return to the previous menu.,Back to Menu,Zurück zum Menü,Powrót do menu,Voltar ao Menu
+Battle Lost!,Battle summary status shown when the player loses a battle.,Battle Lost!,Schlacht verloren!,Bitwa przegrana!,Batalha Perdida!
+Battle Report,Title shown for the battle report panel.,Battle Report,Schlachtbericht,Raport z bitwy,Relatório de Batalha
+Battle Won!,Battle summary status shown when the player wins a battle.,Battle Won!,Schlacht gewonnen!,Bitwa wygrana!,Batalha Vencida!
+Battle for %s,Battle title format showing the contested region name.,Battle for %s,Schlacht um %s,Bitwa o %s,Batalha por %s
+Battle has ended,Battle message shown when combat resolves and ends.,Battle has ended,Die Schlacht ist beendet,Bitwa dobiegła końca,A batalha terminou
+Between %d and %d soldiers.,Prebattle scouting range text for enemy count estimates between bounds.,Between %d and %d soldiers.,Zwischen %d und %d Soldaten.,Między %d a %d żołnierzy.,Entre %d e %d soldados.
+Bombard,Primary prebattle action button text when trebuchet bombardment is available.,Bombard,Bombardieren,Bombardowanie,Bombardear
+Build,Generic build action button label in region management UI.,Build,Bauen,Buduj,Construir
+Build %s,Region action label format for building or upgrading to a specific castle type.,Build %s,%s bauen,Buduj %s,Construir %s
+Building,Build button state label shown while construction is already underway.,Building,Im Bau,W budowie,Em construção
+Building: %s,Tooltip line showing which castle type is currently under construction.,Building: %s,Bau: %s,Budowa: %s,Construção: %s
+Call,Action column header for calling recruits in call to arms modal.,Call,Zu den Waffen,Zwołanie pod broń,Convocar às Armas
+Call to Arms,Region action label and modal title for gathering recruits from neighboring regions.,Call to Arms,Rufen,Zwołaj,Convocar
+Called,Column header for already called recruits in call to arms modal.,Called,Gerufen,Zwołani,Convocados
+Campaign,Main menu mode label for campaign scenarios.,Campaign,Kampagne,Kampania,Campanha
+Campaign List,Main menu panel label for listing campaign entries.,Campaign List,Kampagnenliste,Lista kampanii,Lista de Campanhas
+Cannot raise more armies this turn.,Tooltip warning when raise army has already been used this turn.,Cannot raise more armies this turn.,Diese Runde können keine weiteren Armeen aufgestellt werden.,Nie można wystawić więcej armii w tej turze.,Não é possível levantar mais exércitos neste turno.
+Cannot support more armies in this region.,Tooltip warning when region army capacity has been reached.,Cannot support more armies in this region.,Diese Region kann keine weiteren Armeen unterstützen.,Region nie może utrzymać więcej armii.,Esta região não pode suportar mais exércitos.
+Castle construction is in progress. Wait for completion before building or upgrading.,Tooltip text shown when castle construction is already in progress.,Castle construction is in progress. Wait for completion before building or upgrading.,"Der Burgbau läuft bereits. Warte auf die Fertigstellung, bevor du erneut baust oder aufrüstest.",Budowa zamku już trwa. Poczekaj na jej zakończenie przed kolejną budową lub ulepszeniem.,A construção do castelo já está em andamento. Aguarde a conclusão antes de construir ou melhorar.
+Composition:\n%s,Army details label format showing multiline unit composition text.,Composition:\n%s,Zusammensetzung:\n%s,Skład:\n%s,Composição:\n%s
+"Construct a military outpost to improve local defenses, raise armies, and recruit units.",Tooltip text explaining initial castle construction benefits.,"Construct a military outpost to improve local defenses, raise armies, and recruit units.","Errichte einen militärischen Außenposten, um die Verteidigung zu stärken, Armeen aufzustellen und Einheiten zu rekrutieren.","Zbuduj wojskową placówkę, aby wzmocnić obronę, wystawiać armie i rekrutować jednostki.","Construa um posto militar para melhorar as defesas locais, levantar exércitos e recrutar unidades."
+Continue,Generic continue button label used in battle and intro flows.,Continue,Weiter,Dalej,Continuar
+Create a new army in this region.,Tooltip text explaining the raise army action in region management.,Create a new army in this region.,Neue Armee in dieser Region aufstellen.,Utwórz nową armię w tym regionie.,Criar um novo exército nesta região.
+Current Castle: %s,Tooltip line showing the current castle tier in the region.,Current Castle: %s,Aktuelle Burg: %s,Obecny zamek: %s,Castelo Atual: %s
+END TURN,Primary button label used to end the current turn.,END TURN,ZUG BEENDEN,KONIEC TURY,FIM DO TURNO
+Enemy Losses,Battle report header for enemy casualty values.,Enemy Losses,Feindverluste,Straty wroga,Perdas do Inimigo
+Enemy is withdrawing,Battle message shown when the enemy begins withdrawal.,Enemy is withdrawing,Der Feind zieht sich zurück,Wróg się wycofuje,O inimigo está recuando
+Game Menu,Header label for the in-game pause/options menu modal.,Game Menu,Spielmenü,Menu gry,Menu do Jogo
+Gate %d,Prebattle wall section label format for individual gate indices.,Gate %d,Tor %d,Brama %d,Portão %d
+Gather recruits from neighboring regions.,Tooltip text explaining the call to arms action.,Gather recruits from neighboring regions.,Rekruten aus benachbarten Regionen sammeln.,Zbierz rekrutów z sąsiednich regionów.,Recrute soldados das regiões vizinhas.
+Hello,Scenario event popup message key shown when the mission event triggers.,Hello,Hallo,Witaj,Olá
+Large,Map size label shown in the main menu map info panel.,Large,Groß,Duża,Grande
+Less than %d soldiers.,Prebattle scouting text for small enemy count estimates.,Less than %d soldiers.,Weniger als %d Soldaten.,Mniej niż %d żołnierzy.,Menos de %d soldados.
+Make Camp,Army action label for resting and recovering the army.,Make Camp,Lager aufschlagen,Rozbij obóz,Acampar
+Map Name,Static map info field label in main menu map preview.,Map Name,Kartenname,Nazwa mapy,Nome do Mapa
+Medium,Map size label shown in the main menu map info panel.,Medium,Mittel,Średnia,Médio
+Mines extract %d units per turn,Tooltip line showing per-turn ore extraction amount for discovered deposits.,Mines extract %d units per turn,Minen fördern %d Einheiten pro Runde,Kopalnie wydobywają %d jednostek na turę,Minas extraem %d unidades por turno
+Morale: 100%,Army morale label shown in army and modal status UI.,Morale: 100%,Moral: 100%,Morale: 100%,Moral: 100%
+More than %d soldiers.,Prebattle scouting text for high enemy count estimates.,More than %d soldiers.,Mehr als %d Soldaten.,Więcej niż %d żołnierzy.,Mais de %d soldados.
+Move Army,Army action label for moving an army to another region.,Move Army,Armee bewegen,Przenieś armię,Mover Exército
+Move this army to an adjacent region. Costs movement points based on terrain type.,Tooltip text explaining the move army action and movement cost behavior.,Move this army to an adjacent region. Costs movement points based on terrain type.,Bewege diese Armee in eine benachbarte Region. Kostet Bewegungspunkte je nach Gelände.,Przenieś tę armię do sąsiedniego regionu. Koszt ruchu zależy od terenu.,Mova este exército para uma região adjacente. Custa pontos de movimento dependendo do terreno.
+Movement: %d / 5,Movement points label format showing current and maximum move points.,Movement: %d / 5,Bewegung: %d / 5,Ruch: %d / 5,Movimento: %d / 5
+New army,Fallback name used when a newly raised army has no custom name.,New Army,Neue Armee,Nowa armia,Novo Exército
+No information available.,Fallback tooltip text when no specific tooltip is defined for an action.,No information available.,Keine Informationen verfügbar.,Brak informacji.,Nenhuma informação disponível.
+No luck this turn.,Ore search result message shown when no ore is found for the current turn.,No luck this turn.,Diese Runde kein Erfolg.,Brak szczęścia w tej turze.,Sem sorte neste turno.
+No ore,Ore status text shown when no ore deposits are known in the region.,No ore,Kein Erz,Brak rud,Sem minério
+No search attempts remaining,Tooltip warning shown when ore search attempts are exhausted.,No search attempts remaining,,,
+Ore Search,Region action label and popup header for ore search actions.,Ore Search,Erkundung,Szukaj rud,Busca de Minério
+Search Ore,Region action label and popup header for ore search actions.,Search Ore,Erkundung,Szukaj rudy,Busca de Minério
+Ore searches exhausted.,Ore search result message shown when all search attempts are used.,Ore searches exhausted.,Beute erschöpft.,Próby poszukiwań wyczerpane.,Tentativas de busca esgotadas.
+Ore size was estimated at %d units.,Ore discovery message format showing estimated deposit size.,Ore size was estimated at %d units.,Erzvorkommen auf etwa %d Einheiten geschätzt.,Wielkość złoża oszacowano na %d jednostek.,O tamanho do depósito foi estimado em %d unidades.
+Place Castle,Instruction label shown during the opening castle placement phase.,Place Castle,Burg platzieren,Umieść zamek,Posicionar Castelo
+Player %d,Player label format shown in turn and battle UI panels.,Player %d,Spieler %d,Gracz %d,Jogador %d
+Player %d Won,Victory popup message format naming the winning player.,Player %d Won,Spieler %d hat gewonnen,Gracz %d wygrał,Jogador %d venceu
+Population: %d,Player status label format showing current population value.,Population: %d,Bevölkerung: %d,Populacja: %d,População: %d
+Promote Region,Region action label for administrative region level upgrade.,Promote Region,Region aufwerten,Awansuj region,Promover Região
+Promote the region to the next administrative level to increase growth and production.,Tooltip text explaining region promotion benefits.,Promote the region to the next administrative level to increase growth and production.,"Erhöhe die Verwaltungsstufe der Region, um Wachstum und Produktion zu steigern.","Podnieś poziom administracyjny regionu, aby zwiększyć wzrost i produkcję.",Promova a região ao próximo nível administrativo para aumentar crescimento e produção.
+Raise Army,Region action label for creating a new army in the region.,Raise Army,Armee aufstellen,Wystaw armię,Levantar Exército
+Recruit Soldiers,Action label for opening recruitment flow in army or region context.,Recruit Soldiers,Soldaten rekrutieren,Rekrutuj żołnierzy,Recrutar Soldados
+Recruit new soldiers for this army using regional population and resources.,Tooltip text explaining army recruitment from regional resources.,Recruit new soldiers for this army using regional population and resources.,Rekrutiere neue Soldaten für diese Armee mit regionaler Bevölkerung und Ressourcen.,"Rekrutuj nowych żołnierzy do tej armii, używając populacji i zasobów regionu.",Recrute novos soldados para este exército usando população e recursos regionais.
+Recruit soldiers for this region's local garrison.,Tooltip text explaining garrison recruitment in the region modal.,Recruit soldiers for this region's local garrison.,Rekrutiere Soldaten für die Garnison dieser Region.,Rekrutuj żołnierzy do garnizonu regionu.,Recrute soldados para a guarnição desta região.
+Recruitment at %s,Recruitment modal title format showing the target region name.,Recruitment at %s,Rekrutierung in %s,Rekrutacja w %s,Recrutamento em %s
+Region,Column header label for region entries in call to arms modal.,Region,Region,Region,Região
+Region Actions,Header shown in the region action selection modal.,Region Actions,Regionsaktionen,Akcje regionu,Ações da Região
+Region is already at the maximum level.,Tooltip warning shown when region promotion is no longer possible.,Region is already at the maximum level.,Region hat bereits die maximale Stufe erreicht.,Region osiągnął już maksymalny poziom.,A região já está no nível máximo.
+Region promoted to {level}\n(level {level_number}),Promotion result message format with new region level name and level number.,Region promoted to {level}\n(level {level_number}),Region befördert zu {level}\n(Stufe {level_number}),Region awansował do poziomu {level}\n(poziom {level_number}),Região promovida para {level}\n(nível {level_number})
+Repair,Action label for repairing damaged castle structures.,Repair,Reparieren,Napraw,Reparar
+Repair %s,Region action label format for repairing a specific castle tier.,Repair %s,%s reparieren,Napraw %s,Reparar %s
+Repair started,Header text for the popup confirming castle repairs have started.,Repair started,Reparatur begonnen,Rozpoczęto naprawę,Reparo iniciado
+Repair the damaged walls and gates of your defenses.,Tooltip text explaining castle repair action purpose.,Repair the damaged walls and gates of your defenses.,Repariere beschädigte Mauern und Tore deiner Verteidigung.,Napraw uszkodzone mury i bramy swoich umocnień.,Repare as muralhas e portões danificados de suas defesas.
+Repairing,Button state label shown while repairs are currently in progress.,Repairing,In Reparatur,W naprawie,Reparando
+Repairs will finish in 1 turn.,Repair confirmation message showing fixed one-turn repair duration.,Repairs will finish in 1 turn.,Reparaturen werden in 1 Runde abgeschlossen sein.,Naprawy zakończą się za 1 turę.,Os reparos terminarão em 1 turno.
+Requires Keep,Tooltip requirement warning for actions that need at least a Keep.,Requires Keep,Benötigt Bergfried,Wymaga twierdzy,Requer Torre de Menagem
+Requires Outpost,Tooltip requirement warning for actions that need at least an Outpost.,Requires Outpost,Benötigt Außenposten,Wymaga placówki,Requer Posto
+Rest the army to restore efficiency. Costs 1 movement point and restores 10 vigor.,Tooltip text explaining the make camp action effects and cost.,Rest the army to restore efficiency. Costs 1 movement point and restores 10 vigor.,"Die Armee ausruhen lassen, um Effizienz wiederherzustellen. Kostet 1 Bewegungspunkt und stellt 10 Kraft wieder her.","Odpocznij armią, aby przywrócić sprawność. Kosztuje 1 punkt ruchu i przywraca 10 wigoru.",Descanse o exército para restaurar a eficiência. Custa 1 ponto de movimento e restaura 10 de vigor.
+Return to the previous selection menu.,Tooltip text for the back action in selection modals.,Return to the previous selection menu.,Zurück zum vorherigen Menü.,Powrót do poprzedniego menu.,Retornar ao menu anterior.
+Round %d,Turn status label format for showing current round number.,Round %d,Runde %d,Runda %d,Rodada %d
+Scenario,Main menu mode label for standalone scenario selection.,Scenario,Szenario,Scenariusz,Cenário
+Scenario List,Main menu panel label for listing scenario entries.,Scenario List,Szenarioliste,Lista scenariuszy,Lista de Cenários
+Scenario description LOREM IPSUM,Default placeholder text shown in the scenario description panel when no scenario is selected.,Scenario description LOREM IPSUM,Szenariobeschreibung LOREM IPSUM,Opis scenariusza LOREM IPSUM,Descrição do cenário LOREM IPSUM
+Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd,Default placeholder text shown in the scenario objectives panel when no scenario is selected.,Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd,Szenariobeschreibung LOREM IPSUM asdasd asda sasdasdasdasdadsadasd,Opis scenariusza LOREM IPSUM asdasd asda sasdasdasdasdadsadasd,Descrição do cenário LOREM IPSUM asdasd asda sasdasdasdasdadsadasd
+Search for gold or iron ores.,Tooltip text explaining the ore search action.,Search for gold or iron ores.,Nach Gold- oder Eisenerz suchen.,Szukaj złota lub rudy żelaza.,Buscar ouro ou minério de ferro.
+Select,Button label for selecting an entry in info modal lists.,Select,Auswählen,Wybierz,Selecionar
+Select Map,Button and panel label for map selection in main menu.,Select Map,Karte wählen,Wybierz mapę,Selecionar Mapa
+Select Target,Header shown when selecting a region or army target.,Select Target,Ziel auswählen,Wybierz cel,Selecionar Alvo
+"Select this army to view available actions: movement, recruitment, transfers.",Tooltip text shown when hovering an army entry in selection modal.,"Select this army to view available actions: movement, recruitment, transfers.","Wähle diese Armee, um verfügbare Aktionen zu sehen: Bewegung, Rekrutierung, Transfers.","Wybierz tę armię, aby zobaczyć dostępne akcje: ruch, rekrutację, transfery.","Selecione este exército para ver ações disponíveis: movimento, recrutamento, transferências."
+Selected,Button state label indicating the current selected item.,Selected,Ausgewählt,Wybrano,Selecionado
+Small,Map size label shown in the main menu map info panel.,Small,Klein,Mała,Pequeno
+Start Game,Main menu button label used to launch the selected scenario or map.,Start Game,Spiel starten,Rozpocznij grę,Iniciar Jogo
+Success Chance: %d%%,Tooltip line format showing ore discovery success chance percentage.,Success Chance: %d%%,Erfolgschance: %d%%,Szansa powodzenia: %d%%,Chance de Sucesso: %d%%
+This castle is already at the maximum level and cannot be upgraded further.,Tooltip text shown when the castle cannot be upgraded any further.,This castle is already at the maximum level and cannot be upgraded further.,Diese Burg hat bereits die maximale Stufe und kann nicht weiter ausgebaut werden.,Ten zamek osiągnął maksymalny poziom i nie może być dalej ulepszony.,Este castelo já está no nível máximo e não pode ser melhorado.
+This region cannot be managed on the turn it was conquered.,Tooltip text shown when region management is blocked right after conquest.,This region cannot be managed on the turn it was conquered.,Diese Region kann in der Runde ihrer Eroberung nicht verwaltet werden.,Tym regionem nie można zarządzać w turze jego podboju.,Esta região não pode ser gerenciada no turno em que foi conquistada.
+This region type cannot contain ores,Tooltip warning for biomes where ore search is unavailable.,This region type cannot contain ores,Dieser Regionstyp kann keine Erzvorkommen enthalten,Ten typ regionu nie zawiera rud,Este tipo de região não pode conter minérios
+Tiny,Map size label shown in the main menu map info panel.,Tiny,Winzig,Bardzo mała,Minúsculo
+Transfer Soldiers,Army action label for transferring soldiers between forces.,Transfer Soldiers,Soldaten übertragen,Przenieś żołnierzy,Transferir Soldados
+"Transfer soldiers between this army and the region garrison, or other armies in the region.",Tooltip text explaining the soldier transfer action between armies and garrison.,"Transfer soldiers between this army and the region garrison, or other armies in the region.","Soldaten zwischen dieser Armee, der Garnison der Region oder anderen Armeen übertragen.","Przenoś żołnierzy między tą armią, garnizonem regionu lub innymi armiami w regionie.","Transfira soldados entre este exército, a guarnição da região ou outros exércitos na região."
+Turn {turn},Turn label format showing the current turn number.,Turn {turn},Zug {turn},Tura {turn},Turno {turn}
+Unknown,Fallback label used when a map size or display value cannot be resolved.,Unknown,Unbekannt,Nieznane,Desconhecido
+Upgrade,Action label for upgrading an existing castle structure.,Upgrade,Aufwerten,Ulepsz,Melhorar
+Upgrade the defensive structure to the next level for improved defenses and capabilities.,Tooltip text explaining defensive structure upgrade behavior.,Upgrade the defensive structure to the next level for improved defenses and capabilities.,Verbessere die Verteidigungsstruktur zur nächsten Stufe für stärkere Verteidigung und neue Möglichkeiten.,"Ulepsz strukturę obronną do następnego poziomu, aby zwiększyć obronę i możliwości.",Melhore a estrutura defensiva para o próximo nível para melhores defesas e capacidades.
+"View and manage the region. Build structures, recruit soldiers, and upgrade the region level.",Tooltip text for the region action entry in the selection modal.,"View and manage the region. Build structures, recruit soldiers, and upgrade the region level.","Region anzeigen und verwalten. Gebäude errichten, Soldaten rekrutieren und die Regionsstufe erhöhen.","Zarządzaj regionem. Buduj struktury, rekrutuj żołnierzy i podnoś poziom regionu.","Visualize e gerencie a região. Construa estruturas, recrute soldados e melhore o nível da região."
+Withdraw,Battle action button label for withdrawing from combat.,Withdraw,Rückzug,Wycofaj się,Recuar
+Your Losses,Battle report header for player casualty values.,Your Losses,Deine Verluste,Twoje straty,Suas Perdas
+Your army is withdrawing,Battle message shown when the player begins withdrawal.,Your army is withdrawing,Deine Armee zieht sich zurück,Twoja armia się wycofuje,Seu exército está recuando
+"Your scouts believe the area is barely defended, with only isolated enemies present.",Prebattle scout report text describing estimated enemy army size in the target region.,"Your scouts believe the area is barely defended, with only isolated enemies present.","Deine Späher glauben, dass das Gebiet kaum verteidigt ist, nur vereinzelte Feinde sind vorhanden.","Twoi zwiadowcy sądzą, że obszar jest słabo broniony, jedynie pojedyncze oddziały wroga.","Seus batedores acreditam que a área está pouco defendida, com apenas inimigos isolados presentes."
+Your scouts detected a large concentration of enemy troops in the area.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts detected a large concentration of enemy troops in the area.,Deine Späher entdeckten eine große Konzentration feindlicher Truppen in der Region.,Twoi zwiadowcy wykryli duże skupisko wojsk wroga w regionie.,Seus batedores detectaram uma grande concentração de tropas inimigas na área.
+Your scouts detected a massive concentration of enemy troops across the battlefield.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts detected a massive concentration of enemy troops across the battlefield.,Deine Späher entdeckten eine gewaltige Truppenkonzentration auf dem Schlachtfeld.,Twoi zwiadowcy wykryli ogromną koncentrację wojsk na polu bitwy.,Seus batedores detectaram uma enorme concentração de tropas no campo de batalha.
+Your scouts observed a major assembly of troops preparing for battle.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts observed a major assembly of troops preparing for battle.,"Deine Späher beobachteten eine große Truppenversammlung, die sich auf den Kampf vorbereitet.",Twoi zwiadowcy zauważyli wielkie zgrupowanie wojsk przygotowujących się do bitwy.,Seus batedores observaram uma grande reunião de tropas se preparando para a batalha.
+Your scouts observed a small enemy detachment guarding the area.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts observed a small enemy detachment guarding the area.,"Deine Späher sahen eine kleine feindliche Abteilung, die das Gebiet bewacht.",Twoi zwiadowcy dostrzegli mały oddział wroga pilnujący terenu.,Seus batedores observaram um pequeno destacamento inimigo guardando a área.
+Your scouts observed a strong enemy contingent holding the position.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts observed a strong enemy contingent holding the position.,"Deine Späher beobachteten ein starkes feindliches Kontingent, das die Stellung hält.",Twoi zwiadowcy zauważyli silny kontyngent wroga utrzymujący pozycję.,Seus batedores observaram um forte contingente inimigo mantendo a posição.
+Your scouts report a sizable enemy force defending the region.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts report a sizable enemy force defending the region.,Deine Späher melden eine beträchtliche feindliche Streitmacht zur Verteidigung der Region.,Twoi zwiadowcy meldują o znacznych siłach wroga broniących regionu.,Seus batedores relatam uma força inimiga considerável defendendo a região.
+Your scouts report enemy numbers beyond reliable counting—an entire army stands before you.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts report enemy numbers beyond reliable counting—an entire army stands before you.,Deine Späher berichten von Feindzahlen jenseits verlässlicher Zählung – eine ganze Armee steht vor dir.,Twoi zwiadowcy raportują liczebność wroga przekraczającą możliwość zliczenia — cała armia stoi naprzeciw.,Seus batedores relatam números inimigos além de qualquer contagem confiável — um exército inteiro está diante de você.
+Your scouts warn that an enormous host of soldiers holds this territory.,Prebattle scout report text describing estimated enemy army size in the target region.,Your scouts warn that an enormous host of soldiers holds this territory.,"Deine Späher warnen, dass eine gewaltige Heerschar dieses Gebiet hält.","Twoi zwiadowcy ostrzegają, że to terytorium trzyma ogromna armia.",Seus batedores alertam que uma imensa hoste de soldados mantém este território.
+mission1-description,Scenario metadata key used for mission 1 description text in the main menu.,mission1-description,mission1-description,mission1-description,mission1-description
+mission1-intro,Scenario metadata key used for mission 1 intro popup text at scenario start.,mission1-intro,mission1-intro,mission1-intro,mission1-intro
+mission1-objectives,Scenario metadata key used for mission 1 objectives text in the main menu.,mission1-objectives,mission1-objectives,mission1-objectives,mission1-objectives
+search,Singular word used in ore search status text for one attempt remaining.,search,Suche,poszukiwanie,busca
+searches,Plural word used in ore search status text for multiple attempts remaining.,searches,Suchen,poszukiwania,buscas
+Turn,Singular word used in build and repair completion time messages.,turn,Runde,tura,turno
+Promote,Promote region button,Promote,Fördern,Promuj,Promover
+Recruit,Recruit units button,Recruit,Rekrutieren,Rekrutuj,Recrutar
+Defenders,Defenders,Defenders,Verteidiger,Obrońcy,Defensores
+Resources,Resources,Resources,Ressourcen,Zasoby,Recursos
+Armies,,Armies,Armeen,Armie,Exércitos
+Transfer,Action to move units between armies,Transfer,Verlegen,Przenieś,Transferir
+Abilities:,Abilities:,Abilities:,Fähigkeiten,Zdolności,Habilidades
+Recruit All,Button to recruit all,Recruit all,Rekrutiert alle,Rekrutuj wszystkich,Recrute todos
+Close,Close button,Close,Schließen,Zamknij,Fechar
+Requires,Requires <castle>,Requires,Erfordert,Wymaga,Requer
+Total Cost:,Total cost:,Total cost:,Gesamtkosten:,Całkowity koszt:,Custo total:
+Actions,Actions,Actions,Aktionen,Akcje,Ações
+Ore,Ore ,Ore ,Erz,Ruda,Minério
+None,None <defenses>,None,Keiner,Brak,Nenhum
+Level,Region's upgrade level,Level,Ebene,Poziom,Nível
+(Press Space),(Press Space),(Press Space),(Leertaste drücken),(Wciśnij spację),(Pressione Espaço)
+Trade,Modal Title Screen,Trade,Handel,Handel,Troca
+Buy Price,Buy Price,Buy Price,Kaufpreis,Cena kupna,Preço de compra
+Sell Price,Sell Price,Sell Price,Verkaufspreis,Cena sprzedaży,Preço de venda
+Owned,Owned,Owned,Im Besitz,W posiadaniu,Em posse
+Gold Balance,Gold Balance,Gold Balance,Goldbestand,Bilans złota,Equilíbrio de Ouro
+Buy,Buy,Buy,Kaufen,Kup,Comprar
+Sell,Sell,Sell,Verkaufen,Sprzedaj,Vender
+• Siege Laborer,Ability name,• Siege Laborer,• Belagerer,• Obsługa oblężenia,• Trabalho de Cerco
+• Long spears,Ability name,• Long spears,• Lange Speere,• Długie włócznie,• Lanças Longas
+• Defender,Ability name,• Defender,• Verteidiger,• Obrońca,• Defensor
+• Ranged,Ability name,• Ranged,• Fernkampf,• Zasięgowy,• À Distância
+• Back rank,Ability name,• Back rank,• Hintere Reihe,• Tylny szereg,• Retaguarda
+• Armor Piercing,Ability name,• Armor Piercing,• Rüstungsbrecher,• Przebicie pancerza,• Perfurante
+• Mobility,Ability name,• Mobility,• Beweglichkeit,• Mobilność,• Mobilidade
+• Flanker,Ability name,• Flanker,• Flankierer,• Flankujący,• Flanqueador
+• Charge,Ability name,• Charge,• Sturmangriff,• Szarża,• Investida
+• None,Ability name,• None,• Keine,• Brak,• Nenhuma
+• Multi attack,Ability name,• Multi attack,• Mehrfachangriff,• Wielokrotny atak,• Ataque Múltiplo
+Your scouts estimate enemy force to,Prebattle static scene header text introducing the enemy strength estimate.,Your scouts estimate enemy force to,Deine Späher schätzen die feindliche Streitmacht auf,Twoi zwiadowcy szacują siły wroga na,Seus batedores estimam as forças inimigas em
+Map Size,Map Size,Map Size,Kartengröße,Rozmiar mapy,Tamanho do mapa
+Engaged,Engaged,Engaged,Im Gefecht,W walce,Em combate
+Siege Equipment,Siege Equipment,Siege Equipment,Belagerungsgerät,Machiny oblężnicze,Equipamento de cerco
+Siege points,Siege points,Siege points,Belagerungspunkte,Punkty oblężenia,Pontos de cerco
+Not Available,Not Available,Not Available,Nicht verfügbar,Niedostępne,Indisponível
+Points,Points,Points,Punkte,Punkty,Pontos
+Ladders,Ladders,Ladders,Leitern,Drabiny,Escadas
+Siege Rams,Siege Rams,Siege Rams,Rammböcke,Tarany,Arietes
+Trebuchets,Trebuchets,Trebuchets,Triboke,Trebusze,Trabucos
+Wall Sections,Wall Sections,Wall Sections,Mauerabschnitte,Odcinki murów,Seções da muralha
+Breached,In context of walls,Breached,Durchbrochen,Sforsowane,Rompidas
+Damaged,In context of walls,Damaged,Beschädigt,Uszkodzone,Danificadas
+Intact,In context of walls,Intact,Intakt,Nienaruszone,Intactas
+Gates,in context of castle,Gates,Tore,Bramy,Portões
+Siege Ram,Siege Ram,Siege Ram,Rammböcke,Taran,Ariete
+Gate 1,in context of castle,Gate 1,Tore 1,Brama 1,Portão 1
+Gate 2,in context of castle,Gate 2,Tore 2,Brama 2,Portão 2
+Gate 3,in context of castle,Gate 3,Tore 3,Brama 3,Portão 3
+Reserve Siege Rams,Reserve Siege Rams:,Reserve Siege Rams,Reserve-Rammböcke,Rezerwowe tarany,Arietes de reserva
+Unit,Unit,Unit,Einheit,Jednostka,Unidade
+Dead,Dead,Dead,Tot,Polegli,Mortos
+Wounded,Wounded,Wounded,Verwundet,Ranni,Feridos
+Remain,Remain,Remain,Verbleibend,Pozostali,Restantes

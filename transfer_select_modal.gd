@@ -54,7 +54,7 @@ func hide_modal() -> void:
 
 func _create_buttons() -> void:
 	_clear_buttons()
-	header_label.text = HEADER_TEXT
+	header_label.text = tr(HEADER_TEXT)
 
 	var definitions := _build_button_definitions()
 	for i in definitions.size():
@@ -83,7 +83,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 		definitions.append(entry)
 
 	definitions.append({
-		"text": "Back",
+		"text": tr("Back"),
 		"enabled": true,
 		"action": "_on_back_button_pressed"
 	})
@@ -96,7 +96,7 @@ func _create_army_definition(army: Army) -> Dictionary:
 		return {}
 
 	return {
-		"text": "Army " + str(army.number),
+		"text": tr("Army %s") % army.number,
 		"enabled": true,
 		"action": "_on_army_button_pressed",
 		"action_target": army

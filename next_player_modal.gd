@@ -58,11 +58,11 @@ func show_next_player(player_id: int, turn_number: int, manual_ack_required: boo
 	_active_player_id = player_id
 	_manual_ack_required = manual_ack_required
 	
-	header_label.text = "Turn " + str(turn_number)
+	header_label.text = tr("Turn {turn}").format({"turn": turn_number})
 	
 	# Update player label with color-coded text
 	player_label.add_theme_color_override("font_color", player_color)
-	player_label.text = "Player " + str(player_id)
+	player_label.text = tr("Player %d") % player_id
 	
 	# Show modal
 	visible = true

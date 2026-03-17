@@ -53,7 +53,7 @@ func _create_buttons() -> void:
 
 
 func _update_header() -> void:
-	header_label.text = HEADER_TEXT
+	header_label.text = tr(HEADER_TEXT)
 
 
 func _add_region_button(font: Font) -> void:
@@ -80,7 +80,7 @@ func _add_army_buttons(font: Font) -> void:
 	for i in current_armies.size():
 		var army := current_armies[i]
 		var is_last := i == current_armies.size() - 1
-		var button := _make_button("Army " + str(army.number), false, is_last, font)
+		var button := _make_button(tr("Army %s") % army.number, false, is_last, font)
 		button.name = "ArmyButton" + str(i)
 		button.pressed.connect(_on_army_button_pressed.bind(army))
 		if tutorial_manager:

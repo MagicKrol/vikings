@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cd5j3l8i6bduu" path="res://images/trade_item.png" id="8_h4slp"]
 [ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="9_byqak"]
 [ext_resource type="Script" path="res://trade_modal.gd" id="9_trademodal"]
-[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark.png" id="10_csf5y"]
+[ext_resource type="Texture2D" uid="uid://ceg8pq0cudgp3" path="res://images/button_minus_dark.png" id="10_csf5y"]
 [ext_resource type="Texture2D" uid="uid://kpebeht8jn54" path="res://images/button_plus_dark.png" id="11_gd01y"]
 [ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="12_boxd3"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="13_jfehy"]
@@ -695,6 +695,7 @@ offset_bottom = 600.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hne25")
 
 [node name="HBoxContainer" type="VBoxContainer" parent="Trade"]
+layout_mode = 0
 offset_right = 900.0
 offset_bottom = 654.0
 
@@ -711,7 +712,7 @@ layout_mode = 2
 [node name="RegionName" type="Label" parent="Trade/HBoxContainer/Header/HeaderSection"]
 layout_mode = 2
 theme = ExtResource("5_2xk0f")
-text = "TRADE"
+text = "Trade"
 horizontal_alignment = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/Header"]
@@ -736,12 +737,6 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="TradeDisabledLabel" type="Label" parent="Trade/HBoxContainer/Body"]
-visible = false
-layout_mode = 2
-text = "Trade is disabled in this scenario"
-horizontal_alignment = 1
-
 [node name="FirstRow" type="HBoxContainer" parent="Trade/HBoxContainer/Body/Units"]
 layout_mode = 2
 theme_override_constants/separation = 25
@@ -753,16 +748,18 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
 
 [node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 223.0
 offset_top = 103.0
 offset_right = 373.0
 offset_bottom = 136.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Sell price"
+text = "Sell Price"
 horizontal_alignment = 1
 
 [node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 31.0
 offset_top = 103.0
 offset_right = 181.0
@@ -861,6 +858,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 228.0
 offset_top = 43.0
 offset_right = 369.0
@@ -871,6 +869,7 @@ text = "Owned"
 horizontal_alignment = 1
 
 [node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 294.0
 offset_top = 130.0
 offset_right = 325.0
@@ -880,6 +879,7 @@ theme_override_font_sizes/font_size = 20
 text = "1.53"
 
 [node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 97.0
 offset_top = 130.0
 offset_right = 137.0
@@ -889,6 +889,7 @@ theme_override_font_sizes/font_size = 20
 text = "3.03"
 
 [node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 290.0
 offset_top = 69.0
 offset_right = 340.0
@@ -899,6 +900,7 @@ text = "50"
 
 [node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 266.0
 offset_top = 130.0
 offset_right = 290.0
@@ -908,6 +910,7 @@ expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 71.0
 offset_top = 130.0
 offset_right = 95.0
@@ -917,6 +920,7 @@ expand_mode = 2
 
 [node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 26.0
 offset_top = 167.0
 offset_right = 74.0
@@ -926,6 +930,7 @@ texture = ExtResource("10_csf5y")
 
 [node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 135.0
 offset_top = 167.0
 offset_right = 187.0
@@ -935,6 +940,7 @@ texture = ExtResource("11_gd01y")
 
 [node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
 custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
 offset_left = 27.0
 offset_top = 196.0
 offset_right = 186.0
@@ -947,6 +953,7 @@ button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
 [node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Food"]
+layout_mode = 0
 offset_left = 85.0
 offset_top = 166.0
 offset_right = 124.0
@@ -962,16 +969,18 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
 
 [node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 223.0
 offset_top = 103.0
 offset_right = 373.0
 offset_bottom = 136.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Sell price"
+text = "Sell Price"
 horizontal_alignment = 1
 
 [node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 31.0
 offset_top = 103.0
 offset_right = 181.0
@@ -1070,6 +1079,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 228.0
 offset_top = 43.0
 offset_right = 369.0
@@ -1080,6 +1090,7 @@ text = "Owned"
 horizontal_alignment = 1
 
 [node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 294.0
 offset_top = 130.0
 offset_right = 325.0
@@ -1089,6 +1100,7 @@ theme_override_font_sizes/font_size = 20
 text = "1.53"
 
 [node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 97.0
 offset_top = 130.0
 offset_right = 137.0
@@ -1098,6 +1110,7 @@ theme_override_font_sizes/font_size = 20
 text = "3.03"
 
 [node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 290.0
 offset_top = 69.0
 offset_right = 340.0
@@ -1108,6 +1121,7 @@ text = "50"
 
 [node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 266.0
 offset_top = 130.0
 offset_right = 290.0
@@ -1117,6 +1131,7 @@ expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 71.0
 offset_top = 130.0
 offset_right = 95.0
@@ -1126,6 +1141,7 @@ expand_mode = 2
 
 [node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 26.0
 offset_top = 167.0
 offset_right = 74.0
@@ -1135,6 +1151,7 @@ texture = ExtResource("10_csf5y")
 
 [node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 135.0
 offset_top = 167.0
 offset_right = 187.0
@@ -1144,6 +1161,7 @@ texture = ExtResource("11_gd01y")
 
 [node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
 custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
 offset_left = 27.0
 offset_top = 196.0
 offset_right = 186.0
@@ -1156,6 +1174,7 @@ button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
 [node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/FirstRow/Wood"]
+layout_mode = 0
 offset_left = 85.0
 offset_top = 166.0
 offset_right = 124.0
@@ -1176,16 +1195,18 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
 
 [node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 223.0
 offset_top = 103.0
 offset_right = 373.0
 offset_bottom = 136.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Sell price"
+text = "Sell Price"
 horizontal_alignment = 1
 
 [node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 31.0
 offset_top = 103.0
 offset_right = 181.0
@@ -1284,6 +1305,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 228.0
 offset_top = 43.0
 offset_right = 369.0
@@ -1294,6 +1316,7 @@ text = "Owned"
 horizontal_alignment = 1
 
 [node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 294.0
 offset_top = 130.0
 offset_right = 325.0
@@ -1303,6 +1326,7 @@ theme_override_font_sizes/font_size = 20
 text = "1.53"
 
 [node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 97.0
 offset_top = 130.0
 offset_right = 137.0
@@ -1312,6 +1336,7 @@ theme_override_font_sizes/font_size = 20
 text = "3.03"
 
 [node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 290.0
 offset_top = 69.0
 offset_right = 340.0
@@ -1322,6 +1347,7 @@ text = "50"
 
 [node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 266.0
 offset_top = 130.0
 offset_right = 290.0
@@ -1331,6 +1357,7 @@ expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 71.0
 offset_top = 130.0
 offset_right = 95.0
@@ -1340,6 +1367,7 @@ expand_mode = 2
 
 [node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 26.0
 offset_top = 167.0
 offset_right = 74.0
@@ -1349,6 +1377,7 @@ texture = ExtResource("10_csf5y")
 
 [node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 135.0
 offset_top = 167.0
 offset_right = 187.0
@@ -1358,6 +1387,7 @@ texture = ExtResource("11_gd01y")
 
 [node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
 custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
 offset_left = 27.0
 offset_top = 196.0
 offset_right = 186.0
@@ -1370,6 +1400,7 @@ button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
 [node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Stone"]
+layout_mode = 0
 offset_left = 85.0
 offset_top = 166.0
 offset_right = 124.0
@@ -1385,16 +1416,18 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_hs6g5")
 
 [node name="UnitName3" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 223.0
 offset_top = 103.0
 offset_right = 373.0
 offset_bottom = 136.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Sell price"
+text = "Sell Price"
 horizontal_alignment = 1
 
 [node name="UnitName5" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 31.0
 offset_top = 103.0
 offset_right = 181.0
@@ -1493,6 +1526,7 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="UnitName2" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 228.0
 offset_top = 43.0
 offset_right = 369.0
@@ -1503,6 +1537,7 @@ text = "Owned"
 horizontal_alignment = 1
 
 [node name="SellPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 294.0
 offset_top = 130.0
 offset_right = 325.0
@@ -1512,6 +1547,7 @@ theme_override_font_sizes/font_size = 20
 text = "1.53"
 
 [node name="BuyPrice" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 97.0
 offset_top = 130.0
 offset_right = 137.0
@@ -1521,6 +1557,7 @@ theme_override_font_sizes/font_size = 20
 text = "3.03"
 
 [node name="OwnedCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 290.0
 offset_top = 69.0
 offset_right = 340.0
@@ -1531,6 +1568,7 @@ text = "50"
 
 [node name="TextureRect3" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 266.0
 offset_top = 130.0
 offset_right = 290.0
@@ -1540,6 +1578,7 @@ expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
 custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
 offset_left = 71.0
 offset_top = 130.0
 offset_right = 95.0
@@ -1549,6 +1588,7 @@ expand_mode = 2
 
 [node name="BuyMinus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 26.0
 offset_top = 167.0
 offset_right = 74.0
@@ -1558,6 +1598,7 @@ texture = ExtResource("10_csf5y")
 
 [node name="BuyPlus" type="TextureRect" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
 custom_minimum_size = Vector2(35, 25)
+layout_mode = 0
 offset_left = 135.0
 offset_top = 167.0
 offset_right = 187.0
@@ -1567,6 +1608,7 @@ texture = ExtResource("11_gd01y")
 
 [node name="BuyButton" type="Button" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
 custom_minimum_size = Vector2(20, 20)
+layout_mode = 0
 offset_left = 27.0
 offset_top = 196.0
 offset_right = 186.0
@@ -1579,6 +1621,7 @@ button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
 [node name="BuyCount" type="Label" parent="Trade/HBoxContainer/Body/Units/SecondRow/Iron"]
+layout_mode = 0
 offset_left = 85.0
 offset_top = 166.0
 offset_right = 124.0
@@ -1586,6 +1629,12 @@ offset_bottom = 202.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "2"
+horizontal_alignment = 1
+
+[node name="TradeDisabledLabel" type="Label" parent="Trade/HBoxContainer/Body"]
+visible = false
+layout_mode = 2
+text = "Trade is disabled in this scenario"
 horizontal_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Trade/HBoxContainer"]

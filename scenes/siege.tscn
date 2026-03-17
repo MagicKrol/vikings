@@ -64,7 +64,7 @@ text = "3"
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
-text = "Wall Sections:"
+text = "Wall Sections"
 
 [node name="Breached" type="HBoxContainer" parent="Body"]
 layout_mode = 2
@@ -147,7 +147,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
-text = "Gates:"
+text = "Gates"
 
 [node name="MarginContainer5" type="MarginContainer" parent="Body"]
 custom_minimum_size = Vector2(5, 5)
@@ -384,7 +384,7 @@ theme = ExtResource("2_nbqv0")
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
-text = "Reserve Siege Rams: "
+text = "Reserve Siege Rams"
 
 [node name="Value" type="Label" parent="Body/Reserve"]
 custom_minimum_size = Vector2(20, 0)

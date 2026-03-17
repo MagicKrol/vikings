@@ -63,7 +63,7 @@ func hide_modal() -> void:
 
 func _create_action_buttons() -> void:
 	_clear_buttons()
-	header_label.text = HEADER_TEXT
+	header_label.text = tr(HEADER_TEXT)
 
 	var button_definitions := _build_button_definitions()
 	if button_definitions.is_empty():
@@ -83,7 +83,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	var definitions: Array[Dictionary] = []
 
 	definitions.append({
-		"text": "Move Army",
+		"text": tr("Move Army"),
 		"name": "move_army",
 		"enabled": current_army != null and current_region != null,
 		"action": "_on_move_army_pressed",
@@ -91,7 +91,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	})
 
 	definitions.append({
-		"text": "Make Camp",
+		"text": tr("Make Camp"),
 		"name": "make_camp",
 		"enabled": current_army != null and current_army.has_method("make_camp"),
 		"action": "_on_make_camp_pressed",
@@ -99,7 +99,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	})
 
 	definitions.append({
-		"text": "Transfer Soldiers",
+		"text": tr("Transfer Soldiers"),
 		"name": "transfer_soldiers",
 		"enabled": current_region != null,
 		"action": "_on_transfer_soldiers_pressed",
@@ -107,7 +107,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	})
 
 	definitions.append({
-		"text": "Recruit Soldiers",
+		"text": tr("Recruit Soldiers"),
 		"name": "recruit_soldiers",
 		"enabled": current_army != null and current_region != null,
 		"action": "_on_recruit_soldiers_pressed",
@@ -115,7 +115,7 @@ func _build_button_definitions() -> Array[Dictionary]:
 	})
 
 	definitions.append({
-		"text": "Back",
+		"text": tr("Back"),
 		"name": "back",
 		"enabled": current_region != null,
 		"action": "_on_back_pressed",

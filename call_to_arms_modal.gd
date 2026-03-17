@@ -137,10 +137,10 @@ func _update_display() -> void:
 	call_to_arms_title_label.text = tr("Call to Arms")
 
 	# Update headers
-	regions_header_label.text = "Region"
-	called_recruits_header_label.text = "Called"
-	buttons_header_label.text = "CALL"
-	available_recruits_header_label.text = "Available"
+	regions_header_label.text = tr("Region")
+	called_recruits_header_label.text = tr("Called")
+	buttons_header_label.text = tr("Call")
+	available_recruits_header_label.text = tr("Available")
 
 	# Update regions display
 	_update_regions_display()

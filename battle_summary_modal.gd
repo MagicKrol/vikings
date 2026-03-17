@@ -144,11 +144,11 @@ func _update_display() -> void:
 		_:
 			player_won = false
 	# Set label
-	battle_status_label.text = "Battle Won!" if player_won else "Battle Lost!"
+	battle_status_label.text = tr("Battle Won!") if player_won else tr("Battle Lost!")
 	
 	# Update army and region names
 	if attacking_army:
-		attacker_name_label.text = "Army " + str(attacking_army.number)
+		attacker_name_label.text = tr("Army %s") % attacking_army.number
 	if defending_region:
 		defender_name_label.text = defending_region.get_region_name()
 	

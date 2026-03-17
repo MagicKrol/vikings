@@ -67,7 +67,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
-text = "Population:"
+text = "Population"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
@@ -83,7 +83,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
-text = "Food:"
+text = "Food"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
@@ -99,7 +99,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
-text = "Wood:"
+text = "Wood"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
@@ -115,7 +115,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
-text = "Stone:"
+text = "Stone"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
@@ -131,7 +131,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
-text = "Iron:"
+text = "Iron"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
@@ -147,7 +147,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
-text = "Gold:"
+text = "Gold"
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2

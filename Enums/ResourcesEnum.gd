@@ -34,6 +34,9 @@ const RESOURCE_ICONS = {
 static func type_to_string(resource_type: Type) -> String:
 	return RESOURCE_NAMES.get(resource_type, "Unknown")
 
+static func type_to_display_string(resource_type: Type) -> String:
+	return TranslationServer.translate(type_to_string(resource_type))
+
 # Convert string name to enum type
 static func string_to_type(resource_name: String) -> Type:
 	for type in RESOURCE_NAMES:

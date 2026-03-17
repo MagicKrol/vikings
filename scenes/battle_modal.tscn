@@ -184,7 +184,7 @@ layout_mode = 2
 [node name="AssaultText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
-text = "Engaged:"
+text = "Engaged"
 horizontal_alignment = 1
 
 [node name="AssaultValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
@@ -210,7 +210,7 @@ layout_mode = 2
 
 [node name="DefenderDefenseText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-text = "Defense:"
+text = "Defense"
 horizontal_alignment = 1
 
 [node name="DefenderDefenseValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]

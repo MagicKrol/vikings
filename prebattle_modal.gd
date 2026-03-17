@@ -222,7 +222,7 @@ func _update_gate_rows(gate_state: Dictionary) -> void:
 			var current_hp: float = float(base_hp)
 			if i < gate_values.size():
 				current_hp = float(gate_values[i])
-			name_label.text = "Gate " + str(i + 1)
+			name_label.text = tr("Gate %d") % (i + 1)
 			var percent: int = int(round(float(current_hp) / float(base_hp) * 100.0))
 			value_label.text = str(percent) + "%"
 			bar.max_value = base_hp
@@ -266,11 +266,11 @@ func is_showing_for(army: Army, region: Region) -> bool:
 	return visible and attacking_army == army and defending_region == region
 
 func _update_labels() -> void:
-	region_label.text = "Battle for " + defending_region.get_region_name()
-	attacker_label.text = "Army " + str(attacking_army.number) + " (Player " + str(attacking_army.get_player_id()) + ")"
+	region_label.text = tr("Battle for %s") % defending_region.get_region_name()
+	attacker_label.text = tr("Army %s (Player %d)") % [attacking_army.number, attacking_army.get_player_id()]
 	attacker_vigor_label.text = str(attacking_army.get_efficiency()) + "%"
-	defender_label.text = defending_region.get_region_name() + " defenders"
-	defender_vigor_label.text = "100%"
+	defender_label.text = tr("%s defenders") % defending_region.get_region_name()
+	defender_vigor_label.text = tr("100%")
 	var defense_bonus = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())
 	defense_value_label.text = str(defense_bonus) + "%"
 	_update_assault_value()
@@ -314,13 +314,13 @@ func _update_estimate() -> void:
 	var max_val: int = threshold["max"]
 	var range_text := ""
 	if max_val == -1:
-		range_text = "More than " + str(min_val) + " soldiers."
+		range_text = tr("More than %d soldiers.") % min_val
 	elif min_val == 0:
-		range_text = "Less than " + str(max_val) + " soldiers."
+		range_text = tr("Less than %d soldiers.") % max_val
 	else:
-		range_text = "Between " + str(min_val) + " and " + str(max_val) + " soldiers."
+		range_text = tr("Between %d and %d soldiers.") % [min_val, max_val]
 	estimate_range_label.text = range_text
-	estimate_text_label.text = threshold["description"]
+	estimate_text_label.text = tr(String(threshold["description"]))
 
 func _reset_siege_state() -> void:
 	siege_counts = {"ladders": 0, "rams": 0, "trebuchets": 0}
@@ -640,9 +640,9 @@ func _should_bombard_first() -> bool:
 
 func _update_attack_button_text() -> void:
 	if _should_bombard_first():
-		attack_button.text = BOMBARD_TEXT
+		attack_button.text = tr(BOMBARD_TEXT)
 	else:
-		attack_button.text = CONTINUE_TEXT
+		attack_button.text = tr(CONTINUE_TEXT)
 
 func _update_attack_button_state() -> void:
 	var ladders: int = siege_counts.get("ladders", 0)
@@ -721,4 +721,4 @@ func _get_bombard_payload() -> Dictionary:
 	return trebuchet_bombard_result
 
 func _update_bombard_message(destroyed_sections: int, damaged_sections: int) -> void:
-	message_label.text = str(destroyed_sections) + " wall sections destroyed, " + str(damaged_sections) + " damaged by trebuchet(s)."
+	message_label.text = tr("%d wall sections destroyed, %d damaged by trebuchets.") % [destroyed_sections, damaged_sections]

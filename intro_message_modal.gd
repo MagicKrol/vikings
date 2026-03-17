@@ -7,13 +7,13 @@ const CONTINUE_BUTTON_TEXT: String = "Continue"
 
 func displayMessage(_text: String) -> void:
 	# Keep the baked-in intro text; only show and block input like base class
-	continue_button.text = PLACE_CASTLE_BUTTON_TEXT
+	continue_button.text = tr(PLACE_CASTLE_BUTTON_TEXT)
 	continue_button.visible = true
 	_set_mouse_block(true)
 	_show_modal()
 
 func display_intro_text(text: String) -> void:
-	continue_button.text = CONTINUE_BUTTON_TEXT
+	continue_button.text = tr(CONTINUE_BUTTON_TEXT)
 	continue_button.visible = true
 	message_label.text = tr(text)
 	_set_mouse_block(true)

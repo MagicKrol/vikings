@@ -65,6 +65,9 @@ static func type_to_string(trait_type: Type) -> String:
 static func type_to_display_name(trait_type: Type) -> String:
 	return TRAIT_DISPLAY_NAMES.get(trait_type, "Unknown")
 
+static func type_to_localized_display_name(trait_type: Type) -> String:
+	return TranslationServer.translate(type_to_display_name(trait_type))
+
 # Convert string name to enum type
 static func string_to_type(trait_name: String) -> Type:
 	for type in TRAIT_NAMES:
@@ -75,6 +78,9 @@ static func string_to_type(trait_name: String) -> Type:
 # Get trait description
 static func get_description(trait_type: Type) -> String:
 	return TRAIT_DESCRIPTIONS.get(trait_type, "No description available")
+
+static func get_localized_description(trait_type: Type) -> String:
+	return TranslationServer.translate(get_description(trait_type))
 
 # Get all trait types as an array
 static func get_all_types() -> Array[Type]:

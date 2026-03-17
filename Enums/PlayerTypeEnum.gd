@@ -31,6 +31,9 @@ static func type_to_string(type: Type) -> String:
 		_:
 			return "Unknown"
 
+static func type_to_display_string(type: Type) -> String:
+	return TranslationServer.translate(type_to_string(type))
+
 static func from_string(type_string: String) -> Type:
 	match type_string.to_lower():
 		"human":

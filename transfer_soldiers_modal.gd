@@ -167,11 +167,11 @@ func _update_display() -> void:
 		return
 	
 	# Update target name
-	target_name_label.text = target_army.name
+	target_name_label.text = tr("Army %s") % target_army.number
 	
 	# Update source name
 	if source_army != null:
-		source_name_label.text = source_army.name
+		source_name_label.text = tr("Army %s") % source_army.number
 	else:
 		source_name_label.text = target_region.get_region_name()
 	

@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://u84o41hg3ngl" path="res://images/units/peasant_card.png" id="11_i2qjs"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="13_o875k"]
 [ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="14_oxw3w"]
-[ext_resource type="Texture2D" uid="uid://5ydwqhmv5wdy" path="res://images/button_minus_dark.png" id="15_4tey2"]
+[ext_resource type="Texture2D" uid="uid://ceg8pq0cudgp3" path="res://images/button_minus_dark.png" id="15_4tey2"]
 [ext_resource type="Texture2D" uid="uid://kpebeht8jn54" path="res://images/button_plus_dark.png" id="16_heyhc"]
 [ext_resource type="Texture2D" uid="uid://daw8fprkn5114" path="res://images/units/spearman_card.png" id="17_jug5e"]
 [ext_resource type="Texture2D" uid="uid://c4yugdvbtfvki" path="res://images/units/archer_card.png" id="18_dlgff"]
@@ -690,8 +690,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Peasants"]
 custom_minimum_size = Vector2(35, 25)
@@ -862,8 +861,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Spearmen"]
 custom_minimum_size = Vector2(35, 25)
@@ -1052,8 +1050,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/FirstRow/Archers"]
 custom_minimum_size = Vector2(35, 25)
@@ -1239,8 +1236,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Swordsmen"]
 custom_minimum_size = Vector2(35, 25)
@@ -1409,8 +1405,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 custom_minimum_size = Vector2(35, 25)
@@ -1601,8 +1596,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Horsemen"]
 custom_minimum_size = Vector2(35, 25)
@@ -1796,8 +1790,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/Knights"]
 custom_minimum_size = Vector2(35, 25)
@@ -1966,8 +1959,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/MountedKnights"]
 custom_minimum_size = Vector2(35, 25)
@@ -2146,8 +2138,7 @@ offset_right = 292.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
 theme_override_font_sizes/font_size = 20
-text = "Abilities:
-"
+text = "Abilities:"
 
 [node name="ButtonMinus" type="TextureRect" parent="Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard"]
 custom_minimum_size = Vector2(35, 25)

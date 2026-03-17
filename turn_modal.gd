@@ -45,21 +45,21 @@ func update_turn_display() -> void:
 	# Update turn number
 	var turn_label = get_node("Panel/VBoxContainer/TurnNumber")
 	if game_manager.is_castle_placing_mode():
-		turn_label.text = "Place Castle"
+		turn_label.text = tr("Place Castle")
 	else:
-		var turn_number = game_manager.get_current_turn()
-		turn_label.text = "Turn " + str(turn_number)
+		var turn_number: int = game_manager.get_current_turn()
+		turn_label.text = tr("Turn {turn}").format({"turn": turn_number})
 
 	# Update player display
 	var player_label = get_node("Panel/VBoxContainer/Player")
-	player_label.text = "Player " + str(current_player)
+	player_label.text = tr("Player %d") % current_player
 	player_label.add_theme_color_override("font_color", player_color)
 
 	# Update button text based on mode
 	if game_manager.is_castle_placing_mode():
 		end_turn_button.text = ""
 	else:
-		end_turn_button.text = "END TURN"
+		end_turn_button.text = tr("END TURN")
 
 func _get_player_label_color(base_color: Color) -> Color:
 	return Color.from_hsv(base_color.h, base_color.s, 0.6, base_color.a)

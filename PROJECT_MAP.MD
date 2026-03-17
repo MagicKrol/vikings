@@ -2,6 +2,7 @@
 
 ## Overview
 Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitment, movement, and battles for up to 6 players. Architecture emphasizes separation of concerns and SRP.
+- Localization: gameplay UI/runtime messages in scripts use `tr(...)`; enum display text should use display/localized helper APIs (canonical enum string methods remain for data/serialization).
 
 ## Scenes
 

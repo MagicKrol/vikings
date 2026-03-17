@@ -27,7 +27,7 @@ func _ready() -> void:
 	options_panel.back_requested.connect(_on_options_back_pressed)
 	sound_manager = get_node("/root/Main/SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
-	options_panel.configure(sound_manager, true, "Back")
+	options_panel.configure(sound_manager, true, tr("Back"))
 	options_panel.visible = false
 
 func _on_continue_pressed() -> void:
@@ -55,13 +55,13 @@ func _on_options_back_pressed() -> void:
 	_show_main_menu()
 
 func _show_main_menu() -> void:
-	header_label.text = "Game Menu"
+	header_label.text = tr("Game Menu")
 	top_texture.visible = true
 	button_container.visible = true
 	options_panel.visible = false
 
 func _show_options_menu() -> void:
-	options_panel.configure(sound_manager, true, "Back")
+	options_panel.configure(sound_manager, true, tr("Back"))
 	header_label.text = ""
 	top_texture.visible = false
 	button_container.visible = false
@@ -72,7 +72,7 @@ func show_modal() -> void:
 	ui_manager.set_modal_active(true)
 	get_tree().paused = true
 	sound_manager = get_node("/root/Main/SoundManager") as SoundManager
-	options_panel.configure(sound_manager, true, "Back")
+	options_panel.configure(sound_manager, true, tr("Back"))
 	_show_main_menu()
 
 func hide_modal() -> void:

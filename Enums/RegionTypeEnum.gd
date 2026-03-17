@@ -78,6 +78,9 @@ static func type_to_display_string(region_type: Type) -> String:
 		_:
 			return "Grassland"  # Default fallback
 
+static func type_to_localized_display_string(region_type: Type) -> String:
+	return TranslationServer.translate(type_to_display_string(region_type))
+
 # Helper function to check if biome string indicates forest terrain
 static func _is_forest_biome(biome_string: String) -> bool:
 	var biome_upper = biome_string.to_upper()

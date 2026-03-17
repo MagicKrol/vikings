@@ -187,7 +187,7 @@ func _ready():
 	_setup_victory_buttons()
 	default_scenario_description_text = scenario_description_label.text
 	default_scenario_objectives_text = scenario_objectives_label.text
-	options_container.configure(sound_manager, false, "Back to Menu")
+	options_container.configure(sound_manager, false, tr("Back to Menu"))
 
 	# Show demo or standard menu based on USE_DEMO_MENU constant
 	if USE_DEMO_MENU:
@@ -421,7 +421,7 @@ func _show_new_game_menu():
 
 func _show_options_menu():
 	"""Show the options menu"""
-	options_container.configure(sound_manager, false, "Back to Menu")
+	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	button_bg4.visible = false
 	button_bg5.visible = false
 	menu_container.visible = false
@@ -455,7 +455,7 @@ func _show_campaign_menu():
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = false
 	campaign_panel.visible = true
-	custom_map_panel3_label.text = "Campaign list"
+	custom_map_panel3_label.text = tr("Campaign List")
 	_set_campaign_ui(true)
 	_clear_map_selection()
 	_load_scenario_items()
@@ -482,7 +482,7 @@ func _show_scenario_menu():
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = true
 	campaign_panel.visible = false
-	custom_map_panel3_label.text = "Scenario list"
+	custom_map_panel3_label.text = tr("Scenario List")
 	_set_campaign_ui(false)
 	_clear_map_selection()
 	_load_scenario_items()
@@ -508,7 +508,7 @@ func _show_custom_map_menu():
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = true
 	campaign_panel.visible = false
-	custom_map_panel3_label.text = "Select Map"
+	custom_map_panel3_label.text = tr("Select Map")
 	_set_campaign_ui(false)
 	_clear_map_selection()
 	_load_custom_map_items()
@@ -531,7 +531,7 @@ func _show_demo_menu():
 	custom_map_preview.visible = false
 
 func _set_campaign_ui(enabled: bool):
-	scenario_header_label.text = "Campaign" if enabled else "Scenario"
+	scenario_header_label.text = tr("Campaign") if enabled else tr("Scenario")
 	var show_sizes := not enabled
 	map_size_label.visible = show_sizes
 	map_size_margin1.visible = show_sizes
@@ -994,8 +994,8 @@ func _clear_map_selection():
 	selected_scenario_button_custom = null
 	_set_custom_map_select_enabled(false)
 	_set_scenario_select_enabled(false)
-	custom_map_map_name_label.text = "Map Name"
-	custom_map_map_size_label.text = "Large"
+	custom_map_map_name_label.text = tr("Map Name")
+	custom_map_map_size_label.text = tr("Large")
 	scenario_description_label.text = tr(default_scenario_description_text)
 	scenario_objectives_label.text = tr(default_scenario_objectives_text)
 	custom_map_preview.texture = null
@@ -1003,11 +1003,11 @@ func _clear_map_selection():
 
 func _set_custom_map_select_enabled(enabled: bool):
 	custom_map_select_button.disabled = not enabled
-	custom_map_select_button.text = "Start Game" if enabled else " Select Map "
+	custom_map_select_button.text = tr("Start Game") if enabled else tr("Select Map")
 
 func _set_scenario_select_enabled(enabled: bool):
 	scenario_select_button_custom.disabled = not enabled
-	scenario_select_button_custom.text = "Start Game" if enabled else " Select Map "
+	scenario_select_button_custom.text = tr("Start Game") if enabled else tr("Select Map")
 
 func _gather_map_items() -> Array:
 	var items: Array = []
@@ -1100,15 +1100,15 @@ func _extract_size_code(base_name: String) -> String:
 func _size_full_name(code: String) -> String:
 	match code:
 		"T":
-			return "Tiny"
+			return tr("Tiny")
 		"S":
-			return "Small"
+			return tr("Small")
 		"M":
-			return "Medium"
+			return tr("Medium")
 		"L":
-			return "Large"
+			return tr("Large")
 		_:
-			return "Unknown"
+			return tr("Unknown")
 
 func _display_name_for_map(base: String) -> String:
 	var parts := base.split("-")

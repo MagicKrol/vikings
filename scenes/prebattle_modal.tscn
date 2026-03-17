@@ -142,7 +142,7 @@ layout_mode = 2
 [node name="AttackerVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
 custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
-text = "Vigor:"
+text = "Vigor"
 
 [node name="AttackerVigorValue" type="Label" parent="Panel/Army/HeaderSection/Status"]
 custom_minimum_size = Vector2(60, 0)
@@ -157,7 +157,7 @@ layout_mode = 2
 [node name="DefenderVigorText" type="Label" parent="Panel/Army/HeaderSection/Status"]
 custom_minimum_size = Vector2(95, 0)
 layout_mode = 2
-text = "Vigor: "
+text = "Vigor"
 
 [node name="DefenderVigorValue" type="Label" parent="Panel/Army/HeaderSection/Status"]
 custom_minimum_size = Vector2(50, 0)
@@ -175,7 +175,7 @@ layout_mode = 2
 [node name="AssaultText" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
-text = "Engaged:"
+text = "Engaged"
 
 [node name="AssaultValue" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 custom_minimum_size = Vector2(60, 0)
@@ -190,7 +190,7 @@ layout_mode = 2
 
 [node name="DefenderDefenseText" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
 layout_mode = 2
-text = "Defense: "
+text = "Defense"
 horizontal_alignment = 1
 
 [node name="DefenderDefenseValue" type="Label" parent="Panel/Army/HeaderSection/HBoxContainer2"]
@@ -213,6 +213,7 @@ layout_mode = 2
 [node name="EstimateText" type="Label" parent="Panel/Army/TextSection2/Total"]
 custom_minimum_size = Vector2(530, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Your scouts estimate enemy force to: Your scouts estimate enemy force to:"
 horizontal_alignment = 1
 autowrap_mode = 2
@@ -231,7 +232,7 @@ layout_mode = 2
 [node name="Text" type="Label" parent="Panel/Army/TextSection/Total"]
 custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
-text = "Your scouts estimate enemy force to:"
+text = "Your scouts estimate enemy force to"
 horizontal_alignment = 1
 
 [node name="EstimateSection" type="VBoxContainer" parent="Panel/Army"]
@@ -269,7 +270,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/Army/SiegeSection/SiegeText"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-text = "Siege equipment:"
+text = "Siege Equipment"
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeText"]
 clip_contents = true
@@ -279,7 +280,7 @@ layout_mode = 2
 [node name="PointsText" type="Label" parent="Panel/Army/SiegeSection/SiegeText"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Siege points:"
+text = "Siege points"
 
 [node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeText"]
 layout_mode = 2
@@ -336,7 +337,7 @@ layout_mode = 2
 [node name="Cost" type="Label" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "Points:"
+text = "Points"
 
 [node name="PointsValue" type="Label" parent="Panel/Army/SiegeSection/Available/Ladders"]
 custom_minimum_size = Vector2(10, 0)
@@ -384,7 +385,7 @@ layout_mode = 2
 [node name="Cost" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "Points:"
+text = "Points"
 
 [node name="PointsValue" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(15, 0)
@@ -395,7 +396,7 @@ text = "2"
 [node name="Cost2" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
-text = "Wood:"
+text = "Wood"
 
 [node name="PointsValue2" type="Label" parent="Panel/Army/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(1, 0)
@@ -443,7 +444,7 @@ layout_mode = 2
 [node name="Cost" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "Points:"
+text = "Points"
 
 [node name="PointsValue" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(15, 0)
@@ -454,7 +455,7 @@ text = "4"
 [node name="Cost2" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
-text = "Wood:"
+text = "Wood"
 
 [node name="PointsValue2" type="Label" parent="Panel/Army/SiegeSection/Available/Trebuchets"]
 custom_minimum_size = Vector2(1, 0)
@@ -481,7 +482,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/Army/SiegeSection/Notavailable/HBoxContainer"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-text = "Not available"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Not Available"
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/Army/SiegeSection/Notavailable"]
 custom_minimum_size = Vector2(0, 75)

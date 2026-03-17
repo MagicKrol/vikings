@@ -90,3 +90,9 @@ static func get_level_description(level: Level) -> String:
 			return "A large noble domain"
 		_:
 			return "Unknown region level"
+
+static func level_to_display_string(level: Level) -> String:
+	return TranslationServer.translate(level_to_string(level))
+
+static func get_display_level_description(level: Level) -> String:
+	return TranslationServer.translate(get_level_description(level))

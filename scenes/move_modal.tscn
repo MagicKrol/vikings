@@ -199,24 +199,26 @@ theme_override_constants/separation = 15
 layout_mode = 2
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel2/List/ButtonSection"]
-custom_minimum_size = Vector2(0, 3)
+custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Panel2/List/ButtonSection"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel2/List/ButtonSection/HBoxContainer3"]
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ButtonBorder" type="Panel" parent="Panel2/List/ButtonSection/HBoxContainer3"]
-custom_minimum_size = Vector2(200, 44)
+custom_minimum_size = Vector2(225, 44)
 layout_mode = 2
 theme = ExtResource("4_button_theme")
 theme_override_styles/panel = SubResource("StyleBoxFlat_button_border")
 
 [node name="NextArmy" type="Button" parent="Panel2/List/ButtonSection/HBoxContainer3/ButtonBorder"]
-custom_minimum_size = Vector2(180, 40)
+clip_contents = true
+custom_minimum_size = Vector2(220, 40)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

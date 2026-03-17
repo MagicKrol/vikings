@@ -479,12 +479,21 @@ layout_mode = 2
 custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Panel/Army/AttackSection/HBoxContainer"]
+[node name="AttackButton" type="Button" parent="Panel/Army/AttackSection/HBoxContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme = ExtResource("6_qnd2b")
 text = "Attack"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Panel/Army/AttackSection/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="WithdrawButton" type="Button" parent="Panel/Army/AttackSection/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("6_qnd2b")
+text = "Withdraw"
 
 [node name="BoxContainer" type="BoxContainer" parent="Panel/Army"]
 layout_mode = 2

@@ -383,7 +383,7 @@ func _update_display() -> void:
 		return
 	
 	# Update title with castle level info
-	recruitment_title_label.text = "Recruitment at " + target_region.get_region_name()
+	recruitment_title_label.text = tr("Recruitment at %s") % target_region.get_region_name()
 	_update_requirements()
 	
 	# Update recruitment rows using static elements
@@ -555,11 +555,11 @@ func _get_unit_abilities_text(unit_type: SoldierTypeEnum.Type) -> String:
 	var traits: Array = GameParameters.get_unit_traits(unit_type)
 	var abilities: Array[String] = []
 	if traits.has(UnitTraitEnum.Type.UNIT_TRAIT_3):
-		abilities.append("• Mobility")
+		abilities.append(tr("• Mobility"))
 	if traits.has(UnitTraitEnum.Type.UNIT_TRAIT_8):
-		abilities.append("• Siege")
+		abilities.append(tr("• Siege"))
 	if traits.has(UnitTraitEnum.Type.UNIT_TRAIT_5):
-		abilities.append("• Charge")
+		abilities.append(tr("• Charge"))
 	return "\n".join(abilities)
 
 func _max_affordable_units(unit_costs: Dictionary, desired: int) -> int:

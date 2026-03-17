@@ -1069,7 +1069,7 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	winning_player_id = player_id
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
-	_message_modal.display_message("Player " + str(player_id) + " Won")
+	_message_modal.display_message(tr("Player %d Won") % player_id)
 
 func _initialize_scenario_events_from_data(scenario_data: Dictionary) -> void:
 	_scenario_events_runtime.clear()
@@ -1172,7 +1172,7 @@ func _execute_scenario_event(event_index: int) -> void:
 	var event_data: Dictionary = _scenario_events_runtime[event_index]
 	var event_message: String = String(event_data.get("message", "")).strip_edges()
 	if event_message != "":
-		_message_modal.display_message(event_message)
+		_message_modal.display_message(tr(event_message))
 		await _message_modal.continue_clicked
 	var spawn_plan: Dictionary = _resolve_scenario_event_spawn_region(event_data)
 	event_data = spawn_plan.get("event", event_data)

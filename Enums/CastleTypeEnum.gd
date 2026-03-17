@@ -61,6 +61,12 @@ static func get_description(castle_type: Type) -> String:
 		_:
 			return "Unknown castle type"
 
+static func type_to_display_string(castle_type: Type) -> String:
+	return TranslationServer.translate(type_to_string(castle_type))
+
+static func get_display_description(castle_type: Type) -> String:
+	return TranslationServer.translate(get_description(castle_type))
+
 static func get_next_level(castle_type: Type) -> Type:
 	"""Get the next castle level, or NONE if already at maximum"""
 	match castle_type:

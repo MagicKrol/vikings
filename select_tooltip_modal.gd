@@ -23,7 +23,7 @@ class_name SelectTooltipModal
 # Tooltip text definitions for each button type
 const TOOLTIP_TEXTS = {
 	# Select Modal tooltips
-	"region": "View and manage region. Build structures, recruit soldiers, and upgrade the region level.",
+	"region": "View and manage the region. Build structures, recruit soldiers, and upgrade the region level.",
 	
 	# Army Select Modal tooltips  
 	"move_army": "Move this army to an adjacent region. Costs movement points based on terrain type.",
@@ -33,17 +33,17 @@ const TOOLTIP_TEXTS = {
 	"back": "Return to the previous selection menu.",
 	
 	# Region Select Modal tooltips
-	"raise_army": "Create new army in this region.",
-	"recruit_soldiers_garrison": "Recruit soldiers to region's local garrison.",
-	"build_castle": "Construct military outpost to improve local defenses, raise armies and recruit units.",
-	"upgrade_castle": " Upgrade defensive structure to the next level for improved defenses and capabilities.",
+	"raise_army": "Create a new army in this region.",
+	"recruit_soldiers_garrison": "Recruit soldiers for this region's local garrison.",
+	"build_castle": "Construct a military outpost to improve local defenses, raise armies, and recruit units.",
+	"upgrade_castle": "Upgrade the defensive structure to the next level for improved defenses and capabilities.",
 	"castle_construction": "Castle construction is in progress. Wait for completion before building or upgrading.",
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
 	"repair_castle": "Repair the damaged walls and gates of your defenses.",
-	"promote_region": "Promote region to the next administrative level, increase growth and production.",
+	"promote_region": "Promote the region to the next administrative level to increase growth and production.",
 	"call_to_arms": "Gather recruits from neighboring regions.",
-	"ore_search": "Search for Gold or Iron ores.",
-	"conquered_region_blocked": "Region cannot be manage in the turned it was conquest.",
+	"ore_search": "Search for gold or iron ores.",
+	"conquered_region_blocked": "This region cannot be managed on the turn it was conquered.",
 	
 	# Generic army tooltip (for army buttons in SelectModal)
 	"army": "Select this army to view available actions: movement, recruitment, transfers."
@@ -111,7 +111,7 @@ func _hide_cost_display() -> void:
 func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 	"""Show the tooltip with the specified text"""
 	var key = String(tooltip_key).to_lower()
-	var tooltip_text = TOOLTIP_TEXTS.get(key, "No information available.")
+	var tooltip_text = tr(TOOLTIP_TEXTS.get(key, "No information available."))
 	
 	# Hide cost display by default
 	_hide_cost_display()
@@ -127,7 +127,7 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 				if not cost.is_empty():
 					_display_cost(cost)
 			else:
-				tooltip_text += "\n\nRegion is already at maximum level."
+				tooltip_text += "\n\n" + tr("Region is already at the maximum level.")
 	
 	# Add dynamic cost information for castle-related tooltips
 	if (tooltip_key == "build_castle" or tooltip_key == "upgrade_castle" or tooltip_key == "repair_castle") and context_data.has("current_region"):
@@ -161,20 +161,20 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 		var current_region = context_data["current_region"]
 		if current_region != null and current_region.is_castle_under_construction():
 			var castle_being_built = current_region.get_castle_under_construction()
-			tooltip_text += "\n\nBuilding: " + CastleTypeEnum.type_to_string(castle_being_built)
+			tooltip_text += "\n\n" + (tr("Building: %s") % CastleTypeEnum.type_to_display_string(castle_being_built))
 	
 	# Add current castle info for castle_max_level tooltip
 	if tooltip_key == "castle_max_level" and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null:
 			var current_castle_type = current_region.get_castle_type()
-			tooltip_text += "\n\nCurrent Castle: " + CastleTypeEnum.type_to_string(current_castle_type)
+			tooltip_text += "\n\n" + (tr("Current Castle: %s") % CastleTypeEnum.type_to_display_string(current_castle_type))
 	
 	# Add requirement info for call_to_arms tooltip
 	if tooltip_key == "call_to_arms" and context_data.has("current_region"):
 		var current_region = context_data["current_region"]
 		if current_region != null and current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
-			tooltip_text += "\nRequires Outpost"
+			tooltip_text += "\n" + tr("Requires Outpost")
 	
 	# Add requirement info for raise_army tooltip
 	if tooltip_key == "raise_army" and context_data.has("current_region"):
@@ -189,14 +189,14 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 			_display_cost(cost_dict)
 			
 			if not has_keep_or_higher:
-				tooltip_text += "\n\nRequires Keep"
+				tooltip_text += "\n\n" + tr("Requires Keep")
 			
 			var capacity_available := bool(context_data.get("army_capacity_available", true))
 			if not capacity_available:
-				tooltip_text += "\nCannot support more armies in this region."
+				tooltip_text += "\n" + tr("Cannot support more armies in this region.")
 			var raise_used := bool(context_data.get("raise_used", false))
 			if raise_used:
-				tooltip_text += "\nCannot raise more armies this turn."
+				tooltip_text += "\n" + tr("Cannot raise more armies this turn.")
 	
 	# Add detailed info for ore_search tooltip
 	if tooltip_key == "ore_search" and context_data.has("current_region"):
@@ -210,9 +210,9 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 				if not discovered_ores.is_empty():
 					var ore_messages: Array[String] = []
 					for ore_type in discovered_ores:
-						var ore_name = ResourcesEnum.type_to_string(ore_type).capitalize()
+						var ore_name = ResourcesEnum.type_to_display_string(ore_type).capitalize()
 						var ore_amount = current_region.get_resource_amount(ore_type)
-						ore_messages.append(ore_name + " was discovered\nMines extract " + str(ore_amount) + " units per turn")
+						ore_messages.append((tr("%s was discovered") % ore_name) + "\n" + (tr("Mines extract %d units per turn") % ore_amount))
 					tooltip_text = "\n\n".join(ore_messages)
 				else:
 					var search_cost = GameParameters.get_ore_search_cost()
@@ -222,15 +222,15 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 					var cost_dict = {ResourcesEnum.Type.GOLD: search_cost}
 					_display_cost(cost_dict)
 					
-					tooltip_text += "\nSuccess Chance: " + str(discovery_chance) + "%"
+					tooltip_text += "\n" + (tr("Success Chance: %d%%") % discovery_chance)
 					if attempts_remaining > 0:
-						tooltip_text += "\nAttempts Remaining: " + str(attempts_remaining)
+						tooltip_text += "\n" + (tr("Attempts Remaining: %d") % attempts_remaining)
 						if current_region.ore_search_used_this_turn:
 							tooltip_text += ""
 					else:
-						tooltip_text += "\nNo search attempts remaining"
+						tooltip_text += "\n" + tr("No search attempts remaining")
 			else:
-				tooltip_text += "\n\nThis region type cannot contain ores"
+				tooltip_text += "\n\n" + tr("This region type cannot contain ores")
 	
 	tooltip_label.text = tooltip_text
 	visible = true

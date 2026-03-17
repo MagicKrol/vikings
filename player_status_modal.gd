@@ -78,7 +78,7 @@ func _update_display() -> void:
 		income_text = " (+" + str(pop_data.income) + ")"
 	elif pop_data.income < 0:
 		income_text = " (" + str(pop_data.income) + ")"
-	var pop_text = "Population: " + str(pop_data.amount) + income_text
+	var pop_text = (tr("Population: %d") % pop_data.amount) + income_text
 	population_label.text = pop_text
 	
 	# Update gold label
@@ -89,7 +89,7 @@ func _update_display() -> void:
 		income_text = " (+" + str(gold_data.income) + ")"
 	elif gold_data.income < 0:
 		income_text = " (" + str(gold_data.income) + ")"
-	var new_text = "Gold: " + str(gold_data.amount) + income_text
+	var new_text = (tr("%s: %d") % [ResourcesEnum.type_to_display_string(ResourcesEnum.Type.GOLD), gold_data.amount]) + income_text
 	gold_label.text = new_text
 	
 	# Update food label
@@ -100,7 +100,7 @@ func _update_display() -> void:
 		income_text = " (+" + str(food_data.income) + ")"
 	elif food_data.income < 0:
 		income_text = " (" + str(food_data.income) + ")"
-	new_text = "Food: " + str(food_data.amount) + income_text
+	new_text = (tr("%s: %d") % [ResourcesEnum.type_to_display_string(ResourcesEnum.Type.FOOD), food_data.amount]) + income_text
 	food_label.text = new_text
 	
 	# Update wood label
@@ -111,7 +111,7 @@ func _update_display() -> void:
 		income_text = " (+" + str(wood_data.income) + ")"
 	elif wood_data.income < 0:
 		income_text = " (" + str(wood_data.income) + ")"
-	wood_label.text = "Wood: " + str(wood_data.amount) + income_text
+	wood_label.text = (tr("%s: %d") % [ResourcesEnum.type_to_display_string(ResourcesEnum.Type.WOOD), wood_data.amount]) + income_text
 	
 	# Update stone label
 	var stone_label = get_node("ResourceContainer/StoneLabel")
@@ -121,7 +121,7 @@ func _update_display() -> void:
 		income_text = " (+" + str(stone_data.income) + ")"
 	elif stone_data.income < 0:
 		income_text = " (" + str(stone_data.income) + ")"
-	stone_label.text = "Stone: " + str(stone_data.amount) + income_text
+	stone_label.text = (tr("%s: %d") % [ResourcesEnum.type_to_display_string(ResourcesEnum.Type.STONE), stone_data.amount]) + income_text
 	
 	# Update iron label
 	var iron_label = get_node("ResourceContainer/IronLabel")
@@ -131,7 +131,7 @@ func _update_display() -> void:
 		income_text = " (+" + str(iron_data.income) + ")"
 	elif iron_data.income < 0:
 		income_text = " (" + str(iron_data.income) + ")"
-	iron_label.text = "Iron: " + str(iron_data.amount) + income_text
+	iron_label.text = (tr("%s: %d") % [ResourcesEnum.type_to_display_string(ResourcesEnum.Type.IRON), iron_data.amount]) + income_text
 	
 	# Update player turn label
 	var player_turn_label = get_node("ResourceContainer/PlayerTurnLabel")
@@ -140,10 +140,13 @@ func _update_display() -> void:
 	var color_hex = "#%02x%02x%02x" % [int(player_color.r * 255), int(player_color.g * 255), int(player_color.b * 255)]
 	
 	if game_manager.is_castle_placing_mode():
-		player_turn_label.text = "[center][color=" + color_hex + "]Player " + str(current_player) + "[/color]\nPlace Castle[/center]"
+		var player_text: String = tr("Player %d") % current_player
+		player_turn_label.text = "[center][color=%s]%s[/color]\n%s[/center]" % [color_hex, player_text, tr("Place Castle")]
 	else:
 		var turn_number = game_manager.get_current_turn()
-		player_turn_label.text = "[center][color=" + color_hex + "]Player " + str(current_player) + "[/color]\nRound " + str(turn_number) + "[/center]"
+		var player_text: String = tr("Player %d") % current_player
+		var round_text: String = tr("Round %d") % turn_number
+		player_turn_label.text = "[center][color=%s]%s[/color]\n%s[/center]" % [color_hex, player_text, round_text]
 
 func _update_display_from_game_state() -> void:
 	"""Update display from current game state"""

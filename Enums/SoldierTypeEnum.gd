@@ -35,6 +35,9 @@ const SOLDIER_NAMES = {
 static func type_to_string(soldier_type: Type) -> String:
 	return SOLDIER_NAMES.get(soldier_type, "Unknown")
 
+static func type_to_display_string(soldier_type: Type) -> String:
+	return TranslationServer.translate(type_to_string(soldier_type))
+
 # Convert string name to enum type
 static func string_to_type(soldier_name: String) -> Type:
 	for type in SOLDIER_NAMES:
@@ -90,6 +93,6 @@ static func get_trait_names(soldier_type: Type) -> Array[String]:
 	var traits = get_traits(soldier_type)
 	
 	for unit_trait in traits:
-		trait_names.append(UnitTraitEnum.type_to_display_name(unit_trait))
+		trait_names.append(UnitTraitEnum.type_to_localized_display_name(unit_trait))
 	
 	return trait_names

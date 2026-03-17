@@ -110,11 +110,11 @@ func _update_army_display() -> void:
 	# Update movement label
 	if movement_label:
 		var current_points = current_army.get_movement_points()
-		movement_label.text = "Movement: " + str(current_points) + " / 5"
+		movement_label.text = tr("Movement: %d / 5") % current_points
 	
 	# Update morale label (hardcoded to 100% for now)
 	if morale_label:
-		morale_label.text = "Morale: 100%"
+		morale_label.text = tr("Morale: 100%")
 	
 	# Update composition - create individual labels for each unit type
 	_update_composition_display()

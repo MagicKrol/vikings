@@ -48,8 +48,8 @@ func show_region_tooltip(region: Region, mouse_pos: Vector2):
 	
 	# Update region name with level (e.g., "Shire of Hornhold")
 	var region_level = region.get_region_level()
-	var level_text = RegionLevelEnum.level_to_string(region_level)
-	region_name_label.text = level_text + " of " + region.get_region_name()
+	var level_text = RegionLevelEnum.level_to_display_string(region_level)
+	region_name_label.text = tr("%s of %s") % [level_text, region.get_region_name()]
 	
 	# Update population
 	population_value.text = str(region.get_population())

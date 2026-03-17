@@ -898,23 +898,24 @@ func add_call_to_arms_recruits(amount: int) -> void:
 func get_ore_search_status_string() -> String:
 	"""Get a human-readable string describing ore search status"""
 	if not GameParameters.can_search_for_ore_in_region(region_type):
-		return "No ore"
+		return tr("No ore")
 
 	if ore_search_attempts_remaining <= 0:
 		if discovered_ores.is_empty():
-			return "No ore"
+			return tr("No ore")
 		var ore_names: Array[String] = []
 		for ore in discovered_ores:
-			ore_names.append(ResourcesEnum.type_to_string(ore))
-		return ", ".join(ore_names) + " Found"
+			ore_names.append(ResourcesEnum.type_to_display_string(ore))
+		return tr("%s Found") % ", ".join(ore_names)
 
-	var status = str(ore_search_attempts_remaining) + " searches"
+	var search_word: String = tr("search") if ore_search_attempts_remaining == 1 else tr("searches")
+	var status = tr("%d %s") % [ore_search_attempts_remaining, search_word]
 
 	if not discovered_ores.is_empty():
 		var ore_names: Array[String] = []
 		for ore in discovered_ores:
-			ore_names.append(ResourcesEnum.type_to_string(ore))
-		status = ", ".join(ore_names) + " Found"
+			ore_names.append(ResourcesEnum.type_to_display_string(ore))
+		status = tr("%s Found") % ", ".join(ore_names)
 
 	return status
 

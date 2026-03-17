@@ -290,13 +290,13 @@ text = "5"
 layout_mode = 2
 
 [node name="PromoteButton" type="Button" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
-text = "promote"
+text = "Promote"
 
 [node name="Resources" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection"]
 layout_mode = 2
@@ -400,7 +400,7 @@ text = "40%"
 layout_mode = 2
 
 [node name="BuildButton" type="Button" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -505,7 +505,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Ore "
+text = "Ore"
 
 [node name="Search" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Mine/Info"]
 layout_mode = 2
@@ -521,7 +521,7 @@ text = "Search"
 layout_mode = 2
 
 [node name="SearchOreButton" type="Button" parent="RegionPanel/Body/Region/Actions/Mine/ActionSection"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -591,13 +591,13 @@ text = "Army V"
 layout_mode = 2
 
 [node name="RaiseArmyButton" type="Button" parent="RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
-text = "Raise army"
+text = "Raise Army"
 
 [node name="Resources" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection"]
 layout_mode = 2
@@ -673,7 +673,7 @@ text = "5"
 layout_mode = 2
 
 [node name="RecruitButton" type="Button" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection"]
-custom_minimum_size = Vector2(180, 40)
+custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("14_1btl1")
@@ -764,7 +764,7 @@ expand_mode = 2
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "Population "
+text = "Population"
 
 [node name="PopulationValue" type="Label" parent="RegionPanel/Body/Region/RegionResources/Population"]
 layout_mode = 2

@@ -59,11 +59,11 @@ func _update_display() -> void:
 	
 	# Update army label
 	var player_id = current_army.get_player_id()
-	army_label.text = "Army " + str(player_id)
+	army_label.text = tr("Army %d") % player_id
 	
 	# Update movement label
 	var current_points = current_army.get_movement_points()
-	movement_label.text = "Movement: " + str(current_points) + " / 5"
+	movement_label.text = tr("Movement: %d / 5") % current_points
 	
 	# Change color based on movement points
 	if current_points <= 0:
@@ -75,7 +75,7 @@ func _update_display() -> void:
 	
 	# Update composition label
 	var composition_text = current_army.get_army_composition_string()
-	composition_label.text = "Composition:\n" + composition_text
+	composition_label.text = tr("Composition:\n%s") % composition_text
 
 func _process(_delta: float) -> void:
 	"""Check if current army is still valid"""

@@ -276,7 +276,7 @@ text = "Scenario"
 [node name="ScenarioButton2" type="Button" parent="NewGame"]
 layout_mode = 2
 theme = ExtResource("12_oyrel")
-text = "Custom "
+text = "Custom"
 
 [node name="BackButton" type="Button" parent="NewGame"]
 layout_mode = 2

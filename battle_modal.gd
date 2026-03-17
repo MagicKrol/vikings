@@ -235,7 +235,7 @@ func _update_display() -> void:
 		# Show normal battle screen
 		# Update battle title
 		var region_name = defending_region.get_region_name()
-		battle_title_label.text = "Battle for " + region_name
+		battle_title_label.text = tr("Battle for %s") % region_name
 		
 		# Set appropriate headers for normal battle
 		_update_attacker_header()
@@ -279,22 +279,22 @@ func _update_effectiveness_displays() -> void:
 	
 	# Defender vigor: garrison always 100%, armies use their efficiency
 	# For now, we're always fighting against garrison, so it's 100%
-	defender_effectiveness.text = "100%"
+	defender_effectiveness.text = tr("100%")
 
 
 func _display_battle_report() -> void:
 	"""Display the battle report screen"""
 	# Update title
-	battle_title_label.text = "Battle Report"
+	battle_title_label.text = tr("Battle Report")
 	
 	# Hide vigor labels (not needed for report)
 	attacker_effectiveness.visible = false
 	defender_effectiveness.visible = false
 	
 	# Change column headers
-	attacker_header.text = "Your Losses"
+	attacker_header.text = tr("Your Losses")
 	attacker_header.remove_theme_color_override("font_color")
-	defender_header.text = "Enemy Losses"
+	defender_header.text = tr("Enemy Losses")
 	defender_header.remove_theme_color_override("font_color")
 	
 	# Display losses if we have battle report
@@ -303,7 +303,7 @@ func _display_battle_report() -> void:
 	
 	# Update button text for final screen
 	if continue_button:
-		continue_button.text = "Continue"
+		continue_button.text = tr("Continue")
 
 func _display_army_losses() -> void:
 	"""Display losses for both armies in the report format"""
@@ -657,7 +657,7 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 	
 	# Reset withdrawal state
 	withdrawal_in_progress = false
-	_set_message("Battle has ended")
+	_set_message(tr("Battle has ended"))
 	_update_action_button()
 
 	# Final display update
@@ -675,9 +675,9 @@ func _on_ai_withdrawal_started(side: int) -> void:
 	var human_defender := (gm and gm.is_player_human(region_owner)) or _player_has_defending_army()
 	var human_side := 1 if human_attacker else (2 if human_defender else 0)
 	if side == human_side:
-		_set_message("Your army is withdrawing")
+		_set_message(tr("Your army is withdrawing"))
 	else:
-		_set_message("Enemy is withdrawing")
+		_set_message(tr("Enemy is withdrawing"))
 	_play_retreat_sound()
 	withdrawal_in_progress = true
 	_update_action_button()
@@ -782,7 +782,7 @@ func _on_withdraw_pressed_for_side(side: int, play_click_sound: bool = true) -> 
 	var gm = get_node("../../GameManager") as GameManager
 	if side == 2:
 		withdrawal_in_progress = true
-		_set_message("Your army is withdrawing")
+		_set_message(tr("Your army is withdrawing"))
 		_play_retreat_sound()
 		_update_action_button()
 		if animated_simulator:
@@ -794,7 +794,7 @@ func _on_withdraw_pressed_for_side(side: int, play_click_sound: bool = true) -> 
 		withdrawal_in_progress = true
 		attacker_manual_withdraw_requested = true
 		gm.get_battle_manager().mark_attacker_manual_withdrawal()
-		_set_message("Your army is withdrawing")
+		_set_message(tr("Your army is withdrawing"))
 		_play_retreat_sound()
 		_update_action_button()
 		if animated_simulator:
@@ -847,11 +847,11 @@ func _update_action_button() -> void:
 		var dual_human: bool = _is_dual_human_battle()
 		second_player_container.visible = dual_human
 		if withdrawal_in_progress:
-			continue_button.text = "Continue"
+			continue_button.text = tr("Continue")
 			continue_button.disabled = true
 			second_player_withdraw_button.disabled = true
 		else:
-			continue_button.text = "Withdraw"
+			continue_button.text = tr("Withdraw")
 			if dual_human:
 				continue_button.disabled = not _is_withdraw_allowed_for_side(2)
 				second_player_withdraw_button.disabled = not _is_withdraw_allowed_for_side(1)
@@ -860,7 +860,7 @@ func _update_action_button() -> void:
 				second_player_withdraw_button.disabled = true
 	else:
 		continue_button.visible = true
-		continue_button.text = "Continue"
+		continue_button.text = tr("Continue")
 		continue_button.disabled = false
 		second_player_container.visible = false
 		second_player_withdraw_button.disabled = false
@@ -878,8 +878,8 @@ func _on_speed_modal_changed(context: String, value: float) -> void:
 
 func _update_attacker_header() -> void:
 	var player_id = attacking_army.get_player_id()
-	var player_name = "Player " + str(player_id)
-	attacker_header.text = "Army " + str(attacking_army.number) + " (" + player_name + ")"
+	var player_name: String = tr("Player %d") % player_id
+	attacker_header.text = tr("Army %s (%s)") % [attacking_army.number, player_name]
 	var player_color = GameParameters.get_player_color(player_id)
 	attacker_header.add_theme_color_override("font_color", player_color)
 
@@ -918,7 +918,7 @@ func _update_defender_header() -> void:
 	var region_name = defending_region.get_region_name()
 	var gm = get_node("../../GameManager") as GameManager
 	var owner_id = gm.get_region_manager().get_region_owner(defending_region.get_region_id())
-	defender_header.text = region_name + "' defenders"
+	defender_header.text = tr("%s defenders") % region_name
 	if owner_id == -1:
 		defender_header.remove_theme_color_override("font_color")
 	else:
