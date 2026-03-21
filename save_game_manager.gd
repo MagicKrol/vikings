@@ -44,6 +44,7 @@ static func save_settings(sound_manager: SoundManager) -> bool:
 	config.set_value("visual", "clouds_enabled", Clouds.is_global_clouds_enabled())
 	config.set_value("gameplay", "ai_speed", GameParameters.get_ai_move_speed_multiplier())
 	config.set_value("gameplay", "battle_speed", GameParameters.get_battle_round_time())
+	config.set_value("gameplay", "army_move_trigger", GameParameters.get_army_move_trigger())
 	var error: int = config.save(SETTINGS_FILE_PATH)
 	return error == OK
 
@@ -65,8 +66,10 @@ static func load_settings(sound_manager: SoundManager) -> void:
 	Clouds.set_global_clouds_enabled(clouds_enabled)
 	var ai_speed: float = float(config.get_value("gameplay", "ai_speed", GameParameters.get_ai_move_speed_multiplier()))
 	var battle_speed: float = float(config.get_value("gameplay", "battle_speed", GameParameters.get_battle_round_time()))
+	var army_move_trigger: int = int(config.get_value("gameplay", "army_move_trigger", GameParameters.get_army_move_trigger()))
 	GameParameters.set_ai_move_speed_multiplier(ai_speed)
 	GameParameters.set_battle_round_time(battle_speed)
+	GameParameters.set_army_move_trigger(army_move_trigger)
 	if sound_manager.is_node_ready():
 		_apply_sound_settings(sound_manager, sound_enabled, music_enabled, sound_db, music_db)
 	else:

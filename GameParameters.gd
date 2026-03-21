@@ -85,6 +85,11 @@ const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 3.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
 
+enum ArmyMoveTrigger {
+	LEFT_CLICK = 0,
+	RIGHT_CLICK = 1
+}
+
 ## Border Enhancement Constants
 const BORDER_SATURATION_BOOST = 0.1           # Increase saturation by 20% for colored borders
 const BORDER_VALUE_REDUCTION = 0.15           # Darken borders by 15% 
@@ -167,6 +172,7 @@ const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount f
 
 static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
 static var _battle_round_time: float = BATTLE_ROUND_TIME_NORMAL
+static var _army_move_trigger: int = ArmyMoveTrigger.LEFT_CLICK
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -885,6 +891,15 @@ static func set_battle_round_time(seconds: float) -> void:
 
 static func get_battle_round_time() -> float:
 	return _battle_round_time
+
+static func set_army_move_trigger(trigger: int) -> void:
+	if trigger == ArmyMoveTrigger.RIGHT_CLICK:
+		_army_move_trigger = ArmyMoveTrigger.RIGHT_CLICK
+		return
+	_army_move_trigger = ArmyMoveTrigger.LEFT_CLICK
+
+static func get_army_move_trigger() -> int:
+	return _army_move_trigger
 
 static func get_move_animation_duration(is_ai_player: bool) -> float:
 	if is_ai_player:

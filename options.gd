@@ -21,10 +21,13 @@ var _apply_runtime_clouds: bool = false
 @onready var battle_speed_normal_button: Button = get_node("Scenario/VBoxContainer/BattleSpeed/Normal") as Button
 @onready var battle_speed_fast_button: Button = get_node("Scenario/VBoxContainer/BattleSpeed/Fast") as Button
 @onready var battle_speed_very_fast_button: Button = get_node("Scenario/VBoxContainer/BattleSpeed/VeryFast") as Button
+@onready var move_army_left_click_button: Button = get_node("Scenario/VBoxContainer/MoveArmy/LeftClick") as Button
+@onready var move_army_right_click_button: Button = get_node("Scenario/VBoxContainer/MoveArmy/RightClick") as Button
 
 var _cloud_buttons_group: ButtonGroup
 var _ai_speed_buttons_group: ButtonGroup
 var _battle_speed_buttons_group: ButtonGroup
+var _move_army_buttons_group: ButtonGroup
 
 func _ready() -> void:
 	_cloud_buttons_group = ButtonGroup.new()
@@ -41,6 +44,10 @@ func _ready() -> void:
 	battle_speed_normal_button.button_group = _battle_speed_buttons_group
 	battle_speed_fast_button.button_group = _battle_speed_buttons_group
 	battle_speed_very_fast_button.button_group = _battle_speed_buttons_group
+	_move_army_buttons_group = ButtonGroup.new()
+	_move_army_buttons_group.allow_unpress = false
+	move_army_left_click_button.button_group = _move_army_buttons_group
+	move_army_right_click_button.button_group = _move_army_buttons_group
 	back_button.pressed.connect(_on_back_pressed)
 	sound_slider.value_changed.connect(_on_sound_slider_changed)
 	music_slider.value_changed.connect(_on_music_slider_changed)
@@ -52,6 +59,8 @@ func _ready() -> void:
 	battle_speed_normal_button.pressed.connect(_on_battle_speed_normal_pressed)
 	battle_speed_fast_button.pressed.connect(_on_battle_speed_fast_pressed)
 	battle_speed_very_fast_button.pressed.connect(_on_battle_speed_very_fast_pressed)
+	move_army_left_click_button.pressed.connect(_on_move_army_left_click_pressed)
+	move_army_right_click_button.pressed.connect(_on_move_army_right_click_pressed)
 
 func _input(event: InputEvent) -> void:
 	if not visible:
@@ -82,6 +91,7 @@ func refresh_state() -> void:
 	_set_cloud_buttons_state(CLOUDS_SCRIPT.is_global_clouds_enabled())
 	_sync_ai_speed_buttons()
 	_sync_battle_speed_buttons()
+	_sync_move_army_buttons()
 
 func _on_back_pressed() -> void:
 	back_requested.emit()
@@ -147,6 +157,12 @@ func _on_battle_speed_fast_pressed() -> void:
 func _on_battle_speed_very_fast_pressed() -> void:
 	_set_battle_speed(GameParameters.BATTLE_ROUND_TIME_VERY_FAST)
 
+func _on_move_army_left_click_pressed() -> void:
+	_set_move_army_trigger(GameParameters.ArmyMoveTrigger.LEFT_CLICK)
+
+func _on_move_army_right_click_pressed() -> void:
+	_set_move_army_trigger(GameParameters.ArmyMoveTrigger.RIGHT_CLICK)
+
 func _set_ai_turn_speed(multiplier: float) -> void:
 	GameParameters.set_ai_move_speed_multiplier(multiplier)
 	_sync_ai_speed_buttons()
@@ -155,6 +171,11 @@ func _set_ai_turn_speed(multiplier: float) -> void:
 func _set_battle_speed(seconds: float) -> void:
 	GameParameters.set_battle_round_time(seconds)
 	_sync_battle_speed_buttons()
+	SaveGameManager.save_settings(sound_manager)
+
+func _set_move_army_trigger(trigger: int) -> void:
+	GameParameters.set_army_move_trigger(trigger)
+	_sync_move_army_buttons()
 	SaveGameManager.save_settings(sound_manager)
 
 func _sync_ai_speed_buttons() -> void:
@@ -175,6 +196,13 @@ func _sync_battle_speed_buttons() -> void:
 	else:
 		_set_battle_speed_buttons_state("normal")
 
+func _sync_move_army_buttons() -> void:
+	var move_trigger: int = GameParameters.get_army_move_trigger()
+	if move_trigger == GameParameters.ArmyMoveTrigger.RIGHT_CLICK:
+		_set_move_army_buttons_state("right")
+		return
+	_set_move_army_buttons_state("left")
+
 func _set_ai_speed_buttons_state(selected_key: String) -> void:
 	ai_speed_normal_button.button_pressed = selected_key == "normal"
 	ai_speed_fast_button.button_pressed = selected_key == "fast"
@@ -184,6 +212,10 @@ func _set_battle_speed_buttons_state(selected_key: String) -> void:
 	battle_speed_normal_button.button_pressed = selected_key == "normal"
 	battle_speed_fast_button.button_pressed = selected_key == "fast"
 	battle_speed_very_fast_button.button_pressed = selected_key == "very_fast"
+
+func _set_move_army_buttons_state(selected_key: String) -> void:
+	move_army_left_click_button.button_pressed = selected_key == "left"
+	move_army_right_click_button.button_pressed = selected_key == "right"
 
 func _update_sound_label(value: float) -> void:
 	sound_value_label.text = str(int(round(value))) + "%"

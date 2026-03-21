@@ -29,13 +29,17 @@ class_name ClickManager
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		DebugLogger.log("click", "ClickManager: left click at " + str(event.position))
-		if _is_ui_click(event.position, event.global_position):
-			DebugLogger.log("click", "ClickManager: UI click detected, ignoring map click")
-			return
-		_on_left_click(event.global_position)
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			DebugLogger.log("click", "ClickManager: left click at " + str(event.position))
+			if _is_ui_click(event.position, event.global_position):
+				DebugLogger.log("click", "ClickManager: UI click detected, ignoring map click")
+				return
+			_on_left_click(event.global_position)
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			_handle_right_click_button_event(event)
 	elif event is InputEventMouseMotion:
+		_handle_right_click_motion(event)
 		_handle_mouse_motion()
 	elif event is InputEventKey and event.pressed:
 		# Editor quick-ownership mode: number keys 1..6 select owner, ESC cancels
@@ -67,6 +71,10 @@ var _tutorial_manager: TutorialManager
 # Editor quick-ownership mode state
 var _editor_ownership_mode: bool = false
 var _editor_owner_id: int = 0
+var _right_click_down: bool = false
+var _right_click_dragging: bool = false
+var _right_click_start_position: Vector2 = Vector2.ZERO
+const RIGHT_CLICK_DRAG_THRESHOLD: float = 8.0
 
 func _ready():
 	# Managers will be provided by GameManager via set_managers()
@@ -91,7 +99,38 @@ func get_army_manager() -> ArmyManager:
 # Minimal state for input handling (game state now managed by GameManager)
 
 
+func _handle_right_click_button_event(event: InputEventMouseButton) -> void:
+	if GameParameters.get_army_move_trigger() != GameParameters.ArmyMoveTrigger.RIGHT_CLICK:
+		return
+	if event.pressed:
+		_right_click_down = true
+		_right_click_dragging = false
+		_right_click_start_position = event.position
+		return
+	if not _right_click_down:
+		return
+	_right_click_down = false
+	if _right_click_dragging:
+		return
+	if _is_ui_click(event.position, event.global_position):
+		return
+	_on_right_click(event.global_position)
+
+func _handle_right_click_motion(event: InputEventMouseMotion) -> void:
+	if not _right_click_down:
+		return
+	if _right_click_dragging:
+		return
+	if event.position.distance_to(_right_click_start_position) >= RIGHT_CLICK_DRAG_THRESHOLD:
+		_right_click_dragging = true
+
 func _on_left_click(screen_pos: Vector2) -> void:
+	_on_map_click(screen_pos, MOUSE_BUTTON_LEFT)
+
+func _on_right_click(screen_pos: Vector2) -> void:
+	_on_map_click(screen_pos, MOUSE_BUTTON_RIGHT)
+
+func _on_map_click(screen_pos: Vector2, button_index: int) -> void:
 	if _is_ui_click(screen_pos, screen_pos):
 		DebugLogger.log("click", "ClickManager: UI click detected in _on_left_click")
 		return
@@ -151,7 +190,7 @@ func _on_left_click(screen_pos: Vector2) -> void:
 					hit = true
 					break
 		if hit:
-			_handle_region_click(region_container)
+			_handle_region_click(region_container, button_index)
 			region_clicked = true
 			break
 
@@ -169,7 +208,9 @@ func _on_left_click(screen_pos: Vector2) -> void:
 
 	# If no region was clicked and we have a selected army, deselect it (cancels move)
 	if not region_clicked and _army_manager and _army_manager.selected_army != null:
-		_army_manager.deselect_army()
+		var move_trigger_right: bool = GameParameters.get_army_move_trigger() == GameParameters.ArmyMoveTrigger.RIGHT_CLICK
+		if not (move_trigger_right and button_index == MOUSE_BUTTON_RIGHT):
+			_army_manager.deselect_army()
 
 func _point_in_polygon(p: Vector2, polygon: Polygon2D) -> bool:
 	# Convert world position into polygon local space and use Geometry2D
@@ -204,7 +245,7 @@ func _is_point_in_control(control: Control, screen_pos: Vector2) -> bool:
 	var rect := Rect2(Vector2.ZERO, control.size)
 	return rect.has_point(local_pos)
 
-func _handle_region_click(region_container: Node) -> void:
+func _handle_region_click(region_container: Node, button_index: int) -> void:
 	# Optional guard: check if in map editor mode and handle differently
 	if _game_manager and _game_manager.enable_map_editor:
 		_handle_editor_region_click(region_container)
@@ -222,10 +263,12 @@ func _handle_region_click(region_container: Node) -> void:
 			return
 		tutorial_region_matched = true
 	if _is_move_flow_active():
+		var move_trigger_right: bool = GameParameters.get_army_move_trigger() == GameParameters.ArmyMoveTrigger.RIGHT_CLICK
 		if _army_manager != null and region_container == _army_manager.selected_region_container:
-			_army_manager.deselect_army()
-			if _info_modal and _info_modal.visible:
-				_info_modal.switch_to_region_tab()
+			if not (move_trigger_right and button_index == MOUSE_BUTTON_RIGHT):
+				_army_manager.deselect_army()
+				if _info_modal and _info_modal.visible:
+					_info_modal.switch_to_region_tab()
 			return
 		var visual_manager = _game_manager.get_visual_manager()
 		if visual_manager and visual_manager.has_move_region_highlights():
@@ -233,7 +276,11 @@ func _handle_region_click(region_container: Node) -> void:
 			if region and not allowed_ids.has(region.get_region_id()):
 				var current_player_id = _game_manager.get_current_player_id()
 				var region_owner = _region_manager.get_region_owner(region.get_region_id())
-				if region_owner == current_player_id:
+				if move_trigger_right and button_index == MOUSE_BUTTON_RIGHT:
+					return
+				if move_trigger_right and button_index == MOUSE_BUTTON_LEFT:
+					pass
+				elif region_owner == current_player_id:
 					_army_manager.deselect_army()
 					_info_modal.show_region_info(region)
 					return
@@ -268,7 +315,7 @@ func _handle_region_click(region_container: Node) -> void:
 				return
 			# For now, delegate army handling back to legacy system
 			# TODO: Move to ArmyManager in future refactor
-			_handle_army_selection_and_movement.call_deferred(region_container)
+			_handle_army_selection_and_movement.call_deferred(region_container, button_index)
 
 func _handle_mouse_motion() -> void:
 	if _game_manager == null:
@@ -387,11 +434,17 @@ func _handle_editor_region_click(region_container: Node) -> void:
 
 
 
-func _handle_army_selection_and_movement(region_container: Node) -> void:
+func _handle_army_selection_and_movement(region_container: Node, button_index: int) -> void:
+	var move_trigger_right: bool = GameParameters.get_army_move_trigger() == GameParameters.ArmyMoveTrigger.RIGHT_CLICK
+	var is_move_click: bool = button_index == MOUSE_BUTTON_LEFT
+	if move_trigger_right:
+		is_move_click = button_index == MOUSE_BUTTON_RIGHT
+
 	# If we have a selected army, prioritize movement to the clicked region
 	if _army_manager.selected_army != null and _army_manager.selected_region_container != null:
 		if region_container == _army_manager.selected_region_container:
-			_army_manager.deselect_army()
+			if button_index == MOUSE_BUTTON_LEFT:
+				_army_manager.deselect_army()
 			return
 		var target_region = region_container as Region
 		var target_region_id = target_region.get_region_id()
@@ -399,7 +452,7 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 		var region_owner = _region_manager.get_region_owner(target_region_id)
 		var is_owned_region = region_owner == current_player_id
 		var is_potential_target := _is_potential_move_target(_army_manager.selected_region_container, region_container)
-		if is_potential_target:
+		if is_move_click and is_potential_target:
 			var movement_points = _army_manager.selected_army.get_movement_points()
 			DebugLogger.log("InputSystem", "Selected army " + _army_manager.selected_army.name + " has " + str(movement_points) + " movement points")
 			if movement_points > 0 and _army_manager.can_army_move_to_region(_army_manager.selected_army, region_container):
@@ -408,12 +461,27 @@ func _handle_army_selection_and_movement(region_container: Node) -> void:
 					_army_manager.deselect_army()
 				return
 			return
+		if move_trigger_right:
+			if button_index == MOUSE_BUTTON_RIGHT:
+				return
+			if is_owned_region:
+				var friendly_army: Army = _army_manager.get_army_in_region(region_container, current_player_id)
+				if friendly_army != null:
+					_army_manager.select_army(friendly_army, region_container, current_player_id)
+					return
+				_army_manager.deselect_army()
+				_info_modal.show_region_info(target_region)
+				return
+			return
 		if is_owned_region:
 			_army_manager.deselect_army()
 			_info_modal.show_region_info(target_region)
 			return
 		else:
 			return
+
+	if move_trigger_right and button_index == MOUSE_BUTTON_RIGHT:
+		return
 
 	# Get all armies in this region
 	var armies_in_region: Array[Army] = []
