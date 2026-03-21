@@ -117,7 +117,7 @@ var player_settings: Array = []  # Array of dictionaries with player configurati
 
 func _ready():
 	
-	TranslationServer.set_locale("br")
+	TranslationServer.set_locale("en")
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
@@ -628,15 +628,18 @@ func _setup_victory_buttons():
 		btn.button_group = group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	for btn in buttons:
-		var selected: bool = btn.name == "Conquer"
+		var selected: bool = false
 		btn.button_pressed = selected
 		_update_button_gold_state(btn, selected)
 
 func _get_selected_custom_map_victory() -> String:
 	var conquer_button: Button = get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Conquer")
+	var dominate_button: Button = get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Dominate")
 	if conquer_button.button_pressed:
 		return "conquer"
-	return "dominate"
+	if dominate_button.button_pressed:
+		return "dominate"
+	return ""
 
 func _load_scenario_list():
 	"""Load and display available scenarios"""

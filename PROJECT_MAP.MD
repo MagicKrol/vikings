@@ -13,7 +13,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 - Map preview panel (`MapPreview/InnerPanel/MapScreenshot`) handles campaign/scenario hovers; a separate CustomMap preview lives in `CustomMap/Panel2/TextureRect` and scales previews to a 450x450 frame (keep-aspect-covered, fit width).
 - Custom Map & Scenario submenus share `CustomMap`:
   - Panel (players/difficulty/victory + Select Map) shows for custom maps; Scenario panel shows for scenario list; both Back buttons return to New Game.
-  - Player toggles are static scene nodes with defaults: P1 Human, P2-4 Computer, P5-6 Off; difficulty defaults to Normal; victory defaults to Conquer; selection uses default button styling (no font color override).
+  - Player toggles are static scene nodes with defaults: P1 Human, P2-4 Computer, P5-6 Off; difficulty defaults to Normal; victory has no default selection (no win condition unless selected); selection uses default button styling (no font color override).
   - Map/Scenario list (Panel3) uses a scrollable template row (`Map1`) sorted by size (T/S/M/L) then name; size filter buttons (All/T/S/M/L) rebuild the list and clear selection; row hover/unhover callbacks are wired to `Control` rows duplicated from the `Map1` `HBoxContainer` template.
   - Selecting a row colors it header-gold, updates Panel2 labels (MapName = display name, MapSize = Tiny/Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`; Custom Map, Scenario, and Campaign lists auto-select the first newly created row after list build/filter.
   - List selection now clears stale row references before recoloring so reopening lists after Back does not hit freed-node crashes.
@@ -29,10 +29,10 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 Start Flow
 - Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
   - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
-- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <tiny|small|medium|large>, player_settings: [...], victory_condition: <conquer|dominate> }` (size inferred from filename suffix)
+- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <tiny|small|medium|large>, player_settings: [...], victory_condition: <""|conquer|dominate> }` (size inferred from filename suffix)
 - Saved game: `{ type: "save", save_path: user://savegame.json }` (single-slot overwrite file).
 - `GameManager._ready()` reads `start_payload`:
-  - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file) and loads scenario-defined `victory_conditions` (fallback defaults: conquer + dominate).
+  - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file) and loads scenario-defined `victory_conditions` (missing/empty means no automatic victory).
   - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, reads `victory_condition`, then `generate_map()`.
   - Save: loads `user://savegame.json`, regenerates map from saved source (`map_file` + `map_size`), initializes managers without castle-placement bootstrap, then applies full runtime state (regions/ownership/castles/armies/player/game turn state).
   - Payload is cleared after consumption.
@@ -147,7 +147,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Purpose: High-level orchestration (castle placement, turns, resource ticks, AI start, battle finalization).
 - Key: `initialize_managers()`, `next_turn()`, `_process_round_start_actions()`, `_process_player_turn_start()`, `handle_castle_placement()`, `finalize_battle_result(...)`.
 - Integrates: RegionManager, ArmyManager, BattleManager, VisualManager, UIManager, PlayerManagerNode, TurnController, AIDebugVisualizer, CastlePlacementScorer.
-- Victory system: stores normalized `victory_conditions`; checks at turn start and after movement/battle; supports `conquer` (others have no castles and no armies), `dominate` (>=70% conquerable regions: non-ocean, non-mountain), scenario-targeted `own_region`, `survive_turns`, and `economy` (player owns target region, reaches required region level and castle level there, and has hired required count of a specific unit type).
+- Victory system: stores normalized `victory_conditions`; checks at turn start and after movement/battle; supports `conquer` (others have no castles and no armies), `dominate` (>=70% conquerable regions: non-ocean, non-mountain), scenario-targeted `own_region`, `survive_turns`, and `economy` (player owns target region, reaches required region level and castle level there, and has hired required count of a specific unit type). Empty list means no automatic win trigger.
 - Economy tracking: `record_hired_units()` tracks per-player hired totals by unit type (shared across human and AI recruitment flows), used by `economy` victory and persisted in saves as `player_hired_units`.
 - Scenario rule: `scenario_trade_disabled` is loaded from scenario JSON `trade_disabled` and exposed via `is_trade_disabled_for_current_game()` for TradeModal rendering.
 - Win flow: sets `victory_declared`, blocks further `next_turn()` progression, and shows `MessageModal` text `Player X Won`.

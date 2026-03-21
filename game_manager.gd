@@ -130,7 +130,7 @@ func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
 	if get_tree().has_meta("editor_start_payload") and get_tree().get_meta("editor_start_payload") != null:
 		enable_map_editor = true
-	_set_victory_conditions_from_raw(["conquer"])
+	_set_victory_conditions_from_raw([])
 	_scenario_events_runtime.clear()
 	scenario_trade_disabled = false
 	_reset_player_hired_units_tracking()
@@ -748,7 +748,7 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 	map_generator.generate_map()
 
 func _initialize_victory_conditions_from_custom_payload(payload: Dictionary) -> void:
-	var selected_condition: String = String(payload.get("victory_condition", "conquer")).to_lower()
+	var selected_condition: String = String(payload.get("victory_condition", "")).to_lower()
 	_set_victory_conditions_from_raw([selected_condition])
 
 func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary) -> void:
@@ -756,7 +756,7 @@ func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary
 		var raw_conditions: Array = scenario_data.get("victory_conditions", [])
 		_set_victory_conditions_from_raw(raw_conditions)
 		return
-	_set_victory_conditions_from_raw(["conquer", "dominate"])
+	_set_victory_conditions_from_raw([])
 
 func _initialize_trade_rules_from_scenario_data(scenario_data: Dictionary) -> void:
 	if game_mode != "scenario":
@@ -769,10 +769,7 @@ func load_victory_conditions_from_source(source: Dictionary) -> void:
 		var raw_conditions: Array = source.get("victory_conditions", [])
 		_set_victory_conditions_from_raw(raw_conditions)
 		return
-	if game_mode == "scenario":
-		_set_victory_conditions_from_raw(["conquer", "dominate"])
-		return
-	_set_victory_conditions_from_raw(["conquer"])
+	_set_victory_conditions_from_raw([])
 
 func get_victory_conditions_for_save() -> Array:
 	var serialized: Array = []
@@ -803,8 +800,6 @@ func _set_victory_conditions_from_raw(raw_conditions: Array) -> void:
 		if normalized.is_empty():
 			continue
 		normalized_conditions.append(normalized)
-	if normalized_conditions.is_empty():
-		normalized_conditions.append({"type": "conquer"})
 	victory_conditions.clear()
 	for condition: Dictionary in normalized_conditions:
 		victory_conditions.append(condition.duplicate(true))
