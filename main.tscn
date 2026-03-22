@@ -181,9 +181,10 @@ visible = false
 visible = false
 
 [node name="IconsModal" parent="UI" instance=ExtResource("34_dn8i2")]
-visible = false
-offset_left = 10.0
-offset_right = 450.0
+offset_left = 1810.0
+offset_top = 60.0
+offset_right = 2250.0
+offset_bottom = 60.0
 
 [node name="TradeModal" parent="UI" instance=ExtResource("35_c1ajo")]
 

@@ -137,13 +137,22 @@ func set_overlay_suppressed(active: bool) -> void:
 func _apply_icons_visibility() -> void:
 	if _icons_modal == null:
 		return
-	if is_modal_active or _overlay_suppressed or _move_selection_active:
+	if _should_hide_icons_modal():
 		if _icons_modal.visible:
 			_icons_modal_was_visible = true
 		_icons_modal.visible = false
 	elif _icons_modal_was_visible:
 		_icons_modal.visible = true
 		_icons_modal_was_visible = false
+
+func _should_hide_icons_modal() -> bool:
+	if _move_selection_active:
+		return true
+	if _overlay_suppressed:
+		return true
+	if is_modal_active and not is_only_info_modal_visible():
+		return true
+	return false
 
 func _build_modal_list() -> void:
 	_modal_nodes = [

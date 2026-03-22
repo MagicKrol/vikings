@@ -371,7 +371,6 @@ theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
 theme_override_font_sizes/font_size = 18
 toggle_mode = true
-button_pressed = true
 text = "Left click"
 
 [node name="MarginContainerRight" type="MarginContainer" parent="Scenario/VBoxContainer/MoveArmy"]
@@ -386,4 +385,5 @@ theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
 theme_override_font_sizes/font_size = 18
 toggle_mode = true
+button_pressed = true
 text = "Right click"

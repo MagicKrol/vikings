@@ -461,6 +461,18 @@ func _on_scenario_intro_continue() -> void:
 		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
 	_start_first_turn()
 
+func show_intro_message_modal_again() -> void:
+	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
+		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
+	if scenario_path != "":
+		var scen_mgr := ScenarioManager.new()
+		var scenario_data: Dictionary = scen_mgr.load_scenario(scenario_path)
+		var intro_text: String = String(scenario_data.get("intro_message", "")).strip_edges()
+		if intro_text != "":
+			_intro_message_modal.display_intro_text(intro_text)
+			return
+	_intro_message_modal.displayMessage("")
+
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
 	if event is InputEventKey and event.pressed:

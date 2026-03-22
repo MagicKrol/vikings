@@ -653,6 +653,7 @@ func _update_attack_button_state() -> void:
 
 func _perform_trebuchet_bombard() -> void:
 	bombard_performed = true
+	sound_manager.play_catapult_sound()
 	var total_damage := _roll_trebuchet_damage()
 	var breach_result: Dictionary = {}
 	if total_damage > 0:

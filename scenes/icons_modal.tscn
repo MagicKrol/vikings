@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dxbh6skra8djp"]
+[gd_scene load_steps=5 format=3 uid="uid://dxbh6skra8djp"]
 
 [ext_resource type="Texture2D" uid="uid://vdcvlbekhygk" path="res://images/icons/scale.png" id="1_uhujf"]
-[ext_resource type="Texture2D" uid="uid://dg5no34mjow4h" path="res://images/icons/map.png" id="2_vacpy"]
 [ext_resource type="Script" path="res://icons_modal.gd" id="3_jgatv"]
+[ext_resource type="Texture2D" uid="uid://bhgn0vinpjbqf" path="res://images/icons/settings.png" id="3_wbg6d"]
+[ext_resource type="Texture2D" uid="uid://dtpl05npia0rh" path="res://images/icons/objectives.png" id="4_t7udb"]
 
 [node name="IconsModal" type="Control"]
 layout_mode = 3
@@ -15,18 +16,21 @@ script = ExtResource("3_jgatv")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_top = 950.0
 offset_right = 100.0
-offset_bottom = 1050.0
+offset_bottom = 100.0
 mouse_filter = 0
 texture = ExtResource("1_uhujf")
 
-[node name="TextureRect2" type="TextureRect" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 120.0
-offset_top = 950.0
-offset_right = 220.0
-offset_bottom = 1050.0
+[node name="Settings" type="TextureRect" parent="."]
+offset_top = 110.0
+offset_right = 100.0
+offset_bottom = 210.0
 mouse_filter = 0
-texture = ExtResource("2_vacpy")
+texture = ExtResource("3_wbg6d")
+
+[node name="Objectives" type="TextureRect" parent="."]
+offset_top = 220.0
+offset_right = 100.0
+offset_bottom = 320.0
+mouse_filter = 0
+texture = ExtResource("4_t7udb")

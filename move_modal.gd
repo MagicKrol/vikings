@@ -23,7 +23,13 @@ var make_camp_button: Button = null
 var cancel_button: Button = null
 var army_actions_button: Button = null
 var next_army_button: Button = null
+var no_actions_panel: SelectTooltipModalNoRes = null
+var recruit_button_border: Control = null
+var make_camp_button_border: Control = null
+var transfer_button_border: Control = null
+var next_army_button_border: Control = null
 const TUTORIAL_TARGET_ARMY_DESELECT: String = "MoveModal/army_deselect"
+const NO_ACTIONS_TEXT: String = "Not enough movement points"
 
 func _ready():
 	# Get button reference and connect signal
@@ -35,6 +41,11 @@ func _ready():
 	make_camp_button.pressed.connect(_on_make_camp_pressed)
 	next_army_button = get_node("Panel2/List/ButtonSection/HBoxContainer3/ButtonBorder/NextArmy") as Button
 	next_army_button.pressed.connect(_on_next_army_pressed)
+	no_actions_panel = get_node("NoActions") as SelectTooltipModalNoRes
+	recruit_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer3/ButtonBorder") as Control
+	make_camp_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder") as Control
+	transfer_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder") as Control
+	next_army_button_border = get_node("Panel2/List/ButtonSection/HBoxContainer3/ButtonBorder") as Control
 	set_process_input(true)
 	
 	# Get sound manager reference
@@ -64,6 +75,8 @@ func _ready():
 	mouse_entered.connect(_on_mouse_entered)
 	var panel = get_node("Panel") as Control
 	panel.mouse_entered.connect(_on_panel_mouse_entered)
+	_connect_no_actions_hover()
+	_hide_no_actions()
 	
 	# Initially hidden
 	visible = false
@@ -78,7 +91,7 @@ func show_move_modal(army: Army) -> void:
 	if selected_army and not selected_army.movement_points_changed.is_connected(_on_army_movement_points_changed):
 		selected_army.movement_points_changed.connect(_on_army_movement_points_changed)
 	
-	_update_make_camp_button_state()
+	_update_action_buttons_state()
 	modal_ui_manager.set_modal_active(false)
 	visible = true
 	modal_ui_manager.set_overlay_suppressed(true)
@@ -94,10 +107,13 @@ func hide_move_modal() -> void:
 		selected_army.movement_points_changed.disconnect(_on_army_movement_points_changed)
 	visible = false
 	selected_army = null
+	_hide_no_actions()
 	modal_ui_manager.set_overlay_suppressed(false)
 
 func _on_cancel_move_pressed() -> void:
 	"""Handle transfer button press"""
+	if cancel_button.disabled:
+		return
 	if sound_manager:
 		sound_manager.click_sound()
 	_start_transfer_flow()
@@ -115,12 +131,16 @@ func _on_army_deselect_target_reached() -> void:
 	tutorial_manager.handle_ui_click(TUTORIAL_TARGET_ARMY_DESELECT)
 
 func _on_army_actions_pressed() -> void:
+	if army_actions_button.disabled:
+		return
 	if sound_manager:
 		sound_manager.click_sound()
 	_start_recruit_flow()
 
 func _start_recruit_flow() -> void:
 	if selected_army == null:
+		return
+	if not _selected_army_has_action_points():
 		return
 	var army_to_recruit: Army = selected_army
 	var region_to_recruit: Region = army_to_recruit.get_parent() as Region
@@ -133,6 +153,8 @@ func _start_recruit_flow() -> void:
 
 func _start_transfer_flow() -> void:
 	if selected_army == null:
+		return
+	if not _selected_army_has_action_points():
 		return
 	var army_to_transfer: Army = selected_army
 	var region_to_transfer: Region = army_to_transfer.get_parent() as Region
@@ -153,28 +175,67 @@ func _start_transfer_flow() -> void:
 
 func _on_make_camp_pressed() -> void:
 	"""Handle Make Camp button press"""
+	if make_camp_button.disabled:
+		return
 	if sound_manager:
 		sound_manager.click_sound()
 	if selected_army:
-		if selected_army.get_movement_points() <= 0:
-			_update_make_camp_button_state()
-			return
 		selected_army.make_camp()
 		army_manager.refresh_selected_move_targets()
-		_update_make_camp_button_state()
+		_update_action_buttons_state()
 		_refresh_info_modal()
 
 func _on_army_movement_points_changed(army: Army, new_points: int) -> void:
 	if army == selected_army:
-		_update_make_camp_button_state()
+		_update_action_buttons_state()
 
-func _update_make_camp_button_state() -> void:
-	if make_camp_button == null:
+func _selected_army_has_action_points() -> bool:
+	if selected_army == null:
+		return false
+	return selected_army.get_movement_points() > 0
+
+func _update_action_buttons_state() -> void:
+	var has_action_points: bool = _selected_army_has_action_points()
+	var disabled: bool = not has_action_points
+	_set_action_button_disabled_state(make_camp_button, disabled)
+	_set_action_button_disabled_state(cancel_button, disabled)
+	_set_action_button_disabled_state(army_actions_button, disabled)
+	_set_action_button_disabled_state(next_army_button, disabled)
+	_hide_no_actions()
+
+func _set_action_button_disabled_state(button: Button, disabled: bool) -> void:
+	button.disabled = disabled
+	if disabled:
+		button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		return
-	if selected_army:
-		make_camp_button.disabled = selected_army.get_movement_points() <= 0
-	else:
-		make_camp_button.disabled = true
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+
+func _connect_no_actions_hover() -> void:
+	_connect_hover_pair(army_actions_button, recruit_button_border)
+	_connect_hover_pair(make_camp_button, make_camp_button_border)
+	_connect_hover_pair(cancel_button, transfer_button_border)
+	_connect_hover_pair(next_army_button, next_army_button_border)
+
+func _connect_hover_pair(button: Button, hover_control: Control) -> void:
+	button.mouse_entered.connect(_on_action_hovered.bind(button))
+	button.mouse_exited.connect(_on_action_unhovered)
+	hover_control.mouse_entered.connect(_on_action_hovered.bind(button))
+	hover_control.mouse_exited.connect(_on_action_unhovered)
+
+func _on_action_hovered(button: Button) -> void:
+	if not button.disabled:
+		_hide_no_actions()
+		return
+	_show_no_actions_for(button)
+
+func _on_action_unhovered() -> void:
+	_hide_no_actions()
+
+func _show_no_actions_for(button: Button) -> void:
+	no_actions_panel.show_text(NO_ACTIONS_TEXT)
+
+func _hide_no_actions() -> void:
+	no_actions_panel.hide_tooltip()
 
 func _refresh_info_modal() -> void:
 	if info_modal.visible and selected_army:
@@ -182,15 +243,21 @@ func _refresh_info_modal() -> void:
 
 func _on_mouse_entered() -> void:
 	ui_manager.hide_tooltip_due_to(self)
+	_hide_no_actions()
 
 func _on_panel_mouse_entered() -> void:
 	ui_manager.hide_tooltip_due_to(self)
+	_hide_no_actions()
 
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
 		if ui_manager.is_recruitment_or_transfer_modal_visible():
+			get_viewport().set_input_as_handled()
+			accept_event()
+			return
+		if next_army_button.disabled:
 			get_viewport().set_input_as_handled()
 			accept_event()
 			return
@@ -211,6 +278,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			if ui_manager.is_recruitment_or_transfer_modal_visible():
 				get_viewport().set_input_as_handled()
 				return
+			if next_army_button.disabled:
+				get_viewport().set_input_as_handled()
+				return
 			_cycle_to_next_army()
 			get_viewport().set_input_as_handled()
 
@@ -219,6 +289,8 @@ func set_army_manager(manager: ArmyManager) -> void:
 	army_manager = manager
 
 func _on_next_army_pressed() -> void:
+	if next_army_button.disabled:
+		return
 	if sound_manager:
 		sound_manager.click_sound()
 	_cycle_to_next_army()

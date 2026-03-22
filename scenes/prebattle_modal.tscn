@@ -274,13 +274,14 @@ text = "Siege Equipment"
 
 [node name="MarginContainer3" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeText"]
 clip_contents = true
-custom_minimum_size = Vector2(143, 0)
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
 [node name="PointsText" type="Label" parent="Panel/Army/SiegeSection/SiegeText"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 text = "Siege points"
+horizontal_alignment = 1
 
 [node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/SiegeSection/SiegeText"]
 layout_mode = 2

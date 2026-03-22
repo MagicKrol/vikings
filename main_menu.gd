@@ -3,6 +3,10 @@ class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
 const USE_DEMO_MENU: bool = false
+const LANGUAGE_ENGLISH_FLAG: Texture2D = preload("res://images/flags/english.png")
+const LANGUAGE_GERMAN_FLAG: Texture2D = preload("res://images/flags/germany.png")
+const LANGUAGE_POLISH_FLAG: Texture2D = preload("res://images/flags/poland.png")
+const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/brazil.png")
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -85,10 +89,15 @@ const USE_DEMO_MENU: bool = false
 # Map preview references
 @onready var map_preview: Control = $MapPreview
 @onready var map_screenshot: TextureRect = $MapPreview/InnerPanel/MapScreenshot
+@onready var language_flag_icon: TextureRect = $Language/Flag
+@onready var language_right_arrow: TextureRect = $Language/RightButton
+@onready var language_left_arrow: TextureRect = $Language/LeftButton
+@onready var language_label: Label = $Language/Text
 
 var hover_timer: Timer
 var current_hovered_item: String = ""
 var default_preview_item: String = ""
+var _language_index: int = 0
 
 var sound_manager: SoundManager = null
 var selected_scenario: String = ""
@@ -122,6 +131,7 @@ func _ready():
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
 	SaveGameManager.load_settings(sound_manager)
+	_setup_language_controls()
 	
 	# Create hover timer for delayed hide
 	hover_timer = Timer.new()
@@ -216,6 +226,79 @@ func _on_button_hover():
 	"""Play hover sound when mouse enters button"""
 	if sound_manager:
 		sound_manager.click_sound()
+
+func _setup_language_controls() -> void:
+	language_right_arrow.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	language_left_arrow.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	language_right_arrow.gui_input.connect(_on_language_right_gui_input)
+	language_left_arrow.gui_input.connect(_on_language_left_gui_input)
+	_language_index = _language_index_from_locale(TranslationServer.get_locale())
+	_apply_language_by_index(_language_index, false)
+
+func _on_language_right_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_cycle_language(1)
+
+func _on_language_left_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_cycle_language(-1)
+
+func _cycle_language(step: int) -> void:
+	_apply_language_by_index(_language_index + step, true)
+
+func _apply_language_by_index(index: int, persist: bool) -> void:
+	var language_count: int = 4
+	_language_index = posmod(index, language_count)
+	var locale: String = _locale_for_language_index(_language_index)
+	TranslationServer.set_locale(locale)
+	language_label.text = _label_for_language_index(_language_index)
+	language_flag_icon.texture = _flag_for_language_index(_language_index)
+	options_container.configure(sound_manager, false, tr("Back to Menu"))
+	if persist:
+		SaveGameManager.save_settings(sound_manager)
+
+func _language_index_from_locale(locale: String) -> int:
+	var normalized_locale: String = locale.to_lower()
+	if normalized_locale.begins_with("de"):
+		return 1
+	if normalized_locale.begins_with("pl"):
+		return 2
+	if normalized_locale.begins_with("br") or normalized_locale.begins_with("pt"):
+		return 3
+	return 0
+
+func _locale_for_language_index(index: int) -> String:
+	match index:
+		1:
+			return "de"
+		2:
+			return "pl"
+		3:
+			return "br"
+		_:
+			return "en"
+
+func _label_for_language_index(index: int) -> String:
+	match index:
+		1:
+			return "Deutsch"
+		2:
+			return "Polski"
+		3:
+			return "Português (Brasil)"
+		_:
+			return "English"
+
+func _flag_for_language_index(index: int) -> Texture2D:
+	match index:
+		1:
+			return LANGUAGE_GERMAN_FLAG
+		2:
+			return LANGUAGE_POLISH_FLAG
+		3:
+			return LANGUAGE_PORTUGUESE_BRAZIL_FLAG
+		_:
+			return LANGUAGE_ENGLISH_FLAG
 
 func _on_continue_pressed():
 	DebugLogger.log("UISystem", "Continue button pressed")
@@ -628,7 +711,7 @@ func _setup_victory_buttons():
 		btn.button_group = group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	for btn in buttons:
-		var selected: bool = false
+		var selected: bool = btn.name == "Conquer"
 		btn.button_pressed = selected
 		_update_button_gold_state(btn, selected)
 

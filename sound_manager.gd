@@ -36,6 +36,10 @@ class Playlist:
 @onready var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var horn_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var battle_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var hammer_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var defeat_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var mining_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var catapult_player: AudioStreamPlayer = AudioStreamPlayer.new()
 
 # Playlists
 const PLAYLIST_DEFS := {
@@ -68,12 +72,19 @@ var game_music: AudioStream
 var starting_horn: AudioStream
 var retreat_horn: AudioStream
 var battle_sound: AudioStream
+var hammer_sound: AudioStream
+var defeat_sound: AudioStream
+var mining_sound: AudioStream
+var catapult_sound: AudioStream
 
 # Music state
 var music_enabled: bool = true
 var sound_enabled: bool = true
 var _current_playlist: Playlist = null
 var _audio_cache: Dictionary = {}
+var _hammer_playback_token: int = 0
+var _defeat_playback_token: int = 0
+var _mining_playback_token: int = 0
 
 func _ready():
 	# Add the audio players to the scene tree
@@ -81,12 +92,22 @@ func _ready():
 	add_child(music_player)
 	add_child(horn_player)
 	add_child(battle_player)
+	add_child(hammer_player)
+	add_child(defeat_player)
+	add_child(mining_player)
+	add_child(catapult_player)
 	click_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	horn_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	battle_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	hammer_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	defeat_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	mining_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	catapult_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.finished.connect(_on_music_finished)
 	battle_player.volume_db = linear_to_db(0.5)
+	defeat_player.volume_db = linear_to_db(0.5)
+	mining_player.volume_db = linear_to_db(0.5)
 	music_player.volume_db = linear_to_db(0.5)
 	
 	# Load the click sound
@@ -121,6 +142,26 @@ func _ready():
 	if not battle_sound:
 		DebugLogger.log("GameInit", "Error: Could not load battle.wav")
 
+	# Load the hammer sound
+	hammer_sound = load("res://sounds/hammer.mp3") as AudioStream
+	if not hammer_sound:
+		DebugLogger.log("GameInit", "Error: Could not load hammer.mp3")
+
+	# Load the defeat sound
+	defeat_sound = load("res://sounds/defeat.mp3") as AudioStream
+	if not defeat_sound:
+		DebugLogger.log("GameInit", "Error: Could not load defeat.mp3")
+
+	# Load the mining sound
+	mining_sound = load("res://sounds/mining.mp3") as AudioStream
+	if not mining_sound:
+		DebugLogger.log("GameInit", "Error: Could not load mining.mp3")
+
+	# Load the catapult sound
+	catapult_sound = load("res://sounds/catapult.mp3") as AudioStream
+	if not catapult_sound:
+		DebugLogger.log("GameInit", "Error: Could not load catapult.mp3")
+
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle keyboard input for music toggle"""
 	if event is InputEventKey and event.pressed:
@@ -131,6 +172,53 @@ func click_sound() -> void:
 	"""Play click sound effect"""
 	if click_player and click_player.stream and sound_enabled:
 		click_player.play()
+
+func play_hammer_sound(duration: float = 3.0) -> void:
+	if not sound_enabled:
+		return
+	_hammer_playback_token += 1
+	var playback_token: int = _hammer_playback_token
+	hammer_player.stream = hammer_sound
+	hammer_player.play()
+	var timer: SceneTreeTimer = get_tree().create_timer(duration)
+	timer.timeout.connect(func() -> void:
+		if playback_token == _hammer_playback_token:
+			hammer_player.stop()
+	)
+
+func play_defeat_sound(duration: float = 3.0) -> void:
+	if not sound_enabled:
+		return
+	_defeat_playback_token += 1
+	var playback_token: int = _defeat_playback_token
+	defeat_player.stream = defeat_sound
+	defeat_player.play()
+	var timer: SceneTreeTimer = get_tree().create_timer(duration)
+	timer.timeout.connect(func() -> void:
+		if playback_token == _defeat_playback_token:
+			defeat_player.stop()
+	)
+
+func play_mining_sound(duration: float = -1.0) -> void:
+	if not sound_enabled:
+		return
+	_mining_playback_token += 1
+	var playback_token: int = _mining_playback_token
+	mining_player.stream = mining_sound
+	mining_player.play()
+	if duration <= 0.0:
+		return
+	var timer: SceneTreeTimer = get_tree().create_timer(duration)
+	timer.timeout.connect(func() -> void:
+		if playback_token == _mining_playback_token:
+			mining_player.stop()
+	)
+
+func play_catapult_sound() -> void:
+	if not sound_enabled:
+		return
+	catapult_player.stream = catapult_sound
+	catapult_player.play()
 
 func play_retreat_horn() -> void:
 	if horn_player and retreat_horn and sound_enabled:

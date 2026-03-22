@@ -12,6 +12,9 @@ var defending_region: Region = null
 var battle_report: BattleSimulator.BattleReport = null
 var initial_attacker_composition: Dictionary = {}
 var initial_defender_composition: Dictionary = {}
+var _current_player_won: bool = true
+var _current_is_dual_human_battle: bool = false
+var _defeat_sound_played: bool = false
 
 # UI element references
 var battle_status_label: Label
@@ -77,6 +80,7 @@ func show_battle_summary(army: Army, region: Region, report: BattleSimulator.Bat
 	battle_report = report
 	initial_attacker_composition = initial_attacker
 	initial_defender_composition = initial_defender
+	_defeat_sound_played = false
 	
 	# Update display
 	_update_display()
@@ -87,6 +91,7 @@ func show_battle_summary(army: Army, region: Region, report: BattleSimulator.Bat
 	# Set modal mode active
 	if ui_manager:
 		ui_manager.set_modal_active(true)
+	_play_defeat_sound_if_needed()
 
 func hide_modal() -> void:
 	"""Hide the battle summary modal"""
@@ -102,6 +107,9 @@ func hide_modal() -> void:
 	battle_report = null
 	initial_attacker_composition.clear()
 	initial_defender_composition.clear()
+	_current_player_won = true
+	_current_is_dual_human_battle = false
+	_defeat_sound_played = false
 
 func _update_display() -> void:
 	"""Update all display elements with battle data"""
@@ -127,6 +135,11 @@ func _update_display() -> void:
 		perspective_id = defender_owner
 	var player_is_attacker = perspective_id == attacker_pid
 	var player_is_defender = perspective_id == defender_owner
+	var attacker_human: bool = false
+	var defender_human: bool = false
+	if gm:
+		attacker_human = gm.is_player_human(attacker_pid)
+		defender_human = gm.is_player_human(defender_owner)
 	var player_won = false
 	match battle_report.winner:
 		"Attackers":
@@ -143,6 +156,8 @@ func _update_display() -> void:
 				player_won = false
 		_:
 			player_won = false
+	_current_player_won = player_won
+	_current_is_dual_human_battle = attacker_human and defender_human
 	# Set label
 	battle_status_label.text = tr("Battle Won!") if player_won else tr("Battle Lost!")
 	
@@ -372,3 +387,13 @@ func _on_continue_pressed() -> void:
 	var battle_modal = get_node_or_null("/root/Main/UI/BattleModal")
 	if battle_modal and battle_modal.has_method("_on_summary_closed"):
 		battle_modal._on_summary_closed()
+
+func _play_defeat_sound_if_needed() -> void:
+	if _defeat_sound_played:
+		return
+	if _current_is_dual_human_battle:
+		return
+	if _current_player_won:
+		return
+	sound_manager.play_defeat_sound(3.0)
+	_defeat_sound_played = true

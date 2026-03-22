@@ -172,7 +172,7 @@ const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount f
 
 static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
 static var _battle_round_time: float = BATTLE_ROUND_TIME_NORMAL
-static var _army_move_trigger: int = ArmyMoveTrigger.LEFT_CLICK
+static var _army_move_trigger: int = ArmyMoveTrigger.RIGHT_CLICK
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)

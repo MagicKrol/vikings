@@ -29,3 +29,7 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 
 func hide_tooltip() -> void:
 	visible = false
+
+func show_text(text: String) -> void:
+	tooltip_label.text = text
+	visible = true

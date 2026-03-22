@@ -836,6 +836,7 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	if not current_player.pay_cost(construction_cost):
 		return
 	current_region.start_castle_construction(castle_type)
+	sound_manager.play_hammer_sound(3.0)
 	var turns_left = current_region.get_castle_build_turns_remaining()
 	var building_name = CastleTypeEnum.type_to_display_string(castle_type)
 	var turn_word: String = tr("turn") if turns_left == 1 else tr("turns")
@@ -852,6 +853,10 @@ func _on_ore_search_pressed() -> void:
 	if not _can_player_afford_ore_search():
 		return
 	var search_result = region_manager.perform_ore_search(current_region, 1, player_manager)
+	if search_result.success:
+		sound_manager.play_mining_sound()
+	else:
+		sound_manager.play_mining_sound(2.0)
 	if search_result.success and search_result.has("ore_type"):
 		var ore_type = search_result.ore_type
 		var ore_type_string = ResourcesEnum.type_to_display_string(ore_type)
