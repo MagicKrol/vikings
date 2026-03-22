@@ -17,8 +17,8 @@ Garrison,"Local soldiers, defenders",Garrison,Garnison,Garnizon,Guarnição
 Defense,"Forticiation type, like castle, keep",Defense,Verteidigung,Obrona,Defesa
 Defense score:,How strong is defense in %,Defense score:,Abwehrwert,Siła obrony,Força defensiva
 Recruits:,Number of soldiers to hire,Recruits:,Rekruten,Rekruci,Recrutas
-Move Points:,Number of points army can use to move,Move Points:,Bewegungspunkte,Punkty ruchu,Pontos de movimento
-Vigor,"Represents stamina, will to fight",Vigor:,Kampfmoral,Zapał,Vigor
+Move Points:,Number of points army can use to move,Move Points,Bewegungspunkte,Punkty ruchu,Pontos de movimento
+Vigor,"Represents stamina, will to fight",Vigor,Kampfmoral,Zapał,Vigor
 Men,Number of soldiers in total,Men,Mannstärke,Ludzi,Efetivo
 Peasants,Unit type,Peasants,Bauern,Chłopi,Camponeses
 Spearmen,Unit type,Spearmen,Speerträger,Włócznicy,Lanceiros
@@ -53,14 +53,14 @@ Call,Label for action buttons to call recruits,Call,Rufen,Powołaj,Convocar
 Available,Label for number of available recruits,Available,Verfügbar,Dostępni,Disponíveis
 Total,Total number of recruits,Total,Gesamt,Razem,Total
 Cost,Cost of soldiers to hire,Cost,Kosten,Koszt,Custo
-Outpost,Palisade with a small tower type of structure,Outpost,Außenposten,Posterunek,Posto avançado
-Keep,"A stronger type of defense structure, palisade and stone tower",Keep,Bergfried,Donżon,Torre de menagem
-Castle,Castle as a defense building,Castle,Burg,Zamek,Castelo
+Outpost,Palisade with a small tower type of structure,Outpost,Außenposten,Posterunek,Posto
+Keep,"A stronger type of defense structure, palisade and stone tower",Keep,Bergfried,Warownia,Fortim
+Castle,Castle as a defense building,Castle,Burg,Zamek,Fortim
 Stronghold,Huge type of castle,Stronghold,Festung,Twierdza,Fortaleza
-Requires Outpost,Palisade with a small tower type of structure,Requires Outpost,Erfordert Außenposten,Wymaga posterunku,Requer posto avançado
-Requires Keep,"A stronger type of defense structure, palisade and stone tower",Requires Keep,Erfordert Bergfried,Wymaga donżonu,Requer torre de menagem
-Requires Castle,Castle as a defense building,Requires Castle,Erfordert Burg,Wymaga zamku,Requer castelo
-Requires Strongold,Huge type of castle,Requires Strongold,Erfordert Festung,Wymaga twierdzy,Requer fortaleza
+Requires Outpost,Palisade with a small tower type of structure,Requires Outpost,Erfordert Außenposten,Wymagany posterunek,Requer posto
+Requires Keep,"A stronger type of defense structure, palisade and stone tower",Requires Keep,Erfordert Bergfried,Wymagana warownia,Requer fortim
+Requires Castle,Castle as a defense building,Requires Castle,Erfordert Burg,Wymagany zamek,Requer castelo
+Requires Strongold,Huge type of castle,Requires Strongold,Erfordert Festung,Wymagana twierdza,Requer fortaleza
 Continue,Button to continue action/close window,Continue,Fortfahren,Kontynuuj,Continuar
 Shire,"Lowest level of regions administrative level, very poor region",Shire,Grafschaft,Ziemia,Domínio
 County,"Low level of regions administrative level, poor region",County,Grafschaft,Hrabstwo,Condado
@@ -109,7 +109,7 @@ Very Fast,Speed level of the game,Very Fast,Sehr schnell,Bardzo szybko,Muito rá
 Sound Volume,option to set sound volume level,Sound Volume,Lautstärke,Głośność dźwięku,Volume do som
 Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Głośność muzyki,Volume da música
 "%d wall sections destroyed, %d damaged by trebuchets.",Prebattle bombardment summary format showing destroyed and damaged wall section counts.,"%d wall sections destroyed, %d damaged by trebuchets.","%d Mauerabschnitte zerstört, %d durch Triboke beschädigt.","%d odcinków murów zniszczonych, %d uszkodzonych przez trebusze.","%d seções da muralha destruídas, %d danificadas por trabucos."
-%s Found,Ore search status format listing discovered ore names.,%s Found,%s gefunden,%s znaleziono,%s encontrado
+%s Found,Ore search status format listing discovered ore names.,%s,%s,%s,%s
 %s Found!,Ore discovery popup header format showing the discovered ore type.,%s Found!,%s gefunden!,%s znaleziono!,%s encontrado!
 %s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,%s obrońców,%s defensores
 %s is being raised.,Notification format shown when a new army begins raising.,%s is being raised.,%s wird aufgestellt.,%s jest formowana.,%s está sendo levantado.
@@ -174,8 +174,8 @@ No information available.,Fallback tooltip text when no specific tooltip is defi
 No luck this turn.,Ore search result message shown when no ore is found for the current turn.,No luck this turn.,Diese Runde kein Erfolg.,Brak szczęścia w tej turze.,Sem sorte neste turno.
 No ore,Ore status text shown when no ore deposits are known in the region.,No ore,Kein Erz,Brak rud,Sem minério
 No search attempts remaining,Tooltip warning shown when ore search attempts are exhausted.,No search attempts remaining,,,
-Ore Search,Region action label and popup header for ore search actions.,Ore Search,Erkundung,Szukaj rud,Busca de Minério
-Search Ore,Region action label and popup header for ore search actions.,Search Ore,Erkundung,Szukaj rudy,Busca de Minério
+Ore Search,Region action label and popup header for ore search actions.,Ore Search,Erkundung,Szukaj rud,Prospeção
+Search Ore,Region action label and popup header for ore search actions.,Search Ore,Erkundung,Szukaj rudy,Prospeção
 Ore searches exhausted.,Ore search result message shown when all search attempts are used.,Ore searches exhausted.,Beute erschöpft.,Próby poszukiwań wyczerpane.,Tentativas de busca esgotadas.
 Ore size was estimated at %d units.,Ore discovery message format showing estimated deposit size.,Ore size was estimated at %d units.,Erzvorkommen auf etwa %d Einheiten geschätzt.,Wielkość złoża oszacowano na %d jednostek.,O tamanho do depósito foi estimado em %d unidades.
 Place Castle,Instruction label shown during the opening castle placement phase.,Place Castle,Burg platzieren,Umieść zamek,Posicionar Castelo
@@ -184,7 +184,7 @@ Player %d Won,Victory popup message format naming the winning player.,Player %d 
 Population: %d,Player status label format showing current population value.,Population: %d,Bevölkerung: %d,Populacja: %d,População: %d
 Promote Region,Region action label for administrative region level upgrade.,Promote Region,Region aufwerten,Awansuj region,Promover Região
 Promote the region to the next administrative level to increase growth and production.,Tooltip text explaining region promotion benefits.,Promote the region to the next administrative level to increase growth and production.,"Erhöhe die Verwaltungsstufe der Region, um Wachstum und Produktion zu steigern.","Podnieś poziom administracyjny regionu, aby zwiększyć wzrost i produkcję.",Promova a região ao próximo nível administrativo para aumentar crescimento e produção.
-Raise Army,Region action label for creating a new army in the region.,Raise Army,Armee heben,Wystaw armię,Formar Exército
+Raise Army,Region action label for creating a new army in the region.,Raise Army,Armee heben,Wystaw armię,Novo Exército
 Recruit Soldiers,Action label for opening recruitment flow in army or region context.,Recruit Soldiers,Soldaten rekrutieren,Rekrutuj żołnierzy,Recrutar Soldados
 Recruit new soldiers for this army using regional population and resources.,Tooltip text explaining army recruitment from regional resources.,Recruit new soldiers for this army using regional population and resources.,Rekrutiere neue Soldaten für diese Armee mit regionaler Bevölkerung und Ressourcen.,"Rekrutuj nowych żołnierzy do tej armii, używając populacji i zasobów regionu.",Recrute novos soldados para este exército usando população e recursos regionais.
 Recruit soldiers for this region's local garrison.,Tooltip text explaining garrison recruitment in the region modal.,Recruit soldiers for this region's local garrison.,Rekrutiere Soldaten für die Garnison dieser Region.,Rekrutuj żołnierzy do garnizonu regionu.,Recrute soldados para a guarnição desta região.
@@ -199,7 +199,7 @@ Repair started,Header text for the popup confirming castle repairs have started.
 Repair the damaged walls and gates of your defenses.,Tooltip text explaining castle repair action purpose.,Repair the damaged walls and gates of your defenses.,Repariere beschädigte Mauern und Tore deiner Verteidigung.,Napraw uszkodzone mury i bramy swoich umocnień.,Repare as muralhas e portões danificados de suas defesas.
 Repairing,Button state label shown while repairs are currently in progress.,Repairing,In Reparatur,W naprawie,Reparando
 Repairs will finish in 1 turn.,Repair confirmation message showing fixed one-turn repair duration.,Repairs will finish in 1 turn.,Reparaturen werden in 1 Runde abgeschlossen sein.,Naprawy zakończą się za 1 turę.,Os reparos terminarão em 1 turno.
-Requires Keep,Tooltip requirement warning for actions that need at least a Keep.,Requires Keep,Benötigt Bergfried,Wymaga twierdzy,Requer Torre de Menagem
+Requires Keep,Tooltip requirement warning for actions that need at least a Keep.,Requires Keep,Benötigt Bergfried,Wymaga twierdzy,Requer Fortim de Menagem
 Requires Outpost,Tooltip requirement warning for actions that need at least an Outpost.,Requires Outpost,Benötigt Außenposten,Wymaga placówki,Requer Posto
 Rest the army to restore efficiency. Costs 1 movement point and restores 10 vigor.,Tooltip text explaining the make camp action effects and cost.,Rest the army to restore efficiency. Costs 1 movement point and restores 10 vigor.,"Die Armee ausruhen lassen, um Effizienz wiederherzustellen. Kostet 1 Bewegungspunkt und stellt 10 Kraft wieder her.","Odpocznij armią, aby przywrócić sprawność. Kosztuje 1 punkt ruchu i przywraca 10 wigoru.",Descanse o exército para restaurar a eficiência. Custa 1 ponto de movimento e restaura 10 de vigor.
 Return to the previous selection menu.,Tooltip text for the back action in selection modals.,Return to the previous selection menu.,Zurück zum vorherigen Menü.,Powrót do poprzedniego menu.,Retornar ao menu anterior.
@@ -304,3 +304,7 @@ Unit,Unit,Unit,Einheit,Jednostka,Unidade
 Dead,Dead,Dead,Tot,Polegli,Mortos
 Wounded,Wounded,Wounded,Verwundet,Ranni,Feridos
 Remain,Remain,Remain,Verbleibend,Pozostali,Restantes
+Left click,Mouse buttons,Left click,Linksklick,Lewy przycisk,Botão esquerdo
+Right click,Mouse buttons,Right click,Rechtsklick,Prawy przycisk,Botão direito
+Not enough movement points,Not enough points to perform an action,Not enough movement points,Nicht genügend Bewegungspunkte,Za mało punktów ruchu,Pontos de movimento insuficientes
+Army Move,Option to select how army should move (which button),Army Move,Armeebewegung,Ruch Armii,Movimento do Exército

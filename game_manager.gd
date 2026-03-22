@@ -89,7 +89,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -105,6 +105,7 @@ var click_manager: Node = null
 const FAMINE_MIN_POPULATION: int = 30
 const FAMINE_POP_PER_FOOD: float = 0.1
 const DOMINATE_DEFAULT_THRESHOLD: float = 0.7
+const DEBUG_LANGUAGE_CYCLE: Array[String] = ["en", "de", "pl", "br"]
 
 var _player_initial_turn_completed: Dictionary = {}
 
@@ -497,10 +498,34 @@ func _unhandled_input(event: InputEvent) -> void:
 				DebugLogger.log("TurnProcessing", "Step-by-step AI debug mode: " + ("enabled" if not current_mode else "disabled"))
 			elif castle_placing_mode:
 				DebugLogger.log("TurnProcessing", "Step-by-step mode not available during castle placement")
+		elif event.keycode == KEY_Z:
+			if debug_mode:
+				_cycle_debug_language()
+				get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_F8:
 			# Take screenshot with proper setup
 			_take_game_screenshot()
 		# SPACE key handling is now managed by TurnController's DebugStepGate
+
+func _cycle_debug_language() -> void:
+	var current_locale: String = TranslationServer.get_locale().to_lower()
+	var current_index: int = _debug_language_index_from_locale(current_locale)
+	var next_index: int = (current_index + 1) % DEBUG_LANGUAGE_CYCLE.size()
+	var next_locale: String = DEBUG_LANGUAGE_CYCLE[next_index]
+	TranslationServer.set_locale(next_locale)
+	var turn_modal: TurnModal = _ui_manager.get_turn_modal()
+	turn_modal.update_turn_display()
+	SaveGameManager.save_settings(_sound_manager)
+	DebugLogger.log("UISystem", "Debug language switched to: " + next_locale)
+
+func _debug_language_index_from_locale(locale: String) -> int:
+	if locale.begins_with("de"):
+		return 1
+	if locale.begins_with("pl"):
+		return 2
+	if locale.begins_with("br") or locale.begins_with("pt"):
+		return 3
+	return 0
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""

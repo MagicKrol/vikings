@@ -229,7 +229,6 @@ offset_right = 500.0
 offset_bottom = 1021.0
 
 [node name="Region" type="VBoxContainer" parent="RegionPanel/Body"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -388,7 +387,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Verteidigung"
+text = "Defense"
 
 [node name="DefenseValue" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/Info/Defense"]
 custom_minimum_size = Vector2(40, 0)
@@ -979,6 +978,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="Army" type="VBoxContainer" parent="RegionPanel/Body"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 

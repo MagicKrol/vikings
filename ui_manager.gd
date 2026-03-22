@@ -250,6 +250,10 @@ func handle_escape_action() -> bool:
 		if tutorial_manager.is_active() and tutorial_manager.get_expected_action() != "closed_info_modal":
 			get_viewport().set_input_as_handled()
 			return true
+	if _game_menu_modal.visible:
+		_game_menu_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
 	if _recruitment_modal.visible:
 		_recruitment_modal.hide_modal()
 		get_viewport().set_input_as_handled()
