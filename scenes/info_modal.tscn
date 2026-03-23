@@ -271,7 +271,7 @@ theme_override_font_sizes/font_size = 20
 text = "Shire"
 
 [node name="Info" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/VBoxContainer/Info"]
@@ -291,7 +291,7 @@ text = "5"
 layout_mode = 2
 
 [node name="PromoteButton" type="Button" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection"]
-custom_minimum_size = Vector2(195, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -313,12 +313,20 @@ layout_mode = 2
 texture = ExtResource("14_wyyde")
 expand_mode = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Gold"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+
+[node name="MarginContainer2" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
 
 [node name="Food" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources"]
 layout_mode = 2
@@ -330,8 +338,12 @@ layout_mode = 2
 texture = ExtResource("11_21spt")
 expand_mode = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Food"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Food"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
@@ -346,6 +358,10 @@ custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("12_8s2uy")
 expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Wood"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Wood"]
 custom_minimum_size = Vector2(25, 0)
@@ -381,7 +397,7 @@ theme_override_font_sizes/font_size = 20
 text = "Keep"
 
 [node name="Defense" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/Info"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/Info/Defense"]
@@ -401,7 +417,7 @@ text = "40%"
 layout_mode = 2
 
 [node name="BuildButton" type="Button" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
-custom_minimum_size = Vector2(195, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -423,8 +439,12 @@ layout_mode = 2
 texture = ExtResource("14_wyyde")
 expand_mode = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Gold"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
@@ -439,6 +459,9 @@ custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("12_8s2uy")
 expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Wood"]
+layout_mode = 2
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Wood"]
 custom_minimum_size = Vector2(25, 0)
@@ -457,6 +480,9 @@ layout_mode = 2
 texture = ExtResource("14_a8m1b")
 expand_mode = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Stone"]
+layout_mode = 2
+
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Stone"]
 custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
@@ -473,6 +499,10 @@ custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("14_o0xnj")
 expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Iron"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Iron"]
 custom_minimum_size = Vector2(25, 0)
@@ -502,13 +532,12 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/Mine/Info"]
-custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Ore"
 
 [node name="Search" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Mine/Info"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 
 [node name="SearchStatus" type="Label" parent="RegionPanel/Body/Region/Actions/Mine/Info/Search"]
@@ -522,7 +551,7 @@ text = "Search"
 layout_mode = 2
 
 [node name="SearchOreButton" type="Button" parent="RegionPanel/Body/Region/Actions/Mine/ActionSection"]
-custom_minimum_size = Vector2(195, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -544,8 +573,12 @@ layout_mode = 2
 texture = ExtResource("14_wyyde")
 expand_mode = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Mine/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/Mine/ActionSection/Resources/Gold"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
@@ -572,13 +605,13 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/RaiseArmy/Info"]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(1, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "New army"
 
 [node name="Army" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RaiseArmy/Info"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 
 [node name="NextArmyName" type="Label" parent="RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army"]
@@ -592,7 +625,7 @@ text = "Army V"
 layout_mode = 2
 
 [node name="RaiseArmyButton" type="Button" parent="RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection"]
-custom_minimum_size = Vector2(195, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -614,8 +647,12 @@ layout_mode = 2
 texture = ExtResource("14_wyyde")
 expand_mode = 2
 
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/Resources/Gold"]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/Resources/Gold"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
@@ -654,7 +691,7 @@ theme_override_font_sizes/font_size = 20
 text = "Garrison"
 
 [node name="Men" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info"]
-custom_minimum_size = Vector2(190, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men"]
@@ -674,7 +711,7 @@ text = "5"
 layout_mode = 2
 
 [node name="RecruitButton" type="Button" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection"]
-custom_minimum_size = Vector2(195, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("14_1btl1")
@@ -693,6 +730,10 @@ custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 texture = ExtResource("19_g5noc")
 expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
 
 [node name="Recruits" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
 custom_minimum_size = Vector2(10, 0)

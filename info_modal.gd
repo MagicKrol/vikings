@@ -37,6 +37,17 @@ const ARMY_CARD_TEX_DEFAULT: Texture2D = preload("res://images/army_item3.png")
 const ARMY_CARD_TEX_HOVER: Texture2D = preload("res://images/army_item_selected2.png")
 const ACTION_TOOLTIP_X: float = 550.0
 const ACTION_TOOLTIP_BASE_Y: float = 175.0
+const GARRISON_UNIT_NODE_NAMES: Array[String] = [
+	"Peasants", "Spearmen", "Archers", "Swordsmen",
+	"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
+]
+const GARRISON_UNIT_TYPES: Array[SoldierTypeEnum.Type] = [
+	SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN,
+	SoldierTypeEnum.Type.ARCHERS, SoldierTypeEnum.Type.SWORDSMEN,
+	SoldierTypeEnum.Type.HORSEMEN, SoldierTypeEnum.Type.CROSSBOWMEN,
+	SoldierTypeEnum.Type.KNIGHTS, SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
+	SoldierTypeEnum.Type.ROYAL_GUARD
+]
 
 var _progress_style_green: StyleBoxTexture
 var _progress_style_yellow: StyleBoxTexture
@@ -68,6 +79,7 @@ var _inactive_tab_color: Color = Color(0.595154, 0.595154, 0.595154, 1)
 @onready var _search_ore_button: Button = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection/SearchOreButton")
 @onready var _raise_army_button: Button = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/RaiseArmyButton")
 @onready var _recruit_button: Button = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/RecruitButton")
+@onready var _region_garrison_info: Control = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo") as Control
 @onready var _army_cards: Array[Panel] = [
 	get_node("RegionPanel/Body/Army/Army1") as Panel,
 	get_node("RegionPanel/Body/Army/Army2") as Panel,
@@ -94,6 +106,7 @@ func _ready():
 	_initialize_army_cards()
 	_initialize_region_actions()
 	_initialize_action_tooltips()
+	_initialize_garrison_unit_tooltips()
 	_region_panel_root.mouse_entered.connect(_on_region_panel_mouse_entered)
 	
 	# Initially hidden
@@ -151,6 +164,18 @@ func _initialize_action_tooltips() -> void:
 	_recruit_button.mouse_entered.connect(_on_recruit_garrison_tooltip_hovered)
 	_recruit_button.mouse_exited.connect(_on_action_tooltip_unhovered)
 
+func _initialize_garrison_unit_tooltips() -> void:
+	_connect_garrison_info_unit_tooltips(_region_garrison_info)
+	for card in _army_cards:
+		var garrison_info: Control = card.get_node(NodePath(str(card.name) + "/GarrisonInfo")) as Control
+		_connect_garrison_info_unit_tooltips(garrison_info)
+
+func _connect_garrison_info_unit_tooltips(garrison_info: Control) -> void:
+	for i in range(GARRISON_UNIT_NODE_NAMES.size()):
+		var icon: TextureRect = garrison_info.get_node(NodePath(GARRISON_UNIT_NODE_NAMES[i] + "/TextureRect")) as TextureRect
+		icon.mouse_entered.connect(Callable(self, "_on_garrison_unit_icon_hovered").bind(i, garrison_info))
+		icon.mouse_exited.connect(_on_action_tooltip_unhovered)
+
 func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
 	if node is Control:
 		var control_node := node as Control
@@ -201,6 +226,16 @@ func _show_turns_action_tooltip(tooltip_key: String, context_data: Dictionary, b
 	_position_action_tooltip(select_tooltip_modal, button)
 	select_tooltip_modal.show_tooltip(tooltip_key, context_data)
 
+func _on_garrison_unit_icon_hovered(unit_index: int, garrison_info: Control) -> void:
+	var unit_type: SoldierTypeEnum.Type = GARRISON_UNIT_TYPES[unit_index]
+	var unit_name: String = SoldierTypeEnum.type_to_display_string(unit_type)
+	_show_garrison_unit_action_tooltip(unit_name, garrison_info)
+
+func _show_garrison_unit_action_tooltip(unit_name: String, garrison_info: Control) -> void:
+	select_tooltip_modal.hide_tooltip()
+	_position_action_tooltip_at_garrison(select_tooltip_modal_nores, garrison_info)
+	select_tooltip_modal_nores.show_text(unit_name)
+
 func _hide_action_tooltips() -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_nores.hide_tooltip()
@@ -219,6 +254,9 @@ func _position_action_tooltip(tooltip: Control, button: Control) -> void:
 	var base_y: float = _action_tooltip_base_pos_nores.y
 	var delta_y: float = button.global_position.y - _action_tooltip_base_button_y
 	tooltip.global_position = Vector2(ACTION_TOOLTIP_X, base_y + delta_y)
+
+func _position_action_tooltip_at_garrison(tooltip: Control, garrison_info: Control) -> void:
+	tooltip.global_position = Vector2(ACTION_TOOLTIP_X, garrison_info.global_position.y)
 
 func _get_castle_tooltip_key() -> String:
 	if current_region.is_castle_under_construction():
@@ -618,23 +656,12 @@ func _update_defenders_section() -> void:
 	"""Update garrison unit composition values"""
 	var garrison_comp: ArmyComposition = current_region.get_garrison()
 	var wounded_comp: ArmyComposition = current_region.get_wounded_garrison()
-	var unit_nodes: Array[String] = [
-		"Peasants", "Spearmen", "Archers", "Swordsmen",
-		"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
-	]
-	var unit_types: Array[SoldierTypeEnum.Type] = [
-		SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN,
-		SoldierTypeEnum.Type.ARCHERS, SoldierTypeEnum.Type.SWORDSMEN,
-		SoldierTypeEnum.Type.HORSEMEN, SoldierTypeEnum.Type.CROSSBOWMEN,
-		SoldierTypeEnum.Type.KNIGHTS, SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
-		SoldierTypeEnum.Type.ROYAL_GUARD
-	]
-	for i in unit_nodes.size():
-		var unit_node: Node = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + unit_nodes[i])
-		var healthy: int = garrison_comp.get_soldier_count(unit_types[i])
+	for i in range(GARRISON_UNIT_NODE_NAMES.size()):
+		var unit_node: Node = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + GARRISON_UNIT_NODE_NAMES[i])
+		var healthy: int = garrison_comp.get_soldier_count(GARRISON_UNIT_TYPES[i])
 		var wounded: int = 0
 		if wounded_comp != null:
-			wounded = wounded_comp.get_soldier_count(unit_types[i])
+			wounded = wounded_comp.get_soldier_count(GARRISON_UNIT_TYPES[i])
 		_set_unit_value_with_wounded(unit_node, healthy, wounded)
 
 func _set_cost_value(container_path: String, value: int) -> void:
@@ -648,24 +675,12 @@ func _update_army_unit_values(composition: ArmyComposition, wounded_composition:
 	if composition == null or info_root == null:
 		return
 
-	var unit_nodes: Array[String] = [
-		"Peasants", "Spearmen", "Archers", "Swordsmen",
-		"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
-	]
-	var unit_types: Array[SoldierTypeEnum.Type] = [
-		SoldierTypeEnum.Type.PEASANTS, SoldierTypeEnum.Type.SPEARMEN,
-		SoldierTypeEnum.Type.ARCHERS, SoldierTypeEnum.Type.SWORDSMEN,
-		SoldierTypeEnum.Type.HORSEMEN, SoldierTypeEnum.Type.CROSSBOWMEN,
-		SoldierTypeEnum.Type.KNIGHTS, SoldierTypeEnum.Type.MOUNTED_KNIGHTS,
-		SoldierTypeEnum.Type.ROYAL_GUARD
-	]
-
-	for i in unit_nodes.size():
-		var unit_node: Node = info_root.get_node(unit_nodes[i])
-		var healthy: int = composition.get_soldier_count(unit_types[i])
+	for i in range(GARRISON_UNIT_NODE_NAMES.size()):
+		var unit_node: Node = info_root.get_node(GARRISON_UNIT_NODE_NAMES[i])
+		var healthy: int = composition.get_soldier_count(GARRISON_UNIT_TYPES[i])
 		var wounded: int = 0
 		if wounded_composition != null:
-			wounded = wounded_composition.get_soldier_count(unit_types[i])
+			wounded = wounded_composition.get_soldier_count(GARRISON_UNIT_TYPES[i])
 		_set_unit_value_with_wounded(unit_node, healthy, wounded)
 
 func _set_unit_value_with_wounded(unit_node: Node, healthy: int, wounded: int) -> void:
