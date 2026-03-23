@@ -268,17 +268,14 @@ func _on_promote_region_pressed() -> void:
 		return
 	if not current_player.pay_cost(promotion_cost):
 		return
-	
+		
 	current_region.promote_region()
 	current_region.mark_promoted_this_turn()
-	var level_name = RegionLevelEnum.level_to_display_string(next_level)
-	var promoted_line: String = tr("Region promoted to {level}").format({
-		"level": level_name
-	})
-	var level_line: String = tr("(level {level_number})").format({
+	var level_name: String = RegionLevelEnum.level_to_display_string(next_level)
+	var promotion_message: String = tr("Region promoted to {level}\n(level {level_number})").format({
+		"level": level_name,
 		"level_number": int(next_level) + 1
 	})
-	var promotion_message: String = promoted_line + "\n" + level_line
 	visible = false
 	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
@@ -469,7 +466,7 @@ func _on_raise_army_pressed() -> void:
 	
 	if new_army != null:
 		current_region.mark_raise_army_used()
-		var army_name = new_army.name if new_army.name else tr("New Army")
+		var army_name: String = tr("Army %s") % new_army.number
 		visible = false
 		message_modal.continue_clicked.connect(_on_message_modal_continue)
 		message_modal.display_message(tr("%s is being raised.") % army_name)

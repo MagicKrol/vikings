@@ -149,7 +149,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="AttackerVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
-custom_minimum_size = Vector2(105, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "Vigor:"
 
@@ -160,7 +160,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "90%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Status"]
-custom_minimum_size = Vector2(270, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
 [node name="DefenderVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
@@ -182,10 +182,9 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="AssaultText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(105, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "Engaged"
-horizontal_alignment = 1
 
 [node name="AssaultValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(60, 0)
@@ -194,7 +193,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "40%"
 
 [node name="MarginContainer6" type="MarginContainer" parent="Battle/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(70, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
 [node name="UnitName" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
@@ -209,9 +208,9 @@ custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 
 [node name="DefenderDefenseText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Defense"
-horizontal_alignment = 1
 
 [node name="DefenderDefenseValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
 layout_mode = 2

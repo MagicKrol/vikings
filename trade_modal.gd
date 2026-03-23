@@ -19,6 +19,8 @@ var total_label: Label
 var total_icon: TextureRect
 var close_button: Button
 var game_manager: GameManager
+var info_modal: InfoModal
+var sound_manager: SoundManager
 var allow_for_current_turn: bool = true
 var units_container: VBoxContainer
 var trade_disabled_label: Label
@@ -45,6 +47,8 @@ func _ready() -> void:
 	ui_manager = get_node("../UIManager") as UIManager
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 	game_manager = get_node("../../GameManager") as GameManager
+	info_modal = get_node("../InfoModal") as InfoModal
+	sound_manager = get_node("../../SoundManager") as SoundManager
 	trade_manager = TradeManager.new(player_manager)
 	units_container = get_node("Trade/HBoxContainer/Body/Units") as VBoxContainer
 	trade_disabled_label = get_node("Trade/HBoxContainer/Body/TradeDisabledLabel") as Label
@@ -308,6 +312,7 @@ func _apply_trade() -> void:
 		return
 
 func _on_buy_button_pressed(resource_type: ResourcesEnum.Type) -> void:
+	sound_manager.play_trade_sound()
 	var amount: int = buy_amounts.get(resource_type, 0)
 	if amount <= 0:
 		return
@@ -317,8 +322,10 @@ func _on_buy_button_pressed(resource_type: ResourcesEnum.Type) -> void:
 	buy_amounts[resource_type] = 0
 	_sync_base_state()
 	_update_all_displays()
+	_refresh_info_modal_after_trade()
 
 func _on_sell_button_pressed(resource_type: ResourcesEnum.Type) -> void:
+	sound_manager.play_trade_sound()
 	var amount: int = sell_amounts.get(resource_type, 0)
 	if amount <= 0:
 		return
@@ -328,6 +335,15 @@ func _on_sell_button_pressed(resource_type: ResourcesEnum.Type) -> void:
 	sell_amounts[resource_type] = 0
 	_sync_base_state()
 	_update_all_displays()
+	_refresh_info_modal_after_trade()
+
+func _refresh_info_modal_after_trade() -> void:
+	if not info_modal.visible:
+		return
+	if info_modal.current_mode == InfoModal.DisplayMode.ARMY:
+		info_modal.show_army_info(info_modal.current_army, false)
+	elif info_modal.current_mode == InfoModal.DisplayMode.REGION:
+		info_modal.show_region_info(info_modal.current_region, false, false)
 
 func _sync_base_state() -> void:
 	var player = player_manager.get_current_player()

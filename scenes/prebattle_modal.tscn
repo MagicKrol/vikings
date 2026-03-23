@@ -713,7 +713,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="AttackerVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
-custom_minimum_size = Vector2(105, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "Vigor:"
 
@@ -724,11 +724,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "90%"
 
 [node name="MarginContainer" type="MarginContainer" parent="Battle/VBoxContainer/Status"]
-custom_minimum_size = Vector2(270, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
 [node name="DefenderVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
-custom_minimum_size = Vector2(88, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Vigor:"
 
@@ -746,10 +746,9 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="AssaultText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(105, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "Engaged"
-horizontal_alignment = 1
 
 [node name="AssaultValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(60, 0)
@@ -762,7 +761,7 @@ custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
 [node name="UnitName" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(115, 0)
+custom_minimum_size = Vector2(95, 0)
 layout_mode = 2
 horizontal_alignment = 1
 
@@ -772,9 +771,9 @@ custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 
 [node name="DefenderDefenseText" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Defense"
-horizontal_alignment = 1
 
 [node name="DefenderDefenseValue" type="Label" parent="Battle/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
@@ -860,13 +859,13 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Battle/VBoxContainer/Body/SiegeSection/SiegeText"]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 text = "Siege Equipment"
 
 [node name="MarginContainer3" type="MarginContainer" parent="Battle/VBoxContainer/Body/SiegeSection/SiegeText"]
 clip_contents = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
 [node name="PointsText" type="Label" parent="Battle/VBoxContainer/Body/SiegeSection/SiegeText"]
@@ -1065,7 +1064,6 @@ visible = false
 layout_mode = 2
 
 [node name="Notavailable" type="VBoxContainer" parent="Battle/VBoxContainer/Body/SiegeSection"]
-visible = false
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 
@@ -1073,7 +1071,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="Battle/VBoxContainer/Body/SiegeSection/Notavailable/HBoxContainer"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Battle/VBoxContainer/Body/SiegeSection/Notavailable/HBoxContainer"]

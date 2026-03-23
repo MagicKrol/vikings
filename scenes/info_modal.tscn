@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=36 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="3_ewtj7"]
@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" uid="uid://bus8spxhrs0li" path="res://scenes/army_info.tscn" id="24_sykik"]
 [ext_resource type="Texture2D" uid="uid://b70mdm3jj65x5" path="res://images/army_item3.png" id="27_army_item3"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="28_kuof1"]
+[ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="29_fbacg"]
 
 [sub_resource type="Theme" id="Theme_7jnog"]
 
@@ -1823,3 +1824,10 @@ offset_left = 278.0
 offset_top = -340.0
 offset_right = 678.0
 offset_bottom = -190.0
+
+[node name="ActionTooltipTurns" parent="." instance=ExtResource("29_fbacg")]
+layout_mode = 1
+offset_left = 278.0
+offset_top = -340.0
+offset_right = 678.0
+offset_bottom = -110.0

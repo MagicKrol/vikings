@@ -12,6 +12,7 @@ var message_modal: MessageModal = null
 var army_manager: ArmyManager = null
 var player_manager: PlayerManagerNode = null
 var region_manager: RegionManager = null
+var select_tooltip_modal: SelectTooltipModal = null
 var select_tooltip_modal_nores: SelectTooltipModalNoRes = null
 var tutorial_manager: TutorialManager = null
 
@@ -83,6 +84,7 @@ func _ready():
 	recruitment_modal = get_node("../RecruitmentModal") as RecruitmentModal
 	message_modal = get_node("../MessageModal") as MessageModal
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
+	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
 	select_tooltip_modal_nores = get_node("../SelectTooltipModalNoRes") as SelectTooltipModalNoRes
 	tutorial_manager = game_manager.get_tutorial_manager()
 	army_manager = game_manager.get_army_manager()
@@ -163,8 +165,13 @@ func _on_promote_tooltip_hovered() -> void:
 
 func _on_castle_tooltip_hovered() -> void:
 	var tooltip_key: String = _get_castle_tooltip_key()
-	var context_data = {"current_region": current_region}
-	_show_message_action_tooltip(_get_region_action_tooltip_key(tooltip_key), context_data, _build_button)
+	var region_tooltip_key: String = _get_region_action_tooltip_key(tooltip_key)
+	var context_data: Dictionary = {"current_region": current_region}
+	if region_tooltip_key == "build_castle" or region_tooltip_key == "upgrade_castle":
+		context_data["show_turns_only"] = true
+		_show_turns_action_tooltip(region_tooltip_key, context_data, _build_button)
+		return
+	_show_message_action_tooltip(region_tooltip_key, context_data, _build_button)
 
 func _on_ore_search_tooltip_hovered() -> void:
 	var context_data = {"current_region": current_region}
@@ -185,10 +192,17 @@ func _on_action_tooltip_unhovered() -> void:
 	_hide_action_tooltips()
 
 func _show_message_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
+	select_tooltip_modal.hide_tooltip()
 	_position_action_tooltip(select_tooltip_modal_nores, button)
 	select_tooltip_modal_nores.show_tooltip(tooltip_key, context_data)
 
+func _show_turns_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
+	select_tooltip_modal_nores.hide_tooltip()
+	_position_action_tooltip(select_tooltip_modal, button)
+	select_tooltip_modal.show_tooltip(tooltip_key, context_data)
+
 func _hide_action_tooltips() -> void:
+	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_nores.hide_tooltip()
 
 func _cache_action_tooltip_base() -> void:
@@ -767,14 +781,12 @@ func _on_promote_region_pressed() -> void:
 		return
 	current_region.promote_region()
 	current_region.mark_promoted_this_turn()
-	var level_name = RegionLevelEnum.level_to_display_string(next_level)
-	var promoted_line: String = tr("Region promoted to {level}").format({
-		"level": level_name
-	})
-	var level_line: String = tr("(level {level_number})").format({
+	sound_manager.play_promote_sound()
+	var level_name: String = RegionLevelEnum.level_to_display_string(next_level)
+	var promotion_message: String = tr("Region promoted to {level}\n(level {level_number})").format({
+		"level": level_name,
 		"level_number": int(next_level) + 1
 	})
-	var promotion_message: String = promoted_line + "\n" + level_line
 	message_modal.display_message(promotion_message)
 	_refresh_current_region()
 	_request_player_status_refresh()
@@ -838,9 +850,8 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	current_region.start_castle_construction(castle_type)
 	sound_manager.play_hammer_sound(3.0)
 	var turns_left = current_region.get_castle_build_turns_remaining()
-	var building_name = CastleTypeEnum.type_to_display_string(castle_type)
 	var turn_word: String = tr("turn") if turns_left == 1 else tr("turns")
-	message_modal.display_message(tr("%s will be done in %d %s.") % [building_name, turns_left, turn_word])
+	message_modal.display_message(tr("Construction will be completed in %d %s.") % [turns_left, turn_word])
 	_refresh_current_region()
 	_request_player_status_refresh()
 
@@ -889,8 +900,9 @@ func _on_raise_army_pressed() -> void:
 	current_player.remove_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
 	var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
 	if new_army != null:
+		sound_manager.play_horn_sound()
 		current_region.mark_raise_army_used()
-		var army_name = new_army.name if new_army.name else tr("New Army")
+		var army_name: String = tr("Army %s") % new_army.number
 		message_modal.display_message(tr("%s is being raised.") % army_name)
 		_refresh_current_region()
 		_request_player_status_refresh()

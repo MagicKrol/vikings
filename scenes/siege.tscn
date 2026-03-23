@@ -163,7 +163,7 @@ layout_mode = 2
 theme = ExtResource("2_nbqv0")
 
 [node name="Name" type="Label" parent="Body/Gate1Body/Gate1"]
-custom_minimum_size = Vector2(70, 0)
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 text = "Gate 1"
@@ -180,7 +180,7 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate1Body/Gate1"]
-custom_minimum_size = Vector2(145, 15)
+custom_minimum_size = Vector2(125, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
@@ -198,7 +198,7 @@ custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Name" type="Label" parent="Body/Gate1Body/Ram1"]
-custom_minimum_size = Vector2(110, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 text = "Siege Ram"
@@ -211,11 +211,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "100%"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Body/Gate1Body/Ram1"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate1Body/Ram1"]
-custom_minimum_size = Vector2(96, 15)
+custom_minimum_size = Vector2(86, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
@@ -237,7 +237,7 @@ layout_mode = 2
 theme = ExtResource("2_nbqv0")
 
 [node name="Name" type="Label" parent="Body/Gate2Body/Gate2"]
-custom_minimum_size = Vector2(70, 0)
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 text = "Gate 2"
@@ -254,7 +254,7 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate2Body/Gate2"]
-custom_minimum_size = Vector2(145, 15)
+custom_minimum_size = Vector2(125, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
@@ -272,7 +272,7 @@ custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Name" type="Label" parent="Body/Gate2Body/Ram2"]
-custom_minimum_size = Vector2(110, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 text = "Siege Ram"
@@ -285,11 +285,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "100%"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Body/Gate2Body/Ram2"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate2Body/Ram2"]
-custom_minimum_size = Vector2(96, 15)
+custom_minimum_size = Vector2(86, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
@@ -311,7 +311,7 @@ layout_mode = 2
 theme = ExtResource("2_nbqv0")
 
 [node name="Name" type="Label" parent="Body/Gate3Body/Gate3"]
-custom_minimum_size = Vector2(70, 0)
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 text = "Gate 3"
@@ -328,7 +328,7 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate3Body/Gate3"]
-custom_minimum_size = Vector2(145, 15)
+custom_minimum_size = Vector2(125, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")
@@ -346,7 +346,7 @@ custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Name" type="Label" parent="Body/Gate3Body/Ram3"]
-custom_minimum_size = Vector2(110, 0)
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 theme = ExtResource("3_6srto")
 text = "Siege Ram"
@@ -359,11 +359,11 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "100%"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Body/Gate3Body/Ram3"]
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="Body/Gate3Body/Ram3"]
-custom_minimum_size = Vector2(96, 15)
+custom_minimum_size = Vector2(86, 15)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxTexture_lvqdf")

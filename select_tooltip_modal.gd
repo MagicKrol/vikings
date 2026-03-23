@@ -111,7 +111,8 @@ func _hide_cost_display() -> void:
 func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 	"""Show the tooltip with the specified text"""
 	var key = String(tooltip_key).to_lower()
-	var tooltip_text = tr(TOOLTIP_TEXTS.get(key, "No information available."))
+	var tooltip_text: String = tr(TOOLTIP_TEXTS.get(key, "No information available."))
+	var show_turns_only: bool = bool(context_data.get("show_turns_only", false))
 	
 	# Hide cost display by default
 	_hide_cost_display()
@@ -146,13 +147,16 @@ func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 				castle_type_to_build = current_region.get_castle_type()
 			
 			if castle_type_to_build != CastleTypeEnum.Type.NONE:
-				if tooltip_key == "repair_castle":
+				if show_turns_only and (tooltip_key == "build_castle" or tooltip_key == "upgrade_castle"):
+					var build_time: int = GameParameters.get_castle_build_time(castle_type_to_build)
+					var empty_cost: Dictionary = {}
+					_display_cost(empty_cost, build_time)
+				elif tooltip_key == "repair_castle":
 					var repair_cost = current_region.get_castle_repair_cost()
 					if not repair_cost.is_empty():
 						_display_cost(repair_cost, 1)
 				else:
 					var cost = GameParameters.get_castle_building_cost(castle_type_to_build)
-					
 					if not cost.is_empty():
 						_display_cost(cost)
 	

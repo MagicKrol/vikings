@@ -673,7 +673,6 @@ texture = ExtResource("9_ygwey")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -733,7 +732,7 @@ theme_override_colors/font_color = Color(0.670588, 0.235294, 0.0862745, 1)
 text = "Player 1"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player1"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player1"]
@@ -745,7 +744,7 @@ theme_override_font_sizes/font_size = 18
 text = "Human"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player1"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player1"]
@@ -757,7 +756,7 @@ theme_override_font_sizes/font_size = 18
 text = "Computer"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player1"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player1"]
@@ -786,7 +785,7 @@ theme_override_colors/font_color = Color(0.423529, 0.505882, 0.498039, 1)
 text = "Player 2"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player2"]
@@ -798,7 +797,7 @@ theme_override_font_sizes/font_size = 18
 text = "Human"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player2"]
@@ -810,7 +809,7 @@ theme_override_font_sizes/font_size = 18
 text = "Computer"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player2"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player2"]
@@ -839,7 +838,7 @@ theme_override_colors/font_color = Color(0.25098, 0.403922, 0.101961, 1)
 text = "Player 3"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player3"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player3"]
@@ -851,7 +850,7 @@ theme_override_font_sizes/font_size = 18
 text = "Human"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player3"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player3"]
@@ -863,7 +862,7 @@ theme_override_font_sizes/font_size = 18
 text = "Computer"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player3"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player3"]
@@ -892,7 +891,7 @@ theme_override_colors/font_color = Color(0.717647, 0.0470588, 0.0470588, 1)
 text = "Player 4"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player4"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player4"]
@@ -904,7 +903,7 @@ theme_override_font_sizes/font_size = 18
 text = "Human"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player4"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player4"]
@@ -916,7 +915,7 @@ theme_override_font_sizes/font_size = 18
 text = "Computer"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player4"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player4"]
@@ -945,7 +944,7 @@ theme_override_colors/font_color = Color(1, 0.85098, 0.615686, 1)
 text = "Player 5"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player5"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player5"]
@@ -957,7 +956,7 @@ theme_override_font_sizes/font_size = 18
 text = "Human"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player5"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player5"]
@@ -969,7 +968,7 @@ theme_override_font_sizes/font_size = 18
 text = "Computer"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player5"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player5"]
@@ -998,7 +997,7 @@ theme_override_colors/font_color = Color(0.423529, 0.505882, 0.498039, 1)
 text = "Player 6"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player6"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Human" type="Button" parent="CustomMap/Panel/VBoxContainer/Player6"]
@@ -1010,7 +1009,7 @@ theme_override_font_sizes/font_size = 18
 text = "Human"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player6"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Computer" type="Button" parent="CustomMap/Panel/VBoxContainer/Player6"]
@@ -1022,7 +1021,7 @@ theme_override_font_sizes/font_size = 18
 text = "Computer"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer/Player6"]
-custom_minimum_size = Vector2(30, 0)
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 
 [node name="Off" type="Button" parent="CustomMap/Panel/VBoxContainer/Player6"]
@@ -1140,6 +1139,7 @@ theme_override_font_sizes/font_size = 24
 text = " Select Map "
 
 [node name="Panel2" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 80.0
 offset_top = 200.0
@@ -1172,7 +1172,7 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="Label2" type="Label" parent="CustomMap/Panel2/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 text = "Name"
@@ -1192,7 +1192,7 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="Label2" type="Label" parent="CustomMap/Panel2/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 text = "Size"
@@ -1209,6 +1209,7 @@ custom_minimum_size = Vector2(450, 450)
 layout_mode = 2
 
 [node name="Panel3" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 1360.0
 offset_top = 200.0
@@ -1382,6 +1383,7 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0

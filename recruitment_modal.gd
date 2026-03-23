@@ -652,6 +652,7 @@ func _on_recruit_button_pressed(unit_type: SoldierTypeEnum.Type) -> void:
 	var count: int = recruitment_counts.get(unit_type, 0)
 	if count <= 0:
 		return
+	sound_manager.play_recruit_sound()
 	_apply_recruitment_for_unit(unit_type, count)
 	if target_army != null:
 		target_army.spend_movement_points(1)
@@ -665,6 +666,7 @@ func _on_recruit_button_pressed(unit_type: SoldierTypeEnum.Type) -> void:
 func _on_recruit_all_pressed() -> void:
 	if recruitment_counts.is_empty():
 		return
+	sound_manager.play_recruit_sound()
 	emit_signal("recruit_all_target_reached")
 	_apply_recruitment()
 	if target_army != null:

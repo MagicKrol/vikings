@@ -40,6 +40,9 @@ class Playlist:
 @onready var defeat_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var mining_player: AudioStreamPlayer = AudioStreamPlayer.new()
 @onready var catapult_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var promote_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var recruit_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var trade_player: AudioStreamPlayer = AudioStreamPlayer.new()
 
 # Playlists
 const PLAYLIST_DEFS := {
@@ -76,6 +79,10 @@ var hammer_sound: AudioStream
 var defeat_sound: AudioStream
 var mining_sound: AudioStream
 var catapult_sound: AudioStream
+var promote_sound: AudioStream
+var recruit_sound: AudioStream
+var horn_sound: AudioStream
+var trade_sound: AudioStream
 
 # Music state
 var music_enabled: bool = true
@@ -96,6 +103,9 @@ func _ready():
 	add_child(defeat_player)
 	add_child(mining_player)
 	add_child(catapult_player)
+	add_child(promote_player)
+	add_child(recruit_player)
+	add_child(trade_player)
 	click_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	horn_player.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -104,6 +114,9 @@ func _ready():
 	defeat_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	mining_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	catapult_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	promote_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	recruit_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	trade_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.finished.connect(_on_music_finished)
 	battle_player.volume_db = linear_to_db(0.5)
 	defeat_player.volume_db = linear_to_db(0.5)
@@ -162,6 +175,26 @@ func _ready():
 	if not catapult_sound:
 		DebugLogger.log("GameInit", "Error: Could not load catapult.mp3")
 
+	# Load the promote sound
+	promote_sound = load("res://sounds/promote.mp3") as AudioStream
+	if not promote_sound:
+		DebugLogger.log("GameInit", "Error: Could not load promote.mp3")
+
+	# Load the recruit sound
+	recruit_sound = load("res://sounds/recruit.mp3") as AudioStream
+	if not recruit_sound:
+		DebugLogger.log("GameInit", "Error: Could not load recruit.mp3")
+
+	# Load the action horn sound
+	horn_sound = load("res://sounds/horn.mp3") as AudioStream
+	if not horn_sound:
+		DebugLogger.log("GameInit", "Error: Could not load horn.mp3")
+
+	# Load the trade sound
+	trade_sound = load("res://sounds/trade.mp3") as AudioStream
+	if not trade_sound:
+		DebugLogger.log("GameInit", "Error: Could not load trade.mp3")
+
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle keyboard input for music toggle"""
 	if event is InputEventKey and event.pressed:
@@ -219,6 +252,30 @@ func play_catapult_sound() -> void:
 		return
 	catapult_player.stream = catapult_sound
 	catapult_player.play()
+
+func play_promote_sound() -> void:
+	if not sound_enabled:
+		return
+	promote_player.stream = promote_sound
+	promote_player.play()
+
+func play_recruit_sound() -> void:
+	if not sound_enabled:
+		return
+	recruit_player.stream = recruit_sound
+	recruit_player.play()
+
+func play_horn_sound() -> void:
+	if not sound_enabled:
+		return
+	horn_player.stream = horn_sound
+	horn_player.play()
+
+func play_trade_sound() -> void:
+	if not sound_enabled:
+		return
+	trade_player.stream = trade_sound
+	trade_player.play()
 
 func play_retreat_horn() -> void:
 	if horn_player and retreat_horn and sound_enabled:

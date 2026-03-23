@@ -1,7 +1,7 @@
 key,explanation or purpose,en,de,pl,br
 demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
 Options,,Options,Optionen,Opcje,Opções
-Exit,,Exit,Ausfrahrt,Wyjdź,Sair
+Exit,,Exit,Ausfrahrt,Koniec,Sair
 Population,Number of people in the region,Population:,Bevölkerung,Ludność,População
 Food,Resource type,Food,Nahrung,Żywność,Alimentos
 Wood,Resource type,Wood,Holz,Drewno,Madeira
@@ -95,17 +95,14 @@ Computer,Option for a player type,Computer,Computer,Komputer,Computador
 Off,Option for a player type,Off,Aus,Brak,Nenhum
 Conquer,"A victory condition type, conquering all regions",Conquer,Erobern,Podbój,Conquistar
 Dominate,"A victory condition type, domiante most of the map",Dominate,Dominanz,Dominacja,Dominar
-T,Short version of Map size: Tiny,T,SK,BM,MP
-S,Short version of Map size: Small,S,K,M,P
-M,Short version of Map size: Medium,M,M,Ś,M
-L,Short version of Map size: Large,L,G,D,G
 Clouds ,Graphic effect that display Clouds,Clouds ,Wolken,Chmury,Nuvens
 Show,option to show something,Show,Anzeigen,Pokaż,Mostrar
 Hide,Option to hide something,Hide,Ausblenden,Ukryj,Ocultar
 AI Turn Speed,Title for the option to control turn speed of the AI player,AI Turn Speed,KI-Zuggeschwindigkeit,Szybkość tury AI,Velocidade do turno da IA
 Battle Speed,Title for the option to control speed of the battle,Battle Speed,Kampfgeschwindigkeit,Szybkość walki,Velocidade da batalha
-Fast,Speed level of the game,Fast,Schnell,Szybko,Rápido
-Very Fast,Speed level of the game,Very Fast,Sehr schnell,Bardzo szybko,Muito rápido
+Normal2,Speed level of the game,Normal,Normal,Normalna,Normal
+Fast,Speed level of the game,Fast,Schnell,Szybka,Rápido
+Very Fast,Speed level of the game,Very Fast,Sehr schnell,Bardzo szybka,Muito rápido
 Sound Volume,option to set sound volume level,Sound Volume,Lautstärke,Głośność dźwięku,Volume do som
 Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Głośność muzyki,Volume da música
 "%d wall sections destroyed, %d damaged by trebuchets.",Prebattle bombardment summary format showing destroyed and damaged wall section counts.,"%d wall sections destroyed, %d damaged by trebuchets.","%d Mauerabschnitte zerstört, %d durch Triboke beschädigt.","%d odcinków murów zniszczonych, %d uszkodzonych przez trebusze.","%d seções da muralha destruídas, %d danificadas por trabucos."
@@ -115,7 +112,7 @@ Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Gło
 %s is being raised.,Notification format shown when a new army begins raising.,%s is being raised.,%s wird aufgestellt.,%s jest formowana.,%s está sendo levantado.
 %s of %s,Region title format combining region level display name and region name.,%s of %s,%s von %s,%s %s,%s de %s
 %s was discovered,Tooltip format indicating that a specific ore type has been discovered.,%s was discovered,%s wurde entdeckt,%s został odkryty,%s foi descoberto
-%s will be done in %d %s.,Construction or repair completion message format using building name and remaining turns.,%s will be done in %d %s.,%s wird in %d %s fertig sein.,%s będzie gotowe za %d %s.,%s ficará pronto em %d %s.
+Construction will be completed in %d %s.,Construction or repair completion message format using building name and remaining turns.,Construction will be completed in %d %s.,Der Bau wird in %d %s abgeschlossen sein.,Budowa zostanie zakonczona za %d %s.,A construcao sera concluida em %d %s.
 %s: %d,Player status resource line format showing resource name and amount.,%s: %d,%s: %d,%s: %d,%s: %d
 Army %d,Army label format showing army number in selection and summary screens.,Army %d,Armee %d,Armia %d,Exército %d
 Army %d (%s),Battle header format showing army number and owning player label.,Army %d (%s),Armee %d (%s),Armia %d (%s),Exército %d (%s)
