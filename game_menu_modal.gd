@@ -19,6 +19,7 @@ signal exit_pressed
 signal save_game_pressed
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	continue_button.pressed.connect(_on_continue_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	save_game_button.pressed.connect(_on_save_game_pressed)
@@ -29,6 +30,15 @@ func _ready() -> void:
 	ui_manager = get_node("../UIManager") as UIManager
 	options_panel.configure(sound_manager, true, tr("Back"))
 	options_panel.visible = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:
+			hide_modal()
+			get_viewport().set_input_as_handled()
 
 func _on_continue_pressed() -> void:
 	DebugLogger.log("UISystem", "Game Menu - Continue pressed")

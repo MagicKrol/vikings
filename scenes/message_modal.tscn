@@ -43,28 +43,28 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
+offset_left = 15.0
 offset_top = 10.0
-offset_right = -10.0
+offset_right = -15.0
 offset_bottom = -47.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="Spacer2" type="Control" parent="PanelRoot/ContentContainer"]
+layout_mode = 2
+
 [node name="MessageLabel" type="Label" parent="PanelRoot/ContentContainer"]
-custom_minimum_size = Vector2(0, 170)
+custom_minimum_size = Vector2(100, 175)
 layout_mode = 2
 theme = ExtResource("3_standardtheme")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
-text = "Message text goes here. Message text goes here. Message text goes here. Message text goes here. Message text goes here. 
+text = "Message text goes here. Message text goes here. Message text goes here. Message text goes here. Message text goes here. sdasdadasdadasdasd
+asdasdasdasdasd
 "
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
-
-[node name="Spacer2" type="Control" parent="PanelRoot/ContentContainer"]
-custom_minimum_size = Vector2(0, 5)
-layout_mode = 2
 
 [node name="ContinueButton" type="Button" parent="PanelRoot/ContentContainer"]
 custom_minimum_size = Vector2(160, 40)

@@ -23,7 +23,6 @@ var make_camp_button: Button = null
 var cancel_button: Button = null
 var army_actions_button: Button = null
 var next_army_button: Button = null
-var no_actions_panel: SelectTooltipModalNoRes = null
 var recruit_button_border: Control = null
 var make_camp_button_border: Control = null
 var transfer_button_border: Control = null
@@ -41,7 +40,6 @@ func _ready():
 	make_camp_button.pressed.connect(_on_make_camp_pressed)
 	next_army_button = get_node("Panel2/List/ButtonSection/HBoxContainer3/ButtonBorder/NextArmy") as Button
 	next_army_button.pressed.connect(_on_next_army_pressed)
-	no_actions_panel = get_node("NoActions") as SelectTooltipModalNoRes
 	recruit_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer3/ButtonBorder") as Control
 	make_camp_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder") as Control
 	transfer_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder") as Control
@@ -232,10 +230,12 @@ func _on_action_unhovered() -> void:
 	_hide_no_actions()
 
 func _show_no_actions_for(button: Button) -> void:
-	no_actions_panel.show_text(NO_ACTIONS_TEXT)
+	var no_actions: SelectTooltipModalNoRes = get_node("NoActions") as SelectTooltipModalNoRes
+	no_actions.show_text(NO_ACTIONS_TEXT)
 
 func _hide_no_actions() -> void:
-	no_actions_panel.hide_tooltip()
+	var no_actions: SelectTooltipModalNoRes = get_node("NoActions") as SelectTooltipModalNoRes
+	no_actions.hide_tooltip()
 
 func _refresh_info_modal() -> void:
 	if info_modal.visible and selected_army:

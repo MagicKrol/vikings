@@ -3,6 +3,7 @@ class_name MainMenu
 
 # Set to true for demo menu, false for standard menu
 const USE_DEMO_MENU: bool = false
+const TUTORIAL_SCENARIO_PATH: String = "res://scenarios/tutorial.json"
 const LANGUAGE_ENGLISH_FLAG: Texture2D = preload("res://images/flags/english.png")
 const LANGUAGE_GERMAN_FLAG: Texture2D = preload("res://images/flags/germany.png")
 const LANGUAGE_POLISH_FLAG: Texture2D = preload("res://images/flags/poland.png")
@@ -198,6 +199,7 @@ func _ready():
 	default_scenario_description_text = scenario_description_label.text
 	default_scenario_objectives_text = scenario_objectives_label.text
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
+	_update_primary_main_menu_button()
 
 	# Show demo or standard menu based on USE_DEMO_MENU constant
 	if USE_DEMO_MENU:
@@ -301,7 +303,19 @@ func _flag_for_language_index(index: int) -> Texture2D:
 			return LANGUAGE_ENGLISH_FLAG
 
 func _on_continue_pressed():
-	DebugLogger.log("UISystem", "Continue button pressed")
+	var has_save_file: bool = SaveGameManager.has_save_file()
+	if has_save_file:
+		DebugLogger.log("UISystem", "Continue button pressed")
+		get_tree().set_meta("start_payload", {
+			"type": "save",
+			"save_path": SaveGameManager.SAVE_FILE_PATH
+		})
+	else:
+		DebugLogger.log("UISystem", "Tutorial button pressed")
+		get_tree().set_meta("start_payload", {
+			"type": "scenario",
+			"scenario_path": TUTORIAL_SCENARIO_PATH
+		})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
@@ -472,6 +486,7 @@ func _on_demo_map_pressed():
 
 func _show_main_menu():
 	"""Show the main menu and hide other menus"""
+	_update_primary_main_menu_button()
 	button_bg1.visible = true
 	button_bg2.visible = true
 	button_bg3.visible = true
@@ -485,6 +500,13 @@ func _show_main_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
+
+func _update_primary_main_menu_button() -> void:
+	var has_save_file: bool = SaveGameManager.has_save_file()
+	if has_save_file:
+		continue_button.text = tr("Continue")
+	else:
+		continue_button.text = tr("Tutorial")
 
 func _show_new_game_menu():
 	"""Show the new game menu"""

@@ -798,10 +798,11 @@ func _on_promote_region_pressed() -> void:
 	current_region.mark_promoted_this_turn()
 	sound_manager.play_promote_sound()
 	var level_name: String = RegionLevelEnum.level_to_display_string(next_level)
-	var promotion_message: String = tr("Region promoted to {level}\n(level {level_number})").format({
+	var promotion_message_template: String = tr("Region promoted to {level}\\n(level {level_number})")
+	var promotion_message: String = promotion_message_template.format({
 		"level": level_name,
 		"level_number": int(next_level) + 1
-	})
+	}).replace("\\n", "\n")
 	message_modal.display_message(promotion_message)
 	_refresh_current_region()
 	_request_player_status_refresh()

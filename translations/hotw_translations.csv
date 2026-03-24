@@ -14,7 +14,7 @@ Region Level:,Region's upgrade level,Region Level:,Gebietsstufe,Poziom krainy,N�
 Income,Amount of gold earned per turn,Income,Einkommen,Dochód,Renda
 Garrison:,"Local soldiers, defenders",Garrison:,Garnison:,Garnizon,Guarnição
 Garrison,"Local soldiers, defenders",Garrison,Garnison,Garnizon,Guarnição
-Defense,"Forticiation type, like castle, keep",Defense,Verteidigung,Obrona,Defesa
+Defense,"Forticiation type, like castle, keep",Defense,Abwehr,Obrona,Defesa
 Defense score:,How strong is defense in %,Defense score:,Abwehrwert,Siła obrony,Força defensiva
 Recruits:,Number of soldiers to hire,Recruits:,Rekruten,Rekruci,Recrutas
 Move Points:,Number of points army can use to move,Move Points,Bewegungspunkte,Punkty ruchu,Pontos de movimento
@@ -29,6 +29,7 @@ Horsemen,Unit type,Horsemen,Reiter,Jeźdźcy,Cavaleiros
 Knights,Unit type,Knights,Ritter,Rycerze,Cavaleiros
 Mounted Knights,Unit type,Mounted Knightss,Berittene Ritter,Rycerze konni,Cavaleiros a cavalo
 Royal Guards,Unit type,Royal Guards,Königsgarde,Gwardia,Guarda Real
+Royal Guard,Unit type,Royal Guards,Königsgarde,Gwardia,Guarda Real
 Turn,Game Turn,Turn,Runde,Tura,Turno
 End Turn,Button to end the game turn,End Turn,Zug beenden,Zakończ turę,Encerrar turno
 Player,"Player 1, Player 2 etc.",Player,Spieler,Gracz,Jogador
@@ -107,12 +108,12 @@ Sound Volume,option to set sound volume level,Sound Volume,Lautstärke,Głośno�
 Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Głośność muzyki,Volume da música
 "%d wall sections destroyed, %d damaged by trebuchets.",Prebattle bombardment summary format showing destroyed and damaged wall section counts.,"%d wall sections destroyed, %d damaged by trebuchets.","%d Mauerabschnitte zerstört, %d durch Triboke beschädigt.","%d odcinków murów zniszczonych, %d uszkodzonych przez trebusze.","%d seções da muralha destruídas, %d danificadas por trabucos."
 %s Found,Ore search status format listing discovered ore names.,%s,%s,%s,%s
-%s Found!,Ore discovery popup header format showing the discovered ore type.,%s Found!,%s gefunden!,%s znaleziono!,%s encontrado!
+%s Found!,Ore discovery popup header format showing the discovered ore type.,%s Found!,%s gefunden!,Znaleziono %s!,%s encontrado!
 %s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,%s obrońców,%s defensores
 %s is being raised.,Notification format shown when a new army begins raising.,%s is being raised.,%s wird aufgestellt.,%s jest formowana.,%s está sendo levantado.
 %s of %s,Region title format combining region level display name and region name.,%s of %s,%s von %s,%s %s,%s de %s
 %s was discovered,Tooltip format indicating that a specific ore type has been discovered.,%s was discovered,%s wurde entdeckt,%s został odkryty,%s foi descoberto
-Construction will be completed in %d %s.,Construction or repair completion message format using building name and remaining turns.,Construction will be completed in %d %s.,Der Bau wird in %d %s abgeschlossen sein.,Budowa zostanie zakonczona za %d %s.,A construcao sera concluida em %d %s.
+%s will be done in %d %s.,Construction or repair completion message format using building name and remaining turns.,Construction will be completed in %d %s.,Der Bau wird in %d %s abgeschlossen sein.,Budowa zostanie zakonczona za %d %s.,A construcao sera concluida em %d %s.
 %s: %d,Player status resource line format showing resource name and amount.,%s: %d,%s: %d,%s: %d,%s: %d
 Army %d,Army label format showing army number in selection and summary screens.,Army %d,Armee %d,Armia %d,Exército %d
 Army %d (%s),Battle header format showing army number and owning player label.,Army %d (%s),Armee %d (%s),Armia %d (%s),Exército %d (%s)
@@ -288,7 +289,7 @@ Ladders,Ladders,Ladders,Leitern,Drabiny,Escadas
 Siege Rams,Siege Rams,Siege Rams,Rammböcke,Tarany,Arietes
 Trebuchets,Trebuchets,Trebuchets,Triboke,Trebusze,Trabucos
 Wall Sections,Wall Sections,Wall Sections,Mauerabschnitte,Odcinki murów,Seções da muralha
-Breached,In context of walls,Breached,Durchbrochen,Sforsowane,Rompidas
+Breached,In context of walls,Breached,Durchbrochen,Zniszczone,Rompidas
 Damaged,In context of walls,Damaged,Beschädigt,Uszkodzone,Danificadas
 Intact,In context of walls,Intact,Intakt,Nienaruszone,Intactas
 Gates,in context of castle,Gates,Tore,Bramy,Portões

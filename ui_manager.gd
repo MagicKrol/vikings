@@ -244,6 +244,14 @@ func _unhandled_input(event):
 		handle_escape_action()
 
 func handle_escape_action() -> bool:
+	if _message_modal.visible:
+		_message_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _intro_message_modal.visible:
+		_intro_message_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
 	var game_manager_tutorial: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
 	if game_manager_tutorial.tutorial_enabled:
 		var tutorial_manager: TutorialManager = game_manager_tutorial.get_tutorial_manager()

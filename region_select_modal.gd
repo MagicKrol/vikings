@@ -272,10 +272,11 @@ func _on_promote_region_pressed() -> void:
 	current_region.promote_region()
 	current_region.mark_promoted_this_turn()
 	var level_name: String = RegionLevelEnum.level_to_display_string(next_level)
-	var promotion_message: String = tr("Region promoted to {level}\n(level {level_number})").format({
+	var promotion_message_template: String = tr("Region promoted to {level}\\n(level {level_number})")
+	var promotion_message: String = promotion_message_template.format({
 		"level": level_name,
 		"level_number": int(next_level) + 1
-	})
+	}).replace("\\n", "\n")
 	visible = false
 	if not message_modal.continue_clicked.is_connected(_on_message_modal_continue):
 		message_modal.continue_clicked.connect(_on_message_modal_continue)

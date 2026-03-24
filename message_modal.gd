@@ -10,6 +10,7 @@ const BORDER_COLOR = Color.BLACK
 const SHADOW_OFFSET = Vector2(4, 4)
 const SHADOW_COLOR = Color(0, 0, 0, 0.3)
 const BORDER_WIDTH = 4.0
+const CLOSE_KEYCODES: Array[int] = [KEY_ESCAPE, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
 
 @onready var ui_manager: UIManager = get_node("../UIManager") as UIManager
 @onready var sound_manager: SoundManager = get_node("../../SoundManager") as SoundManager
@@ -65,6 +66,15 @@ func _on_continue_pressed() -> void:
 	sound_manager.click_sound()
 	emit_signal("continue_clicked")
 	_hide_modal()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event.pressed and not key_event.echo and CLOSE_KEYCODES.has(key_event.keycode):
+			_on_continue_pressed()
+			get_viewport().set_input_as_handled()
 
 func _draw():
 	pass
