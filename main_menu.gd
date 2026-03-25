@@ -14,6 +14,7 @@ const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/b
 @onready var load_game_button: Button = $MenuContainer/LoadGameButton
 @onready var options_button: Button = $MenuContainer/OptionsButton
 @onready var exit_button: Button = $MenuContainer/ExitButton
+@onready var save_game_modal: MainMenuSaveGameModal = $SaveGameModal
 
 # New Game menu buttons
 @onready var campaign_button: Button = $NewGame/CampaignButton
@@ -155,6 +156,8 @@ func _ready():
 	load_game_button.pressed.connect(_on_load_game_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
+	save_game_modal.back_requested.connect(_on_save_game_modal_back_requested)
+	save_game_modal.action_requested.connect(_on_save_game_modal_action_requested)
 	
 	# Connect new game menu button signals
 	campaign_button.pressed.connect(_on_campaign_pressed)
@@ -305,10 +308,11 @@ func _flag_for_language_index(index: int) -> Texture2D:
 func _on_continue_pressed():
 	var has_save_file: bool = SaveGameManager.has_save_file()
 	if has_save_file:
+		var latest_save_path: String = SaveGameManager.get_latest_save_path()
 		DebugLogger.log("UISystem", "Continue button pressed")
 		get_tree().set_meta("start_payload", {
 			"type": "save",
-			"save_path": SaveGameManager.SAVE_FILE_PATH
+			"save_path": latest_save_path
 		})
 	else:
 		DebugLogger.log("UISystem", "Tutorial button pressed")
@@ -326,14 +330,29 @@ func _on_new_game_pressed():
 
 func _on_load_game_pressed():
 	DebugLogger.log("UISystem", "Load Game button pressed")
-	if not SaveGameManager.has_save_file():
+	var save_entries: Array[Dictionary] = SaveGameManager.get_save_entries()
+	save_game_modal.configure(MainMenuSaveGameModal.Mode.LOAD, save_entries)
+	save_game_modal.visible = true
+	save_game_modal.move_to_front()
+
+func _on_save_game_modal_back_requested() -> void:
+	save_game_modal.visible = false
+	if USE_DEMO_MENU:
+		_show_demo_menu()
+	else:
+		_show_main_menu()
+
+func _on_save_game_modal_action_requested(mode: int, selected_file_name: String, _entered_file_name: String) -> void:
+	if mode != MainMenuSaveGameModal.Mode.LOAD:
 		return
+	if selected_file_name == "":
+		return
+	var save_path: String = SaveGameManager.build_save_path_from_file_name(selected_file_name)
 	get_tree().set_meta("start_payload", {
 		"type": "save",
-		"save_path": SaveGameManager.SAVE_FILE_PATH
+		"save_path": save_path
 	})
-	if sound_manager:
-		sound_manager.stop_main_menu_music()
+	sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_options_pressed():

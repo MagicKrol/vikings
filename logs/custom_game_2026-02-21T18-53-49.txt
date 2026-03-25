@@ -1,0 +1,178 @@
+AI Log File: custom_game
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=146, gold=100) vs thr=0.50; Frontier2Army=1.33
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Economy: Bought 9 Food (gold change -19)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=146, gold=100) vs thr=0.50; Frontier2Army=1.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Greenfjord (#262) | total:100.0 (recruits:100.0, distance:100.0, dist:4, next:Castle)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=3, discoveries=0, gold_spent=30.
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Hellathwaite (#260), score: 51.6 (resources: 11.2, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.5)
+Candidate 2: Eastthwaite (#232), score: 39.4 (resources: 7.5, population: 1.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 3: Westfjell (#241), score: 35.9 (resources: 3.8, population: 2.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.3)
+[MOVEMENT]
+Best target: Hellathwaite (no enemy)
+Moves to Saintstadir [MP left: 4, Vigor: 95%]
+Moves to Hellathwaite [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Hellathwaite
+Battle started
+Attacker: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 16 - P:8]
+Defender Recruits (Hellathwaite) (unknown) [Power: 6 - P:3]
+Battle Result: Won
+Attacker After: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hellathwaite (unknown) [Power: 0 - none]
+
+Moving to Hellathwaite [MP left: 2, Vigor: 85%]
+Candidate 1: Greenhaug (#226), score: 55.7 (resources: 11.2, population: 2.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.3)
+[MOVEMENT]
+Best target: Greenhaug (no enemy)
+Moves to Greenhaug [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Greenhaug
+Battle started
+Attacker: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Greenhaug) (unknown) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Greenhaug (unknown) [Power: 0 - none]
+
+Moving to Greenhaug [MP left: 0, Vigor: 75%]
+-------------- ARMY Army II -------------
+Army II [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Eastthwaite (#232), score: 37.0 (resources: 7.5, population: 1.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 2: Westfjell (#241), score: 34.1 (resources: 3.8, population: 2.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.3)
+Candidate 3: Kingford (#256), score: 31.9 (resources: 7.5, population: 2.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+[MOVEMENT]
+Best target: Eastthwaite (no enemy)
+Moves to Sanddon [MP left: 3, Vigor: 95%]
+Moves to Eastthwaite [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Eastthwaite
+Battle started
+Attacker: Army II [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 10 - P:5]
+Defender Recruits (Eastthwaite) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army II [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Eastthwaite (unknown) [Power: 0 - none]
+
+Moving to Eastthwaite [MP left: 1, Vigor: 85%]
+Candidate 1: Westfjell (#205), score: 78.6 (resources: 15.0, population: 7.6, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 2: Eastfjell (#204), score: 45.8 (resources: 3.8, population: 5.4, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Hafnbury (#223), score: 38.3 (resources: 3.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.2)
+[MOVEMENT]
+Best target: Westfjell (Player 2 (unknown))
+Out of movement points before reaching Westfjell
+Movement blocked near Westfjell
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army III -------------
+Army III [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Westfjell (#205), score: 74.1 (resources: 15.0, population: 7.6, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 2: Eastfjell (#204), score: 42.8 (resources: 3.8, population: 5.4, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Westfjell (#241), score: 35.5 (resources: 3.8, population: 2.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.3)
+[MOVEMENT]
+Best target: Westfjell (Player 2 (unknown))
+Moves to Sanddon [MP left: 3, Vigor: 95%]
+Moves to Eastthwaite [MP left: 2, Vigor: 90%]
+Moves to Westfjell [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Westfjell
+Battle started
+Attacker: Army III [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Westfjell) (unknown) [Power: 36 - P:18]
+Battle Result: Won
+Attacker After: Army III [Power: 110 - P:18, S:8, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westfjell (unknown) [Power: 0 - none]
+
+Moving to Westfjell [MP left: 0, Vigor: 80%]
+Economy: Bought: 8 Stone, 2 Wood for 39 gold
+
+Resources (end):
+Gold: 2
+Food: 59
+Wood: 27
+Iron: 10
+Stone: 18
+

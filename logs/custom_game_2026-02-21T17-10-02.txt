@@ -1,0 +1,189 @@
+AI Log File: custom_game
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=151, gold=100) vs thr=0.50; Frontier2Army=2.33
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Economy: Bought 2 Food (gold change -4)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=151, gold=100) vs thr=0.50; Frontier2Army=2.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Hellaholme (#222) | total:100.0 (recruits:100.0, distance:100.0, dist:5, next:Castle)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Westhaug (#211), score: 51.4 (resources: 11.2, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 2: Vatnfjell (#159), score: 45.9 (resources: 7.5, population: 2.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 3: Souththwaite (#205), score: 36.5 (resources: 7.5, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+[MOVEMENT]
+Best target: Westhaug (no enemy)
+Moves to Fossnes [MP left: 4, Vigor: 95%]
+Moves to Westhaug [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Westhaug
+Battle started
+Attacker: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 18 - P:9]
+Defender Recruits (Westhaug) (unknown) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army I [Power: 116 - P:20, S:10, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westhaug (unknown) [Power: 0 - none]
+
+Moving to Westhaug [MP left: 2, Vigor: 85%]
+Candidate 1: Hellastadir (#206), score: 55.2 (resources: 7.5, population: 5.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+Candidate 2: Stonewich (#170), score: 42.8 (resources: 11.2, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hellastadir (no enemy)
+Moves to Hellastadir [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Hellastadir
+Battle started
+Attacker: Army I [Power: 116 - P:20, S:10, A:5, SW:4, K:1]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Hellastadir) (unknown) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army I [Power: 114 - P:19, S:10, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hellastadir (unknown) [Power: 0 - none]
+
+Moving to Hellastadir [MP left: 0, Vigor: 75%]
+-------------- ARMY Army II -------------
+Army II [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Vatnfjell (#159), score: 44.3 (resources: 7.5, population: 2.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 2: Stonewich (#170), score: 44.2 (resources: 11.2, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Souththwaite (#205), score: 35.0 (resources: 7.5, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+[MOVEMENT]
+Best target: Vatnfjell (no enemy)
+Moves to Souththorpe [MP left: 4, Vigor: 95%]
+Moves to Vatnfjell [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Vatnfjell
+Battle started
+Attacker: Army II [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 16 - P:8]
+Defender Recruits (Vatnfjell) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army II [Power: 113 - P:18, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatnfjell (unknown) [Power: 0 - none]
+
+Moving to Vatnfjell [MP left: 2, Vigor: 85%]
+Candidate 1: Greenford (#204), score: 27.8 (resources: 1.2, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 2: Souththwaite (#205), score: 27.2 (resources: 2.5, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 3: Whithaug (#161), score: 15.5 (resources: 1.2, population: 3.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.3)
+[MOVEMENT]
+Best target: Greenford (no enemy)
+Moves to Greenford [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Greenford
+Battle started
+Attacker: Army II [Power: 113 - P:18, S:9, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Greenford) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 111 - P:17, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Greenford (unknown) [Power: 0 - none]
+
+Moving to Greenford [MP left: 0, Vigor: 75%]
+-------------- ARMY Army III -------------
+Army III [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Eychester (#203), score: 40.1 (resources: 1.0, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 2: Vatnberg (#232), score: 32.9 (resources: 3.8, population: 2.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 3: Souththwaite (#205), score: 26.5 (resources: 2.5, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+[MOVEMENT]
+Best target: Eychester (no enemy)
+Moves to Souththorpe [MP left: 4, Vigor: 95%]
+Moves to Vatnfjell [MP left: 3, Vigor: 90%]
+Moves to Eychester [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Eychester
+Battle started
+Attacker: Army III [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 6 - P:3]
+Defender Recruits (Eychester) (unknown) [Power: 28 - P:14]
+Battle Result: Won
+Attacker After: Army III [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Eychester (unknown) [Power: 0 - none]
+
+Moving to Eychester [MP left: 0, Vigor: 80%]
+Economy: Bought: 18 Stone, 1 Wood for 86 gold
+
+Resources (end):
+Gold: 0
+Food: 52
+Wood: 26
+Iron: 10
+Stone: 28
+

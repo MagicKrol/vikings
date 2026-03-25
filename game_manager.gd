@@ -93,6 +93,7 @@ var debug_heatmap: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
+var _save_game_modal: SaveGameModal
 var _sound_manager: SoundManager
 var tutorial_enabled: bool = false
 # Map editor mode state
@@ -172,7 +173,8 @@ func _ready():
 			
 			map_generator.generate_map()
 		elif kind == "save":
-			var save_data: Dictionary = SaveGameManager.load_game()
+			var save_path: String = String(payload.get("save_path", SaveGameManager.SAVE_FILE_PATH))
+			var save_data: Dictionary = SaveGameManager.load_game_from_path(save_path)
 			if not save_data.is_empty():
 				_loaded_from_save = true
 				_pending_loaded_save_data = save_data
@@ -255,12 +257,16 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	if not _next_player_modal.continue_acknowledged.is_connected(_on_next_player_modal_continue_acknowledged):
 		_next_player_modal.continue_acknowledged.connect(_on_next_player_modal_continue_acknowledged)
 	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
+	_save_game_modal = ui_node.get_node("SaveGameModal") as SaveGameModal
 	_message_modal = ui_node.get_node("MessageModal") as MessageModal
 	_intro_message_modal = ui_node.get_node("IntroMessageModal") as IntroMessageModal
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
 		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
+		_game_menu_modal.connect("load_game_pressed", _on_game_menu_load_game_pressed)
 		_game_menu_modal.connect("save_game_pressed", _on_game_menu_save_game_pressed)
+	_save_game_modal.back_requested.connect(_on_save_game_modal_back_requested)
+	_save_game_modal.action_requested.connect(_on_save_game_modal_action_requested)
 	_ui_manager = ui_node.get_node("UIManager") as UIManager
 	var tutorial_modal = get_node("../UI/TutorialModal") as TutorialModal
 	var tutorial_world_arrow = get_node("../Map/TutorialWorldArrow") as Sprite2D
@@ -3754,16 +3760,50 @@ func _on_game_menu_main_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 func _on_game_menu_save_game_pressed() -> void:
-	var save_ok: bool = SaveGameManager.save_game(self)
+	var save_entries: Array[Dictionary] = SaveGameManager.get_save_entries()
+	_save_game_modal.configure(SaveGameModal.Mode.SAVE, save_entries, SaveGameModal.Context.GAME_MENU)
+	_save_game_modal.visible = true
+	_save_game_modal.move_to_front()
+	_ui_manager.set_modal_active(true)
+
+func _on_game_menu_load_game_pressed() -> void:
+	var save_entries: Array[Dictionary] = SaveGameManager.get_save_entries()
+	_save_game_modal.configure(SaveGameModal.Mode.LOAD, save_entries, SaveGameModal.Context.GAME_MENU)
+	_save_game_modal.visible = true
+	_save_game_modal.move_to_front()
+	_ui_manager.set_modal_active(true)
+
+func _on_save_game_modal_back_requested(_context: int) -> void:
+	_save_game_modal.visible = false
+	_ui_manager.set_modal_active(true)
+
+func _on_save_game_modal_action_requested(mode: int, selected_file_name: String, entered_file_name: String) -> void:
+	var save_ok: bool = false
+	if mode == SaveGameModal.Mode.SAVE:
+		var target_file_name: String = entered_file_name if entered_file_name != "" else selected_file_name
+		save_ok = SaveGameManager.save_game_named(self, target_file_name)
+		var save_entries: Array[Dictionary] = SaveGameManager.get_save_entries()
+		_save_game_modal.configure(SaveGameModal.Mode.SAVE, save_entries, SaveGameModal.Context.GAME_MENU)
+	elif mode == SaveGameModal.Mode.LOAD:
+		if selected_file_name == "":
+			DebugLogger.log("SaveGame", "ERROR: No save file selected")
+			return
+		var save_path: String = SaveGameManager.build_save_path_from_file_name(selected_file_name)
+		get_tree().paused = false
+		get_tree().set_meta("start_payload", {
+			"type": "save",
+			"save_path": save_path
+		})
+		get_tree().change_scene_to_file("res://main.tscn")
+		return
 	if save_ok:
-		DebugLogger.log("SaveGame", "Game saved to " + SaveGameManager.SAVE_FILE_PATH)
+		DebugLogger.log("SaveGame", "Game saved")
 	else:
 		DebugLogger.log("SaveGame", "ERROR: Failed to save game")
 
 func _on_game_menu_exit_pressed() -> void:
 	"""Handle Exit Game button from game menu"""
-	DebugLogger.log("UISystem", "Exiting game")
-	get_tree().quit()
+	_on_game_menu_main_menu_pressed()
 
 func handle_human_end_turn() -> void:
 	_auto_camp_armies_for_player(current_player)

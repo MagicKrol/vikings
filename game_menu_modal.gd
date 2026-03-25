@@ -6,8 +6,8 @@ extends Control
 @onready var button_container: VBoxContainer = $InnerPanel/ButtonContainer
 @onready var continue_button: Button = $InnerPanel/ButtonContainer/ContinueButton
 @onready var options_button: Button = $InnerPanel/ButtonContainer/OptionsButton
-@onready var save_game_button: Button = $InnerPanel/ButtonContainer/SaveGameButton
-@onready var main_menu_button: Button = $InnerPanel/ButtonContainer/MainMenuButton
+@onready var load_game_button: Button = $InnerPanel/ButtonContainer/SaveGameButton
+@onready var save_game_button: Button = $InnerPanel/ButtonContainer/MainMenuButton
 @onready var exit_button: Button = $InnerPanel/ButtonContainer/ExitButton
 @onready var options_panel: OptionsPanel = get_node("../Options") as OptionsPanel
 
@@ -16,14 +16,15 @@ var ui_manager: UIManager
 
 signal main_menu_pressed
 signal exit_pressed
+signal load_game_pressed
 signal save_game_pressed
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	continue_button.pressed.connect(_on_continue_pressed)
 	options_button.pressed.connect(_on_options_pressed)
+	load_game_button.pressed.connect(_on_load_game_pressed)
 	save_game_button.pressed.connect(_on_save_game_pressed)
-	main_menu_button.pressed.connect(_on_main_menu_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	options_panel.back_requested.connect(_on_options_back_pressed)
 	sound_manager = get_node("/root/Main/SoundManager") as SoundManager
@@ -51,6 +52,10 @@ func _on_options_pressed() -> void:
 func _on_main_menu_pressed() -> void:
 	DebugLogger.log("UISystem", "Game Menu - Main Menu pressed")
 	main_menu_pressed.emit()
+
+func _on_load_game_pressed() -> void:
+	DebugLogger.log("UISystem", "Game Menu - Load Game pressed")
+	load_game_pressed.emit()
 
 func _on_save_game_pressed() -> void:
 	DebugLogger.log("UISystem", "Game Menu - Save Game pressed")

@@ -1,0 +1,1307 @@
+AI Log File: custom_game
+
+Recruitment: Score: 0.00 (r=7, a=3, dist=0.0, rec=116, gold=100) vs thr=0.50; Frontier2Army=2.33
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=7, a=3, dist=0.0, rec=116, gold=100) vs thr=0.50; Frontier2Army=2.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Sandstadir (#134) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army III -------------
+Army III [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Wooddon (#121), score: 57.5 (resources: 18.8, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+Candidate 2: Reykhaug (#128), score: 57.1 (resources: 17.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.4)
+Candidate 3: Torfjell (#82), score: 47.2 (resources: 11.2, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Wooddon (no enemy)
+Moves to Hafnfjord [MP left: 4, Vigor: 95%]
+Moves to Wooddon [MP left: 0, Vigor: 90%]
+[BATTLE]
+Fight at Wooddon
+Battle started
+Attacker: Army III [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 18 - P:9]
+Defender Recruits (Wooddon) (unknown) [Power: 6 - P:3]
+Battle Result: Won
+Attacker After: Army III [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Wooddon (unknown) [Power: 0 - none]
+
+Moving to Wooddon [MP left: 0, Vigor: 85%]
+-------------- ARMY Army II -------------
+Army II [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Reykoy (#136), score: 47.5 (resources: 9.0, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.8)
+Candidate 2: Torfjell (#82), score: 46.2 (resources: 11.2, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Westley (#102), score: 43.9 (resources: 7.5, population: 4.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+[MOVEMENT]
+Best target: Reykoy (no enemy)
+Moves to Torham [MP left: 4, Vigor: 95%]
+Moves to Reykoy [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Reykoy
+Battle started
+Attacker: Army II [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Reykoy) (unknown) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army II [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Reykoy (unknown) [Power: 0 - none]
+
+Moving to Reykoy [MP left: 1, Vigor: 85%]
+Candidate 1: Hvitnes (#132), score: 76.8 (resources: 20.2, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 2: Torfjell (#82), score: 43.2 (resources: 11.2, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Westley (#102), score: 42.9 (resources: 7.5, population: 4.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+[MOVEMENT]
+Best target: Hafnton (no enemy)
+Out of movement points before reaching Hafnton
+Movement blocked near Hafnton
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army I -------------
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+Candidate 1: Westley (#102), score: 46.5 (resources: 7.5, population: 4.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 2: Torfjell (#82), score: 42.5 (resources: 11.2, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Torberg (#103), score: 40.2 (resources: 7.5, population: 6.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+[MOVEMENT]
+Best target: Westley (no enemy)
+Moves to Hafnfjord [MP left: 4, Vigor: 95%]
+Moves to Westley [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Westley
+Battle started
+Attacker: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 4 - P:2]
+Defender Recruits (Westley) (unknown) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 113 - P:20, S:9, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westley (unknown) [Power: 0 - none]
+
+Moving to Westley [MP left: 2, Vigor: 85%]
+Candidate 1: Eydon (#117), score: 48.8 (resources: 11.2, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.9)
+Candidate 2: Torberg (#103), score: 39.0 (resources: 7.5, population: 6.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Hellaoy (#93), score: 34.5 (resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Eydon (no enemy)
+Moves to Eydon [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Eydon
+Battle started
+Attacker: Army I [Power: 113 - P:20, S:9, A:5, SW:4, K:1]
+Defender Garrison (unknown) [Power: 8 - P:4]
+Defender Recruits (Eydon) (unknown) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army I [Power: 107 - P:19, S:9, A:5, SW:3, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Eydon (unknown) [Power: 0 - none]
+
+Moving to Eydon [MP left: 0, Vigor: 75%]
+Economy: Bought: 19 Stone for 88 gold
+
+Resources (end):
+Gold: 2
+Food: 50
+Wood: 25
+Iron: 10
+Stone: 29
+
+Recruitment: Score: 0.00 (r=11, a=3, dist=3.3, rec=132, gold=28) vs thr=0.50; Frontier2Army=2.33
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 2]
+       
+ 222222222222222      
+2:::::::::::::::22    
+2::::::222222:::::2   
+2222222     2:::::2   
+			2:::::2   
+			2:::::2   
+		 2222::::2    
+	22222::::::22     
+  22::::::::222       
+ 2:::::22222          
+2:::::2               
+2:::::2               
+2:::::2       222222  
+2::::::2222222:::::2  
+2::::::::::::::::::2  
+22222222222222222222  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 28
+Food: 57
+Wood: 32
+Iron: 10
+Stone: 29
+
+Signals:
+frontier_pressure: 0.636
+underpowered_ratio: 0.000
+castle_spacing: 11.000
+bank_ratio: 0.560
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=11, a=3, dist=3.3, rec=132, gold=28) vs thr=0.50; Frontier2Army=2.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Westley (#102) | total:98.9 (strategy:43.9, neighbor:55.0, distance_status:False, score:98.9<[100.0])
+- Reykoy (#136) | total:72.5 (strategy:27.5, neighbor:45.0, distance_status:True, score:72.5<[100.0])
+- Eydon (#117) | total:63.8 (strategy:38.8, neighbor:25.0, distance_status:True, score:63.8<[100.0])
+- Wooddon (#121) | total:61.7 (strategy:11.7, neighbor:50.0, distance_status:False, score:61.7<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up purchases: 1 Stone (gold -5) | total gold change: -5)
+
+- Sandstadir (#134) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region actions: Upgrading Reykoy to County (score: 2.0)
+
+Economy: Ore search: attempts=1, discoveries=0, gold_spent=10.
+
+Additional Castle Recruitment:
+- Sandstadir: +5
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 107, E: 75 - P:19, S:9, A:5, SW:3, K:1]
+Army I makes camp [MP left: 4, Vigor: 85%]
+Candidate 1: Westhavn (#110), score: 32.8 (resources: 2.5, population: 3.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.3)
+Candidate 2: Torberg (#103), score: 28.8 (resources: 2.5, population: 6.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Hellaoy (#93), score: 26.5 (resources: 2.5, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Westhavn (no enemy)
+Moves to Westhavn [MP left: 2, Vigor: 80%]
+[BATTLE]
+Fight at Westhavn
+Battle started
+Attacker: Army I [Power: 107 - P:19, S:9, A:5, SW:3, K:1]
+Defender Garrison (unknown) [Power: 4 - P:2]
+Defender Recruits (Westhavn) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army I [Power: 97 - P:17, S:7, A:5, SW:3, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westhavn (unknown) [Power: 0 - none]
+
+Moving to Westhavn [MP left: 2, Vigor: 75%]
+Army I makes camp [MP left: 1, Vigor: 85%]
+Candidate 1: Hvitnes (#132), score: 71.4 (resources: 20.2, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 2: Reykhaug (#128), score: 34.2 (resources: 8.2, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.4)
+Candidate 3: Redthorpe (#130), score: 30.9 (resources: 1.0, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.6)
+[MOVEMENT]
+Best target: Redthorpe (no enemy)
+Out of movement points before reaching Redthorpe
+Movement blocked near Redthorpe
+Army I makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army II -------------
+Army II [Power: 118, E: 95 - P:19, S:10, A:5, SW:5, K:1]
+Candidate 1: Hvitnes (#132), score: 74.2 (resources: 20.2, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 2: Hafnton (#123), score: 37.0 (resources: 1.0, population: 1.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 10.0)
+Candidate 3: Reykhaug (#128), score: 35.0 (resources: 8.2, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.4)
+[MOVEMENT]
+Best target: Hvitnes (no enemy)
+Moves to Hvitnes [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Hvitnes
+Battle started
+Attacker: Army II [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 18 - P:9]
+Defender Recruits (Hvitnes) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hvitnes (unknown) [Power: 0 - none]
+
+Moving to Hvitnes [MP left: 1, Vigor: 85%]
+Candidate 1: Kington (#118), score: 85.6 (resources: 20.5, population: 4.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.7)
+Candidate 2: Saintfjell (#129), score: 78.7 (resources: 22.8, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 3: Hafnton (#123), score: 36.3 (resources: 1.0, population: 1.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 10.0)
+[MOVEMENT]
+Best target: Kington (no enemy)
+Out of movement points before reaching Kington
+Movement blocked near Kington
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army III -------------
+Army III [Power: 118, E: 85 - P:19, S:10, A:5, SW:5, K:1]
+Candidate 1: Reykhaug (#128), score: 36.5 (resources: 8.2, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.4)
+Candidate 2: Torberg (#103), score: 28.0 (resources: 2.5, population: 6.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Torfjell (#82), score: 24.3 (resources: 3.8, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Reykhaug (no enemy)
+Moves to Reykhaug [MP left: 1, Vigor: 80%]
+[BATTLE]
+Fight at Reykhaug
+Battle started
+Attacker: Army III [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 10 - P:5]
+Defender Recruits (Reykhaug) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 116 - P:18, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Reykhaug (unknown) [Power: 0 - none]
+
+Moving to Reykhaug [MP left: 1, Vigor: 75%]
+Army III makes camp [MP left: 0, Vigor: 85%]
+Candidate 1: Kington (#118), score: 66.3 (resources: 15.5, population: 4.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.7)
+Candidate 2: Saintfjell (#129), score: 53.7 (resources: 15.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 3: Hafnton (#123), score: 34.8 (resources: 1.0, population: 1.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 10.0)
+[MOVEMENT]
+Best target: Torberg (no enemy)
+Out of movement points before reaching Torham
+Out of movement points before reaching Torberg
+Resources (end):
+Gold: 3
+Food: 47
+Wood: 32
+Iron: 10
+Stone: 30
+
+Recruitment: Score: 0.00 (r=14, a=3, dist=4.3, rec=143, gold=38) vs thr=0.50; Frontier2Army=2.67
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 3]
+  
+  3333333333333333  
+3::::::::::::::::::33  
+3:::::::33333:::::::3  
+3333333     3::::::3  
+			3::::::3  
+			3::::::3  
+   33333333::::::3  
+   3:::::::::::::3  
+   33333333::::::3  
+			3:::::3  
+			3:::::3  
+			3:::::3  
+3333333     3:::::3  
+3:::::::33333:::::3  
+3:::::::::::::::::33  
+ 3333333333333333  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 38
+Food: 56
+Wood: 40
+Iron: 10
+Stone: 31
+
+Signals:
+frontier_pressure: 0.571
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 0.760
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=14, a=3, dist=4.3, rec=143, gold=38) vs thr=0.50; Frontier2Army=2.67)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Westley (#102) | total:98.9 (strategy:43.9, neighbor:55.0, distance_status:False, score:98.9<[100.0])
+- Reykoy (#136) | total:92.5 (strategy:27.5, neighbor:65.0, distance_status:True, score:92.5<[100.0])
+- Hvitnes (#132) | total:78.6 (strategy:43.6, neighbor:35.0, distance_status:True, score:78.6<[100.0])
+- Eydon (#117) | total:73.8 (strategy:38.8, neighbor:35.0, distance_status:True, score:73.8<[100.0])
+- Wooddon (#121) | total:71.7 (strategy:11.7, neighbor:60.0, distance_status:False, score:71.7<[100.0])
+- Westhavn (#110) | total:63.2 (strategy:43.2, neighbor:20.0, distance_status:True, score:63.2<[100.0])
+- Reykhaug (#128) | total:48.6 (strategy:3.6, neighbor:45.0, distance_status:True, score:48.6<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Sandstadir (#134) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region actions: Upgrading Reykhaug to County (score: 3.0)
+
+Economy: Ore search: attempts=2, discoveries=1, gold_spent=20.
+
+Economy: Ore discoveries: Hvitnes
+
+Additional Castle Recruitment:
+- Sandstadir: +5
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army III -------------
+Army III [Power: 116, E: 85 - P:18, S:10, A:5, SW:5, K:1]
+Candidate 1: Hafnton (#123), score: 34.1 (resources: 1.0, population: 1.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 10.0)
+Candidate 2: Torberg (#103), score: 26.8 (resources: 2.5, population: 6.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Torfjell (#82), score: 23.3 (resources: 3.8, population: 5.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hafnton (no enemy)
+Moves to Reykoy [MP left: 3, Vigor: 80%]
+Moves to Hafnton [MP left: 0, Vigor: 75%]
+[BATTLE]
+Fight at Hafnton
+Battle started
+Attacker: Army III [Power: 116 - P:18, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Hafnton) (unknown) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army III [Power: 112 - P:16, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hafnton (unknown) [Power: 0 - none]
+
+Moving to Hafnton [MP left: 0, Vigor: 70%]
+-------------- ARMY Army II -------------
+Army II [Power: 118, E: 95 - P:19, S:10, A:5, SW:5, K:1]
+Candidate 1: Kington (#118), score: 71.1 (resources: 15.5, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.7)
+Candidate 2: Saintfjell (#129), score: 62.3 (resources: 15.2, population: 4.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 3: Vatnford (#119), score: 31.1 (resources: 3.0, population: 1.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+[MOVEMENT]
+Best target: Kington (no enemy)
+Moves to Kington [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Kington
+Battle started
+Attacker: Army II [Power: 118 - P:19, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 8 - P:4]
+Defender Recruits (Kington) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 116 - P:18, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Kington (unknown) [Power: 0 - none]
+
+Moving to Kington [MP left: 2, Vigor: 85%]
+Candidate 1: Vatnnes (#113), score: 26.5 (resources: 1.2, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.2)
+[MOVEMENT]
+Best target: Vatnnes (no enemy)
+Moves to Vatnnes [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Vatnnes
+Battle started
+Attacker: Army II [Power: 116 - P:18, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 14 - P:7]
+Defender Recruits (Vatnnes) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 114 - P:17, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatnnes (unknown) [Power: 0 - none]
+
+Moving to Vatnnes [MP left: 0, Vigor: 75%]
+-------------- ARMY Army I -------------
+Army I [Power: 104, E: 95 - P:17, S:8, A:5, SW:4, K:1]
+Candidate 1: Redthorpe (#130), score: 27.3 (resources: 1.0, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.6)
+Candidate 2: Torberg (#103), score: 25.4 (resources: 2.5, population: 6.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Hellaoy (#93), score: 21.7 (resources: 2.5, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Redthorpe (no enemy)
+Moves to Redthorpe [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Redthorpe
+Battle started
+Attacker: Army I [Power: 104 - P:17, S:8, A:5, SW:4, K:1]
+Defender Garrison (unknown) [Power: 6 - P:3]
+Defender Recruits (Redthorpe) (unknown) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army I [Power: 100 - P:15, S:8, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Redthorpe (unknown) [Power: 0 - none]
+
+Moving to Redthorpe [MP left: 2, Vigor: 85%]
+Candidate 1: Northholme (#96), score: 27.5 (resources: 2.5, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.5)
+Candidate 2: Blackbury (#109), score: 26.9 (resources: 1.2, population: 1.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.7)
+[MOVEMENT]
+Best target: Northholme (no enemy)
+Moves to Northholme [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Northholme
+Battle started
+Attacker: Army I [Power: 100 - P:15, S:8, A:5, SW:4, K:1]
+Defender Garrison (unknown) [Power: 10 - P:5]
+Defender Recruits (Northholme) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army I [Power: 98 - P:14, S:8, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Northholme (unknown) [Power: 0 - none]
+
+Moving to Northholme [MP left: 0, Vigor: 75%]
+Resources (end):
+Gold: 8
+Food: 46
+Wood: 40
+Iron: 10
+Stone: 31
+
+Recruitment: Score: 0.75 (r=19, a=3, dist=6.7, rec=148, gold=53) vs thr=0.50; Frontier2Army=4.00
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 4]
+          
+	   444444444    
+	  4::::::::4    
+	 4:::::::::4    
+	4::::44::::4    
+   4::::4 4::::4    
+  4::::4  4::::4    
+ 4::::4   4::::4    
+4::::444444::::444  
+4::::::::::::::::4  
+4444444444:::::444  
+		  4::::4    
+		  4::::4    
+		  4::::4    
+		44::::::44  
+		4::::::::4  
+		4444444444  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 53
+Food: 59
+Wood: 50
+Iron: 13
+Stone: 36
+
+Signals:
+frontier_pressure: 0.632
+underpowered_ratio: 0.333
+castle_spacing: 19.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: raised (Score: 0.75 (r=19, a=3, dist=6.7, rec=148, gold=53) vs thr=0.50; Frontier2Army=4.00)
+
+Economy: Build Castle: built.
+
+Canidates:
+- Hafnton (#123) | total:170.0 (strategy:100.0, neighbor:70.0, distance_status:True, score:170.0>[100.0])
+- Kington (#118) | total:127.3 (strategy:67.3, neighbor:60.0, distance_status:True, score:127.3>[100.0])
+- Reykoy (#136) | total:102.5 (strategy:27.5, neighbor:75.0, distance_status:True, score:102.5>[100.0])
+- Westley (#102) | total:98.9 (strategy:43.9, neighbor:55.0, distance_status:False, score:98.9<[100.0])
+- Hvitnes (#132) | total:98.6 (strategy:43.6, neighbor:55.0, distance_status:True, score:98.6<[100.0])
+- Redthorpe (#130) | total:95.7 (strategy:55.7, neighbor:40.0, distance_status:True, score:95.7<[100.0])
+- Eydon (#117) | total:73.8 (strategy:38.8, neighbor:35.0, distance_status:True, score:73.8<[100.0])
+- Westhavn (#110) | total:73.2 (strategy:43.2, neighbor:30.0, distance_status:True, score:73.2<[100.0])
+- Wooddon (#121) | total:71.7 (strategy:11.7, neighbor:60.0, distance_status:False, score:71.7<[100.0])
+- Vatnnes (#113) | total:62.2 (strategy:32.2, neighbor:30.0, distance_status:True, score:62.2<[100.0])
+- Northholme (#96) | total:50.3 (strategy:25.3, neighbor:25.0, distance_status:True, score:50.3<[100.0])
+- Reykhaug (#128) | total:48.6 (strategy:3.6, neighbor:45.0, distance_status:True, score:48.6<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Sandstadir (#134) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Sandstadir: +3
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 98, E: 75 - P:14, S:8, A:5, SW:4, K:1]
+Army I makes camp [MP left: 4, Vigor: 85%]
+Candidate 1: Blackbury (#109), score: 26.1 (resources: 1.2, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.7)
+Candidate 2: Blackfell (#98), score: 11.3 (resources: 1.2, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Blackbury (no enemy)
+Moves to Blackbury [MP left: 2, Vigor: 80%]
+[BATTLE]
+Fight at Blackbury
+Battle started
+Attacker: Army I [Power: 100 - P:15, S:8, A:5, SW:4, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Blackbury) (unknown) [Power: 6 - P:3]
+Battle Result: Won
+Attacker After: Army I [Power: 98 - P:14, S:8, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Blackbury (unknown) [Power: 0 - none]
+
+Moving to Blackbury [MP left: 2, Vigor: 75%]
+Army I makes camp [MP left: 1, Vigor: 85%]
+Candidate 1: Saintfjell (#129), score: 49.8 (resources: 11.2, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 2: Oakchester (#101), score: 48.5 (resources: 3.8, population: 6.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.4)
+Candidate 3: Bergfjell (#124), score: 34.4 (resources: 9.0, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.2)
+[MOVEMENT]
+Best target: Oakchester (no enemy)
+Out of movement points before reaching Oakchester
+Movement blocked near Oakchester
+Army I makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army II -------------
+Army II [Power: 114, E: 75 - P:17, S:10, A:5, SW:5, K:1]
+Army II makes camp [MP left: 4, Vigor: 85%]
+Candidate 1: Hellaby (#120), score: 29.7 (resources: 4.8, population: 3.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.8)
+Candidate 2: Oshavn (#100), score: 20.2 (resources: 1.2, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Vatnhaug (#112), score: 14.7 (resources: 2.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.5)
+[MOVEMENT]
+Best target: Hellaby (no enemy)
+Moves to Hellaby [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Hellaby
+Battle started
+Attacker: Army II [Power: 116 - P:18, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 4 - P:2]
+Defender Recruits (Hellaby) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 111 - P:17, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hellaby (unknown) [Power: 0 - none]
+
+Moving to Hellaby [MP left: 0, Vigor: 75%]
+-------------- ARMY Army III -------------
+Army III [Power: 112, E: 70 - P:16, S:10, A:5, SW:5, K:1]
+Army III makes camp [MP left: 4, Vigor: 80%]
+Army III makes camp [MP left: 3, Vigor: 90%]
+Candidate 1: Northoy (#104), score: 30.2 (resources: 1.2, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.8)
+[MOVEMENT]
+Best target: Northoy (no enemy)
+Moves to Northoy [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Northoy
+Battle started
+Attacker: Army III [Power: 112 - P:16, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 8 - P:4]
+Defender Recruits (Northoy) (unknown) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 110 - P:15, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Northoy (unknown) [Power: 0 - none]
+
+Moving to Northoy [MP left: 1, Vigor: 80%]
+Army III makes camp [MP left: 0, Vigor: 90%]
+Candidate 1: Saintfjell (#129), score: 46.7 (resources: 11.2, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 2: Bergfjell (#124), score: 45.6 (resources: 9.0, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.2)
+Candidate 3: Oakchester (#101), score: 40.1 (resources: 3.8, population: 6.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.4)
+[MOVEMENT]
+Best target: Akrnes (no enemy)
+Out of movement points before reaching Akrnes
+Out of movement points before reaching Akrnes
+Economy: Bought: 1 Wood for 2 gold
+
+Resources (end):
+Gold: 1
+Food: 59
+Wood: 26
+Iron: 13
+Stone: 36
+
+Recruitment: Army Army IV recruited 28 (g:51 w:4 i:0) at Sandstadir
+
+Recruitment: Score: 0.00 (r=22, a=4, dist=5.5, rec=122, gold=0) vs thr=0.50; Frontier2Army=3.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 5]
+   
+555555555555555555   
+5::::::::::::::::5   
+5::::::::::::::::5   
+5:::::555555555555   
+5:::::5              
+5:::::5              
+5:::::5555555555     
+5:::::::::::::::5    
+555555555555:::::5   
+			5:::::5  
+			5:::::5  
+5555555     5:::::5  
+5::::::55555::::::5  
+ 55:::::::::::::55   
+   55:::::::::55     
+	 555555555       
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 51
+Food: 74
+Wood: 37
+Iron: 16
+Stone: 42
+
+Signals:
+frontier_pressure: 0.545
+underpowered_ratio: 0.500
+castle_spacing: 22.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Sandstadir: 28 units (P: 14, S: 6, A: 4, SW: 3, H: 1) - gold spent: 51, recruits left: 122
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=22, a=4, dist=5.5, rec=122, gold=0) vs thr=0.50; Frontier2Army=3.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Kington (#118) | total:137.3 (strategy:67.3, neighbor:70.0, distance_status:True, score:137.3>[100.0])
+- Redthorpe (#130) | total:105.7 (strategy:55.7, neighbor:50.0, distance_status:True, score:105.7>[100.0])
+- Reykoy (#136) | total:102.5 (strategy:27.5, neighbor:75.0, distance_status:True, score:102.5>[100.0])
+- Blackbury (#109) | total:102.3 (strategy:57.3, neighbor:45.0, distance_status:True, score:102.3>[100.0])
+- Westley (#102) | total:98.9 (strategy:43.9, neighbor:55.0, distance_status:False, score:98.9<[100.0])
+- Hvitnes (#132) | total:98.6 (strategy:43.6, neighbor:55.0, distance_status:True, score:98.6<[100.0])
+- Eydon (#117) | total:73.8 (strategy:38.8, neighbor:35.0, distance_status:True, score:73.8<[100.0])
+- Hellaby (#120) | total:73.2 (strategy:28.2, neighbor:45.0, distance_status:True, score:73.2<[100.0])
+- Westhavn (#110) | total:73.2 (strategy:43.2, neighbor:30.0, distance_status:True, score:73.2<[100.0])
+- Vatnnes (#113) | total:72.2 (strategy:32.2, neighbor:40.0, distance_status:True, score:72.2<[100.0])
+- Wooddon (#121) | total:71.7 (strategy:11.7, neighbor:60.0, distance_status:False, score:71.7<[100.0])
+- Northholme (#96) | total:60.3 (strategy:25.3, neighbor:35.0, distance_status:True, score:60.3<[100.0])
+- Northoy (#104) | total:57.9 (strategy:27.9, neighbor:30.0, distance_status:True, score:57.9<[100.0])
+- Reykhaug (#128) | total:48.6 (strategy:3.6, neighbor:45.0, distance_status:True, score:48.6<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:0 short:30
+- Wood need:25 have:33 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Sandstadir (#134) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Sandstadir: skipped (garrison 127 vs avg 78.3)
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army III -------------
+Army III [Power: 112, E: 90 - P:16, S:10, A:5, SW:5, K:1]
+Candidate 1: Bergfjell (#124), score: 47.0 (resources: 9.0, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.2)
+Candidate 2: Akrnes (#99), score: 27.0 (resources: 2.5, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+Candidate 3: Greenhavn (#72), score: 20.7 (resources: 2.5, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Bergfjell (no enemy)
+Moves to Bergfjell [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Bergfjell
+Battle started
+Attacker: Army III [Power: 112 - P:16, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 10 - P:5]
+Defender Recruits (Bergfjell) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army III [Power: 112 - P:16, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Bergfjell (unknown) [Power: 0 - none]
+
+Moving to Bergfjell [MP left: 1, Vigor: 80%]
+Army III makes camp [MP left: 0, Vigor: 90%]
+Candidate 1: Saintfjell (#129), score: 44.7 (resources: 11.2, population: 5.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 2: Oakchester (#101), score: 39.8 (resources: 3.8, population: 6.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.4)
+Candidate 3: Vatnford (#119), score: 27.5 (resources: 3.0, population: 1.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+[MOVEMENT]
+Best target: Akrnes (no enemy)
+Out of movement points before reaching Akrnes
+Out of movement points before reaching Akrnes
+-------------- ARMY Army II -------------
+Army II [Power: 111, E: 75 - P:17, S:9, A:5, SW:5, K:1]
+Army II makes camp [MP left: 4, Vigor: 85%]
+Candidate 1: Oakchester (#101), score: 48.5 (resources: 3.8, population: 6.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.4)
+Candidate 2: Vatnford (#119), score: 29.9 (resources: 3.0, population: 1.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 3: Oshavn (#100), score: 19.2 (resources: 1.2, population: 4.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+[MOVEMENT]
+Best target: Oakchester (no enemy)
+Moves to Oakchester [MP left: 2, Vigor: 80%]
+[BATTLE]
+Fight at Oakchester
+Battle started
+Attacker: Army II [Power: 111 - P:17, S:9, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 16 - P:8]
+Defender Recruits (Oakchester) (unknown) [Power: 32 - P:16]
+Battle Result: Won
+Attacker After: Army II [Power: 98 - P:16, S:8, A:5, SW:3, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Oakchester (unknown) [Power: 0 - none]
+
+Moving to Oakchester [MP left: 2, Vigor: 75%]
+Army II makes camp [MP left: 1, Vigor: 85%]
+Candidate 1: Saintfjell (#129), score: 51.5 (resources: 11.2, population: 5.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 2: Hvitthorpe (#95), score: 47.8 (resources: 3.8, population: 7.3, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.5)
+Candidate 3: Vatnford (#119), score: 29.5 (resources: 3.0, population: 1.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+[MOVEMENT]
+Best target: Hvitthorpe (Player 1 (unknown))
+Out of movement points before reaching Hvitthorpe
+Movement blocked near Hvitthorpe
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY Army IV -------------
+Army IV [Power: 81, E: 100 - P:15, S:6, A:4, SW:3, H:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Sandstadir (dist:0, recruits:122, needs_recruitment_armies:0, score: 170.8)
+Selected castle: Sandstadir
+Recruiting at Sandstadir
+Recruitment: Army Army IV could not recruit at Sandstadir (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Sandstadir
+Army IV makes camp [MP left: 4, Vigor: 100%]
+Army IV makes camp [MP left: 3, Vigor: 100%]
+Army IV makes camp [MP left: 2, Vigor: 100%]
+Army IV makes camp [MP left: 1, Vigor: 100%]
+Army IV makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY Army I -------------
+Army I [Power: 98, E: 95 - P:14, S:8, A:5, SW:4, K:1]
+Candidate 1: Hvitthorpe (#95), score: 50.1 (resources: 3.8, population: 7.3, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.5)
+Candidate 2: Saintfjell (#129), score: 49.8 (resources: 11.2, population: 5.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 3: Vatnford (#119), score: 30.6 (resources: 3.0, population: 1.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+[MOVEMENT]
+Best target: Hvitthorpe (Player 1 (unknown))
+Moves to Oakchester [MP left: 4, Vigor: 90%]
+Moves to Hvitthorpe [MP left: 2, Vigor: 85%]
+[BATTLE]
+Fight at Hvitthorpe
+Battle started
+Attacker: Army I [Power: 98 - P:14, S:8, A:5, SW:4, K:1]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Hvitthorpe) (unknown) [Power: 42 - P:21]
+Battle Result: Won
+Attacker After: Army I [Power: 90 - P:13, S:6, A:5, SW:4, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hvitthorpe (unknown) [Power: 0 - none]
+
+Moving to Hvitthorpe [MP left: 2, Vigor: 80%]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Sandstadir (dist:6, recruits:122, needs_recruitment_armies:1, score: 14.2)
+Selected castle: Sandstadir
+Needs recruitment moving to Sandstadir
+Army I makes camp [MP left: 1, Vigor: 90%]
+Moves to Oakchester [MP left: 0, Vigor: 85%]
+Out of movement points before reaching Blackbury
+Out of movement points before reaching Sandstadir
+Resources (end):
+Gold: 0
+Food: 74
+Wood: 33
+Iron: 16
+Stone: 42
+
+Recruitment: Army Army IV recruited 31 (g:57 w:4 i:0) at Sandstadir
+
+Recruitment: Score: 0.00 (r=25, a=4, dist=6.0, rec=112, gold=0) vs thr=0.50; Frontier2Army=3.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 6]
+      
+		66666666     
+	   6::::::6      
+	  6::::::6       
+	 6::::::6        
+	6::::::6         
+   6::::::6          
+  6::::::6           
+ 6::::::::66666      
+6::::::::::::::66    
+6::::::66666:::::6   
+6:::::6     6:::::6  
+6:::::6     6:::::6  
+6::::::66666::::::6  
+ 66:::::::::::::66   
+   66:::::::::66     
+	 666666666       
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 57
+Food: 92
+Wood: 46
+Iron: 19
+Stone: 49
+
+Signals:
+frontier_pressure: 0.480
+underpowered_ratio: 0.500
+castle_spacing: 12.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army IV at Sandstadir: 31 units (P: 15, S: 7, A: 4, SW: 4, H: 1) - gold spent: 57, recruits left: 112
+
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=25, a=4, dist=6.0, rec=112, gold=0) vs thr=0.50; Frontier2Army=3.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Oakchester (#101) | total:119.0 (strategy:64.0, neighbor:55.0, distance_status:True, score:119.0>[100.0])
+- Blackbury (#109) | total:112.3 (strategy:57.3, neighbor:55.0, distance_status:True, score:112.3>[100.0])
+- Redthorpe (#130) | total:105.7 (strategy:55.7, neighbor:50.0, distance_status:True, score:105.7>[100.0])
+- Westley (#102) | total:98.9 (strategy:43.9, neighbor:55.0, distance_status:False, score:98.9<[100.0])
+- Hellaby (#120) | total:83.2 (strategy:28.2, neighbor:55.0, distance_status:True, score:83.2<[100.0])
+- Eydon (#117) | total:73.8 (strategy:38.8, neighbor:35.0, distance_status:False, score:73.8<[100.0])
+- Westhavn (#110) | total:73.2 (strategy:43.2, neighbor:30.0, distance_status:False, score:73.2<[100.0])
+- Vatnnes (#113) | total:72.2 (strategy:32.2, neighbor:40.0, distance_status:True, score:72.2<[100.0])
+- Wooddon (#121) | total:71.7 (strategy:11.7, neighbor:60.0, distance_status:False, score:71.7<[100.0])
+- Northholme (#96) | total:60.3 (strategy:25.3, neighbor:35.0, distance_status:True, score:60.3<[100.0])
+- Reykhaug (#128) | total:48.6 (strategy:3.6, neighbor:45.0, distance_status:False, score:48.6<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:0 short:30
+- Wood need:25 have:42 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Sandstadir (#134) | total:85.7 (recruits:100.0, distance:71.4, dist:7, next:Castle)
+- Hafnton (#123) | total:70.1 (recruits:40.2, distance:100.0, dist:5, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Sandstadir: skipped (garrison 127 vs avg 87.3)
+- Hafnton: +4
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army I -------------
+Army I [Power: 92, E: 85 - P:14, S:6, A:5, SW:4, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Sandstadir (dist:5, recruits:112, needs_recruitment_armies:0, score: 31.4)
+- Hafnton (dist:3, recruits:45, needs_recruitment_armies:0, score: 18.0)
+Selected castle: Sandstadir
+Needs recruitment moving to Sandstadir
+Moves to Blackbury [MP left: 4, Vigor: 80%]
+Moves to Redthorpe [MP left: 2, Vigor: 75%]
+Moves to Westhavn [MP left: 1, Vigor: 70%]
+Moves to Eydon [MP left: 0, Vigor: 65%]
+Out of movement points before reaching Westley
+Out of movement points before reaching Sandstadir
+-------------- ARMY Army II -------------
+Army II [Power: 101, E: 95 - P:16, S:9, A:5, SW:3, K:1]
+Candidate 1: Sandholme (#63), score: 56.1 (resources: 2.5, population: 9.8, level: 3, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Saintfjell (#129), score: 51.5 (resources: 11.2, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 3: Vatnford (#119), score: 29.8 (resources: 3.0, population: 1.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+[MOVEMENT]
+Best target: Sandholme (Player 1 (unknown - UnknownArmies:3 (total:0)))
+Moves to Hvitthorpe [MP left: 4, Vigor: 90%]
+Moves to Sandholme [MP left: 2, Vigor: 85%]
+Siege breach rolls - Sim vs Sandholme
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 0 Trebuchets, 1 Battling Rams, 0 Ladders
+Assault: 0%
+Defense: 55%
+Simulation started
+Attacker: Army II [Power: 101 - P:16, S:9, A:5, SW:3, K:1]
+Defender Army I (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender Army II (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender Army III (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Sandholme) (unknown) [Power: 68 - P:34]
+Battle Result: Won
+Attacker After: Army II [Power: 101 - P:16, S:9, A:5, SW:3, K:1]
+Army I: Army I [Power: 0 - none]
+Army II: Army II [Power: 0 - none]
+Army III: Army III [Power: 0 - none]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Sandholme): Recruits (Sandholme) [Power: 0 - none]
+
+Siege equipement
+Available points: 2
+Available wood: 42 (growth limit)
+Bought: 0 Trebuchets, 1 Battling Rams, 0 Ladders
+Breached sections: 0, Damaged sections: 0
+
+[BATTLE]
+Fight at Sandholme
+Withdrew to Hvitthorpe
+Siege breach rolls
+
+Battle started
+Attacker: Army II [Power: 101 - P:16, S:9, A:5, SW:3, K:1]
+Defender Army I (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender Army II (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender Army III (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Sandholme) (unknown) [Power: 68 - P:34]
+Battle Result: Withdrew
+Withdrawal: Attacker
+Attacker After: Army II [Power: 92 - P:15, S:8, A:4, SW:3, K:1]
+Defender After: Army I (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender After: Army II (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender After: Army III (unknown) [Power: 75 - P:15, S:5, A:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 2 - P:1]
+Defender After (Recruits): Sandholme (unknown) [Power: 68 - P:34]
+
+[RECRUITMENT]
+Recruitment castle candidates:
+- Sandstadir (dist:6, recruits:112, needs_recruitment_armies:0, score: 26.1)
+- Hafnton (dist:4, recruits:45, needs_recruitment_armies:0, score: 13.5)
+Selected castle: Sandstadir
+Needs recruitment moving to Sandstadir
+Army II makes camp [MP left: 1, Vigor: 90%]
+Moves to Oakchester [MP left: 0, Vigor: 85%]
+Out of movement points before reaching Blackbury
+Out of movement points before reaching Sandstadir
+-------------- ARMY Army III -------------
+Army III [Power: 112, E: 90 - P:16, S:10, A:5, SW:5, K:1]
+Candidate 1: Vatnford (#119), score: 26.0 (resources: 3.0, population: 1.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 2: Greenhaug (#115), score: 24.5 (resources: 3.0, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.1)
+Candidate 3: Akrnes (#99), score: 24.0 (resources: 2.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+[MOVEMENT]
+Best target: Vatnford (no enemy)
+Moves to Kington [MP left: 3, Vigor: 85%]
+Moves to Vatnford [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Vatnford
+Battle started
+Attacker: Army III [Power: 112 - P:16, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Vatnford) (unknown) [Power: 6 - P:3]
+Battle Result: Won
+Attacker After: Army III [Power: 109 - P:16, S:9, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatnford (unknown) [Power: 0 - none]
+
+Moving to Vatnford [MP left: 0, Vigor: 75%]
+-------------- ARMY Army IV -------------
+Army IV [Power: 169, E: 100 - P:30, S:13, A:8, SW:7, H:2]
+Candidate 1: Torberg (#103), score: 29.7 (resources: 2.5, population: 6.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 2: Torfjell (#82), score: 29.6 (resources: 3.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hellaoy (#93), score: 21.7 (resources: 2.5, population: 5.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Torberg (no enemy)
+Moves to Hafnfjord [MP left: 4, Vigor: 95%]
+Moves to Torberg [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Torberg
+Battle started
+Attacker: Army IV [Power: 169 - P:30, S:13, A:8, SW:7, H:2]
+Defender Garrison (unknown) [Power: 8 - P:4]
+Defender Recruits (Torberg) (unknown) [Power: 34 - P:17]
+Battle Result: Won
+Attacker After: Army IV [Power: 167 - P:29, S:13, A:8, SW:7, H:2]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Torberg (unknown) [Power: 0 - none]
+
+Moving to Torberg [MP left: 2, Vigor: 85%]
+Candidate 1: Saintfjell (#129), score: 48.1 (resources: 11.2, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 2: Torfjell (#82), score: 26.2 (resources: 3.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hellaoy (#93), score: 26.0 (resources: 2.5, population: 5.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Torfjell (no enemy)
+Moves to Kirkworth [MP left: 1, Vigor: 80%]
+Out of movement points before reaching Torfjell
+Movement blocked near Torfjell
+Army IV makes camp [MP left: 0, Vigor: 90%]
+Resources (end):
+Gold: 0
+Food: 92
+Wood: 40
+Iron: 19
+Stone: 49
+
+Recruitment: Score: 0.00 (r=27, a=4, dist=5.8, rec=135, gold=62) vs thr=0.50; Frontier2Army=2.50
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 7]
+   
+77777777777777777777  
+7::::::::::::::::::7  
+7::::::::::::::::::7  
+777777777777:::::::7  
+		   7::::::7   
+		  7::::::7    
+		 7::::::7     
+		7::::::7      
+	   7::::::7       
+	  7::::::7        
+	 7::::::7         
+	7::::::7          
+   7::::::7           
+  7::::::7            
+ 7::::::7             
+77777777              
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 62
+Food: 109
+Wood: 56
+Iron: 22
+Stone: 56
+
+Signals:
+frontier_pressure: 0.370
+underpowered_ratio: 0.500
+castle_spacing: 13.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=27, a=4, dist=5.8, rec=135, gold=62) vs thr=0.50; Frontier2Army=2.50)
+
+Economy: Build Castle: built.
+
+Canidates:
+- Vatnford (#119) | total:132.8 (strategy:52.8, neighbor:80.0, distance_status:True, score:132.8>[100.0])
+- Oakchester (#101) | total:129.0 (strategy:64.0, neighbor:65.0, distance_status:True, score:129.0>[100.0])
+- Blackbury (#109) | total:122.3 (strategy:57.3, neighbor:65.0, distance_status:True, score:122.3>[100.0])
+- Westley (#102) | total:108.9 (strategy:43.9, neighbor:65.0, distance_status:False, score:108.9>[100.0])
+- Redthorpe (#130) | total:105.7 (strategy:55.7, neighbor:50.0, distance_status:True, score:105.7>[100.0])
+- Hellaby (#120) | total:93.2 (strategy:28.2, neighbor:65.0, distance_status:True, score:93.2<[100.0])
+- Eydon (#117) | total:73.8 (strategy:38.8, neighbor:35.0, distance_status:False, score:73.8<[100.0])
+- Westhavn (#110) | total:73.2 (strategy:43.2, neighbor:30.0, distance_status:False, score:73.2<[100.0])
+- Vatnnes (#113) | total:72.2 (strategy:32.2, neighbor:40.0, distance_status:True, score:72.2<[100.0])
+- Wooddon (#121) | total:71.7 (strategy:11.7, neighbor:60.0, distance_status:False, score:71.7<[100.0])
+- Northholme (#96) | total:60.3 (strategy:25.3, neighbor:35.0, distance_status:True, score:60.3<[100.0])
+- Torberg (#103) | total:54.2 (strategy:9.2, neighbor:45.0, distance_status:False, score:54.2<[100.0])
+- Reykhaug (#128) | total:48.6 (strategy:3.6, neighbor:45.0, distance_status:False, score:48.6<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Sandstadir (#134) | total:85.7 (recruits:100.0, distance:71.4, dist:7, next:Castle)
+- Hafnton (#123) | total:71.9 (recruits:43.7, distance:100.0, dist:5, next:Keep)
+
+Economy: Upgrade Region actions: Upgrading Sandstadir to Duchy (score: 6.0), Upgrading Torberg to County (score: 3.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+Additional Castle Recruitment:
+- Sandstadir: skipped (garrison 127 vs avg 98.4)
+- Hafnton: +4
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army II -------------
+Army II [Power: 96, E: 85 - P:15, S:8, A:5, SW:3, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Sandstadir (dist:5, recruits:135, needs_recruitment_armies:0, score: 37.8)
+- Hafnton (dist:3, recruits:59, needs_recruitment_armies:0, score: 23.6)
+Selected castle: Sandstadir
+Needs recruitment moving to Sandstadir
+Moves to Blackbury [MP left: 4, Vigor: 80%]
+Moves to Redthorpe [MP left: 2, Vigor: 75%]
+Moves to Westhavn [MP left: 1, Vigor: 70%]
+Moves to Eydon [MP left: 0, Vigor: 65%]
+Out of movement points before reaching Westley
+Out of movement points before reaching Sandstadir
+-------------- ARMY Army III -------------
+Army III [Power: 109, E: 75 - P:16, S:9, A:5, SW:5, K:1]
+Army III makes camp [MP left: 4, Vigor: 85%]
+Candidate 1: Saintfjell (#129), score: 54.0 (resources: 11.2, population: 5.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.7)
+Candidate 2: Oshavn (#100), score: 20.3 (resources: 1.2, population: 4.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Blackfell (#98), score: 11.8 (resources: 1.2, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Saintfjell (no enemy)
+Moves to Saintfjell [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Saintfjell
+Battle started
+Attacker: Army III [Power: 114 - P:17, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 4 - P:2]
+Defender Recruits (Saintfjell) (unknown) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 112 - P:16, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Saintfjell (unknown) [Power: 0 - none]
+
+Moving to Saintfjell [MP left: 0, Vigor: 75%]
+Resources (end):
+Gold: 2
+Food: 69
+Wood: 21
+Iron: 22
+Stone: 56
+

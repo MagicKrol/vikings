@@ -1,0 +1,436 @@
+AI Log File: battle_test
+
+Recruitment: Garrison recruited 10 (g:50 w:4 i:5) at Blackham
+
+Recruitment: Garrison recruited 8 (g:44 w:3 i:5) at Westford
+
+Economy: Insufficient funds to upgrade Outpost.
+
+Economy: Buy Food failed (insufficient_gold)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 55
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 2.200
+underpowered_ratio: 0.200
+castle_spacing: 1.667
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Danger castles checked: 2.
+
+Castle Defense Recruitment:
+- Blackham: 10 units (A: 4, SW: 1, K: 5) - gold spent: 50, recruits left: 10
+- Westford: 8 units (A: 3, K: 5) - gold spent: 44, recruits left: 9
+
+Economy: Castle Defense Recruitment skipped: Hellawich: in danger but has minimal garrison power (Power: 1700 / 150)
+
+Economy: Castle Defense Recruitment skipped: Akrfell: in danger but has minimal garrison power (Power: 1700 / 60)
+
+Economy: Castle Defense Recruitment skipped: Eastmere: in danger but has minimal garrison power (Power: 1100 / 150)
+
+Economy: Castle Defense Recruitment skipped: Riverberg: in danger but has minimal garrison power (Power: 98 / 30)
+
+Economy: Castle Defense Recruitment skipped: Torwich: in danger but has minimal garrison power (Power: 620 / 60)
+
+Economy: Castle Defense Recruitment skipped: Redstadir: in danger but has minimal garrison power (Power: 740 / 150)
+
+Economy: Castle Defense Recruitment skipped: Blackwich: in danger but has minimal garrison power (Power: 1100 / 60)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Ashby (#339) | total:40.0 (strategy:0.0, neighbor:40.0, distance_status:True, score:40.0<[100.0])
+- Kirkley (#270) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:True, score:30.0<[100.0])
+- Osfjell (#309) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:False, score:10.0<[100.0])
+- Torholme (#389) | total:10.0 (strategy:0.0, neighbor:10.0, distance_status:True, score:10.0<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up purchases: 1 Stone (gold -4) | total gold change: -4)
+
+- Riverberg (#413) | total:79.5 (recruits:59.1, distance:100.0, dist:1, next:Keep)
+- Blackwich (#460) | total:55.6 (recruits:100.0, distance:11.1, dist:9, next:Castle)
+- Torwich (#424) | total:46.5 (recruits:81.8, distance:11.1, dist:9, next:Castle)
+- Akrfell (#376) | total:45.9 (recruits:81.8, distance:10.0, dist:10, next:Castle)
+- Blackham (#443) | total:29.9 (recruits:45.5, distance:14.3, dist:7, next:Stronghold)
+- Westford (#462) | total:26.0 (recruits:40.9, distance:11.1, dist:9, next:Stronghold)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+-------------- ARMY Army III -------------
+Army III [Power: 400, E: 100 - P:100, A:50]
+Candidate 1: Osmere (#238), score: 67.6 (resources: 18.8, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Saintdon (#236), score: 64.9 (resources: 18.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Woodham (#253), score: 61.6 (resources: 18.8, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Osmere (no enemy)
+Moves to Osmere [MP left: 3, Vigor: 95%]
+[BATTLE]
+Fight at Osmere
+Battle started
+Attacker: Army III [Power: 400 - P:100, A:50]
+Defender Garrison (unknown) [Power: 28 - P:14]
+Defender Recruits (Osmere) (unknown) [Power: 26 - P:13]
+Battle Result: Won
+Attacker After: Army III [Power: 400 - P:100, A:50]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Osmere (unknown) [Power: 0 - none]
+
+Moving to Osmere [MP left: 3, Vigor: 90%]
+Candidate 1: Hafnmere (#239), score: 68.5 (resources: 22.5, population: 3.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Saintdon (#236), score: 65.0 (resources: 18.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Woodham (#253), score: 64.0 (resources: 18.8, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hafnmere (no enemy)
+Moves to Hafnmere [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Hafnmere
+Battle started
+Attacker: Army III [Power: 400 - P:100, A:50]
+Defender Garrison (unknown) [Power: 36 - P:18]
+Defender Recruits (Hafnmere) (unknown) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army III [Power: 398 - P:99, A:50]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hafnmere (unknown) [Power: 0 - none]
+
+Moving to Hafnmere [MP left: 1, Vigor: 80%]
+Army III makes camp [MP left: 0, Vigor: 90%]
+Candidate 1: Saintdon (#236), score: 66.9 (resources: 18.8, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Woodham (#253), score: 59.9 (resources: 18.8, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Torthwaite (#310), score: 46.4 (resources: 12.5, population: 4.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Saintdon (no enemy)
+Out of movement points before reaching Osmere
+Out of movement points before reaching Saintdon
+-------------- ARMY Army V -------------
+Army V [Power: 1200, E: 100 - P:300, A:50, SW:100]
+Candidate 1: Torthorpe (#324), score: 93.8 (resources: 26.2, population: 3.5, level: 1, castle_bonus: 8.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Torthorpe (Player 1 (unknown))
+Moves to Torthorpe [MP left: 3, Vigor: 95%]
+Siege breach rolls - Sim vs Torthorpe
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 4 Trebuchets, 4 Battling Rams, 16 Ladders
+Assault: 28%
+Defense: 70%
+Simulation started
+Attacker: Army V [Power: 1200 - P:300, A:50, SW:100]
+Defender Garrison (unknown) [Power: 600 - P:100, A:100]
+Defender Recruits (Torthorpe) (unknown) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army V [Power: 1200 - P:300, A:50, SW:100]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Torthorpe): Recruits (Torthorpe) [Power: 0 - none]
+
+Siege equipement
+Available points: 40
+Available wood: 48 (growth limit)
+Bought: 4 Trebuchets, 6 Battling Rams, 12 Ladders
+Breached sections: 2, Damaged sections: 1
+
+[BATTLE]
+Fight at Torthorpe
+Withdrew to Reykstadir
+Siege breach rolls
+Gate 1: 
+  Ram 1: ranged 34 (bucket 30), roll 75/30, turns 9, q=0.35, gate_dpt=0.27 (hp=1.5), ram_dpt=1.11
+  Ram 2: ranged 34 (bucket 30), roll 5/30, turns 7, q=1.00, gate_dpt=1.00 (hp=1.5), ram_dpt=0.25
+Gate 2: 
+  Ram 1: ranged 33 (bucket 30), roll 89/30, turns 8, q=0.16, gate_dpt=0.14 (hp=1.9), ram_dpt=1.25
+  Ram 2: ranged 33 (bucket 30), roll 3/30, turns 7, q=1.00, gate_dpt=1.00 (hp=1.9), ram_dpt=0.16
+Gate 3: 
+  Ram 1: ranged 33 (bucket 30), roll 95/30, turns 7, q=0.07, gate_dpt=0.07 (hp=1.5), ram_dpt=1.43
+  Ram 2: ranged 33 (bucket 30), roll 26/30, turns 7, q=1.00, gate_dpt=1.00 (hp=1.5), ram_dpt=1.23
+
+Battle started
+Attacker: Army V [Power: 1200 - P:300, A:50, SW:100]
+Defender Garrison (unknown) [Power: 600 - P:100, A:100]
+Defender Recruits (Torthorpe) (unknown) [Power: 16 - P:8]
+Battle Result: Withdrew
+Withdrawal: Attacker
+Attacker After: Army V [Power: 720 - P:160, A:39, SW:61]
+Defender After (Garrison): Garrison (unknown) [Power: 530 - P:83, A:91]
+Defender After (Recruits): Torthorpe (unknown) [Power: 14 - P:7]
+
+[MOVEMENT]
+No valid targets; camping
+Army V makes camp [MP left: 2, Vigor: 100%]
+Army V makes camp [MP left: 1, Vigor: 100%]
+Army V makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY Army V -------------
+Army V [Power: 40, E: 100 - P:20]
+[RECRUITMENT]
+No recruit castles available from Ashby
+Recruitment: Army Army V could not recruit at Ashby (reason: no_recruit_castle)
+
+Defending due to no safe recruitment path
+Army V makes camp [MP left: 4, Vigor: 100%]
+Army V makes camp [MP left: 3, Vigor: 100%]
+Army V makes camp [MP left: 2, Vigor: 100%]
+Army V makes camp [MP left: 1, Vigor: 100%]
+Army V makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY Army II -------------
+Army II [Power: 1300, E: 100 - P:100, S:100, A:100, SW:100]
+Candidate 1: Kirkford (#272), score: 56.4 (resources: 11.2, population: 4.8, level: 1, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Kirkford (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Kirkford [MP left: 3, Vigor: 95%]
+Siege breach rolls - Sim vs Kirkford
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 3 Trebuchets, 0 Battling Rams, 16 Ladders
+Assault: 37%
+Defense: 30%
+Simulation started
+Attacker: Army I [Power: 1300 - P:100, S:100, A:100, SW:100]
+Defender Army II (unknown) [Power: 650 - P:50, S:50, A:50, SW:50]
+Defender Garrison (unknown) [Power: 24 - P:12]
+Defender Recruits (Kirkford) (unknown) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 1300 - P:100, S:100, A:100, SW:100]
+Army II: Army II [Power: 0 - none]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Kirkford): Recruits (Kirkford) [Power: 0 - none]
+
+Siege equipement
+Available points: 30
+Available wood: 16 (growth limit)
+Bought: 3 Trebuchets, 0 Battling Rams, 16 Ladders
+Breached sections: 3, Damaged sections: 1
+
+[BATTLE]
+Fight at Kirkford
+Siege breach rolls
+
+Battle started
+Attacker: Army I [Power: 1300 - P:100, S:100, A:100, SW:100]
+Defender Army II (unknown) [Power: 650 - P:50, S:50, A:50, SW:50]
+Defender Garrison (unknown) [Power: 24 - P:12]
+Defender Recruits (Kirkford) (unknown) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army I [Power: 600 - P:33, S:30, A:75, SW:36]
+Defender After: Army II (unknown) [Power: 0 - none]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Kirkford (unknown) [Power: 0 - none]
+
+Moving to Kirkford [MP left: 3, Vigor: 90%]
+Candidate 1: Hellaby (#188), score: 48.4 (resources: 15.0, population: 0.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Hellaby (Player 1 (unknown))
+Moves to Hellaby [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Hellaby
+Battle started
+Attacker: Army I [Power: 600 - P:33, S:30, A:75, SW:36]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Hellaby) (unknown) [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 600 - P:33, S:30, A:75, SW:36]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hellaby (unknown) [Power: 0 - none]
+
+Moving to Hellaby [MP left: 1, Vigor: 80%]
+Army I makes camp [MP left: 0, Vigor: 90%]
+[MOVEMENT]
+No valid targets; camping
+-------------- ARMY Army IV -------------
+Army IV [Power: 200, E: 100 - P:100]
+Candidate 1: Westdon (#269), score: 79.1 (resources: 26.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Redchester (#185), score: 59.5 (resources: 18.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hafnthorpe (#338), score: 58.2 (resources: 15.0, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Westdon (no enemy)
+Moves to Ashby [MP left: 4, Vigor: 95%]
+Moves to Kirkley [MP left: 3, Vigor: 90%]
+Moves to Westdon [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Westdon
+Battle started
+Attacker: Army IV [Power: 200 - P:100]
+Defender Garrison (unknown) [Power: 22 - P:11]
+Defender Recruits (Westdon) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army IV [Power: 192 - P:96]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westdon (unknown) [Power: 0 - none]
+
+Moving to Westdon [MP left: 1, Vigor: 80%]
+Army IV makes camp [MP left: 0, Vigor: 90%]
+Candidate 1: Redchester (#185), score: 59.6 (resources: 18.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Akrham (#337), score: 58.7 (resources: 15.0, population: 5.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hafnthorpe (#338), score: 56.0 (resources: 15.0, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+[MOVEMENT]
+Best target: Redchester (no enemy)
+Out of movement points before reaching Redchester
+Out of movement points before reaching Redchester
+Resources (end):
+Gold: 2
+Food: 50
+Wood: 1
+Iron: 0
+Stone: 11
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: no_candidate.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Economy: Bought: 20 Stone, 3 Wood for 99 gold
+
+Resources (end):
+Gold: 1
+Food: 50
+Wood: 23
+Iron: 10
+Stone: 30
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 0.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (no castles in danger)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: no_candidate.
+
+Economy: Ore search: skipped (no eligible regions).
+
+No Additional Castle Recruitment (skipped (first turn))
+
+______ ARMY ACTIONS ______
+Economy: Bought: 20 Stone, 3 Wood for 99 gold
+
+Resources (end):
+Gold: 1
+Food: 50
+Wood: 23
+Iron: 10
+Stone: 30
+

@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=35 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://cwnuj1wbctw4p" path="res://images/flags/english.png" id="19_17y38"]
 [ext_resource type="Texture2D" uid="uid://c8jqxu6j8ua6p" path="res://images/icons/arrow_language.png" id="20_tyfg7"]
 [ext_resource type="FontFile" uid="uid://bcxayetxfa0fs" path="res://fonts/Cinzel/static/Cinzel-Bold.ttf" id="21_dujlr"]
+[ext_resource type="Script" path="res://main_menu_save_game_modal.gd" id="22_save_modal_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -1209,7 +1210,6 @@ custom_minimum_size = Vector2(450, 450)
 layout_mode = 2
 
 [node name="Panel3" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 1360.0
 offset_top = 200.0
@@ -1978,6 +1978,197 @@ theme_override_font_sizes/font_size = 18
 toggle_mode = true
 button_pressed = true
 text = "Right click"
+
+[node name="SaveGameModal" type="Control" parent="."]
+visible = false
+z_index = 120
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("22_save_modal_script")
+
+[node name="TextureRect3" type="TextureRect" parent="SaveGameModal"]
+layout_mode = 0
+offset_left = 660.0
+offset_top = 236.0
+offset_right = 2196.0
+offset_bottom = 1772.0
+scale = Vector2(0.4, 0.41)
+texture = ExtResource("9_ygwey")
+expand_mode = 2
+
+[node name="TextureRect5" type="TextureRect" parent="SaveGameModal"]
+visible = false
+layout_mode = 0
+offset_left = 693.0
+offset_top = 236.0
+offset_right = 2229.0
+offset_bottom = 1772.0
+scale = Vector2(0.35, 0.41)
+texture = ExtResource("9_ygwey")
+expand_mode = 2
+
+[node name="Panel" type="Panel" parent="SaveGameModal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -267.0
+offset_top = -300.0
+offset_right = 267.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ijsky")
+
+[node name="ArmyTexture" type="TextureRect" parent="SaveGameModal/Panel"]
+layout_mode = 0
+offset_top = 181.0
+offset_right = 556.0
+offset_bottom = 463.0
+texture = ExtResource("14_f8n4j")
+expand_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SaveGameModal/Panel"]
+layout_mode = 0
+offset_top = 15.0
+offset_right = 546.0
+offset_bottom = 669.0
+
+[node name="HeaderLabel" type="Label" parent="SaveGameModal/Panel/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("11_pot7t")
+text = "Load Game"
+horizontal_alignment = 1
+
+[node name="HeaderMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="BackRow" type="HBoxContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="SaveGameModal/Panel/VBoxContainer/BackRow"]
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
+[node name="BackMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+
+[node name="ListHeaders" type="HBoxContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="GameNameHeader" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ListHeaders"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "File Name"
+
+[node name="GameTypeHeader" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ListHeaders"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Type"
+horizontal_alignment = 1
+
+[node name="GameDateHeader" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ListHeaders"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Date"
+horizontal_alignment = 2
+
+[node name="ListMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 270)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="SaveList" type="VBoxContainer" parent="SaveGameModal/Panel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="RowTemplate" type="HBoxContainer" parent="SaveGameModal/Panel/VBoxContainer/ScrollContainer/SaveList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("16_btn_styles")
+
+[node name="GameName" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ScrollContainer/SaveList/RowTemplate"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("15_std_modal")
+text = "12345678901234567890"
+
+[node name="GameType" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ScrollContainer/SaveList/RowTemplate"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("15_std_modal")
+text = "scenario"
+horizontal_alignment = 1
+
+[node name="GameDate" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ScrollContainer/SaveList/RowTemplate"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("15_std_modal")
+text = "2026-03-24 12:12:32"
+horizontal_alignment = 2
+
+[node name="InputMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="FileNameLabel" type="Label" parent="SaveGameModal/Panel/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "File Name"
+
+[node name="FileNameInput" type="LineEdit" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 20
+placeholder_text = "save_name"
+max_length = 20
+
+[node name="ActionMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+
+[node name="LoadMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+
+[node name="ActionRow" type="HBoxContainer" parent="SaveGameModal/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ActionButton" type="Button" parent="SaveGameModal/Panel/VBoxContainer/ActionRow"]
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 24
+text = "Load Game"
 
 [node name="Language" type="Control" parent="."]
 anchors_preset = 0

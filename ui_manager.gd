@@ -54,6 +54,7 @@ var _call_to_arms_modal: CallToArmsModal
 var _battle_summary_modal: BattleSummaryModal
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
+var _save_game_modal: SaveGameModal
 var _modal_nodes: Array[Control] = []
 var _blocking_modal_nodes: Array[Control] = []
 var _move_selection_active: bool = false
@@ -103,6 +104,7 @@ func _ready():
 	_battle_summary_modal = get_parent().get_node("BattleSummaryModal") as BattleSummaryModal
 	_next_player_modal = get_parent().get_node("NextPlayerModal") as NextPlayerModal
 	_game_menu_modal = get_parent().get_node("GameMenuModal") as Control
+	_save_game_modal = get_parent().get_node("SaveGameModal") as SaveGameModal
 	_build_modal_list()
 	_build_blocking_modal_list()
 	
@@ -168,7 +170,8 @@ func _build_modal_list() -> void:
 		_call_to_arms_modal,
 		_next_player_modal,
 		_battle_summary_modal,
-		_game_menu_modal
+		_game_menu_modal,
+		_save_game_modal
 	]
 
 func _build_blocking_modal_list() -> void:
@@ -250,6 +253,10 @@ func handle_escape_action() -> bool:
 		return true
 	if _intro_message_modal.visible:
 		_intro_message_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _save_game_modal.visible:
+		_save_game_modal.visible = false
 		get_viewport().set_input_as_handled()
 		return true
 	var game_manager_tutorial: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager

@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dh12fwg3fof36"
+
+[deps]
+
+files=["res://translations/missions.explanation or purpose.translation", "res://translations/missions.en.translation", "res://translations/missions.de.translation", "res://translations/missions.pl.translation", "res://translations/missions.br.translation"]
+
+source_file="res://translations/missions.csv"
+dest_files=["res://translations/missions.explanation or purpose.translation", "res://translations/missions.en.translation", "res://translations/missions.de.translation", "res://translations/missions.pl.translation", "res://translations/missions.br.translation"]
+
+[params]
+
+compress=true
+delimiter=0

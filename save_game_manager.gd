@@ -4,27 +4,59 @@ class_name SaveGameManager
 const SAVE_FILE_PATH: String = "user://savegame.json"
 const SETTINGS_FILE_PATH: String = "user://settings.cfg"
 const SAVE_VERSION: int = 1
+const SAVE_FILE_EXTENSION: String = ".json"
+const DEFAULT_SAVE_BASENAME: String = "savegame"
 
 static func has_save_file() -> bool:
-	return FileAccess.file_exists(SAVE_FILE_PATH)
+	var infos: Array[Dictionary] = _collect_save_file_infos()
+	return not infos.is_empty()
+
+static func get_latest_save_path() -> String:
+	var infos: Array[Dictionary] = _collect_save_file_infos()
+	if infos.is_empty():
+		return SAVE_FILE_PATH
+	var latest_path: String = SAVE_FILE_PATH
+	var latest_modified: int = -1
+	for info in infos:
+		var modified: int = int(info.get("modified", 0))
+		if modified > latest_modified:
+			latest_modified = modified
+			latest_path = String(info.get("path", SAVE_FILE_PATH))
+	return latest_path
+
+static func build_save_path_from_file_name(raw_file_name: String) -> String:
+	var sanitized_name: String = _sanitize_save_file_name(raw_file_name)
+	return "user://" + sanitized_name + SAVE_FILE_EXTENSION
 
 static func save_game(game_manager: GameManager) -> bool:
+	return save_game_to_path(game_manager, SAVE_FILE_PATH)
+
+static func save_game_named(game_manager: GameManager, raw_file_name: String) -> bool:
+	var save_path: String = SAVE_FILE_PATH
+	if raw_file_name.strip_edges() != "":
+		save_path = build_save_path_from_file_name(raw_file_name)
+	return save_game_to_path(game_manager, save_path)
+
+static func save_game_to_path(game_manager: GameManager, save_path: String) -> bool:
 	var save_data: Dictionary = _build_save_data(game_manager)
-	var file: FileAccess = FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 	if file == null:
-		DebugLogger.log("SaveGame", "ERROR: Could not open save file for writing: " + SAVE_FILE_PATH)
+		DebugLogger.log("SaveGame", "ERROR: Could not open save file for writing: " + save_path)
 		return false
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
-	DebugLogger.log("SaveGame", "Saved game file: " + ProjectSettings.globalize_path(SAVE_FILE_PATH))
+	DebugLogger.log("SaveGame", "Saved game file: " + ProjectSettings.globalize_path(save_path))
 	var sound_manager: SoundManager = game_manager.get_node("../SoundManager") as SoundManager
 	save_settings(sound_manager)
 	return true
 
 static func load_game() -> Dictionary:
-	var file: FileAccess = FileAccess.open(SAVE_FILE_PATH, FileAccess.READ)
+	return load_game_from_path(SAVE_FILE_PATH)
+
+static func load_game_from_path(save_path: String) -> Dictionary:
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
 	if file == null:
-		DebugLogger.log("SaveGame", "ERROR: Could not open save file: " + SAVE_FILE_PATH)
+		DebugLogger.log("SaveGame", "ERROR: Could not open save file: " + save_path)
 		return {}
 	var text: String = file.get_as_text()
 	file.close()
@@ -34,6 +66,30 @@ static func load_game() -> Dictionary:
 		DebugLogger.log("SaveGame", "ERROR: Failed to parse save file: " + json.error_string)
 		return {}
 	return json.data as Dictionary
+
+static func get_save_entries() -> Array[Dictionary]:
+	var infos: Array[Dictionary] = _collect_save_file_infos()
+	_sort_save_infos_in_place(infos)
+	var entries: Array[Dictionary] = []
+	for info in infos:
+		var save_path: String = String(info.get("path", ""))
+		var modified: int = int(info.get("modified", 0))
+		var file_name_with_ext: String = String(info.get("file_name", ""))
+		var file_name: String = file_name_with_ext.get_basename()
+		var save_data: Dictionary = load_game_from_path(save_path)
+		var source: Dictionary = save_data.get("source", {})
+		var mode: String = String(source.get("mode", "custom"))
+		var game_type: String = "skirmish"
+		if mode == "scenario":
+			game_type = _resolve_scenario_type(source)
+		var game_name: String = _resolve_save_display_name(source, file_name)
+		entries.append({
+			"name": game_name,
+			"type": game_type,
+			"date": _format_save_date(modified),
+			"file_name": file_name
+		})
+	return entries
 
 static func save_settings(sound_manager: SoundManager) -> bool:
 	var config: ConfigFile = ConfigFile.new()
@@ -449,6 +505,106 @@ static func _to_int_array(raw: Array) -> Array[int]:
 	for item in raw:
 		values.append(int(item))
 	return values
+
+static func _collect_save_file_infos() -> Array[Dictionary]:
+	var infos: Array[Dictionary] = []
+	var user_dir: DirAccess = DirAccess.open("user://")
+	if user_dir == null:
+		return infos
+	user_dir.list_dir_begin()
+	var entry: String = user_dir.get_next()
+	while entry != "":
+		if not user_dir.current_is_dir() and entry.to_lower().ends_with(SAVE_FILE_EXTENSION):
+			var save_path: String = "user://" + entry
+			var save_data: Dictionary = load_game_from_path(save_path)
+			var valid_save: bool = not save_data.is_empty() and int(save_data.get("version", 0)) > 0 and save_data.has("game_state")
+			if valid_save:
+				infos.append({
+					"file_name": entry,
+					"path": save_path,
+					"modified": int(FileAccess.get_modified_time(save_path))
+				})
+		entry = user_dir.get_next()
+	user_dir.list_dir_end()
+	return infos
+
+static func _sort_save_infos_desc(a: Dictionary, b: Dictionary) -> bool:
+	return int(a.get("modified", 0)) > int(b.get("modified", 0))
+
+static func _sort_save_infos_in_place(infos: Array[Dictionary]) -> void:
+	var count: int = infos.size()
+	for i in range(count):
+		var best_index: int = i
+		var best_modified: int = int(infos[i].get("modified", 0))
+		for j in range(i + 1, count):
+			var candidate_modified: int = int(infos[j].get("modified", 0))
+			if candidate_modified > best_modified:
+				best_modified = candidate_modified
+				best_index = j
+		if best_index != i:
+			var temp: Dictionary = infos[i]
+			infos[i] = infos[best_index]
+			infos[best_index] = temp
+
+static func _sanitize_save_file_name(raw_file_name: String) -> String:
+	var stripped: String = raw_file_name.strip_edges()
+	if stripped == "":
+		return DEFAULT_SAVE_BASENAME
+	var result: String = ""
+	for i in range(stripped.length()):
+		var character: String = stripped.substr(i, 1)
+		var codepoint: int = character.unicode_at(0)
+		var is_digit: bool = codepoint >= 48 and codepoint <= 57
+		var is_upper: bool = codepoint >= 65 and codepoint <= 90
+		var is_lower: bool = codepoint >= 97 and codepoint <= 122
+		var is_symbol: bool = character == "_" or character == "-" or character == " "
+		if is_digit or is_upper or is_lower or is_symbol:
+			result += character
+	result = result.strip_edges().replace(" ", "_")
+	if result == "":
+		return DEFAULT_SAVE_BASENAME
+	return result
+
+static func _resolve_scenario_type(source: Dictionary) -> String:
+	var scenario_path: String = String(source.get("scenario_path", ""))
+	if scenario_path == "":
+		return "scenario"
+	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
+	var scenario_type: String = String(scenario_data.get("scenario_type", "scenario")).to_lower()
+	if scenario_type == "campaign":
+		return "campaign"
+	return "scenario"
+
+static func _resolve_save_display_name(source: Dictionary, fallback_name: String) -> String:
+	var mode: String = String(source.get("mode", "custom"))
+	if mode == "scenario":
+		var scenario_path: String = String(source.get("scenario_path", ""))
+		var scenario_name: String = _humanize_name(scenario_path.get_file().get_basename())
+		if scenario_name != "":
+			return scenario_name
+	if mode == "custom":
+		var map_file: String = String(source.get("map_file", ""))
+		var map_name: String = _humanize_name(map_file.get_file().get_basename())
+		if map_name != "":
+			return map_name
+	return _humanize_name(fallback_name)
+
+static func _humanize_name(raw_name: String) -> String:
+	var text: String = raw_name.strip_edges()
+	text = text.replace("_", " ")
+	text = text.replace("-", " ")
+	return text
+
+static func _format_save_date(unix_time: int) -> String:
+	if unix_time <= 0:
+		return ""
+	var datetime: Dictionary = Time.get_datetime_dict_from_unix_time(unix_time)
+	var year: int = int(datetime.get("year", 0))
+	var month: int = int(datetime.get("month", 0))
+	var day: int = int(datetime.get("day", 0))
+	var hour: int = int(datetime.get("hour", 0))
+	var minute: int = int(datetime.get("minute", 0))
+	return "%04d-%02d-%02d %02d:%02d" % [year, month, day, hour, minute]
 
 static func _map_size_to_string(map_size: MapGenerator.MapSize) -> String:
 	match map_size:
