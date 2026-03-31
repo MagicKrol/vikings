@@ -827,6 +827,8 @@ func _handle_battle_defeat(defeated_army: Army) -> void:
 						if _army_manager != null:
 							offset = _army_manager._get_army_position_offset(retreat_region)
 						defeated_army.position = center + offset
+				if _army_manager != null:
+					_army_manager.on_army_moved(defeated_army, parent_region, retreat_region)
 				
 				DebugLogger.log("BattleSystem", "[BattleManager] Army successfully retreated to " + str(retreat_region.get_region_name()))
 				return
@@ -840,13 +842,13 @@ func _handle_battle_defeat(defeated_army: Army) -> void:
 	# If we reach here, army either has no soldiers or couldn't retreat - remove it
 	DebugLogger.log("BattleSystem", "[BattleManager] Removing army " + str(defeated_army.name) + " from the map")
 	
-	# Remove the army from the scene
-	if parent_region != null:
-		parent_region.remove_child(defeated_army)
-	
 	# Remove the army from army manager tracking
 	if _army_manager != null:
 		_army_manager.remove_army_from_tracking(defeated_army)
+
+	# Remove the army from the scene
+	if parent_region != null:
+		parent_region.remove_child(defeated_army)
 	
 	# Free the army node
 	defeated_army.queue_free()

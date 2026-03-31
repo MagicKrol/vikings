@@ -118,6 +118,7 @@ var loaded_scenario_name: String = ""  # Track the loaded scenario name for the 
 var _loaded_from_save: bool = false
 var _pending_loaded_save_data: Dictionary = {}
 var _ai_log_manager: AILogManager = AILogManager.new()
+var _turn_advance_in_progress: bool = false
 var _ai_log_started: bool = false
 var _ai_battle_log_queue: Dictionary = {}
 var average_army_power: float = 0.0
@@ -535,6 +536,14 @@ func _debug_language_index_from_locale(locale: String) -> int:
 
 func next_turn():
 	"""Advance to the next player's turn and perform turn-based actions"""
+	if _turn_advance_in_progress:
+		DebugLogger.log("TurnProcessing", "next_turn ignored: turn advance already in progress")
+		return
+	_turn_advance_in_progress = true
+	await _next_turn_internal()
+	_turn_advance_in_progress = false
+
+func _next_turn_internal() -> void:
 	if victory_declared:
 		DebugLogger.log("Victory", "next_turn ignored after victory")
 		return
@@ -576,7 +585,7 @@ func next_turn():
 		DebugLogger.log("TurnProcessing", "AI Player " + str(current_player) + " starting turn processing with TurnController...")
 		await _turn_controller.start_turn(current_player)
 		await _await_pending_battles()
-		next_turn()  # Advance to next player after turn completes
+		call_deferred("next_turn")  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
 	else:
 		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")
@@ -2272,6 +2281,36 @@ func _compute_attacker_effectiveness_ratio(attacker: Army, siege_payload: Dictio
 		return 0.0
 	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
 
+func _compute_attacker_effectiveness_ratio_from_composition(attacker_comp: ArmyComposition, siege_payload: Dictionary, target_region: Region) -> float:
+	if target_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		return 1.0
+	var preset_total := float(siege_payload.get("assault_ratio", -1.0))
+	if preset_total >= 0.0:
+		return clampf(preset_total, 0.0, 1.0)
+	var ladder_ratio := float(siege_payload.get("ladder_effectiveness_ratio", -1.0))
+	var wall_ratio := float(siege_payload.get("wall_effectiveness_ratio", -1.0))
+	var gate_ratio := float(siege_payload.get("gate_effectiveness_ratio", -1.0))
+	var combined := 0.0
+	var any_component := false
+	if ladder_ratio >= 0.0:
+		combined += ladder_ratio
+		any_component = true
+	if wall_ratio >= 0.0:
+		combined += wall_ratio
+		any_component = true
+	if gate_ratio >= 0.0:
+		combined += gate_ratio
+		any_component = true
+	if any_component:
+		return clampf(combined, 0.0, 1.0)
+	var raw: int = int(siege_payload.get("ladder_effectiveness_raw", 0))
+	if raw <= 0:
+		return 0.0
+	var non_ranged := GameParameters.calculate_non_ranged_count(attacker_comp)
+	if non_ranged <= 0:
+		return 0.0
+	return clampf(float(raw) / float(non_ranged), 0.0, 1.0)
+
 func _roll_ai_trebuchet_bombard_damage(treb_count: int) -> int:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
@@ -2497,6 +2536,65 @@ func simulate_siege_battle(attacker: Army, target_region: Region, use_full_wood:
 		"uncapped_wood": use_full_wood
 	}
 
+func simulate_castle_threat_battle(attacking_armies: Array[Army], target_region: Region, use_full_wood: bool = false) -> Dictionary:
+	var merged_attacker: ArmyComposition = _merge_attacker_army_composition(attacking_armies)
+	var reference_attacker: Army = attacking_armies[0]
+	var defenders := _build_simulated_defenders(target_region, -1)
+	var siege_sim: Dictionary = _simulate_ai_siege_preparation_for_composition(merged_attacker, reference_attacker.get_player_id(), target_region, use_full_wood)
+	var siege_payload: Dictionary = siege_sim.get("siege_payload", {})
+	var attacker_effectiveness_ratio: float = float(siege_sim.get("attacker_effectiveness_ratio", 1.0))
+	var defense_bonus: int = int(siege_sim.get("defense_bonus", _battle_manager.get_effective_defense_for_region(target_region)))
+	var simulator := BattleSimulator.new()
+	var defender_armies: Array[ArmyComposition] = defenders.get("armies", [])
+	var garrison_comp: ArmyComposition = defenders.get("garrison", null)
+	var sim_label: String = "Threat Sim vs " + str(target_region.get_region_name())
+	if use_full_wood:
+		sim_label += " (no cap)"
+	var report := simulator.simulate_battle(
+		[merged_attacker],
+		defender_armies,
+		garrison_comp,
+		_get_average_efficiency_for_armies(attacking_armies),
+		100,
+		target_region.get_region_type(),
+		target_region.get_castle_type(),
+		"Attackers",
+		"Defenders",
+		false,
+		false,
+		defense_bonus,
+		attacker_effectiveness_ratio,
+		siege_payload,
+		_ai_log_manager,
+		sim_label
+	)
+	return {
+		"report": report,
+		"result": _derive_battle_result_from_report(report),
+		"attacker_effectiveness_ratio": attacker_effectiveness_ratio,
+		"defense_bonus": defense_bonus,
+		"attacker_survivors": _sum_composition(report.final_attacker),
+		"defender_survivors": _sum_composition(report.final_defender),
+		"siege_payload": siege_payload,
+		"uncapped_wood": use_full_wood
+	}
+
+func _merge_attacker_army_composition(attacking_armies: Array[Army]) -> ArmyComposition:
+	var merged: ArmyComposition = ArmyComposition.new()
+	for army in attacking_armies:
+		var source: ArmyComposition = army.get_composition()
+		for unit_type in SoldierTypeEnum.get_all_types():
+			var quantity: int = source.get_soldier_count(unit_type)
+			if quantity > 0:
+				merged.add_soldiers(unit_type, quantity)
+	return merged
+
+func _get_average_efficiency_for_armies(attacking_armies: Array[Army]) -> int:
+	var total_efficiency: int = 0
+	for army in attacking_armies:
+		total_efficiency += army.get_efficiency()
+	return int(round(float(total_efficiency) / float(max(1, attacking_armies.size()))))
+
 func _build_simulated_defenders(target_region: Region, observer_id: int = -1) -> Dictionary:
 	var owner_id: int = _region_manager.get_region_owner(target_region.get_region_id())
 	var defender_armies: Array[ArmyComposition] = []
@@ -2569,6 +2667,50 @@ func _simulate_ai_siege_preparation(attacker: Army, target_region: Region, use_f
 		"gate_state": gate_state
 	}
 
+func _simulate_ai_siege_preparation_for_composition(attacker_comp: ArmyComposition, attacker_player_id: int, target_region: Region, use_full_wood: bool = false) -> Dictionary:
+	var castle_type := target_region.get_castle_type()
+	var default_defense: int = _battle_manager.get_effective_defense_for_region(target_region)
+	if castle_type == CastleTypeEnum.Type.NONE:
+		return {
+			"siege_payload": {},
+			"attacker_effectiveness_ratio": 1.0,
+			"defense_bonus": default_defense
+		}
+	var defense_state := _capture_defense_state(target_region)
+	var siege_counts: Dictionary = _simulate_siege_purchase_for_composition(attacker_comp, attacker_player_id, defense_state, use_full_wood)
+	var bombard_damage: int = 0
+	var apply_trebuchet_damage := true
+	if int(siege_counts.get("trebuchets", 0)) > 0:
+		bombard_damage = _roll_ai_trebuchet_bombard_damage(int(siege_counts["trebuchets"]))
+		if bombard_damage > 0:
+			_apply_wall_damage_to_state(defense_state, bombard_damage)
+		apply_trebuchet_damage = false
+	var siege_payload := _apply_siege_damage_to_state(defense_state, siege_counts, apply_trebuchet_damage)
+	var wall_state := _build_wall_state_from_sim(defense_state)
+	var gate_state := _build_gate_state_from_sim(defense_state)
+	var wall_raw := _compute_wall_assault_raw_from_state(castle_type, wall_state)
+	var wall_ratio := _compute_wall_assault_ratio_from_raw(wall_raw, attacker_comp)
+	var gate_ratio := _compute_gate_assault_ratio_from_state(gate_state, attacker_comp)
+	var ladder_ratio := _compute_ladder_ratio_from_raw(int(siege_payload.get("ladder_effectiveness_raw", 0)), attacker_comp)
+	if int(siege_counts.get("trebuchets", 0)) > 0:
+		siege_payload["trebuchet_bombard"] = _build_simulated_bombard_payload(wall_state, bombard_damage, wall_ratio, gate_ratio, ladder_ratio, castle_type)
+	siege_payload["siege_counts"] = siege_counts.duplicate()
+	siege_payload["gate_state"] = gate_state
+	siege_payload["ladder_effectiveness_ratio"] = ladder_ratio
+	siege_payload["wall_effectiveness_raw"] = wall_raw
+	siege_payload["wall_effectiveness_ratio"] = wall_ratio
+	siege_payload["gate_effectiveness_ratio"] = gate_ratio
+	siege_payload["assault_ratio"] = clampf(ladder_ratio + wall_ratio + gate_ratio, 0.0, 1.0)
+	var attacker_effectiveness_ratio: float = _compute_attacker_effectiveness_ratio_from_composition(attacker_comp, siege_payload, target_region)
+	var defense_bonus := _compute_defense_bonus_from_state(castle_type, wall_state)
+	return {
+		"siege_payload": siege_payload,
+		"attacker_effectiveness_ratio": attacker_effectiveness_ratio,
+		"defense_bonus": defense_bonus,
+		"wall_state": wall_state,
+		"gate_state": gate_state
+	}
+
 func _capture_defense_state(target_region: Region) -> Dictionary:
 	var gate_state: Dictionary = target_region.get_gate_state()
 	var wall_state: Dictionary = target_region.get_wall_state()
@@ -2585,6 +2727,28 @@ func _simulate_siege_purchase(attacker: Army, target_region: Region, defense_sta
 	var player := player_manager.get_player(player_id)
 	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
 	var wood_growth: int = int(floor(player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD)))
+	var wood_budget: int = _calculate_siege_wood_budget(available_wood, wood_growth)
+	if use_full_wood:
+		wood_budget = available_wood
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var wall_state := _build_wall_state_from_sim(defense_state)
+	var gate_state := _build_gate_state_from_sim(defense_state)
+	var intact_walls: int = 0
+	for hp in wall_state.get("wall_values", []):
+		if int(hp) > 0:
+			intact_walls += 1
+	var intact_gates: int = 0
+	for hp in gate_state.get("gate_values", []):
+		if int(hp) > 0:
+			intact_gates += 1
+	return _battle_manager.plan_siege_purchase(siege_points_total, intact_walls, intact_gates, wood_budget, rng)
+
+func _simulate_siege_purchase_for_composition(attacker_comp: ArmyComposition, attacker_player_id: int, defense_state: Dictionary, use_full_wood: bool) -> Dictionary:
+	var siege_points_total: int = GameParameters.calculate_siege_points_for_composition(attacker_comp)
+	var player := player_manager.get_player(attacker_player_id)
+	var available_wood: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
+	var wood_growth: int = int(floor(player_manager.get_player_resource_growth(attacker_player_id, ResourcesEnum.Type.WOOD)))
 	var wood_budget: int = _calculate_siege_wood_budget(available_wood, wood_growth)
 	if use_full_wood:
 		wood_budget = available_wood
@@ -2969,6 +3133,7 @@ func _await_pending_battles() -> void:
 	"""Await until there are no active battles remaining."""
 	while _active_battles > 0:
 		await _battle_manager.battle_finished
+	await _battle_manager.await_finalize_complete()
 
 func finalize_battle_result(result_data: Dictionary) -> void:
 	"""
@@ -3368,6 +3533,8 @@ func ai_travel_to(army: Army, final_region_id: int) -> Dictionary:
 			# Friendly step - use ArmyManager.move_army()
 			DebugLogger.log("AIMovement", "ai_travel_to: Friendly step - using ArmyManager.move_army")
 			var move_success = await _army_manager.move_army(army, next_region)
+			if move_success:
+				_handle_recruitment_merge_on_friendly_step(army, next_region)
 			await _ai_camera_director.await_delay(GameParameters.CAMERA_FRIENDLY_MOVE_DELAY)
 			
 			# Log step result  
@@ -3388,6 +3555,43 @@ func ai_travel_to(army: Army, final_region_id: int) -> Dictionary:
 		var current_pos = final_position.get_region_id() if final_position else -1
 		DebugLogger.log("AIMovement", "ai_travel_to: Army %s stopped at region %d (target was %d)" % [army.get_display_name(), current_pos, final_region_id])
 		return {"result": "blocked", "battle_region_id": current_pos}
+
+func _handle_recruitment_merge_on_friendly_step(moving_army: Army, region: Region) -> void:
+	if not moving_army.is_recruitment_requested():
+		return
+	var friendly_armies: Array[Army] = []
+	for region_army in _army_manager.get_armies_in_region(region):
+		if not is_instance_valid(region_army):
+			continue
+		if region_army.get_player_id() != moving_army.get_player_id():
+			continue
+		friendly_armies.append(region_army)
+	if friendly_armies.size() < 2:
+		return
+	friendly_armies.sort_custom(func(a: Army, b: Army) -> bool:
+		var a_power: int = a.get_army_power()
+		var b_power: int = b.get_army_power()
+		if a_power != b_power:
+			return a_power > b_power
+		return a.get_instance_id() < b.get_instance_id()
+	)
+	var receiver: Army = friendly_armies[0]
+	if receiver == moving_army:
+		return
+	var transferred: bool = _army_manager.transfer_all_soldiers(moving_army, receiver)
+	if not transferred:
+		return
+	moving_army.spawn_minimal_peasant_token()
+	_recheck_recruitment_need_after_transfer(receiver)
+
+func _recheck_recruitment_need_after_transfer(army: Army) -> void:
+	if not army.is_recruitment_requested():
+		return
+	var turn_number: int = get_current_turn()
+	if army.needs_recruitment(turn_number):
+		return
+	army.clear_recruitment_request()
+	army.set_recruitment_move_state(Army.RecruitmentMoveState.NORMAL)
 
 # ============================================================================
 # AI Battle Log Helpers
@@ -3706,7 +3910,8 @@ func _start_first_turn() -> void:
 			DebugLogger.log("TurnProcessing", "Enabled AI debug display for Player " + str(current_player))
 		
 		await _turn_controller.start_turn(current_player)
-		next_turn()  # Advance to next player after turn completes
+		await _await_pending_battles()
+		call_deferred("next_turn")  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
 	else:
 		DebugLogger.log("TurnProcessing", "Skipping AI turn processing")

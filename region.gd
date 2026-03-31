@@ -36,6 +36,8 @@ var region_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND
 var region_level: RegionLevelEnum.Level = RegionLevelEnum.Level.L1
 var is_ocean: bool = false
 var center: Vector2 = Vector2.ZERO
+var nearby_regions: Array[int] = []
+var castle_nearby_entities: Dictionary = {}
 
 # Army composition stationed in this region
 var garrison: ArmyComposition
@@ -103,6 +105,8 @@ func setup_region(region_data: Dictionary) -> void:
 	garrison = ArmyComposition.new()
 	wounded_garrison = ArmyComposition.new()
 	wounded_recruits = ArmyComposition.new()
+	nearby_regions.clear()
+	castle_nearby_entities = _build_empty_nearby_entities()
 	resources = ResourceComposition.new()
 	base_resources = ResourceComposition.new()
 	castle_repair_turns_remaining = 0
@@ -447,11 +451,17 @@ func get_castle_type() -> CastleTypeEnum.Type:
 func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
 	"""Set the castle type (used when construction completes or upgrades)"""
 	var old_castle_type = castle_type
+	var had_castle: bool = old_castle_type != CastleTypeEnum.Type.NONE
 	castle_type = new_castle_type
+	var has_castle_now: bool = castle_type != CastleTypeEnum.Type.NONE
 	
 	# Recalculate recruitment limits when castle type changes
 	if old_castle_type != new_castle_type:
 		_reset_defense_state_to_full()
+	if had_castle != has_castle_now:
+		var game_manager: GameManager = get_node("/root/Main/GameManager") as GameManager
+		var army_manager: ArmyManager = game_manager.get_army_manager()
+		army_manager.on_region_castle_presence_changed(self, had_castle, has_castle_now)
 
 func has_castle() -> bool:
 	"""Check if region has any castle"""
@@ -694,7 +704,7 @@ func process_castle_construction() -> bool:
 	if castle_build_turns_remaining <= 0:
 		# Construction completed
 		var completed_castle_type = castle_under_construction
-		castle_type = castle_under_construction
+		set_castle_type(completed_castle_type)
 		castle_under_construction = CastleTypeEnum.Type.NONE
 		castle_build_turns_remaining = 0
 		_reset_defense_state_to_full()
@@ -723,6 +733,16 @@ func _update_castle_visual() -> void:
 	# Update the castle visual (this will place the correct icon)
 	visual_manager.update_castle_visual(self)
 	DebugLogger.log("RegionManagement", "Updated castle visual for " + region_name)
+
+func _build_empty_nearby_entities() -> Dictionary:
+	return {
+		"friendly_armies": {},
+		"enemy_armies": {},
+		"castles": {}
+	}
+
+func clear_castle_nearby_entities() -> void:
+	castle_nearby_entities = _build_empty_nearby_entities()
 
 func can_build_castle() -> bool:
 	"""Check if a castle can be built in this region"""

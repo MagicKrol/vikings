@@ -35,6 +35,7 @@ var computer_controlled: bool = false
 var resources: Dictionary = {}
 var wealth_level: int = GameParameters.WealthLevel.POOR
 var traded_resources: Dictionary = {}
+var ai_castle_upgrade_savings_gold: int = 0
 
 # Player statistics
 var regions_owned: Array[int] = []
@@ -143,6 +144,25 @@ func add_traded_resource_amount(resource_type: ResourcesEnum.Type, amount: int) 
 
 func get_traded_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 	return traded_resources.get(resource_type, 0)
+
+func get_ai_castle_upgrade_savings_gold() -> int:
+	return ai_castle_upgrade_savings_gold
+
+func set_ai_castle_upgrade_savings_gold(amount: int) -> void:
+	ai_castle_upgrade_savings_gold = max(0, amount)
+
+func add_ai_castle_upgrade_savings_gold(amount: int) -> int:
+	if amount <= 0:
+		return ai_castle_upgrade_savings_gold
+	ai_castle_upgrade_savings_gold = max(0, ai_castle_upgrade_savings_gold + amount)
+	return ai_castle_upgrade_savings_gold
+
+func spend_ai_castle_upgrade_savings_gold(amount: int) -> int:
+	if amount <= 0:
+		return 0
+	var used: int = min(ai_castle_upgrade_savings_gold, amount)
+	ai_castle_upgrade_savings_gold -= used
+	return used
 
 func decay_traded_resources(rate: float, growths: Dictionary) -> void:
 	for resource_type in traded_resources:
@@ -280,6 +300,7 @@ func to_dictionary() -> Dictionary:
 		"player_color": [player_color.r, player_color.g, player_color.b, player_color.a],
 		"is_computer": computer_controlled,
 		"resources": _resources_to_dict(),
+		"ai_castle_upgrade_savings_gold": ai_castle_upgrade_savings_gold,
 		"regions_owned": regions_owned,
 		"total_population": total_population
 	}
@@ -294,6 +315,7 @@ func from_dictionary(data: Dictionary) -> void:
 	player_color = Color(color_array[0], color_array[1], color_array[2], color_array[3])
 	
 	_resources_from_dict(data.get("resources", {}))
+	ai_castle_upgrade_savings_gold = max(0, int(data.get("ai_castle_upgrade_savings_gold", 0)))
 	var raw_regions: Array = data.get("regions_owned", [])
 	regions_owned = _to_int_array(raw_regions)
 	total_population = data.get("total_population", 0)

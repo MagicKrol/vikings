@@ -5,7 +5,7 @@ class_name BudgetManager
 # Only armies positioned at castles can receive budgets since they can immediately use them
 # Assigns budgets directly to armies' assigned_budget field
 # Returns number of armies that received budgets
-func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, region_manager: RegionManager, turn_number: int = 1, castle_requests: Array = []) -> int:
+func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, region_manager: RegionManager, turn_number: int = 1, castle_requests: Array = [], resource_caps: Dictionary = {}) -> int:
 	if all_armies.is_empty() and castle_requests.is_empty():
 		DebugLogger.log("AIRecruitment", "No armies or castles require recruitment budgets")
 		return 0
@@ -23,19 +23,24 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	var garrisons_by_castle: Dictionary = {}  # region_id -> Array[Dictionary]
 	
 	for army in all_armies:
-		if army.needs_recruitment(turn_number):
-			army.request_recruitment()
-			var army_region = army.get_parent() as Region
-			if army_region:
-				var region_id := army_region.get_region_id()
-				var castle_level := region_manager.get_castle_level(region_id)
-				if castle_level >= 1:
-					if not armies_by_castle.has(region_id):
-						armies_by_castle[region_id] = []
-					armies_by_castle[region_id].append(army)
-					DebugLogger.log("AIRecruitment", "Army " + army.name + " at castle (level " + str(castle_level) + ") flagged for recruitment")
-				else:
-					DebugLogger.log("AIRecruitment", "Army " + army.name + " needs recruitment but not at castle - flagged but no budget allocated")
+		var needs_recruitment: bool = army.needs_recruitment(turn_number) or army.is_recruitment_requested()
+		if not needs_recruitment:
+			continue
+		army.request_recruitment()
+		var army_region = army.get_parent() as Region
+		if army_region:
+			var region_id := army_region.get_region_id()
+			var region_owner: int = region_manager.get_region_owner(region_id)
+			if region_owner != player.get_player_id():
+				continue
+			var castle_level := region_manager.get_castle_level(region_id)
+			if castle_level >= 1:
+				if not armies_by_castle.has(region_id):
+					armies_by_castle[region_id] = []
+				armies_by_castle[region_id].append(army)
+				DebugLogger.log("AIRecruitment", "Army " + army.name + " at castle (level " + str(castle_level) + ") flagged for recruitment")
+			else:
+				DebugLogger.log("AIRecruitment", "Army " + army.name + " needs recruitment but not at castle - flagged but no budget allocated")
 	
 	for request in castle_requests:
 		var region_id := int(request.get("region_id", -1))
@@ -53,99 +58,121 @@ func allocate_recruitment_budgets(all_armies: Array[Army], player: Player, regio
 	
 	var ordered_region_ids: Array = combined_region_ids.keys()
 	ordered_region_ids.sort()
-	var ordered_armies: Array[Army] = []
-	var army_to_index: Dictionary = {}
-	
-	for region_id in ordered_region_ids:
-		var group: Array = armies_by_castle.get(region_id, [])
-		if group.size() > 0:
-			group.sort_custom(func(a, b): return a.get_instance_id() < b.get_instance_id())
-		for army in group:
-			army_to_index[army] = ordered_armies.size()
-			ordered_armies.append(army)
-	
-	if ordered_armies.is_empty():
-		DebugLogger.log("AIRecruitment", "No armies at castles need recruitment")
-	
-	var sorted_castle_requests: Array = castle_requests.duplicate()
-	if not sorted_castle_requests.is_empty():
-		sorted_castle_requests.sort_custom(func(a, b): return int(a.get("region_id", -1)) < int(b.get("region_id", -1)))
-	
-	var combined_size := ordered_armies.size() + sorted_castle_requests.size()
-	if combined_size == 0:
-		return 0
-	
-	var total_gold := player.get_resource_amount(ResourcesEnum.Type.GOLD)
-	var total_wood := player.get_resource_amount(ResourcesEnum.Type.WOOD) 
-	var total_iron := player.get_resource_amount(ResourcesEnum.Type.IRON)
-	
-	DebugLogger.log("AIRecruitment", "Player " + str(player.get_player_id()) + " has: " + str(total_gold) + " gold, " + str(total_wood) + " wood, " + str(total_iron) + " iron")
-	DebugLogger.log("AIRecruitment", "Allocating resources across " + str(ordered_armies.size()) + " armies and " + str(sorted_castle_requests.size()) + " castle garrisons")
-	
-	var gold_split := _distribute_equally(total_gold, combined_size)
-	var wood_split := _distribute_equally(total_wood, combined_size)
-	var iron_split := _distribute_equally(total_iron, combined_size)
-	var entry_budgets: Array = []
-	for idx in range(combined_size):
-		entry_budgets.append(BudgetComposition.new(gold_split[idx], wood_split[idx], iron_split[idx], 0))
-	
-	var current_index := 0
-	for army in ordered_armies:
-		army_to_index[army] = current_index
-		current_index += 1
-	
-	for request in sorted_castle_requests:
-		request["combined_index"] = current_index
-		current_index += 1
-	
-	# Assign budgets per castle with deterministic recruits split
+	var combined_entries: Array[Dictionary] = []
+	var army_entries_assigned: int = 0
 	for region_id in ordered_region_ids:
 		var castle_armies: Array = armies_by_castle.get(region_id, [])
 		if castle_armies.size() > 0:
 			castle_armies.sort_custom(func(a, b): return a.get_instance_id() < b.get_instance_id())
+		for army in castle_armies:
+			combined_entries.append({
+				"kind": "army",
+				"region_id": int(region_id),
+				"army": army,
+				"weight": 1.0
+			})
 		var castle_garrisons: Array = garrisons_by_castle.get(region_id, [])
-		var entry_count := castle_armies.size() + castle_garrisons.size()
+		for request in castle_garrisons:
+			var request_weight: float = max(0.0, float(request.get("weight", 1.0)))
+			if request_weight <= 0.0:
+				request_weight = 1.0
+			combined_entries.append({
+				"kind": "castle",
+				"region_id": int(region_id),
+				"request": request,
+				"weight": request_weight
+			})
+
+	if combined_entries.is_empty():
+		DebugLogger.log("AIRecruitment", "No armies at castles need recruitment")
+		return 0
+	
+	var total_gold := int(resource_caps.get(ResourcesEnum.Type.GOLD, player.get_resource_amount(ResourcesEnum.Type.GOLD)))
+	var total_wood := int(resource_caps.get(ResourcesEnum.Type.WOOD, player.get_resource_amount(ResourcesEnum.Type.WOOD)))
+	var total_iron := int(resource_caps.get(ResourcesEnum.Type.IRON, player.get_resource_amount(ResourcesEnum.Type.IRON)))
+	var combined_size: int = combined_entries.size()
+	
+	DebugLogger.log("AIRecruitment", "Player " + str(player.get_player_id()) + " has: " + str(total_gold) + " gold, " + str(total_wood) + " wood, " + str(total_iron) + " iron")
+	var army_entry_count: int = 0
+	var castle_entry_count: int = 0
+	for entry in combined_entries:
+		var entry_kind: String = String(entry.get("kind", ""))
+		if entry_kind == "army":
+			army_entry_count += 1
+		else:
+			castle_entry_count += 1
+	DebugLogger.log("AIRecruitment", "Allocating resources across " + str(army_entry_count) + " armies and " + str(castle_entry_count) + " castle garrisons")
+
+	var weighted_entries: Dictionary = {}
+	for idx in range(combined_size):
+		var entry_weight: float = max(0.0, float(combined_entries[idx].get("weight", 1.0)))
+		if entry_weight <= 0.0:
+			entry_weight = 1.0
+		weighted_entries[idx] = entry_weight
+
+	var gold_split: Dictionary = _split_weighted_int(total_gold, weighted_entries)
+	var wood_split: Dictionary = _split_weighted_int(total_wood, weighted_entries)
+	var iron_split: Dictionary = _split_weighted_int(total_iron, weighted_entries)
+	var entry_budgets: Array = []
+	for idx in range(combined_size):
+		entry_budgets.append(BudgetComposition.new(
+			int(gold_split.get(idx, 0)),
+			int(wood_split.get(idx, 0)),
+			int(iron_split.get(idx, 0)),
+			0
+		))
+
+	for idx in range(combined_entries.size()):
+		var entry: Dictionary = combined_entries[idx]
+		var budget: BudgetComposition = entry_budgets[idx]
+		var entry_kind: String = String(entry.get("kind", ""))
+		if entry_kind == "army":
+			var entry_army: Army = entry.get("army", null)
+			entry_army.assigned_budget = budget
+			army_entries_assigned += 1
+			DebugLogger.log("AIRecruitment", "Assigned budget to army " + entry_army.name + ": " + str(budget.to_dict()))
+		else:
+			var entry_request: Dictionary = entry.get("request", {})
+			entry_request["assigned_budget"] = budget
+			DebugLogger.log("AIRecruitment", "Assigned garrison budget for region " + str(int(entry.get("region_id", -1))) + ": " + str(budget.to_dict()))
+
+	var entry_indices_by_region: Dictionary = {}
+	for idx in range(combined_entries.size()):
+		var entry_region_id: int = int(combined_entries[idx].get("region_id", -1))
+		if not entry_indices_by_region.has(entry_region_id):
+			entry_indices_by_region[entry_region_id] = []
+		var region_indices: Array = entry_indices_by_region.get(entry_region_id, [])
+		region_indices.append(idx)
+		entry_indices_by_region[entry_region_id] = region_indices
+
+	# Assign recruit caps per castle with deterministic split across all entries tied to that castle
+	for region_id in ordered_region_ids:
+		var region_entry_indices: Array = entry_indices_by_region.get(region_id, [])
+		var entry_count: int = region_entry_indices.size()
 		if entry_count == 0:
 			continue
 		var sources := region_manager.get_available_recruits_from_region_and_neighbors(region_id, player.get_player_id())
-		var total_recruits := 0
+		var total_recruits: int = 0
 		for s in sources:
 			total_recruits += int(s.amount)
-		var recruits_split := _distribute_equally(total_recruits, entry_count)
-		var share_index := 0
-		
-		for local_idx in range(castle_armies.size()):
-			var army = castle_armies[local_idx]
-			var idx = int(army_to_index[army])
+		var recruits_split: Array[int] = _distribute_equally(total_recruits, entry_count)
+		for local_idx in range(region_entry_indices.size()):
+			var idx: int = int(region_entry_indices[local_idx])
 			var budget: BudgetComposition = entry_budgets[idx]
-			if share_index < recruits_split.size():
-				budget.available_recruits = recruits_split[share_index]
+			if local_idx < recruits_split.size():
+				budget.available_recruits = recruits_split[local_idx]
 			else:
 				budget.available_recruits = 0
-			army.assigned_budget = budget
-			DebugLogger.log("AIRecruitment", "Assigned budget to army " + army.name + ": " + str(budget.to_dict()))
-			share_index += 1
-		
-		for request in castle_garrisons:
-			var budget: BudgetComposition = request.get("assigned_budget", null)
-			if budget == null:
-				share_index += 1
-				continue
-			if share_index < recruits_split.size():
-				budget.available_recruits = recruits_split[share_index]
+			var entry: Dictionary = combined_entries[idx]
+			var entry_kind: String = String(entry.get("kind", ""))
+			if entry_kind == "army":
+				var entry_army: Army = entry.get("army", null)
+				entry_army.assigned_budget = budget
 			else:
-				budget.available_recruits = 0
-			request["assigned_budget"] = budget
-			DebugLogger.log("AIRecruitment", "Assigned garrison budget for region " + str(region_id) + ": " + str(budget.to_dict()))
-			share_index += 1
-	
-	for request in sorted_castle_requests:
-		var idx = int(request.get("combined_index", -1))
-		if idx >= 0 and idx < entry_budgets.size():
-			request["assigned_budget"] = entry_budgets[idx]
-		request.erase("combined_index")
-	
-	return ordered_armies.size()
+				var entry_request: Dictionary = entry.get("request", {})
+				entry_request["assigned_budget"] = budget
+
+	return army_entries_assigned
 
 # Distribute an amount equally among recipients using largest remainder method
 func _distribute_equally(total_amount: int, num_recipients: int) -> Array[int]:
@@ -170,6 +197,49 @@ func _distribute_equally(total_amount: int, num_recipients: int) -> Array[int]:
 			result.append(base_amount)      # Rest get base amount
 	
 	return result
+
+func _split_weighted_int(total_amount: int, weights: Dictionary) -> Dictionary:
+	var split: Dictionary = {}
+	var ordered_keys: Array = weights.keys()
+	ordered_keys.sort()
+	for key in ordered_keys:
+		split[key] = 0
+	if total_amount <= 0 or ordered_keys.is_empty():
+		return split
+	var sum_weights: float = 0.0
+	for key in ordered_keys:
+		sum_weights += max(0.0, float(weights.get(key, 0.0)))
+	if sum_weights <= 0.0:
+		return split
+	var remainders: Array[Dictionary] = []
+	var taken: int = 0
+	for key in ordered_keys:
+		var weight: float = max(0.0, float(weights.get(key, 0.0)))
+		var raw_share: float = float(total_amount) * weight / sum_weights
+		var floor_share: int = int(floor(raw_share))
+		split[key] = floor_share
+		taken += floor_share
+		remainders.append({
+			"key": key,
+			"fraction": raw_share - float(floor_share)
+		})
+	remainders.sort_custom(func(a, b):
+		var frac_a: float = float(a.get("fraction", 0.0))
+		var frac_b: float = float(b.get("fraction", 0.0))
+		if abs(frac_a - frac_b) < 0.0001:
+			return int(a.get("key", 0)) < int(b.get("key", 0))
+		return frac_a > frac_b
+	)
+	var remaining: int = total_amount - taken
+	var idx: int = 0
+	while remaining > 0 and not remainders.is_empty():
+		var target_key: int = int(remainders[idx].get("key", 0))
+		split[target_key] = int(split.get(target_key, 0)) + 1
+		remaining -= 1
+		idx += 1
+		if idx >= remainders.size():
+			idx = 0
+	return split
 
 # Legacy method for backwards compatibility with existing tests
 # Split a total budget across "keys" (e.g., armies) proportionally to weights.

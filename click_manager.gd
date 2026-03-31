@@ -42,6 +42,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_right_click_motion(event)
 		_handle_mouse_motion()
 	elif event is InputEventKey and event.pressed:
+		if event.keycode == KEY_CTRL and not event.echo:
+			if _game_manager.debug_mode and _hovered_region_id_for_debug != -1:
+				_army_manager.debug_log_nearby_entities_for_region(_hovered_region_id_for_debug)
+			return
 		# Editor quick-ownership mode: number keys 1..6 select owner, ESC cancels
 		if _game_manager and _game_manager.enable_map_editor:
 			var code: int = event.keycode
@@ -75,6 +79,7 @@ var _editor_owner_id: int = 0
 var _right_click_down: bool = false
 var _right_click_dragging: bool = false
 var _right_click_start_position: Vector2 = Vector2.ZERO
+var _hovered_region_id_for_debug: int = -1
 const RIGHT_CLICK_DRAG_THRESHOLD: float = 8.0
 
 func _ready():
@@ -320,6 +325,7 @@ func _handle_region_click(region_container: Node, button_index: int) -> void:
 
 func _handle_mouse_motion() -> void:
 	if _is_hovering_icons_modal():
+		_hovered_region_id_for_debug = -1
 		var visual_manager_icons: VisualManager = _game_manager.get_visual_manager()
 		visual_manager_icons.clear_region_highlight_hover()
 		visual_manager_icons.set_map_hover_region(-1)
@@ -327,6 +333,7 @@ func _handle_mouse_motion() -> void:
 		_hide_move_hover_tooltips()
 		return
 	if _game_manager == null:
+		_hovered_region_id_for_debug = -1
 		_hide_move_hover_tooltips()
 		return
 	if _ui_manager and _ui_manager.is_modal_active:
@@ -341,12 +348,14 @@ func _handle_mouse_motion() -> void:
 			return
 	var visual_manager = _game_manager.get_visual_manager()
 	if visual_manager == null:
+		_hovered_region_id_for_debug = -1
 		_hide_move_hover_tooltips()
 		return
 	var camera := get_node("../Camera2D") as Camera2D
 	var world_pos = camera.get_global_mouse_position()
 	var regions_node := _map_script.get_node_or_null("Regions")
 	if regions_node == null:
+		_hovered_region_id_for_debug = -1
 		visual_manager.clear_move_region_hover()
 		visual_manager.set_map_hover_region(-1)
 		_hide_move_hover_tooltips()
@@ -354,6 +363,7 @@ func _handle_mouse_motion() -> void:
 	var highlighted_ids = visual_manager.get_move_region_highlight_ids()
 	var hovered_move_region_id = -1
 	var hovered_general_region_id = -1
+	var hovered_debug_region_id = -1
 	var hovered_move_region: Region = null
 	for region_container in regions_node.get_children():
 		if not (region_container is Region):
@@ -364,12 +374,15 @@ func _handle_mouse_motion() -> void:
 		if _point_in_polygon(world_pos, polygon):
 			var region_ref: Region = region_container as Region
 			var candidate_id = region_ref.get_region_id()
+			if _should_highlight_region_hover(region_ref):
+				hovered_debug_region_id = candidate_id
 			if visual_manager.has_move_region_highlights() and _army_manager != null and _army_manager.selected_army != null and highlighted_ids.has(candidate_id):
 				hovered_move_region_id = candidate_id
 				hovered_move_region = region_ref
 			elif _should_highlight_region_hover(region_ref) and not highlighted_ids.has(candidate_id):
 				hovered_general_region_id = candidate_id
 			break
+	_hovered_region_id_for_debug = hovered_debug_region_id
 	if visual_manager.has_move_region_highlights():
 		visual_manager.set_map_hover_region(-1)
 		if hovered_move_region_id != -1:

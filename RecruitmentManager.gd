@@ -46,14 +46,15 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	army.clear_recruitment_request()
 	result["recruits_left"] = _count_recruits_remaining(recruit_sources)
 	result["budget_left"] = budget.to_dict()
-	_log_recruitment("Army %s recruited %d (g:%d w:%d i:%d) at %s" % [
-		army.get_display_name(),
-		int(result.get("total_recruited", 0)),
-		int(result.get("spent_gold", 0)),
-		int(result.get("spent_wood", 0)),
-		int(result.get("spent_iron", 0)),
-		region.get_region_name()
-	])
+	if debug:
+		_log_recruitment("Army %s recruited %d (g:%d w:%d i:%d) at %s" % [
+			army.get_display_name(),
+			int(result.get("total_recruited", 0)),
+			int(result.get("spent_gold", 0)),
+			int(result.get("spent_wood", 0)),
+			int(result.get("spent_iron", 0)),
+			region.get_region_name()
+		])
 	return result
 
 func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, debug: bool = false) -> Dictionary:
@@ -69,13 +70,14 @@ func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, de
 	_deduct_player_resources(player_id, int(result.get("spent_gold", 0)), int(result.get("spent_wood", 0)), int(result.get("spent_iron", 0)))
 	result["recruits_left"] = _count_recruits_remaining(recruit_sources)
 	result["budget_left"] = budget.to_dict()
-	_log_recruitment("Garrison recruited %d (g:%d w:%d i:%d) at %s" % [
-		int(result.get("total_recruited", 0)),
-		int(result.get("spent_gold", 0)),
-		int(result.get("spent_wood", 0)),
-		int(result.get("spent_iron", 0)),
-		region.get_region_name()
-	])
+	if debug:
+		_log_recruitment("Garrison recruited %d (g:%d w:%d i:%d) at %s" % [
+			int(result.get("total_recruited", 0)),
+			int(result.get("spent_gold", 0)),
+			int(result.get("spent_wood", 0)),
+			int(result.get("spent_iron", 0)),
+			region.get_region_name()
+		])
 	return result
 
 func _compute_plan(budget: BudgetComposition, recruits: int, tier_cap: int, disable_cavalry: bool) -> Dictionary:

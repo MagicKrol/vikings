@@ -36,7 +36,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 Start Flow
 - Main menu sets `SceneTree` meta `start_payload` and loads `main.tscn`:
   - Scenario: `{ type: "scenario", scenario_path: res://scenarios/<name>.json }`
-- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <tiny|small|medium|large>, player_settings: [...], victory_condition: <""|conquer|dominate> }` (size inferred from filename suffix)
+- Custom map: `{ type: "map", map_file: res://mapdata/<file>.json, map_size: <xtiny|tiny|small|medium|large|huge>, player_settings: [...], victory_condition: <""|conquer|dominate> }` (uses the exact filename suffix; UI still groups list rows as T/S/M/L).
 - Saved game: `{ type: "save", save_path: user://<save_name>.json }` (path chosen from available save files; default save path remains `user://savegame.json`).
 - `GameManager._ready()` reads `start_payload`:
   - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file) and loads scenario-defined `victory_conditions` (missing/empty means no automatic victory).
@@ -47,7 +47,7 @@ Start Flow
 
 ### main.tscn (Primary)
 Main (Node2D) [place_armies.gd]
-├ Map (Node2D) [map_generator.gd]
+├ Map (Node2D) [map_generator.gd] – precomputes `Region.nearby_regions` (depth 2 BFS over non-ocean, non-mountain adjacency) on map generation
 │	├ Clouds (Node2D) [clouds.gd] – spawns clouds (cloud1.png..cloud5.png) with matching shadows, random scale/position within map size, moves left-to-right at per-cloud speed, respawns at x=-1000 after crossing x=3050; exposes global/runtime cloud visibility (`set_global_clouds_enabled`, `set_clouds_enabled`) used by the shared Options panel; shadow blur uses `cloud_shadow_blur.gdshader`
 │	├ Regions (Node2D) – dynamic `Region` nodes [region.gd] named `<region_name>#<region_id>` (land polygons tile `background4grass.png` and still rebuild from the stored noisy border points; ocean polygons remain hidden by default)
 │	│	└ Borders: `BorderManager` instantiates named Line2D nodes (`OceanBorder@id`, `OwnershipBorder@id`, `InternalBorder@id`) and only adjusts width/color/offset when ownership changes so counts always match adjacency.
@@ -168,8 +168,11 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - AI memory: Records observed enemy army power for computer players after each battle (5-round decay window via `GameParameters.ENEMY_ARMY_MEMORY_ROUNDS`).
 - AI memory: Records observed enemy garrison power when computer armies attack a region (shared 5-round decay window).
 - Enemy intel snapshots: `_record_both_sides_power_snapshot()` captures defender forces for the attacker and attacker forces for the defender on early withdrawals; `_record_battle_power_after_resolution()` refreshes both sides' sightings after losses/retreats so AI knowledge stays current.
-- Siege sims: `simulate_siege_battle(attacker, region)` runs AI-style siege prep on cloned wall/gate states (no resource spend/state changes) and feeds `BattleSimulator` so AI can judge castle fights during planning; it now uses only known defender intel (tracked armies/garrison); unknown forces are excluded from the sim.
+- Siege sims: `simulate_siege_battle(attacker, region)` runs AI-style siege prep on cloned wall/gate states (no resource spend/state changes) and feeds `BattleSimulator` so AI can judge castle fights during planning; it uses known defender intel (tracked armies/garrison) for attacker-side scouting.
+- Castle threat sims: `simulate_castle_threat_battle(attacking_armies, region)` merges multiple attackers from one nearby region into a single simulated composition and runs against full defenders (all defending armies + garrison + recruits) for castle-threat classification.
 - AI: Uses `TurnController.start_turn()` for computer players; castle placement uses `CastlePlacementScorer` with randomness.
+- AI turn handoff: after an AI turn completes, `next_turn()` is queued via `call_deferred` (not immediate recursion), and turn advancement always waits for pending battles plus battle finalization (`_await_pending_battles()` + `BattleManager.await_finalize_complete()`) before switching players.
+- Turn-advance guard: `next_turn()` now uses an internal in-progress lock to prevent overlapping/re-entrant turn transitions (e.g. duplicate end-turn triggers) from skipping players.
 - AI Step Gate: `ai_step_requires_shift` forwards to `DebugStepGate` — when true, AI waits for Shift to advance; false lets AI run automatically.
 - AI Logging: Owns `AILogManager`; `ensure_ai_log_started()` names the log `<scenario>_<timestamp>.txt` the first time any AI player takes a turn so all later TurnController events can append to the same file inside the root `logs/` directory.
 - Round start caches the average power of all armies each round so AI economy can compare castle garrisons against the global baseline.
@@ -214,18 +217,29 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Enemy intel logging: Target lines mark enemies as “known” only when tracked power exists (tracked armies or garrison memory); first-turn unseen enemies remain unknown.
 - Recruitment: When no recruit castle is available (or unreachable via friendly-only paths), the army logs the miss and spends the turn camping/defending; recruitment moves route strictly through owned regions (no hostile hops) when heading to a castle or peasant pickup.
 - Economy logging: AI log now records castle build/upgrade candidates with scores plus resource gaps and top-up attempts when builds/upgrades are skipped.
+- Movement debug logging: target candidate dumps now print top 10 scored candidates (instead of top 3) for easier AI target-selection tracing.
+- Movement debug logging now also prints `Rejected candidates` with explicit filter reasons (overmatched, no friendly path, raider thresholds, merge halt, unreachable this turn) so dropped targets are visible in AI logs.
 - Signals: `turn_started`, `move_prepared`, `move_started`, `battle_started`, `battle_finished`, `region_conquered`, `turn_finished`.
 - Uses: `ArmyPathfinder`, `ArmyTargetScorer`, `BudgetManager` (allocate budgets at turn start), `RecruitmentManager` (hire at castles when requested; AI allows instant hire for `just_raised`), `DebugStepGate`.
-- AI castle upkeep: `plan_turn()` handles both emergency garrison hires and the final “additional recruitment” pass (threat-weighted) before army movement, so TurnController no longer runs ore searches or garrison spending after movement.
+- AI castle upkeep: TurnController now runs economy in two phases with one `EconomyAIManager` instance: pre-move economy with emergency reserve lock, then post-move castle threat refresh + castle recruitment execution.
+- Castle upgrade bank: `EconomyAIManager` deposits 10% of spendable gold at AI turn start (turn 2+) into `Player.ai_castle_upgrade_savings_gold`, hard-locks that gold from non-upgrade spending, and caps the bank at `Stronghold gold cost * 1.25`.
+- Castle reserve budgets: threatened-castle reserve requests now use the same base allocation weight as armies (`1.0` per request), and each castle reserve is capped by recruits (`max gold = 10 * recruits`, `max wood = floor(0.5 * recruits)`, `max iron = floor(0.5 * recruits)`), applied in both pre-move and post-move reserve recalculation.
+- Threat-first movement tree: after recruitment/peasants checks, each AI army now evaluates threatened-castle actions from a fixed pre-move threat snapshot (`threat_level >= 2`) before frontier scoring: direct attack uses friendly-route reachability and a per-army/per-target retry guard, blocks blind direct attacks on unknown castle threats, and requires castle simulation viability for known castle threats; when direct attack is blocked, the same threat pass falls through to support-merge (friendly keeps transferred troops; donor leaves 1 peasant and flags recruitment), and support toward castle threats is accepted only if merged-attack simulation is viable; otherwise fallback reposition to threatened castle remains.
+- Threat power refresh: threat attack/support/defense checks refresh each threat entry with live tracked enemy power during movement, so known-power comparisons use up-to-date memory instead of stale pre-move snapshot values.
+- Two-mode role routing: after recruitment/peasants/threat checks, armies follow a per-turn role assignment. `EXPANSION` mode (no enemy frontier) sets all armies to `RAIDER`; `WAR` mode uses a hard-target staircase to assign `MAIN`, computes `RAIDER` slots from total frontier size with cap `ceil((hard+soft)/4)`, and marks leftovers as `SUPPORT`. If no `MAIN` is assigned, remaining armies stay `RAIDER` (no support conversion). Targeting uses two buckets: `hard` (enemy region with army or castle) and `soft` (no army/castle, neutral or enemy-owned). `MAIN` prioritizes hard→soft, while `RAIDER` uses one combined scored pool (soft + hard) and applies hard-target exceptions only (known weaker army by 20% or known castle defense by 2x). `SUPPORT` merges to nearest reachable main, else routes to recruitment, else camps.
+- Main hard-target reachability: `MAIN` attempts hard targets only when reachable this turn; if no reachable hard target exists, it immediately falls back to soft-target selection.
+- Live frontier refresh: role behavior refreshes frontier buckets before each army decision pass, so newly conquered regions immediately affect hard/soft target pools within the same turn (roles remain turn-assigned).
+- Role move safety: even though role buckets are turn-scoped, target selection revalidates live ownership/bucket state and skips the army’s current region so captured regions cannot be repeatedly selected with zero-cost self-moves.
+- Threat defend de-dup: castle fallback reposition now runs a live sufficiency gate so armies do not pile onto the same castle. Unknown threats allow only one defender unless none is present; known threats allow additional defenders only while known threat power exceeds current full castle defense (`armies + garrison + recruits`), and reposition is reach-this-turn only.
 - Wealth tracking: caches start-of-turn resources for AI log headers, writes the final totals after movement, and calls `PlayerManagerNode.update_player_wealth_status()` so every player ends their turn tagged as poor/normal/rich (thresholds in `GameParameters`).
 - Battle Logs: After `_log_army_move_result()` records `"Fight at ..."` lines, `_log_recent_battle_details()` pulls the queued summary from `GameManager.consume_ai_battle_log_for_army()` so AI logs show `Battle started`, attacker/defender stats, the result string (`Won/Defeated/Withdrew`), and the post-battle status lines right after the arrival entry; battle log tokens are captured before travel so freed armies can still retrieve their queued entries, and the header uses the actual contested region returned by `ai_travel_to`.
-- Recruitment Loop: When an army needs troops, it always finds the best owned castle (logs every candidate with distance/recruits/score), travels there (including current region), and if no budget is available it camps and skips frontier actions until a budgeted hire succeeds.
+- Recruitment Loop: Recruitment movement uses a state machine per army (`NORMAL`, `TRANSFER_TO_CLOSEST`, `RECRUIT_OR_DEFEND`) to avoid camping loops when castles are unreachable. `NORMAL` tries friendly-only castle routing; if none exists, it falls back to non-friendly castle selection and can attempt bounded clean breakthrough routing (max 120 explored nodes): friendly regions on the path are always allowed, while non-friendly regions on the path must have no armies and no castle, and the total non-friendly path count is capped at 3. `TRANSFER_TO_CLOSEST` skips breakthrough and targets reachable castle or nearest reachable friendly stack for transfer. `RECRUIT_OR_DEFEND` now falls back to `NORMAL` when its selected castle is not reachable this turn, so breakthrough/transfer fallback can run instead of hard-camping.
 - Withdrawal Logging: `battle_withdrawal` results note which side withdrew; defender withdrawals are treated as holding the target (no extra movement log), while attacker withdrawals log the retreat destination.
 - Post-withdrawal reposition: when an AI army withdraws or loses and still has movement points, it moves to the strongest reachable friendly region within range.
 - Calls back into `GameManager.ai_travel_to()` for step-wise movement and battle triggers.
 - Reinforcement routing: Armies that need recruitment but have no assigned budget now queue a `goal: reinforce` move toward the best owned castle before chasing frontier targets, so low-power stacks travel home for resupply.
 - Castle targeting: When enemy strength is known and the target has a castle, `_build_enemy_info()` triggers `GameManager.simulate_siege_battle()` and `_evaluate_merge_policy()` halts attacks predicted to lose (or withdraw) and proceeds when the sim reports victory.
-- Army loop (AI only): per-turn armies are shuffled, then each army loops until MPs are gone — recruitment (must move to best castle; if blocked, camp), then peasant recruitment, then frontier target selection; target choice logs with known/unknown enemy tags, merges local armies when enemy is stronger/unknown, rests vigor to 100% if below 90% before moving, and attacks; if no valid move, the army spends all MPs camping. Enemy unknown → always merge and attack; stronger enemy without enough local power leaves a TODO defense stop.
+- Army loop (AI only): per-turn armies are shuffled, then each army loops until MPs are gone — recruitment, peasant recruitment, threatened-castle handling, then role-driven action (`MAIN`/`RAIDER`/`SUPPORT`). If no valid role action remains, the army camps out remaining MP.
 - Resting Logic (AI): armies rest to 100% vigor before any move if efficiency < 90% (camp until full or MPs run out), and any time no move is possible they burn remaining MPs camping; end-of-turn pass still exhausts leftover MPs with `make_camp()`.
 - Peasants-Only Recruitment:
   - Runs only when standard recruitment is not needed, the player has positive net food growth, and the army is below its wealth-adjusted peasant floor (Poor uses the base 20% minimum, Normal halves to 10%, Rich players skip peasants entirely).
@@ -233,6 +247,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
   - Filters candidate regions to those with enough recruits to meet the calculated need, then picks the best recruits-per-(distance+1) ratio so nearby pools are favored.
   - If no region can meet the minimum, the army flags for normal castle recruitment; otherwise it moves/hire peasants for free using standard pathfinding within current MPs.
 - AI Logging: During AI turns `TurnController` calls `AILogManager` to write the requested log format — each turn header includes resources, signals, decision, and owned regions, while every army action logs as `Recruits`, `Goes to Castle`, or `Moves` with its target plus recruitment/economy success or failure reasons.
+- Decision-tree logging: movement decisions emit explicit branch logs for threat handling and role routing (including mode/role selection, raider hard-target exceptions, and support merge/recruit/camp outcomes) via `AILogManager.log_army_decision_tree(...)`.
 - AI log entries now show efficiency inline (`Power: 67, E: 95 - P:...`) so it’s easy to see when armies act below full effectiveness.
 - Frontier targeting now logs the top 3 scored candidates (name/id, score, resources/pop/level/castle/pursue/strategy components) before selecting the best attack target.
 
@@ -253,7 +268,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 
 ### Region systems
 - region_manager.gd (RegionManager): ownership map, castle start, neighbor graph, resource generation, level upgrades, turn ticks (population growth, recruit replenish, castle builds, ore search reset), frontier discovery, recruit source aggregation, castle level lookup. Registers `VisualManager` via `set_visual_manager()` so ownership changes can clear any temporary hover highlights before recoloring overlays. `find_best_recruitment_castle()` returns both the best region id and the scored candidate list, using `(total available recruits from the castle + owned neighbors) / distance * (1 + 0.2 × castle level)`, divides the recruit pool evenly across all armies requesting recruitment at that castle (including the requester) for scoring, and rejects any castle not connected via wholly owned regions when selecting the best target.
-- region.gd (Region): data container with population, resources, recruits, ownership counter, garrison, castle type/upgrade, ore search, movement/passability helpers.
+- region.gd (Region): data container with population, resources, recruits, ownership counter, garrison, castle type/upgrade, ore search, movement/passability helpers, plus precomputed `nearby_regions` and castle-local cached `castle_nearby_entities`.
 	- `apply_population_loss(loss, min_population)` clamps population and recalculates recruits.
 	- `heal_all_wounded()` now restores wounded recruits straight into the base recruit pool (pre-ownership modifier) so they heal at turn start without touching population.
 	- `fill_recruits_to_maximum()` resets the recruit pool to the region's current cap (used during scenario setup).
@@ -274,14 +289,15 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Scarcity bias window tightened: `RECRUIT_SCARCITY_LOW/HIGH` now 0.5/1.5 gold-per-recruit, so quality bias ramps up as soon as gold/recruits is decent and reaches max when ratio ≥1.5.
 
 ### Army systems
-- army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking and cleanup.
-- army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, simple power checks. Emits `movement_points_changed(army, new_points)` whenever points reset/spent/camped so ArmyManager can refresh highlights. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use), instanced warrior visuals (`scenes/warrior_1..6.tscn`) scaled only by map size, and `get_display_name()` to standardize log/UI labels (falls back to the roman number when the node keeps a default Node2D name).
+- army_manager.gd (ArmyManager): create/select/move/deselect armies, movement points reset, battle hooks, tracking/cleanup, plus event-driven nearby cache synchronization for armies/castles (create/move/remove and castle presence changes).
+- army.gd (Army): movement points, ownership, efficiency (reduce/restore, affects combat), recruitment request/assigned budget, recruitment movement state (`NORMAL`, `TRANSFER_TO_CLOSEST`, `RECRUIT_OR_DEFEND`), simple power checks, and cached `nearby_entities` (`friendly_armies`, `enemy_armies`, `castles`) keyed by entity id. `needs_recruitment(turn_number)` uses threshold-based power checks; first-turn universal recruitment is handled by `EconomyAIManager` pre-move candidate selection only. Emits `movement_points_changed(army, new_points)` whenever points reset/spent/camped so ArmyManager can refresh highlights. Includes `just_raised` flag (AI-only instant recruitment bypass on first turn; cleared after use), instanced warrior visuals (`scenes/warrior_1..6.tscn`) scaled only by map size, and `get_display_name()` to standardize log/UI labels (falls back to the roman number when the node keeps a default Node2D name).
 - ArmyManager exposes `transfer_all_soldiers(donor, receiver)` for bulk transfers, and armies keep `spawn_minimal_peasant_token()` so TurnController can leave placeholder peasants after merging stacks.
 - ArmyPathfinder.gd: pathfinding within MP horizon, multi-turn pathfinding with MP constraints.
 - **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
   - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
   - `get_resource_component_breakdown_out_of_10(region, player_id)`: Per-resource contributions that sum to resource component  
   - `get_final_army_score_raw(army, region_id)`: Returns final_raw = base_raw + random - mp_cost with full breakdown
+  - Pursuit bonus: when pursuit ratio is met, score bonus is doubled if the target has a known enemy army that is isolated (no adjacent region owned by that enemy owner), making focus-destruction targets more attractive.
 - ArmyMovementPlanner.gd: High-level army movement coordination using canonical raw final scoring from ArmyTargetScorer. Applies danger penalty as separate adjustment after raw final score.
 
 ### VisualManager.gd (VisualManager)
@@ -305,28 +321,35 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Used by GameManager and TurnController.
 
 ### Economy & Recruitment
-- BudgetManager.gd: Split player resources among armies at castles that need reinforcement; sets `army.assigned_budget` with `BudgetComposition`.
+- BudgetManager.gd: Shared recruitment allocator for both army and castle requests. Splits one combined gold/wood/iron pool across entries (weighted; deterministic largest-remainder), then splits local recruit availability per castle across all entries in that castle; sets `army.assigned_budget` and request `assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
 - RecruitmentManager.gd: Python-inspired recruitment (feasibility-picked T with spend target, ranged/peasants bounds, diversity floor, scarcity bias/boosts, low-gpr quantity bonus) using `GameParameters` exports (`RECRUIT_*`, unit boosts) and per-castle/garrison ideals; simulation and final hire share the same builder so hired counts match the decided `T`, budgets cannot go negative, and spent resources are `start - remaining`.
 - PlayerManagerNode.gd: `get_player_economy_snapshot()` aggregates balances, projected income (with food upkeep), and population totals; `get_projected_economy_for_player()` wraps it for compatibility and UI (PlayerStatusModal2) consumption.
 
 ### EconomyAIManager.gd
-- Purpose: Central, deterministic planner for AI economy decisions each turn.
-- Current Scope: Recruitment budgeting and raise army decisions (integrated with existing flow).
-- Future Hooks: region_upgrade, castle_upgrade (stubs in place).
-- Key Functions:
-  - `plan_turn(player_id, turn_number)`: Computes signals, allocates recruitment budgets (and immediately hires armies/garrison defenders), then runs the sequential economy pass (raise → build → upgrade → ore → extra castle recruitment)
-  - `perform_garrison_trickle(player_id)`: Adds free garrison units each turn per castle tier (4/6/8/10) weighted by ideal compositions; archers/crossbowmen require positive wood growth, knights/royal guard require positive iron growth, and the free pool is full/half/blocked when the castle garrison is below / up to 125% / above the global average army power cached on round start.
-  - `decide_and_raise_army(player_id, turn_number)`: Orchestrates the raise army decision and execution
-  - `pick_best_raise_region(player_id)`: Selects optimal castle for new army based on recruits and frontier proximity
-  - `should_raise_army(candidate, player)`: Global decision logic with guards and scoring, returns a `score_text` string for AI log output
-  - `execute_raise_army(player_id, region_id)`: Creates army and deducts cost
-  - `ore_checks(player_id)`: Walks all owned regions once per AI turn and spends gold on `Region.search_for_ore()` whenever the region still has attempts and the player can afford the flat ore search cost
-  - `execute_garrison_recruitment(player_id)` / `perform_garrison_trickle(player_id)`: Reuse `RecruitmentManager` so danger-listed castles (step 1) and the final “additional castle recruitment” pass both hire with the same composition logic as armies, feeding `IDEAL_CASTLE_GARRISON_COMPOSITIONS` and respecting leftover gold (only when net food growth is positive)
-- Signals computed: frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm
-- Integration: `TurnController.start_turn()` constructs `EconomyAIManager` and runs `plan_turn()` once per AI turn. The plan now executes a fixed sequence: (1) split all available gold/wood/iron across armies (plus danger castles) for recruitment, (2) attempt to raise armies, (3) build castles, (4) upgrade castles, (5) upgrade regions, (6) perform ore searches, and (7) spend any leftover resources on additional castle recruitment. After this economy pass completes, TurnController proceeds directly to army movement (no separate post-movement budget phase).
-- Castle garrison protection: During budget allocation, castles that fall below `SAFE_GARRISON_POWER_PER_LEVEL` and have enemy armies within two hops receive the same BudgetComposition treatment as armies, then pass those budgets to `RecruitmentManager.hire_garrison()` so regions fill toward their `IDEAL_CASTLE_GARRISON_COMPOSITIONS`.
-- Garrison upkeep: After AI movement resolves, any surplus gold is split among all owned castles with weights tied to castle tier (outpost..stronghold). Each castle spends its share through the same recruiter as long as the player's projected food change stays positive.
+- Purpose: Central, deterministic AI economy planner with event-driven castle-threat reserve cache.
+- Key Turn APIs:
+  - `run_pre_move_economy_with_reserve_lock(player_id, turn_number)`: computes signals, analyzes castle threats from `castle_nearby_entities`, builds one shared pre-move recruitment pool for armies + threatened castles, syncs castle reserve lock from that pool, executes early surplus-selling, deposits AI castle-upgrade savings bank (turn>1), evaluates castle upgrades, then runs remaining pre-move economy actions.
+  - `run_post_move_castle_recruitment(player_id, turn_number)`: refreshes castle threats after movement, resimulates known threats when needed (unknown->known or power change >15%), recalculates weighted reserve budgets, and executes castle recruitment.
+  - `analyze_castle_threats_pre_move(player_id)`: public pre-move threat scan hook.
+  - `get_castle_threat_snapshot(player_id)`: read-only deep-copy snapshot for movement decisioning (`threat_levels_by_region`, `threat_registry_by_region`).
+- Threat model:
+  - Per-castle threat registry keyed by `army_<id>` with `known/power/region_id/threat`.
+  - Threat classes: `small` (known attacker loses sim), `medium` (unknown power), `big` (known attacker wins sim).
+  - Values: `small=+1`, `medium=+2`, `big=+4`; `threat_level` stores max severity `0..3`.
+  - Reachability filter: enemy entries from `castle_nearby_entities` are treated as threats only if pathfinding confirms they can reach the castle within one turn (`cost <= MOVEMENT_POINTS_PER_TURN`) using `friendly_only=false`.
+  - Known enemy armies in the same region are merged into one simulated attacker.
+  - Threat logging: pre/post threat summaries now include per-threat detail lines under each castle (`id`, source region, `threat` label/level, `intel` known/unknown, tracked power) for debugging threat classification.
+- Reserve model:
+  - Only castles with `threat_level > 1` receive emergency budgets.
+  - Pre-move recruitment uses one shared budget pool across army and castle requests (castle request weight = `total_threat_value`, army weight = 1.0).
+  - Reserved resources are synced from castle shares and hard-locked during pre-move economy spending checks.
+  - Separate AI-only upgrade-bank gold lock is applied to all non-upgrade spend checks (recruitment/raise/build/ore/food-buy).
+- Trade ordering: AI trade is split into `sell_surplus` (before castle-upgrade checks) and `buy_food_deficit` (after all other economy actions).
+- Castle-upgrade savings bank: from turn 2 onward, AI deposits 10% of spendable gold into persistent per-player `ai_castle_upgrade_savings_gold`, capped to one Keep->Castle gold cost; successful castle upgrades consume bank gold first in accounting logs.
+- Integration: TurnController now runs this manager in two phases (pre-move + post-move) within one AI turn instance.
+- Recruitment budget safety: pre-move economy now clears stale recruitment flags on armies that no longer need reinforcement, re-runs allocation for any still-needing castle army that ended up without `assigned_budget`, and applies a non-null fallback budget object to prevent recruitment wait loops.
+- Army recruitment ownership guard: pre-move army recruitment/budget assignment is now restricted to armies standing in player-owned castle regions; no army recruitment is performed from enemy/neutral castles.
 
 - Priority Flow:
   - If any armies at castles need recruitment this turn → allocate recruitment budgets and skip raising/building.
@@ -347,6 +370,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
   - Recruits: `recruits_total >= AI_MIN_RECRUITS_FOR_RAISING`
   - Gold reserve: `player.gold - RAISE_ARMY_COST >= AI_RESERVE_GOLD_MIN`
   - Capacity: ignores castles already hosting `GameParameters.MAX_ARMIES_PER_REGION` armies; execution aborts (with gold restored) if a cap race happens mid-action.
+- Logging: decline reasons now include concrete gate/threshold values (for example gold reserve after raise, recruits minimum, frontier pressure minimum, or score below threshold) in the `Raise Army:` economy line.
 - Scoring factors (normalized 0..1):
   - Region/Army ratio within band `[AI_RAISE_R2A_BAND_MIN..MAX]`
   - Average MP distance of armies to candidate castle `[AI_RAISE_DIST_MIN..MAX]`
@@ -359,9 +383,10 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ## Logging
 ### AILogManager.gd (AILogManager)
 - Purpose: Writes AI-only log files under `logs/<scenario>_<timestamp>.txt` in the project root so each game session has its own text file distinct from standard debug logs.
-- API: `start_new_game_log(label)`, `log_turn_intro(turn, player_label, player_id, resources, signals, decision, region_names)`, `log_army_action(name, power, action, target)`, plus helpers for recruitment/economy notes.
+- API: `start_new_game_log(label)`, `log_turn_intro(turn, player_label, player_id, resources, signals, decision, region_names, wealth_label, upgrade_savings_gold)`, `log_army_action(name, power, action, target)`, `log_army_separator(army_number, role_label)`, `log_army_decision_tree(army_name, branch, reason)`, plus helpers for recruitment/economy notes.
 - Siege logging: records AI siege equipment purchases with SP available, ladders/rams/trebuchets, and breached/damaged wall sections.
 - Format: Turn headers (dashes + `[Turn X]` + ASCII digits) are emitted once per turn, then `[Player Y]` with matching ASCII art, full resource list, `Signals:` (frontier_pressure, underpowered_ratio, castle_spacing, bank_ratio, power_gap_norm), `Decision: ...`, `Regions: ...`, followed by `Army N [Power: Z]: Recruits|Goes to Castle|Moves` with `Target: ...` and recruitment/economy rationales.
+- Turn intro resources now include `Upgrade Saved Gold` (AI castle-upgrade savings bank) next to the standard resource balances.
 - Integration: GameManager creates the logger once per session and exposes it; TurnController logs each AI turn header, army action, recruitment success/failure, peasant hires, and the post-movement economy summary through this manager.
 
 - PlayerManagerNode.set_player_resources(): applies scenario `player_resources` dictionaries to player resource amounts (keys must match ResourcesEnum.type_to_string, e.g., "Food", "Gold").
@@ -413,8 +438,9 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 
 ## Input & UI
 - ESC Key: Opens/closes game menu modal (pauses game) when pressed during gameplay. Not available in map editor mode.
-- click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), InfoModal updates, human battle start; ESC delegates to UIManager’s single-action escape handler (close one eligible modal or deselect once). In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. Army move trigger follows `GameParameters` (`Right click` default, or `Left click` from Options): in right-click mode, RMB is move-only (drag-safe: ignores RMB drags), while LMB becomes selection/region-info behavior on friendly regions and does not attack/move into enemy regions. During tutorial `expected_action=region`, region validation runs before move-flow deselect handling so non-target region clicks are blocked. Mouse motion feeds `VisualManager` both move-target hover and neutral land hover via the new `set_map_hover_region()`, but while cursor is over `IconsModal` it clears hover highlight and hides region tooltip.
+- click_manager.gd (ClickManager): Mouse input → region hit tests → delegates to GameManager (castle placement, movement via `perform_region_entry`), InfoModal updates, human battle start; ESC delegates to UIManager’s single-action escape handler (close one eligible modal or deselect once). In editor mode, also hit-tests `Map/Ocean` polygons to select ocean regions. Army move trigger follows `GameParameters` (`Right click` default, or `Left click` from Options): in right-click mode, RMB is move-only (drag-safe: ignores RMB drags), while LMB becomes selection/region-info behavior on friendly regions and does not attack/move into enemy regions. During tutorial `expected_action=region`, region validation runs before move-flow deselect handling so non-target region clicks are blocked. Mouse motion feeds `VisualManager` both move-target hover and neutral land hover via the new `set_map_hover_region()`, but while cursor is over `IconsModal` it clears hover highlight and hides region tooltip. When `GameManager.debug_mode` is enabled, pressing `Ctrl` prints nearby cache dumps (`nearby_entities`) for armies/castles in the currently hovered valid land region.
 - Movement animation: Army moves animate smoothly using tweens (`Army.animate_move_to`) and play the walking animation during movement (speed scales with the move duration). `ArmyManager.move_army_to_region()` preserves global position across reparenting, computes the stacked target, animates to global target, awaits tween completion, then proceeds (ownership, battle checks, UI). All callers (`GameManager.perform_region_entry`, `ai_travel_to`) await move completion, so no new actions start until the animation ends. Retreat/reposition animations now respect the AI Speed modal multiplier (faster when Fast/Very Fast). After victories, the attacking army switches to the `Victory` animation node, then returns to idle on completion.
+- Recruitment-step merge hook: during `ai_travel_to`, when a recruitment-requested army makes a friendly step into a region with another friendly army, it transfers into the strongest local army (strongest→weakest ordering), leaves a 1-peasant token, and the receiver immediately rechecks recruitment need (clears request/state if no longer needed).
 - ui_manager.gd (UIManager): Central UI state; tooltip coordination; modal visibility control; polls tracked modals (info/move/prebattle/battle/message/trade/recruit/transfer/call-to-arms/next-player/battle summary/game menu) every frame to update `is_modal_active` and hide IconsModal/TurnModal whenever any are visible. ESC now performs exactly one action per press in priority order (if GameMenuModal is open: close it; otherwise Recruitment/Transfer close, then Move cancel/deselect, then Trade close, then army deselect, then InfoModal close if it is the only open modal); during active tutorial ESC is blocked except when `expected_action` is `closed_info_modal`; blocking modals (Prebattle/Battle/BattleSummary) remain until their buttons close them. Treats mountain regions like oceans for tooltip suppression. Turn modal visibility is now suppressed while an army is selected for movement (managed via ArmyManager).
 - region_tooltip.gd: Shows region information on hover. In debug mode with army target scoring active, displays same scores as overlay using ai_debug_visualizer.get_detailed_scores(). Shows canonical scoring breakdown (base+random-mp) matching overlay display.
 - select_tooltip_modal.gd: Tooltip text provider for action buttons. Uses `SelectTooltipModal` when resource costs are shown and `SelectTooltipModalNoRes` for message-only tips.
@@ -434,7 +460,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Camera Centering: Auto-centers on armies/assets. `CameraController.await_target_reached()` replaces arbitrary delays; `GameManager.ai_travel_to()` awaits camera arrival instead of timers. For human players: `GameManager._on_current_player_changed()` centers on first army or castle, but skips recentering while any battle is active to prevent mid-battle camera jumps.
 
 ## Data & Parameters
-- Player.gd: resources, name/color/id, afford/pay helpers, serialization, plus a per-player `wealth_level` flag (poor/normal/rich) that TurnController updates at the end of each turn so recruitment logic can read each player's current tier.
+- Player.gd: resources, name/color/id, afford/pay helpers, serialization, plus a per-player `wealth_level` flag (poor/normal/rich) that TurnController updates at the end of each turn so recruitment logic can read each player's current tier, and persistent AI-only `ai_castle_upgrade_savings_gold` used for protected castle-upgrade funding.
 - ResourceComposition.gd / ArmyComposition.gd: storage and math helpers; food cost, power.
 - GameParameters.gd: unit stats and costs, recruitment caps and growth, movement costs, mining/search, castle defense, AI weights, pathfinder/AI constants, icons/scales, peasants-only recruitment parameters (AI_PEA_*), camera timing constants (CAMERA_*), and the new wealth thresholds + composition tables used to pick poor/normal/rich army and garrison mixes.
 - Enums (Enums/*.gd): Regions, Levels, Soldiers, Players, Resources, Unit traits, Castle types.
@@ -484,6 +510,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Retreat Support: `get_previous_region_for_army()` exposes the last region so cameras can focus on withdrawal destinations.
 - Raised armies now spawn with 1 peasant token (set in `Army.setup_raised_army`) to avoid empty stacks on creation.
 - Selection: `move_army()` preserves the active selection when the moved army was already selected (so the selected region updates to the new location after movement).
+- Nearby cache events: exposes cache maintenance hooks (`on_army_created`, `on_army_moved`, `on_army_removed`, `on_region_castle_presence_changed`) and `debug_log_nearby_entities_for_region(region_id)` used by Ctrl-hover debug dumps.
 
 ### ai_camera_director.gd (AICameraDirector)
 - Purpose: Coordinates AI camera focus and timing around the shared `CameraController`.

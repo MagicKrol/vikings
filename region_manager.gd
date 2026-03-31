@@ -642,9 +642,11 @@ func get_available_recruits_from_region_and_neighbors(region_id: int, player_id:
 	
 	# Get the main region
 	var main_region = map_generator.get_region_container_by_id(region_id)
-	var main_recruits = main_region.get_available_recruits()
-	if main_recruits > 0:
-		recruit_sources.append({"region_id": region_id, "amount": main_recruits})
+	var main_owner: int = get_region_owner(region_id)
+	if main_owner == player_id:
+		var main_recruits = main_region.get_available_recruits()
+		if main_recruits > 0:
+			recruit_sources.append({"region_id": region_id, "amount": main_recruits})
 	
 	# Get neighboring regions owned by the same player
 	var neighbors = get_neighbor_regions(region_id)

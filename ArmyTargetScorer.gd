@@ -423,8 +423,80 @@ func _get_pursuit_bonus(army: Army, region_id: int) -> float:
 		assault_multiplier = GameParameters.AI_CASTLE_ASSAULT_EXPECTED_MULTIPLIER
 	var meets_ratio := not game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_PURSUIT_POWER_RATIO)
 	if meets_ratio:
-		return float(GameParameters.AI_PURSUIT_SCORE_BONUS)
+		var pursue_bonus: float = float(GameParameters.AI_PURSUIT_SCORE_BONUS)
+		if _is_known_enemy_army_killable_and_isolated(army, region_id, defender_power):
+			return pursue_bonus * 2.0
+		return pursue_bonus
 	return 0.0
+
+func _is_known_enemy_army_killable_and_isolated(attacker: Army, region_id: int, defender_power: float) -> bool:
+	if attacker == null or not is_instance_valid(attacker):
+		return false
+	if defender_power <= 0.0:
+		return false
+	var observer_id: int = attacker.get_player_id()
+	var enemy_owner_id: int = _get_known_enemy_owner_for_target(observer_id, region_id)
+	if enemy_owner_id <= 0:
+		return false
+	if not _target_has_known_enemy_army(observer_id, region_id):
+		return false
+	if not _target_enemy_army_isolated(enemy_owner_id, region_id):
+		return false
+	var attacker_power: float = float(attacker.get_army_power())
+	if attacker_power <= 0.0:
+		return false
+	var ratio: float = attacker_power / max(1.0, defender_power)
+	return ratio >= GameParameters.AI_PURSUIT_POWER_RATIO
+
+func _get_known_enemy_owner_for_target(observer_id: int, region_id: int) -> int:
+	var target_owner_id: int = region_manager.get_region_owner(region_id)
+	if target_owner_id > 0 and target_owner_id != observer_id:
+		return target_owner_id
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return -1
+	for child in region_container.get_children():
+		if not (child is Army):
+			continue
+		var enemy_army: Army = child
+		if enemy_army.get_player_id() == observer_id:
+			continue
+		var key := Player.get_enemy_tracker_key(enemy_army)
+		if key == "":
+			continue
+		var tracked_power: int = player_manager.get_tracked_enemy_power(observer_id, key)
+		if tracked_power < 0:
+			continue
+		return enemy_army.get_player_id()
+	return -1
+
+func _target_has_known_enemy_army(observer_id: int, region_id: int) -> bool:
+	var region_container = map_generator.get_region_container_by_id(region_id)
+	if region_container == null:
+		return false
+	for child in region_container.get_children():
+		if not (child is Army):
+			continue
+		var enemy_army: Army = child
+		if enemy_army.get_player_id() == observer_id:
+			continue
+		var key := Player.get_enemy_tracker_key(enemy_army)
+		if key == "":
+			continue
+		var tracked_power: int = player_manager.get_tracked_enemy_power(observer_id, key)
+		if tracked_power >= 0:
+			return true
+	return false
+
+func _target_enemy_army_isolated(enemy_owner_id: int, region_id: int) -> bool:
+	if enemy_owner_id <= 0:
+		return false
+	var neighbors: Array = region_manager.get_neighbor_regions(region_id)
+	for neighbor_id_variant in neighbors:
+		var neighbor_id: int = int(neighbor_id_variant)
+		if region_manager.get_region_owner(neighbor_id) == enemy_owner_id:
+			return false
+	return true
 
 func _get_known_enemy_power(observer_id: int, region_id: int) -> Dictionary:
 	var region_container = map_generator.get_region_container_by_id(region_id)

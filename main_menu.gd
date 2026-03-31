@@ -430,7 +430,8 @@ func _on_custom_map_select_pressed():
 		return
 	var size_code: String = selected_map_item.get("size", "S")
 	var map_path := "res://mapdata/" + map_file + ".json"
-	var size_str := _size_full_name(size_code).to_lower()
+	var fallback_size_str: String = _size_full_name(size_code).to_lower()
+	var size_str: String = String(selected_map_item.get("map_size_exact", fallback_size_str))
 	var selected_victory: String = _get_selected_custom_map_victory()
 	get_tree().set_meta("start_payload", {
 		"type": "map",
@@ -1149,10 +1150,12 @@ func _gather_map_items() -> Array:
 					file_name = dir.get_next()
 					continue
 				var size_code := _extract_size_code(base)
+				var exact_size: String = _extract_exact_size_name(base)
 				items.append({
 					"file": base,
 					"display_name": _display_name_for_map(base),
-					"size": size_code
+					"size": size_code,
+					"map_size_exact": exact_size
 				})
 			file_name = dir.get_next()
 		dir.list_dir_end()
@@ -1223,6 +1226,17 @@ func _extract_size_code(base_name: String) -> String:
 			return "L"
 		_:
 			return "S"
+
+func _extract_exact_size_name(base_name: String) -> String:
+	var parts: Array = base_name.split("-")
+	if parts.is_empty():
+		return "small"
+	var size_part: String = String(parts[parts.size() - 1]).to_lower()
+	match size_part:
+		"xtiny", "tiny", "small", "medium", "large", "huge":
+			return size_part
+		_:
+			return "small"
 
 func _size_full_name(code: String) -> String:
 	match code:

@@ -29,10 +29,10 @@ enum MapSize {
 
 # Map size scaling factors (SMALL is baseline 1.0)
 const MAP_SIZE_SCALES := {
-	MapSize.TINY: 1.436486,      # Tiny map size: 504
+	MapSize.TINY: 38.0/26.0,     # ~1.461538
 	MapSize.SMALL: 1.0,          # Baseline
-	MapSize.MEDIUM: 0.703062,    # Medium map size: 2104
-	MapSize.LARGE: 0.505064,     # Large map size: 4077
+	MapSize.MEDIUM: 18.0/26.0,   # ~0.692308
+	MapSize.LARGE: 12.8/26.0,    # ~0.492308
 	MapSize.HUGE: 9.0/26.0,      # ~0.346154
 	MapSize.XTINY: 55.0/26.0     # ~2.115385
 }
@@ -359,6 +359,8 @@ func _render_from_json() -> void:
 	# Sync land polygons with the generated noisy borders
 	_rebuild_region_polygons_from_borders()
 	_ensure_neutral_overlays_for_all_regions()
+	_build_non_ocean_graph_data()
+	_compute_nearby_regions_for_all_land(2)
 
 	# Build adjacency graph for non-ocean regions and draw overlay
 	_build_and_draw_region_graph_overlay()
@@ -816,16 +818,12 @@ func _get_neutral_overlay_color() -> Color:
 
 
 func _build_and_draw_region_graph_overlay() -> void:
+	if non_ocean_graph.is_empty():
+		_build_non_ocean_graph_data()
+
 	# Skip if graph display is disabled
 	if not show_region_graph:
 		return
-		
-	# Build adjacency graph for non-ocean regions
-	var Graph := load("res://region_graph.gd")
-	if Graph == null:
-		return
-	non_ocean_graph = Graph.build_non_ocean_adjacency(regions, edges)
-	non_ocean_centers = Graph.compute_region_centers(regions)
 
 	# Create overlay node to hold markers and lines
 	var overlay := Node2D.new()
@@ -870,6 +868,41 @@ func _build_and_draw_region_graph_overlay() -> void:
 			line.width = 1.5 * polygon_scale
 			line.default_color = Color(0, 0, 0, 0.5)
 			overlay.add_child(line)
+
+func _build_non_ocean_graph_data() -> void:
+	var graph_script = load("res://region_graph.gd")
+	non_ocean_graph = graph_script.build_non_ocean_adjacency(regions, edges)
+	non_ocean_centers = graph_script.compute_region_centers(regions)
+
+func _compute_nearby_regions_for_all_land(step_depth: int) -> void:
+	for region_id in region_container_by_id.keys():
+		var region_node: Region = region_container_by_id[region_id] as Region
+		if region_node.is_ocean_region() or region_node.get_region_type() == RegionTypeEnum.Type.MOUNTAINS:
+			region_node.nearby_regions = []
+			continue
+		region_node.nearby_regions = _get_regions_within_steps(region_node.get_region_id(), step_depth)
+
+func _get_regions_within_steps(start_region_id: int, max_steps: int) -> Array[int]:
+	var visited: Dictionary = {}
+	var queue: Array[Array] = [[start_region_id, 0]]
+	var result: Array[int] = []
+	visited[start_region_id] = true
+	while not queue.is_empty():
+		var item: Array = queue.pop_front()
+		var current_region_id: int = int(item[0])
+		var distance: int = int(item[1])
+		result.append(current_region_id)
+		if distance >= max_steps:
+			continue
+		var neighbors: Array = non_ocean_graph.get(current_region_id, [])
+		for neighbor in neighbors:
+			var neighbor_id: int = int(neighbor)
+			if visited.has(neighbor_id):
+				continue
+			visited[neighbor_id] = true
+			queue.append([neighbor_id, distance + 1])
+	result.sort()
+	return result
 
 func _create_ocean_frame() -> void:
 	# Create a textured frame around the map using 4 rectangles

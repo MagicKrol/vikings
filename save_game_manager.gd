@@ -377,6 +377,8 @@ static func _apply_armies_from_save(map_generator: MapGenerator, army_manager: A
 			army.efficiency = int(entry.get("efficiency", 100))
 			army.recruitment_requested = bool(entry.get("recruitment_requested", false))
 			army.just_raised = bool(entry.get("just_raised", false))
+			var recruitment_state: int = int(entry.get("recruitment_move_state", int(Army.RecruitmentMoveState.NORMAL)))
+			army.set_recruitment_move_state(recruitment_state as Army.RecruitmentMoveState)
 			_apply_composition(army.get_composition(), entry.get("composition", {}))
 			_apply_composition(army.get_wounded_composition(), entry.get("wounded_composition", {}))
 
@@ -435,6 +437,7 @@ static func _serialize_army(army: Army) -> Dictionary:
 		"efficiency": army.get_efficiency(),
 		"recruitment_requested": army.is_recruitment_requested(),
 		"just_raised": army.just_raised,
+		"recruitment_move_state": int(army.get_recruitment_move_state()),
 		"composition": _serialize_composition(army.get_composition()),
 		"wounded_composition": _serialize_composition(army.get_wounded_composition())
 	}

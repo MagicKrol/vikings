@@ -82,7 +82,7 @@ const AI_PURSUIT_SCORE_BONUS = 5.0			# Score bonus for high-ratio pursuit target
 const AI_CASTLE_ATTACK_MIN_RATIO = 1.5		# Minimum ratio required to consider attacking castles
 const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider attacking non-castles
 const AI_MOVE_SPEED_NORMAL = 1.0
-const AI_MOVE_SPEED_FAST = 3.0
+const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
 
 enum ArmyMoveTrigger {

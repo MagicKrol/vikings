@@ -105,6 +105,264 @@ func _find_army_modal() -> void:
 	# This will be called later when the scene is ready
 	# For now, we'll set it to null and find it when needed
 
+func _build_empty_nearby_entities() -> Dictionary:
+	return {
+		"friendly_armies": {},
+		"enemy_armies": {},
+		"castles": {}
+	}
+
+func _get_army_entity_id(army: Army) -> String:
+	return "army_" + str(army.get_instance_id())
+
+func _get_castle_entity_id(region: Region) -> String:
+	return "castle_" + str(region.get_region_id())
+
+func _get_region_nearby_ids(region: Region) -> Array[int]:
+	var nearby_ids: Array[int] = []
+	if region.nearby_regions.is_empty():
+		nearby_ids.append(region.get_region_id())
+		return nearby_ids
+	for region_id in region.nearby_regions:
+		nearby_ids.append(int(region_id))
+	return nearby_ids
+
+func _get_player_manager() -> PlayerManagerNode:
+	var game_manager: GameManager = _get_game_manager()
+	return game_manager.get_player_manager()
+
+func _ensure_army_nearby_entities(army: Army) -> void:
+	if not army.nearby_entities.has("friendly_armies"):
+		army.nearby_entities = _build_empty_nearby_entities()
+
+func _ensure_castle_nearby_entities(region: Region) -> void:
+	if not region.castle_nearby_entities.has("friendly_armies"):
+		region.castle_nearby_entities = _build_empty_nearby_entities()
+
+func _upsert_army_in_army_cache(target_army: Army, observed_army: Army) -> void:
+	if target_army == observed_army:
+		return
+	_ensure_army_nearby_entities(target_army)
+	var observed_id: String = _get_army_entity_id(observed_army)
+	var observed_region: Region = observed_army.get_parent() as Region
+	var observed_region_id: int = observed_region.get_region_id()
+	var observed_player_id: int = observed_army.get_player_id()
+	var entry: Dictionary = {
+		"id": observed_id,
+		"region_id": observed_region_id,
+		"player_id": observed_player_id
+	}
+	if target_army.get_player_id() == observed_player_id:
+		entry["known"] = true
+		entry["power"] = observed_army.get_army_power()
+		target_army.nearby_entities["friendly_armies"][observed_id] = entry
+		target_army.nearby_entities["enemy_armies"].erase(observed_id)
+		return
+	var tracker_key: String = Player.get_enemy_tracker_key(observed_army)
+	var tracked_power: int = _get_player_manager().get_tracked_enemy_power(target_army.get_player_id(), tracker_key)
+	var is_known: bool = tracked_power >= 0
+	entry["known"] = is_known
+	entry["power"] = tracked_power if is_known else -1
+	target_army.nearby_entities["enemy_armies"][observed_id] = entry
+	target_army.nearby_entities["friendly_armies"].erase(observed_id)
+
+func _remove_army_from_army_cache(target_army: Army, observed_army_id: String) -> void:
+	_ensure_army_nearby_entities(target_army)
+	target_army.nearby_entities["friendly_armies"].erase(observed_army_id)
+	target_army.nearby_entities["enemy_armies"].erase(observed_army_id)
+
+func _upsert_army_in_castle_cache(target_region: Region, observed_army: Army) -> void:
+	_ensure_castle_nearby_entities(target_region)
+	var observed_id: String = _get_army_entity_id(observed_army)
+	var observed_region: Region = observed_army.get_parent() as Region
+	var observed_region_id: int = observed_region.get_region_id()
+	var observed_player_id: int = observed_army.get_player_id()
+	var target_owner_id: int = region_manager.get_region_owner(target_region.get_region_id())
+	var entry: Dictionary = {
+		"id": observed_id,
+		"region_id": observed_region_id,
+		"player_id": observed_player_id
+	}
+	if observed_player_id == target_owner_id:
+		entry["known"] = true
+		entry["power"] = observed_army.get_army_power()
+		target_region.castle_nearby_entities["friendly_armies"][observed_id] = entry
+		target_region.castle_nearby_entities["enemy_armies"].erase(observed_id)
+		return
+	var tracker_key: String = Player.get_enemy_tracker_key(observed_army)
+	var tracked_power: int = _get_player_manager().get_tracked_enemy_power(target_owner_id, tracker_key)
+	var is_known: bool = tracked_power >= 0
+	entry["known"] = is_known
+	entry["power"] = tracked_power if is_known else -1
+	target_region.castle_nearby_entities["enemy_armies"][observed_id] = entry
+	target_region.castle_nearby_entities["friendly_armies"].erase(observed_id)
+
+func _remove_army_from_castle_cache(target_region: Region, observed_army_id: String) -> void:
+	_ensure_castle_nearby_entities(target_region)
+	target_region.castle_nearby_entities["friendly_armies"].erase(observed_army_id)
+	target_region.castle_nearby_entities["enemy_armies"].erase(observed_army_id)
+
+func _upsert_castle_in_army_cache(target_army: Army, observed_castle_region: Region) -> void:
+	_ensure_army_nearby_entities(target_army)
+	var castle_id: String = _get_castle_entity_id(observed_castle_region)
+	var entry: Dictionary = {
+		"id": castle_id,
+		"region_id": observed_castle_region.get_region_id(),
+		"owner_id": region_manager.get_region_owner(observed_castle_region.get_region_id()),
+		"castle_type": CastleTypeEnum.type_to_string(observed_castle_region.get_castle_type())
+	}
+	target_army.nearby_entities["castles"][castle_id] = entry
+
+func _remove_castle_from_army_cache(target_army: Army, castle_id: String) -> void:
+	_ensure_army_nearby_entities(target_army)
+	target_army.nearby_entities["castles"].erase(castle_id)
+
+func _upsert_castle_in_castle_cache(target_region: Region, observed_castle_region: Region) -> void:
+	_ensure_castle_nearby_entities(target_region)
+	var castle_id: String = _get_castle_entity_id(observed_castle_region)
+	if castle_id == _get_castle_entity_id(target_region):
+		return
+	var entry: Dictionary = {
+		"id": castle_id,
+		"region_id": observed_castle_region.get_region_id(),
+		"owner_id": region_manager.get_region_owner(observed_castle_region.get_region_id()),
+		"castle_type": CastleTypeEnum.type_to_string(observed_castle_region.get_castle_type())
+	}
+	target_region.castle_nearby_entities["castles"][castle_id] = entry
+
+func _remove_castle_from_castle_cache(target_region: Region, castle_id: String) -> void:
+	_ensure_castle_nearby_entities(target_region)
+	target_region.castle_nearby_entities["castles"].erase(castle_id)
+
+func _upsert_army_for_entities_in_region(observed_army: Army, region_id: int) -> void:
+	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
+	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
+	for target_army in armies_in_region:
+		if target_army == observed_army:
+			continue
+		_upsert_army_in_army_cache(target_army, observed_army)
+	if target_region.has_castle():
+		_upsert_army_in_castle_cache(target_region, observed_army)
+
+func _remove_army_for_entities_in_region(observed_army_id: String, region_id: int) -> void:
+	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
+	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
+	for target_army in armies_in_region:
+		_remove_army_from_army_cache(target_army, observed_army_id)
+	if target_region.has_castle():
+		_remove_army_from_castle_cache(target_region, observed_army_id)
+
+func _upsert_castle_for_entities_in_region(observed_castle_region: Region, region_id: int) -> void:
+	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
+	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
+	for target_army in armies_in_region:
+		_upsert_castle_in_army_cache(target_army, observed_castle_region)
+	if target_region.has_castle():
+		_upsert_castle_in_castle_cache(target_region, observed_castle_region)
+
+func _remove_castle_for_entities_in_region(observed_castle_id: String, region_id: int) -> void:
+	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
+	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
+	for target_army in armies_in_region:
+		_remove_castle_from_army_cache(target_army, observed_castle_id)
+	if target_region.has_castle():
+		_remove_castle_from_castle_cache(target_region, observed_castle_id)
+
+func _rebuild_nearby_entities_for_army(army: Army) -> void:
+	army.reset_nearby_entities()
+	var army_region: Region = army.get_parent() as Region
+	var nearby_ids: Array[int] = _get_region_nearby_ids(army_region)
+	for nearby_region_id in nearby_ids:
+		var nearby_region: Region = map_generator.get_region_container_by_id(nearby_region_id) as Region
+		var armies_in_region: Array[Army] = get_armies_in_region(nearby_region)
+		for other_army in armies_in_region:
+			if other_army == army:
+				continue
+			_upsert_army_in_army_cache(army, other_army)
+		if nearby_region.has_castle():
+			_upsert_castle_in_army_cache(army, nearby_region)
+
+func _rebuild_nearby_entities_for_castle(castle_region: Region) -> void:
+	if not castle_region.has_castle():
+		castle_region.clear_castle_nearby_entities()
+		return
+	castle_region.clear_castle_nearby_entities()
+	var nearby_ids: Array[int] = _get_region_nearby_ids(castle_region)
+	for nearby_region_id in nearby_ids:
+		var nearby_region: Region = map_generator.get_region_container_by_id(nearby_region_id) as Region
+		var armies_in_region: Array[Army] = get_armies_in_region(nearby_region)
+		for nearby_army in armies_in_region:
+			_upsert_army_in_castle_cache(castle_region, nearby_army)
+		if nearby_region.has_castle():
+			_upsert_castle_in_castle_cache(castle_region, nearby_region)
+
+func on_army_created(army: Army, region: Region) -> void:
+	var nearby_ids: Array[int] = _get_region_nearby_ids(region)
+	for region_id in nearby_ids:
+		_upsert_army_for_entities_in_region(army, region_id)
+	_rebuild_nearby_entities_for_army(army)
+
+func on_army_moved(army: Army, old_region: Region, new_region: Region) -> void:
+	var old_nearby_ids: Array[int] = _get_region_nearby_ids(old_region)
+	var new_nearby_ids: Array[int] = _get_region_nearby_ids(new_region)
+	var old_lookup: Dictionary = {}
+	var new_lookup: Dictionary = {}
+	for region_id in old_nearby_ids:
+		old_lookup[region_id] = true
+	for region_id in new_nearby_ids:
+		new_lookup[region_id] = true
+	var removed_region_ids: Array[int] = []
+	var added_region_ids: Array[int] = []
+	var overlap_region_ids: Array[int] = []
+	for region_id in old_lookup.keys():
+		var old_id: int = int(region_id)
+		if not new_lookup.has(old_id):
+			removed_region_ids.append(old_id)
+	for region_id in new_lookup.keys():
+		var new_id: int = int(region_id)
+		if not old_lookup.has(new_id):
+			added_region_ids.append(new_id)
+		else:
+			overlap_region_ids.append(new_id)
+	var army_id: String = _get_army_entity_id(army)
+	for region_id in removed_region_ids:
+		_remove_army_for_entities_in_region(army_id, region_id)
+	for region_id in added_region_ids:
+		_upsert_army_for_entities_in_region(army, region_id)
+	for region_id in overlap_region_ids:
+		_upsert_army_for_entities_in_region(army, region_id)
+	_rebuild_nearby_entities_for_army(army)
+
+func on_army_removed(army: Army, old_region: Region) -> void:
+	var nearby_ids: Array[int] = _get_region_nearby_ids(old_region)
+	var army_id: String = _get_army_entity_id(army)
+	for region_id in nearby_ids:
+		_remove_army_for_entities_in_region(army_id, region_id)
+	army.reset_nearby_entities()
+
+func on_region_castle_presence_changed(region: Region, had_castle: bool, has_castle: bool) -> void:
+	var nearby_ids: Array[int] = _get_region_nearby_ids(region)
+	var castle_id: String = _get_castle_entity_id(region)
+	if had_castle and not has_castle:
+		for nearby_region_id in nearby_ids:
+			_remove_castle_for_entities_in_region(castle_id, nearby_region_id)
+		region.clear_castle_nearby_entities()
+		return
+	if has_castle:
+		for nearby_region_id in nearby_ids:
+			_upsert_castle_for_entities_in_region(region, nearby_region_id)
+		_rebuild_nearby_entities_for_castle(region)
+
+func debug_log_nearby_entities_for_region(region_id: int) -> void:
+	var region: Region = map_generator.get_region_container_by_id(region_id) as Region
+	print("[NearbyEntities] Hovered region " + region.get_region_name() + " (#" + str(region.get_region_id()) + ")")
+	print("[NearbyEntities] nearby_regions=" + str(region.nearby_regions))
+	var armies_in_region: Array[Army] = get_armies_in_region(region)
+	for army in armies_in_region:
+		print("[NearbyEntities] " + army.get_display_name() + " " + _get_army_entity_id(army) + " => " + str(army.nearby_entities))
+	if region.has_castle():
+		print("[NearbyEntities] " + _get_castle_entity_id(region) + " => " + str(region.castle_nearby_entities))
+
 func create_army(region_container: Node, player_id: int, is_raised: bool = false) -> Army:
 	"""Create a new army in the specified region"""
 	if is_raised:
@@ -155,6 +413,8 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 
 	if player_id == _ready_highlight_player_id:
 		update_ready_highlights_for_player(player_id)
+
+	on_army_created(army, region_container as Region)
 
 	return army
 
@@ -426,6 +686,7 @@ func move_army_to_region(target_region_container: Node) -> bool:
 	moving_army.get_parent().remove_child(moving_army)
 	target_region_container.add_child(moving_army)
 	moving_army.global_position = start_global
+	on_army_moved(moving_army, source_region as Region, target_region_container as Region)
 
 	# Reposition remaining armies in source region (selected army removed)
 	_apply_army_offsets_for_region(source_region)
@@ -969,6 +1230,8 @@ func remove_destroyed_armies() -> void:
 					i += 1
 					continue
 				DebugLogger.log("ArmyManagement", "Removing destroyed army: " + army.name)
+				var old_region: Region = army.get_parent() as Region
+				on_army_removed(army, old_region)
 				# Remove from scene
 				if army.get_parent() != null:
 					army.get_parent().remove_child(army)
@@ -989,6 +1252,8 @@ func remove_army_from_tracking(army: Army) -> void:
 	"""Remove a specific army from tracking (used when army is defeated)"""
 	if army == null:
 		return
+	var old_region: Region = army.get_parent() as Region
+	on_army_removed(army, old_region)
 	
 	var player_id = army.get_player_id()
 	if armies_by_player.has(player_id):
@@ -1038,6 +1303,7 @@ func retreat_army_to_previous_region(army: Army) -> void:
 		current_parent.remove_child(army)
 	previous_region.add_child(army)
 	army.global_position = start_global
+	on_army_moved(army, current_parent as Region, previous_region)
 	# Reposition others in source, compute and animate target for this army, then apply others in dest
 	if current_parent != null:
 		_apply_army_offsets_for_region(current_parent)

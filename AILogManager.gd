@@ -19,7 +19,7 @@ func start_new_game_log(raw_label: String) -> void:
 	header_file.store_string("AI Log File: %s\n\n" % current_game_label)
 	header_file.close()
 
-func log_turn_intro(turn_number: int, player_label: String, player_id: int, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "") -> void:
+func log_turn_intro(turn_number: int, player_label: String, player_id: int, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "", upgrade_savings_gold: int = 0) -> void:
 	if turn_number != last_logged_turn:
 		last_logged_turn = turn_number
 		_append_turn_header(turn_number)
@@ -33,6 +33,7 @@ func log_turn_intro(turn_number: int, player_label: String, player_id: int, reso
 	lines.append("Resources:")
 	for resource_type in ResourcesEnum.get_all_types():
 		lines.append("%s: %d" % [ResourcesEnum.type_to_string(resource_type), int(resources.get(resource_type, 0))])
+	lines.append("Upgrade Saved Gold: %d" % upgrade_savings_gold)
 	lines.append("")
 	lines.append("Signals:")
 	lines.append("frontier_pressure: %.3f" % float(signals.get("frontier_pressure", 0.0)))
@@ -162,6 +163,21 @@ func log_castle_recruitment_summary(header: String, entries: Array, fallback_rea
 
 func log_army_detail(detail: String) -> void:
 	_append_lines([detail])
+
+func log_army_separator(army_number: String, role_label: String) -> void:
+	var safe_number: String = army_number.strip_edges()
+	if safe_number == "":
+		safe_number = "?"
+	var safe_role: String = role_label.strip_edges()
+	if safe_role == "":
+		safe_role = "Unknown"
+	_append_lines(["-------------- ARMY %s (%s) -------------" % [safe_number, safe_role]])
+
+func log_army_decision_tree(army_name: String, branch: String, reason: String) -> void:
+	var safe_reason: String = reason
+	if safe_reason == "":
+		safe_reason = "n/a"
+	_append_lines(["DecisionTree: %s -> %s (%s)" % [army_name, branch, safe_reason]])
 
 func log_siege_preparation(points: int, wood_available: int, wood_limit_label: String, purchases: Dictionary, breached: int, damaged: int) -> void:
 	var lines: Array[String] = []

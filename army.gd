@@ -45,14 +45,22 @@ var movement_points: int = GameParameters.MOVEMENT_POINTS_PER_TURN
 var number: String = ""
 var efficiency: int = 100  # Efficiency percentage (10-100), affects hit chances in battle
 
+enum RecruitmentMoveState {
+	NORMAL,
+	TRANSFER_TO_CLOSEST,
+	RECRUIT_OR_DEFEND
+}
+
 # Recruitment system
 var recruitment_requested: bool = false  # Flag for requesting recruitment budget
 var assigned_budget: BudgetComposition = null  # Budget allocated for this army's recruitment
 var just_raised: bool = false  # Marks freshly raised AI armies for instant recruitment bypass
+var recruitment_move_state: RecruitmentMoveState = RecruitmentMoveState.NORMAL
 
 # Army composition - soldiers in this army
 var composition: ArmyComposition
 var wounded_composition: ArmyComposition
+var nearby_entities: Dictionary = {}
 var _animations: AnimatedSprite2D
 var _victory: AnimatedSprite2D
 var _animation_speed_scale: float = 1.0
@@ -74,8 +82,10 @@ func setup_army(new_player_id: int, roman_number: String, starting_composition: 
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	wounded_composition = ArmyComposition.new()
+	nearby_entities = _build_empty_nearby_entities()
 	number = roman_number
 	just_raised = false
+	recruitment_move_state = RecruitmentMoveState.NORMAL
 	
 	# Set player-specific warrior visual
 	_set_warrior_visual(player_id)
@@ -97,8 +107,10 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	wounded_composition = ArmyComposition.new()
+	nearby_entities = _build_empty_nearby_entities()
 	number = roman_number
 	just_raised = true
+	recruitment_move_state = RecruitmentMoveState.NORMAL
 	
 	# Set player-specific warrior visual
 	_set_warrior_visual(player_id)
@@ -335,6 +347,12 @@ func get_assigned_budget() -> BudgetComposition:
 	"""Get the budget assigned to this army"""
 	return assigned_budget
 
+func set_recruitment_move_state(state: RecruitmentMoveState) -> void:
+	recruitment_move_state = state
+
+func get_recruitment_move_state() -> RecruitmentMoveState:
+	return recruitment_move_state
+
 func needs_recruitment(turn_number: int = 1) -> bool:
 	"""Check if this army needs recruitment based on power threshold"""
 	var base_max := 20.0
@@ -351,6 +369,16 @@ func get_peasant_ratio() -> float:
 		return 0.0
 	var peasant_count = get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
 	return float(peasant_count) / float(total_soldiers)
+
+func _build_empty_nearby_entities() -> Dictionary:
+	return {
+		"friendly_armies": {},
+		"enemy_armies": {},
+		"castles": {}
+	}
+
+func reset_nearby_entities() -> void:
+	nearby_entities = _build_empty_nearby_entities()
 
 func compute_peasant_need(target_prop: float) -> int:
 	"""Calculate how many peasants are needed to reach target proportion"""
