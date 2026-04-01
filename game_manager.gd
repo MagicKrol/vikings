@@ -2536,10 +2536,10 @@ func simulate_siege_battle(attacker: Army, target_region: Region, use_full_wood:
 		"uncapped_wood": use_full_wood
 	}
 
-func simulate_castle_threat_battle(attacking_armies: Array[Army], target_region: Region, use_full_wood: bool = false) -> Dictionary:
+func simulate_castle_threat_battle(attacking_armies: Array[Army], target_region: Region, use_full_wood: bool = false, include_defender_armies: bool = true) -> Dictionary:
 	var merged_attacker: ArmyComposition = _merge_attacker_army_composition(attacking_armies)
 	var reference_attacker: Army = attacking_armies[0]
-	var defenders := _build_simulated_defenders(target_region, -1)
+	var defenders := _build_simulated_defenders(target_region, -1, include_defender_armies)
 	var siege_sim: Dictionary = _simulate_ai_siege_preparation_for_composition(merged_attacker, reference_attacker.get_player_id(), target_region, use_full_wood)
 	var siege_payload: Dictionary = siege_sim.get("siege_payload", {})
 	var attacker_effectiveness_ratio: float = float(siege_sim.get("attacker_effectiveness_ratio", 1.0))
@@ -2595,18 +2595,19 @@ func _get_average_efficiency_for_armies(attacking_armies: Array[Army]) -> int:
 		total_efficiency += army.get_efficiency()
 	return int(round(float(total_efficiency) / float(max(1, attacking_armies.size()))))
 
-func _build_simulated_defenders(target_region: Region, observer_id: int = -1) -> Dictionary:
+func _build_simulated_defenders(target_region: Region, observer_id: int = -1, include_defender_armies: bool = true) -> Dictionary:
 	var owner_id: int = _region_manager.get_region_owner(target_region.get_region_id())
 	var defender_armies: Array[ArmyComposition] = []
-	for child in target_region.get_children():
-		if child is Army and child.get_player_id() == owner_id:
-			var army_node := child as Army
-			if observer_id != -1:
-				var tracker_key := Player.get_enemy_tracker_key(army_node)
-				var tracked_power := player_manager.get_tracked_enemy_power(observer_id, tracker_key)
-				if tracked_power < 0:
-					continue
-			defender_armies.append(army_node.get_composition().duplicate())
+	if include_defender_armies:
+		for child in target_region.get_children():
+			if child is Army and child.get_player_id() == owner_id:
+				var army_node := child as Army
+				if observer_id != -1:
+					var tracker_key := Player.get_enemy_tracker_key(army_node)
+					var tracked_power := player_manager.get_tracked_enemy_power(observer_id, tracker_key)
+					if tracked_power < 0:
+						continue
+				defender_armies.append(army_node.get_composition().duplicate())
 	var garrison_source: ArmyComposition = target_region.get_garrison()
 	var garrison_copy: ArmyComposition = ArmyComposition.new()
 	var tracked_garrison := -1

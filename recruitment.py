@@ -6,14 +6,14 @@ from typing import Dict, Tuple
 
 UNITS = {
 	"peasants": {"gold": 1, "wood": 0, "iron": 0},
-	"spearmen": {"gold": 1, "wood": 0, "iron": 0},
+	"spearmen": {"gold": 2, "wood": 0, "iron": 0},
 	"swordsmen": {"gold": 3, "wood": 0, "iron": 0},
-	"archers": {"gold": 4, "wood": 1, "iron": 0},
-	"crossbowmen": {"gold": 4, "wood": 1, "iron": 0},
-	"horsemen": {"gold": 5, "wood": 0, "iron": 0},
-	"knights": {"gold": 10, "wood": 0, "iron": 1},
-	"mounted_knights": {"gold": 15, "wood": 0, "iron": 1},
-	"royal_guard": {"gold": 20, "wood": 0, "iron": 1},
+	"archers": {"gold": 3, "wood": 1, "iron": 0},
+	"crossbowmen": {"gold": 3, "wood": 1, "iron": 0},
+	"horsemen": {"gold": 4, "wood": 0, "iron": 0},
+	"knights": {"gold": 6, "wood": 0, "iron": 1},
+	"mounted_knights": {"gold": 9, "wood": 0, "iron": 1},
+	"royal_guard": {"gold": 12, "wood": 0, "iron": 2},
 }
 
 TIERS = {

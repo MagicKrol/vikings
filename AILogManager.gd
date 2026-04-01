@@ -19,7 +19,7 @@ func start_new_game_log(raw_label: String) -> void:
 	header_file.store_string("AI Log File: %s\n\n" % current_game_label)
 	header_file.close()
 
-func log_turn_intro(turn_number: int, player_label: String, player_id: int, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "", upgrade_savings_gold: int = 0) -> void:
+func log_turn_intro(turn_number: int, player_label: String, player_id: int, resources: Dictionary, signals: Dictionary, decision: String, region_names: Array, wealth_label: String = "", upgrade_savings_gold: int = 0, castle_garrison_lines: Array[String] = []) -> void:
 	if turn_number != last_logged_turn:
 		last_logged_turn = turn_number
 		_append_turn_header(turn_number)
@@ -41,6 +41,10 @@ func log_turn_intro(turn_number: int, player_label: String, player_id: int, reso
 	lines.append("castle_spacing: %.3f" % float(signals.get("castle_spacing", 0.0)))
 	lines.append("bank_ratio: %.3f" % float(signals.get("bank_ratio", 0.0)))
 	lines.append("power_gap_norm: %.3f" % float(signals.get("power_gap_norm", 0.0)))
+	if not castle_garrison_lines.is_empty():
+		lines.append("")
+		for castle_line in castle_garrison_lines:
+			lines.append(castle_line)
 	lines.append("")
 	lines.append("______ ECONOMY ______")
 	_append_lines(lines)

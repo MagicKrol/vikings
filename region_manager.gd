@@ -590,15 +590,20 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 						var recruits_for_score: int = int(float(total_recruits) / float(requesting_armies))
 						var distance_score := float(recruits_for_score) / distance_for_score
 						var level_bonus := 1.0 + (0.2 * float(castle_level))
-						var total_score := distance_score * level_bonus
 						var region_node = map_generator.get_region_container_by_id(current_id) as Region
-						var region_name := region_node.get_region_name() if region_node else "Region %d" % current_id
+						var region_name: String = region_node.get_region_name()
+						var garrison_power: int = region_node.get_garrison_strength()
+						var garrison_power_bonus: int = 0
+						if needy_armies == 0 and _has_no_nearby_enemy_threats(region_node):
+							garrison_power_bonus = garrison_power
+						var total_score := (distance_score * level_bonus) + float(garrison_power_bonus)
 						var candidate_info := {
 							"region_id": current_id,
 							"region_name": region_name,
 							"distance": distance,
 							"recruits": total_recruits,
 							"needs_recruitment_armies": needy_armies,
+							"power": garrison_power,
 							"castle_level": castle_level,
 							"score": total_score
 						}
@@ -622,6 +627,10 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 		"best_region_id": best_castle_id,
 		"candidates": candidates
 	}
+
+func _has_no_nearby_enemy_threats(region: Region) -> bool:
+	var enemy_armies: Dictionary = region.castle_nearby_entities.get("enemy_armies", {})
+	return enemy_armies.is_empty()
 
 func _count_recruitment_needy_armies(region_id: int, owner_id: int, exclude_army: Army = null) -> int:
 	"""Count armies belonging to owner_id in the region that requested recruitment."""

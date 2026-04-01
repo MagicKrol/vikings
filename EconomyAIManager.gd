@@ -17,6 +17,7 @@ var castle_threat_registry_by_region: Dictionary = {}
 var castle_total_threat_value_by_region: Dictionary = {}
 var castle_threat_level_by_region: Dictionary = {}
 var castle_reserved_budget_by_region: Dictionary = {}
+var castle_threat_scan_entries_by_region: Dictionary = {}
 var reserved_recruitment_lock: Dictionary = {}
 
 const BUILD_CASTLE_TYPE := CastleTypeEnum.Type.OUTPOST
@@ -24,19 +25,23 @@ const STRATEGIC_SCORE_SCALE := 10.0
 const FRIENDLY_NEIGHBOR_VALUE := 15.0
 const NEUTRAL_NEIGHBOR_VALUE := 5.0
 const ENEMY_NEIGHBOR_PENALTY := 10.0
+const ADJACENT_CASTLE_NEIGHBOR_PENALTY := 45.0
 const CASTLE_SCORE_THRESHOLD := 100.0
 const SMALL_CASTLE_TOPUP_LIMIT := 5
 const MAX_DISTANCE := 9999
-const THREAT_SMALL := "small"
-const THREAT_MEDIUM := "medium"
+const THREAT_CASTLE_SAFE := "castle_safe"
+const THREAT_NEEDS_ARMY := "needs_army"
+const THREAT_UNKNOWN := "unknown"
 const THREAT_BIG := "big"
-const THREAT_VALUE_SMALL := 1
-const THREAT_VALUE_MEDIUM := 2
+const THREAT_VALUE_CASTLE_SAFE := 1
+const THREAT_VALUE_NEEDS_ARMY := 2
+const THREAT_VALUE_UNKNOWN := 2
 const THREAT_VALUE_BIG := 4
 const THREAT_LEVEL_NONE := 0
-const THREAT_LEVEL_SMALL := 1
-const THREAT_LEVEL_MEDIUM := 2
-const THREAT_LEVEL_BIG := 3
+const THREAT_LEVEL_CASTLE_SAFE := 1
+const THREAT_LEVEL_NEEDS_ARMY := 2
+const THREAT_LEVEL_UNKNOWN := 3
+const THREAT_LEVEL_BIG := 4
 const THREAT_POWER_CHANGE_THRESHOLD := 0.15
 const AI_UPGRADE_BANK_DEPOSIT_RATIO := 0.10
 const CASTLE_RESERVE_GOLD_PER_RECRUIT := 10.0
@@ -393,7 +398,7 @@ func _build_shared_castle_recruitment_requests(player_id: int) -> Array:
 			continue
 		var threat_level: int = int(castle_threat_level_by_region.get(region_id, THREAT_LEVEL_NONE))
 		var total_threat_value: int = int(castle_total_threat_value_by_region.get(region_id, 0))
-		if threat_level <= THREAT_LEVEL_SMALL or total_threat_value <= 0:
+		if threat_level <= THREAT_LEVEL_CASTLE_SAFE or total_threat_value <= 0:
 			continue
 		requests.append({
 			"region_id": region_id,
@@ -997,8 +1002,11 @@ func _score_region_for_castle(region_id: int, player_id: int) -> float:
 
 func _compute_neighbor_support_score(region_id: int, player_id: int) -> float:
 	var neighbor_ids = region_manager.get_neighbor_regions(region_id)
-	var score = 0.0
+	var score: float = 0.0
+	var has_adjacent_castle: bool = false
 	for neighbor_id in neighbor_ids:
+		if region_manager.get_castle_level(neighbor_id) > 0:
+			has_adjacent_castle = true
 		var owner_id = region_manager.get_region_owner(neighbor_id)
 		if owner_id == player_id:
 			score += FRIENDLY_NEIGHBOR_VALUE
@@ -1006,6 +1014,8 @@ func _compute_neighbor_support_score(region_id: int, player_id: int) -> float:
 			score += NEUTRAL_NEIGHBOR_VALUE
 		else:
 			score -= ENEMY_NEIGHBOR_PENALTY
+	if has_adjacent_castle:
+		score -= ADJACENT_CASTLE_NEIGHBOR_PENALTY
 	return score
 
 func _evaluate_forward_requirement(region_id: int, enemy_castles: Array[int], enemy_baseline: Dictionary) -> Dictionary:
@@ -1058,9 +1068,6 @@ func _build_castle_exclusion_set() -> Dictionary:
 			continue
 		if region.get_castle_type() != CastleTypeEnum.Type.NONE:
 			excluded[int(rid)] = true
-			var neighbors = region_manager.get_neighbor_regions(int(rid))
-			for neighbor_id in neighbors:
-				excluded[neighbor_id] = true
 	return excluded
 
 func _limit_candidate_details(all_details: Array) -> Array:
@@ -1670,6 +1677,7 @@ func _reset_castle_threat_state() -> void:
 	castle_total_threat_value_by_region.clear()
 	castle_threat_level_by_region.clear()
 	castle_reserved_budget_by_region.clear()
+	castle_threat_scan_entries_by_region.clear()
 	_clear_reserved_recruitment_lock()
 
 func _clear_reserved_recruitment_lock() -> void:
@@ -1734,6 +1742,7 @@ func _refresh_castle_threats_for_player(player_id: int, post_move_refresh: bool)
 		castle_threat_registry_by_region[region_id] = evaluated.get("registry", {})
 		castle_total_threat_value_by_region[region_id] = int(evaluated.get("total_threat_value", 0))
 		castle_threat_level_by_region[region_id] = int(evaluated.get("threat_level", THREAT_LEVEL_NONE))
+		castle_threat_scan_entries_by_region[region_id] = evaluated.get("scan_entries", [])
 		if post_move_refresh:
 			var current_total: int = int(castle_total_threat_value_by_region.get(region_id, 0))
 			var current_level: int = int(castle_threat_level_by_region.get(region_id, THREAT_LEVEL_NONE))
@@ -1753,6 +1762,7 @@ func _refresh_castle_threats_for_player(player_id: int, post_move_refresh: bool)
 		castle_total_threat_value_by_region.erase(region_id_int)
 		castle_threat_level_by_region.erase(region_id_int)
 		castle_reserved_budget_by_region.erase(region_id_int)
+		castle_threat_scan_entries_by_region.erase(region_id_int)
 		if post_move_refresh:
 			deltas.append("Castle #%d: threat removed" % region_id_int)
 	return {
@@ -1763,21 +1773,32 @@ func _refresh_castle_threats_for_player(player_id: int, post_move_refresh: bool)
 func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, previous_registry: Dictionary, post_move_refresh: bool, army_lookup: Dictionary) -> Dictionary:
 	var enemy_cache: Dictionary = castle_region.castle_nearby_entities.get("enemy_armies", {})
 	var observations_by_army_id: Dictionary = {}
+	var scan_entries: Array[Dictionary] = []
 	var pathfinder: ArmyPathfinder = ArmyPathfinder.new(region_manager, army_manager)
 	var castle_region_id: int = castle_region.get_region_id()
+	var has_defender_army_in_castle: bool = _castle_has_defender_army_in_region(castle_region, player_id)
 	for enemy_key in enemy_cache.keys():
 		var cached: Dictionary = enemy_cache.get(enemy_key, {})
 		var army_entity_id: String = String(cached.get("id", String(enemy_key)))
+		var cached_region_id: int = int(cached.get("region_id", -1))
+		var cached_known: bool = bool(cached.get("known", false))
+		var cached_power: int = int(cached.get("power", -1))
 		if not army_lookup.has(army_entity_id):
+			scan_entries.append(_build_threat_scan_entry(army_entity_id, cached_region_id, cached_known, cached_power, false, "not_in_tracking", -1))
 			continue
 		var enemy_army: Army = army_lookup[army_entity_id]
 		var enemy_region: Region = enemy_army.get_parent() as Region
 		var enemy_region_id: int = enemy_region.get_region_id()
 		var enemy_player_id: int = enemy_army.get_player_id()
-		if not _can_reach_castle_in_one_turn(pathfinder, enemy_region_id, castle_region_id, enemy_player_id):
-			continue
 		var tracker_key: String = _extract_tracker_key_from_entity_id(army_entity_id)
 		var tracked_power: int = player_manager.get_tracked_enemy_power(player_id, tracker_key)
+		var reachability: Dictionary = _get_castle_reachability_in_one_turn(pathfinder, enemy_region_id, castle_region_id, enemy_player_id)
+		var can_reach: bool = bool(reachability.get("can_reach", false))
+		var reach_reason: String = String(reachability.get("reason", "no_path"))
+		var reach_cost: int = int(reachability.get("cost", -1))
+		scan_entries.append(_build_threat_scan_entry(army_entity_id, enemy_region_id, tracked_power >= 0, tracked_power if tracked_power >= 0 else -1, can_reach, reach_reason, reach_cost))
+		if not can_reach:
+			continue
 		var observation: Dictionary = {
 			"id": army_entity_id,
 			"region_id": enemy_region_id,
@@ -1794,10 +1815,10 @@ func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, p
 		var observation: Dictionary = observations_by_army_id[army_entity_id]
 		var is_known: bool = bool(observation.get("known", false))
 		if not is_known:
-			var medium_entry: Dictionary = _build_threat_entry(observation, THREAT_MEDIUM)
-			registry[army_entity_id] = medium_entry
-			total_threat_value += int(medium_entry.get("threat_value", 0))
-			threat_level = max(threat_level, int(medium_entry.get("threat_level", THREAT_LEVEL_NONE)))
+			var unknown_entry: Dictionary = _build_threat_entry(observation, THREAT_UNKNOWN, "n/a", "n/a")
+			registry[army_entity_id] = unknown_entry
+			total_threat_value += int(unknown_entry.get("threat_value", 0))
+			threat_level = max(threat_level, int(unknown_entry.get("threat_level", THREAT_LEVEL_NONE)))
 			continue
 		var region_id: int = int(observation.get("region_id", -1))
 		if not known_groups.has(region_id):
@@ -1828,7 +1849,9 @@ func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, p
 				if power_delta > THREAT_POWER_CHANGE_THRESHOLD:
 					requires_simulation = true
 					break
-		var threat_label: String = THREAT_SMALL
+		var threat_label: String = THREAT_CASTLE_SAFE
+		var sim_castle_only_label: String = "n/a"
+		var sim_with_army_label: String = "n/a"
 		if requires_simulation:
 			var grouped_armies: Array[Army] = []
 			for grouped_army_id in grouped_ids:
@@ -1836,30 +1859,76 @@ func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, p
 					var grouped_army: Army = army_lookup[grouped_army_id]
 					grouped_armies.append(grouped_army)
 			if not grouped_armies.is_empty():
-				var simulation: Dictionary = game_manager.simulate_castle_threat_battle(grouped_armies, castle_region)
-				var result: String = String(simulation.get("result", "defeat"))
-				threat_label = THREAT_BIG if result == "victory" else THREAT_SMALL
+				var castle_only_sim: Dictionary = game_manager.simulate_castle_threat_battle(grouped_armies, castle_region, false, false)
+				var castle_only_attacker_wins: bool = _is_attacker_victory_in_threat_simulation(castle_only_sim)
+				var with_army_attacker_wins: bool = castle_only_attacker_wins
+				if has_defender_army_in_castle:
+					var with_army_sim: Dictionary = game_manager.simulate_castle_threat_battle(grouped_armies, castle_region, false, true)
+					with_army_attacker_wins = _is_attacker_victory_in_threat_simulation(with_army_sim)
+				sim_castle_only_label = _format_threat_sim_result_label(castle_only_attacker_wins)
+				sim_with_army_label = _format_threat_sim_result_label(with_army_attacker_wins)
+				if with_army_attacker_wins:
+					threat_label = THREAT_BIG
+				elif castle_only_attacker_wins:
+					threat_label = THREAT_NEEDS_ARMY
+				else:
+					threat_label = THREAT_CASTLE_SAFE
 		else:
 			var previous_group_entry: Dictionary = previous_registry.get(grouped_ids[0], {})
-			threat_label = String(previous_group_entry.get("threat", THREAT_SMALL))
+			threat_label = String(previous_group_entry.get("threat", THREAT_CASTLE_SAFE))
+			sim_castle_only_label = String(previous_group_entry.get("sim_castle_only", "n/a"))
+			sim_with_army_label = String(previous_group_entry.get("sim_with_army", "n/a"))
 		for grouped_army_id in grouped_ids:
 			var known_observation: Dictionary = observations_by_army_id.get(grouped_army_id, {})
-			var known_entry: Dictionary = _build_threat_entry(known_observation, threat_label)
+			var known_entry: Dictionary = _build_threat_entry(known_observation, threat_label, sim_castle_only_label, sim_with_army_label)
 			registry[grouped_army_id] = known_entry
 			total_threat_value += int(known_entry.get("threat_value", 0))
 			threat_level = max(threat_level, int(known_entry.get("threat_level", THREAT_LEVEL_NONE)))
 	return {
 		"registry": registry,
 		"total_threat_value": total_threat_value,
-		"threat_level": threat_level
+		"threat_level": threat_level,
+		"scan_entries": scan_entries
 	}
 
-func _can_reach_castle_in_one_turn(pathfinder: ArmyPathfinder, enemy_region_id: int, castle_region_id: int, enemy_player_id: int) -> bool:
+func _get_castle_reachability_in_one_turn(pathfinder: ArmyPathfinder, enemy_region_id: int, castle_region_id: int, enemy_player_id: int) -> Dictionary:
 	var path_result: Dictionary = pathfinder.find_path_to_target(enemy_region_id, castle_region_id, enemy_player_id, false, true)
 	if not bool(path_result.get("success", false)):
-		return false
+		return {
+			"can_reach": false,
+			"reason": "no_path",
+			"cost": -1
+		}
 	var movement_cost: int = int(path_result.get("cost", GameParameters.MOVEMENT_POINTS_PER_TURN + 1))
-	return movement_cost <= GameParameters.MOVEMENT_POINTS_PER_TURN
+	if movement_cost > GameParameters.MOVEMENT_POINTS_PER_TURN:
+		return {
+			"can_reach": false,
+			"reason": "insufficient_mp",
+			"cost": movement_cost
+		}
+	return {
+		"can_reach": true,
+		"reason": "reachable",
+		"cost": movement_cost
+	}
+
+func _build_threat_scan_entry(army_entity_id: String, region_id: int, known: bool, power: int, accepted: bool, reason: String, path_cost: int) -> Dictionary:
+	return {
+		"id": army_entity_id,
+		"region_id": region_id,
+		"known": known,
+		"power": power,
+		"accepted": accepted,
+		"reason": reason,
+		"path_cost": path_cost
+	}
+
+func _castle_has_defender_army_in_region(castle_region: Region, player_id: int) -> bool:
+	var armies_in_region: Array[Army] = army_manager.get_armies_in_region(castle_region)
+	for army in armies_in_region:
+		if army.get_player_id() == player_id:
+			return true
+	return false
 
 func _build_army_lookup_by_entity_id() -> Dictionary:
 	var lookup: Dictionary = {}
@@ -1876,7 +1945,7 @@ func _extract_tracker_key_from_entity_id(army_entity_id: String) -> String:
 		return army_entity_id.substr(5, army_entity_id.length() - 5)
 	return army_entity_id
 
-func _build_threat_entry(observation: Dictionary, threat_label: String) -> Dictionary:
+func _build_threat_entry(observation: Dictionary, threat_label: String, sim_castle_only: String, sim_with_army: String) -> Dictionary:
 	return {
 		"id": String(observation.get("id", "")),
 		"region_id": int(observation.get("region_id", -1)),
@@ -1885,15 +1954,19 @@ func _build_threat_entry(observation: Dictionary, threat_label: String) -> Dicti
 		"power": int(observation.get("power", -1)),
 		"threat": threat_label,
 		"threat_value": _get_threat_value(threat_label),
-		"threat_level": _get_threat_level(threat_label)
+		"threat_level": _get_threat_level(threat_label),
+		"sim_castle_only": sim_castle_only,
+		"sim_with_army": sim_with_army
 	}
 
 func _get_threat_value(threat_label: String) -> int:
 	match threat_label:
-		THREAT_SMALL:
-			return THREAT_VALUE_SMALL
-		THREAT_MEDIUM:
-			return THREAT_VALUE_MEDIUM
+		THREAT_CASTLE_SAFE:
+			return THREAT_VALUE_CASTLE_SAFE
+		THREAT_NEEDS_ARMY:
+			return THREAT_VALUE_NEEDS_ARMY
+		THREAT_UNKNOWN:
+			return THREAT_VALUE_UNKNOWN
 		THREAT_BIG:
 			return THREAT_VALUE_BIG
 		_:
@@ -1901,14 +1974,23 @@ func _get_threat_value(threat_label: String) -> int:
 
 func _get_threat_level(threat_label: String) -> int:
 	match threat_label:
-		THREAT_SMALL:
-			return THREAT_LEVEL_SMALL
-		THREAT_MEDIUM:
-			return THREAT_LEVEL_MEDIUM
+		THREAT_CASTLE_SAFE:
+			return THREAT_LEVEL_CASTLE_SAFE
+		THREAT_NEEDS_ARMY:
+			return THREAT_LEVEL_NEEDS_ARMY
+		THREAT_UNKNOWN:
+			return THREAT_LEVEL_UNKNOWN
 		THREAT_BIG:
 			return THREAT_LEVEL_BIG
 		_:
 			return THREAT_LEVEL_NONE
+
+func _is_attacker_victory_in_threat_simulation(simulation: Dictionary) -> bool:
+	var result: String = String(simulation.get("result", "defeat"))
+	return result == "victory"
+
+func _format_threat_sim_result_label(attacker_wins: bool) -> String:
+	return "lose" if attacker_wins else "hold"
 
 func _recalculate_castle_reserve_budgets(player_id: int) -> void:
 	castle_reserved_budget_by_region.clear()
@@ -1925,7 +2007,7 @@ func _recalculate_castle_reserve_budgets(player_id: int) -> void:
 			continue
 		var level: int = int(castle_threat_level_by_region.get(region_id, THREAT_LEVEL_NONE))
 		var total_value: int = int(castle_total_threat_value_by_region.get(region_id, 0))
-		if level <= THREAT_LEVEL_SMALL or total_value <= 0:
+		if level <= THREAT_LEVEL_CASTLE_SAFE or total_value <= 0:
 			continue
 		weighted_castles[region_id] = float(total_value)
 		ordered_castles.append(region_id)
@@ -2072,8 +2154,65 @@ func _format_castle_threat_summary_lines(player_id: int) -> Array[String]:
 			total_value,
 			threat_registry.size()
 		])
+		var scan_entries: Array = castle_threat_scan_entries_by_region.get(region_id, [])
+		_append_castle_threat_scan_lines(lines, scan_entries)
 		_append_castle_threat_detail_lines(lines, threat_registry)
 	return lines
+
+func _append_castle_threat_scan_lines(lines: Array[String], scan_entries: Array) -> void:
+	if scan_entries.is_empty():
+		return
+	var accepted_entries: Array[Dictionary] = []
+	var rejected_entries: Array[Dictionary] = []
+	for scan_entry_variant in scan_entries:
+		var scan_entry: Dictionary = scan_entry_variant
+		if bool(scan_entry.get("accepted", false)):
+			accepted_entries.append(scan_entry)
+		else:
+			rejected_entries.append(scan_entry)
+	accepted_entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_cost: int = int(a.get("path_cost", 999))
+		var b_cost: int = int(b.get("path_cost", 999))
+		if a_cost != b_cost:
+			return a_cost < b_cost
+		return String(a.get("id", "")) < String(b.get("id", ""))
+	)
+	rejected_entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_reason: String = String(a.get("reason", ""))
+		var b_reason: String = String(b.get("reason", ""))
+		if a_reason != b_reason:
+			return a_reason < b_reason
+		return String(a.get("id", "")) < String(b.get("id", ""))
+	)
+	for accepted_entry in accepted_entries:
+		lines.append("  - nearby " + _format_threat_scan_entry_line(accepted_entry, "accepted"))
+	for rejected_entry in rejected_entries:
+		lines.append("  - rejected " + _format_threat_scan_entry_line(rejected_entry, "rejected"))
+
+func _format_threat_scan_entry_line(scan_entry: Dictionary, status_label: String) -> String:
+	var threat_id: String = String(scan_entry.get("id", "unknown_threat"))
+	var region_id: int = int(scan_entry.get("region_id", -1))
+	var region_name: String = "Unknown region"
+	if region_id >= 0:
+		var threat_region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+		region_name = threat_region.get_region_name()
+	var known: bool = bool(scan_entry.get("known", false))
+	var power: int = int(scan_entry.get("power", -1))
+	var reason: String = String(scan_entry.get("reason", ""))
+	var path_cost: int = int(scan_entry.get("path_cost", -1))
+	var intel_label: String = "known" if known else "unknown"
+	var power_text: String = str(power) if known and power >= 0 else "unknown"
+	var cost_text: String = str(path_cost) if path_cost >= 0 else "n/a"
+	return "%s @ %s (#%d): %s, intel=%s, power=%s, reason=%s, path_cost=%s" % [
+		threat_id,
+		region_name,
+		region_id,
+		status_label,
+		intel_label,
+		power_text,
+		reason,
+		cost_text
+	]
 
 func _append_castle_threat_detail_lines(lines: Array[String], threat_registry: Dictionary) -> void:
 	if threat_registry.is_empty():
@@ -2112,20 +2251,24 @@ func _format_castle_threat_entry_line(threat_entry: Dictionary) -> String:
 			region_name = threat_region.get_region_name()
 		else:
 			region_name = "Region %d" % region_id
-	var threat_label: String = String(threat_entry.get("threat", THREAT_SMALL))
+	var threat_label: String = String(threat_entry.get("threat", THREAT_CASTLE_SAFE))
 	var threat_level: int = int(threat_entry.get("threat_level", THREAT_LEVEL_NONE))
 	var known: bool = bool(threat_entry.get("known", false))
 	var tracked_power: int = int(threat_entry.get("power", -1))
+	var sim_castle_only: String = String(threat_entry.get("sim_castle_only", "n/a"))
+	var sim_with_army: String = String(threat_entry.get("sim_with_army", "n/a"))
 	var intel_label: String = "known" if known else "unknown"
 	var power_text: String = str(tracked_power) if known and tracked_power >= 0 else "unknown"
-	return "%s @ %s (#%d): threat=%s(level=%d), intel=%s, power=%s" % [
+	return "%s @ %s (#%d): threat=%s(level=%d), intel=%s, power=%s, sim_castle_only=%s, sim_with_army=%s" % [
 		threat_id,
 		region_name,
 		region_id,
 		threat_label,
 		threat_level,
 		intel_label,
-		power_text
+		power_text,
+		sim_castle_only,
+		sim_with_army
 	]
 
 func _format_castle_reserve_summary_lines(player_id: int) -> Array[String]:

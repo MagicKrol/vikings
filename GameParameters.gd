@@ -479,8 +479,8 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.KNIGHTS: {
 		"attack": 35,     # 60% hit chance per unit
 		"defense": 65,    # 60% chance to deflect hits
-		"cost": 7,       # Recruitment cost
-		"gold_cost": 7,
+		"cost": 6,       # Recruitment cost
+		"gold_cost": 6,
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 1,
@@ -490,8 +490,8 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: {
 		"attack": 35,     # 65% hit chance per unit
 		"defense": 70,    # 60% chance to deflect hits
-		"cost": 10,       # Recruitment cost
-		"gold_cost": 10,
+		"cost": 9,       # Recruitment cost
+		"gold_cost": 9,
 		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 1,
@@ -501,8 +501,8 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.ROYAL_GUARD: {
 		"attack": 40,     # 80% hit chance per unit
 		"defense": 85,    # 80% chance to deflect hits
-		"cost": 18,       # Recruitment cost
-		"gold_cost": 18,
+		"cost": 12,       # Recruitment cost
+		"gold_cost": 12,
 		"food_cost": 0.1,
 		"wood_cost": 0,
 		"iron_cost": 2,

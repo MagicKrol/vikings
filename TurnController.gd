@@ -54,6 +54,7 @@ var _castle_threat_level_snapshot_by_region: Dictionary = {}
 var _castle_threat_registry_snapshot_by_region: Dictionary = {}
 var _unknown_threat_defended_by_region: Dictionary = {}
 var _threat_direct_block_by_army: Dictionary = {}
+var _threat_local_merge_attempt_by_army: Dictionary = {}
 var _ai_mode_for_turn: int = 0
 var _frontier_hard_regions: Array[int] = []
 var _frontier_soft_regions: Array[int] = []
@@ -138,6 +139,7 @@ func start_turn(player_id: int) -> void:
 	_castle_threat_registry_snapshot_by_region.clear()
 	_unknown_threat_defended_by_region.clear()
 	_threat_direct_block_by_army.clear()
+	_threat_local_merge_attempt_by_army.clear()
 	_frontier_hard_regions.clear()
 	_frontier_soft_regions.clear()
 	_army_role_by_id.clear()
@@ -160,12 +162,16 @@ func start_turn(player_id: int) -> void:
 
 	# Step 1: Use EconomyAIManager to plan economy and allocate budgets (recruitment wired-in)
 	var econ := EconomyAIManager.new(region_manager, army_manager, player_manager, game_manager)
+	var intro_econ_result: Dictionary = {
+		"signals": econ._compute_signals(player_id, turn_number),
+		"decision": "sequential"
+	}
+	_log_turn_intro(player_id, turn_number, intro_econ_result)
 	var pre_move_econ_result: Dictionary = econ.run_pre_move_economy_with_reserve_lock(player_id, turn_number)
 	var threat_snapshot: Dictionary = econ.get_castle_threat_snapshot(player_id)
 	_castle_threat_level_snapshot_by_region = threat_snapshot.get("threat_levels_by_region", {})
 	_castle_threat_registry_snapshot_by_region = threat_snapshot.get("threat_registry_by_region", {})
 	_assign_ai_mode_and_roles(player_id)
-	_log_turn_intro(player_id, turn_number, pre_move_econ_result)
 	_log_economy_plan(pre_move_econ_result)
 	var army_recruitment: Dictionary = pre_move_econ_result.get("army_recruitment", {})
 	var assigned_count = int(army_recruitment.get("budgets_assigned", 0))
@@ -785,11 +791,15 @@ func _process_single_army(army: Army) -> void:
 	while is_instance_valid(army) and army.get_movement_points() > 0:
 		if game_manager.has_victory_been_declared():
 			return
+		if _handle_castle_garrison_release_cycle(army):
+			continue
 		if await _handle_recruitment_cycle(army, turn_number):
 			continue
 		if await _handle_peasant_cycle(army, turn_number):
 			continue
 		if await _handle_threatened_castle_cycle(army):
+			continue
+		if _handle_castle_hold_cycle(army):
 			continue
 		if await _handle_role_behavior_cycle(army, turn_number):
 			continue
@@ -805,6 +815,25 @@ func _process_single_army(army: Army) -> void:
 		_log_army_detail_line("Spending remaining %d MP on camping" % army.get_movement_points())
 		_spend_all_on_camp(army)
 
+func _handle_castle_garrison_release_cycle(army: Army) -> bool:
+	var current_region: Region = army.get_parent() as Region
+	if not current_region.has_castle():
+		return false
+	var enemy_armies: Dictionary = current_region.castle_nearby_entities.get("enemy_armies", {})
+	if not enemy_armies.is_empty():
+		return false
+	var garrison: ArmyComposition = current_region.get_garrison()
+	if not garrison.has_soldiers():
+		return false
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count: int = garrison.get_soldier_count(unit_type)
+		if count <= 0:
+			continue
+		current_region.remove_soldiers_from_garrison(unit_type, count)
+		army.add_soldiers(unit_type, count)
+	_log_decision_tree_branch(army, "castle_garrison_merge", "no_nearby_threats")
+	return true
+
 func _handle_recruitment_cycle(army: Army, turn_number: int) -> bool:
 	if army.needs_recruitment(turn_number) and not army.is_recruitment_requested():
 		army.request_recruitment()
@@ -815,93 +844,71 @@ func _handle_recruitment_cycle(army: Army, turn_number: int) -> bool:
 	if not army.is_recruitment_requested():
 		return false
 	_log_recruitment_header()
-	match army.get_recruitment_move_state():
-		Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST:
-			return await _handle_recruitment_transfer_to_closest_state(army)
-		Army.RecruitmentMoveState.RECRUIT_OR_DEFEND:
-			return await _handle_recruitment_recruit_or_defend_state(army, turn_number)
-		_:
-			return await _handle_recruitment_normal_state(army, turn_number)
-
-func _handle_recruitment_normal_state(army: Army, turn_number: int) -> bool:
 	var current_region: Region = army.get_parent() as Region
 	var current_region_id: int = current_region.get_region_id()
-	var best_castle: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id)
-	_log_recruitment_candidates(best_castle, current_region_id)
-	var target_region_id: int = int(best_castle.get("best_region_id", -1))
-	if target_region_id == -1:
-		var breakthrough_castle: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id, false)
-		_log_recruitment_candidates(breakthrough_castle, current_region_id)
-		var breakthrough_castle_id: int = int(breakthrough_castle.get("best_region_id", -1))
-		if breakthrough_castle_id == -1:
+	var recruitment_routes: Dictionary = _resolve_recruitment_routes(army, current_region_id, turn_number)
+	_log_recruitment_route_candidates(recruitment_routes, current_region_id)
+	match army.get_recruitment_move_state():
+		Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST:
+			return await _handle_recruitment_transfer_to_closest_state(army, turn_number, current_region, current_region_id, recruitment_routes)
+		Army.RecruitmentMoveState.RECRUIT_OR_DEFEND:
+			return await _handle_recruitment_recruit_or_defend_state(army, turn_number, current_region, current_region_id, recruitment_routes)
+		_:
+			return await _handle_recruitment_normal_state(army, turn_number, current_region, current_region_id, recruitment_routes)
+
+func _handle_recruitment_normal_state(army: Army, turn_number: int, current_region: Region, current_region_id: int, recruitment_routes: Dictionary) -> bool:
+	var reachable_castle: Dictionary = recruitment_routes.get("reachable_pick", {})
+	var target_region_id: int = int(recruitment_routes.get("reachable_best_region_id", -1))
+	if target_region_id != -1:
+		if current_region_id == target_region_id:
+			return _execute_recruitment_at_current_region(army, current_region)
+		_log_army_detail_line("Needs recruitment moving to " + _get_region_name_by_id(target_region_id))
+		await _move_army_to_region(army, target_region_id, "reinforce", reachable_castle)
+		return true
+	var breakthrough_castle_id: int = int(recruitment_routes.get("breakthrough_best_region_id", -1))
+	if breakthrough_castle_id == -1:
+		if not bool(recruitment_routes.get("allow_breakthrough", true)):
+			_log_decision_tree_branch(army, "recruit_mark_transfer_half_power", "below_half_threshold")
+			_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "below_half_threshold")
+		else:
 			_log_recruitment_status_once(army, current_region_id, "no_recruit_castle")
 			_log_decision_tree_branch(army, "recruit_mark_transfer_no_clean_path", "no_recruit_castle")
 			_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "no_recruit_castle")
-			return await _handle_recruitment_transfer_to_closest_state(army)
-		if _is_army_below_half_recruitment_threshold(army, turn_number):
-			_log_decision_tree_branch(army, "recruit_mark_transfer_half_power", "below_half_threshold")
-			_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "below_half_threshold")
-			return await _handle_recruitment_transfer_to_closest_state(army)
-		var breakthrough_path: Array[int] = _find_clean_breakthrough_path_to_recruit_castle(army, current_region_id, breakthrough_castle_id)
-		if breakthrough_path.is_empty():
-			_log_decision_tree_branch(army, "recruit_mark_transfer_no_clean_path", "no_clean_path")
-			_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "no_clean_path")
-			return await _handle_recruitment_transfer_to_closest_state(army)
-		var breakthrough_target_id: int = _get_first_breakthrough_step_on_path(breakthrough_path, army.get_player_id())
-		var breakthrough_goal: String = "attack"
-		if breakthrough_target_id == -1:
-			breakthrough_target_id = breakthrough_castle_id
-			breakthrough_goal = "reinforce"
-		_log_decision_tree_branch(army, "recruit_breakthrough_attack", "to " + _get_region_name_by_id(breakthrough_target_id))
-		await _move_army_to_region_with_result(army, breakthrough_target_id, breakthrough_goal, {})
-		return true
-	if current_region_id == target_region_id:
-		return _execute_recruitment_at_current_region(army, current_region)
-	if _can_reach_region_this_turn(army, current_region_id, target_region_id, true):
-		_log_army_detail_line("Needs recruitment moving to " + _get_region_name_by_id(target_region_id))
-		await _move_army_to_region(army, target_region_id, "reinforce", best_castle)
-		return true
-	var rechecked_castle: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id)
-	var rechecked_target_region_id: int = int(rechecked_castle.get("best_region_id", -1))
-	_log_recruitment_candidates(rechecked_castle, current_region_id)
-	if rechecked_target_region_id == -1:
-		_log_decision_tree_branch(army, "recruit_mark_transfer_no_clean_path", "no_recheck_castle")
-		_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "no_recheck_castle")
-		return await _handle_recruitment_transfer_to_closest_state(army)
-	if _can_reach_region_this_turn(army, current_region_id, rechecked_target_region_id, true):
-		_log_army_detail_line("Needs recruitment moving to " + _get_region_name_by_id(rechecked_target_region_id))
-		await _move_army_to_region(army, rechecked_target_region_id, "reinforce", rechecked_castle)
-		return true
-	if _is_army_below_half_recruitment_threshold(army, turn_number):
-		_log_decision_tree_branch(army, "recruit_mark_transfer_half_power", "below_half_threshold")
-		_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "below_half_threshold")
-		return await _handle_recruitment_transfer_to_closest_state(army)
-	var clean_path: Array[int] = _find_clean_breakthrough_path_to_recruit_castle(army, current_region_id, rechecked_target_region_id)
-	if clean_path.is_empty():
+		return await _handle_recruitment_transfer_to_closest_state(army, turn_number, current_region, current_region_id, recruitment_routes)
+	var breakthrough_path: Array[int] = _get_breakthrough_path_for_candidate(army, current_region_id, breakthrough_castle_id, recruitment_routes)
+	if breakthrough_path.is_empty():
 		_log_decision_tree_branch(army, "recruit_mark_transfer_no_clean_path", "no_clean_path")
 		_set_recruitment_move_state(army, Army.RecruitmentMoveState.TRANSFER_TO_CLOSEST, "no_clean_path")
-		return await _handle_recruitment_transfer_to_closest_state(army)
-	var breakthrough_target_id: int = _get_first_breakthrough_step_on_path(clean_path, army.get_player_id())
+		return await _handle_recruitment_transfer_to_closest_state(army, turn_number, current_region, current_region_id, recruitment_routes)
+	var breakthrough_target_id: int = _get_first_breakthrough_step_on_path(breakthrough_path, army.get_player_id())
 	var breakthrough_goal: String = "attack"
 	if breakthrough_target_id == -1:
-		breakthrough_target_id = rechecked_target_region_id
+		breakthrough_target_id = breakthrough_castle_id
 		breakthrough_goal = "reinforce"
 	_log_decision_tree_branch(army, "recruit_breakthrough_attack", "to " + _get_region_name_by_id(breakthrough_target_id))
 	await _move_army_to_region_with_result(army, breakthrough_target_id, breakthrough_goal, {})
 	return true
 
-func _handle_recruitment_transfer_to_closest_state(army: Army) -> bool:
-	var current_region: Region = army.get_parent() as Region
-	var current_region_id: int = current_region.get_region_id()
-	var best_castle: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id)
-	_log_recruitment_candidates(best_castle, current_region_id)
-	var target_region_id: int = int(best_castle.get("best_region_id", -1))
+func _handle_recruitment_transfer_to_closest_state(army: Army, _turn_number: int, current_region: Region, current_region_id: int, recruitment_routes: Dictionary) -> bool:
+	var reachable_castle: Dictionary = recruitment_routes.get("reachable_pick", {})
+	var target_region_id: int = int(recruitment_routes.get("reachable_best_region_id", -1))
 	if target_region_id != -1:
 		if target_region_id == current_region_id:
 			return _execute_recruitment_at_current_region(army, current_region)
-		if _can_reach_region_this_turn(army, current_region_id, target_region_id, true):
-			_log_army_detail_line("Transfer state moving to " + _get_region_name_by_id(target_region_id))
-			await _move_army_to_region(army, target_region_id, "reinforce", best_castle)
+		_log_army_detail_line("Transfer state moving to " + _get_region_name_by_id(target_region_id))
+		await _move_army_to_region(army, target_region_id, "reinforce", reachable_castle)
+		return true
+	var breakthrough_castle_id: int = int(recruitment_routes.get("breakthrough_best_region_id", -1))
+	if breakthrough_castle_id != -1 and bool(recruitment_routes.get("allow_breakthrough", true)):
+		var breakthrough_path: Array[int] = _get_breakthrough_path_for_candidate(army, current_region_id, breakthrough_castle_id, recruitment_routes)
+		if not breakthrough_path.is_empty():
+			var breakthrough_target_id: int = _get_first_breakthrough_step_on_path(breakthrough_path, army.get_player_id())
+			var breakthrough_goal: String = "attack"
+			if breakthrough_target_id == -1:
+				breakthrough_target_id = breakthrough_castle_id
+				breakthrough_goal = "reinforce"
+			_log_decision_tree_branch(army, "recruit_breakthrough_attack", "to " + _get_region_name_by_id(breakthrough_target_id))
+			await _move_army_to_region_with_result(army, breakthrough_target_id, breakthrough_goal, {})
 			return true
 	var transfer_target: Dictionary = _select_transfer_target_from_nearby(army, current_region_id)
 	if transfer_target.is_empty():
@@ -917,6 +924,7 @@ func _handle_recruitment_transfer_to_closest_state(army: Army) -> bool:
 			_log_army_transfer(army, friendly_army)
 			army.spawn_minimal_peasant_token()
 			_set_recruitment_move_state(army, Army.RecruitmentMoveState.RECRUIT_OR_DEFEND, "transfer_complete")
+			_finalize_recruitment_transfer_turn(army)
 		return true
 	_log_decision_tree_branch(army, "recruit_transfer_to_friendly", "to " + _get_region_name_by_id(friendly_region_id))
 	await _move_army_to_region(army, friendly_region_id, "support_merge", {})
@@ -929,27 +937,100 @@ func _handle_recruitment_transfer_to_closest_state(army: Army) -> bool:
 				_log_army_transfer(army, friendly_army)
 				army.spawn_minimal_peasant_token()
 				_set_recruitment_move_state(army, Army.RecruitmentMoveState.RECRUIT_OR_DEFEND, "transfer_complete")
+				_finalize_recruitment_transfer_turn(army)
 	return true
 
-func _handle_recruitment_recruit_or_defend_state(army: Army, turn_number: int) -> bool:
-	var current_region: Region = army.get_parent() as Region
-	var current_region_id: int = current_region.get_region_id()
-	var best_castle: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id)
-	_log_recruitment_candidates(best_castle, current_region_id)
-	var target_region_id: int = int(best_castle.get("best_region_id", -1))
-	if target_region_id == -1:
-		_log_decision_tree_branch(army, "recruit_or_defend_camp", "no_recruit_castle")
+func _finalize_recruitment_transfer_turn(army: Army) -> void:
+	if army.get_movement_points() > 0:
 		_spend_all_on_camp(army)
-		return true
-	if target_region_id == current_region_id:
-		return _execute_recruitment_at_current_region(army, current_region)
-	if _can_reach_region_this_turn(army, current_region_id, target_region_id, true):
+
+func _handle_recruitment_recruit_or_defend_state(army: Army, _turn_number: int, current_region: Region, current_region_id: int, recruitment_routes: Dictionary) -> bool:
+	var reachable_castle: Dictionary = recruitment_routes.get("reachable_pick", {})
+	var target_region_id: int = int(recruitment_routes.get("reachable_best_region_id", -1))
+	if target_region_id != -1:
+		if target_region_id == current_region_id:
+			return _execute_recruitment_at_current_region(army, current_region)
 		_log_army_detail_line("Recruit-or-defend moving to " + _get_region_name_by_id(target_region_id))
-		await _move_army_to_region(army, target_region_id, "reinforce", best_castle)
+		await _move_army_to_region(army, target_region_id, "reinforce", reachable_castle)
 		return true
-	_log_decision_tree_branch(army, "recruit_or_defend_retry_normal", "no_reachable_castle")
-	_set_recruitment_move_state(army, Army.RecruitmentMoveState.NORMAL, "no_reachable_castle")
-	return await _handle_recruitment_normal_state(army, turn_number)
+	var breakthrough_castle_id: int = int(recruitment_routes.get("breakthrough_best_region_id", -1))
+	if breakthrough_castle_id != -1 and bool(recruitment_routes.get("allow_breakthrough", true)):
+		var breakthrough_path: Array[int] = _get_breakthrough_path_for_candidate(army, current_region_id, breakthrough_castle_id, recruitment_routes)
+		if not breakthrough_path.is_empty():
+			var breakthrough_target_id: int = _get_first_breakthrough_step_on_path(breakthrough_path, army.get_player_id())
+			var breakthrough_goal: String = "attack"
+			if breakthrough_target_id == -1:
+				breakthrough_target_id = breakthrough_castle_id
+				breakthrough_goal = "reinforce"
+			_log_decision_tree_branch(army, "recruit_breakthrough_attack", "to " + _get_region_name_by_id(breakthrough_target_id))
+			await _move_army_to_region_with_result(army, breakthrough_target_id, breakthrough_goal, {})
+			return true
+	_log_decision_tree_branch(army, "recruit_or_defend_camp", "no_reachable_or_breakthrough_castle")
+	_spend_all_on_camp(army)
+	return true
+
+func _resolve_recruitment_routes(army: Army, current_region_id: int, turn_number: int) -> Dictionary:
+	var reachable_pick: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id)
+	var allow_breakthrough: bool = not _is_army_below_half_recruitment_threshold(army, turn_number)
+	var raw_breakthrough_pick: Dictionary = _find_best_recruitment_castle_pick(army, current_region_id, false)
+	var filtered_breakthrough_pick: Dictionary = {"best_region_id": -1, "candidates": [], "paths_by_region": {}}
+	if allow_breakthrough:
+		filtered_breakthrough_pick = _filter_breakthrough_recruitment_candidates(army, current_region_id, raw_breakthrough_pick)
+	return {
+		"reachable_pick": reachable_pick,
+		"reachable_best_region_id": int(reachable_pick.get("best_region_id", -1)),
+		"breakthrough_pick": filtered_breakthrough_pick,
+		"breakthrough_best_region_id": int(filtered_breakthrough_pick.get("best_region_id", -1)),
+		"allow_breakthrough": allow_breakthrough
+	}
+
+func _filter_breakthrough_recruitment_candidates(army: Army, current_region_id: int, breakthrough_pick: Dictionary) -> Dictionary:
+	var candidates_variant: Array = breakthrough_pick.get("candidates", [])
+	var filtered_candidates: Array = []
+	var paths_by_region: Dictionary = {}
+	for candidate_variant in candidates_variant:
+		var candidate: Dictionary = candidate_variant
+		var region_id: int = int(candidate.get("region_id", -1))
+		if region_id < 0:
+			continue
+		var path: Array[int] = _find_clean_breakthrough_path_to_recruit_castle(army, current_region_id, region_id)
+		if path.is_empty():
+			continue
+		filtered_candidates.append(candidate.duplicate(true))
+		paths_by_region[region_id] = path
+	if filtered_candidates.size() > 1:
+		filtered_candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return float(a.get("score", 0.0)) > float(b.get("score", 0.0))
+		)
+	var best_region_id: int = -1
+	if not filtered_candidates.is_empty():
+		best_region_id = int((filtered_candidates[0] as Dictionary).get("region_id", -1))
+	return {
+		"best_region_id": best_region_id,
+		"candidates": filtered_candidates,
+		"paths_by_region": paths_by_region
+	}
+
+func _get_breakthrough_path_for_candidate(army: Army, current_region_id: int, target_region_id: int, recruitment_routes: Dictionary) -> Array[int]:
+	var breakthrough_pick: Dictionary = recruitment_routes.get("breakthrough_pick", {})
+	var paths_by_region: Dictionary = breakthrough_pick.get("paths_by_region", {})
+	if paths_by_region.has(target_region_id):
+		var cached_path_variant: Variant = paths_by_region.get(target_region_id, [])
+		if cached_path_variant is Array:
+			var cached_path: Array[int] = []
+			for region_step_variant in cached_path_variant:
+				cached_path.append(int(region_step_variant))
+			return cached_path
+	return _find_clean_breakthrough_path_to_recruit_castle(army, current_region_id, target_region_id)
+
+func _log_recruitment_route_candidates(recruitment_routes: Dictionary, current_region_id: int) -> void:
+	var reachable_pick: Dictionary = recruitment_routes.get("reachable_pick", {})
+	_log_recruitment_candidates(reachable_pick, current_region_id, "Reachable recruitment castle candidates", "No reachable recruitment castles available")
+	var breakthrough_pick: Dictionary = recruitment_routes.get("breakthrough_pick", {})
+	var breakthrough_empty_label: String = "No breakthrough recruitment castles available"
+	if not bool(recruitment_routes.get("allow_breakthrough", true)):
+		breakthrough_empty_label += " (below_half_threshold)"
+	_log_recruitment_candidates(breakthrough_pick, current_region_id, "Breakthrough recruitment castle candidates", breakthrough_empty_label)
 
 func _execute_recruitment_at_current_region(army: Army, current_region: Region) -> bool:
 	var current_region_id: int = current_region.get_region_id()
@@ -1190,13 +1271,10 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 	for castle_candidate in castle_candidates:
 		var castle_region_id: int = int(castle_candidate.get("region_id", -1))
 		var threat_entries: Array[Dictionary] = _get_sorted_threat_entries_for_castle(castle_region_id)
-		var has_active_threat: bool = false
-		for threat_entry in threat_entries:
-			if not _is_threat_entry_still_active(threat_entry, player_id):
-				continue
-			var live_threat_entry: Dictionary = _get_live_threat_entry_for_decision(threat_entry, player_id)
-			has_active_threat = true
-			var threat_region_id: int = int(live_threat_entry.get("region_id", -1))
+		var grouped_threat_contexts: Array[Dictionary] = _get_grouped_threat_contexts_for_castle(castle_region_id, player_id, threat_entries)
+		var active_threat_count: int = grouped_threat_contexts.size()
+		for threat_context in grouped_threat_contexts:
+			var threat_region_id: int = int(threat_context.get("region_id", -1))
 			if threat_region_id < 0:
 				continue
 			if threat_region_id == current_region_id:
@@ -1204,9 +1282,11 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 			var attack_path: Dictionary = _get_path_info_for_player(player_id, current_region_id, threat_region_id, true, army.get_movement_points())
 			if not bool(attack_path.get("can_reach_this_turn", false)):
 				continue
-			var direct_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, live_threat_entry, threat_region_id)
+			var grouped_reason: String = _format_grouped_threat_context_reason(threat_context)
+			_log_decision_tree_branch(army, "threat_grouped_context", grouped_reason)
+			var direct_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, threat_context, threat_region_id)
 			if bool(direct_eval.get("can_attack", false)):
-				var attack_reason: String = "to " + _get_region_name_by_id(threat_region_id)
+				var attack_reason: String = "to " + _get_region_name_by_id(threat_region_id) + " (" + grouped_reason + ")"
 				_log_decision_tree_branch(army, "threat_direct_attack", attack_reason)
 				var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 				var result_label: String = String(attack_result.get("result", "blocked"))
@@ -1216,18 +1296,29 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 			var block_branch: String = String(direct_eval.get("block_branch", ""))
 			if block_branch != "":
 				_log_decision_tree_branch(army, block_branch, "to " + _get_region_name_by_id(threat_region_id))
-			var support_candidate: Dictionary = _select_support_merge_target(army, live_threat_entry, current_region_id)
+			if block_branch == "threat_direct_blocked_turn_lock":
+				_log_decision_tree_branch(army, "threat_local_merge_skipped_turn_lock", "to " + _get_region_name_by_id(threat_region_id))
+				if _should_hold_in_castle_after_threat_lock(army, castle_region_id):
+					_log_decision_tree_branch(army, "threat_hold_after_direct_lock", _get_region_name_by_id(castle_region_id))
+					_spend_all_on_camp(army)
+					return true
+				continue
+			if await _try_local_merge_attack_for_threat(army, threat_context, threat_region_id):
+				return true
+			var support_candidate: Dictionary = _select_support_merge_target(army, threat_context, current_region_id)
 			if support_candidate.is_empty():
+				if await _try_garrison_sortie_for_threat(army, threat_context, castle_region_id, threat_region_id, attack_path, active_threat_count):
+					return true
 				continue
 			var support_army: Army = support_candidate.get("friendly_army", null) as Army
 			var support_region_id: int = int(support_candidate.get("region_id", -1))
 			if support_region_id == current_region_id:
 				var transferred_local: bool = army_manager.transfer_all_soldiers(army, support_army)
 				if transferred_local:
-					_log_army_transfer(army, support_army)
-					army.spawn_minimal_peasant_token()
-					army.request_recruitment()
+					_finalize_threat_transfer_donor(army, support_army, "local_transfer")
 					_log_decision_tree_branch(army, "threat_support_merge", "local_transfer")
+					return true
+				if await _try_garrison_sortie_for_threat(army, threat_context, castle_region_id, threat_region_id, attack_path, active_threat_count):
 					return true
 				continue
 			var support_reason: String = "to " + _get_region_name_by_id(support_region_id)
@@ -1239,11 +1330,11 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 				if army_region.get_region_id() == support_region.get_region_id():
 					var transferred: bool = army_manager.transfer_all_soldiers(army, support_army)
 					if transferred:
-						_log_army_transfer(army, support_army)
-						army.spawn_minimal_peasant_token()
-						army.request_recruitment()
+						_finalize_threat_transfer_donor(army, support_army, "support_transfer")
 						return true
-		if not has_active_threat:
+			if await _try_garrison_sortie_for_threat(army, threat_context, castle_region_id, threat_region_id, attack_path, active_threat_count):
+				return true
+		if grouped_threat_contexts.is_empty():
 			continue
 		if castle_region_id == current_region_id:
 			continue
@@ -1253,24 +1344,301 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 		if not unknown_needs_defender and not known_needs_more_defenders:
 			_log_decision_tree_branch(army, "threat_castle_defended", _get_region_name_by_id(castle_region_id))
 			continue
-		var castle_path: Dictionary = _get_path_info_for_player(player_id, current_region_id, castle_region_id, true, army.get_movement_points())
-		if not bool(castle_path.get("can_reach_this_turn", false)):
-			_log_decision_tree_branch(army, "threat_reposition_skipped_unreachable", _get_region_name_by_id(castle_region_id))
-			continue
-		var castle_reason: String = "to " + _get_region_name_by_id(castle_region_id)
-		if unknown_needs_defender and not known_needs_more_defenders:
-			_log_decision_tree_branch(army, "threat_reposition_needed_unknown", castle_reason)
-		else:
-			_log_decision_tree_branch(army, "threat_reposition_needed_known_gap", castle_reason)
-		await _move_army_to_region(army, castle_region_id, "threat_reposition", {})
-		if is_instance_valid(army):
-			army.request_recruitment()
-			var army_region: Region = army.get_parent() as Region
-			if army_region.get_region_id() == castle_region_id and bool(defend_eval.get("has_unknown_threat", false)):
-				_unknown_threat_defended_by_region[castle_region_id] = true
-		return true
+			var castle_path: Dictionary = _get_path_info_for_player(player_id, current_region_id, castle_region_id, true, army.get_movement_points())
+			if not bool(castle_path.get("can_reach_this_turn", false)):
+				_log_decision_tree_branch(army, "threat_reposition_skipped_unreachable", _get_region_name_by_id(castle_region_id))
+				continue
+			var castle_reason: String = "to " + _get_region_name_by_id(castle_region_id)
+			if unknown_needs_defender and not known_needs_more_defenders:
+				_log_decision_tree_branch(army, "threat_reposition_needed_unknown", castle_reason)
+			else:
+				_log_decision_tree_branch(army, "threat_reposition_needed_known_gap", castle_reason)
+			await _move_army_to_region(army, castle_region_id, "threat_reposition", {})
+			if is_instance_valid(army):
+				army.request_recruitment()
+				var army_region: Region = army.get_parent() as Region
+				if army_region.get_region_id() == castle_region_id and bool(defend_eval.get("has_unknown_threat", false)):
+					_unknown_threat_defended_by_region[castle_region_id] = true
+				_spend_all_on_camp(army)
+			return true
 	_log_decision_tree_branch(army, "threat_no_action", "no_reachable_threat_action")
 	return false
+
+func _handle_castle_hold_cycle(army: Army) -> bool:
+	var current_region: Region = army.get_parent() as Region
+	if not current_region.has_castle():
+		return false
+	var current_region_id: int = current_region.get_region_id()
+	var threat_level: int = int(_castle_threat_level_snapshot_by_region.get(current_region_id, 0))
+	if threat_level <= 0:
+		return false
+	var castle_name: String = _get_region_name_by_id(current_region_id)
+	if threat_level == 1:
+		_log_decision_tree_branch(army, "threat_release_level1_castle_safe", castle_name)
+		return false
+	if threat_level >= 4:
+		return false
+	if threat_level != 2 and threat_level != 3:
+		return false
+	if _can_army_execute_direct_threat_attack_from_castle(army, current_region_id):
+		return false
+	var friendly_armies_in_castle: Array[Army] = _get_friendly_armies_in_region(current_region, army.get_player_id())
+	if friendly_armies_in_castle.size() > 1:
+		return false
+	if threat_level == 2:
+		_log_decision_tree_branch(army, "threat_hold_level2_needs_army", castle_name)
+	else:
+		_log_decision_tree_branch(army, "threat_hold_level3_unknown", castle_name)
+	_spend_all_on_camp(army)
+	return true
+
+func _can_army_execute_direct_threat_attack_from_castle(army: Army, castle_region_id: int) -> bool:
+	var player_id: int = army.get_player_id()
+	var threat_entries: Array[Dictionary] = _get_sorted_threat_entries_for_castle(castle_region_id)
+	var grouped_threat_contexts: Array[Dictionary] = _get_grouped_threat_contexts_for_castle(castle_region_id, player_id, threat_entries)
+	for threat_context in grouped_threat_contexts:
+		var threat_region_id: int = int(threat_context.get("region_id", -1))
+		if threat_region_id < 0 or threat_region_id == castle_region_id:
+			continue
+		var attack_path: Dictionary = _get_path_info_for_player(player_id, castle_region_id, threat_region_id, true, army.get_movement_points())
+		if not bool(attack_path.get("can_reach_this_turn", false)):
+			continue
+		var direct_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, threat_context, threat_region_id)
+		if bool(direct_eval.get("can_attack", false)):
+			return true
+	return false
+
+func _get_friendly_armies_in_region(region: Region, player_id: int) -> Array[Army]:
+	var friendly_armies: Array[Army] = []
+	var armies_in_region: Array[Army] = army_manager.get_armies_in_region(region)
+	for region_army in armies_in_region:
+		if region_army.get_player_id() == player_id:
+			friendly_armies.append(region_army)
+	return friendly_armies
+
+func _count_active_threat_entries_for_castle(threat_entries: Array[Dictionary], player_id: int) -> int:
+	var count: int = 0
+	for threat_entry in threat_entries:
+		if _is_threat_entry_still_active(threat_entry, player_id):
+			count += 1
+	return count
+
+func _try_local_merge_attack_for_threat(army: Army, threat_context: Dictionary, threat_region_id: int) -> bool:
+	var army_id: int = army.get_instance_id()
+	if _has_threat_local_merge_attempt(army_id, threat_region_id):
+		return false
+	var local_support_armies: Array[Army] = _get_local_support_armies_for_threat(army)
+	if local_support_armies.is_empty():
+		return false
+	_mark_threat_local_merge_attempt(army_id, threat_region_id)
+	_log_decision_tree_branch(army, "threat_local_merge_attempt", "to " + _get_region_name_by_id(threat_region_id))
+	_merge_local_support_armies_for_threat(army, local_support_armies)
+	var merged_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, threat_context, threat_region_id)
+	if not bool(merged_eval.get("can_attack", false)):
+		return false
+	_log_decision_tree_branch(army, "threat_direct_attack", "to " + _get_region_name_by_id(threat_region_id))
+	var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
+	var result_label: String = String(attack_result.get("result", "blocked"))
+	if result_label == "battle_withdrawal" or result_label == "battle_defeat":
+		_set_threat_direct_block(army.get_instance_id(), threat_region_id, result_label)
+	return true
+
+func _should_hold_in_castle_after_threat_lock(army: Army, castle_region_id: int) -> bool:
+	var current_region: Region = army.get_parent() as Region
+	return current_region.has_castle() and current_region.get_region_id() == castle_region_id
+
+func _merge_local_support_armies_for_threat(receiver: Army, donors: Array[Army]) -> void:
+	var source_region: Region = receiver.get_parent() as Region
+	for donor in donors:
+		if donor == receiver:
+			continue
+		if donor.get_parent() != source_region:
+			continue
+		var transferred: bool = army_manager.transfer_all_soldiers(donor, receiver)
+		if transferred:
+			_finalize_threat_transfer_donor(donor, receiver, "local_merge_donor")
+
+func _finalize_threat_transfer_donor(donor: Army, receiver: Army, reason: String) -> void:
+	_log_army_transfer(donor, receiver)
+	donor.spawn_minimal_peasant_token()
+	donor.request_recruitment()
+	_log_decision_tree_branch(donor, "threat_transfer_donor_finalized", reason)
+	if donor.get_movement_points() > 0:
+		_spend_all_on_camp(donor)
+
+func _get_local_support_armies_for_threat(army: Army) -> Array[Army]:
+	var current_region: Region = army.get_parent() as Region
+	var local_armies: Array[Army] = []
+	var armies_in_region: Array[Army] = army_manager.get_armies_in_region(current_region)
+	for local_army in armies_in_region:
+		if local_army == army:
+			continue
+		if local_army.get_player_id() != army.get_player_id():
+			continue
+		local_armies.append(local_army)
+	return local_armies
+
+func _try_garrison_sortie_for_threat(army: Army, threat_context: Dictionary, castle_region_id: int, threat_region_id: int, attack_path: Dictionary, active_threat_count: int) -> bool:
+	var current_region: Region = army.get_parent() as Region
+	var current_region_id: int = current_region.get_region_id()
+	if current_region_id != castle_region_id:
+		return false
+	if not current_region.has_castle():
+		return false
+	var threat_known: bool = bool(threat_context.get("known", false))
+	if not threat_known:
+		_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_unknown", "to " + _get_region_name_by_id(threat_region_id))
+		return false
+	var enemy_power: int = int(threat_context.get("power", -1))
+	if enemy_power <= 0:
+		_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_ratio", "to " + _get_region_name_by_id(threat_region_id))
+		return false
+	var army_power_before_pull: int = army.get_army_power()
+	var pull_plan_info: Dictionary = _build_garrison_pull_plan_for_threat(current_region, army_power_before_pull, enemy_power)
+	if not bool(pull_plan_info.get("success", false)):
+		_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_ratio", "to " + _get_region_name_by_id(threat_region_id))
+		return false
+	var requires_roundtrip: bool = active_threat_count > 1
+	if requires_roundtrip:
+		var attack_cost: int = int(attack_path.get("cost", AI_PATH_UNREACHABLE_COST))
+		var return_path: Dictionary = _get_path_info_for_player(army.get_player_id(), threat_region_id, castle_region_id, false, army.get_movement_points())
+		if not bool(return_path.get("success", false)):
+			_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_multithreat_roundtrip", "to " + _get_region_name_by_id(threat_region_id))
+			return false
+		var return_cost: int = int(return_path.get("cost", AI_PATH_UNREACHABLE_COST))
+		if attack_cost + return_cost > army.get_movement_points():
+			_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_multithreat_roundtrip", "to " + _get_region_name_by_id(threat_region_id))
+			return false
+	var pull_plan: Dictionary = pull_plan_info.get("plan", {})
+	_apply_garrison_pull_plan_to_army(current_region, army, pull_plan)
+	var sortie_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, threat_context, threat_region_id)
+	if not bool(sortie_eval.get("can_attack", false)):
+		_revert_garrison_pull_plan_from_army(current_region, army, pull_plan)
+		return false
+	_log_decision_tree_branch(army, "threat_garrison_sortie_selected", "to " + _get_region_name_by_id(threat_region_id))
+	var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
+	var result_label: String = String(attack_result.get("result", "blocked"))
+	if result_label == "battle_withdrawal" or result_label == "battle_defeat":
+		_set_threat_direct_block(army.get_instance_id(), threat_region_id, result_label)
+	if requires_roundtrip and is_instance_valid(army):
+		var army_region_after_attack: Region = army.get_parent() as Region
+		if army_region_after_attack.get_region_id() != castle_region_id:
+			_log_decision_tree_branch(army, "threat_garrison_sortie_return", "to " + _get_region_name_by_id(castle_region_id))
+			await _move_army_to_region(army, castle_region_id, "sortie_return", {})
+	return true
+
+func _build_garrison_pull_plan_for_threat(castle_region: Region, current_army_power: int, enemy_power: int) -> Dictionary:
+	var garrison: ArmyComposition = castle_region.get_garrison()
+	var garrison_power: int = _calculate_composition_power(garrison)
+	var min_required_power: int = int(ceil(float(enemy_power) * 1.2))
+	var max_ratio_power: int = int(floor(float(enemy_power) * 1.5))
+	if max_ratio_power < min_required_power:
+		max_ratio_power = min_required_power
+	var max_possible_power: int = current_army_power + garrison_power
+	if max_possible_power < min_required_power:
+		return {
+			"success": false,
+			"plan": {},
+			"pulled_power": 0
+		}
+	var desired_power: int = mini(max_possible_power, max_ratio_power)
+	var needed_power: int = maxi(0, desired_power - current_army_power)
+	if needed_power <= 0:
+		return {
+			"success": true,
+			"plan": {},
+			"pulled_power": 0
+		}
+	var pull_plan: Dictionary = {}
+	var unit_entries: Array[Dictionary] = []
+	var pulled_power: int = 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_power: int = int(GameParameters.get_unit_stat(unit_type, "power"))
+		if unit_power <= 0:
+			continue
+		var count: int = garrison.get_soldier_count(unit_type)
+		if count <= 0:
+			continue
+		var exact_units: float = (float(count) * float(needed_power)) / float(max(1, garrison_power))
+		var base_take: int = mini(count, int(floor(exact_units)))
+		if base_take > 0:
+			pull_plan[unit_type] = base_take
+			pulled_power += base_take * unit_power
+		unit_entries.append({
+			"unit_type": int(unit_type),
+			"unit_power": unit_power,
+			"remaining": count - base_take,
+			"fractional": exact_units - float(base_take)
+		})
+	unit_entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_fractional: float = float(a.get("fractional", 0.0))
+		var b_fractional: float = float(b.get("fractional", 0.0))
+		if a_fractional != b_fractional:
+			return a_fractional > b_fractional
+		var a_unit_power: int = int(a.get("unit_power", 0))
+		var b_unit_power: int = int(b.get("unit_power", 0))
+		if a_unit_power != b_unit_power:
+			return a_unit_power < b_unit_power
+		return int(a.get("unit_type", -1)) < int(b.get("unit_type", -1))
+	)
+	var progress: bool = true
+	while progress and pulled_power < needed_power:
+		progress = false
+		for entry in unit_entries:
+			var remaining: int = int(entry.get("remaining", 0))
+			if remaining <= 0:
+				continue
+			var unit_power: int = int(entry.get("unit_power", 0))
+			if pulled_power + unit_power > needed_power:
+				continue
+			var unit_type: int = int(entry.get("unit_type", -1))
+			var current_take: int = int(pull_plan.get(unit_type, 0))
+			pull_plan[unit_type] = current_take + 1
+			entry["remaining"] = remaining - 1
+			pulled_power += unit_power
+			progress = true
+			if pulled_power >= needed_power:
+				break
+	var final_power: int = current_army_power + pulled_power
+	if final_power < min_required_power:
+		return {
+			"success": false,
+			"plan": {},
+			"pulled_power": 0
+		}
+	return {
+		"success": true,
+		"plan": pull_plan,
+		"pulled_power": pulled_power
+	}
+
+func _apply_garrison_pull_plan_to_army(castle_region: Region, army: Army, pull_plan: Dictionary) -> void:
+	for unit_type_key in pull_plan.keys():
+		var unit_type: SoldierTypeEnum.Type = int(unit_type_key)
+		var count: int = int(pull_plan.get(unit_type_key, 0))
+		if count <= 0:
+			continue
+		castle_region.remove_soldiers_from_garrison(unit_type, count)
+		army.add_soldiers(unit_type, count)
+
+func _revert_garrison_pull_plan_from_army(castle_region: Region, army: Army, pull_plan: Dictionary) -> void:
+	for unit_type_key in pull_plan.keys():
+		var unit_type: SoldierTypeEnum.Type = int(unit_type_key)
+		var count: int = int(pull_plan.get(unit_type_key, 0))
+		if count <= 0:
+			continue
+		army.remove_soldiers(unit_type, count)
+		castle_region.add_soldiers_to_garrison(unit_type, count)
+
+func _calculate_composition_power(composition: ArmyComposition) -> int:
+	var total_power: int = 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count: int = composition.get_soldier_count(unit_type)
+		if count <= 0:
+			continue
+		var unit_power: int = int(GameParameters.get_unit_stat(unit_type, "power"))
+		total_power += count * unit_power
+	return total_power
 
 func _evaluate_castle_defense_need(castle_region_id: int, player_id: int, threat_entries: Array[Dictionary]) -> Dictionary:
 	var has_unknown_threat: bool = false
@@ -1410,12 +1778,73 @@ func _extract_tracker_key_from_entity_id(entity_id: String) -> String:
 		return entity_id.substr(5, entity_id.length() - 5)
 	return entity_id
 
-func _can_attack_threat_directly(army: Army, threat_entry: Dictionary) -> bool:
-	var threat_known: bool = bool(threat_entry.get("known", false))
-	if not threat_known:
-		return true
-	var threat_power: int = int(threat_entry.get("power", -1))
-	return army.get_army_power() > threat_power
+func _get_grouped_threat_contexts_for_castle(castle_region_id: int, player_id: int, threat_entries: Array[Dictionary] = []) -> Array[Dictionary]:
+	var source_entries: Array[Dictionary] = threat_entries
+	if source_entries.is_empty():
+		source_entries = _get_sorted_threat_entries_for_castle(castle_region_id)
+	var grouped_by_region: Dictionary = {}
+	for threat_entry in source_entries:
+		if not _is_threat_entry_still_active(threat_entry, player_id):
+			continue
+		var live_threat_entry: Dictionary = _get_live_threat_entry_for_decision(threat_entry, player_id)
+		var threat_region_id: int = int(live_threat_entry.get("region_id", -1))
+		if threat_region_id < 0:
+			continue
+		var grouped_context: Dictionary = grouped_by_region.get(threat_region_id, {
+			"region_id": threat_region_id,
+			"known_total_power": 0,
+			"has_unknown": false,
+			"source_entries": [],
+			"max_threat_level": 0
+		})
+		var grouped_source_entries: Array = grouped_context.get("source_entries", [])
+		grouped_source_entries.append(live_threat_entry)
+		grouped_context["source_entries"] = grouped_source_entries
+		var threat_level: int = int(live_threat_entry.get("threat_level", 0))
+		grouped_context["max_threat_level"] = max(int(grouped_context.get("max_threat_level", 0)), threat_level)
+		var threat_known: bool = bool(live_threat_entry.get("known", false))
+		if threat_known:
+			var current_known_total: int = int(grouped_context.get("known_total_power", 0))
+			current_known_total += max(0, int(live_threat_entry.get("power", 0)))
+			grouped_context["known_total_power"] = current_known_total
+		else:
+			grouped_context["has_unknown"] = true
+		grouped_by_region[threat_region_id] = grouped_context
+	var grouped_contexts: Array[Dictionary] = []
+	for grouped_key in grouped_by_region.keys():
+		var grouped_context: Dictionary = grouped_by_region.get(grouped_key, {})
+		var known_total_power: int = int(grouped_context.get("known_total_power", 0))
+		var has_unknown: bool = bool(grouped_context.get("has_unknown", false))
+		grouped_context["known"] = known_total_power > 0
+		grouped_context["power"] = known_total_power if known_total_power > 0 else -1
+		grouped_context["has_unknown"] = has_unknown
+		grouped_contexts.append(grouped_context)
+	grouped_contexts.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_level: int = int(a.get("max_threat_level", 0))
+		var b_level: int = int(b.get("max_threat_level", 0))
+		if a_level != b_level:
+			return a_level > b_level
+		var a_power: int = int(a.get("known_total_power", 0))
+		var b_power: int = int(b.get("known_total_power", 0))
+		if a_power != b_power:
+			return a_power > b_power
+		return int(a.get("region_id", -1)) < int(b.get("region_id", -1))
+	)
+	return grouped_contexts
+
+func _format_grouped_threat_context_reason(threat_context: Dictionary) -> String:
+	var known_total_power: int = int(threat_context.get("known_total_power", 0))
+	var has_unknown: bool = bool(threat_context.get("has_unknown", false))
+	var source_entries: Array = threat_context.get("source_entries", [])
+	return "known_total=%d unknown=%s entries=%d" % [known_total_power, str(has_unknown), source_entries.size()]
+
+func _can_attack_grouped_threat_directly(army: Army, threat_context: Dictionary) -> bool:
+	var has_known_power: bool = bool(threat_context.get("known", false))
+	var known_power: int = int(threat_context.get("power", -1))
+	if has_known_power and known_power > 0:
+		return army.get_army_power() > known_power
+	var has_unknown: bool = bool(threat_context.get("has_unknown", false))
+	return has_unknown
 
 func _is_threat_direct_blocked(army_id: int, target_region_id: int) -> bool:
 	if not _threat_direct_block_by_army.has(army_id):
@@ -1428,7 +1857,18 @@ func _set_threat_direct_block(army_id: int, target_region_id: int, reason: Strin
 	army_locks[target_region_id] = reason
 	_threat_direct_block_by_army[army_id] = army_locks
 
-func _evaluate_threat_direct_attack_viability(army: Army, threat_entry: Dictionary, threat_region_id: int) -> Dictionary:
+func _has_threat_local_merge_attempt(army_id: int, target_region_id: int) -> bool:
+	if not _threat_local_merge_attempt_by_army.has(army_id):
+		return false
+	var army_attempts: Dictionary = _threat_local_merge_attempt_by_army.get(army_id, {})
+	return army_attempts.has(target_region_id)
+
+func _mark_threat_local_merge_attempt(army_id: int, target_region_id: int) -> void:
+	var army_attempts: Dictionary = _threat_local_merge_attempt_by_army.get(army_id, {})
+	army_attempts[target_region_id] = true
+	_threat_local_merge_attempt_by_army[army_id] = army_attempts
+
+func _evaluate_threat_direct_attack_viability(army: Army, threat_context: Dictionary, threat_region_id: int) -> Dictionary:
 	var army_id: int = army.get_instance_id()
 	if _is_threat_direct_blocked(army_id, threat_region_id):
 		return {
@@ -1437,7 +1877,7 @@ func _evaluate_threat_direct_attack_viability(army: Army, threat_entry: Dictiona
 		}
 	var threat_region: Region = region_manager.map_generator.get_region_container_by_id(threat_region_id) as Region
 	var has_castle: bool = threat_region.get_castle_type() != CastleTypeEnum.Type.NONE
-	var threat_known: bool = bool(threat_entry.get("known", false))
+	var threat_known: bool = bool(threat_context.get("known", false))
 	if has_castle:
 		if not threat_known:
 			_set_threat_direct_block(army_id, threat_region_id, "unknown_castle")
@@ -1454,7 +1894,7 @@ func _evaluate_threat_direct_attack_viability(army: Army, threat_entry: Dictiona
 				"block_branch": "threat_direct_blocked_simulation"
 			}
 		return {"can_attack": true}
-	if _can_attack_threat_directly(army, threat_entry):
+	if _can_attack_grouped_threat_directly(army, threat_context):
 		return {"can_attack": true}
 	return {
 		"can_attack": false,
@@ -1942,6 +2382,7 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 			_latest_candidate_rejections.append({
 				"target_id": target_id,
 				"reason": "known_overmatched_filter",
+				"observer_id": player_id,
 				"score": 0.0,
 				"has_score": false
 			})
@@ -2282,8 +2723,9 @@ func _build_castle_log_lines(candidates: Array) -> Array[String]:
 		var distance := int(entry.get("distance", 0))
 		var level := int(entry.get("castle_level", 0))
 		var needs_recruitment_armies := int(entry.get("needs_recruitment_armies", 0))
+		var power := int(entry.get("power", 0))
 		var score := float(entry.get("score", 0.0))
-		lines.append("Castle %s - recruits:%d, distance:%d, level:%d, needs_recruitment_armies:%d, score: %.1f" % [name, recruits, distance, level, needs_recruitment_armies, score])
+		lines.append("Castle %s - recruits:%d, distance:%d, level:%d, needs_recruitment_armies:%d, power:%d, score: %.1f" % [name, recruits, distance, level, needs_recruitment_armies, power, score])
 	return lines
 
 func _hire_peasants_at_region(army: Army, region: Region, max_needed: int) -> int:
@@ -2316,7 +2758,8 @@ func _log_turn_intro(player_id: int, turn_number: int, econ_result: Dictionary) 
 	var decision = String(econ_result.get("decision", ""))
 	var player_label = "%s (#%d)" % [player.get_player_name(), player_id]
 	var upgrade_savings_gold: int = player.get_ai_castle_upgrade_savings_gold()
-	game_manager.get_ai_log_manager().log_turn_intro(turn_number, player_label, player_id, resources, signals, decision, region_names, wealth_label, upgrade_savings_gold)
+	var castle_garrison_lines: Array[String] = _build_player_castle_garrison_log_lines(player_id)
+	game_manager.get_ai_log_manager().log_turn_intro(turn_number, player_label, player_id, resources, signals, decision, region_names, wealth_label, upgrade_savings_gold, castle_garrison_lines)
 
 func _log_turn_outro(player_id: int) -> void:
 	if not _log_active_turn:
@@ -2426,6 +2869,18 @@ func _log_rejected_candidates(rejections: Array[Dictionary]) -> void:
 		var region_id: int = int(rejected.get("target_id", -1))
 		var reason_raw: String = String(rejected.get("reason", "unknown"))
 		var reason_label: String = _format_rejected_reason(reason_raw)
+		if reason_raw == "known_overmatched_filter":
+			var observer_id: int = int(rejected.get("observer_id", -1))
+			var enemy_army_detail: String = _build_known_enemy_army_power_detail(observer_id, region_id)
+			var overmatched_line := "Reason: %s Candidate %d: %s (#%d), enemies: %s" % [
+				reason_label,
+				i + 1,
+				_get_region_name_by_id(region_id),
+				region_id,
+				enemy_army_detail
+			]
+			_log_army_detail_line(overmatched_line)
+			continue
 		var score_label: String = "n/a"
 		if bool(rejected.get("has_score", false)):
 			score_label = "%.1f" % float(rejected.get("score", 0.0))
@@ -2437,6 +2892,24 @@ func _log_rejected_candidates(rejections: Array[Dictionary]) -> void:
 			score_label
 		]
 		_log_army_detail_line(line)
+
+func _build_known_enemy_army_power_detail(observer_id: int, region_id: int) -> String:
+	if observer_id <= 0:
+		return "none"
+	var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+	var details: Array[String] = []
+	var enemies: Array[Army] = army_manager.get_armies_in_region(region)
+	for enemy in enemies:
+		if enemy.get_player_id() == observer_id:
+			continue
+		var tracker_key: String = Player.get_enemy_tracker_key(enemy)
+		var tracked_power: int = player_manager.get_tracked_enemy_power(observer_id, tracker_key)
+		if tracked_power < 0:
+			continue
+		details.append("%s:%d" % [enemy.get_display_name(), tracked_power])
+	if details.is_empty():
+		return "none"
+	return ", ".join(details)
 
 func _format_rejected_reason(reason: String) -> String:
 	match reason:
@@ -2477,12 +2950,14 @@ func _log_target_candidates(moves: Array) -> void:
 	for i in range(top_count):
 		var move: Dictionary = sorted[i]
 		var region_id: int = int(move.get("target_id", -1))
+		var mp_cost: int = int(move.get("mp_cost", 0))
 		var components: Dictionary = move.get("components", Dictionary())
-		var line := "Candidate %d: %s (#%d), score: %.1f (resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, strategy: %.1f)" % [
+		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, strategy: %.1f)" % [
 			i + 1,
 			_get_region_name_by_id(region_id),
 			region_id,
 			float(move.get("final_score", 0.0)),
+			mp_cost,
 			float(components.get("resources", 0.0)),
 			float(components.get("population", 0.0)),
 			int(components.get("level", 0)),
@@ -2788,27 +3263,30 @@ func _log_army_separator(army: Army) -> void:
 	var role_label: String = _get_army_role_display_label(_get_army_role_for_turn(army))
 	var army_number: String = _get_army_number_for_log(army)
 	game_manager.get_ai_log_manager().log_army_separator(army_number, role_label)
+	var current_region: Region = army.get_parent() as Region
+	_log_army_detail_line("Region: " + current_region.get_region_name())
 	_log_army_detail_line("%s [Power: %d, E: %d - %s]" % [army.get_display_name(), army.get_army_power(), army.get_efficiency(), _get_army_composition_suffix(army)])
 
 func _log_recruitment_header() -> void:
 	if _log_active_turn:
 		_log_army_detail_line("[RECRUITMENT]")
 
-func _log_recruitment_candidates(best_castle: Dictionary, current_region_id: int) -> void:
+func _log_recruitment_candidates(best_castle: Dictionary, current_region_id: int, header_label: String, empty_label: String) -> void:
 	if not _log_active_turn:
 		return
 	var candidates: Array = best_castle.get("candidates", [])
 	if candidates.is_empty():
-		_log_army_detail_line("No recruit castles available from " + _get_region_name_by_id(current_region_id))
+		_log_army_detail_line(empty_label + " from " + _get_region_name_by_id(current_region_id))
 		return
-	_log_army_detail_line("Recruitment castle candidates:")
+	_log_army_detail_line(header_label + ":")
 	for cand in candidates:
 		var name := String(cand.get("region_name", _get_region_name_by_id(int(cand.get("region_id", -1)))))
 		var distance := int(cand.get("distance", 0))
 		var recruits := int(cand.get("recruits", 0))
 		var needs_recruitment_armies := int(cand.get("needs_recruitment_armies", 0))
+		var power := int(cand.get("power", 0))
 		var score := float(cand.get("score", 0.0))
-		_log_army_detail_line("- %s (dist:%d, recruits:%d, needs_recruitment_armies:%d, score: %.1f)" % [name, distance, recruits, needs_recruitment_armies, score])
+		_log_army_detail_line("- %s (dist:%d, recruits:%d, needs_recruitment_armies:%d, power: %d, score: %.1f)" % [name, distance, recruits, needs_recruitment_armies, power, score])
 	var pick_id := int(best_castle.get("best_region_id", -1))
 	if pick_id != -1:
 		_log_army_detail_line("Selected castle: " + _get_region_name_by_id(pick_id))
@@ -2839,6 +3317,24 @@ func _log_recent_battle_details(army: Army, army_log_token: String) -> void:
 
 func _get_army_composition_suffix(army: Army) -> String:
 	var comp = army.get_composition()
+	return _get_composition_suffix(comp)
+
+func _build_player_castle_garrison_log_lines(player_id: int) -> Array[String]:
+	var lines: Array[String] = []
+	var region_ids: Array[int] = region_manager.get_player_regions(player_id)
+	region_ids.sort()
+	for region_id in region_ids:
+		var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+		if not region.has_castle():
+			continue
+		var castle_label: String = CastleTypeEnum.type_to_string(region.get_castle_type())
+		var garrison: ArmyComposition = region.get_garrison()
+		var garrison_power: int = _calculate_composition_power(garrison)
+		var composition_suffix: String = _get_composition_suffix(garrison)
+		lines.append("%s %s [Power: %d - %s]" % [castle_label, region.get_region_name(), garrison_power, composition_suffix])
+	return lines
+
+func _get_composition_suffix(comp: ArmyComposition) -> String:
 	if comp == null:
 		return ""
 	var mapping = [

@@ -207,12 +207,12 @@ func _purchase_units(weights: Dictionary, gold: int, wood: int, iron: int, recru
 			wood_used += loop_counts[t] * int(_unit_cost(t)["wood"])
 			iron_used += loop_counts[t] * int(_unit_cost(t)["iron"])
 		while wood_used > wood_left:
-			var removed := _remove_one(loop_counts, func(u): return int(_unit_cost(u)["wood"]) > 0)
+			var removed: bool = _remove_one(loop_counts, func(u): return int(_unit_cost(u)["wood"]) > 0)
 			if not removed:
 				break
 			wood_used = _resource_used(loop_counts, "wood")
 		while iron_used > iron_left:
-			var removed2 := _remove_one(loop_counts, func(u): return int(_unit_cost(u)["iron"]) > 0)
+			var removed2: bool = _remove_one(loop_counts, func(u): return int(_unit_cost(u)["iron"]) > 0)
 			if not removed2:
 				break
 			iron_used = _resource_used(loop_counts, "iron")
@@ -222,7 +222,17 @@ func _purchase_units(weights: Dictionary, gold: int, wood: int, iron: int, recru
 		var gold_spent: int = 0
 		for t in ORDER:
 			gold_spent += loop_counts[t] * int(_unit_cost(t)["gold"])
-		if gold_spent <= 0 or gold_spent > gold_left:
+		while gold_spent > gold_left:
+			var removed_gold: bool = _remove_one(loop_counts, func(u):
+				return int(_unit_cost(u)["gold"]) > 0
+			)
+			if not removed_gold:
+				break
+			gold_spent = _resource_used(loop_counts, "gold")
+			wood_used = _resource_used(loop_counts, "wood")
+			iron_used = _resource_used(loop_counts, "iron")
+		loop_total = _sum_dict(loop_counts)
+		if loop_total <= 0 or gold_spent <= 0 or gold_spent > gold_left:
 			break
 		gold_left -= gold_spent
 		wood_left -= wood_used

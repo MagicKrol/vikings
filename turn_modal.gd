@@ -39,8 +39,8 @@ func update_turn_display() -> void:
 	if not game_manager:
 		return
 
-	var current_player = game_manager.get_current_player()
-	var player_color = _get_player_label_color(GameParameters.get_player_color(current_player))
+	var current_player: int = game_manager.get_current_player()
+	var player_color: Color = GameParameters.get_player_color(current_player)
 	
 	# Update turn number
 	var turn_label = get_node("Panel/VBoxContainer/TurnNumber")
@@ -60,9 +60,6 @@ func update_turn_display() -> void:
 		end_turn_button.text = ""
 	else:
 		end_turn_button.text = tr("END TURN")
-
-func _get_player_label_color(base_color: Color) -> Color:
-	return Color.from_hsv(base_color.h, base_color.s, 0.6, base_color.a)
 
 func refresh_from_game_state() -> void:
 	"""Refresh display from current game state"""
