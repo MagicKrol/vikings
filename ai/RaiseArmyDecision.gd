@@ -13,6 +13,11 @@ static func _norm(val: float, lo: float, hi: float) -> float:
 
 static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, gold: int, frontier_regions: int) -> float:
 	# Hard gates mirrored by should_raise_army_simple()
+	if armies == 0:
+		if gold < GameParameters.RAISE_ARMY_COST:
+			DebugLogger.log("AIEconomy", "Recruitment: No armies and cannot afford raise cost")
+			return 0.0
+		return 1.0
 	var gold_after := float(gold - GameParameters.RAISE_ARMY_COST)
 	if gold_after < float(GameParameters.AI_RESERVE_GOLD_MIN):
 		DebugLogger.log("AIEconomy", "Recruitment: Reserve gold min - not satisfied")
@@ -20,9 +25,11 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 	if recruits < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
 		DebugLogger.log("AIEconomy", "Recruitment: Min recruits for raising - not satisfied")
 		return 0.0
-	if float(frontier_regions / armies) < GameParameters.AI_RAISE_FRONTIER:
-		DebugLogger.log("AIEconomy", "Recruitment: Frontier regions - not satisfied")
-		return 0.0
+	if armies > 0:
+		var frontier_ratio: float = float(frontier_regions) / float(armies)
+		if frontier_ratio < GameParameters.AI_RAISE_FRONTIER:
+			DebugLogger.log("AIEconomy", "Recruitment: Frontier regions - not satisfied")
+			return 0.0
 
 
 	# Ratios and normalizations

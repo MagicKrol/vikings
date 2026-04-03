@@ -499,12 +499,16 @@ func _handle_army_selection_and_movement(region_container: Node, button_index: i
 				_army_manager.deselect_army()
 				_info_modal.show_region_info(target_region)
 				return
+			_army_manager.deselect_army()
+			_info_modal.show_region_info(target_region)
 			return
 		if is_owned_region:
 			_army_manager.deselect_army()
 			_info_modal.show_region_info(target_region)
 			return
 		else:
+			_army_manager.deselect_army()
+			_info_modal.show_region_info(target_region)
 			return
 
 	if move_trigger_right and button_index == MOUSE_BUTTON_RIGHT:
@@ -529,18 +533,10 @@ func _handle_army_selection_and_movement(region_container: Node, button_index: i
 			_game_manager.show_prebattle_modal(player_army_in_region, region)
 			return
 
-	# Show region info for owned regions, otherwise hide the modal
+	# Show region info for every clickable land region
 	var region = region_container as Region
 	if region != null:
-		var region_id = region.get_region_id()
-		var region_owner = _region_manager.get_region_owner(region_id)
-		var current_player_id = _game_manager.get_current_player_id()
-		if region_owner == current_player_id:
-			_info_modal.show_region_info(region)
-		else:
-			if _info_modal.visible:
-				_info_modal.hide_modal()
-			DebugLogger.log("InputSystem", "Clicked on region: " + region.get_region_name() + " (Owner: " + str(region_owner) + ")")
+		_info_modal.show_region_info(region)
 
 func _is_potential_move_target(source_region_container: Node, target_region_container: Node) -> bool:
 	var source_region := source_region_container as Region

@@ -397,13 +397,27 @@ func record_enemy_army_power(observer_id: int, enemy_army: Army) -> void:
 	var power = 0
 	if enemy_army != null and is_instance_valid(enemy_army):
 		power = enemy_army.get_army_power()
-	player.update_enemy_army_memory(key, power)
+	var composition: ArmyComposition = enemy_army.get_composition().duplicate()
+	var wounded_composition: ArmyComposition = enemy_army.get_wounded_composition()
+	var wounded_copy: ArmyComposition = null
+	if wounded_composition != null:
+		wounded_copy = wounded_composition.duplicate()
+	player.update_enemy_army_memory(key, power, composition, wounded_copy)
 
 func record_enemy_garrison(observer_id: int, region_id: int, power: int) -> void:
 	var player = get_player(observer_id)
 	if player == null:
 		return
-	player.update_enemy_garrison_memory(region_id, power)
+	var region: Region = map_generator.get_region_container_by_id(region_id) as Region
+	var garrison: ArmyComposition = region.get_garrison()
+	var wounded_garrison: ArmyComposition = region.get_wounded_garrison()
+	var garrison_copy: ArmyComposition = null
+	var wounded_copy: ArmyComposition = null
+	if garrison != null:
+		garrison_copy = garrison.duplicate()
+	if wounded_garrison != null:
+		wounded_copy = wounded_garrison.duplicate()
+	player.update_enemy_garrison_memory(region_id, power, garrison_copy, wounded_copy)
 
 func decay_enemy_memory_for_player(player_id: int) -> void:
 	var player = get_player(player_id)
@@ -422,6 +436,36 @@ func get_tracked_enemy_garrison_power(player_id: int, region_id: int) -> int:
 	if player == null:
 		return -1
 	return player.get_tracked_enemy_garrison_power(region_id)
+
+func get_tracked_enemy_army_composition_turns_ago(player_id: int, key: String) -> int:
+	var player = get_player(player_id)
+	if player == null:
+		return -1
+	return player.get_tracked_enemy_army_composition_turns_ago(key)
+
+func get_tracked_enemy_army_composition(player_id: int, key: String) -> ArmyComposition:
+	var player = get_player(player_id)
+	if player == null:
+		return null
+	return player.get_tracked_enemy_army_composition(key)
+
+func get_tracked_enemy_army_wounded_composition(player_id: int, key: String) -> ArmyComposition:
+	var player = get_player(player_id)
+	if player == null:
+		return null
+	return player.get_tracked_enemy_army_wounded_composition(key)
+
+func get_tracked_enemy_garrison_composition(player_id: int, region_id: int) -> ArmyComposition:
+	var player = get_player(player_id)
+	if player == null:
+		return null
+	return player.get_tracked_enemy_garrison_composition(region_id)
+
+func get_tracked_enemy_garrison_wounded_composition(player_id: int, region_id: int) -> ArmyComposition:
+	var player = get_player(player_id)
+	if player == null:
+		return null
+	return player.get_tracked_enemy_garrison_wounded_composition(region_id)
 
 func clear_enemy_garrison_memory(region_id: int) -> void:
 	for player_id in players:

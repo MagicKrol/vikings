@@ -71,7 +71,7 @@ const RECRUIT_DIVERSITY_REQUIREMENTS: Dictionary = {  # Minimal diversity floor 
 }
 const RECRUIT_DIVERSITY_MIN_T = 24             # Apply diversity floor only when T >= this
 const POPULATION_GROWTH_RATE = 0.02            # Base population growth rate (%)
-const POPULATION_CONST_GROWTH_RATE = 0.01
+const POPULATION_CONST_GROWTH_RATE = 0.00
 const WITHDRAWAL_FREE_HIT_ROUNDS = 2           # Number of free hit rounds enemy gets during withdrawal
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 2    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
@@ -147,11 +147,11 @@ const CASTLE_RECRUITMENT_PERCENTAGES = {
 }
 
 const REGION_RECRUITMENT_PERCENTAGES = {
-	RegionLevelEnum.Level.L1: 0.05,         
-	RegionLevelEnum.Level.L2: 0.06,      
-	RegionLevelEnum.Level.L3: 0.07,        
-	RegionLevelEnum.Level.L4: 0.08,       
-	RegionLevelEnum.Level.L5: 0.09    
+	RegionLevelEnum.Level.L1: 0.04,         
+	RegionLevelEnum.Level.L2: 0.05,      
+	RegionLevelEnum.Level.L3: 0.06,        
+	RegionLevelEnum.Level.L4: 0.07,       
+	RegionLevelEnum.Level.L5: 0.08    
 }
 
 ## AI Region Scoring Weights (0-100 scale normalization factors)
@@ -925,7 +925,7 @@ static func get_starting_resource_amount(resource_type: ResourcesEnum.Type) -> i
 static func generate_garrison_size(region_level: RegionLevelEnum.Level) -> int:
 	"""Generate random garrison size based on region level"""
 	var range_data = GARRISON_BY_LEVEL.get(region_level, {"min": 0, "max": 0})
-	return randi_range(range_data.min, range_data.max)
+	return randi_range(range_data.min, range_data.max) + 2
 
 static func generate_population_size(region_level: RegionLevelEnum.Level) -> int:
 	"""Generate random population size based on region level"""

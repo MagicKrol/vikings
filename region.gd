@@ -408,8 +408,11 @@ func get_growth() -> float:
 	var standard_growth_rate = base_growth_rate * recruit_ratio
 
 	var food_bonus: float = float(resources.get_resource_amount(ResourcesEnum.Type.FOOD)) * 0.001
+	var neutral_growth_penalty: float = 0.0
+	if current_owner_id == 0:
+		neutral_growth_penalty = 0.01
 
-	return standard_growth_rate + promotion_bonus + food_bonus + const_growth_rate
+	return standard_growth_rate + promotion_bonus + food_bonus + const_growth_rate - neutral_growth_penalty
 
 func get_population_increase() -> int:
 	return int(population * get_growth())
@@ -736,9 +739,10 @@ func _update_castle_visual() -> void:
 
 func _build_empty_nearby_entities() -> Dictionary:
 	return {
-		"friendly_armies": {},
-		"enemy_armies": {},
-		"castles": {}
+		"army_ids": {},
+		"castle_ids": {},
+		"friendly_army_ids": {},
+		"enemy_army_ids": {}
 	}
 
 func clear_castle_nearby_entities() -> void:

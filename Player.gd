@@ -36,13 +36,15 @@ var resources: Dictionary = {}
 var wealth_level: int = GameParameters.WealthLevel.POOR
 var traded_resources: Dictionary = {}
 var ai_castle_upgrade_savings_gold: int = 0
+var ai_raise_army_savings_gold: int = 0
 
 # Player statistics
 var regions_owned: Array[int] = []
 var armies_owned: Array[Army] = []
 var total_population: int = 0
 var enemy_army_memory: Dictionary = {}  # Tracks encountered enemy armies: id -> {power:int, rounds:int}
-var enemy_garrison_memory: Dictionary = {}  # Tracks observed enemy garrisons: region_id -> {power:int, rounds:int}
+var enemy_army_composition_memory: Dictionary = {}  # Tracks encountered enemy armies: id -> {composition:Dictionary, wounded_composition:Dictionary, turns_ago:int}
+var enemy_garrison_memory: Dictionary = {}  # Tracks observed enemy garrisons: region_id -> {power:int, rounds:int, composition:Dictionary, wounded_composition:Dictionary}
 
 func _init(id: int = -1, name: String = ""):
 	player_id = id
@@ -164,6 +166,25 @@ func spend_ai_castle_upgrade_savings_gold(amount: int) -> int:
 	ai_castle_upgrade_savings_gold -= used
 	return used
 
+func get_ai_raise_army_savings_gold() -> int:
+	return ai_raise_army_savings_gold
+
+func set_ai_raise_army_savings_gold(amount: int) -> void:
+	ai_raise_army_savings_gold = max(0, amount)
+
+func add_ai_raise_army_savings_gold(amount: int) -> int:
+	if amount <= 0:
+		return ai_raise_army_savings_gold
+	ai_raise_army_savings_gold = max(0, ai_raise_army_savings_gold + amount)
+	return ai_raise_army_savings_gold
+
+func spend_ai_raise_army_savings_gold(amount: int) -> int:
+	if amount <= 0:
+		return 0
+	var used: int = min(ai_raise_army_savings_gold, amount)
+	ai_raise_army_savings_gold -= used
+	return used
+
 func decay_traded_resources(rate: float, growths: Dictionary) -> void:
 	for resource_type in traded_resources:
 		var current = traded_resources.get(resource_type, 0)
@@ -203,22 +224,46 @@ static func get_enemy_tracker_key(army: Army) -> String:
 		return ""
 	return str(army.get_instance_id())
 
-func update_enemy_army_memory(key: String, power: int) -> void:
+func _composition_to_dictionary(composition: ArmyComposition) -> Dictionary:
+	if composition == null:
+		return {}
+	return composition.to_dictionary()
+
+func _dictionary_to_composition(data: Dictionary) -> ArmyComposition:
+	if data.is_empty():
+		return null
+	var composition: ArmyComposition = ArmyComposition.new()
+	composition.from_dictionary(data)
+	return composition
+
+func update_enemy_army_memory(key: String, power: int, composition: ArmyComposition = null, wounded_composition: ArmyComposition = null) -> void:
 	if key == "":
 		return
 	enemy_army_memory[key] = {
 		"power": max(0, power),
 		"rounds": GameParameters.ENEMY_ARMY_MEMORY_ROUNDS
 	}
+	if composition != null:
+		update_enemy_army_composition_memory(key, composition, wounded_composition)
 
+func update_enemy_army_composition_memory(key: String, composition: ArmyComposition, wounded_composition: ArmyComposition) -> void:
+	if key == "":
+		return
+	enemy_army_composition_memory[key] = {
+		"composition": _composition_to_dictionary(composition),
+		"wounded_composition": _composition_to_dictionary(wounded_composition),
+		"turns_ago": 0
+	}
 
-func update_enemy_garrison_memory(region_id: int, power: int) -> void:
+func update_enemy_garrison_memory(region_id: int, power: int, composition: ArmyComposition = null, wounded_composition: ArmyComposition = null) -> void:
 	if region_id < 0:
 		return
 	var key := str(region_id)
 	enemy_garrison_memory[key] = {
 		"power": max(0, power),
-		"rounds": GameParameters.ENEMY_ARMY_MEMORY_ROUNDS
+		"rounds": GameParameters.ENEMY_ARMY_MEMORY_ROUNDS,
+		"composition": _composition_to_dictionary(composition),
+		"wounded_composition": _composition_to_dictionary(wounded_composition)
 	}
 
 func decay_enemy_memory() -> void:
@@ -237,18 +282,24 @@ func decay_enemy_memory() -> void:
 		for key in to_remove:
 			enemy_army_memory.erase(key)
 	if enemy_garrison_memory.is_empty():
-		return
-	var to_remove_g: Array[String] = []
-	for key in enemy_garrison_memory.keys():
-		var entry_g: Dictionary = enemy_garrison_memory[key]
-		var rounds_left_g: int = int(entry_g.get("rounds", 0)) - 1
-		if rounds_left_g <= 0:
-			to_remove_g.append(key)
-		else:
-			entry_g["rounds"] = rounds_left_g
-			enemy_garrison_memory[key] = entry_g
-	for key in to_remove_g:
-		enemy_garrison_memory.erase(key)
+		pass
+	else:
+		var to_remove_g: Array[String] = []
+		for key in enemy_garrison_memory.keys():
+			var entry_g: Dictionary = enemy_garrison_memory[key]
+			var rounds_left_g: int = int(entry_g.get("rounds", 0)) - 1
+			if rounds_left_g <= 0:
+				to_remove_g.append(key)
+			else:
+				entry_g["rounds"] = rounds_left_g
+				enemy_garrison_memory[key] = entry_g
+		for key in to_remove_g:
+			enemy_garrison_memory.erase(key)
+	for key in enemy_army_composition_memory.keys():
+		var composition_entry: Dictionary = enemy_army_composition_memory[key]
+		var turns_ago: int = int(composition_entry.get("turns_ago", 0)) + 1
+		composition_entry["turns_ago"] = turns_ago
+		enemy_army_composition_memory[key] = composition_entry
 
 func get_tracked_enemy_power(key: String) -> int:
 	if key == "":
@@ -257,6 +308,32 @@ func get_tracked_enemy_power(key: String) -> int:
 		return int(enemy_army_memory[key].get("power", -1))
 	return -1
 
+func get_tracked_enemy_army_composition_turns_ago(key: String) -> int:
+	if key == "":
+		return -1
+	if not enemy_army_composition_memory.has(key):
+		return -1
+	var entry: Dictionary = enemy_army_composition_memory[key]
+	return int(entry.get("turns_ago", -1))
+
+func get_tracked_enemy_army_composition(key: String) -> ArmyComposition:
+	if key == "":
+		return null
+	if not enemy_army_composition_memory.has(key):
+		return null
+	var entry: Dictionary = enemy_army_composition_memory[key]
+	var composition_data: Dictionary = entry.get("composition", {})
+	return _dictionary_to_composition(composition_data)
+
+func get_tracked_enemy_army_wounded_composition(key: String) -> ArmyComposition:
+	if key == "":
+		return null
+	if not enemy_army_composition_memory.has(key):
+		return null
+	var entry: Dictionary = enemy_army_composition_memory[key]
+	var wounded_data: Dictionary = entry.get("wounded_composition", {})
+	return _dictionary_to_composition(wounded_data)
+
 func get_tracked_enemy_garrison_power(region_id: int) -> int:
 	if region_id < 0:
 		return -1
@@ -264,6 +341,26 @@ func get_tracked_enemy_garrison_power(region_id: int) -> int:
 	if enemy_garrison_memory.has(key):
 		return int(enemy_garrison_memory[key].get("power", -1))
 	return -1
+
+func get_tracked_enemy_garrison_composition(region_id: int) -> ArmyComposition:
+	if region_id < 0:
+		return null
+	var key := str(region_id)
+	if not enemy_garrison_memory.has(key):
+		return null
+	var entry: Dictionary = enemy_garrison_memory[key]
+	var composition_data: Dictionary = entry.get("composition", {})
+	return _dictionary_to_composition(composition_data)
+
+func get_tracked_enemy_garrison_wounded_composition(region_id: int) -> ArmyComposition:
+	if region_id < 0:
+		return null
+	var key := str(region_id)
+	if not enemy_garrison_memory.has(key):
+		return null
+	var entry: Dictionary = enemy_garrison_memory[key]
+	var wounded_data: Dictionary = entry.get("wounded_composition", {})
+	return _dictionary_to_composition(wounded_data)
 
 func clear_enemy_garrison_memory(region_id: int) -> void:
 	if region_id < 0:
@@ -301,6 +398,7 @@ func to_dictionary() -> Dictionary:
 		"is_computer": computer_controlled,
 		"resources": _resources_to_dict(),
 		"ai_castle_upgrade_savings_gold": ai_castle_upgrade_savings_gold,
+		"ai_raise_army_savings_gold": ai_raise_army_savings_gold,
 		"regions_owned": regions_owned,
 		"total_population": total_population
 	}
@@ -316,6 +414,7 @@ func from_dictionary(data: Dictionary) -> void:
 	
 	_resources_from_dict(data.get("resources", {}))
 	ai_castle_upgrade_savings_gold = max(0, int(data.get("ai_castle_upgrade_savings_gold", 0)))
+	ai_raise_army_savings_gold = max(0, int(data.get("ai_raise_army_savings_gold", 0)))
 	var raw_regions: Array = data.get("regions_owned", [])
 	regions_owned = _to_int_array(raw_regions)
 	total_population = data.get("total_population", 0)

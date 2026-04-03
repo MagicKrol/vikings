@@ -274,14 +274,12 @@ func _log_ai_resource_top_up_summary(purchases: Array[Dictionary]) -> void:
 	ai_log.log_economy(msg)
 
 func _get_available_armies(player_id: int) -> Array[Army]:
-	"""Get armies that can still move this turn"""
+	"""Get all valid armies for turn processing"""
 	var available: Array[Army] = []
 	var player_armies = army_manager.get_player_armies(player_id)
 	
 	for army in player_armies:
 		if army == null or not is_instance_valid(army):
-			continue
-		if army.get_movement_points() <= 0:
 			continue
 		available.append(army)
 	
@@ -484,8 +482,6 @@ func _handle_support_role_cycle(army: Army, turn_number: int) -> bool:
 					army.request_recruitment()
 		return true
 
-	if not army.is_recruitment_requested():
-		army.request_recruitment()
 	var recruitment_handled: bool = await _handle_recruitment_cycle(army, turn_number)
 	if recruitment_handled:
 		_log_decision_tree_branch(army, "role_support_recruit", "recruitment_fallback")
@@ -716,7 +712,7 @@ func _select_support_main_merge_target(army: Army, current_region_id: int) -> Di
 		var main_region: Region = main_army.get_parent() as Region
 		var main_region_id: int = main_region.get_region_id()
 		var path_info: Dictionary = _get_path_info_for_player(army.get_player_id(), current_region_id, main_region_id, true, army.get_movement_points())
-		if not bool(path_info.get("can_reach_this_turn", false)):
+		if not bool(path_info.get("success", false)):
 			continue
 		var path_cost: int = int(path_info.get("cost", AI_PATH_UNREACHABLE_COST))
 		candidates.append({
@@ -741,13 +737,7 @@ func _select_support_main_merge_target(army: Army, current_region_id: int) -> Di
 	return candidates[0]
 
 func _resolve_army_by_instance_id(instance_id: int) -> Army:
-	if instance_id <= 0:
-		return null
-	var all_armies: Array[Army] = army_manager.get_all_armies()
-	for tracked_army in all_armies:
-		if tracked_army.get_instance_id() == instance_id:
-			return tracked_army
-	return null
+	return army_manager.get_army_by_instance_id(instance_id)
 
 func _get_ai_mode_label(mode: int) -> String:
 	match mode:
@@ -788,9 +778,11 @@ func _process_single_army(army: Army) -> void:
 		return
 	var turn_number: int = _get_current_turn()
 	_log_army_separator(army)
+	_refresh_recruitment_flag_for_army(army, turn_number, true)
 	while is_instance_valid(army) and army.get_movement_points() > 0:
 		if game_manager.has_victory_been_declared():
 			return
+		_refresh_recruitment_flag_for_army(army, turn_number, false)
 		if _handle_castle_garrison_release_cycle(army):
 			continue
 		if await _handle_recruitment_cycle(army, turn_number):
@@ -811,16 +803,28 @@ func _process_single_army(army: Army) -> void:
 			break
 	if not is_instance_valid(army):
 		return
+	_refresh_recruitment_flag_for_army(army, turn_number, false)
 	if army.get_movement_points() > 0:
 		_log_army_detail_line("Spending remaining %d MP on camping" % army.get_movement_points())
 		_spend_all_on_camp(army)
+
+func _refresh_recruitment_flag_for_army(army: Army, turn_number: int, allow_roll: bool) -> void:
+	if not is_instance_valid(army):
+		return
+	if army.is_recruitment_requested():
+		if not army.needs_recruitment(turn_number, false, false, true):
+			army.clear_recruitment_request()
+			_set_recruitment_move_state(army, Army.RecruitmentMoveState.NORMAL, "not_needed")
+		return
+	if allow_roll and army.needs_recruitment(turn_number, true):
+		army.request_recruitment()
 
 func _handle_castle_garrison_release_cycle(army: Army) -> bool:
 	var current_region: Region = army.get_parent() as Region
 	if not current_region.has_castle():
 		return false
-	var enemy_armies: Dictionary = current_region.castle_nearby_entities.get("enemy_armies", {})
-	if not enemy_armies.is_empty():
+	var enemy_army_ids: Dictionary = current_region.castle_nearby_entities.get("enemy_army_ids", {})
+	if not enemy_army_ids.is_empty():
 		return false
 	var garrison: ArmyComposition = current_region.get_garrison()
 	if not garrison.has_soldiers():
@@ -835,9 +839,7 @@ func _handle_castle_garrison_release_cycle(army: Army) -> bool:
 	return true
 
 func _handle_recruitment_cycle(army: Army, turn_number: int) -> bool:
-	if army.needs_recruitment(turn_number) and not army.is_recruitment_requested():
-		army.request_recruitment()
-	if army.is_recruitment_requested() and not army.needs_recruitment(turn_number):
+	if army.is_recruitment_requested() and not army.needs_recruitment(turn_number, false, false, true):
 		army.clear_recruitment_request()
 		_set_recruitment_move_state(army, Army.RecruitmentMoveState.NORMAL, "not_needed")
 		return false
@@ -1057,6 +1059,7 @@ func _execute_recruitment_at_current_region(army: Army, current_region: Region) 
 	else:
 		_log_recruitment_success(army, current_region_id, result, comp_before, power_before)
 		_log_recruitment_detail(army, result, current_region.get_region_name())
+		army.clear_recruitment_request()
 		_set_recruitment_move_state(army, Army.RecruitmentMoveState.NORMAL, "recruited")
 	return true
 
@@ -1068,7 +1071,7 @@ func _can_reach_region_this_turn(army: Army, from_region_id: int, to_region_id: 
 	return bool(path_info.get("can_reach_this_turn", false))
 
 func _is_army_below_half_recruitment_threshold(army: Army, turn_number: int) -> bool:
-	var threshold: float = army_manager.calc_reinforcement_threshold(turn_number)
+	var threshold: float = army.get_recruitment_threshold(turn_number)
 	var half_threshold: float = threshold * AI_RECRUITMENT_HALF_THRESHOLD_RATIO
 	return float(army.get_army_power()) < half_threshold
 
@@ -1185,11 +1188,11 @@ func _get_first_breakthrough_step_on_path(path: Array[int], player_id: int) -> i
 	return -1
 
 func _select_transfer_target_from_nearby(army: Army, current_region_id: int) -> Dictionary:
-	var friendly_cache: Dictionary = army.nearby_entities.get("friendly_armies", {})
+	var current_region: Region = army.get_parent() as Region
+	var friendly_cache: Dictionary = current_region.castle_nearby_entities.get("friendly_army_ids", {})
 	var candidates: Array[Dictionary] = []
 	for friendly_key in friendly_cache.keys():
-		var friendly_entry: Dictionary = friendly_cache.get(friendly_key, {})
-		var friendly_entity_id: String = String(friendly_entry.get("id", String(friendly_key)))
+		var friendly_entity_id: String = String(friendly_key)
 		var friendly_army: Army = _resolve_army_from_entity_id(friendly_entity_id)
 		if not is_instance_valid(friendly_army):
 			continue
@@ -1918,13 +1921,13 @@ func _select_support_merge_target(army: Army, threat_entry: Dictionary, current_
 	var threat_region_id: int = int(threat_entry.get("region_id", -1))
 	if threat_region_id < 0:
 		return {}
-	var friendly_cache: Dictionary = army.nearby_entities.get("friendly_armies", {})
+	var current_region: Region = army.get_parent() as Region
+	var friendly_cache: Dictionary = current_region.castle_nearby_entities.get("friendly_army_ids", {})
 	var candidates: Array[Dictionary] = []
 	var threat_known: bool = bool(threat_entry.get("known", false))
 	var threat_power: int = int(threat_entry.get("power", -1))
 	for friendly_key in friendly_cache.keys():
-		var friendly_entry: Dictionary = friendly_cache.get(friendly_key, {})
-		var friendly_entity_id: String = String(friendly_entry.get("id", String(friendly_key)))
+		var friendly_entity_id: String = String(friendly_key)
 		var friendly_army: Army = _resolve_army_from_entity_id(friendly_entity_id)
 		if not is_instance_valid(friendly_army):
 			continue
@@ -1979,22 +1982,7 @@ func _support_merge_passes_castle_simulation(acting_army: Army, friendly_army: A
 	return simulation_result == "victory"
 
 func _resolve_army_from_entity_id(army_entity_id: String) -> Army:
-	var instance_id: int = _extract_instance_id_from_army_entity_id(army_entity_id)
-	if instance_id <= 0:
-		return null
-	var all_armies: Array[Army] = army_manager.get_all_armies()
-	for tracked_army in all_armies:
-		if tracked_army.get_instance_id() == instance_id:
-			return tracked_army
-	return null
-
-func _extract_instance_id_from_army_entity_id(army_entity_id: String) -> int:
-	if not army_entity_id.begins_with("army_"):
-		return -1
-	var suffix: String = army_entity_id.substr(5, army_entity_id.length() - 5)
-	if suffix == "":
-		return -1
-	return int(suffix)
+	return army_manager.get_army_by_entity_id(army_entity_id)
 
 func _select_frontier_move(army: Army) -> Dictionary:
 	var frontier: Array[int] = region_manager.get_frontier_regions(army.get_player_id())
@@ -2480,9 +2468,9 @@ func _on_battle_finished(result: String) -> void:
 	emit_signal("battle_finished", result)
 
 # Peasants-only recruitment helpers
-func _needs_recruitment_peasants(army: Army, turn_number: int) -> Dictionary:
+func _needs_recruitment_peasants(army: Army, _turn_number: int) -> Dictionary:
 	"""Check if army needs peasants-only recruitment"""
-	if army.needs_recruitment(turn_number):
+	if army.is_recruitment_requested():
 		return {"needed": false}
 	
 	var player_id = army.get_player_id()

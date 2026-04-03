@@ -56,11 +56,11 @@ var recruitment_requested: bool = false  # Flag for requesting recruitment budge
 var assigned_budget: BudgetComposition = null  # Budget allocated for this army's recruitment
 var just_raised: bool = false  # Marks freshly raised AI armies for instant recruitment bypass
 var recruitment_move_state: RecruitmentMoveState = RecruitmentMoveState.NORMAL
+var _recruitment_threshold_base_roll: int = 10
 
 # Army composition - soldiers in this army
 var composition: ArmyComposition
 var wounded_composition: ArmyComposition
-var nearby_entities: Dictionary = {}
 var _animations: AnimatedSprite2D
 var _victory: AnimatedSprite2D
 var _animation_speed_scale: float = 1.0
@@ -82,7 +82,6 @@ func setup_army(new_player_id: int, roman_number: String, starting_composition: 
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	wounded_composition = ArmyComposition.new()
-	nearby_entities = _build_empty_nearby_entities()
 	number = roman_number
 	just_raised = false
 	recruitment_move_state = RecruitmentMoveState.NORMAL
@@ -107,7 +106,6 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	efficiency = 100  # Start with full efficiency
 	composition = ArmyComposition.new()
 	wounded_composition = ArmyComposition.new()
-	nearby_entities = _build_empty_nearby_entities()
 	number = roman_number
 	just_raised = true
 	recruitment_move_state = RecruitmentMoveState.NORMAL
@@ -334,6 +332,7 @@ func clear_recruitment_request() -> void:
 	"""Clear the recruitment request flag"""
 	recruitment_requested = false
 	assigned_budget = null
+	_recruitment_threshold_base_roll = 10
 
 func is_recruitment_requested() -> bool:
 	"""Check if army has requested recruitment"""
@@ -353,12 +352,26 @@ func set_recruitment_move_state(state: RecruitmentMoveState) -> void:
 func get_recruitment_move_state() -> RecruitmentMoveState:
 	return recruitment_move_state
 
-func needs_recruitment(turn_number: int = 1) -> bool:
-	"""Check if this army needs recruitment based on power threshold"""
-	var base_max := 20.0
-	var scaled := base_max * (1.0 + 0.03 * float(turn_number))
+func get_recruitment_threshold(turn_number: int = 1, roll: bool = false, minimal: bool = false, maximum: bool = false) -> float:
+	var effective_turn_number: int = turn_number
+	if effective_turn_number > 20:
+		effective_turn_number = 20
+	if roll:
+		_recruitment_threshold_base_roll = randi_range(10, 20)
+	var base_roll: int = _recruitment_threshold_base_roll
+	if minimal:
+		base_roll = 10
+	elif maximum:
+		base_roll = 20
 	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
-	var threshold := scaled * float(peasant_power) * 2.0
+	return float(base_roll) * (1.0 + 0.03 * float(effective_turn_number)) * float(peasant_power) * 2.0
+
+func needs_recruitment(turn_number: int = 1, roll: bool = false, minimal: bool = false, maximum: bool = false) -> bool:
+	"""Check if this army needs recruitment based on power threshold.
+	Use roll=true only during the army turn-start refresh.
+	All mid-turn checks should use roll=false (or read recruitment_requested directly) to avoid rerolling.
+	"""
+	var threshold: float = get_recruitment_threshold(turn_number, roll, minimal, maximum)
 	DebugLogger.log("AIRecruitment", "[Army] " + str(name) + " needs recruitment: Army " + str(get_army_power()) + " vs threshold " + str(threshold))
 	return float(get_army_power()) < threshold
 
@@ -369,16 +382,6 @@ func get_peasant_ratio() -> float:
 		return 0.0
 	var peasant_count = get_soldier_count(SoldierTypeEnum.Type.PEASANTS)
 	return float(peasant_count) / float(total_soldiers)
-
-func _build_empty_nearby_entities() -> Dictionary:
-	return {
-		"friendly_armies": {},
-		"enemy_armies": {},
-		"castles": {}
-	}
-
-func reset_nearby_entities() -> void:
-	nearby_entities = _build_empty_nearby_entities()
 
 func compute_peasant_need(target_prop: float) -> int:
 	"""Calculate how many peasants are needed to reach target proportion"""

@@ -79,6 +79,11 @@ var _inactive_tab_color: Color = Color(0.595154, 0.595154, 0.595154, 1)
 @onready var _search_ore_button: Button = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection/SearchOreButton")
 @onready var _raise_army_button: Button = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/RaiseArmyButton")
 @onready var _recruit_button: Button = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/RecruitButton")
+@onready var _region_level_action_section: Control = get_node("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection")
+@onready var _castle_level_action_section: Control = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection")
+@onready var _mine_action_section: Control = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection")
+@onready var _raise_army_action_section: Control = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection")
+@onready var _garrison_action_section: Control = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection")
 @onready var _region_garrison_info: Control = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo") as Control
 @onready var _army_cards: Array[Panel] = [
 	get_node("RegionPanel/Body/Army/Army1") as Panel,
@@ -287,6 +292,87 @@ func _apply_conquered_region_action_lock() -> void:
 	_raise_army_button.disabled = true
 	_recruit_button.disabled = true
 
+func _is_region_enemy_or_neutral(region: Region) -> bool:
+	var owner_id: int = region_manager.get_region_owner(region.get_region_id())
+	var current_player_id: int = game_manager.get_current_player_id()
+	return owner_id != current_player_id
+
+func _is_region_intel_mode(region: Region) -> bool:
+	if game_manager.debug_mode:
+		return false
+	return _is_region_enemy_or_neutral(region)
+
+func _is_current_region_intel_mode() -> bool:
+	if current_region == null:
+		return false
+	return _is_region_intel_mode(current_region)
+
+func _set_region_action_sections_visible(is_visible: bool) -> void:
+	_region_level_action_section.visible = is_visible
+	_castle_level_action_section.visible = is_visible
+	_mine_action_section.visible = is_visible
+	_raise_army_action_section.visible = is_visible
+	_garrison_action_section.visible = is_visible
+
+func _apply_region_intel_overrides() -> void:
+	var is_intel_mode: bool = _is_current_region_intel_mode()
+	_set_region_action_sections_visible(not is_intel_mode)
+	if not is_intel_mode:
+		return
+	var mine_status: Label = get_node("RegionPanel/Body/Region/Actions/Mine/Info/Search/SearchStatus") as Label
+	var next_army_name: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName") as Label
+	var garrison_men_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue") as Label
+	mine_status.text = ""
+	next_army_name.text = ""
+	garrison_men_value.text = ""
+
+func _get_selectable_armies(armies: Array[Army]) -> Array[Army]:
+	var selectable_armies: Array[Army] = []
+	for army in armies:
+		if _is_army_selectable_for_current_player(army):
+			selectable_armies.append(army)
+	return selectable_armies
+
+func _is_army_selectable_for_current_player(army: Army) -> bool:
+	return army.get_player_id() == game_manager.get_current_player_id()
+
+func _format_intel_turns_label(turns_ago: int) -> String:
+	if turns_ago < 0:
+		return "? " + tr("turns")
+	return str(turns_ago) + " " + tr("turns")
+
+func _get_enemy_army_intel_composition(army: Army) -> ArmyComposition:
+	var observer_id: int = game_manager.get_current_player_id()
+	var tracker_key: String = Player.get_enemy_tracker_key(army)
+	return player_manager.get_tracked_enemy_army_composition(observer_id, tracker_key)
+
+func _get_enemy_army_intel_wounded_composition(army: Army) -> ArmyComposition:
+	var observer_id: int = game_manager.get_current_player_id()
+	var tracker_key: String = Player.get_enemy_tracker_key(army)
+	return player_manager.get_tracked_enemy_army_wounded_composition(observer_id, tracker_key)
+
+func _get_enemy_garrison_intel_composition() -> ArmyComposition:
+	var observer_id: int = game_manager.get_current_player_id()
+	return player_manager.get_tracked_enemy_garrison_composition(observer_id, current_region.get_region_id())
+
+func _get_enemy_garrison_intel_wounded_composition() -> ArmyComposition:
+	var observer_id: int = game_manager.get_current_player_id()
+	return player_manager.get_tracked_enemy_garrison_wounded_composition(observer_id, current_region.get_region_id())
+
+func _set_unknown_unit_value(unit_node: Node) -> void:
+	var healthy_node: Control = unit_node.get_node("Healthy") as Control
+	var wounded_node: HBoxContainer = unit_node.get_node("Wounded") as HBoxContainer
+	var healthy_value: Label = healthy_node.get_node("Value") as Label
+	wounded_node.visible = false
+	healthy_node.visible = true
+	healthy_value.text = "?"
+	healthy_value.add_theme_color_override("font_color", Color.WHITE)
+
+func _set_unknown_unit_values(info_root: Node) -> void:
+	for unit_name in GARRISON_UNIT_NODE_NAMES:
+		var unit_node: Node = info_root.get_node(unit_name)
+		_set_unknown_unit_value(unit_node)
+
 func show_army_info(army: Army, manage_modal_mode: bool = true) -> void:
 	"""Show the modal with army information"""
 	# Prevent showing during AI/computer turns
@@ -332,7 +418,8 @@ func show_region_info(region: Region, manage_modal_mode: bool = true, allow_tab_
 	current_army = null
 	if current_region != null:
 		var armies_in_region := _get_armies_in_region(current_region)
-		current_army = _find_army_with_most_movement_points(armies_in_region)
+		var selectable_armies: Array[Army] = _get_selectable_armies(armies_in_region)
+		current_army = _find_army_with_most_movement_points(selectable_armies)
 		if armies_in_region.is_empty():
 			_set_active_tab(TabType.REGION)
 	_suppress_auto_select = false
@@ -394,11 +481,15 @@ func _update_army_display() -> void:
 	_update_region_header()
 
 	var armies: Array[Army] = _get_armies_in_region(current_region)
+	var selectable_armies: Array[Army] = _get_selectable_armies(armies)
+	var intel_mode: bool = _is_current_region_intel_mode()
 
-	if current_army == null or not armies.has(current_army):
-		if not _suppress_auto_select:
-			current_army = _find_army_with_most_movement_points(armies)
-	if current_army != null and not _suppress_auto_select:
+	if current_army == null or not armies.has(current_army) or not _is_army_selectable_for_current_player(current_army):
+		if not _suppress_auto_select and not intel_mode:
+			current_army = _find_army_with_most_movement_points(selectable_armies)
+		else:
+			current_army = null
+	if current_army != null and not _suppress_auto_select and not intel_mode:
 		_select_army_for_move(current_army)
 
 	for i in range(_army_cards.size()):
@@ -412,12 +503,24 @@ func _update_army_display() -> void:
 
 func _update_army_card(card: Panel, army: Army) -> void:
 	card.visible = true
+	var intel_mode: bool = _is_current_region_intel_mode()
+	var is_selectable: bool = _is_army_selectable_for_current_player(army)
 	var selection_button = card.get_node("SelectionStatus") as Button
-	if army == current_army:
+	if intel_mode:
+		selection_button.disabled = true
+		selection_button.theme = BUTTON_DEFAULT_THEME
+		var observer_id: int = game_manager.get_current_player_id()
+		var tracker_key: String = Player.get_enemy_tracker_key(army)
+		var turns_ago: int = player_manager.get_tracked_enemy_army_composition_turns_ago(observer_id, tracker_key)
+		selection_button.text = _format_intel_turns_label(turns_ago)
+		card.add_theme_stylebox_override("panel", _army_card_style_default)
+	elif is_selectable and army == current_army:
+		selection_button.disabled = false
 		selection_button.theme = BUTTON_GREEN_THEME
 		selection_button.text = tr("Selected")
 		card.add_theme_stylebox_override("panel", _army_card_style_hover)
 	else:
+		selection_button.disabled = not is_selectable
 		selection_button.theme = BUTTON_DEFAULT_THEME
 		selection_button.text = tr("Select")
 		card.add_theme_stylebox_override("panel", _army_card_style_default)
@@ -427,18 +530,34 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	army_name_label.text = tr("Army %s") % army.number
 
 	var move_container = content.get_node("MP/MoveContainer") as HBoxContainer
-	_update_move_points_icons(move_container, army.get_movement_points())
+	if intel_mode:
+		_update_move_points_icons(move_container, 0)
+	else:
+		_update_move_points_icons(move_container, army.get_movement_points())
 
 	var progress_bar = content.get_node("Vigor/ProgressBar") as ProgressBar
-	var vigor_percent = int(round(army.get_efficiency()))
-	_update_vigor_bar(progress_bar, vigor_percent)
 	var vigor_value = content.get_node("Vigor/ProgressBar/Value") as Label
-	vigor_value.text = str(vigor_percent) + "%"
+	if intel_mode:
+		_update_vigor_bar(progress_bar, 0)
+		vigor_value.text = "?"
+	else:
+		var vigor_percent = int(round(army.get_efficiency()))
+		_update_vigor_bar(progress_bar, vigor_percent)
+		vigor_value.text = str(vigor_percent) + "%"
 
-	var composition = army.get_composition()
-	var wounded_composition = army.get_wounded_composition()
+	var composition: ArmyComposition = army.get_composition()
+	var wounded_composition: ArmyComposition = army.get_wounded_composition()
+	var has_known_composition: bool = true
+	if intel_mode:
+		composition = _get_enemy_army_intel_composition(army)
+		wounded_composition = _get_enemy_army_intel_wounded_composition(army)
+		if composition == null:
+			has_known_composition = false
 	var info_root = content.get_node("GarrisonInfo")
-	_update_army_unit_values(composition, wounded_composition, info_root)
+	if intel_mode and not has_known_composition:
+		_set_unknown_unit_values(info_root)
+	else:
+		_update_army_unit_values(composition, wounded_composition, info_root)
 
 func _find_army_with_most_movement_points(armies: Array[Army]) -> Army:
 	var best_army: Army = null
@@ -460,6 +579,8 @@ func _get_armies_in_region(region: Region) -> Array[Army]:
 	return armies
 
 func _select_army_for_move(army: Army) -> void:
+	if not _is_army_selectable_for_current_player(army):
+		return
 	var army_manager = game_manager.get_army_manager()
 	if army_manager.selected_army == army:
 		return
@@ -541,6 +662,7 @@ func _update_region_display() -> void:
 	_update_garrison_section()
 	_update_defenders_section()
 	_update_region_resource_values()
+	_apply_region_intel_overrides()
 	_apply_conquered_region_action_lock()
 
 func _update_region_header() -> void:
@@ -656,6 +778,13 @@ func _update_defenders_section() -> void:
 	"""Update garrison unit composition values"""
 	var garrison_comp: ArmyComposition = current_region.get_garrison()
 	var wounded_comp: ArmyComposition = current_region.get_wounded_garrison()
+	if _is_current_region_intel_mode():
+		garrison_comp = _get_enemy_garrison_intel_composition()
+		wounded_comp = _get_enemy_garrison_intel_wounded_composition()
+		if garrison_comp == null:
+			var garrison_info_root: Node = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo")
+			_set_unknown_unit_values(garrison_info_root)
+			return
 	for i in range(GARRISON_UNIT_NODE_NAMES.size()):
 		var unit_node: Node = get_node("RegionPanel/Body/Region/DefendersSection/GarrisonInfo/" + GARRISON_UNIT_NODE_NAMES[i])
 		var healthy: int = garrison_comp.get_soldier_count(GARRISON_UNIT_TYPES[i])
@@ -1092,6 +1221,14 @@ func _on_army_card_mouse_exited(index: int) -> void:
 func _on_army_card_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var army = _army_card_armies[index]
+		if _is_current_region_intel_mode():
+			(_army_cards[index] as Control).accept_event()
+			get_viewport().set_input_as_handled()
+			return
+		if army == null or not _is_army_selectable_for_current_player(army):
+			(_army_cards[index] as Control).accept_event()
+			get_viewport().set_input_as_handled()
+			return
 		if army != null and army == current_army:
 			game_manager.get_army_manager().deselect_army()
 			current_army = null

@@ -244,14 +244,15 @@ func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region
 		capacity_by_region[pick_id] = int(capacity_by_region[pick_id]) - 1
 		if int(capacity_by_region[pick_id]) <= 0:
 			capacity_by_region.erase(pick_id)
-		var start_global := d.global_position
+		var start_global: Vector2 = d.global_position
 		from_region.remove_child(d)
 		dest_region.add_child(d)
-		var target_local := _army_manager._compute_army_target_position(dest_region, d)
+		_army_manager.on_army_moved(d, from_region, dest_region)
+		var target_local: Vector2 = _army_manager._compute_army_target_position(dest_region, d)
 		_army_manager._apply_army_offsets_for_region(dest_region, d)
 		var target_global: Vector2 = dest_region.to_global(target_local)
 		d.global_position = start_global
-		var tw := d.animate_move_to(target_global, move_duration, true)
+		var tw: Tween = d.animate_move_to(target_global, move_duration, true)
 		await tw.finished
 		moved_any = true
 	return moved_any

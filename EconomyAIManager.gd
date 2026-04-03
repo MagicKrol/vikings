@@ -105,41 +105,45 @@ func run_pre_move_economy_with_reserve_lock(player_id: int, turn_number: int) ->
 	var upgrade_bank_result: Dictionary = _deposit_castle_upgrade_bank(player_id, turn_number)
 	summary["castle_upgrade_bank"] = upgrade_bank_result
 
-	# Step 2: Army recruitment budgets (army flow unchanged)
+	# Step 2: Deposit persistent raise reserve bank (AI-only, dynamic activation).
+	var raise_reserve_bank_result: Dictionary = _deposit_raise_army_reserve_bank(player_id)
+	summary["raise_army_reserve_bank"] = raise_reserve_bank_result
+
+	# Step 3: Army recruitment budgets (army flow unchanged)
 	var army_recruitment = army_recruitments(player_id, turn_number)
 	summary["army_recruitment"] = army_recruitment
 	summary["castle_threats_pre_move"] = _format_castle_threat_summary_lines(player_id)
 	summary["castle_reserve_pre_move"] = _format_castle_reserve_summary_lines(player_id)
 	
-	# Step 3: Sell surplus resources before castle upgrade decision.
+	# Step 4: Sell surplus resources before castle upgrade decision.
 	var trade_sell_result: Dictionary = _execute_ai_trade_sell_surplus(player_id)
 	summary["trade_sell"] = trade_sell_result
 
-	# Step 4: Upgrade castles (can use savings bank).
+	# Step 5: Upgrade castles (can use savings bank).
 	var upgrade_castle = _evaluate_upgrade_castle(player_id, turn_number)
 	summary["upgrade_castle"] = upgrade_castle
 	
-	# Step 5: Raise armies when allowed.
+	# Step 6: Raise armies when allowed.
 	var raise_res = decide_and_raise_army(player_id, turn_number)
 	summary["raise"] = raise_res
 
-	# Step 6: Build castles.
+	# Step 7: Build castles.
 	var build_castle = _evaluate_build_castle(player_id, turn_number)
 	summary["build_castle"] = build_castle
 
-	# Step 7: Repair damaged castles
+	# Step 8: Repair damaged castles
 	var repair_castle = _evaluate_repair_castle(player_id)
 	summary["repair_castle"] = repair_castle
 	
-	# Step 8: Upgrade regions
+	# Step 9: Upgrade regions
 	var upgrade_region = _evaluate_upgrade_region(player_id, turn_number)
 	summary["upgrade_region"] = upgrade_region
 	
-	# Step 9: Ore searches
+	# Step 10: Ore searches
 	var ore_result = ore_checks(player_id)
 	summary["ore"] = ore_result
 	
-	# Step 10: Buy food deficit after all economy actions.
+	# Step 11: Buy food deficit after all economy actions.
 	var trade_buy_food_result: Dictionary = _execute_ai_trade_buy_food_deficit(player_id)
 	summary["trade_buy_food"] = trade_buy_food_result
 	summary["trade"] = _merge_trade_results(trade_sell_result, trade_buy_food_result)
@@ -482,6 +486,90 @@ func _spend_castle_upgrade_bank_for_gold_cost(player: Player, gold_cost_paid: in
 		_log_trade("Castle Upgrade Bank: used:%d remaining:%d cap:%d" % [used_from_bank, remaining_bank, cap])
 	return used_from_bank
 
+func _release_castle_upgrade_bank(player: Player, release_reason: String) -> int:
+	var released_gold: int = _get_upgrade_bank_locked_gold(player)
+	if released_gold <= 0:
+		return 0
+	player.set_ai_castle_upgrade_savings_gold(0)
+	var cap: int = _get_upgrade_bank_gold_cap()
+	_log_trade("Castle Upgrade Bank: released:%d bank:%d cap:%d reason:%s" % [released_gold, 0, cap, release_reason])
+	return released_gold
+
+func _get_raise_army_reserve_gold_cap() -> int:
+	return max(0, int(GameParameters.RAISE_ARMY_COST))
+
+func _get_raise_army_reserve_locked_gold(player: Player) -> int:
+	var cap: int = _get_raise_army_reserve_gold_cap()
+	return clampi(player.get_ai_raise_army_savings_gold(), 0, cap)
+
+func _has_severe_castle_threats(player_id: int) -> bool:
+	for region_key in castle_threat_level_by_region.keys():
+		var region_id: int = int(region_key)
+		if region_manager.get_region_owner(region_id) != player_id:
+			continue
+		var threat_level: int = int(castle_threat_level_by_region.get(region_id, THREAT_LEVEL_NONE))
+		if threat_level >= THREAT_LEVEL_NEEDS_ARMY:
+			return true
+	return false
+
+func _has_raise_intent_opportunity(player_id: int) -> bool:
+	var armies_count: int = army_manager.get_player_armies(player_id).size()
+	if armies_count == 0:
+		return true
+	var candidate: Dictionary = pick_best_raise_region(player_id)
+	return not candidate.is_empty()
+
+func _deposit_raise_army_reserve_bank(player_id: int) -> Dictionary:
+	var player: Player = player_manager.get_player(player_id)
+	var cap: int = _get_raise_army_reserve_gold_cap()
+	if not player.is_computer():
+		return {"added": 0, "bank": player.get_ai_raise_army_savings_gold(), "cap": cap, "reason": "not_ai"}
+	if cap <= 0:
+		return {"added": 0, "bank": player.get_ai_raise_army_savings_gold(), "cap": cap, "reason": "no_cap"}
+	var current_bank: int = _get_raise_army_reserve_locked_gold(player)
+	if _has_severe_castle_threats(player_id):
+		var released_gold: int = _release_raise_army_reserve(player, "severe_castle_threat")
+		if released_gold > 0:
+			return {"added": 0, "bank": player.get_ai_raise_army_savings_gold(), "cap": cap, "reason": "severe_castle_threat_release", "released": released_gold}
+		_log_trade("Raise Army Reserve: skipped (severe_castle_threat)")
+		return {"added": 0, "bank": current_bank, "cap": cap, "reason": "severe_castle_threat"}
+	if not _has_raise_intent_opportunity(player_id):
+		_log_trade("Raise Army Reserve: skipped (no_raise_intent)")
+		return {"added": 0, "bank": current_bank, "cap": cap, "reason": "no_raise_intent"}
+	if current_bank >= cap:
+		_log_trade("Raise Army Reserve: skipped (at_cap, bank:%d cap:%d)" % [current_bank, cap])
+		return {"added": 0, "bank": current_bank, "cap": cap, "reason": "at_cap"}
+	var spendable_gold: int = _get_spendable_resource(player, ResourcesEnum.Type.GOLD)
+	var add_amount: int = min(max(0, cap - current_bank), spendable_gold)
+	if add_amount <= 0:
+		_log_trade("Raise Army Reserve: skipped (no_spendable_gold)")
+		return {"added": 0, "bank": current_bank, "cap": cap, "reason": "no_spendable_gold"}
+	var new_bank: int = player.add_ai_raise_army_savings_gold(add_amount)
+	if new_bank > cap:
+		player.set_ai_raise_army_savings_gold(cap)
+		new_bank = cap
+	_log_trade("Raise Army Reserve: added:%d bank:%d cap:%d" % [add_amount, new_bank, cap])
+	return {"added": add_amount, "bank": new_bank, "cap": cap, "reason": "deposited"}
+
+func _spend_raise_army_reserve_for_gold_cost(player: Player, gold_cost_paid: int) -> int:
+	if gold_cost_paid <= 0:
+		return 0
+	var used_from_reserve: int = player.spend_ai_raise_army_savings_gold(gold_cost_paid)
+	if used_from_reserve > 0:
+		var remaining_reserve: int = player.get_ai_raise_army_savings_gold()
+		var cap: int = _get_raise_army_reserve_gold_cap()
+		_log_trade("Raise Army Reserve: used:%d remaining:%d cap:%d" % [used_from_reserve, remaining_reserve, cap])
+	return used_from_reserve
+
+func _release_raise_army_reserve(player: Player, release_reason: String) -> int:
+	var released_gold: int = _get_raise_army_reserve_locked_gold(player)
+	if released_gold <= 0:
+		return 0
+	player.set_ai_raise_army_savings_gold(0)
+	var cap: int = _get_raise_army_reserve_gold_cap()
+	_log_trade("Raise Army Reserve: released:%d bank:%d cap:%d reason:%s" % [released_gold, 0, cap, release_reason])
+	return released_gold
+
 func _execute_army_recruitment(player_id: int, armies: Array[Army]) -> Array[String]:
 	var entries: Array[String] = []
 	if recruitment_manager == null:
@@ -510,10 +598,8 @@ func _find_recruitment_armies_at_castles(player_id: int, turn_number: int) -> Ar
 	var armies = army_manager.get_player_armies(player_id)
 	var force_first_turn_recruitment: bool = turn_number <= 1
 	for a in armies:
-		var needs_recruit: bool = force_first_turn_recruitment or a.needs_recruitment(turn_number)
+		var needs_recruit: bool = force_first_turn_recruitment or a.is_recruitment_requested()
 		if not needs_recruit:
-			if a.is_recruitment_requested():
-				a.clear_recruitment_request()
 			continue
 		a.request_recruitment()
 		var r: Region = a.get_parent()
@@ -531,8 +617,9 @@ func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	
 	if candidate.is_empty():
+		var released_raise_reserve_gold: int = _release_raise_army_reserve(player, "no_candidate")
 		DebugLogger.log("AIEconomy", "   Decision: NO - No valid castle regions with sufficient recruits")
-		return {"raised": false, "reason": "no_candidate", "score_text": "", "score": 0.0}
+		return {"raised": false, "reason": "no_candidate", "score_text": "", "score": 0.0, "released_raise_reserve_gold": released_raise_reserve_gold}
 	
 	DebugLogger.log("AIEconomy", "   Best candidate: Region %d (recruits: %d, score: %.1f)" % [candidate["region_id"], candidate["recruits_total"], candidate["score"]])
 	
@@ -556,6 +643,8 @@ func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
 func pick_best_raise_region(player_id: int) -> Dictionary:
 	DebugLogger.log("AIEconomy", "   Searching for castle regions with sufficient recruits...")
 	var owned_regions = region_manager.get_player_regions(player_id)
+	var armies_count: int = army_manager.get_player_armies(player_id).size()
+	var is_first_army_bootstrap: bool = armies_count == 0
 	var candidates = []
 	var max_recruits_seen = 1
 	var castles_checked = 0
@@ -574,7 +663,7 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		
 		DebugLogger.log("AIEconomy", "   Castle %d: %d recruits (min: %d)" % [region_id, recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
 		
-		if recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
+		if not is_first_army_bootstrap and recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
 			continue
 		
 		max_recruits_seen = max(max_recruits_seen, recruits_total)
@@ -596,12 +685,15 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 			var frontier_regions = region_manager.get_frontier_regions(player_id)
 			if frontier_regions.size() > 0:
 				travel_hint = 1
+
+		var free_garrison_bonus: float = _get_raise_free_garrison_bonus(region_id, player_id)
 		
 		candidates.append({
 			"region_id": region_id,
 			"recruits_total": recruits_total,
 			"frontier_near": frontier_near,
-			"travel_hint": travel_hint
+			"travel_hint": travel_hint,
+			"free_garrison_bonus": free_garrison_bonus
 		})
 	
 	DebugLogger.log("AIEconomy", "   Checked %d castles, found %d valid candidates" % [castles_checked, candidates.size()])
@@ -615,12 +707,14 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		var score = GameParameters.AI_CAND_W_RECRUITS * recruits_norm
 		score += GameParameters.AI_CAND_W_FRONTIER_NEAR * candidate["frontier_near"]
 		score += GameParameters.AI_CAND_W_TRAVEL * candidate["travel_hint"]
+		score += float(candidate.get("free_garrison_bonus", 0.0))
 		candidate["score"] = score
-		DebugLogger.log("AIEconomy", "   Candidate %d: score %.1f (recruits: %.2f*%.1f, frontier: %d*%.1f, travel: %d*%.1f)" % [
+		DebugLogger.log("AIEconomy", "   Candidate %d: score %.1f (recruits: %.2f*%.1f, frontier: %d*%.1f, travel: %d*%.1f, free_garrison: %.1f)" % [
 			candidate["region_id"], score,
 			recruits_norm, GameParameters.AI_CAND_W_RECRUITS,
 			candidate["frontier_near"], GameParameters.AI_CAND_W_FRONTIER_NEAR,
-			candidate["travel_hint"], GameParameters.AI_CAND_W_TRAVEL
+			candidate["travel_hint"], GameParameters.AI_CAND_W_TRAVEL,
+			float(candidate.get("free_garrison_bonus", 0.0))
 		])
 	
 	# Pick highest score with deterministic tie-break
@@ -633,6 +727,26 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 	DebugLogger.log("AIEconomy", "   Winner: Region %d (score: %.1f)" % [candidates[0]["region_id"], candidates[0]["score"]])
 	
 	return candidates[0]
+
+func _get_raise_free_garrison_bonus(region_id: int, player_id: int) -> float:
+	var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+	var needy_armies: int = _count_recruitment_requested_armies_in_region(region, player_id)
+	if needy_armies > 0:
+		return 0.0
+	var enemy_army_ids: Dictionary = region.castle_nearby_entities.get("enemy_army_ids", {})
+	if not enemy_army_ids.is_empty():
+		return 0.0
+	return float(region.get_garrison_strength()) / 4.0
+
+func _count_recruitment_requested_armies_in_region(region: Region, player_id: int) -> int:
+	var count: int = 0
+	var armies_in_region: Array[Army] = army_manager.get_armies_in_region(region)
+	for region_army in armies_in_region:
+		if region_army.get_player_id() != player_id:
+			continue
+		if region_army.is_recruitment_requested():
+			count += 1
+	return count
 
 # Decide whether to raise an army this turn
 func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
@@ -649,7 +763,7 @@ func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
 	var castle_id: int = candidate["region_id"]
 	var avg_dist := _compute_avg_distance_to_castle(armies_arr, castle_id, player.get_player_id())
 	var recruits_total := int(candidate["recruits_total"])
-	var gold := _get_spendable_resource(player, ResourcesEnum.Type.GOLD)
+	var gold := _get_spendable_resource(player, ResourcesEnum.Type.GOLD, false, true)
 	var frontier_regions_count: int = region_manager.get_frontier_regions(player.get_player_id()).size()
 	var frontier_ratio: float = 0.0
 	if armies_count > 0:
@@ -659,15 +773,15 @@ func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
 	var gold_after := gold - GameParameters.RAISE_ARMY_COST
 	var gate_failed: bool = false
 	var decline_reasons: Array[String] = []
-	if gold_after < GameParameters.AI_RESERVE_GOLD_MIN:
+	if armies_count > 0 and gold_after < GameParameters.AI_RESERVE_GOLD_MIN:
 		DebugLogger.log("AIEconomy", "   Gate FAIL: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
 		gate_failed = true
 		decline_reasons.append("not enough gold reserve after raise (%d vs %d)" % [gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
-	if recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
+	if armies_count > 0 and recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
 		DebugLogger.log("AIEconomy", "   Gate FAIL: RECRUITS_MIN (%d < %d)" % [recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
 		gate_failed = true
 		decline_reasons.append("not enough recruits (%d vs %d)" % [recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
-	if frontier_ratio < GameParameters.AI_RAISE_FRONTIER:
+	if armies_count > 0 and frontier_ratio < GameParameters.AI_RAISE_FRONTIER:
 		decline_reasons.append("frontier pressure too low (%.2f vs %.2f)" % [frontier_ratio, GameParameters.AI_RAISE_FRONTIER])
 	
 	var score_value: float = RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
@@ -691,8 +805,11 @@ func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
 	}
 
 func _format_raise_score(score_value: float, regions: int, armies_count: int, avg_dist: float, recruits_total: int, gold: int, frontier_size: int) -> String:
+	var frontier_ratio_for_log: float = 0.0
+	if armies_count > 0:
+		frontier_ratio_for_log = float(frontier_size) / float(armies_count)
 	return "Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f; Frontier2Army=%.2f" % [
-		score_value, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM, float(frontier_size)/float(armies_count)
+		score_value, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM, frontier_ratio_for_log
 	]
 
 func _compute_avg_distance_to_castle(armies_arr: Array[Army], castle_region_id: int, player_id: int) -> float:
@@ -725,7 +842,7 @@ func execute_raise_army(player_id: int, region_id: int) -> bool:
 		return false
 	
 	# Check and deduct cost
-	if _get_spendable_resource(player, ResourcesEnum.Type.GOLD) < GameParameters.RAISE_ARMY_COST:
+	if _get_spendable_resource(player, ResourcesEnum.Type.GOLD, false, true) < GameParameters.RAISE_ARMY_COST:
 		DebugLogger.log("AIEconomy", "Recruitment: reserve lock blocks raise army")
 		return false
 	if not player.remove_resources(ResourcesEnum.Type.GOLD, GameParameters.RAISE_ARMY_COST):
@@ -738,6 +855,7 @@ func execute_raise_army(player_id: int, region_id: int) -> bool:
 		player.add_resources(ResourcesEnum.Type.GOLD, GameParameters.RAISE_ARMY_COST)
 		DebugLogger.log("AIEconomy", "Recruitment: army creation failed")
 		return false
+	_spend_raise_army_reserve_for_gold_cost(player, GameParameters.RAISE_ARMY_COST)
 	DebugLogger.log("AIEconomy", "Recruitment: army creation successfully")
 	return true
 
@@ -1239,7 +1357,14 @@ func _evaluate_upgrade_castle(player_id: int, turn_number: int) -> Dictionary:
 	var detail_entries: Array = candidate_info.get("details", [])
 	var detail_summary = _limit_candidate_details(detail_entries)
 	if candidate_id == -1:
-		return {"executed": false, "reason": "no_upgrade_candidates", "details": detail_summary, "candidate_details": detail_entries}
+		var released_bank_gold: int = _release_castle_upgrade_bank(player, "no_upgrade_candidates")
+		return {
+			"executed": false,
+			"reason": "no_upgrade_candidates",
+			"details": detail_summary,
+			"candidate_details": detail_entries,
+			"released_upgrade_bank_gold": released_bank_gold
+		}
 	var region = region_manager.map_generator.get_region_container_by_id(candidate_id) as Region
 	if region == null:
 		return {"executed": false, "reason": "region_missing", "details": detail_summary, "candidate_details": detail_entries}
@@ -1690,27 +1815,29 @@ func _clear_reserved_recruitment_lock() -> void:
 func _get_reserved_resource(resource_type: ResourcesEnum.Type) -> int:
 	return int(reserved_recruitment_lock.get(resource_type, 0))
 
-func _get_spendable_resource(player: Player, resource_type: ResourcesEnum.Type, allow_upgrade_bank_spend: bool = false) -> int:
+func _get_spendable_resource(player: Player, resource_type: ResourcesEnum.Type, allow_upgrade_bank_spend: bool = false, allow_raise_reserve_spend: bool = false) -> int:
 	var total_amount: int = player.get_resource_amount(resource_type)
 	if resource_type == ResourcesEnum.Type.GOLD or resource_type == ResourcesEnum.Type.WOOD or resource_type == ResourcesEnum.Type.IRON:
 		var locked_amount: int = _get_reserved_resource(resource_type)
 		if resource_type == ResourcesEnum.Type.GOLD and not allow_upgrade_bank_spend:
 			locked_amount += _get_upgrade_bank_locked_gold(player)
+		if resource_type == ResourcesEnum.Type.GOLD and not allow_raise_reserve_spend:
+			locked_amount += _get_raise_army_reserve_locked_gold(player)
 		return max(0, total_amount - locked_amount)
 	return total_amount
 
-func _can_afford_cost_with_reserve(player: Player, cost: Dictionary, allow_upgrade_bank_spend: bool = false) -> bool:
+func _can_afford_cost_with_reserve(player: Player, cost: Dictionary, allow_upgrade_bank_spend: bool = false, allow_raise_reserve_spend: bool = false) -> bool:
 	for resource_key in cost.keys():
 		var resource_type: ResourcesEnum.Type = resource_key
 		var required: int = int(cost.get(resource_type, 0))
 		if required <= 0:
 			continue
-		if _get_spendable_resource(player, resource_type, allow_upgrade_bank_spend) < required:
+		if _get_spendable_resource(player, resource_type, allow_upgrade_bank_spend, allow_raise_reserve_spend) < required:
 			return false
 	return true
 
-func _pay_cost_with_reserve(player: Player, cost: Dictionary, allow_upgrade_bank_spend: bool = false) -> bool:
-	if not _can_afford_cost_with_reserve(player, cost, allow_upgrade_bank_spend):
+func _pay_cost_with_reserve(player: Player, cost: Dictionary, allow_upgrade_bank_spend: bool = false, allow_raise_reserve_spend: bool = false) -> bool:
+	if not _can_afford_cost_with_reserve(player, cost, allow_upgrade_bank_spend, allow_raise_reserve_spend):
 		return false
 	var paid: bool = player.pay_cost(cost)
 	if not paid:
@@ -1718,6 +1845,9 @@ func _pay_cost_with_reserve(player: Player, cost: Dictionary, allow_upgrade_bank
 	if allow_upgrade_bank_spend:
 		var gold_cost_paid: int = int(cost.get(ResourcesEnum.Type.GOLD, 0))
 		_spend_castle_upgrade_bank_for_gold_cost(player, gold_cost_paid)
+	if allow_raise_reserve_spend:
+		var raise_gold_cost_paid: int = int(cost.get(ResourcesEnum.Type.GOLD, 0))
+		_spend_raise_army_reserve_for_gold_cost(player, raise_gold_cost_paid)
 	return true
 
 func _refresh_castle_threats_after_movement(player_id: int) -> Dictionary:
@@ -1725,7 +1855,6 @@ func _refresh_castle_threats_after_movement(player_id: int) -> Dictionary:
 
 func _refresh_castle_threats_for_player(player_id: int, post_move_refresh: bool) -> Dictionary:
 	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
-	var army_lookup: Dictionary = _build_army_lookup_by_entity_id()
 	var active_castles: Dictionary = {}
 	var deltas: Array[String] = []
 	var castles_checked: int = 0
@@ -1738,7 +1867,7 @@ func _refresh_castle_threats_for_player(player_id: int, post_move_refresh: bool)
 		var previous_registry: Dictionary = castle_threat_registry_by_region.get(region_id, {})
 		var previous_total: int = int(castle_total_threat_value_by_region.get(region_id, 0))
 		var previous_level: int = int(castle_threat_level_by_region.get(region_id, THREAT_LEVEL_NONE))
-		var evaluated: Dictionary = _evaluate_castle_threat_for_region(region, player_id, previous_registry, post_move_refresh, army_lookup)
+		var evaluated: Dictionary = _evaluate_castle_threat_for_region(region, player_id, previous_registry, post_move_refresh)
 		castle_threat_registry_by_region[region_id] = evaluated.get("registry", {})
 		castle_total_threat_value_by_region[region_id] = int(evaluated.get("total_threat_value", 0))
 		castle_threat_level_by_region[region_id] = int(evaluated.get("threat_level", THREAT_LEVEL_NONE))
@@ -1770,23 +1899,19 @@ func _refresh_castle_threats_for_player(player_id: int, post_move_refresh: bool)
 		"deltas": deltas
 	}
 
-func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, previous_registry: Dictionary, post_move_refresh: bool, army_lookup: Dictionary) -> Dictionary:
-	var enemy_cache: Dictionary = castle_region.castle_nearby_entities.get("enemy_armies", {})
+func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, previous_registry: Dictionary, post_move_refresh: bool) -> Dictionary:
+	var enemy_cache: Dictionary = castle_region.castle_nearby_entities.get("enemy_army_ids", {})
 	var observations_by_army_id: Dictionary = {}
 	var scan_entries: Array[Dictionary] = []
 	var pathfinder: ArmyPathfinder = ArmyPathfinder.new(region_manager, army_manager)
 	var castle_region_id: int = castle_region.get_region_id()
 	var has_defender_army_in_castle: bool = _castle_has_defender_army_in_region(castle_region, player_id)
 	for enemy_key in enemy_cache.keys():
-		var cached: Dictionary = enemy_cache.get(enemy_key, {})
-		var army_entity_id: String = String(cached.get("id", String(enemy_key)))
-		var cached_region_id: int = int(cached.get("region_id", -1))
-		var cached_known: bool = bool(cached.get("known", false))
-		var cached_power: int = int(cached.get("power", -1))
-		if not army_lookup.has(army_entity_id):
-			scan_entries.append(_build_threat_scan_entry(army_entity_id, cached_region_id, cached_known, cached_power, false, "not_in_tracking", -1))
+		var army_entity_id: String = String(enemy_key)
+		var enemy_army: Army = army_manager.get_army_by_entity_id(army_entity_id)
+		if not is_instance_valid(enemy_army):
+			scan_entries.append(_build_threat_scan_entry(army_entity_id, -1, false, -1, false, "not_in_tracking", -1))
 			continue
-		var enemy_army: Army = army_lookup[army_entity_id]
 		var enemy_region: Region = enemy_army.get_parent() as Region
 		var enemy_region_id: int = enemy_region.get_region_id()
 		var enemy_player_id: int = enemy_army.get_player_id()
@@ -1855,8 +1980,9 @@ func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, p
 		if requires_simulation:
 			var grouped_armies: Array[Army] = []
 			for grouped_army_id in grouped_ids:
-				if army_lookup.has(grouped_army_id):
-					var grouped_army: Army = army_lookup[grouped_army_id]
+				var grouped_army_entity_id: String = String(grouped_army_id)
+				var grouped_army: Army = army_manager.get_army_by_entity_id(grouped_army_entity_id)
+				if is_instance_valid(grouped_army):
 					grouped_armies.append(grouped_army)
 			if not grouped_armies.is_empty():
 				var castle_only_sim: Dictionary = game_manager.simulate_castle_threat_battle(grouped_armies, castle_region, false, false)
@@ -1929,16 +2055,6 @@ func _castle_has_defender_army_in_region(castle_region: Region, player_id: int) 
 		if army.get_player_id() == player_id:
 			return true
 	return false
-
-func _build_army_lookup_by_entity_id() -> Dictionary:
-	var lookup: Dictionary = {}
-	var all_armies: Array[Army] = army_manager.get_all_armies()
-	for army in all_armies:
-		if army == null or not is_instance_valid(army):
-			continue
-		var army_entity_id: String = "army_" + str(army.get_instance_id())
-		lookup[army_entity_id] = army
-	return lookup
 
 func _extract_tracker_key_from_entity_id(army_entity_id: String) -> String:
 	if army_entity_id.begins_with("army_"):

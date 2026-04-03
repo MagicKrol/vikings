@@ -55,6 +55,7 @@ var _ready_highlight_player_id: int = -1
 
 # All armies in the game: player_id -> Array[Army]
 var armies_by_player: Dictionary = {}
+var army_by_entity_id: Dictionary = {}
 
 # Track previous region for each army (for withdrawal retreat)
 var army_previous_regions: Dictionary = {}  # Army -> Node (region_container)
@@ -107,13 +108,37 @@ func _find_army_modal() -> void:
 
 func _build_empty_nearby_entities() -> Dictionary:
 	return {
-		"friendly_armies": {},
-		"enemy_armies": {},
-		"castles": {}
+		"army_ids": {},
+		"castle_ids": {},
+		"friendly_army_ids": {},
+		"enemy_army_ids": {}
 	}
 
 func _get_army_entity_id(army: Army) -> String:
 	return "army_" + str(army.get_instance_id())
+
+func _register_army_in_index(army: Army) -> void:
+	var army_entity_id: String = _get_army_entity_id(army)
+	army_by_entity_id[army_entity_id] = army
+
+func _unregister_army_from_index(army: Army) -> void:
+	var army_entity_id: String = _get_army_entity_id(army)
+	army_by_entity_id.erase(army_entity_id)
+
+func get_army_by_entity_id(army_entity_id: String) -> Army:
+	if not army_by_entity_id.has(army_entity_id):
+		return null
+	var tracked_army: Army = army_by_entity_id[army_entity_id] as Army
+	if not is_instance_valid(tracked_army):
+		army_by_entity_id.erase(army_entity_id)
+		return null
+	return tracked_army
+
+func get_army_by_instance_id(instance_id: int) -> Army:
+	if instance_id <= 0:
+		return null
+	var army_entity_id: String = "army_" + str(instance_id)
+	return get_army_by_entity_id(army_entity_id)
 
 func _get_castle_entity_id(region: Region) -> String:
 	return "castle_" + str(region.get_region_id())
@@ -127,180 +152,94 @@ func _get_region_nearby_ids(region: Region) -> Array[int]:
 		nearby_ids.append(int(region_id))
 	return nearby_ids
 
-func _get_player_manager() -> PlayerManagerNode:
-	var game_manager: GameManager = _get_game_manager()
-	return game_manager.get_player_manager()
-
-func _ensure_army_nearby_entities(army: Army) -> void:
-	if not army.nearby_entities.has("friendly_armies"):
-		army.nearby_entities = _build_empty_nearby_entities()
-
 func _ensure_castle_nearby_entities(region: Region) -> void:
-	if not region.castle_nearby_entities.has("friendly_armies"):
+	if not region.castle_nearby_entities.has("army_ids"):
 		region.castle_nearby_entities = _build_empty_nearby_entities()
 
-func _upsert_army_in_army_cache(target_army: Army, observed_army: Army) -> void:
-	if target_army == observed_army:
-		return
-	_ensure_army_nearby_entities(target_army)
-	var observed_id: String = _get_army_entity_id(observed_army)
-	var observed_region: Region = observed_army.get_parent() as Region
-	var observed_region_id: int = observed_region.get_region_id()
-	var observed_player_id: int = observed_army.get_player_id()
-	var entry: Dictionary = {
-		"id": observed_id,
-		"region_id": observed_region_id,
-		"player_id": observed_player_id
-	}
-	if target_army.get_player_id() == observed_player_id:
-		entry["known"] = true
-		entry["power"] = observed_army.get_army_power()
-		target_army.nearby_entities["friendly_armies"][observed_id] = entry
-		target_army.nearby_entities["enemy_armies"].erase(observed_id)
-		return
-	var tracker_key: String = Player.get_enemy_tracker_key(observed_army)
-	var tracked_power: int = _get_player_manager().get_tracked_enemy_power(target_army.get_player_id(), tracker_key)
-	var is_known: bool = tracked_power >= 0
-	entry["known"] = is_known
-	entry["power"] = tracked_power if is_known else -1
-	target_army.nearby_entities["enemy_armies"][observed_id] = entry
-	target_army.nearby_entities["friendly_armies"].erase(observed_id)
+func _resolve_army_from_entity_id(army_entity_id: String) -> Army:
+	return get_army_by_entity_id(army_entity_id)
 
-func _remove_army_from_army_cache(target_army: Army, observed_army_id: String) -> void:
-	_ensure_army_nearby_entities(target_army)
-	target_army.nearby_entities["friendly_armies"].erase(observed_army_id)
-	target_army.nearby_entities["enemy_armies"].erase(observed_army_id)
+func _reclassify_region_army_sets(target_region: Region) -> void:
+	_ensure_castle_nearby_entities(target_region)
+	target_region.castle_nearby_entities["friendly_army_ids"].clear()
+	target_region.castle_nearby_entities["enemy_army_ids"].clear()
+	var stale_army_ids: Array[String] = []
+	var owner_id: int = region_manager.get_region_owner(target_region.get_region_id())
+	var army_ids: Dictionary = target_region.castle_nearby_entities.get("army_ids", {})
+	for army_key in army_ids.keys():
+		var army_entity_id: String = String(army_key)
+		var tracked_army: Army = _resolve_army_from_entity_id(army_entity_id)
+		if not is_instance_valid(tracked_army):
+			stale_army_ids.append(army_entity_id)
+			continue
+		if tracked_army.get_player_id() == owner_id:
+			target_region.castle_nearby_entities["friendly_army_ids"][army_entity_id] = true
+		else:
+			target_region.castle_nearby_entities["enemy_army_ids"][army_entity_id] = true
+	for stale_army_id in stale_army_ids:
+		target_region.castle_nearby_entities["army_ids"].erase(stale_army_id)
 
 func _upsert_army_in_castle_cache(target_region: Region, observed_army: Army) -> void:
 	_ensure_castle_nearby_entities(target_region)
 	var observed_id: String = _get_army_entity_id(observed_army)
-	var observed_region: Region = observed_army.get_parent() as Region
-	var observed_region_id: int = observed_region.get_region_id()
-	var observed_player_id: int = observed_army.get_player_id()
 	var target_owner_id: int = region_manager.get_region_owner(target_region.get_region_id())
-	var entry: Dictionary = {
-		"id": observed_id,
-		"region_id": observed_region_id,
-		"player_id": observed_player_id
-	}
-	if observed_player_id == target_owner_id:
-		entry["known"] = true
-		entry["power"] = observed_army.get_army_power()
-		target_region.castle_nearby_entities["friendly_armies"][observed_id] = entry
-		target_region.castle_nearby_entities["enemy_armies"].erase(observed_id)
-		return
-	var tracker_key: String = Player.get_enemy_tracker_key(observed_army)
-	var tracked_power: int = _get_player_manager().get_tracked_enemy_power(target_owner_id, tracker_key)
-	var is_known: bool = tracked_power >= 0
-	entry["known"] = is_known
-	entry["power"] = tracked_power if is_known else -1
-	target_region.castle_nearby_entities["enemy_armies"][observed_id] = entry
-	target_region.castle_nearby_entities["friendly_armies"].erase(observed_id)
+	target_region.castle_nearby_entities["army_ids"][observed_id] = true
+	if observed_army.get_player_id() == target_owner_id:
+		target_region.castle_nearby_entities["friendly_army_ids"][observed_id] = true
+		target_region.castle_nearby_entities["enemy_army_ids"].erase(observed_id)
+	else:
+		target_region.castle_nearby_entities["enemy_army_ids"][observed_id] = true
+		target_region.castle_nearby_entities["friendly_army_ids"].erase(observed_id)
 
 func _remove_army_from_castle_cache(target_region: Region, observed_army_id: String) -> void:
 	_ensure_castle_nearby_entities(target_region)
-	target_region.castle_nearby_entities["friendly_armies"].erase(observed_army_id)
-	target_region.castle_nearby_entities["enemy_armies"].erase(observed_army_id)
-
-func _upsert_castle_in_army_cache(target_army: Army, observed_castle_region: Region) -> void:
-	_ensure_army_nearby_entities(target_army)
-	var castle_id: String = _get_castle_entity_id(observed_castle_region)
-	var entry: Dictionary = {
-		"id": castle_id,
-		"region_id": observed_castle_region.get_region_id(),
-		"owner_id": region_manager.get_region_owner(observed_castle_region.get_region_id()),
-		"castle_type": CastleTypeEnum.type_to_string(observed_castle_region.get_castle_type())
-	}
-	target_army.nearby_entities["castles"][castle_id] = entry
-
-func _remove_castle_from_army_cache(target_army: Army, castle_id: String) -> void:
-	_ensure_army_nearby_entities(target_army)
-	target_army.nearby_entities["castles"].erase(castle_id)
+	target_region.castle_nearby_entities["army_ids"].erase(observed_army_id)
+	target_region.castle_nearby_entities["friendly_army_ids"].erase(observed_army_id)
+	target_region.castle_nearby_entities["enemy_army_ids"].erase(observed_army_id)
 
 func _upsert_castle_in_castle_cache(target_region: Region, observed_castle_region: Region) -> void:
 	_ensure_castle_nearby_entities(target_region)
 	var castle_id: String = _get_castle_entity_id(observed_castle_region)
 	if castle_id == _get_castle_entity_id(target_region):
 		return
-	var entry: Dictionary = {
-		"id": castle_id,
-		"region_id": observed_castle_region.get_region_id(),
-		"owner_id": region_manager.get_region_owner(observed_castle_region.get_region_id()),
-		"castle_type": CastleTypeEnum.type_to_string(observed_castle_region.get_castle_type())
-	}
-	target_region.castle_nearby_entities["castles"][castle_id] = entry
+	target_region.castle_nearby_entities["castle_ids"][castle_id] = true
 
 func _remove_castle_from_castle_cache(target_region: Region, castle_id: String) -> void:
 	_ensure_castle_nearby_entities(target_region)
-	target_region.castle_nearby_entities["castles"].erase(castle_id)
+	target_region.castle_nearby_entities["castle_ids"].erase(castle_id)
 
 func _upsert_army_for_entities_in_region(observed_army: Army, region_id: int) -> void:
 	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
-	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
-	for target_army in armies_in_region:
-		if target_army == observed_army:
-			continue
-		_upsert_army_in_army_cache(target_army, observed_army)
-	if target_region.has_castle():
-		_upsert_army_in_castle_cache(target_region, observed_army)
+	_upsert_army_in_castle_cache(target_region, observed_army)
 
 func _remove_army_for_entities_in_region(observed_army_id: String, region_id: int) -> void:
 	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
-	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
-	for target_army in armies_in_region:
-		_remove_army_from_army_cache(target_army, observed_army_id)
-	if target_region.has_castle():
-		_remove_army_from_castle_cache(target_region, observed_army_id)
+	_remove_army_from_castle_cache(target_region, observed_army_id)
 
 func _upsert_castle_for_entities_in_region(observed_castle_region: Region, region_id: int) -> void:
 	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
-	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
-	for target_army in armies_in_region:
-		_upsert_castle_in_army_cache(target_army, observed_castle_region)
-	if target_region.has_castle():
-		_upsert_castle_in_castle_cache(target_region, observed_castle_region)
+	_upsert_castle_in_castle_cache(target_region, observed_castle_region)
 
 func _remove_castle_for_entities_in_region(observed_castle_id: String, region_id: int) -> void:
 	var target_region: Region = map_generator.get_region_container_by_id(region_id) as Region
-	var armies_in_region: Array[Army] = get_armies_in_region(target_region)
-	for target_army in armies_in_region:
-		_remove_castle_from_army_cache(target_army, observed_castle_id)
-	if target_region.has_castle():
-		_remove_castle_from_castle_cache(target_region, observed_castle_id)
+	_remove_castle_from_castle_cache(target_region, observed_castle_id)
 
-func _rebuild_nearby_entities_for_army(army: Army) -> void:
-	army.reset_nearby_entities()
-	var army_region: Region = army.get_parent() as Region
-	var nearby_ids: Array[int] = _get_region_nearby_ids(army_region)
-	for nearby_region_id in nearby_ids:
-		var nearby_region: Region = map_generator.get_region_container_by_id(nearby_region_id) as Region
-		var armies_in_region: Array[Army] = get_armies_in_region(nearby_region)
-		for other_army in armies_in_region:
-			if other_army == army:
-				continue
-			_upsert_army_in_army_cache(army, other_army)
-		if nearby_region.has_castle():
-			_upsert_castle_in_army_cache(army, nearby_region)
-
-func _rebuild_nearby_entities_for_castle(castle_region: Region) -> void:
-	if not castle_region.has_castle():
-		castle_region.clear_castle_nearby_entities()
-		return
-	castle_region.clear_castle_nearby_entities()
-	var nearby_ids: Array[int] = _get_region_nearby_ids(castle_region)
+func _rebuild_nearby_entities_for_region(target_region: Region) -> void:
+	target_region.clear_castle_nearby_entities()
+	var nearby_ids: Array[int] = _get_region_nearby_ids(target_region)
 	for nearby_region_id in nearby_ids:
 		var nearby_region: Region = map_generator.get_region_container_by_id(nearby_region_id) as Region
 		var armies_in_region: Array[Army] = get_armies_in_region(nearby_region)
 		for nearby_army in armies_in_region:
-			_upsert_army_in_castle_cache(castle_region, nearby_army)
+			_upsert_army_in_castle_cache(target_region, nearby_army)
 		if nearby_region.has_castle():
-			_upsert_castle_in_castle_cache(castle_region, nearby_region)
+			_upsert_castle_in_castle_cache(target_region, nearby_region)
+	_reclassify_region_army_sets(target_region)
 
 func on_army_created(army: Army, region: Region) -> void:
 	var nearby_ids: Array[int] = _get_region_nearby_ids(region)
 	for region_id in nearby_ids:
 		_upsert_army_for_entities_in_region(army, region_id)
-	_rebuild_nearby_entities_for_army(army)
 
 func on_army_moved(army: Army, old_region: Region, new_region: Region) -> void:
 	var old_nearby_ids: Array[int] = _get_region_nearby_ids(old_region)
@@ -331,14 +270,12 @@ func on_army_moved(army: Army, old_region: Region, new_region: Region) -> void:
 		_upsert_army_for_entities_in_region(army, region_id)
 	for region_id in overlap_region_ids:
 		_upsert_army_for_entities_in_region(army, region_id)
-	_rebuild_nearby_entities_for_army(army)
 
 func on_army_removed(army: Army, old_region: Region) -> void:
 	var nearby_ids: Array[int] = _get_region_nearby_ids(old_region)
 	var army_id: String = _get_army_entity_id(army)
 	for region_id in nearby_ids:
 		_remove_army_for_entities_in_region(army_id, region_id)
-	army.reset_nearby_entities()
 
 func on_region_castle_presence_changed(region: Region, had_castle: bool, has_castle: bool) -> void:
 	var nearby_ids: Array[int] = _get_region_nearby_ids(region)
@@ -346,22 +283,21 @@ func on_region_castle_presence_changed(region: Region, had_castle: bool, has_cas
 	if had_castle and not has_castle:
 		for nearby_region_id in nearby_ids:
 			_remove_castle_for_entities_in_region(castle_id, nearby_region_id)
-		region.clear_castle_nearby_entities()
+		_rebuild_nearby_entities_for_region(region)
 		return
 	if has_castle:
 		for nearby_region_id in nearby_ids:
 			_upsert_castle_for_entities_in_region(region, nearby_region_id)
-		_rebuild_nearby_entities_for_castle(region)
+		_rebuild_nearby_entities_for_region(region)
+
+func on_region_owner_changed(region: Region) -> void:
+	_reclassify_region_army_sets(region)
 
 func debug_log_nearby_entities_for_region(region_id: int) -> void:
 	var region: Region = map_generator.get_region_container_by_id(region_id) as Region
 	print("[NearbyEntities] Hovered region " + region.get_region_name() + " (#" + str(region.get_region_id()) + ")")
 	print("[NearbyEntities] nearby_regions=" + str(region.nearby_regions))
-	var armies_in_region: Array[Army] = get_armies_in_region(region)
-	for army in armies_in_region:
-		print("[NearbyEntities] " + army.get_display_name() + " " + _get_army_entity_id(army) + " => " + str(army.nearby_entities))
-	if region.has_castle():
-		print("[NearbyEntities] " + _get_castle_entity_id(region) + " => " + str(region.castle_nearby_entities))
+	print("[NearbyEntities] " + _get_castle_entity_id(region) + " => " + str(region.castle_nearby_entities))
 
 func create_army(region_container: Node, player_id: int, is_raised: bool = false) -> Army:
 	"""Create a new army in the specified region"""
@@ -403,6 +339,7 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 	if not armies_by_player.has(player_id):
 		armies_by_player[player_id] = []
 	armies_by_player[player_id].append(army)
+	_register_army_in_index(army)
 	army.movement_points_changed.connect(_on_army_movement_points_changed)
 
 	if is_raised:
@@ -1203,13 +1140,12 @@ func transfer_all_soldiers(donor: Army, receiver: Army) -> bool:
 
 func calc_reinforcement_threshold(turn_number: int) -> float:
 	"""Calculate the power threshold below which an army needs reinforcement"""
-	# L1 max = 20; +3% per turn (linear scaling)
-	# threshold = 20 * (1 + 0.03 * turn_number)
-	# then * PEASANTS.power * 2
-	var base_max := 20.0
-	var scaled := base_max * (1.0 + 0.03 * float(turn_number))
+	var effective_turn_number: int = turn_number
+	if effective_turn_number > 20:
+		effective_turn_number = 20
+	var random_base: int = randi_range(10, 20)
 	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
-	return scaled * float(peasant_power) * 2.0
+	return float(random_base) * (1.0 + 0.03 * float(effective_turn_number)) * float(peasant_power) * 2.0
 
 func remove_destroyed_armies() -> void:
 	"""Remove armies that have no soldiers left after battle"""
@@ -1232,6 +1168,7 @@ func remove_destroyed_armies() -> void:
 				DebugLogger.log("ArmyManagement", "Removing destroyed army: " + army.name)
 				var old_region: Region = army.get_parent() as Region
 				on_army_removed(army, old_region)
+				_unregister_army_from_index(army)
 				# Remove from scene
 				if army.get_parent() != null:
 					army.get_parent().remove_child(army)
@@ -1254,6 +1191,7 @@ func remove_army_from_tracking(army: Army) -> void:
 		return
 	var old_region: Region = army.get_parent() as Region
 	on_army_removed(army, old_region)
+	_unregister_army_from_index(army)
 	
 	var player_id = army.get_player_id()
 	if armies_by_player.has(player_id):

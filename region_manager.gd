@@ -40,6 +40,7 @@ var region_graph: Dictionary = {}
 # Reference to the map generator for region data
 var map_generator: MapGenerator
 var visual_manager: VisualManager
+var army_manager: ArmyManager
 
 # Region name management
 var available_names: Array[String] = []
@@ -53,6 +54,9 @@ func _init(map_gen: MapGenerator):
 
 func set_visual_manager(vm: VisualManager) -> void:
 	visual_manager = vm
+
+func set_army_manager(am: ArmyManager) -> void:
+	army_manager = am
 
 func _load_region_names() -> void:
 	"""Load region names from regions.json file"""
@@ -157,6 +161,8 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 	elif map_generator and map_generator.has_method("regenerate_borders"):
 		# Fallback to full regeneration
 		map_generator.regenerate_borders()
+	var region_after_change: Region = map_generator.get_region_container_by_id(region_id) as Region
+	army_manager.on_region_owner_changed(region_after_change)
 
 func set_initial_region_ownership(region_id: int, player_id: int) -> void:
 	"""Set initial ownership of a region for castle placement with full recruitment"""
@@ -629,8 +635,8 @@ func find_best_recruitment_castle(from_region_id: int, owner_id: int, include_or
 	}
 
 func _has_no_nearby_enemy_threats(region: Region) -> bool:
-	var enemy_armies: Dictionary = region.castle_nearby_entities.get("enemy_armies", {})
-	return enemy_armies.is_empty()
+	var enemy_army_ids: Dictionary = region.castle_nearby_entities.get("enemy_army_ids", {})
+	return enemy_army_ids.is_empty()
 
 func _count_recruitment_needy_armies(region_id: int, owner_id: int, exclude_army: Army = null) -> int:
 	"""Count armies belonging to owner_id in the region that requested recruitment."""

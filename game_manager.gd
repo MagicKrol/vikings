@@ -243,6 +243,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	if _army_manager == null:
 		push_error("[GameManager] CRITICAL: Failed to create ArmyManager")
 		return
+	_region_manager.set_army_manager(_army_manager)
 	
 	# Find the click manager and provide it with manager references
 	click_manager = get_node("../ClickManager")
@@ -636,6 +637,7 @@ func _initialize_map_editor() -> void:
 	# Minimal managers for editor actions (ownership/army toggles) — create AFTER map generation
 	_region_manager = RegionManager.new(map_generator)
 	_army_manager = ArmyManager.new(map_generator, _region_manager)
+	_region_manager.set_army_manager(_army_manager)
 	# Provide to ClickManager so editor code can use them
 	click_manager = get_node("../ClickManager")
 	if click_manager.has_method("set_managers"):
@@ -1829,14 +1831,10 @@ func get_player_manager() -> PlayerManagerNode:
 func record_enemy_army_power(observer_id: int, enemy_army: Army) -> void:
 	if player_manager == null:
 		return
-	if not is_player_computer(observer_id):
-		return
 	player_manager.record_enemy_army_power(observer_id, enemy_army)
 
 func record_enemy_garrison(observer_id: int, region_id: int, power: int) -> void:
 	if player_manager == null:
-		return
-	if not is_player_computer(observer_id):
 		return
 	player_manager.record_enemy_garrison(observer_id, region_id, power)
 
@@ -2369,7 +2367,7 @@ func _record_enemy_presence(observer_id: int, target_region: Region) -> void:
 	if target_region == null:
 		return
 	var target_owner := _region_manager.get_region_owner(target_region.get_region_id())
-	if target_owner == observer_id or target_owner == -1:
+	if target_owner == observer_id:
 		return
 	var garrison_comp: ArmyComposition = target_region.get_garrison()
 	var recruits: int = target_region.get_base_available_recruits()
@@ -2481,7 +2479,7 @@ func _record_enemy_presence_for_attacker(observer_id: int, target_region: Region
 	if target_region == null:
 		return
 	var target_owner := _region_manager.get_region_owner(target_region.get_region_id())
-	if target_owner == observer_id or target_owner == -1:
+	if target_owner == observer_id:
 		return
 	var garrison_power: int = _compute_region_total_defender_power(target_region)
 	record_enemy_garrison(observer_id, target_region.get_region_id(), garrison_power)
@@ -3589,7 +3587,7 @@ func _recheck_recruitment_need_after_transfer(army: Army) -> void:
 	if not army.is_recruitment_requested():
 		return
 	var turn_number: int = get_current_turn()
-	if army.needs_recruitment(turn_number):
+	if army.needs_recruitment(turn_number, false, true, false):
 		return
 	army.clear_recruitment_request()
 	army.set_recruitment_move_state(Army.RecruitmentMoveState.NORMAL)
