@@ -103,7 +103,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("4_text_theme")
-text = "File Name"
+text = "Filename"
 
 [node name="GameTypeHeader" type="Label" parent="Panel/VBoxContainer/ListHeaders"]
 custom_minimum_size = Vector2(120, 0)
@@ -116,7 +116,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme = ExtResource("4_text_theme")
-text = "Date"
+text = "Time"
 horizontal_alignment = 2
 
 [node name="ListMargin" type="MarginContainer" parent="Panel/VBoxContainer"]
@@ -169,7 +169,7 @@ layout_mode = 2
 [node name="FileNameLabel" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_text_theme")
-text = "File Name"
+text = "Filename"
 
 [node name="FileNameInput" type="LineEdit" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 38)

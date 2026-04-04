@@ -112,7 +112,10 @@ var selected_custom_map: String = ""
 var selected_scenario_button: Button = null
 
 # Custom map/scenario selection state
-const GOLD_COLOR := Color(0.945098, 0.847059, 0.568627, 1.0)
+const ROW_HIGHLIGHT_NONE_COLOR: Color = Color(0, 0, 0, 0)
+const ROW_HIGHLIGHT_HOVER_COLOR: Color = Color(0, 0, 0, 0.2)
+const ROW_HIGHLIGHT_SELECTED_COLOR: Color = Color(0, 0, 0, 0.4)
+const ROW_TEXT_COLOR: Color = Color(1, 1, 1, 1)
 const MAP_SIZE_ORDER := {"T": 0, "S": 1, "M": 2, "L": 3}
 var map_items: Array = []
 var scenario_items: Array = []
@@ -1001,6 +1004,8 @@ func _populate_map_list(items: Array, for_scenario: bool):
 	for i in range(items.size()):
 		var item: Dictionary = items[i]
 		var row: HBoxContainer = template_row.duplicate(true)
+		if not row.has_method("set_highlight_color"):
+			row.set_script(load("res://map_list_row.gd"))
 		row.name = "Entry" + str(i + 1)
 		row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		row.visible = true
@@ -1010,7 +1015,7 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		name_label.text = item.get("display_name", "Map")
 		size_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		name_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		_set_row_color(row, Color.WHITE)
+		_set_row_highlight_color(row, ROW_HIGHLIGHT_NONE_COLOR)
 		row.gui_input.connect(_on_map_row_gui_input.bind(row, item, for_scenario))
 		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
 		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
@@ -1034,8 +1039,8 @@ func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 		else:
 			selected_map_button = null
 	if current_selected and current_selected != row:
-		_set_row_color(current_selected, Color.WHITE)
-	_set_row_color(row, GOLD_COLOR)
+		_set_row_highlight_color(current_selected, ROW_HIGHLIGHT_NONE_COLOR)
+	_set_row_highlight_color(row, ROW_HIGHLIGHT_SELECTED_COLOR)
 	if for_scenario:
 		selected_scenario_button_custom = row
 		selected_scenario_item = item
@@ -1058,7 +1063,7 @@ func _on_map_row_hovered(row: Control, item: Dictionary, for_scenario: bool):
 		else:
 			selected_map_button = null
 	if current_selected != row:
-		_set_row_color(row, GOLD_COLOR)
+		_set_row_highlight_color(row, ROW_HIGHLIGHT_HOVER_COLOR)
 
 func _on_map_row_unhovered(row: Control, item: Dictionary, for_scenario: bool):
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
@@ -1069,15 +1074,15 @@ func _on_map_row_unhovered(row: Control, item: Dictionary, for_scenario: bool):
 		else:
 			selected_map_button = null
 	if current_selected != row:
-		_set_row_color(row, Color.WHITE)
+		_set_row_highlight_color(row, ROW_HIGHLIGHT_NONE_COLOR)
 
-func _set_row_color(row: Control, color: Color):
-	if not row:
-		return
+func _set_row_highlight_color(row: Control, color: Color) -> void:
 	var size_label: Label = row.get_node("Size")
 	var name_label: Label = row.get_node("Name")
-	size_label.add_theme_color_override("font_color", color)
-	name_label.add_theme_color_override("font_color", color)
+	size_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
+	name_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
+	if row.has_method("set_highlight_color"):
+		row.call("set_highlight_color", color)
 
 func _update_button_gold_state(button: Button, selected: bool):
 	button.button_pressed = selected
@@ -1134,9 +1139,9 @@ func _clear_map_selection():
 	if selected_scenario_button_custom and not is_instance_valid(selected_scenario_button_custom):
 		selected_scenario_button_custom = null
 	if selected_map_button:
-		_set_row_color(selected_map_button, Color.WHITE)
+		_set_row_highlight_color(selected_map_button, ROW_HIGHLIGHT_NONE_COLOR)
 	if selected_scenario_button_custom:
-		_set_row_color(selected_scenario_button_custom, Color.WHITE)
+		_set_row_highlight_color(selected_scenario_button_custom, ROW_HIGHLIGHT_NONE_COLOR)
 	selected_map_button = null
 	selected_scenario_button_custom = null
 	_set_custom_map_select_enabled(false)

@@ -579,38 +579,22 @@ func meets_food_upgrade_safeguard(player_id: int, food_cost: int) -> bool:
 
 func calculate_total_army_food_cost(player_id: int) -> float:
 	"""Calculate total food cost for all armies and garrisons owned by a player"""
-	var total_food_cost = 0.0
-	var player = get_player(player_id)
-	var is_computer = player.is_computer()
+	var total_food_cost: float = 0.0
 	
-	# Get all regions owned by this player and sum garrison food costs
-	# if not is_computer or 1: #for now we enable food cost for AI
-	# 	var owned_regions = region_manager.get_player_regions(player_id)
-	# 	var regions_node = map_generator.get_node_or_null("Regions")
-	# 	for region_id in owned_regions:
-	# 		var region_node = _find_region_by_id(regions_node, region_id)
-	# 		var garrison = region_node.get_garrison()
-	# 		if garrison != null:
-	# 			var garrison_food_cost = garrison.get_total_food_cost()
-	# 			total_food_cost += garrison_food_cost
-	# 		var wounded_garrison = region_node.get_wounded_garrison()
-	# 		if wounded_garrison != null:
-	# 			var wounded_garrison_food_cost = wounded_garrison.get_total_food_cost()
-	# 			total_food_cost += wounded_garrison_food_cost
+	# Add active garrison upkeep for all owned regions.
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
+	for region_id in owned_regions:
+		var region_node: Region = map_generator.get_region_container_by_id(region_id) as Region
+		var garrison: ArmyComposition = region_node.get_garrison()
+		total_food_cost += garrison.get_total_food_cost()
 	
-	# Add standalone armies
-	if army_manager != null:
-		var all_armies = army_manager.get_all_armies()
-		for army in all_armies:
-			if army.get_player_id() == player_id:
-				var army_composition = army.get_composition()
-				if army_composition != null:
-					var army_food_cost = army_composition.get_total_food_cost()
-					total_food_cost += army_food_cost
-					# Include wounded composition upkeep
-					var wounded_comp = army.get_wounded_composition()
-					if wounded_comp != null:
-						total_food_cost += wounded_comp.get_total_food_cost()
+	# Add active army upkeep.
+	var all_armies: Array[Army] = army_manager.get_all_armies()
+	for army in all_armies:
+		if army.get_player_id() == player_id:
+			var army_composition: ArmyComposition = army.get_composition()
+			var army_food_cost: float = army_composition.get_total_food_cost()
+			total_food_cost += army_food_cost
 	
 	return total_food_cost
 

@@ -21,12 +21,17 @@ enum Mode {
 @onready var row_template: HBoxContainer = get_node("Panel/VBoxContainer/ScrollContainer/SaveList/RowTemplate") as HBoxContainer
 
 var current_mode: Mode = Mode.LOAD
-var selected_row: HBoxContainer
+var selected_row: Control
 var selected_file_name: String = ""
 var base_scroll_height: float = 0.0
 var base_army_texture_bottom: float = 0.0
 
 const LOAD_LAYOUT_EXTRA_HEIGHT: float = 72.0
+const ROW_HIGHLIGHT_NONE_COLOR: Color = Color(0, 0, 0, 0)
+const ROW_HIGHLIGHT_HOVER_COLOR: Color = Color(0, 0, 0, 0.45)
+const ROW_HIGHLIGHT_SELECTED_COLOR: Color = Color(0, 0, 0, 0.65)
+const ROW_TEXT_COLOR: Color = Color(1, 1, 1, 1)
+const MAP_LIST_ROW_SCRIPT: Script = preload("res://map_list_row.gd")
 
 func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
@@ -77,6 +82,8 @@ func populate_save_list(entries: Array[Dictionary]) -> void:
 	var row_index: int = 0
 	for entry in entries:
 		var row: HBoxContainer = row_template.duplicate() as HBoxContainer
+		if not row.has_method("set_highlight_color"):
+			row.set_script(MAP_LIST_ROW_SCRIPT)
 		row.visible = true
 		var file_name: String = String(entry.get("file_name", ""))
 		var game_type: String = String(entry.get("type", ""))
@@ -87,7 +94,10 @@ func populate_save_list(entries: Array[Dictionary]) -> void:
 		name_label.text = file_name
 		type_label.text = game_type
 		date_label.text = save_date
+		_set_row_selected(row, false)
 		row.gui_input.connect(Callable(self, "_on_row_gui_input").bind(row, file_name))
+		row.mouse_entered.connect(Callable(self, "_on_row_hovered").bind(row))
+		row.mouse_exited.connect(Callable(self, "_on_row_unhovered").bind(row))
 		save_list.add_child(row)
 		row_index += 1
 		if row_index == 1:
@@ -104,13 +114,13 @@ func _clear_dynamic_rows() -> void:
 	selected_row = row_template
 	selected_file_name = ""
 
-func _on_row_gui_input(event: InputEvent, row: HBoxContainer, file_name: String) -> void:
+func _on_row_gui_input(event: InputEvent, row: Control, file_name: String) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			_set_selected_row(row, file_name)
 
-func _set_selected_row(row: HBoxContainer, file_name: String) -> void:
+func _set_selected_row(row: Control, file_name: String) -> void:
 	_set_row_selected(selected_row, false)
 	selected_row = row
 	selected_file_name = file_name
@@ -118,14 +128,29 @@ func _set_selected_row(row: HBoxContainer, file_name: String) -> void:
 	if current_mode == Mode.SAVE:
 		file_name_input.text = selected_file_name
 
-func _set_row_selected(row: HBoxContainer, is_selected: bool) -> void:
-	var color: Color = Color(0.945098, 0.847059, 0.568627, 1.0) if is_selected else Color(1.0, 1.0, 1.0, 1.0)
+func _on_row_hovered(row: Control) -> void:
+	if selected_row == row:
+		return
+	_set_row_highlight_color(row, ROW_HIGHLIGHT_HOVER_COLOR)
+
+func _on_row_unhovered(row: Control) -> void:
+	if selected_row == row:
+		return
+	_set_row_highlight_color(row, ROW_HIGHLIGHT_NONE_COLOR)
+
+func _set_row_selected(row: Control, is_selected: bool) -> void:
+	var highlight_color: Color = ROW_HIGHLIGHT_SELECTED_COLOR if is_selected else ROW_HIGHLIGHT_NONE_COLOR
 	var name_label: Label = row.get_node("GameName") as Label
 	var type_label: Label = row.get_node("GameType") as Label
 	var date_label: Label = row.get_node("GameDate") as Label
-	name_label.add_theme_color_override("font_color", color)
-	type_label.add_theme_color_override("font_color", color)
-	date_label.add_theme_color_override("font_color", color)
+	name_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
+	type_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
+	date_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
+	_set_row_highlight_color(row, highlight_color)
+
+func _set_row_highlight_color(row: Control, color: Color) -> void:
+	if row.has_method("set_highlight_color"):
+		row.call("set_highlight_color", color)
 
 func _on_back_pressed() -> void:
 	visible = false

@@ -354,8 +354,8 @@ func get_recruitment_move_state() -> RecruitmentMoveState:
 
 func get_recruitment_threshold(turn_number: int = 1, roll: bool = false, minimal: bool = false, maximum: bool = false) -> float:
 	var effective_turn_number: int = turn_number
-	if effective_turn_number > 20:
-		effective_turn_number = 20
+	if effective_turn_number > 40:
+		effective_turn_number = 40
 	if roll:
 		_recruitment_threshold_base_roll = randi_range(10, 20)
 	var base_roll: int = _recruitment_threshold_base_roll

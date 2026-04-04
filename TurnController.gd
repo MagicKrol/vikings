@@ -793,6 +793,8 @@ func _process_single_army(army: Army) -> void:
 			continue
 		if _handle_castle_hold_cycle(army):
 			continue
+		if _check_if_heal_wounded(army):
+			continue
 		if await _handle_role_behavior_cycle(army, turn_number):
 			continue
 		_log_decision_tree_branch(army, "frontier_scoring_fallback", "role_no_action")
@@ -2117,6 +2119,41 @@ func _get_local_armies_power(army: Army) -> int:
 	for a in armies_here:
 		total += a.get_army_power()
 	return total
+
+func _check_if_heal_wounded(army: Army) -> bool:
+	if army.get_movement_points() <= 0:
+		return false
+	var threshold: float = _get_wounded_heal_threshold_for_difficulty()
+	var wounded_ratio: float = _get_army_wounded_ratio(army)
+	if wounded_ratio < threshold:
+		return false
+	var camped: bool = false
+	while army.get_movement_points() > 0:
+		wounded_ratio = _get_army_wounded_ratio(army)
+		if wounded_ratio < threshold:
+			break
+		army.make_camp()
+		_log_army_make_camp(army)
+		camped = true
+	return camped
+
+func _get_wounded_heal_threshold_for_difficulty() -> float:
+	var difficulty: int = game_manager.get_game_difficulty()
+	match difficulty:
+		GameParameters.Difficulty.EASY:
+			return 0.50
+		GameParameters.Difficulty.HARD:
+			return 0.20
+		_:
+			return 0.35
+
+func _get_army_wounded_ratio(army: Army) -> float:
+	var active_soldiers: int = army.get_composition().get_total_soldiers()
+	var wounded_soldiers: int = army.get_wounded_composition().get_total_soldiers()
+	var total_soldiers: int = active_soldiers + wounded_soldiers
+	if total_soldiers <= 0:
+		return 0.0
+	return float(wounded_soldiers) / float(total_soldiers)
 
 func _ensure_vigor_before_move(army: Army) -> bool:
 	var target_efficiency = 85

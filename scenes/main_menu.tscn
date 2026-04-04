@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=36 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -22,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://c8jqxu6j8ua6p" path="res://images/icons/arrow_language.png" id="20_tyfg7"]
 [ext_resource type="FontFile" uid="uid://bcxayetxfa0fs" path="res://fonts/Cinzel/static/Cinzel-Bold.ttf" id="21_dujlr"]
 [ext_resource type="Script" path="res://main_menu_save_game_modal.gd" id="22_save_modal_script"]
+[ext_resource type="Script" path="res://map_list_row.gd" id="23_map_list_row_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -1362,6 +1363,7 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("16_btn_styles")
+script = ExtResource("23_map_list_row_script")
 
 [node name="Size" type="Label" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row"]
 custom_minimum_size = Vector2(60, 0)
@@ -1376,7 +1378,7 @@ custom_minimum_size = Vector2(35, 5)
 layout_mode = 2
 
 [node name="Name" type="Label" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row"]
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(370, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("15_std_modal")
@@ -1601,6 +1603,7 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("16_btn_styles")
+script = ExtResource("23_map_list_row_script")
 
 [node name="Size" type="Label" parent="CustomMap/Panel4/VBoxContainer/ScrollContainer/MapList/Row"]
 custom_minimum_size = Vector2(60, 0)
@@ -2073,7 +2076,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "File Name"
+text = "Filename"
 
 [node name="GameTypeHeader" type="Label" parent="SaveGameModal/Panel/VBoxContainer/ListHeaders"]
 custom_minimum_size = Vector2(120, 0)
@@ -2086,7 +2089,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Date"
+text = "Time"
 horizontal_alignment = 2
 
 [node name="ListMargin" type="MarginContainer" parent="SaveGameModal/Panel/VBoxContainer"]
@@ -2139,7 +2142,7 @@ layout_mode = 2
 [node name="FileNameLabel" type="Label" parent="SaveGameModal/Panel/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "File Name"
+text = "Filename"
 
 [node name="FileNameInput" type="LineEdit" parent="SaveGameModal/Panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 38)

@@ -19,6 +19,12 @@ func display_intro_text(text: String) -> void:
 	_set_mouse_block(true)
 	_show_modal()
 
+func display_default_intro_text_with_continue() -> void:
+	continue_button.text = tr(CONTINUE_BUTTON_TEXT)
+	continue_button.visible = true
+	_set_mouse_block(true)
+	_show_modal()
+
 func display_message(_header: String, _message: String = "") -> void:
 	# Preserve default label text
 	displayMessage("")

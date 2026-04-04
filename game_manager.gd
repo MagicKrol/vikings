@@ -103,12 +103,12 @@ var enable_map_editor: bool = false  # Configurable flag to enable map editor mo
 # References to other managers
 var click_manager: Node = null
 
-const FAMINE_MIN_POPULATION: int = 30
-const FAMINE_POP_PER_FOOD: float = 0.1
+const FAMINE_POINTS_PER_FOOD: float = 10.0
 const DOMINATE_DEFAULT_THRESHOLD: float = 0.7
 const DEBUG_LANGUAGE_CYCLE: Array[String] = ["en", "de", "pl", "br"]
 
 var _player_initial_turn_completed: Dictionary = {}
+var _latest_famine_result_by_player: Dictionary = {}
 
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
@@ -484,7 +484,7 @@ func show_intro_message_modal_again() -> void:
 		if intro_text != "":
 			_intro_message_modal.display_intro_text(intro_text)
 			return
-	_intro_message_modal.displayMessage("")
+	_intro_message_modal.display_default_intro_text_with_continue()
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
@@ -580,9 +580,10 @@ func _next_turn_internal() -> void:
 		await _process_scenario_events_for_turn_start(current_player)
 		if victory_declared:
 			return
-		_process_player_turn_start(current_player)
+		await _process_player_turn_start(current_player)
 		if check_victory_conditions_for_player(current_player):
 			return
+		_process_turn_start_autosave(current_player)
 	
 	# Check if current player is AI and handle AI turn processing
 	DebugLogger.log("TurnProcessing", "Checking AI turn: castle_placing_mode=" + str(castle_placing_mode) + ", current_player=" + str(current_player) + ", is_computer=" + str(is_player_computer(current_player)))
@@ -1434,9 +1435,21 @@ func _process_player_turn_start(player_id: int):
 	player_manager.process_resource_income_for_player(player_id)
 	DebugLogger.log("TurnProcessing", "Deducting army food costs for Player " + str(player_id) + "...")
 	_process_army_food_costs_for_player(player_id)
+	var famine_result: Dictionary = consume_latest_famine_result_for_player(player_id)
 	_player_initial_turn_completed[player_id] = true
 	_update_player_status_display()
-	
+	await _show_turn_start_famine_message_if_needed(player_id, famine_result)
+ 
+func _process_turn_start_autosave(player_id: int) -> void:
+	if castle_placing_mode:
+		return
+	if not is_player_human(player_id):
+		return
+	var autosave_ok: bool = SaveGameManager.save_auto_save(self)
+	if autosave_ok:
+		DebugLogger.log("SaveGame", "Autosave updated: " + ProjectSettings.globalize_path(SaveGameManager.AUTOSAVE_FILE_PATH))
+	else:
+		DebugLogger.log("SaveGame", "ERROR: Failed to update autosave")
 
 
 func reset_movement_points():
@@ -1454,208 +1467,372 @@ func reset_movement_points():
 
 func _process_army_food_costs_for_player(player_id: int) -> void:
 	"""Process food costs for armies and garrisons for a specific player"""
-	var player = player_manager.get_player(player_id)
+	var player: Player = player_manager.get_player(player_id)
 	if player == null:
 		DebugLogger.log("TurnProcessing", "Warning: Player " + str(player_id) + " not found for food cost processing")
 		return
 	
 	# Calculate total food cost for all armies and garrisons
-	var total_food_cost = player_manager.calculate_total_army_food_cost(player_id)
+	var total_food_cost: float = player_manager.calculate_total_army_food_cost(player_id)
 	
 	if total_food_cost > 0:
 		# Convert float cost to integer (round up)
-		var food_cost_int = int(ceil(total_food_cost))
+		var food_cost_int: int = int(ceil(total_food_cost))
 		
 		DebugLogger.log("TurnProcessing", "Total army food cost for Player " + str(player_id) + ": " + str(total_food_cost) + " (rounded: " + str(food_cost_int) + ")")
 		
 		# Check if player has enough food
-		var current_food = player.get_resource_amount(ResourcesEnum.Type.FOOD)
-		var net_food_after = current_food - food_cost_int
+		var current_food: int = player.get_resource_amount(ResourcesEnum.Type.FOOD)
+		var net_food_after: int = current_food - food_cost_int
 		if net_food_after >= 0:
 			player.set_resource_amount(ResourcesEnum.Type.FOOD, net_food_after)
 			DebugLogger.log("TurnProcessing", "Deducted " + str(food_cost_int) + " food from Player " + str(player_id) + " (" + str(net_food_after) + " remaining)")
+			_latest_famine_result_by_player.erase(player_id)
 		else:
 			DebugLogger.log("TurnProcessing", "WARNING: Player " + str(player_id) + " doesn't have enough food! Required: " + str(food_cost_int) + ", Available: " + str(current_food))
 			var shortage: float = max(0.0, total_food_cost - float(current_food))
 			player.set_resource_amount(ResourcesEnum.Type.FOOD, 0)
 			if shortage > 0.0:
 				DebugLogger.log("TurnProcessing", "Triggering famine for Player " + str(player_id) + " (food deficit: " + str(snappedf(shortage, 0.01)) + ")")
-				famine_regions(player_id, shortage)
+				var famine_result: Dictionary = famine_regions(player_id, shortage)
+				_latest_famine_result_by_player[player_id] = famine_result
 	else:
 		DebugLogger.log("TurnProcessing", "No army food costs for Player " + str(player_id))
+		_latest_famine_result_by_player.erase(player_id)
 
-func famine_regions(player_id: int, missing_food: float) -> void:
-	missing_food = max(0.0, missing_food)
-	if missing_food <= 0.0:
-		return
-	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
-	if map_generator == null or _region_manager == null or _army_manager == null:
-		DebugLogger.log("TurnProcessing", "Cannot process famine - missing managers")
-		return
-	var entry_map: Dictionary = {}
-	var total_men := 0
-	var owned_region_ids = _region_manager.get_player_regions(player_id)
-	for region_id in owned_region_ids:
-		var region = map_generator.get_region_container_by_id(region_id) as Region
-		if region == null:
-			continue
-		var entry = _get_or_create_famine_entry(entry_map, region)
-		entry.owns_region = true
-		var garrison_comp: ArmyComposition = region.get_garrison()
-		var garrison_total := 0
-		if garrison_comp != null:
-			garrison_total = garrison_comp.get_total_soldiers()
-		entry.garrison = garrison_comp
-		entry.total_men += garrison_total
-		entry_map[region] = entry
-		total_men += garrison_total
-	var player_armies = _army_manager.get_player_armies(player_id)
-	for army in player_armies:
-		if army == null or not is_instance_valid(army):
-			continue
-		var region_node = army.get_parent()
-		if region_node == null or not (region_node is Region):
-			continue
-		var region = region_node as Region
-		var entry = _get_or_create_famine_entry(entry_map, region)
-		var soldier_count = army.get_total_soldiers()
-		entry.armies.append(army)
-		entry.total_men += soldier_count
-		entry_map[region] = entry
-		total_men += soldier_count
-	if total_men <= 0:
-		DebugLogger.log("TurnProcessing", "Famine skipped for Player " + str(player_id) + " - no stationed troops")
-		return
-	var total_population_loss_target = int(floor(missing_food / FAMINE_POP_PER_FOOD))
-	if total_population_loss_target <= 0:
-		return
-	var entries_with_men: Array = []
-	var entries_all: Array = []
-	var floor_sum := 0
-	for region in entry_map.keys():
-		var entry = entry_map[region]
-		if entry.total_men > 0:
-			var share_food := missing_food * float(entry.total_men) / float(total_men)
-			var pop_loss_float := share_food / FAMINE_POP_PER_FOOD
-			entry.loss_target_float = pop_loss_float
-			entry.loss_int = int(floor(pop_loss_float))
-			entry.fraction = pop_loss_float - float(entry.loss_int)
-			floor_sum += entry.loss_int
-			entries_with_men.append(entry)
-		else:
-			entry.loss_target_float = 0.0
-			entry.loss_int = 0
-			entry.fraction = 0.0
-		entries_all.append(entry)
-	var remainder: int = int(max(0, total_population_loss_target - floor_sum))
-	if remainder > 0 and entries_with_men.size() > 0:
-		entries_with_men.sort_custom(Callable(self, "_sort_famine_fraction_desc"))
-		var idx := 0
-		while remainder > 0 and entries_with_men.size() > 0:
-			entries_with_men[idx].loss_int += 1
-			remainder -= 1
-			idx = (idx + 1) % entries_with_men.size()
-	for entry in entries_all:
-		var pop_loss_target: int = entry.loss_int
-		if pop_loss_target <= 0:
-			continue
-		var region: Region = entry.region
-		var actual_loss = region.apply_population_loss(pop_loss_target, FAMINE_MIN_POPULATION)
-		var leftover = pop_loss_target - actual_loss
-		var reached_minimum := region.get_population() <= FAMINE_MIN_POPULATION
-		if entry.owns_region and reached_minimum:
-			var garrison_comp: ArmyComposition = entry.garrison
-			if garrison_comp != null and garrison_comp.get_total_soldiers() > 0:
-				var removed = _remove_casualties_from_composition(garrison_comp, garrison_comp.get_total_soldiers())
-				leftover = max(0, leftover - removed)
-				DebugLogger.log("TurnProcessing", "Famine wiped garrison in " + region.get_region_name())
-		if leftover > 0:
-			leftover = _apply_army_starvation(entry.armies, leftover)
-			if leftover > 0:
-				DebugLogger.log("TurnProcessing", "Famine leftover " + str(leftover) + " not absorbed in region " + region.get_region_name())
+func famine_regions(player_id: int, missing_food: float) -> Dictionary:
+	var clamped_missing_food: float = max(0.0, missing_food)
+	var result: Dictionary = {
+		"triggered": clamped_missing_food > 0.0,
+		"player_id": player_id,
+		"food_deficit": snappedf(clamped_missing_food, 0.01),
+		"target_points": 0,
+		"actual_points_removed": 0,
+		"soldiers_lost": 0,
+		"by_force": [],
+		"by_unit_type": {}
+	}
+	if clamped_missing_food <= 0.0:
+		return result
+	
+	var target_points: int = int(floor(clamped_missing_food * FAMINE_POINTS_PER_FOOD))
+	result["target_points"] = target_points
+	if target_points <= 0:
+		return result
+	
+	var force_entries: Array[Dictionary] = _build_famine_force_entries(player_id)
+	if force_entries.is_empty():
+		DebugLogger.log("TurnProcessing", "Famine skipped for Player " + str(player_id) + " - no eligible army or garrison units")
+		return result
+	
+	var total_force_points: int = 0
+	for force_entry in force_entries:
+		total_force_points += int(force_entry.get("upkeep_points", 0))
+	if total_force_points <= 0:
+		return result
+	
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.randomize()
+	var points_to_apply: int = min(target_points, total_force_points)
+	_allocate_points_proportionally(force_entries, points_to_apply, "upkeep_points", "allocated_points", rng)
+	
+	var by_force: Array = []
+	var by_unit_type: Dictionary = {}
+	var actual_points_removed: int = 0
+	var soldiers_lost: int = 0
+	for idx in range(force_entries.size()):
+		var force_entry: Dictionary = force_entries[idx]
+		var force_result: Dictionary = _apply_famine_points_to_force(force_entry, rng)
+		var removed_points: int = int(force_result.get("removed_points", 0))
+		var force_soldiers_lost: int = int(force_result.get("soldiers_lost", 0))
+		var removed_units: Dictionary = force_result.get("removed_units", {})
+		force_entry["removed_points"] = removed_points
+		force_entry["soldiers_lost"] = force_soldiers_lost
+		force_entry["removed_units"] = removed_units
+		force_entries[idx] = force_entry
+		actual_points_removed += removed_points
+		soldiers_lost += force_soldiers_lost
+		for unit_name in removed_units.keys():
+			by_unit_type[unit_name] = int(by_unit_type.get(unit_name, 0)) + int(removed_units[unit_name])
+		by_force.append({
+			"force_id": String(force_entry.get("force_id", "")),
+			"force_type": String(force_entry.get("force_type", "")),
+			"force_name": String(force_entry.get("force_name", "")),
+			"region_id": int(force_entry.get("region_id", -1)),
+			"region_name": String(force_entry.get("region_name", "")),
+			"allocated_points": int(force_entry.get("allocated_points", 0)),
+			"removed_points": removed_points,
+			"soldiers_lost": force_soldiers_lost,
+			"units": removed_units
+		})
+	
 	_army_manager.remove_destroyed_armies()
+	result["actual_points_removed"] = actual_points_removed
+	result["soldiers_lost"] = soldiers_lost
+	result["by_force"] = by_force
+	result["by_unit_type"] = by_unit_type
+	DebugLogger.log("TurnProcessing", "Famine resolved for Player " + str(player_id) + ": " + str(soldiers_lost) + " soldiers died")
+	return result
+
+func get_latest_famine_result_for_player(player_id: int) -> Dictionary:
+	var stored_result: Dictionary = _latest_famine_result_by_player.get(player_id, {})
+	return stored_result.duplicate(true)
+
+func consume_latest_famine_result_for_player(player_id: int) -> Dictionary:
+	var stored_result: Dictionary = _latest_famine_result_by_player.get(player_id, {})
+	var result: Dictionary = stored_result.duplicate(true)
+	_latest_famine_result_by_player.erase(player_id)
+	return result
+
+func _show_turn_start_famine_message_if_needed(player_id: int, famine_result: Dictionary) -> void:
+	if famine_result.is_empty():
+		return
+	if not bool(famine_result.get("triggered", false)):
+		return
+	if not is_player_human(player_id):
+		return
+	var soldiers_lost: int = int(famine_result.get("soldiers_lost", 0))
+	var header_text: String = tr("Famine strikes your armies.")
+	var body_text: String = tr("%d soldiers died from starvation.") % soldiers_lost
+	_message_modal.display_message(header_text, body_text)
+	await _message_modal.continue_clicked
+
+func _build_famine_force_entries(player_id: int) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var owned_region_ids: Array[int] = _region_manager.get_player_regions(player_id)
+	for region_id in owned_region_ids:
+		var region: Region = map_generator.get_region_container_by_id(region_id) as Region
+		var garrison: ArmyComposition = region.get_garrison()
+		var garrison_points: int = _get_composition_famine_points(garrison)
+		if garrison_points <= 0:
+			continue
+		entries.append({
+			"force_id": "garrison_%d" % region_id,
+			"force_type": "garrison",
+			"force_name": "Garrison " + region.get_region_name(),
+			"region_id": region_id,
+			"region_name": region.get_region_name(),
+			"composition": garrison,
+			"upkeep_points": garrison_points,
+			"allocated_points": 0,
+			"removed_points": 0,
+			"soldiers_lost": 0,
+			"removed_units": {}
+		})
+	
+	var player_armies: Array[Army] = _army_manager.get_player_armies(player_id)
+	for army in player_armies:
+		var region: Region = army.get_parent() as Region
+		var composition: ArmyComposition = army.get_composition()
+		var army_points: int = _get_composition_famine_points(composition)
+		if army_points <= 0:
+			continue
+		entries.append({
+			"force_id": "army_%d" % army.get_instance_id(),
+			"force_type": "army",
+			"force_name": army.get_display_name(),
+			"region_id": region.get_region_id(),
+			"region_name": region.get_region_name(),
+			"composition": composition,
+			"upkeep_points": army_points,
+			"allocated_points": 0,
+			"removed_points": 0,
+			"soldiers_lost": 0,
+			"removed_units": {}
+		})
+	
+	return entries
+
+func _get_composition_famine_points(composition: ArmyComposition) -> int:
+	var total_points: int = 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count: int = composition.get_soldier_count(unit_type)
+		if count <= 0:
+			continue
+		var unit_points: int = _get_unit_famine_points(unit_type)
+		if unit_points <= 0:
+			continue
+		total_points += count * unit_points
+	return total_points
+
+func _get_unit_famine_points(unit_type: SoldierTypeEnum.Type) -> int:
+	var food_cost: float = float(GameParameters.get_unit_food_cost(unit_type))
+	return max(0, int(round(food_cost * FAMINE_POINTS_PER_FOOD)))
+
+func _allocate_points_proportionally(entries: Array[Dictionary], points_to_allocate: int, capacity_key: String, allocation_key: String, rng: RandomNumberGenerator) -> int:
+	if points_to_allocate <= 0 or entries.is_empty():
+		return 0
+	
+	var total_capacity: int = 0
+	for idx in range(entries.size()):
+		var entry: Dictionary = entries[idx]
+		var capacity: int = max(0, int(entry.get(capacity_key, 0)))
+		entry[allocation_key] = 0
+		entry["_fraction"] = 0.0
+		entries[idx] = entry
+		total_capacity += capacity
+	if total_capacity <= 0:
+		return 0
+	
+	var target: int = min(points_to_allocate, total_capacity)
+	var floor_sum: int = 0
+	for idx in range(entries.size()):
+		var entry: Dictionary = entries[idx]
+		var capacity: int = max(0, int(entry.get(capacity_key, 0)))
+		if capacity <= 0:
+			continue
+		var share_float: float = float(target) * float(capacity) / float(total_capacity)
+		var floor_alloc: int = min(capacity, int(floor(share_float)))
+		entry[allocation_key] = floor_alloc
+		entry["_fraction"] = share_float - float(floor_alloc)
+		entries[idx] = entry
+		floor_sum += floor_alloc
+	
+	var remainder: int = max(0, target - floor_sum)
+	while remainder > 0:
+		var candidate_indexes: Array[int] = []
+		var candidate_weights: Array[float] = []
+		var has_fraction_weight: bool = false
+		for idx in range(entries.size()):
+			var entry: Dictionary = entries[idx]
+			var capacity: int = max(0, int(entry.get(capacity_key, 0)))
+			var allocated: int = max(0, int(entry.get(allocation_key, 0)))
+			if allocated >= capacity:
+				continue
+			candidate_indexes.append(idx)
+			var weight: float = max(0.0, float(entry.get("_fraction", 0.0)))
+			if weight > 0.0:
+				has_fraction_weight = true
+			candidate_weights.append(weight)
+		if candidate_indexes.is_empty():
+			break
+		if not has_fraction_weight:
+			candidate_weights.clear()
+			for candidate_idx in candidate_indexes:
+				var fallback_entry: Dictionary = entries[candidate_idx]
+				var fallback_capacity: int = max(0, int(fallback_entry.get(capacity_key, 0)))
+				var fallback_allocated: int = max(0, int(fallback_entry.get(allocation_key, 0)))
+				candidate_weights.append(float(max(1, fallback_capacity - fallback_allocated)))
+		var picked_local_idx: int = _pick_weighted_index(candidate_weights, rng)
+		var picked_entry_idx: int = candidate_indexes[picked_local_idx]
+		var picked_entry: Dictionary = entries[picked_entry_idx]
+		picked_entry[allocation_key] = int(picked_entry.get(allocation_key, 0)) + 1
+		entries[picked_entry_idx] = picked_entry
+		remainder -= 1
+	
+	for idx in range(entries.size()):
+		var clean_entry: Dictionary = entries[idx]
+		clean_entry.erase("_fraction")
+		entries[idx] = clean_entry
+	return target - remainder
+
+func _pick_weighted_index(weights: Array[float], rng: RandomNumberGenerator) -> int:
+	if weights.is_empty():
+		return 0
+	var total_weight: float = 0.0
+	for weight in weights:
+		total_weight += max(0.0, float(weight))
+	if total_weight <= 0.0:
+		return rng.randi_range(0, weights.size() - 1)
+	var roll: float = rng.randf() * total_weight
+	var cumulative: float = 0.0
+	for idx in range(weights.size()):
+		cumulative += max(0.0, float(weights[idx]))
+		if roll <= cumulative:
+			return idx
+	return weights.size() - 1
+
+func _apply_famine_points_to_force(force_entry: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+	var allocated_points: int = max(0, int(force_entry.get("allocated_points", 0)))
+	if allocated_points <= 0:
+		return {"removed_points": 0, "soldiers_lost": 0, "removed_units": {}}
+	
+	var composition: ArmyComposition = force_entry.get("composition") as ArmyComposition
+	var unit_entries: Array[Dictionary] = []
+	var total_unit_points: int = 0
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count: int = composition.get_soldier_count(unit_type)
+		if count <= 0:
+			continue
+		var point_cost: int = _get_unit_famine_points(unit_type)
+		if point_cost <= 0:
+			continue
+		var max_points: int = count * point_cost
+		unit_entries.append({
+			"unit_type": unit_type,
+			"count": count,
+			"point_cost": point_cost,
+			"max_points": max_points,
+			"allocated_points": 0,
+			"remove_units": 0,
+			"residue_weight": 0.0
+		})
+		total_unit_points += max_points
+	if total_unit_points <= 0:
+		return {"removed_points": 0, "soldiers_lost": 0, "removed_units": {}}
+	
+	var points_to_apply: int = min(allocated_points, total_unit_points)
+	_allocate_points_proportionally(unit_entries, points_to_apply, "max_points", "allocated_points", rng)
+	
+	var removed_points: int = 0
+	for idx in range(unit_entries.size()):
+		var unit_entry: Dictionary = unit_entries[idx]
+		var point_cost: int = int(unit_entry.get("point_cost", 0))
+		var count: int = int(unit_entry.get("count", 0))
+		var allocated_unit_points: int = int(unit_entry.get("allocated_points", 0))
+		var base_remove: int = min(count, allocated_unit_points / point_cost)
+		unit_entry["remove_units"] = base_remove
+		unit_entry["residue_weight"] = float(allocated_unit_points - (base_remove * point_cost))
+		unit_entries[idx] = unit_entry
+		removed_points += base_remove * point_cost
+	
+	var remaining_points: int = max(0, points_to_apply - removed_points)
+	while remaining_points > 0:
+		var candidate_indexes: Array[int] = []
+		var candidate_weights: Array[float] = []
+		for idx in range(unit_entries.size()):
+			var unit_entry: Dictionary = unit_entries[idx]
+			var point_cost: int = int(unit_entry.get("point_cost", 0))
+			var count: int = int(unit_entry.get("count", 0))
+			var removed_units: int = int(unit_entry.get("remove_units", 0))
+			if removed_units >= count:
+				continue
+			if point_cost > remaining_points:
+				continue
+			candidate_indexes.append(idx)
+			candidate_weights.append(max(0.1, 0.1 + float(unit_entry.get("residue_weight", 0.0))))
+		if candidate_indexes.is_empty():
+			break
+		var picked_local_idx: int = _pick_weighted_index(candidate_weights, rng)
+		var picked_entry_idx: int = candidate_indexes[picked_local_idx]
+		var picked_entry: Dictionary = unit_entries[picked_entry_idx]
+		var picked_cost: int = int(picked_entry.get("point_cost", 0))
+		picked_entry["remove_units"] = int(picked_entry.get("remove_units", 0)) + 1
+		unit_entries[picked_entry_idx] = picked_entry
+		removed_points += picked_cost
+		remaining_points -= picked_cost
+	
+	var soldiers_lost: int = 0
+	var removed_units_summary: Dictionary = {}
+	for unit_entry in unit_entries:
+		var remove_units: int = int(unit_entry.get("remove_units", 0))
+		if remove_units <= 0:
+			continue
+		var unit_type: SoldierTypeEnum.Type = int(unit_entry.get("unit_type", SoldierTypeEnum.Type.PEASANTS))
+		composition.remove_soldiers(unit_type, remove_units)
+		soldiers_lost += remove_units
+		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
+		removed_units_summary[unit_name] = int(removed_units_summary.get(unit_name, 0)) + remove_units
+	
+	return {
+		"removed_points": removed_points,
+		"soldiers_lost": soldiers_lost,
+		"removed_units": removed_units_summary
+	}
 
 func has_completed_initial_turn(player_id: int) -> bool:
 	return _player_initial_turn_completed.get(player_id, false)
-
-func _get_or_create_famine_entry(entry_map: Dictionary, region: Region) -> Dictionary:
-	if entry_map.has(region):
-		return entry_map[region]
-	var data = {
-		"region": region,
-		"garrison": region.get_garrison(),
-		"armies": [],
-		"total_men": 0,
-		"owns_region": false,
-		"loss_target_float": 0.0,
-		"loss_int": 0,
-		"fraction": 0.0
-	}
-	entry_map[region] = data
-	return data
-
-func _sort_famine_fraction_desc(a: Dictionary, b: Dictionary) -> bool:
-	return a.fraction > b.fraction
-
-func _remove_casualties_from_composition(composition: ArmyComposition, casualties: int) -> int:
-	if composition == null or casualties <= 0:
-		return 0
-	var remaining := casualties
-	for unit_type in SoldierTypeEnum.get_all_types():
-		if remaining <= 0:
-			break
-		var available = composition.get_soldier_count(unit_type)
-		if available <= 0:
-			continue
-		var to_remove = min(available, remaining)
-		composition.remove_soldiers(unit_type, to_remove)
-		remaining -= to_remove
-	return casualties - remaining
-
-func _apply_army_starvation(armies: Array, casualties: int) -> int:
-	if casualties <= 0 or armies.is_empty():
-		return casualties
-	var army_data: Array = []
-	var total_soldiers := 0
-	for army in armies:
-		if army == null or not is_instance_valid(army):
-			continue
-		var soldiers = army.get_total_soldiers()
-		if soldiers <= 0:
-			continue
-		var data = {
-			"army": army,
-			"soldiers": soldiers,
-			"loss": 0,
-			"fraction": 0.0
-		}
-		army_data.append(data)
-		total_soldiers += soldiers
-	if total_soldiers <= 0:
-		return casualties
-	var total_target = min(casualties, total_soldiers)
-	var floor_sum := 0
-	for data in army_data:
-		var share_float := float(data.soldiers) / float(total_soldiers) * float(total_target)
-		var loss_int := int(floor(share_float))
-		data.loss = loss_int
-		data.fraction = share_float - float(loss_int)
-		floor_sum += loss_int
-	var remainder: int = int(max(0, total_target - floor_sum))
-	if remainder > 0:
-		army_data.sort_custom(Callable(self, "_sort_famine_fraction_desc"))
-		var idx := 0
-		while remainder > 0 and army_data.size() > 0:
-			army_data[idx].loss += 1
-			remainder -= 1
-			idx = (idx + 1) % army_data.size()
-	for data in army_data:
-		var loss_count: int = data.loss
-		if loss_count <= 0:
-			continue
-		var army: Army = data.army
-		_remove_casualties_from_composition(army.get_composition(), loss_count)
-	return casualties - total_target
 
 func _update_player_status_display() -> void:
 	"""Update the player status display when resources or player changes"""
@@ -3913,9 +4090,10 @@ func _start_first_turn() -> void:
 	await _process_scenario_events_for_turn_start(current_player)
 	if victory_declared:
 		return
-	_process_player_turn_start(current_player)
+	await _process_player_turn_start(current_player)
 	if check_victory_conditions_for_player(current_player):
 		return
+	_process_turn_start_autosave(current_player)
 	
 	if _tutorial_manager and not is_player_computer(current_player) and not _tutorial_manager.is_active():
 		_tutorial_manager.start_tutorial(current_player)

@@ -2,6 +2,7 @@ extends RefCounted
 class_name SaveGameManager
 
 const SAVE_FILE_PATH: String = "user://savegame.json"
+const AUTOSAVE_FILE_PATH: String = "user://autosave.json"
 const SETTINGS_FILE_PATH: String = "user://settings.cfg"
 const SAVE_VERSION: int = 1
 const SAVE_FILE_EXTENSION: String = ".json"
@@ -30,6 +31,9 @@ static func build_save_path_from_file_name(raw_file_name: String) -> String:
 
 static func save_game(game_manager: GameManager) -> bool:
 	return save_game_to_path(game_manager, SAVE_FILE_PATH)
+
+static func save_auto_save(game_manager: GameManager) -> bool:
+	return save_game_to_path(game_manager, AUTOSAVE_FILE_PATH)
 
 static func save_game_named(game_manager: GameManager, raw_file_name: String) -> bool:
 	var save_path: String = SAVE_FILE_PATH
