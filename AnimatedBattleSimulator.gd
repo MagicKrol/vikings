@@ -25,11 +25,11 @@ func set_round_time(seconds: float) -> void:
 	if is_battle_running:
 		battle_timer.start()
 
-func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}) -> void:
+func start_animated_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}, ai_withdrawal_rules: Dictionary = {}) -> void:
 	if is_battle_running:
 		DebugLogger.log("BattleAnimation", "Battle already running!")
 		return
-	battle_session = battle_simulator.start_battle_session(attacking_armies, defending_armies, region_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, attacker_can_withdraw, defender_can_withdraw, castle_defense_bonus_override, attacker_effectiveness_ratio, siege_payload)
+	battle_session = battle_simulator.start_battle_session(attacking_armies, defending_armies, region_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, attacker_can_withdraw, defender_can_withdraw, castle_defense_bonus_override, attacker_effectiveness_ratio, siege_payload, ai_withdrawal_rules)
 	self.defender_can_withdraw = battle_session != null and battle_session.defender_can_withdraw
 	is_battle_running = battle_session != null and battle_session.is_battle_running
 	if not is_battle_running:

@@ -49,6 +49,11 @@ const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/b
 	get_node("CustomMap/Scenario/VBoxContainer/Difficulty/Normal"),
 	get_node("CustomMap/Scenario/VBoxContainer/Difficulty/Hard")
 ]
+@onready var custom_map_difficulty_buttons: Array[Button] = [
+	get_node("CustomMap/Panel/VBoxContainer/Difficulty/Easy"),
+	get_node("CustomMap/Panel/VBoxContainer/Difficulty/Normal"),
+	get_node("CustomMap/Panel/VBoxContainer/Difficulty/Hard")
+]
 @onready var custom_map_list: VBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList
 @onready var custom_map_template_row: HBoxContainer = $CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row
 @onready var campaign_map_list: VBoxContainer = $CustomMap/Panel4/VBoxContainer/ScrollContainer/MapList
@@ -318,7 +323,8 @@ func _on_continue_pressed():
 		DebugLogger.log("UISystem", "Tutorial button pressed")
 		get_tree().set_meta("start_payload", {
 			"type": "scenario",
-			"scenario_path": TUTORIAL_SCENARIO_PATH
+			"scenario_path": TUTORIAL_SCENARIO_PATH,
+			"difficulty": "normal"
 		})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -389,7 +395,8 @@ func _on_campaign_play_pressed():
 		var scen_path := "res://scenarios/" + selected_scenario + ".json"
 		get_tree().set_meta("start_payload", {
 			"type": "scenario",
-			"scenario_path": scen_path
+			"scenario_path": scen_path,
+			"difficulty": _get_selected_scenario_difficulty()
 		})
 		if sound_manager:
 			sound_manager.stop_main_menu_music()
@@ -412,7 +419,8 @@ func _on_scenario_play_pressed():
 		var scen_path := "res://scenarios/" + selected_scenario + ".json"
 		get_tree().set_meta("start_payload", {
 			"type": "scenario",
-			"scenario_path": scen_path
+			"scenario_path": scen_path,
+			"difficulty": _get_selected_scenario_difficulty()
 		})
 		if sound_manager:
 			sound_manager.stop_main_menu_music()
@@ -438,7 +446,8 @@ func _on_custom_map_select_pressed():
 		"map_file": map_path,
 		"map_size": size_str,
 		"player_settings": player_settings,
-		"victory_condition": selected_victory
+		"victory_condition": selected_victory,
+		"difficulty": _get_selected_custom_map_difficulty()
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -451,7 +460,8 @@ func _on_scenario_select_pressed():
 	var scen_path := "res://scenarios/" + scenario_name + ".json"
 	get_tree().set_meta("start_payload", {
 		"type": "scenario",
-		"scenario_path": scen_path
+		"scenario_path": scen_path,
+		"difficulty": _get_selected_scenario_difficulty()
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -464,7 +474,8 @@ func _on_demo_tutorial_pressed():
 	var scen_path := "res://scenarios/tutorial.json"
 	get_tree().set_meta("start_payload", {
 		"type": "scenario",
-		"scenario_path": scen_path
+		"scenario_path": scen_path,
+		"difficulty": "normal"
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -493,7 +504,8 @@ func _on_demo_map_pressed():
 		"map_file": map_path,
 		"map_size": "small",
 		"player_settings": demo_player_settings,
-		"victory_condition": "conquer"
+		"victory_condition": "conquer",
+		"difficulty": "normal"
 	})
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
@@ -716,17 +728,12 @@ func _setup_player_buttons():
 		_update_button_gold_state(off_btn, off_btn.button_pressed)
 
 func _setup_difficulty_buttons():
-	var buttons: Array = [
-		get_node("CustomMap/Panel/VBoxContainer/Difficulty/Easy"),
-		get_node("CustomMap/Panel/VBoxContainer/Difficulty/Normal"),
-		get_node("CustomMap/Panel/VBoxContainer/Difficulty/Hard")
-	]
 	var group := ButtonGroup.new()
-	for btn in buttons:
+	for btn in custom_map_difficulty_buttons:
 		btn.toggle_mode = true
 		btn.button_group = group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	for btn in buttons:
+	for btn in custom_map_difficulty_buttons:
 		var selected: bool = btn.name == "Normal"
 		btn.button_pressed = selected
 		_update_button_gold_state(btn, selected)
@@ -741,6 +748,18 @@ func _setup_scenario_difficulty_buttons():
 	for btn in scenario_difficulty_buttons:
 		var selected: bool = btn.name == "Normal"
 		btn.button_pressed = selected
+
+func _difficulty_from_buttons(buttons: Array[Button]) -> String:
+	for btn in buttons:
+		if btn.button_pressed:
+			return btn.name.to_lower()
+	return "normal"
+
+func _get_selected_custom_map_difficulty() -> String:
+	return _difficulty_from_buttons(custom_map_difficulty_buttons)
+
+func _get_selected_scenario_difficulty() -> String:
+	return _difficulty_from_buttons(scenario_difficulty_buttons)
 
 func _setup_victory_buttons():
 	var buttons: Array = [

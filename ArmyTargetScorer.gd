@@ -342,6 +342,8 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 		var owner_id := region_manager.get_region_owner(region_id)
 		if owner_id > 0 and owner_id != army.get_player_id():
 			ownership_bonus = float(GameParameters.AI_ENEMY_REGION_SCORE_BONUS)
+			if game_manager.is_player_ai(army.get_player_id()) and game_manager.is_player_human(owner_id):
+				ownership_bonus += GameParameters.get_ai_human_target_score_bonus(game_manager.get_game_difficulty())
 
 	var pursuit_bonus := _get_pursuit_bonus(army, region_id)
 	var castle_bonus := _get_castle_bonus(region, army.get_player_id())
@@ -384,16 +386,21 @@ func is_target_overmatched_by_known_enemy(army: Army, region_id: int) -> bool:
 	if region == null:
 		return false
 	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
+	var owner_id: int = region.get_region_owner()
+	var ai_vs_human: bool = game_manager.is_player_ai(army.get_player_id()) and game_manager.is_player_human(owner_id)
+	var game_difficulty: int = game_manager.get_game_difficulty()
+	var castle_min_ratio: float = GameParameters.get_ai_castle_attack_min_ratio(game_difficulty, ai_vs_human)
+	var field_min_ratio: float = GameParameters.get_ai_field_attack_min_ratio(game_difficulty, ai_vs_human)
 	var defense_bonus: int = GameParameters.get_castle_defense_bonus(castle_type)
 	var assault_multiplier: float = 1.0
 	if castle_type != CastleTypeEnum.Type.NONE:
 		assault_multiplier = GameParameters.AI_CASTLE_ASSAULT_EXPECTED_MULTIPLIER
 	# Castle gate: require attacker to exceed defended power before siege prep
 	if castle_type != CastleTypeEnum.Type.NONE:
-		if game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_CASTLE_ATTACK_MIN_RATIO):
+		if game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, castle_min_ratio):
 			return true
 	# Standard withdrawal threshold without siege bonuses
-	return game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, GameParameters.AI_FIELD_ATTACK_MIN_RATIO)
+	return game_manager.should_ai_withdraw_by_power(attacker_power, defender_power, assault_multiplier, defense_bonus, field_min_ratio)
 
 func _get_pursuit_bonus(army: Army, region_id: int) -> float:
 	_ensure_runtime_references()

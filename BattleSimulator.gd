@@ -56,6 +56,7 @@ class BattleSession:
 	var volley_done: bool
 	var previous_power_ratio: float
 	var losing_ratio_streak: int
+	var ai_withdrawal_rules: Dictionary
 	
 	func _init():
 		current_attackers = {}
@@ -84,6 +85,7 @@ class BattleSession:
 		volley_done = false
 		previous_power_ratio = -1.0
 		losing_ratio_streak = 0
+		ai_withdrawal_rules = {}
 
 func _calculate_non_ranged_from_dict(composition: Dictionary) -> int:
 	var total := 0
@@ -617,7 +619,7 @@ func _build_gate_plan_log_lines(siege_state: Dictionary, battle_label: String) -
 	return lines
 
 # Main battle function - accepts arrays of compositions for each side
-func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}, ai_log: AILogManager = null, ai_log_label: String = "") -> BattleReport:
+func simulate_battle(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_label: String = "Attackers", defender_label: String = "Defenders", attacker_can_withdraw: bool = false, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}, ai_log: AILogManager = null, ai_log_label: String = "", ai_withdrawal_rules: Dictionary = {}) -> BattleReport:
 	"""
 	Simulate a battle between multiple armies and defenders
 	attacking_armies: Array of ArmyComposition objects
@@ -689,7 +691,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	_apply_kills(merged_defenders, attacker_ranged_kills)
 	_apply_kills(merged_attackers, defender_ranged_kills)
 
-	var withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw, castle_type, rng, rounds, attacker_effectiveness_ratio, siege_state, withdrawal_tracker)
+	var withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw, castle_type, rng, rounds, attacker_effectiveness_ratio, siege_state, withdrawal_tracker, ai_withdrawal_rules)
 	if withdraw_side != 0:
 		var withdraw_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, withdraw_side, castle_defense_bonus_override, attacker_effectiveness_ratio, is_siege_battle, siege_state)
 		rounds += withdraw_rounds
@@ -741,7 +743,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 		_apply_kills(merged_attackers, defender_kills)
 		_deduct_garrison_losses_from_snapshot(attacker_kills, defender_snapshot, current_garrison)
 
-		var mid_withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw, castle_type, rng, rounds, attacker_effectiveness_ratio, siege_state, withdrawal_tracker)
+		var mid_withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw, castle_type, rng, rounds, attacker_effectiveness_ratio, siege_state, withdrawal_tracker, ai_withdrawal_rules)
 		if mid_withdraw_side != 0:
 			var withdraw_extra_rounds := _resolve_withdrawal_phase(merged_attackers, merged_defenders, current_garrison, attacker_efficiency, defender_efficiency, terrain_type, castle_type, rng, attacker_stats, defender_stats, mid_withdraw_side, castle_defense_bonus_override, attacker_effectiveness_ratio, is_siege_battle, siege_state)
 			rounds += withdraw_extra_rounds
@@ -771,7 +773,7 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 	
 	return report
 
-func start_battle_session(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = true, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}) -> BattleSession:
+func start_battle_session(attacking_armies: Array, defending_armies: Array, region_garrison: ArmyComposition = null, attacker_efficiency: int = 100, defender_efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, attacker_can_withdraw: bool = true, defender_can_withdraw: bool = false, castle_defense_bonus_override: int = -1, attacker_effectiveness_ratio: float = 0.0, siege_payload: Dictionary = {}, ai_withdrawal_rules: Dictionary = {}) -> BattleSession:
 	var session := BattleSession.new()
 	session.attacker_efficiency = attacker_efficiency
 	session.defender_efficiency = defender_efficiency
@@ -781,6 +783,7 @@ func start_battle_session(attacking_armies: Array, defending_armies: Array, regi
 	session.attacker_can_withdraw = attacker_can_withdraw
 	session.defender_can_withdraw = defender_can_withdraw and castle_type == CastleTypeEnum.Type.NONE
 	session.attacker_effectiveness_ratio = clampf(attacker_effectiveness_ratio, 0.0, 1.0)
+	session.ai_withdrawal_rules = ai_withdrawal_rules.duplicate(true)
 	session.is_siege_battle = castle_type != CastleTypeEnum.Type.NONE
 	session.siege_payload_base = siege_payload.duplicate(true)
 	session.current_attackers = _merge_compositions(attacking_armies)
@@ -865,7 +868,7 @@ func process_opening_volley_session(session: BattleSession, rng: RandomNumberGen
 		"previous_power_ratio": session.previous_power_ratio,
 		"losing_ratio_streak": session.losing_ratio_streak
 	}
-	var withdraw_side = _decide_withdrawal(session.current_attackers, session.current_defenders, session.current_garrison, session.attacker_can_withdraw, session.defender_can_withdraw, session.castle_type, rng, session.current_round, session.attacker_effectiveness_ratio, session.siege_state, withdrawal_tracker)
+	var withdraw_side = _decide_withdrawal(session.current_attackers, session.current_defenders, session.current_garrison, session.attacker_can_withdraw, session.defender_can_withdraw, session.castle_type, rng, session.current_round, session.attacker_effectiveness_ratio, session.siege_state, withdrawal_tracker, session.ai_withdrawal_rules)
 	session.previous_power_ratio = float(withdrawal_tracker.get("previous_power_ratio", session.previous_power_ratio))
 	session.losing_ratio_streak = int(withdrawal_tracker.get("losing_ratio_streak", session.losing_ratio_streak))
 	if withdraw_side != 0:
@@ -894,7 +897,7 @@ func process_next_round_session(session: BattleSession, rng: RandomNumberGenerat
 		"previous_power_ratio": session.previous_power_ratio,
 		"losing_ratio_streak": session.losing_ratio_streak
 	}
-	var withdraw_side = _decide_withdrawal(session.current_attackers, session.current_defenders, session.current_garrison, session.attacker_can_withdraw, session.defender_can_withdraw, session.castle_type, rng, session.current_round, session.attacker_effectiveness_ratio, session.siege_state, withdrawal_tracker)
+	var withdraw_side = _decide_withdrawal(session.current_attackers, session.current_defenders, session.current_garrison, session.attacker_can_withdraw, session.defender_can_withdraw, session.castle_type, rng, session.current_round, session.attacker_effectiveness_ratio, session.siege_state, withdrawal_tracker, session.ai_withdrawal_rules)
 	session.previous_power_ratio = float(withdrawal_tracker.get("previous_power_ratio", session.previous_power_ratio))
 	session.losing_ratio_streak = int(withdrawal_tracker.get("losing_ratio_streak", session.losing_ratio_streak))
 	if withdraw_side != 0:
@@ -1271,7 +1274,10 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 		_merge_kill_results(mobility_kills, target_kills)
 	return mobility_kills
 
-func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_can_withdraw: bool, defender_can_withdraw: bool, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, current_round: int, attacker_effectiveness_ratio: float = 1.0, siege_state: Dictionary = {}, withdrawal_tracker: Dictionary = {}) -> int:
+func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_can_withdraw: bool, defender_can_withdraw: bool, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, current_round: int, attacker_effectiveness_ratio: float = 1.0, siege_state: Dictionary = {}, withdrawal_tracker: Dictionary = {}, ai_withdrawal_rules: Dictionary = {}) -> int:
+	var siege_bailout_ratio: float = float(ai_withdrawal_rules.get("siege_bailout_ratio", 1.5))
+	var withdraw_power_threshold: float = float(ai_withdrawal_rules.get("withdraw_power_threshold", GameParameters.AI_WITHDRAW_POWER_THRESHOLD))
+	var withdraw_forced_threshold: float = float(ai_withdrawal_rules.get("withdraw_forced_threshold", GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE))
 	var is_siege_battle := castle_type != CastleTypeEnum.Type.NONE
 	if is_siege_battle:
 		var atk_power: int = _compute_dict_power(current_attackers)
@@ -1281,7 +1287,7 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 		if not attacker_can_withdraw:
 			return 0
 		var ratio: float = float(atk_power) / float(def_power)
-		if ratio <= 1.5:
+		if ratio <= siege_bailout_ratio:
 			DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal siege bailout side=1 ratio=" + str(snappedf(ratio, 0.003)))
 			return 1
 		var active_rams: int = _get_active_ram_count(siege_state)
@@ -1333,9 +1339,9 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 		if armies_only.is_empty():
 			return 0
 	var ratio_open := float(weaker) / float(stronger)
-	if ratio_open > GameParameters.AI_WITHDRAW_POWER_THRESHOLD:
+	if ratio_open > withdraw_power_threshold:
 		return 0
-	if ratio_open <= GameParameters.AI_WITHDRAW_MAX_POWER_DIFFERENCE:
+	if ratio_open <= withdraw_forced_threshold:
 		DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal forced side=" + str(withdrawing) + " atk_power=" + str(atk_power_open) + " def_power=" + str(def_power_open) + " ratio=" + str(snappedf(ratio_open, 0.003)))
 		return withdrawing
 	var gap := 1.0 - ratio_open

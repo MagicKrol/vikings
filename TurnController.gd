@@ -2403,6 +2403,8 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 		var owner_id := region_manager.get_region_owner(target_id)
 		if owner_id > 0 and owner_id != player_id:
 			ownership_bonus = float(GameParameters.AI_ENEMY_REGION_SCORE_BONUS)
+			if game_manager.is_player_ai(player_id) and game_manager.is_player_human(owner_id):
+				ownership_bonus += GameParameters.get_ai_human_target_score_bonus(game_manager.get_game_difficulty())
 		var pursue_bonus := float(components.get("pursue_bonus", 0.0))
 		var castle_bonus := float(components.get("castle_bonus", 0.0))
 		var enemy_adjustment := target_scorer.get_enemy_adjustment(army, target_id)

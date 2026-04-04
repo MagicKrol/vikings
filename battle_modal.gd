@@ -601,7 +601,8 @@ func _run_battle_simulation() -> void:
 	var attacker_withdraw_allowed = bm.get_attacker_withdraw_allowed()
 	var defender_withdraw_allowed = bm.get_defender_withdraw_allowed()
 	var attacker_effectiveness_ratio = bm.get_attacker_effectiveness_ratio()
-	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override, attacker_effectiveness_ratio, siege_payload)
+	var ai_withdrawal_rules: Dictionary = bm.get_ai_withdrawal_rules()
+	animated_simulator.start_animated_battle(attacking_compositions, defending_compositions, region_garrison, attacker_efficiency, 100, terrain_type, castle_type, attacker_withdraw_allowed, defender_withdraw_allowed, defense_override, attacker_effectiveness_ratio, siege_payload, ai_withdrawal_rules)
 	
 	DebugLogger.log("UISystem", "Starting animated battle simulation...")
 

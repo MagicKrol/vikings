@@ -76,7 +76,7 @@ const WITHDRAWAL_FREE_HIT_ROUNDS = 2           # Number of free hit rounds enemy
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 2    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
 const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
-const AI_WITHDRAW_MAX_POWER_DIFFERENCE = 0.20	# Power gap (20%) that forces withdrawal once reached
+const AI_WITHDRAW_MAX_POWER_DIFFERENCE = 0.30	# Normal-mode forced withdrawal ratio in open field
 const AI_PURSUIT_POWER_RATIO = 1.5			# Ratio above which AI gets a pursuit bonus for targets
 const AI_PURSUIT_SCORE_BONUS = 5.0			# Score bonus for high-ratio pursuit targets
 const AI_CASTLE_ATTACK_MIN_RATIO = 1.5		# Minimum ratio required to consider attacking castles
@@ -84,6 +84,44 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
+
+enum Difficulty {
+	EASY = 0,
+	NORMAL = 1,
+	HARD = 2
+}
+
+const GAME_DIFFICULTY_DEFAULT: int = Difficulty.NORMAL
+const AI_HUMAN_TARGET_SCORE_BONUS_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: -5.0,
+	Difficulty.NORMAL: 0.0,
+	Difficulty.HARD: 5.0
+}
+const AI_CASTLE_ATTACK_MIN_RATIO_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 1.25,
+	Difficulty.NORMAL: 1.5,
+	Difficulty.HARD: 1.75
+}
+const AI_FIELD_ATTACK_MIN_RATIO_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 0.8,
+	Difficulty.NORMAL: 1.0,
+	Difficulty.HARD: 1.2
+}
+const AI_WITHDRAW_POWER_THRESHOLD_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 0.6,
+	Difficulty.NORMAL: 0.8,
+	Difficulty.HARD: 0.85
+}
+const AI_WITHDRAW_FORCED_RATIO_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 0.2,
+	Difficulty.NORMAL: 0.3,
+	Difficulty.HARD: 0.4
+}
+const AI_SIEGE_WITHDRAW_BAILOUT_RATIO_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 1.25,
+	Difficulty.NORMAL: 1.5,
+	Difficulty.HARD: 1.75
+}
 
 enum ArmyMoveTrigger {
 	LEFT_CLICK = 0,
@@ -691,7 +729,15 @@ const WEALTH_NORMAL_THRESHOLD_GOLD = 200
 const WEALTH_RICH_THRESHOLD_GOLD = 400
 
 ## Initial Player Resources
-const STARTING_RESOURCES = {
+const STARTING_RESOURCES_EASY = {
+	ResourcesEnum.Type.GOLD: 150,
+	ResourcesEnum.Type.FOOD: 100,
+	ResourcesEnum.Type.WOOD: 30,
+	ResourcesEnum.Type.IRON: 20,
+	ResourcesEnum.Type.STONE: 20
+}
+
+const STARTING_RESOURCES_NORMAL = {
 	ResourcesEnum.Type.GOLD: 100,
 	ResourcesEnum.Type.FOOD: 50,
 	ResourcesEnum.Type.WOOD: 20,
@@ -699,15 +745,53 @@ const STARTING_RESOURCES = {
 	ResourcesEnum.Type.STONE: 10
 }
 
-const STARTING_ARMY_COMPOSITION_HUMAN = {
+const STARTING_RESOURCES_HARD = {
+	ResourcesEnum.Type.GOLD: 80,
+	ResourcesEnum.Type.FOOD: 30,
+	ResourcesEnum.Type.WOOD: 10,
+	ResourcesEnum.Type.IRON: 0,
+	ResourcesEnum.Type.STONE: 0
+}
+
+const STARTING_RESOURCES = STARTING_RESOURCES_NORMAL
+
+const STARTING_ARMY_COMPOSITION_HUMAN_EASY = {
+	SoldierTypeEnum.Type.PEASANTS: 30,
+	SoldierTypeEnum.Type.SPEARMEN: 15,
+	SoldierTypeEnum.Type.SWORDSMEN: 10,
+	SoldierTypeEnum.Type.ARCHERS: 10,
+	SoldierTypeEnum.Type.CROSSBOWMEN: 0,
+	SoldierTypeEnum.Type.HORSEMEN: 0,
+	SoldierTypeEnum.Type.KNIGHTS: 2,
+	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: 0,
+	SoldierTypeEnum.Type.ROYAL_GUARD: 0
+}
+
+const STARTING_ARMY_COMPOSITION_HUMAN_NORMAL = {
+	SoldierTypeEnum.Type.PEASANTS: 20,
+	SoldierTypeEnum.Type.SPEARMEN: 10,
+	SoldierTypeEnum.Type.SWORDSMEN: 5,
+	SoldierTypeEnum.Type.ARCHERS: 5,
+	SoldierTypeEnum.Type.CROSSBOWMEN: 0,
+	SoldierTypeEnum.Type.HORSEMEN: 0,
+	SoldierTypeEnum.Type.KNIGHTS: 1,
+	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: 0,
+	SoldierTypeEnum.Type.ROYAL_GUARD: 0
+}
+
+const STARTING_ARMY_COMPOSITION_HUMAN_HARD = {
 	SoldierTypeEnum.Type.PEASANTS: 15,
 	SoldierTypeEnum.Type.SPEARMEN: 5,
 	SoldierTypeEnum.Type.SWORDSMEN: 0,
 	SoldierTypeEnum.Type.ARCHERS: 5,
 	SoldierTypeEnum.Type.CROSSBOWMEN: 0,
 	SoldierTypeEnum.Type.HORSEMEN: 0,
-	SoldierTypeEnum.Type.KNIGHTS: 1
+	SoldierTypeEnum.Type.KNIGHTS: 1,
+	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: 0,
+	SoldierTypeEnum.Type.ROYAL_GUARD: 0
 }
+
+const STARTING_ARMY_COMPOSITION_HUMAN = STARTING_ARMY_COMPOSITION_HUMAN_NORMAL
 
 const STARTING_ARMY_COMPOSITION_AI = {
 	SoldierTypeEnum.Type.PEASANTS: 20,
@@ -916,11 +1000,11 @@ static func generate_resource_amount(region_type: RegionTypeEnum.Type, resource_
 	if region_type == RegionTypeEnum.Type.GRASSLAND and resource_type == ResourcesEnum.Type.FOOD:
 		return _roll_weighted_3(45, 35, 1, 2, 3)
 	if region_type == RegionTypeEnum.Type.FOREST and resource_type == ResourcesEnum.Type.WOOD:
-		return _roll_weighted_3(45, 35, 1, 2, 3)
+		return _roll_weighted_3(55, 30, 1, 2, 3)
 	if region_type == RegionTypeEnum.Type.HILLS and resource_type == ResourcesEnum.Type.STONE:
 		return _roll_weighted_3(45, 35, 1, 2, 3)
 	if region_type == RegionTypeEnum.Type.FOREST_HILLS and resource_type == ResourcesEnum.Type.WOOD:
-		return _roll_weighted_2(65, 1, 2)
+		return _roll_weighted_2(70, 1, 2)
 	if region_type == RegionTypeEnum.Type.FOREST_HILLS and resource_type == ResourcesEnum.Type.STONE:
 		return _roll_weighted_3(45, 35, 0, 1, 2)
 
@@ -946,6 +1030,14 @@ static func _roll_weighted_3(first_weight: int, second_weight: int, first_value:
 static func get_starting_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 	"""Get starting amount for a resource type"""
 	return STARTING_RESOURCES.get(resource_type, 0)
+
+static func get_starting_resource_amount_for_difficulty(resource_type: ResourcesEnum.Type, difficulty: int) -> int:
+	var normalized: int = normalize_game_difficulty(difficulty)
+	if normalized == Difficulty.EASY:
+		return int(STARTING_RESOURCES_EASY.get(resource_type, 0))
+	if normalized == Difficulty.HARD:
+		return int(STARTING_RESOURCES_HARD.get(resource_type, 0))
+	return int(STARTING_RESOURCES_NORMAL.get(resource_type, 0))
 
 static func generate_garrison_size(region_level: RegionLevelEnum.Level) -> int:
 	"""Generate random garrison size based on region level"""
@@ -1049,16 +1141,84 @@ static func _copy_starting_composition(source: Dictionary) -> Dictionary:
 		comp[key] = int(source[key])
 	return comp
 
+static func normalize_game_difficulty(difficulty: int) -> int:
+	if difficulty < Difficulty.EASY or difficulty > Difficulty.HARD:
+		return GAME_DIFFICULTY_DEFAULT
+	return difficulty
+
+static func game_difficulty_from_string(difficulty_name: String) -> int:
+	var lowered: String = difficulty_name.to_lower()
+	if lowered == "easy":
+		return Difficulty.EASY
+	if lowered == "hard":
+		return Difficulty.HARD
+	return Difficulty.NORMAL
+
+static func game_difficulty_to_string(difficulty: int) -> String:
+	var normalized: int = normalize_game_difficulty(difficulty)
+	if normalized == Difficulty.EASY:
+		return "easy"
+	if normalized == Difficulty.HARD:
+		return "hard"
+	return "normal"
+
+static func get_ai_human_target_score_bonus(difficulty: int) -> float:
+	var normalized: int = normalize_game_difficulty(difficulty)
+	return float(AI_HUMAN_TARGET_SCORE_BONUS_BY_DIFFICULTY.get(normalized, 0.0))
+
+static func _resolve_ai_combat_difficulty(difficulty: int, ai_vs_human: bool) -> int:
+	if not ai_vs_human:
+		return Difficulty.NORMAL
+	return normalize_game_difficulty(difficulty)
+
+static func get_ai_castle_attack_min_ratio(difficulty: int, ai_vs_human: bool) -> float:
+	var resolved: int = _resolve_ai_combat_difficulty(difficulty, ai_vs_human)
+	return float(AI_CASTLE_ATTACK_MIN_RATIO_BY_DIFFICULTY.get(resolved, AI_CASTLE_ATTACK_MIN_RATIO))
+
+static func get_ai_field_attack_min_ratio(difficulty: int, ai_vs_human: bool) -> float:
+	var resolved: int = _resolve_ai_combat_difficulty(difficulty, ai_vs_human)
+	return float(AI_FIELD_ATTACK_MIN_RATIO_BY_DIFFICULTY.get(resolved, AI_FIELD_ATTACK_MIN_RATIO))
+
+static func get_ai_withdraw_power_threshold(difficulty: int, ai_vs_human: bool) -> float:
+	var resolved: int = _resolve_ai_combat_difficulty(difficulty, ai_vs_human)
+	return float(AI_WITHDRAW_POWER_THRESHOLD_BY_DIFFICULTY.get(resolved, AI_WITHDRAW_POWER_THRESHOLD))
+
+static func get_ai_withdraw_forced_ratio(difficulty: int, ai_vs_human: bool) -> float:
+	var resolved: int = _resolve_ai_combat_difficulty(difficulty, ai_vs_human)
+	return float(AI_WITHDRAW_FORCED_RATIO_BY_DIFFICULTY.get(resolved, AI_WITHDRAW_MAX_POWER_DIFFERENCE))
+
+static func get_ai_siege_withdraw_bailout_ratio(difficulty: int, ai_vs_human: bool) -> float:
+	var resolved: int = _resolve_ai_combat_difficulty(difficulty, ai_vs_human)
+	return float(AI_SIEGE_WITHDRAW_BAILOUT_RATIO_BY_DIFFICULTY.get(resolved, 1.5))
+
+static func get_ai_withdrawal_rules(difficulty: int, ai_vs_human: bool) -> Dictionary:
+	return {
+		"withdraw_power_threshold": get_ai_withdraw_power_threshold(difficulty, ai_vs_human),
+		"withdraw_forced_threshold": get_ai_withdraw_forced_ratio(difficulty, ai_vs_human),
+		"siege_bailout_ratio": get_ai_siege_withdraw_bailout_ratio(difficulty, ai_vs_human)
+	}
+
+static func get_starting_army_composition_human_for_difficulty(difficulty: int) -> Dictionary:
+	var normalized: int = normalize_game_difficulty(difficulty)
+	if normalized == Difficulty.EASY:
+		return _copy_starting_composition(STARTING_ARMY_COMPOSITION_HUMAN_EASY)
+	if normalized == Difficulty.HARD:
+		return _copy_starting_composition(STARTING_ARMY_COMPOSITION_HUMAN_HARD)
+	return _copy_starting_composition(STARTING_ARMY_COMPOSITION_HUMAN_NORMAL)
+
 static func get_starting_army_composition_human() -> Dictionary:
-	return _copy_starting_composition(STARTING_ARMY_COMPOSITION_HUMAN)
+	return get_starting_army_composition_human_for_difficulty(GAME_DIFFICULTY_DEFAULT)
 
 static func get_starting_army_composition_ai() -> Dictionary:
 	return _copy_starting_composition(STARTING_ARMY_COMPOSITION_AI)
 
-static func get_starting_army_composition_for_player_type(player_type: PlayerTypeEnum.Type) -> Dictionary:
+static func get_starting_army_composition_for_player_type_with_difficulty(player_type: PlayerTypeEnum.Type, difficulty: int) -> Dictionary:
 	if player_type == PlayerTypeEnum.Type.COMPUTER:
 		return get_starting_army_composition_ai()
-	return get_starting_army_composition_human()
+	return get_starting_army_composition_human_for_difficulty(difficulty)
+
+static func get_starting_army_composition_for_player_type(player_type: PlayerTypeEnum.Type) -> Dictionary:
+	return get_starting_army_composition_for_player_type_with_difficulty(player_type, GAME_DIFFICULTY_DEFAULT)
 
 static func get_starting_army_composition() -> Dictionary:
 	return get_starting_army_composition_human()

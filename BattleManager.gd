@@ -63,6 +63,7 @@ var _fighting_army_for_reselection: Army = null
 var _attacker_withdraw_allowed: bool = false
 var _defender_withdraw_allowed: bool = false
 var _attacker_effectiveness_ratio: float = 0.0
+var _ai_withdrawal_rules: Dictionary = {}
 var _attacker_manual_withdraw_requested: bool = false
 const MIN_FRAC_TREBS: float = 0.6
 const MIN_FRAC_RAMS: float = 0.6
@@ -145,8 +146,12 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 	# AI background path: no modal, instant simulation when flag is on
 	# Exception: if the defender is human (region owner or defending army), always show modal
 	var attacker_is_ai: bool = _game_manager.is_player_computer(attacker.get_player_id())
+	var attacker_is_human: bool = _game_manager.is_player_human(attacker.get_player_id())
 	var defender_owner_id := _region_manager.get_region_owner(target_region_id)
 	var defender_is_human: bool = false
+	var defender_is_ai: bool = false
+	if defender_owner_id != -1 and _game_manager.is_player_computer(defender_owner_id):
+		defender_is_ai = true
 	if defender_owner_id != -1 and _game_manager.is_player_human(defender_owner_id):
 		defender_is_human = true
 	else:
@@ -154,6 +159,10 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 			if _game_manager.is_player_human(d.get_player_id()):
 				defender_is_human = true
 				break
+			if _game_manager.is_player_computer(d.get_player_id()):
+				defender_is_ai = true
+	var ai_vs_human_battle: bool = (attacker_is_ai and defender_is_human) or (attacker_is_human and defender_is_ai)
+	_ai_withdrawal_rules = GameParameters.get_ai_withdrawal_rules(_game_manager.get_game_difficulty(), ai_vs_human_battle)
 	if _game_manager.debug_disable_battle_modal and attacker_is_ai and not defender_is_human:
 		var atk_comps = _compositions_from_armies([attacker])
 		var def_comps = _compositions_from_armies(defender_armies)
@@ -172,7 +181,7 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 		var effective_defense = _get_effective_defense_bonus(target_region)
 		var ai_log: AILogManager = _game_manager.get_ai_log_manager()
 		var battle_label: String = str(attacker.name) + " -> " + str(target_region.get_region_name())
-		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense, _attacker_effectiveness_ratio, _pending_siege_payload, ai_log, battle_label)
+		var report = sim.simulate_battle(atk_comps, def_comps, garrison, attacker_eff, defender_eff, terrain_type, castle_type, attacker_label, defender_label, _attacker_withdraw_allowed, _defender_withdraw_allowed, effective_defense, _attacker_effectiveness_ratio, _pending_siege_payload, ai_log, battle_label, _ai_withdrawal_rules)
 		# Compute wounded for background path so summary data is present
 		report.attacker_wounded = Utils.compute_wounded(report.attacker_losses)
 		report.defender_wounded = Utils.compute_wounded(report.defender_losses)
@@ -295,6 +304,7 @@ func _clear_pending_conquest_state() -> void:
 	pending_conquest_army = null
 	pending_conquest_region = null
 	_attacker_effectiveness_ratio = 0.0
+	_ai_withdrawal_rules = {}
 	_pending_siege_payload = {}
 
 func _calculate_wall_defense_penalty(region: Region) -> int:
@@ -324,6 +334,9 @@ func get_attacker_effectiveness_raw() -> int:
 
 func get_attacker_effectiveness_ratio() -> float:
 	return _attacker_effectiveness_ratio
+
+func get_ai_withdrawal_rules() -> Dictionary:
+	return _ai_withdrawal_rules.duplicate(true)
 
 func compute_ladder_capacity(region: Region) -> int:
 	var data = GameParameters.CASTLE_WALLS_GATES.get(region.get_castle_type(), {})

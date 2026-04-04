@@ -15,6 +15,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 - Custom Map & Scenario submenus share `CustomMap`:
   - Panel (players/difficulty/victory + Select Map) shows for custom maps; Scenario panel shows for scenario list; both Back buttons return to New Game.
   - Player toggles are static scene nodes with defaults: P1 Human, P2-4 Computer, P5-6 Off; difficulty defaults to Normal; custom-map victory defaults to `Conquer`; selection uses default button styling (no font color override). Map Settings player-name labels use `GameParameters.PLAYER_COLORS` as base, with a slight readability lift for P3 and P6 on the dark background.
+  - New game start payload now carries `difficulty` (`easy|normal|hard`) from Custom Map/Scenario selectors; tutorial/demo payloads default to `normal`.
   - Map/Scenario list (Panel3) uses a scrollable template row (`Map1`) sorted by size (T/S/M/L) then name; size filter buttons (All/T/S/M/L) rebuild the list and clear selection; row hover/unhover callbacks are wired to `Control` rows duplicated from the `Map1` `HBoxContainer` template.
   - Selecting a row colors it header-gold, updates Panel2 labels (MapName = display name, MapSize = Tiny/Small/Medium/Large), enables the Select button (text switches to "Start Game"), and loads the preview if available under `previews/<map_or_scenario>.png`; Custom Map, Scenario, and Campaign lists auto-select the first newly created row after list build/filter.
   - List selection now clears stale row references before recoloring so reopening lists after Back does not hit freed-node crashes.
@@ -41,6 +42,7 @@ Start Flow
 - `GameManager._ready()` reads `start_payload`:
   - Scenario: sets `game_mode = "scenario"`, assigns `scenario_path` (pre-load applies scenario map file) and loads scenario-defined `victory_conditions` (missing/empty means no automatic victory).
   - Custom map: sets `game_mode = "custom"`, assigns `MapGenerator.data_file_path` and map size via `_map_set_size_from_string`, applies player_settings if present, reads `victory_condition`, then `generate_map()`.
+  - For scenario/custom starts, reads `difficulty` and stores it as `GameManager.game_difficulty` (single runtime source for difficulty-dependent systems).
   - Save: loads the path from payload (`save_path`), regenerates map from saved source (`map_file` + `map_size`), initializes managers without castle-placement bootstrap, then applies full runtime state (regions/ownership/castles/armies/player/game turn state).
   - Payload is cleared after consumption.
 - Custom map start shows `MessageModal` prompt "Click a region to choose your starting location" during castle placement.
@@ -182,6 +184,8 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Initial castle placement (human or AI) now spawns a Keep immediately rather than an Outpost, so every starting stronghold begins at level 2 with the associated recruitment caps and visuals.
 - Debug overlay: `show_region_center_markers` draws a small red square at each land region center by calling `MapGenerator.set_center_markers_enabled()` after startup and whenever the map regenerates.
 - AI pre-battle withdrawal: before siege prep, AI attackers back out if attacker power ≤ defender power after defense bonus; after siege prep (or for open-field fights) AI withdraws immediately when the standard withdrawal power threshold is met (no roll, no casualties).
+- Starting army composition lookup now uses `game_difficulty`: human starts are difficulty-dependent (Easy > Normal > Hard), while AI starts stay unchanged.
+- Starting player resources now use `game_difficulty` presets for active players at initialization (Easy: 150/100/30/20/20, Normal: 100/50/20/10/10, Hard: 80/30/10/0/0 for Gold/Food/Wood/Iron/Stone).
 - Target scoring: known enemy power (tracked armies + tracked garrison) is checked against the same withdrawal thresholds; regions with stronger known enemies are skipped during frontier target selection.
 - Target scoring: known enemy power is adjusted by castle defense and a conservative assault multiplier; castles require a projected ratio > 1.5 to be considered, while open-field targets require > 1.0; pursuit bonuses apply the same castle adjustments.
 - Map Editor: `enable_map_editor` flag — when true, skips castle placement/turns, initializes MapEditor, shows empty editor panel (25% left).
@@ -303,6 +307,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - ArmyManager exposes `transfer_all_soldiers(donor, receiver)` for bulk transfers, and armies keep `spawn_minimal_peasant_token()` so TurnController can leave placeholder peasants after merging stacks.
 - ArmyPathfinder.gd: pathfinding within MP horizon, multi-turn pathfinding with MP constraints.
 - **ArmyTargetScorer.gd**: **Single source of truth for army region scoring**. Provides canonical raw scoring APIs:
+  - Ownership bonus includes base enemy-region bonus plus a difficulty-based modifier only when AI targets a human-owned region (`-5/0/+5` on Easy/Normal/Hard).
   - `get_base_region_score_raw(region, player_id)`: Returns raw base sum and components (strategic + population + level + resource, no normalization)
   - `get_resource_component_breakdown_out_of_10(region, player_id)`: Per-resource contributions that sum to resource component  
   - `get_final_army_score_raw(army, region_id)`: Returns final_raw = base_raw + random - mp_cost with full breakdown
@@ -440,9 +445,10 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - ArmyTargetScorer.gd: Applies enemy memory adjustments (nullifies targets when tracked enemy armies are ≥25% stronger, adds ±1 per 5% difference up to ±10).
 - ArmyTargetScorer.gd: Combines stored army and garrison intel; requires known power for every defending army before applying bonuses.
 - ArmyTargetScorer.gd: Adds configurable +5 bonus for enemy-owned regions (`GameParameters.AI_ENEMY_REGION_SCORE_BONUS`).
+- ArmyTargetScorer.gd: Known-overmatched attack gate uses difficulty-aware castle/field min-ratio getters from `GameParameters`; difficulty scaling applies only to AI-vs-human target checks (AI-vs-AI stays normal).
  - Withdrawal Rules:
-   - Background/instant sims use `BattleSimulator._decide_withdrawal`: per-round checks, attacker power scaled by assault ratio (+0.2 per active ram), defender power scaled by castle defense; forced/roll thresholds use `AI_WITHDRAW_POWER_THRESHOLD` / `AI_WITHDRAW_MAX_POWER_DIFFERENCE`.
-   - Animated battles use `AnimatedBattleSimulator._try_start_withdrawal`: non-siege keeps legacy ratio/roll; siege uses trend logic (if attacker ratio ≤ 1.5 withdraws; after round 7, if ratio worsens 3 rounds in a row, attacker withdraws). Checks run each round.
+   - Background and animated sims use `BattleSimulator._decide_withdrawal` with rules injected from `BattleManager`: `withdraw_power_threshold`, `withdraw_forced_threshold`, and siege bailout ratio.
+   - `BattleManager` resolves those rules from `GameParameters.get_ai_withdrawal_rules(game_difficulty, ai_vs_human_battle)`, so difficulty scaling applies only to AI-vs-human battles; AI-vs-AI uses normal values.
    - Eligibility: attacker auto-withdraw is AI-only; defender auto-withdraw is AI-only, castle must be `NONE`, and at least one defending army with an owned neighboring region (garrison/recruits never withdraw). Human attacker can still click Withdraw; in dual-human battles both human sides have explicit withdraw buttons (`SecondPlayer/Withdraw` for attacker side, main `Button` for defender side).
    - Resolution: free-hit rounds run in-battle (AnimatedBattleSimulator/BattleSimulator). If attackers withdraw, defenders (armies + garrison) hit them; if defenders withdraw, attackers hit only defender armies (garrison stays). Outcome is `Withdrawal` even if garrison/recruits remain.
    - Manual attacker withdrawal still locks defender auto-withdraw and forces the outcome to attacker withdrawal so retreat happens after free-hit rounds.

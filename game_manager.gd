@@ -128,6 +128,7 @@ var winning_player_id: int = -1
 var _scenario_events_runtime: Array[Dictionary] = []
 var scenario_trade_disabled: bool = false
 var _player_hired_units: Dictionary = {}
+var game_difficulty: int = GameParameters.GAME_DIFFICULTY_DEFAULT
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -159,9 +160,11 @@ func _ready():
 		if kind == "scenario":
 			game_mode = "scenario"
 			scenario_path = String(payload.get("scenario_path", ""))
+			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
 		elif kind == "map":
 			game_mode = "custom"
 			scenario_path = ""
+			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
 			var map_path := String(payload.get("map_file", ""))
 			var size_str := String(payload.get("map_size", "small"))
 			map_generator.data_file_path = map_path.get_file()
@@ -316,6 +319,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 		player_manager.set_army_manager(_army_manager)
 		# Ensure players are initialized before any UI or scenario logic uses them
 		player_manager._initialize_players(player_types)
+		_apply_starting_resources_for_difficulty()
 		_trade_manager = TradeManager.new(player_manager)
 		
 		# Connect to player change signal to refresh UI
@@ -1741,7 +1745,23 @@ func get_player_type(player_id: int) -> PlayerTypeEnum.Type:
 
 func get_starting_army_composition_for_player(player_id: int) -> Dictionary:
 	"""Get starting army composition for the given player's control type"""
-	return GameParameters.get_starting_army_composition_for_player_type(get_player_type(player_id))
+	return GameParameters.get_starting_army_composition_for_player_type_with_difficulty(get_player_type(player_id), game_difficulty)
+
+func get_game_difficulty() -> int:
+	return game_difficulty
+
+func _apply_starting_resources_for_difficulty() -> void:
+	for i in range(player_types.size()):
+		var player_type: PlayerTypeEnum.Type = player_types[i]
+		if player_type == PlayerTypeEnum.Type.OFF:
+			continue
+		var player_id: int = i + 1
+		var resources_data: Dictionary = {}
+		for resource_type in ResourcesEnum.get_all_types():
+			var resource_key: String = ResourcesEnum.type_to_string(resource_type)
+			var amount: int = GameParameters.get_starting_resource_amount_for_difficulty(resource_type, game_difficulty)
+			resources_data[resource_key] = amount
+		player_manager.set_player_resources(player_id, resources_data)
 
 func is_player_active(player_id: int) -> bool:
 	"""Check if a player is active (not OFF)"""
@@ -2419,7 +2439,9 @@ func _should_ai_withdraw_post_siege(attacker: Army, target_region: Region, siege
 		return false
 	var assault_multiplier: float = 1.0
 	var defense_bonus: int = 0
-	var withdraw_threshold: float = GameParameters.AI_WITHDRAW_POWER_THRESHOLD
+	var defender_owner_id: int = target_region.get_region_owner()
+	var ai_vs_human: bool = is_player_computer(attacker.get_player_id()) and is_player_human(defender_owner_id)
+	var withdraw_threshold: float = GameParameters.get_ai_withdraw_power_threshold(get_game_difficulty(), ai_vs_human)
 	if target_region.get_castle_type() != CastleTypeEnum.Type.NONE:
 		assault_multiplier = max(0.0, _compute_attacker_effectiveness_ratio(attacker, siege_payload, target_region))
 		var siege_counts: Dictionary = siege_payload.get("siege_counts", {})
