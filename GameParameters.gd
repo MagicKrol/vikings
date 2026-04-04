@@ -46,10 +46,10 @@ const RECRUIT_RANGED_SHARE_MIN = 0.20          # Gaussian ranged diversion min
 const RECRUIT_RANGED_SHARE_MAX = 0.30          # Gaussian ranged diversion max
 const RECRUIT_GAUSS_SIGMA = 1.6
 const RECRUIT_GAUSS_AMPLITUDE = 10.0
-const RECRUIT_GAUSS_CUTOFF_X = 7.0
+const RECRUIT_GAUSS_CUTOFF_X = 5.0
 const RECRUIT_GAUSS_RATIO_MIN = 0.5
 const RECRUIT_GAUSS_RATIO_MAX = 5.0
-const RECRUIT_GAUSS_MAX_SHIFT = 6.0
+const RECRUIT_GAUSS_MAX_SHIFT = 4.0
 const RECRUIT_SCARCITY_LOW = 0.5               # Gold/recruit lower bound for scarcity bias (legacy)
 const RECRUIT_SCARCITY_HIGH = 1.5              # Gold/recruit upper bound for full scarcity bias (legacy)
 const RECRUIT_UNIT_BOOSTS: Dictionary = {      # Scarcity bias boosts (higher = more likely when gold/recruit is high)
@@ -913,10 +913,35 @@ static func get_resource_range(region_type: RegionTypeEnum.Type, resource_type: 
 
 static func generate_resource_amount(region_type: RegionTypeEnum.Type, resource_type: ResourcesEnum.Type) -> int:
 	"""Generate random resource amount for region/resource combination"""
+	if region_type == RegionTypeEnum.Type.GRASSLAND and resource_type == ResourcesEnum.Type.FOOD:
+		return _roll_weighted_3(45, 35, 1, 2, 3)
+	if region_type == RegionTypeEnum.Type.FOREST and resource_type == ResourcesEnum.Type.WOOD:
+		return _roll_weighted_3(45, 35, 1, 2, 3)
+	if region_type == RegionTypeEnum.Type.HILLS and resource_type == ResourcesEnum.Type.STONE:
+		return _roll_weighted_3(45, 35, 1, 2, 3)
+	if region_type == RegionTypeEnum.Type.FOREST_HILLS and resource_type == ResourcesEnum.Type.WOOD:
+		return _roll_weighted_2(65, 1, 2)
+	if region_type == RegionTypeEnum.Type.FOREST_HILLS and resource_type == ResourcesEnum.Type.STONE:
+		return _roll_weighted_3(45, 35, 0, 1, 2)
+
 	var range_data = get_resource_range(region_type, resource_type)
 	if range_data.min == 0 and range_data.max == 0:
 		return 0
 	return randi_range(range_data.min, range_data.max)
+
+static func _roll_weighted_2(first_weight: int, first_value: int, second_value: int) -> int:
+	var roll: int = randi_range(1, 100)
+	if roll <= first_weight:
+		return first_value
+	return second_value
+
+static func _roll_weighted_3(first_weight: int, second_weight: int, first_value: int, second_value: int, third_value: int) -> int:
+	var roll: int = randi_range(1, 100)
+	if roll <= first_weight:
+		return first_value
+	if roll <= first_weight + second_weight:
+		return second_value
+	return third_value
 
 static func get_starting_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 	"""Get starting amount for a resource type"""

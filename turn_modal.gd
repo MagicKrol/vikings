@@ -58,8 +58,14 @@ func update_turn_display() -> void:
 	# Update button text based on mode
 	if game_manager.is_castle_placing_mode():
 		end_turn_button.text = ""
+		end_turn_button.disabled = false
 	else:
-		end_turn_button.text = tr("END TURN")
+		if game_manager.is_player_ai(current_player):
+			end_turn_button.text = tr("in progress")
+			end_turn_button.disabled = true
+		else:
+			end_turn_button.text = tr("END TURN")
+			end_turn_button.disabled = false
 
 func refresh_from_game_state() -> void:
 	"""Refresh display from current game state"""
