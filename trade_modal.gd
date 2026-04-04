@@ -10,6 +10,12 @@ const RESOURCE_TYPES := [
 const HOLD_DELAY_SECONDS: float = 0.5
 const HOLD_INTERVAL_SECONDS: float = 1.0
 const HOLD_STEP: int = 10
+const BUTTON_MINUS_DARK: Texture2D = preload("res://images/button_minus_dark.png")
+const BUTTON_MINUS_LIGHT: Texture2D = preload("res://images/button_minus_light.png")
+const BUTTON_PLUS_DARK: Texture2D = preload("res://images/button_plus_dark.png")
+const BUTTON_PLUS_LIGHT: Texture2D = preload("res://images/button_plus_light.png")
+const BUTTON_MINUS_DISABLED_PATH: String = "res://images/button_minus_disabled.png"
+const BUTTON_PLUS_DISABLED_PATH: String = "res://images/button_plus_disabled.png"
 
 var ui_manager: UIManager
 var player_manager: PlayerManagerNode
@@ -42,8 +48,12 @@ var _hold_is_buy: bool = true
 var _hold_elapsed: float = 0.0
 var _hold_interval_elapsed: float = 0.0
 var _hold_after_delay_started: bool = false
+var _button_minus_disabled: Texture2D
+var _button_plus_disabled: Texture2D
 
 func _ready() -> void:
+	_button_minus_disabled = _load_texture_from_png(BUTTON_MINUS_DISABLED_PATH)
+	_button_plus_disabled = _load_texture_from_png(BUTTON_PLUS_DISABLED_PATH)
 	ui_manager = get_node("../UIManager") as UIManager
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 	game_manager = get_node("../../GameManager") as GameManager
@@ -123,12 +133,55 @@ func _connect_buttons() -> void:
 
 func _connect_resource_buttons(resource_type: ResourcesEnum.Type) -> void:
 	var section: Dictionary = resource_sections[resource_type]
-	(section["buy_minus"] as TextureRect).gui_input.connect(_on_buy_adjust_input.bind(resource_type, -1))
-	(section["buy_plus"] as TextureRect).gui_input.connect(_on_buy_adjust_input.bind(resource_type, 1))
-	(section["sell_minus"] as TextureRect).gui_input.connect(_on_sell_adjust_input.bind(resource_type, -1))
-	(section["sell_plus"] as TextureRect).gui_input.connect(_on_sell_adjust_input.bind(resource_type, 1))
+	var buy_minus: TextureRect = section["buy_minus"] as TextureRect
+	var buy_plus: TextureRect = section["buy_plus"] as TextureRect
+	var sell_minus: TextureRect = section["sell_minus"] as TextureRect
+	var sell_plus: TextureRect = section["sell_plus"] as TextureRect
+	buy_minus.gui_input.connect(_on_buy_adjust_input.bind(resource_type, -1))
+	buy_plus.gui_input.connect(_on_buy_adjust_input.bind(resource_type, 1))
+	sell_minus.gui_input.connect(_on_sell_adjust_input.bind(resource_type, -1))
+	sell_plus.gui_input.connect(_on_sell_adjust_input.bind(resource_type, 1))
+	buy_minus.mouse_entered.connect(_on_adjust_button_hover.bind(buy_minus, false))
+	buy_minus.mouse_exited.connect(_on_adjust_button_exit.bind(buy_minus, false))
+	buy_plus.mouse_entered.connect(_on_adjust_button_hover.bind(buy_plus, true))
+	buy_plus.mouse_exited.connect(_on_adjust_button_exit.bind(buy_plus, true))
+	sell_minus.mouse_entered.connect(_on_adjust_button_hover.bind(sell_minus, false))
+	sell_minus.mouse_exited.connect(_on_adjust_button_exit.bind(sell_minus, false))
+	sell_plus.mouse_entered.connect(_on_adjust_button_hover.bind(sell_plus, true))
+	sell_plus.mouse_exited.connect(_on_adjust_button_exit.bind(sell_plus, true))
 	(section["buy_button"] as Button).pressed.connect(_on_buy_button_pressed.bind(resource_type))
 	(section["sell_button"] as Button).pressed.connect(_on_sell_button_pressed.bind(resource_type))
+
+func _on_adjust_button_hover(button: TextureRect, is_plus: bool) -> void:
+	if button.mouse_filter == Control.MOUSE_FILTER_IGNORE:
+		return
+	_set_adjust_button_texture(button, is_plus, true, true)
+
+func _on_adjust_button_exit(button: TextureRect, is_plus: bool) -> void:
+	if button.mouse_filter == Control.MOUSE_FILTER_IGNORE:
+		_set_adjust_button_texture(button, is_plus, false, false)
+		return
+	_set_adjust_button_texture(button, is_plus, false, true)
+
+func _set_adjust_button_texture(button: TextureRect, is_plus: bool, is_hover: bool, enabled: bool) -> void:
+	if not enabled:
+		button.texture = _button_plus_disabled if is_plus else _button_minus_disabled
+		return
+	if is_plus:
+		button.texture = BUTTON_PLUS_LIGHT if is_hover else BUTTON_PLUS_DARK
+	else:
+		button.texture = BUTTON_MINUS_LIGHT if is_hover else BUTTON_MINUS_DARK
+
+func _set_adjust_button_enabled(button: TextureRect, enabled: bool, is_plus: bool) -> void:
+	button.mouse_filter = Control.MOUSE_FILTER_STOP if enabled else Control.MOUSE_FILTER_IGNORE
+	_set_adjust_button_texture(button, is_plus, _is_mouse_over_control(button), enabled)
+
+func _is_mouse_over_control(control: Control) -> bool:
+	return control.get_global_rect().has_point(control.get_viewport().get_mouse_position())
+
+func _load_texture_from_png(path: String) -> Texture2D:
+	var image: Image = Image.load_from_file(path)
+	return ImageTexture.create_from_image(image)
 
 func _refresh_state() -> void:
 	_reset_trade_state()
@@ -246,6 +299,10 @@ func _update_after_change(resource_type: ResourcesEnum.Type) -> void:
 	_update_price_display(resource_type)
 	_update_resource_display(resource_type)
 	_update_gold_display()
+	for current_type in RESOURCE_TYPES:
+		if current_type == resource_type:
+			continue
+		_update_adjust_buttons(current_type)
 
 func _update_all_displays() -> void:
 	for resource_type in RESOURCE_TYPES:
@@ -257,9 +314,24 @@ func _update_resource_display(resource_type: ResourcesEnum.Type) -> void:
 	var total_amount = _get_current_resource_total(resource_type)
 	var section: Dictionary = resource_sections[resource_type]
 	(section["owned_label"] as Label).text = str(total_amount)
-	(section["buy_count_label"] as Label).text = str(buy_amounts.get(resource_type, 0))
-	(section["sell_count_label"] as Label).text = str(sell_amounts.get(resource_type, 0))
+	var buy_count: int = buy_amounts.get(resource_type, 0)
+	var sell_count: int = sell_amounts.get(resource_type, 0)
+	(section["buy_count_label"] as Label).text = str(buy_count)
+	(section["sell_count_label"] as Label).text = str(sell_count)
 	_set_label_color(section["owned_label"] as Label, total_amount - base_resources.get(resource_type, 0), false, total_amount)
+	_update_adjust_buttons(resource_type)
+
+func _update_adjust_buttons(resource_type: ResourcesEnum.Type) -> void:
+	var section: Dictionary = resource_sections[resource_type]
+	var total_amount: int = _get_current_resource_total(resource_type)
+	var buy_count: int = buy_amounts.get(resource_type, 0)
+	var sell_count: int = sell_amounts.get(resource_type, 0)
+	var can_buy_more: bool = _calculate_affordable_buy(resource_type, 1, _get_gold_balance()) > 0
+	var can_sell_more: bool = total_amount > 0
+	_set_adjust_button_enabled(section["buy_minus"] as TextureRect, buy_count > 0, false)
+	_set_adjust_button_enabled(section["buy_plus"] as TextureRect, can_buy_more, true)
+	_set_adjust_button_enabled(section["sell_minus"] as TextureRect, sell_count > 0, false)
+	_set_adjust_button_enabled(section["sell_plus"] as TextureRect, can_sell_more, true)
 
 func _update_price_display(resource_type: ResourcesEnum.Type) -> void:
 	var section: Dictionary = resource_sections[resource_type]

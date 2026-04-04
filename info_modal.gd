@@ -310,15 +310,16 @@ func _is_current_region_intel_mode() -> bool:
 func _set_region_action_sections_visible(is_visible: bool) -> void:
 	_region_level_action_section.visible = is_visible
 	_castle_level_action_section.visible = is_visible
-	_mine_action_section.visible = is_visible
 	_raise_army_action_section.visible = is_visible
 	_garrison_action_section.visible = is_visible
+	if not is_visible:
+		_mine_action_section.visible = false
 
 func _apply_region_intel_overrides() -> void:
 	var is_intel_mode: bool = _is_current_region_intel_mode()
-	_set_region_action_sections_visible(not is_intel_mode)
 	if not is_intel_mode:
 		return
+	_set_region_action_sections_visible(false)
 	var mine_status: Label = get_node("RegionPanel/Body/Region/Actions/Mine/Info/Search/SearchStatus") as Label
 	var next_army_name: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName") as Label
 	var garrison_men_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue") as Label
@@ -680,6 +681,8 @@ func _update_region_level_section() -> void:
 	level_value.text = current_region.get_region_level_number()
 
 	var current_level: RegionLevelEnum.Level = current_region.get_region_level()
+	var is_region_max_level: bool = current_level >= RegionLevelEnum.Level.L5
+	_region_level_action_section.visible = not is_region_max_level
 	var target_level: RegionLevelEnum.Level = current_level
 	if current_level < RegionLevelEnum.Level.L5:
 		target_level = current_level + 1
@@ -712,6 +715,12 @@ func _update_castle_section() -> void:
 		elif effective_defense < base_defense:
 			defense_value.add_theme_color_override("font_color", GameParameters.UI_COLOR_WOUNDED)
 
+	var current_castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
+	var next_castle_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_castle_type)
+	var is_castle_max_level: bool = current_castle_type != CastleTypeEnum.Type.NONE and next_castle_type == CastleTypeEnum.Type.NONE
+	var should_hide_castle_actions: bool = is_castle_max_level and not current_region.is_castle_under_construction() and not current_region.is_castle_under_repair() and not current_region.has_castle_damage()
+	_castle_level_action_section.visible = not should_hide_castle_actions
+
 	_update_construction_status()
 
 	var cost: Dictionary = _get_castle_cost_for_display()
@@ -723,6 +732,7 @@ func _update_castle_section() -> void:
 	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Wood", wood_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Stone", stone_cost)
 	_set_cost_value("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Iron", iron_cost)
+	_update_castle_construction_time_resource()
 
 func _get_castle_cost_for_display() -> Dictionary:
 	var cost: Dictionary = {}
@@ -738,6 +748,25 @@ func _get_castle_cost_for_display() -> Dictionary:
 	if next_type == CastleTypeEnum.Type.NONE:
 		return cost
 	return GameParameters.get_castle_building_cost(next_type)
+
+func _update_castle_construction_time_resource() -> void:
+	var gold_container: HBoxContainer = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Gold")
+	var wood_container: HBoxContainer = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Wood")
+	var stone_container: HBoxContainer = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Stone")
+	var iron_container: HBoxContainer = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Iron")
+	var time_container: HBoxContainer = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Time")
+	var time_value: Label = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Time/Value")
+	var is_under_construction: bool = current_region.is_castle_under_construction()
+	if is_under_construction:
+		gold_container.visible = false
+		wood_container.visible = false
+		stone_container.visible = false
+		iron_container.visible = false
+		time_container.visible = true
+		var turns_left: int = current_region.get_castle_build_turns_remaining()
+		time_value.text = str(turns_left)
+		return
+	time_container.visible = false
 
 func _update_raise_army_section() -> void:
 	"""Update raise army label and cost"""
@@ -880,6 +909,8 @@ func _update_region_resource_values() -> void:
 func _update_construction_status() -> void:
 	"""Update construction status label"""
 	var build_button = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/BuildButton") as Button
+	var current_castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
+	var next_castle_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_castle_type)
 	if current_region.is_castle_under_construction():
 		build_button.text = tr("Building")
 		build_button.disabled = true
@@ -890,16 +921,15 @@ func _update_construction_status() -> void:
 		build_button.text = tr("Repair")
 		var can_repair: bool = _can_player_afford_repair() and current_region.has_castle()
 		build_button.disabled = not can_repair
-	elif current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+	elif current_castle_type == CastleTypeEnum.Type.NONE:
 		build_button.text = tr("Build")
 		build_button.disabled = not (_can_player_afford_any_castle() and current_region.can_build_castle())
 	else:
 		build_button.text = tr("Upgrade")
-		var next_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_region.get_castle_type())
-		if next_type == CastleTypeEnum.Type.NONE:
+		if next_castle_type == CastleTypeEnum.Type.NONE:
 			build_button.disabled = true
 		else:
-			build_button.disabled = not (_can_player_afford_castle(next_type) and current_region.can_upgrade_castle())
+			build_button.disabled = not (_can_player_afford_castle(next_castle_type) and current_region.can_upgrade_castle())
 
 func _update_mine_status() -> void:
 	"""Update mine status label"""
@@ -908,6 +938,8 @@ func _update_mine_status() -> void:
 	var gold_cost: int = GameParameters.get_ore_search_cost()
 	_set_cost_value("RegionPanel/Body/Region/Actions/Mine/ActionSection/Resources/Gold", gold_cost)
 	var can_search_region: bool = GameParameters.can_search_for_ore_in_region(current_region.get_region_type())
+	var has_searches_remaining: bool = current_region.get_ore_search_attempts_remaining() > 0
+	_mine_action_section.visible = can_search_region and has_searches_remaining
 	var can_search: bool = current_region.can_search_for_ore()
 	var can_afford: bool = _can_player_afford_ore_search()
 	_search_ore_button.disabled = not (can_search_region and can_search and can_afford)

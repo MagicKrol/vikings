@@ -27,10 +27,12 @@ const UNIT_SECTIONS := [
 	{"path": "Recruitment/HBoxContainer/Body/Units/ThirdRow/RoyalGuard", "type": SoldierTypeEnum.Type.ROYAL_GUARD}
 ]
 
-const BUTTON_MINUS_DARK = preload("res://images/button_minus_dark.png")
-const BUTTON_MINUS_LIGHT = preload("res://images/button_minus_light.png")
-const BUTTON_PLUS_DARK = preload("res://images/button_plus_dark.png")
-const BUTTON_PLUS_LIGHT = preload("res://images/button_plus_light.png")
+const BUTTON_MINUS_DARK: Texture2D = preload("res://images/button_minus_dark.png")
+const BUTTON_MINUS_LIGHT: Texture2D = preload("res://images/button_minus_light.png")
+const BUTTON_PLUS_DARK: Texture2D = preload("res://images/button_plus_dark.png")
+const BUTTON_PLUS_LIGHT: Texture2D = preload("res://images/button_plus_light.png")
+const BUTTON_MINUS_DISABLED_PATH: String = "res://images/button_minus_disabled.png"
+const BUTTON_PLUS_DISABLED_PATH: String = "res://images/button_plus_disabled.png"
 
 const ICON_GOLD = preload("res://images/icons/new_coin.png")
 const ICON_WOOD = preload("res://images/icons/new_forest.png")
@@ -79,6 +81,8 @@ var _hold_delta: int = 0
 var _hold_elapsed: float = 0.0
 var _hold_interval_elapsed: float = 0.0
 var _hold_after_delay_started: bool = false
+var _button_minus_disabled: Texture2D
+var _button_plus_disabled: Texture2D
 
 func _setup_references():
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -95,6 +99,8 @@ func _setup_references():
 		tutorial_manager = game_manager.get_tutorial_manager()
 
 func _ready():
+	_button_minus_disabled = _load_texture_from_png(BUTTON_MINUS_DISABLED_PATH)
+	_button_plus_disabled = _load_texture_from_png(BUTTON_PLUS_DISABLED_PATH)
 	# Setup base references but skip button_container setup
 	_setup_references()
 	visible = false
@@ -241,12 +247,20 @@ func _on_adjust_button_input(event: InputEvent, unit_type: SoldierTypeEnum.Type,
 			_stop_hold()
 
 func _on_adjust_button_hover(button: TextureRect, is_plus: bool) -> void:
-	_set_adjust_button_texture(button, is_plus, true)
+	if button.mouse_filter == Control.MOUSE_FILTER_IGNORE:
+		return
+	_set_adjust_button_texture(button, is_plus, true, true)
 
 func _on_adjust_button_exit(button: TextureRect, is_plus: bool) -> void:
-	_set_adjust_button_texture(button, is_plus, false)
+	if button.mouse_filter == Control.MOUSE_FILTER_IGNORE:
+		_set_adjust_button_texture(button, is_plus, false, false)
+		return
+	_set_adjust_button_texture(button, is_plus, false, true)
 
-func _set_adjust_button_texture(button: TextureRect, is_plus: bool, is_hover: bool) -> void:
+func _set_adjust_button_texture(button: TextureRect, is_plus: bool, is_hover: bool, enabled: bool) -> void:
+	if not enabled:
+		button.texture = _button_plus_disabled if is_plus else _button_minus_disabled
+		return
 	if is_plus:
 		button.texture = BUTTON_PLUS_LIGHT if is_hover else BUTTON_PLUS_DARK
 	else:
@@ -255,8 +269,13 @@ func _set_adjust_button_texture(button: TextureRect, is_plus: bool, is_hover: bo
 func _is_mouse_over_control(control: Control) -> bool:
 	return control.get_global_rect().has_point(control.get_viewport().get_mouse_position())
 
-func _set_adjust_button_enabled(button: TextureRect, enabled: bool) -> void:
+func _set_adjust_button_enabled(button: TextureRect, enabled: bool, is_plus: bool) -> void:
 	button.mouse_filter = Control.MOUSE_FILTER_STOP if enabled else Control.MOUSE_FILTER_IGNORE
+	_set_adjust_button_texture(button, is_plus, _is_mouse_over_control(button), enabled)
+
+func _load_texture_from_png(path: String) -> Texture2D:
+	var image: Image = Image.load_from_file(path)
+	return ImageTexture.create_from_image(image)
 
 func _start_hold(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	_hold_active = true
@@ -458,19 +477,16 @@ func _update_unit_section(section_path: String, unit_type: SoldierTypeEnum.Type,
 		resource1_icon.visible = false
 		resource1_cost_label.visible = false
 	
-	_set_adjust_button_texture(button_minus, false, _is_mouse_over_control(button_minus))
-	_set_adjust_button_texture(button_plus, true, _is_mouse_over_control(button_plus))
-	
 	if not is_available:
-		_set_adjust_button_enabled(button_minus, false)
-		_set_adjust_button_enabled(button_plus, false)
+		_set_adjust_button_enabled(button_minus, false, false)
+		_set_adjust_button_enabled(button_plus, false, true)
 		recruit_button.disabled = true
 		count_label.text = "0"
 		return
 	
-	var can_hire_one = _can_hire_amount(unit_type, 1)
-	_set_adjust_button_enabled(button_plus, can_hire_one)
-	_set_adjust_button_enabled(button_minus, count_to_hire > 0)
+	var can_hire_one: bool = _can_hire_amount(unit_type, 1)
+	_set_adjust_button_enabled(button_plus, can_hire_one, true)
+	_set_adjust_button_enabled(button_minus, count_to_hire > 0, false)
 	recruit_button.disabled = count_to_hire <= 0
 
 func _update_total_row() -> void:

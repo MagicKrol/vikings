@@ -18,6 +18,8 @@ var quick_resolve_button: Button
 var message_label: Label
 var defender_defense_value: Label
 var buttons_margin: MarginContainer
+var progress_bar_army1: ProgressBar
+var progress_bar_army2: ProgressBar
 var siege_panel: SiegePanel
 var siege_payload: Dictionary = {}
 
@@ -58,6 +60,17 @@ var tutorial_manager: TutorialManager = null
 var speed_modal: SpeedModal = null
 var assault_ratio_override: float = -1.0
 var _is_siege_battle: bool = false
+var _power_progress_style_background: StyleBoxTexture
+var _power_progress_style_green: StyleBoxTexture
+var _power_progress_style_yellow: StyleBoxTexture
+var _power_progress_style_red: StyleBoxTexture
+var _initial_attacker_power: int = 0
+var _initial_defender_power: int = 0
+
+const POWER_PROGRESS_TEX_EMPTY: Texture2D = preload("res://images/progressbar_empty.png")
+const POWER_PROGRESS_TEX_GREEN: Texture2D = preload("res://images/progressbar_green.png")
+const POWER_PROGRESS_TEX_YELLOW: Texture2D = preload("res://images/progressbar_yellow.png")
+const POWER_PROGRESS_TEX_RED: Texture2D = preload("res://images/progressbar_red.png")
 
 func _ready():
 	# Get references to static UI elements from updated scene structure
@@ -77,7 +90,11 @@ func _ready():
 	message_label = get_node("Battle/VBoxContainer/MessageSection/HBoxContainer/Message")
 	defender_defense_value = get_node("Battle/VBoxContainer/HBoxContainer2/DefenderDefenseValue")
 	buttons_margin = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/ButtonsMargin") as MarginContainer
+	progress_bar_army1 = get_node("ProgressBarArmy1") as ProgressBar
+	progress_bar_army2 = get_node("ProgressBarArmy2") as ProgressBar
 	siege_panel = get_node("Siege") as SiegePanel
+	_initialize_power_bar_styles()
+	_reset_army_power_bars()
 
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
@@ -160,6 +177,7 @@ func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> 
 	if speed_modal:
 		speed_modal.set_context("battle")
 		speed_modal.visible = true
+	_reset_army_power_bars()
 
 	# Show initial display BEFORE starting battle
 	_apply_siege_state()
@@ -200,6 +218,7 @@ func hide_modal() -> void:
 	current_defender_composition.clear()
 	assault_ratio_override = -1.0
 	_set_message("")
+	_reset_army_power_bars()
 
 	# Reset withdrawal state
 	withdrawal_in_progress = false
@@ -253,6 +272,7 @@ func _update_display() -> void:
 		_update_defender_units()
 		
 		_update_action_button()
+	_update_army_power_bars()
 
 func _build_siege_view_state_from_payload(siege_payload: Dictionary) -> Dictionary:
 	var payload_state: Dictionary = siege_payload.get("siege_view_state", {})
@@ -570,11 +590,15 @@ func _run_battle_simulation() -> void:
 	# Store initial compositions for battle summary
 	initial_attacker_comp = current_attacker_composition.duplicate()
 	initial_defender_comp = current_defender_composition.duplicate()
+	# Power bars baseline must match the exact live starting compositions.
+	_initial_attacker_power = _compute_dict_power(current_attacker_composition)
+	_initial_defender_power = _compute_dict_power(current_defender_composition)
 	# Add recruits to initial defender composition
 	var summary_recruits = defending_region.get_base_available_recruits()
 	_defender_start_recruits = summary_recruits
 	if summary_recruits > 0:
 		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
+	_update_army_power_bars()
 	
 	# During battle, show withdraw functionality
 	_update_assault_value()
@@ -914,6 +938,94 @@ func _update_assault_value() -> void:
 		var ratio := bm.get_attacker_effectiveness_ratio()
 		percent = int(round(ratio * 100.0))
 	assault_value_label.text = str(percent) + "%"
+
+func _initialize_power_bar_styles() -> void:
+	_power_progress_style_background = StyleBoxTexture.new()
+	_power_progress_style_background.texture = POWER_PROGRESS_TEX_EMPTY
+	_power_progress_style_green = StyleBoxTexture.new()
+	_power_progress_style_green.texture = POWER_PROGRESS_TEX_GREEN
+	_power_progress_style_yellow = StyleBoxTexture.new()
+	_power_progress_style_yellow.texture = POWER_PROGRESS_TEX_YELLOW
+	_power_progress_style_red = StyleBoxTexture.new()
+	_power_progress_style_red.texture = POWER_PROGRESS_TEX_RED
+
+func _reset_army_power_bars() -> void:
+	_initial_attacker_power = 0
+	_initial_defender_power = 0
+	_update_power_bar(progress_bar_army1, 100)
+	_update_power_bar(progress_bar_army2, 100)
+
+func _update_army_power_bars() -> void:
+	var attacker_composition: Dictionary = _get_attacker_power_composition()
+	var defender_composition: Dictionary = _get_defender_power_composition()
+	var attacker_power: int = _compute_dict_power(attacker_composition)
+	var defender_power: int = _compute_dict_power(defender_composition)
+	var attacker_percent: int = _compute_power_percent(attacker_power, _initial_attacker_power)
+	var defender_percent: int = _compute_power_percent(defender_power, _initial_defender_power)
+	_update_power_bar(progress_bar_army1, attacker_percent)
+	_update_power_bar(progress_bar_army2, defender_percent)
+
+func _get_attacker_power_composition() -> Dictionary:
+	if battle_in_progress:
+		return current_attacker_composition
+	if battle_report != null:
+		return battle_report.final_attacker
+	if not initial_attacker_comp.is_empty():
+		return initial_attacker_comp
+	var composition: Dictionary = {}
+	var army_comp: ArmyComposition = attacking_army.get_composition()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count: int = army_comp.get_soldier_count(unit_type)
+		if count > 0:
+			composition[unit_type] = count
+	return composition
+
+func _get_defender_power_composition() -> Dictionary:
+	if battle_in_progress:
+		return current_defender_composition
+	if battle_report != null:
+		return battle_report.final_defender
+	if not initial_defender_comp.is_empty():
+		return initial_defender_comp
+	var composition: Dictionary = {}
+	var garrison_comp: ArmyComposition = defending_region.get_garrison()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var count: int = garrison_comp.get_soldier_count(unit_type)
+		if count > 0:
+			composition[unit_type] = count
+	var base_recruits: int = defending_region.get_base_available_recruits()
+	if base_recruits > 0:
+		composition[SoldierTypeEnum.Type.PEASANTS] = composition.get(SoldierTypeEnum.Type.PEASANTS, 0) + base_recruits
+	return composition
+
+func _compute_dict_power(comp_dict: Dictionary) -> int:
+	var total_power: int = 0
+	for unit_type in comp_dict.keys():
+		var qty: int = int(comp_dict[unit_type])
+		if qty <= 0:
+			continue
+		total_power += int(GameParameters.get_unit_stat(unit_type, "power")) * qty
+	return total_power
+
+func _compute_power_percent(current_power: int, initial_power: int) -> int:
+	if initial_power <= 0:
+		return 100
+	var value: int = int(round((float(current_power) / float(initial_power)) * 100.0))
+	return clampi(value, 0, 100)
+
+func _update_power_bar(progress_bar: ProgressBar, percent: int) -> void:
+	var clamped_percent: int = clampi(percent, 0, 100)
+	progress_bar.min_value = 0
+	progress_bar.max_value = 100
+	progress_bar.value = clamped_percent
+	progress_bar.add_theme_stylebox_override("background", _power_progress_style_background)
+	var fill_style: StyleBoxTexture = _power_progress_style_red
+	if clamped_percent >= 67:
+		fill_style = _power_progress_style_green
+	elif clamped_percent >= 34:
+		fill_style = _power_progress_style_yellow
+	progress_bar.add_theme_stylebox_override("fill", fill_style)
+	progress_bar.queue_redraw()
 
 func _update_defender_header() -> void:
 	var region_name = defending_region.get_region_name()

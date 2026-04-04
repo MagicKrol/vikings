@@ -26,6 +26,7 @@ var rams_minus: Button
 var treb_plus: Button
 var treb_minus: Button
 var message_label: Label
+var battle_bottom_margin: MarginContainer
 
 var siege_panel: Control
 var walls_breached_value: Label
@@ -63,6 +64,8 @@ const TREBUCHET_SHOTS: int = 4
 const TREBUCHET_HIT_CHANCE: float = 0.5
 const BOMBARD_TEXT := "Bombard"
 const CONTINUE_TEXT := "Attack"
+const BATTLE_BOTTOM_MARGIN_WITH_SIEGE_Y: float = 90.0
+const BATTLE_BOTTOM_MARGIN_WITHOUT_SIEGE_Y: float = 118.0
 
 var siege_points_total: int = 0
 var siege_points_spent: int = 0
@@ -96,6 +99,7 @@ func _ready():
 	treb_plus = get_node("Battle/VBoxContainer/Body/SiegeSection/Available/Trebuchets/Button1")
 	treb_minus = get_node("Battle/VBoxContainer/Body/SiegeSection/Available/Trebuchets/Button1m")
 	message_label = get_node("Battle/VBoxContainer/MessageSection/HBoxContainer/Message")
+	battle_bottom_margin = get_node("Battle/VBoxContainer/MarginContainer4") as MarginContainer
 	game_manager = get_node("../../GameManager") as GameManager
 	ui_manager = get_node("../UIManager") as UIManager
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -281,6 +285,7 @@ func _update_labels() -> void:
 func _update_siege_visibility(defense_bonus: int) -> void:
 	var show_siege := defense_bonus > 0
 	if show_siege:
+		battle_bottom_margin.custom_minimum_size = Vector2(0.0, BATTLE_BOTTOM_MARGIN_WITH_SIEGE_Y)
 		if siege_panel:
 			siege_panel.visible = true
 		siege_available.visible = true
@@ -288,6 +293,7 @@ func _update_siege_visibility(defense_bonus: int) -> void:
 		siege_points_text.visible = true
 		siege_points_value.visible = true
 	else:
+		battle_bottom_margin.custom_minimum_size = Vector2(0.0, BATTLE_BOTTOM_MARGIN_WITHOUT_SIEGE_Y)
 		if siege_panel:
 			siege_panel.visible = false
 		siege_available.visible = false

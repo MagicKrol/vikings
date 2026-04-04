@@ -1088,7 +1088,7 @@ custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 
 [node name="MarginContainer4" type="MarginContainer" parent="Battle/VBoxContainer"]
-custom_minimum_size = Vector2(0, 118)
+custom_minimum_size = Vector2(0, 90)
 layout_mode = 2
 
 [node name="MessageSection" type="VBoxContainer" parent="Battle/VBoxContainer"]

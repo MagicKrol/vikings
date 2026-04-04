@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=37 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="3_ewtj7"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="11_21spt"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="12_8s2uy"]
 [ext_resource type="Texture2D" uid="uid://4f1lhlu6nlp2" path="res://images/icons/castle_icon (4).png" id="13_4jjrl"]
+[ext_resource type="Texture2D" uid="uid://bd6s1e8mr3cpa" path="res://images/icons/time.png" id="13_gf31p"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="14_1btl1"]
 [ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="14_a8m1b"]
 [ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="14_o0xnj"]
@@ -295,7 +296,6 @@ custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Promote"
 
@@ -370,6 +370,32 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "30"
 
+[node name="Time" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("13_gf31p")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="MarginContainer2" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
+
 [node name="CastleLevel" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions"]
 custom_minimum_size = Vector2(5, 5)
 layout_mode = 2
@@ -421,7 +447,6 @@ custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Upgrade"
 
@@ -511,6 +536,32 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "30"
 
+[node name="Time" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("13_gf31p")
+expand_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
+[node name="Value" type="Label" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(25, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "10"
+
+[node name="MarginContainer2" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection/Resources/Time"]
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
+
 [node name="Mine" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions"]
 custom_minimum_size = Vector2(5, 5)
 layout_mode = 2
@@ -555,7 +606,6 @@ custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Search Ore"
 
@@ -629,7 +679,6 @@ custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Raise Army"
 
@@ -1039,7 +1088,6 @@ offset_bottom = 31.0
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 theme_override_font_sizes/font_size = 16
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Selected"
 
@@ -1161,7 +1209,6 @@ offset_bottom = 31.0
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 theme_override_font_sizes/font_size = 16
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Selected"
 
@@ -1280,7 +1327,6 @@ offset_bottom = 31.0
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 theme_override_font_sizes/font_size = 16
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Selected"
 
@@ -1399,7 +1445,6 @@ offset_bottom = 31.0
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 theme_override_font_sizes/font_size = 16
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Selected"
 
@@ -1518,7 +1563,6 @@ offset_bottom = 31.0
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 theme_override_font_sizes/font_size = 16
-toggle_mode = true
 button_group = SubResource("ButtonGroup_l3w7x")
 text = "Selected"
 

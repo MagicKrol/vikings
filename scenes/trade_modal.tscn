@@ -842,7 +842,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -948,7 +948,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1063,7 +1063,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -1169,7 +1169,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1289,7 +1289,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -1395,7 +1395,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1510,7 +1510,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -1616,7 +1616,7 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = true
+toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
