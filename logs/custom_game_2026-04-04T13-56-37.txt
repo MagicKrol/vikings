@@ -1,0 +1,1231 @@
+AI Log File: custom_game
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 150
+Food: 100
+Wood: 30
+Iron: 20
+Stone: 20
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.714
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Keep Blackbury [Power: 6 - P:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (turn_1)
+
+Economy: Raise Army Reserve: added:20 bank:20 cap:20
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Economy: Raise Army Reserve: released:20 bank:0 cap:20 reason:no_candidate
+
+Economy: Army hires: Army I at Blackbury: 20 units (P: 5, S: 7, A: 5, SW: 2, H: 1) - gold spent: 44, recruits left: 78, Army II at Blackbury: 20 units (P: 6, S: 6, A: 6, SW: 1, H: 1) - gold spent: 43, recruits left: 58, Army III at Blackbury: 20 units (P: 5, S: 8, A: 4, SW: 2, H: 1) - gold spent: 43, recruits left: 38
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Blackbury: level=0 total=0 threats=0
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Akrhavn (#214) | total:68.4 (strategy:58.4, neighbor:10.0, distance_status:True, score:68.4<[100.0])
+- Reykoy (#201) | total:47.6 (strategy:47.6, neighbor:0.0, distance_status:True, score:47.6<[100.0])
+- Hvitnes (#155) | total:25.3 (strategy:20.3, neighbor:5.0, distance_status:False, score:25.3<[100.0])
+- Oakthorpe (#172) | total:4.3 (strategy:4.3, neighbor:0.0, distance_status:False, score:4.3<[100.0])
+- Vatnberg (#112) | total:1.0 (strategy:1.0, neighbor:0.0, distance_status:False, score:1.0<[100.0])
+- Kirkholme (#215) | total:-6.4 (strategy:3.6, neighbor:-10.0, distance_status:True, score:-6.4<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Blackbury (#171) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region actions: Upgrading Blackbury to Duchy (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Raider) -------------
+Region: Blackbury
+Army II [Power: 183, E: 100 - P:26, S:16, A:11, SW:6, H:1, K:1]
+DecisionTree: Army II -> castle_garrison_merge (no_nearby_threats)
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 4 candidates:
+Candidate 1: Southholme (#191), score: 45.6 (mp_cost: 4, resources: 7.5, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.0)
+Candidate 2: Reykley (#156), score: 33.3 (mp_cost: 3, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 3: Stonefell (#216), score: 27.1 (mp_cost: 5, resources: 1.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 4: Riverhaug (#245), score: 15.9 (mp_cost: 5, resources: 2.0, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+DecisionTree: Army II -> role_raider_expand (to Southholme)
+[MOVEMENT]
+Best target: Southholme (no enemy)
+Moves to Reykoy [MP left: 3, Vigor: 95%]
+Moves to Southholme [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Southholme
+Battle started
+Attacker: Army II [Power: 189 - P:29, S:16, A:11, SW:6, H:1, K:1]
+Defender Garrison (unknown) [Power: 18 - P:9]
+Defender Recruits (Southholme) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 182 - P:27, S:15, A:11, SW:6, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Southholme (unknown) [Power: 0 - none]
+
+Moving to Southholme [MP left: 1, Vigor: 85%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 7 candidates:
+Candidate 1: Redham (#225), score: 71.1 (mp_cost: 4, resources: 21.2, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Candidate 2: Southfjord (#188), score: 43.5 (mp_cost: 2, resources: 3.8, population: 2.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 10.0)
+Candidate 3: Ashmere (#146), score: 42.9 (mp_cost: 2, resources: 7.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 4: Reykley (#156), score: 33.7 (mp_cost: 2, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 5: Stonefell (#216), score: 23.8 (mp_cost: 8, resources: 1.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 6: Bergwich (#192), score: 21.2 (mp_cost: 3, resources: 2.0, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.5)
+Candidate 7: Riverhaug (#245), score: 13.2 (mp_cost: 8, resources: 2.0, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+DecisionTree: Army II -> role_raider_expand (to Southfjord)
+[MOVEMENT]
+Best target: Southfjord (no enemy)
+Out of movement points before reaching Southfjord
+Movement blocked near Southfjord
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY III (Raider) -------------
+Region: Blackbury
+Army III [Power: 183, E: 100 - P:25, S:18, A:9, SW:7, H:1, K:1]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Top 5 candidates:
+Candidate 1: Southfjord (#188), score: 45.3 (mp_cost: 5, resources: 3.8, population: 2.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 10.0)
+Candidate 2: Ashmere (#146), score: 38.6 (mp_cost: 5, resources: 7.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 3: Reykley (#156), score: 31.2 (mp_cost: 3, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 4: Stonefell (#216), score: 26.6 (mp_cost: 5, resources: 1.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 5: Riverhaug (#245), score: 13.2 (mp_cost: 5, resources: 2.0, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+DecisionTree: Army III -> role_raider_expand (to Southfjord)
+[MOVEMENT]
+Best target: Southfjord (no enemy)
+Moves to Reykoy [MP left: 3, Vigor: 95%]
+Moves to Southholme [MP left: 2, Vigor: 90%]
+Moves to Southfjord [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Southfjord
+Battle started
+Attacker: Army III [Power: 183 - P:25, S:18, A:9, SW:7, H:1, K:1]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Southfjord) (unknown) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army III [Power: 181 - P:24, S:18, A:9, SW:7, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Southfjord (unknown) [Power: 0 - none]
+
+Moving to Southfjord [MP left: 0, Vigor: 80%]
+-------------- ARMY I (Raider) -------------
+Region: Blackbury
+Army I [Power: 184, E: 100 - P:25, S:17, A:10, SW:7, H:1, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_expansion_role_raider (post_threat)
+Top 4 candidates:
+Candidate 1: Ashmere (#146), score: 35.6 (mp_cost: 5, resources: 7.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 2: Stonefell (#216), score: 29.5 (mp_cost: 5, resources: 1.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 3: Reykley (#156), score: 29.0 (mp_cost: 3, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 4: Riverhaug (#245), score: 12.6 (mp_cost: 5, resources: 2.0, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+DecisionTree: Army I -> role_raider_expand (to Ashmere)
+[MOVEMENT]
+Best target: Ashmere (no enemy)
+Moves to Reykoy [MP left: 3, Vigor: 95%]
+Moves to Southholme [MP left: 2, Vigor: 90%]
+Moves to Ashmere [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Ashmere
+Battle started
+Attacker: Army I [Power: 184 - P:25, S:17, A:10, SW:7, H:1, K:1]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Ashmere) (unknown) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army I [Power: 184 - P:25, S:17, A:10, SW:7, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Ashmere (unknown) [Power: 0 - none]
+
+Moving to Ashmere [MP left: 0, Vigor: 80%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 70
+Wood: 5
+Iron: 20
+Stone: 20
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 150
+Food: 100
+Wood: 30
+Iron: 20
+Stone: 20
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.875
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Keep Hvitford [Power: 14 - P:7]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (turn_1)
+
+Economy: Raise Army Reserve: added:20 bank:20 cap:20
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=63, gold=20) vs thr=0.50; Frontier2Army=2.33
+
+Economy: Army hires: Army I at Hvitford: 21 units (P: 8, S: 5, A: 5, SW: 1, H: 2) - gold spent: 44, recruits left: 104, Army II at Hvitford: 21 units (P: 9, S: 4, A: 6, H: 2) - gold spent: 43, recruits left: 83, Army III at Hvitford: 21 units (P: 9, S: 4, A: 6, H: 2) - gold spent: 43, recruits left: 63
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Hvitford: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (0 vs 30); frontier pressure too low (2.33 vs 3.00) (Score: 0.00 (r=8, a=3, dist=0.0, rec=63, gold=20) vs thr=0.50; Frontier2Army=2.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Akroy (#202) | total:63.2 (strategy:63.2, neighbor:0.0, distance_status:True, score:63.2<[100.0])
+- Greenfjell (#183) | total:35.8 (strategy:30.8, neighbor:5.0, distance_status:True, score:35.8<[100.0])
+- Hafnthwaite (#212) | total:28.4 (strategy:18.4, neighbor:10.0, distance_status:True, score:28.4<[100.0])
+- Riverby (#194) | total:19.2 (strategy:14.2, neighbor:5.0, distance_status:False, score:19.2<[100.0])
+- Redbury (#184) | total:18.0 (strategy:13.0, neighbor:5.0, distance_status:False, score:18.0<[100.0])
+- Hellaham (#186) | total:12.5 (strategy:7.5, neighbor:5.0, distance_status:False, score:12.5<[100.0])
+- Saintwich (#242) | total:7.3 (strategy:12.3, neighbor:-5.0, distance_status:True, score:7.3<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Hvitford (#222) | total:100.0 (recruits:100.0, distance:100.0, dist:5, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY III (Raider) -------------
+Region: Hvitford
+Army III [Power: 184, E: 100 - P:29, S:14, A:11, SW:5, H:2, K:1]
+DecisionTree: Army III -> castle_garrison_merge (no_nearby_threats)
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Top 7 candidates:
+Candidate 1: Riverhavn (#140), score: 45.1 (mp_cost: 3, resources: 11.2, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 2: Eastholme (#159), score: 41.7 (mp_cost: 3, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 3: Osdal (#235), score: 37.3 (mp_cost: 4, resources: 7.5, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+Candidate 4: Bergvik (#160), score: 36.6 (mp_cost: 3, resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 5: Hvitfjord (#211), score: 34.9 (mp_cost: 3, resources: 3.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 6: Greenthwaite (#205), score: 32.4 (mp_cost: 3, resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 7: Kingwich (#237), score: 26.6 (mp_cost: 4, resources: 2.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+DecisionTree: Army III -> role_raider_expand (to Riverhavn)
+[MOVEMENT]
+Best target: Riverhavn (no enemy)
+Moves to Redbury [MP left: 4, Vigor: 95%]
+Moves to Riverhavn [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Riverhavn
+Battle started
+Attacker: Army III [Power: 198 - P:36, S:14, A:11, SW:5, H:2, K:1]
+Defender Garrison (unknown) [Power: 24 - P:12]
+Defender Recruits (Riverhavn) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army III [Power: 196 - P:35, S:14, A:11, SW:5, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Riverhavn (unknown) [Power: 0 - none]
+
+Moving to Riverhavn [MP left: 2, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Top 6 candidates:
+Candidate 1: Eastholme (#159), score: 40.1 (mp_cost: 6, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 2: Osdal (#235), score: 35.1 (mp_cost: 7, resources: 7.5, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+Candidate 3: Bergvik (#160), score: 34.5 (mp_cost: 6, resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 4: Hvitfjord (#211), score: 33.8 (mp_cost: 4, resources: 3.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 5: Greenthwaite (#205), score: 31.7 (mp_cost: 6, resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 6: Kingwich (#237), score: 25.5 (mp_cost: 6, resources: 2.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+DecisionTree: Army III -> role_raider_expand (to Hvitfjord)
+[MOVEMENT]
+Best target: Hvitfjord (no enemy)
+Moves to Redbury [MP left: 1, Vigor: 80%]
+Moves to Greenfjell [MP left: 0, Vigor: 75%]
+Out of movement points before reaching Hvitfjord
+Out of movement points before reaching Greenfjell
+-------------- ARMY I (Raider) -------------
+Region: Hvitford
+Army I [Power: 185, E: 100 - P:28, S:15, A:10, SW:6, H:2, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_expansion_role_raider (post_threat)
+Top 6 candidates:
+Candidate 1: Eastholme (#159), score: 41.1 (mp_cost: 3, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 2: Bergvik (#160), score: 37.3 (mp_cost: 3, resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 3: Osdal (#235), score: 37.1 (mp_cost: 4, resources: 7.5, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+Candidate 4: Greenthwaite (#205), score: 36.4 (mp_cost: 3, resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 5: Hvitfjord (#211), score: 36.1 (mp_cost: 3, resources: 3.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 6: Kingwich (#237), score: 27.2 (mp_cost: 4, resources: 2.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+DecisionTree: Army I -> role_raider_expand (to Eastholme)
+[MOVEMENT]
+Best target: Eastholme (no enemy)
+Moves to Akroy [MP left: 4, Vigor: 95%]
+Moves to Eastholme [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Eastholme
+Battle started
+Attacker: Army I [Power: 185 - P:28, S:15, A:10, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 8 - P:4]
+Defender Recruits (Eastholme) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army I [Power: 185 - P:28, S:15, A:10, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Eastholme (unknown) [Power: 0 - none]
+
+Moving to Eastholme [MP left: 2, Vigor: 85%]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_expansion_role_raider (post_threat)
+Top 4 candidates:
+Candidate 1: Torchester (#161), score: 47.3 (mp_cost: 2, resources: 11.2, population: 5.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.3)
+Candidate 2: Vatndon (#204), score: 42.3 (mp_cost: 2, resources: 7.5, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Bergvik (#160), score: 36.7 (mp_cost: 2, resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 4: Greenthwaite (#205), score: 35.6 (mp_cost: 2, resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+DecisionTree: Army I -> role_raider_expand (to Torchester)
+[MOVEMENT]
+Best target: Torchester (no enemy)
+Moves to Torchester [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Torchester
+Battle started
+Attacker: Army I [Power: 185 - P:28, S:15, A:10, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 18 - P:9]
+Defender Recruits (Torchester) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army I [Power: 182 - P:28, S:14, A:10, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Torchester (unknown) [Power: 0 - none]
+
+Moving to Torchester [MP left: 0, Vigor: 75%]
+-------------- ARMY II (Raider) -------------
+Region: Hvitford
+Army II [Power: 184, E: 100 - P:29, S:14, A:11, SW:5, H:2, K:1]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 8 candidates:
+Candidate 1: Northmere (#162), score: 40.8 (mp_cost: 5, resources: 11.2, population: 4.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 2: Vatndon (#204), score: 40.6 (mp_cost: 4, resources: 7.5, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Osdal (#235), score: 38.1 (mp_cost: 4, resources: 7.5, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+Candidate 4: Greenthwaite (#205), score: 35.5 (mp_cost: 3, resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 5: Bergvik (#160), score: 34.6 (mp_cost: 3, resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 6: Hvitfjord (#211), score: 34.3 (mp_cost: 3, resources: 3.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 7: Southford (#203), score: 31.5 (mp_cost: 5, resources: 2.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 8: Kingwich (#237), score: 25.1 (mp_cost: 4, resources: 2.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+DecisionTree: Army II -> role_raider_expand (to Northmere)
+[MOVEMENT]
+Best target: Northmere (no enemy)
+Moves to Akroy [MP left: 4, Vigor: 95%]
+Moves to Eastholme [MP left: 3, Vigor: 90%]
+Moves to Torchester [MP left: 2, Vigor: 85%]
+Moves to Northmere [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Northmere
+Battle started
+Attacker: Army II [Power: 184 - P:29, S:14, A:11, SW:5, H:2, K:1]
+Defender Garrison (unknown) [Power: 24 - P:12]
+Defender Recruits (Northmere) (unknown) [Power: 16 - P:8]
+Battle Result: Won
+Attacker After: Army II [Power: 184 - P:29, S:14, A:11, SW:5, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Northmere (unknown) [Power: 0 - none]
+
+Moving to Northmere [MP left: 0, Vigor: 75%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 8 Wood for 17 gold
+
+Resources (end):
+Gold: 3
+Food: 100
+Wood: 21
+Iron: 20
+Stone: 20
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 150
+Food: 100
+Wood: 30
+Iron: 20
+Stone: 20
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 6.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Keep Oakmere [Power: 8 - P:4]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (turn_1)
+
+Economy: Raise Army Reserve: added:20 bank:20 cap:20
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Economy: Raise Army Reserve: released:20 bank:0 cap:20 reason:no_candidate
+
+Economy: Army hires: Army I at Oakmere: 20 units (P: 5, S: 8, A: 4, SW: 1, H: 2) - gold spent: 44, recruits left: 77, Army II at Oakmere: 20 units (P: 6, S: 7, A: 4, SW: 1, H: 2) - gold spent: 43, recruits left: 57, Army III at Oakmere: 20 units (P: 6, S: 7, A: 4, SW: 1, H: 2) - gold spent: 43, recruits left: 37
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Oakmere: level=0 total=0 threats=0
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Kingvik (#217) | total:36.9 (strategy:26.9, neighbor:10.0, distance_status:True, score:36.9<[100.0])
+- Kingberg (#173) | total:16.1 (strategy:21.1, neighbor:-5.0, distance_status:True, score:16.1<[100.0])
+- Rivernes (#218) | total:1.4 (strategy:11.4, neighbor:-10.0, distance_status:True, score:1.4<[100.0])
+- Whitbury (#124) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:False, score:-15.0<[100.0])
+- Ashhavn (#181) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:False, score:-15.0<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Oakmere (#174) | total:100.0 (recruits:100.0, distance:100.0, dist:6, next:Castle)
+
+Economy: Upgrade Region actions: Upgrading Oakmere to Duchy (score: 6.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Raider) -------------
+Region: Oakmere
+Army II [Power: 183, E: 100 - P:26, S:17, A:9, SW:6, H:2, K:1]
+DecisionTree: Army II -> castle_garrison_merge (no_nearby_threats)
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 3 candidates:
+Candidate 1: Hafnbury (#209), score: 61.7 (mp_cost: 3, resources: 11.2, population: 5.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.6)
+Candidate 2: Westthwaite (#165), score: 37.3 (mp_cost: 3, resources: 7.5, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.9)
+Candidate 3: Stonefell (#238), score: 36.5 (mp_cost: 4, resources: 3.0, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+DecisionTree: Army II -> role_raider_expand (to Hafnbury)
+[MOVEMENT]
+Best target: Hafnbury (no enemy)
+Moves to Kingvik [MP left: 4, Vigor: 95%]
+Moves to Hafnbury [MP left: 2, Vigor: 90%]
+[BATTLE]
+Fight at Hafnbury
+Battle started
+Attacker: Army II [Power: 191 - P:30, S:17, A:9, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 22 - P:11]
+Defender Recruits (Hafnbury) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 183 - P:26, S:17, A:9, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hafnbury (unknown) [Power: 0 - none]
+
+Moving to Hafnbury [MP left: 2, Vigor: 85%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 1 candidates:
+Candidate 1: Westthwaite (#165), score: 37.0 (mp_cost: 2, resources: 7.5, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.9)
+DecisionTree: Army II -> role_raider_expand (to Westthwaite)
+[MOVEMENT]
+Best target: Westthwaite (no enemy)
+Moves to Westthwaite [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Westthwaite
+Battle started
+Attacker: Army II [Power: 183 - P:26, S:17, A:9, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 8 - P:4]
+Defender Recruits (Westthwaite) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army II [Power: 183 - P:26, S:17, A:9, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Westthwaite (unknown) [Power: 0 - none]
+
+Moving to Westthwaite [MP left: 0, Vigor: 75%]
+-------------- ARMY I (Raider) -------------
+Region: Oakmere
+Army I [Power: 184, E: 100 - P:25, S:18, A:9, SW:6, H:2, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_raider (post_threat)
+Top 3 candidates:
+Candidate 1: Northmere (#162), score: 48.8 (mp_cost: 4, resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 2: Southford (#203), score: 40.1 (mp_cost: 5, resources: 6.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 3: Stonefell (#238), score: 37.2 (mp_cost: 4, resources: 3.0, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+Rejected candidates:
+Reason: raider_unknown_hard_target Candidate 1: Northmere (#162), score: 48.8
+DecisionTree: Army I -> role_raider_expand (to Southford)
+[MOVEMENT]
+Best target: Southford (no enemy)
+Moves to Kingvik [MP left: 4, Vigor: 95%]
+Moves to Hafnbury [MP left: 3, Vigor: 90%]
+Moves to Southford [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Southford
+Battle started
+Attacker: Army I [Power: 184 - P:25, S:18, A:9, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 10 - P:5]
+Defender Recruits (Southford) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army I [Power: 181 - P:25, S:17, A:9, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Southford (unknown) [Power: 0 - none]
+
+Moving to Southford [MP left: 0, Vigor: 80%]
+-------------- ARMY III (Raider) -------------
+Region: Oakmere
+Army III [Power: 183, E: 100 - P:26, S:17, A:9, SW:6, H:2, K:1]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_war_role_raider (post_threat)
+Top 2 candidates:
+Candidate 1: Northmere (#162), score: 48.0 (mp_cost: 4, resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 2: Stonefell (#238), score: 35.0 (mp_cost: 4, resources: 3.0, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+Rejected candidates:
+Reason: raider_unknown_hard_target Candidate 1: Northmere (#162), score: 48.0
+DecisionTree: Army III -> role_raider_expand (to Stonefell)
+[MOVEMENT]
+Best target: Stonefell (no enemy)
+Moves to Kingvik [MP left: 4, Vigor: 95%]
+Moves to Stonefell [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Stonefell
+Battle started
+Attacker: Army III [Power: 183 - P:26, S:17, A:9, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 6 - P:3]
+Defender Recruits (Stonefell) (unknown) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army III [Power: 180 - P:26, S:16, A:9, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Stonefell (unknown) [Power: 0 - none]
+
+Moving to Stonefell [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_war_role_raider (post_threat)
+Top 5 candidates:
+Candidate 1: Fossbury (#246), score: 48.2 (mp_cost: 3, resources: 6.0, population: 4.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+Candidate 2: Torchester (#161), score: 47.4 (mp_cost: 5, resources: 11.2, population: 5.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.3)
+Candidate 3: Northmere (#162), score: 47.2 (mp_cost: 4, resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 4: Eastholme (#159), score: 42.0 (mp_cost: 5, resources: 7.5, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 5: Vatndon (#204), score: 36.8 (mp_cost: 5, resources: 7.5, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+DecisionTree: Army III -> role_raider_expand (to Fossbury)
+[MOVEMENT]
+Best target: Fossbury (no enemy)
+Out of movement points before reaching Fossbury
+Movement blocked near Fossbury
+Army III makes camp [MP left: 0, Vigor: 95%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 70
+Wood: 8
+Iron: 20
+Stone: 20
+
+--------------------------------------------------------
+[Turn 2]
+       
+ 222222222222222      
+2:::::::::::::::22    
+2::::::222222:::::2   
+2222222     2:::::2   
+			2:::::2   
+			2:::::2   
+		 2222::::2    
+	22222::::::22     
+  22::::::::222       
+ 2:::::22222          
+2:::::2               
+2:::::2               
+2:::::2       222222  
+2::::::2222222:::::2  
+2::::::::::::::::::2  
+22222222222222222222  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 26
+Food: 63
+Wood: 11
+Iron: 20
+Stone: 20
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.900
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 0.520
+power_gap_norm: 0.000
+
+Keep Blackbury [Power: 0 - none]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:2 bank:2 cap:125
+
+Economy: Raise Army Reserve: added:20 bank:20 cap:20
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=10, a=3, dist=3.7, rec=57, gold=24) vs thr=0.50; Frontier2Army=3.00
+
+Economy: Could not buy needed resources for build: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Bought 1 Food (gold change -2)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Blackbury: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (4 vs 30) (Score: 0.00 (r=10, a=3, dist=3.7, rec=57, gold=24) vs thr=0.50; Frontier2Army=3.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+Canidates:
+- Southfjord (#188) | total:150.0 (strategy:100.0, neighbor:50.0, distance_status:True, score:150.0>[100.0])
+- Southholme (#191) | total:100.1 (strategy:40.1, neighbor:60.0, distance_status:True, score:100.1>[100.0])
+- Ashmere (#146) | total:75.0 (strategy:30.0, neighbor:45.0, distance_status:True, score:75.0<[100.0])
+- Akrhavn (#214) | total:68.4 (strategy:58.4, neighbor:10.0, distance_status:True, score:68.4<[100.0])
+- Reykoy (#201) | total:57.6 (strategy:47.6, neighbor:10.0, distance_status:True, score:57.6<[100.0])
+- Hvitnes (#155) | total:25.3 (strategy:20.3, neighbor:5.0, distance_status:False, score:25.3<[100.0])
+- Oakthorpe (#172) | total:4.3 (strategy:4.3, neighbor:0.0, distance_status:False, score:4.3<[100.0])
+- Vatnberg (#112) | total:1.0 (strategy:1.0, neighbor:0.0, distance_status:False, score:1.0<[100.0])
+- Kirkholme (#215) | total:-6.4 (strategy:3.6, neighbor:-10.0, distance_status:True, score:-6.4<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:26 short:4
+- Wood need:25 have:11 short:14
+
+Build Castle top-up:
+- Top-up failed: needed resources beyond acceptable threshold
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Blackbury (#171) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY III (Raider) -------------
+Region: Southfjord
+Army III [Power: 181, E: 80 - P:24, S:18, A:9, SW:7, H:1, K:1]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Army III makes camp [MP left: 4, Vigor: 90%]
+Top 6 candidates:
+Candidate 1: Blackton (#147), score: 92.1 (mp_cost: 3, resources: 30.0, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.3)
+Candidate 2: Westnes (#223), score: 41.9 (mp_cost: 3, resources: 1.0, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.2)
+Candidate 3: Hvitton (#187), score: 34.8 (mp_cost: 2, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.6)
+Candidate 4: Reykley (#156), score: 33.3 (mp_cost: 3, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 5: Hvithaug (#98), score: 30.9 (mp_cost: 3, resources: 3.8, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 6: Bergwich (#192), score: 21.3 (mp_cost: 3, resources: 2.0, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.5)
+DecisionTree: Army III -> role_raider_expand (to Blackton)
+[MOVEMENT]
+Best target: Blackton (no enemy)
+Moves to Blackton [MP left: 1, Vigor: 85%]
+[BATTLE]
+Fight at Blackton
+Battle started
+Attacker: Army III [Power: 183 - P:25, S:18, A:9, SW:7, H:1, K:1]
+Defender Garrison (unknown) [Power: 14 - P:7]
+Defender Recruits (Blackton) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army III [Power: 183 - P:25, S:18, A:9, SW:7, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Blackton (unknown) [Power: 0 - none]
+
+Moving to Blackton [MP left: 1, Vigor: 80%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Army III makes camp [MP left: 0, Vigor: 90%]
+-------------- ARMY I (Raider) -------------
+Region: Ashmere
+Army I [Power: 184, E: 80 - P:25, S:17, A:10, SW:7, H:1, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_expansion_role_raider (post_threat)
+Army I makes camp [MP left: 4, Vigor: 90%]
+Top 6 candidates:
+Candidate 1: Hafnstadir (#141), score: 48.3 (mp_cost: 4, resources: 11.2, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.4)
+Candidate 2: Westnes (#223), score: 37.8 (mp_cost: 4, resources: 1.0, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.2)
+Candidate 3: Reykley (#156), score: 31.7 (mp_cost: 2, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 4: Hvitton (#187), score: 31.5 (mp_cost: 3, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.6)
+Candidate 5: Hvithaug (#98), score: 31.2 (mp_cost: 2, resources: 3.8, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 6: Bergwich (#192), score: 22.4 (mp_cost: 4, resources: 2.0, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.5)
+DecisionTree: Army I -> role_raider_expand (to Hafnstadir)
+[MOVEMENT]
+Best target: Hafnstadir (no enemy)
+Moves to Blackton [MP left: 2, Vigor: 85%]
+Moves to Hafnstadir [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Hafnstadir
+Battle started
+Attacker: Army I [Power: 184 - P:25, S:17, A:10, SW:7, H:1, K:1]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Hafnstadir) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army I [Power: 182 - P:24, S:17, A:10, SW:7, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hafnstadir (unknown) [Power: 0 - none]
+
+Moving to Hafnstadir [MP left: 0, Vigor: 75%]
+-------------- ARMY II (Raider) -------------
+Region: Southholme
+Army II [Power: 182, E: 95 - P:27, S:15, A:11, SW:6, H:1, K:1]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 6 candidates:
+Candidate 1: Redham (#225), score: 58.8 (mp_cost: 4, resources: 15.2, population: 5.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Candidate 2: Westnes (#223), score: 38.5 (mp_cost: 4, resources: 1.0, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.2)
+Candidate 3: Hvitton (#187), score: 35.2 (mp_cost: 3, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.6)
+Candidate 4: Reykley (#156), score: 34.3 (mp_cost: 2, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 5: Hvithaug (#98), score: 30.0 (mp_cost: 3, resources: 3.8, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 6: Bergwich (#192), score: 24.0 (mp_cost: 3, resources: 2.0, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.5)
+DecisionTree: Army II -> role_raider_expand (to Redham)
+[MOVEMENT]
+Best target: Redham (no enemy)
+Moves to Redham [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Redham
+Battle started
+Attacker: Army II [Power: 182 - P:27, S:15, A:11, SW:6, H:1, K:1]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Redham) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 172 - P:25, S:13, A:11, SW:6, H:1, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Redham (unknown) [Power: 0 - none]
+
+Moving to Redham [MP left: 1, Vigor: 85%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 9 candidates:
+Candidate 1: Westnes (#223), score: 37.4 (mp_cost: 5, resources: 1.0, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.2)
+Candidate 2: Saintberg (#142), score: 35.6 (mp_cost: 7, resources: 11.2, population: 2.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 3: Hvitton (#187), score: 30.1 (mp_cost: 4, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.6)
+Candidate 4: Reykley (#156), score: 29.0 (mp_cost: 3, resources: 3.8, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.0)
+Candidate 5: Hvithaug (#98), score: 26.5 (mp_cost: 4, resources: 3.8, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 6: Stonefell (#216), score: 25.5 (mp_cost: 8, resources: 1.0, population: 4.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.3)
+Candidate 7: Bergwich (#192), score: 24.2 (mp_cost: 3, resources: 2.0, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.5)
+Candidate 8: Eastnes (#151), score: 21.4 (mp_cost: 7, resources: 3.8, population: 2.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.9)
+Candidate 9: Riverhaug (#245), score: 10.4 (mp_cost: 8, resources: 2.0, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.2)
+DecisionTree: Army II -> role_raider_expand (to Reykley)
+[MOVEMENT]
+Best target: Reykley (no enemy)
+Moves to Southholme [MP left: 0, Vigor: 80%]
+Out of movement points before reaching Reykley
+Out of movement points before reaching Southholme
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 10 Wood for 22 gold
+
+Resources (end):
+Gold: 2
+Food: 64
+Wood: 21
+Iron: 20
+Stone: 20
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 36
+Food: 104
+Wood: 28
+Iron: 20
+Stone: 20
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.667
+underpowered_ratio: 0.000
+castle_spacing: 12.000
+bank_ratio: 0.720
+power_gap_norm: 0.000
+
+Keep Hvitford [Power: 0 - none]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:1 bank:1 cap:125
+
+Economy: Raise Army Reserve: skipped (at_cap, bank:20 cap:20)
+
+Economy: Sold 4 Food for 4 gold
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=12, a=3, dist=3.7, rec=88, gold=39) vs thr=0.50; Frontier2Army=2.67
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Hvitford: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (19 vs 30); frontier pressure too low (2.67 vs 3.00) (Score: 0.00 (r=12, a=3, dist=3.7, rec=88, gold=39) vs thr=0.50; Frontier2Army=2.67)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Eastholme (#159) | total:93.0 (strategy:58.0, neighbor:35.0, distance_status:True, score:93.0<[100.0])
+- Akroy (#202) | total:73.2 (strategy:63.2, neighbor:10.0, distance_status:True, score:73.2<[100.0])
+- Greenfjell (#183) | total:35.8 (strategy:30.8, neighbor:5.0, distance_status:True, score:35.8<[100.0])
+- Riverhavn (#140) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:False, score:30.0<[100.0])
+- Hafnthwaite (#212) | total:28.4 (strategy:18.4, neighbor:10.0, distance_status:True, score:28.4<[100.0])
+- Redbury (#184) | total:28.0 (strategy:13.0, neighbor:15.0, distance_status:False, score:28.0<[100.0])
+- Torchester (#161) | total:22.5 (strategy:2.5, neighbor:20.0, distance_status:True, score:22.5<[100.0])
+- Hellaham (#186) | total:22.5 (strategy:7.5, neighbor:15.0, distance_status:False, score:22.5<[100.0])
+- Riverby (#194) | total:19.2 (strategy:14.2, neighbor:5.0, distance_status:False, score:19.2<[100.0])
+- Saintwich (#242) | total:7.3 (strategy:12.3, neighbor:-5.0, distance_status:True, score:7.3<[100.0])
+- Northmere (#162) | total:-4.3 (strategy:0.7, neighbor:-5.0, distance_status:True, score:-4.3<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Hvitford (#222) | total:100.0 (recruits:100.0, distance:100.0, dist:5, next:Castle)
+
+Economy: Upgrade Region actions: Upgrading Saintwich to March (score: 4.0)
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY III (Main) -------------
+Region: Greenfjell
+Army III [Power: 196, E: 75 - P:35, S:14, A:11, SW:5, H:2, K:1]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_war_role_main (post_threat)
+Army III makes camp [MP left: 4, Vigor: 85%]
+Top 2 candidates:
+Candidate 1: Southford (#203), score: 37.4 (mp_cost: 7, resources: 2.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 2: Westthwaite (#165), score: 37.3 (mp_cost: 8, resources: 7.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.9)
+Rejected candidates:
+Reason: unreachable_this_turn Candidate 1: Southford (#203), score: 37.4
+Reason: unreachable_this_turn Candidate 2: Westthwaite (#165), score: 37.3
+Top 2 candidates:
+Candidate 1: Hvitfjord (#211), score: 36.3 (mp_cost: 2, resources: 3.8, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 2: Kingwich (#237), score: 24.9 (mp_cost: 4, resources: 2.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+DecisionTree: Army III -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Hvitfjord (no enemy)
+Moves to Hvitfjord [MP left: 2, Vigor: 80%]
+[BATTLE]
+Fight at Hvitfjord
+Battle started
+Attacker: Army III [Power: 196 - P:35, S:14, A:11, SW:5, H:2, K:1]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Hvitfjord) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army III [Power: 196 - P:35, S:14, A:11, SW:5, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hvitfjord (unknown) [Power: 0 - none]
+
+Moving to Hvitfjord [MP left: 2, Vigor: 75%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_war_role_main (post_threat)
+Army III makes camp [MP left: 1, Vigor: 85%]
+Top 2 candidates:
+Candidate 1: Southford (#203), score: 35.9 (mp_cost: 8, resources: 2.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 2: Westthwaite (#165), score: 21.4 (mp_cost: 9, resources: 2.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.9)
+Rejected candidates:
+Reason: unreachable_this_turn Candidate 1: Southford (#203), score: 35.9
+Reason: unreachable_this_turn Candidate 2: Westthwaite (#165), score: 21.4
+Top 7 candidates:
+Candidate 1: Eywich (#206), score: 39.0 (mp_cost: 2, resources: 3.8, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+Candidate 2: Kingwich (#237), score: 27.0 (mp_cost: 3, resources: 2.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+Candidate 3: Osdal (#235), score: 26.1 (mp_cost: 5, resources: 2.5, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.8)
+Candidate 4: Vatndon (#204), score: 25.8 (mp_cost: 7, resources: 2.5, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 5: Bergvik (#160), score: 23.0 (mp_cost: 6, resources: 2.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 6: Greenthwaite (#205), score: 21.3 (mp_cost: 6, resources: 2.5, population: 2.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Candidate 7: Southfjord (#170), score: 17.9 (mp_cost: 2, resources: 1.2, population: 4.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+DecisionTree: Army III -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Eywich (no enemy)
+Out of movement points before reaching Eywich
+Movement blocked near Eywich
+Army III makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY II (Raider) -------------
+Region: Northmere
+Army II [Power: 184, E: 75 - P:29, S:14, A:11, SW:5, H:2, K:1]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_raider (post_threat)
+Army II makes camp [MP left: 4, Vigor: 85%]
+Top 5 candidates:
+Candidate 1: Southford (#203), score: 41.4 (mp_cost: 3, resources: 2.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 2: Westthwaite (#165), score: 30.3 (mp_cost: 2, resources: 2.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.9)
+Candidate 3: Vatndon (#204), score: 26.4 (mp_cost: 4, resources: 2.5, population: 3.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 4: Bergvik (#160), score: 23.6 (mp_cost: 4, resources: 2.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 5: Greenthwaite (#205), score: 20.1 (mp_cost: 4, resources: 2.5, population: 2.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Rejected candidates:
+Reason: raider_unknown_hard_target Candidate 1: Southford (#203), score: 41.4
+Reason: raider_unknown_hard_target Candidate 2: Westthwaite (#165), score: 30.3
+DecisionTree: Army II -> role_raider_expand (to Vatndon)
+[MOVEMENT]
+Best target: Vatndon (no enemy)
+Moves to Torchester [MP left: 3, Vigor: 80%]
+Moves to Eastholme [MP left: 2, Vigor: 75%]
+Moves to Vatndon [MP left: 0, Vigor: 70%]
+[BATTLE]
+Fight at Vatndon
+Battle started
+Attacker: Army II [Power: 184 - P:29, S:14, A:11, SW:5, H:2, K:1]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Vatndon) (unknown) [Power: 12 - P:6]
+Battle Result: Won
+Attacker After: Army II [Power: 184 - P:29, S:14, A:11, SW:5, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatndon (unknown) [Power: 0 - none]
+
+Moving to Vatndon [MP left: 0, Vigor: 65%]
+-------------- ARMY I (Raider) -------------
+Region: Torchester
+Army I [Power: 182, E: 75 - P:28, S:14, A:10, SW:6, H:2, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_raider (post_threat)
+Army I makes camp [MP left: 4, Vigor: 85%]
+Top 5 candidates:
+Candidate 1: Southford (#203), score: 40.1 (mp_cost: 3, resources: 2.0, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 8.8)
+Candidate 2: Torholme (#232), score: 32.8 (mp_cost: 4, resources: 3.8, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 3: Westthwaite (#165), score: 27.7 (mp_cost: 3, resources: 2.5, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.9)
+Candidate 4: Bergvik (#160), score: 23.8 (mp_cost: 3, resources: 2.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.6)
+Candidate 5: Greenthwaite (#205), score: 22.3 (mp_cost: 3, resources: 2.5, population: 2.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 2.2)
+Rejected candidates:
+Reason: raider_unknown_hard_target Candidate 1: Southford (#203), score: 40.1
+DecisionTree: Army I -> role_raider_expand (to Torholme)
+[MOVEMENT]
+Best target: Torholme (no enemy)
+Moves to Eastholme [MP left: 3, Vigor: 80%]
+Moves to Vatndon [MP left: 2, Vigor: 75%]
+Moves to Torholme [MP left: 0, Vigor: 70%]
+[BATTLE]
+Fight at Torholme
+Battle started
+Attacker: Army I [Power: 182 - P:28, S:14, A:10, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 14 - P:7]
+Defender Recruits (Torholme) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army I [Power: 182 - P:28, S:14, A:10, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Torholme (unknown) [Power: 0 - none]
+
+Moving to Torholme [MP left: 0, Vigor: 65%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 10 Wood for 23 gold
+
+Resources (end):
+Gold: 2
+Food: 80
+Wood: 28
+Iron: 20
+Stone: 20
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 26
+Food: 68
+Wood: 12
+Iron: 20
+Stone: 20
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.500
+underpowered_ratio: 0.000
+castle_spacing: 10.000
+bank_ratio: 0.520
+power_gap_norm: 0.000
+
+Keep Oakmere [Power: 0 - none]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:2 bank:2 cap:125
+
+Economy: Raise Army Reserve: added:20 bank:20 cap:20
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=10, a=3, dist=2.3, rec=55, gold=24) vs thr=0.50; Frontier2Army=1.67
+
+Economy: Could not buy needed resources for build: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Bought 2 Food (gold change -4)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Oakmere: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (4 vs 30); frontier pressure too low (1.67 vs 3.00) (Score: 0.00 (r=10, a=3, dist=2.3, rec=55, gold=24) vs thr=0.50; Frontier2Army=1.67)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+Canidates:
+- Hafnbury (#209) | total:140.7 (strategy:65.7, neighbor:75.0, distance_status:True, score:140.7>[100.0])
+- Stonefell (#238) | total:119.4 (strategy:69.4, neighbor:50.0, distance_status:True, score:119.4>[100.0])
+- Southford (#203) | total:77.8 (strategy:87.8, neighbor:-10.0, distance_status:True, score:77.8<[100.0])
+- Kingvik (#217) | total:56.9 (strategy:26.9, neighbor:30.0, distance_status:True, score:56.9<[100.0])
+- Westthwaite (#165) | total:54.0 (strategy:19.0, neighbor:35.0, distance_status:True, score:54.0<[100.0])
+- Kingberg (#173) | total:36.1 (strategy:21.1, neighbor:15.0, distance_status:True, score:36.1<[100.0])
+- Rivernes (#218) | total:11.4 (strategy:11.4, neighbor:0.0, distance_status:True, score:11.4<[100.0])
+- Whitbury (#124) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:False, score:-15.0<[100.0])
+- Ashhavn (#181) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:False, score:-15.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:26 short:4
+- Wood need:25 have:12 short:13
+
+Build Castle top-up:
+- Top-up failed: needed resources beyond acceptable threshold
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Oakmere (#174) | total:100.0 (recruits:100.0, distance:100.0, dist:6, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Raider) -------------
+Region: Southford
+Army I [Power: 181, E: 80 - P:25, S:17, A:9, SW:6, H:2, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_raider (post_threat)
+Army I makes camp [MP left: 4, Vigor: 90%]
+Top 4 candidates:
+Candidate 1: Torchester (#161), score: 54.8 (mp_cost: 2, resources: 11.2, population: 5.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.3)
+Candidate 2: Northmere (#162), score: 49.8 (mp_cost: 2, resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 3: Eastholme (#159), score: 46.9 (mp_cost: 2, resources: 7.5, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 4: Vatndon (#204), score: 46.9 (mp_cost: 2, resources: 7.5, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+DecisionTree: Army I -> role_raider_expand (to Torchester)
+[MOVEMENT]
+Best target: Torchester (Player 3 (unknown))
+Moves to Torchester [MP left: 2, Vigor: 85%]
+[BATTLE]
+Fight at Torchester
+Battle started
+Attacker: Army I [Power: 181 - P:25, S:17, A:9, SW:6, H:2, K:1]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Torchester) (unknown) [Power: 8 - P:4]
+Battle Result: Won
+Attacker After: Army I [Power: 181 - P:25, S:17, A:9, SW:6, H:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Torchester (unknown) [Power: 0 - none]
+
+Moving to Torchester [MP left: 2, Vigor: 80%]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_raider (post_threat)
+Army I makes camp [MP left: 1, Vigor: 90%]
+Top 4 candidates:
+Candidate 1: Northmere (#162), score: 50.8 (mp_cost: 2, resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 2: Eastholme (#159), score: 48.1 (mp_cost: 2, resources: 7.5, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+Candidate 3: Vatndon (#204), score: 43.8 (mp_cost: 4, resources: 7.5, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 4: Fossbury (#246), score: 41.1 (mp_cost: 8, resources: 6.0, population: 4.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+DecisionTree: Army I -> role_raider_expand (to Northmere)
+[MOVEMENT]
+Best target: Northmere (Player 3 (unknown))
+Out of movement points before reaching Northmere
+Movement blocked near Northmere
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Main) -------------
+Region: Westthwaite
+Army II [Power: 183, E: 75 - P:26, S:17, A:9, SW:6, H:2, K:1]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Army II makes camp [MP left: 4, Vigor: 85%]
+Top 1 candidates:
+Candidate 1: Vatndon (#204), score: 41.7 (mp_cost: 4, resources: 7.5, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+DecisionTree: Army II -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Vatndon (Player 3 (unknown - UnknownArmies:1 (total:0)))
+Moves to Southford [MP left: 2, Vigor: 80%]
+Moves to Vatndon [MP left: 0, Vigor: 75%]
+[BATTLE]
+Fight at Vatndon
+Withdrew to Southford
+Battle started
+Attacker: Army II [Power: 183 - P:26, S:17, A:9, SW:6, H:2, K:1]
+Defender Army II (unknown) [Power: 184 - P:29, S:14, A:11, SW:5, H:2, K:1]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Vatndon) (unknown) [Power: 0 - none]
+Battle Result: Withdrew
+Withdrawal: Attacker
+Attacker After: Army II [Power: 29 - P:1, S:1, A:5, SW:1]
+Defender After: Army II (unknown) [Power: 66 - P:5, S:2, A:8, SW:2, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatndon (unknown) [Power: 0 - none]
+
+-------------- ARMY III (Raider) -------------
+Region: Stonefell
+Army III [Power: 183, E: 95 - P:26, S:17, A:9, SW:6, H:2, K:1]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_war_role_raider (post_threat)
+Top 4 candidates:
+Candidate 1: Vatndon (#204), score: 49.5 (mp_cost: 5, resources: 7.5, population: 3.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 2: Northmere (#162), score: 49.1 (mp_cost: 4, resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.1)
+Candidate 3: Fossbury (#246), score: 49.1 (mp_cost: 3, resources: 6.0, population: 4.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.9)
+Candidate 4: Eastholme (#159), score: 45.7 (mp_cost: 5, resources: 7.5, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.8)
+DecisionTree: Army III -> role_raider_hard_known_army (to Vatndon)
+[MOVEMENT]
+Best target: Vatndon (Player 3 (known - Army II:66, Garrison:66 (total:132)))
+Moves to Hafnbury [MP left: 4, Vigor: 90%]
+Moves to Southford [MP left: 2, Vigor: 85%]
+Moves to Vatndon [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Vatndon
+Battle started
+Attacker: Army III [Power: 183 - P:26, S:17, A:9, SW:6, H:2, K:1]
+Defender Army II (known) [Power: 66 - P:5, S:2, A:8, SW:2, K:1]
+Defender Garrison (known) [Power: 0 - none]
+Defender Recruits (Vatndon) (unknown) [Power: 0 - none]
+Battle Result: Withdrew
+Withdrawal: Defender
+Attacker After: Army III [Power: 178 - P:25, S:16, A:9, SW:6, H:2, K:1]
+Defender After: Army II (known) [Power: 32 - P:3, S:2, A:3, SW:2]
+Defender After (Garrison): Garrison (known) [Power: 0 - none]
+Defender After (Recruits): Vatndon (unknown) [Power: 0 - none]
+
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 9 Wood for 19 gold
+
+Resources (end):
+Gold: 3
+Food: 70
+Wood: 21
+Iron: 20
+Stone: 20
+

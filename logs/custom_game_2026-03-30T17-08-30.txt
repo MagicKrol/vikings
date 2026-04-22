@@ -1,0 +1,729 @@
+AI Log File: custom_game
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=82, gold=0) vs thr=0.50; Frontier2Army=4.00
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Norththorpe: 19 units (P: 10, S: 4, A: 2, SW: 2, H: 1) - gold spent: 34, recruits left: 121, Army II at Norththorpe: 20 units (P: 12, S: 3, A: 3, SW: 2) - gold spent: 33, recruits left: 101, Army III at Norththorpe: 19 units (P: 11, S: 3, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 82
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Norththorpe: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=82, gold=0) vs thr=0.50; Frontier2Army=4.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Norththorpe (#367) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Raider) -------------
+Army I [Power: 173, E: 100 - P:30, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Norththorpe (dist:0, recruits:82, needs_recruitment_armies:0, score: 114.8)
+Selected castle: Norththorpe
+Recruiting at Norththorpe
+Recruitment: Army Army I could not recruit at Norththorpe (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Norththorpe
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY III (Raider) -------------
+Army III [Power: 172, E: 100 - P:31, S:13, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Norththorpe (dist:0, recruits:82, needs_recruitment_armies:1, score: 57.4)
+Selected castle: Norththorpe
+Recruiting at Norththorpe
+Recruitment: Army Army III could not recruit at Norththorpe (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Norththorpe
+Army III makes camp [MP left: 4, Vigor: 100%]
+Army III makes camp [MP left: 3, Vigor: 100%]
+Army III makes camp [MP left: 2, Vigor: 100%]
+Army III makes camp [MP left: 1, Vigor: 100%]
+Army III makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Raider) -------------
+Army II [Power: 173, E: 100 - P:32, S:13, A:8, SW:7, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Norththorpe (dist:0, recruits:82, needs_recruitment_armies:2, score: 37.8)
+Selected castle: Norththorpe
+Recruiting at Norththorpe
+Recruitment: Army Army II could not recruit at Norththorpe (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Norththorpe
+Army II makes camp [MP left: 4, Vigor: 100%]
+Army II makes camp [MP left: 3, Vigor: 100%]
+Army II makes camp [MP left: 2, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 100%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 13
+Iron: 10
+Stone: 10
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=94, gold=0) vs thr=0.50; Frontier2Army=3.67
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+[Player Player 3 (#3)]
+
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██               ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Saintworth: 19 units (P: 10, S: 4, A: 2, SW: 2, H: 1) - gold spent: 34, recruits left: 130, Army II at Saintworth: 18 units (P: 9, S: 4, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 112, Army III at Saintworth: 18 units (P: 9, S: 4, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 94
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Saintworth: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=94, gold=0) vs thr=0.50; Frontier2Army=3.67)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintworth (#312) | total:100.0 (recruits:100.0, distance:100.0, dist:6, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY III (Raider) -------------
+Army III [Power: 171, E: 100 - P:29, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Saintworth (dist:0, recruits:94, needs_recruitment_armies:0, score: 131.6)
+Selected castle: Saintworth
+Recruiting at Saintworth
+Recruitment: Army Army III could not recruit at Saintworth (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Saintworth
+Army III makes camp [MP left: 4, Vigor: 100%]
+Army III makes camp [MP left: 3, Vigor: 100%]
+Army III makes camp [MP left: 2, Vigor: 100%]
+Army III makes camp [MP left: 1, Vigor: 100%]
+Army III makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Raider) -------------
+Army II [Power: 171, E: 100 - P:29, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Saintworth (dist:0, recruits:94, needs_recruitment_armies:1, score: 65.8)
+Selected castle: Saintworth
+Recruiting at Saintworth
+Recruitment: Army Army II could not recruit at Saintworth (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Saintworth
+Army II makes camp [MP left: 4, Vigor: 100%]
+Army II makes camp [MP left: 3, Vigor: 100%]
+Army II makes camp [MP left: 2, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 100%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY I (Raider) -------------
+Army I [Power: 173, E: 100 - P:30, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Saintworth (dist:0, recruits:94, needs_recruitment_armies:2, score: 43.4)
+Selected castle: Saintworth
+Recruiting at Saintworth
+Recruitment: Army Army I could not recruit at Saintworth (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Saintworth
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 14
+Iron: 10
+Stone: 10
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=78, gold=0) vs thr=0.50; Frontier2Army=3.67
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+[Player Player 4 (#4)]
+        
+░█████████  ░██                                                 ░████   
+░██     ░██ ░██                                                ░██ ██   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████     ░██  ██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░██   ██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░█████████ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██              ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██              ░██   
+												  ░██                                   
+										░███████                                    
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.375
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Northfjell: 18 units (P: 9, S: 3, A: 3, SW: 2, H: 1) - gold spent: 34, recruits left: 113, Army II at Northfjell: 18 units (P: 9, S: 4, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 95, Army III at Northfjell: 18 units (P: 9, S: 4, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 78
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Northfjell: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=78, gold=0) vs thr=0.50; Frontier2Army=3.67)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Northfjell (#391) | total:100.0 (recruits:100.0, distance:100.0, dist:6, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Raider) -------------
+Army I [Power: 172, E: 100 - P:29, S:13, A:8, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Northfjell (dist:0, recruits:78, needs_recruitment_armies:0, score: 109.2)
+Selected castle: Northfjell
+Recruiting at Northfjell
+Recruitment: Army Army I could not recruit at Northfjell (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Northfjell
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY III (Raider) -------------
+Army III [Power: 171, E: 100 - P:29, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Northfjell (dist:0, recruits:78, needs_recruitment_armies:1, score: 54.6)
+Selected castle: Northfjell
+Recruiting at Northfjell
+Recruitment: Army Army III could not recruit at Northfjell (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Northfjell
+Army III makes camp [MP left: 4, Vigor: 100%]
+Army III makes camp [MP left: 3, Vigor: 100%]
+Army III makes camp [MP left: 2, Vigor: 100%]
+Army III makes camp [MP left: 1, Vigor: 100%]
+Army III makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Raider) -------------
+Army II [Power: 171, E: 100 - P:29, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Northfjell (dist:0, recruits:78, needs_recruitment_armies:2, score: 36.4)
+Selected castle: Northfjell
+Recruiting at Northfjell
+Recruitment: Army Army II could not recruit at Northfjell (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Northfjell
+Army II makes camp [MP left: 4, Vigor: 100%]
+Army II makes camp [MP left: 3, Vigor: 100%]
+Army II makes camp [MP left: 2, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 100%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 13
+Iron: 10
+Stone: 10
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=90, gold=0) vs thr=0.50; Frontier2Army=2.67
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+[Player Player 5 (#5)]
+ 
+░█████████  ░██                                              ░████████ 
+░██     ░██ ░██                                              ░██       
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████    ░███████  
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███              ░██ 
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░██   ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Ashvik: 18 units (P: 9, S: 3, A: 3, SW: 2, H: 1) - gold spent: 34, recruits left: 125, Army II at Ashvik: 19 units (P: 11, S: 3, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 106, Army III at Ashvik: 19 units (P: 11, S: 3, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 90
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Ashvik: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=90, gold=0) vs thr=0.50; Frontier2Army=2.67)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Ashvik (#370) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Raider) -------------
+Army II [Power: 172, E: 100 - P:31, S:13, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Ashvik (dist:0, recruits:90, needs_recruitment_armies:0, score: 126.0)
+Selected castle: Ashvik
+Recruiting at Ashvik
+Recruitment: Army Army II could not recruit at Ashvik (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Ashvik
+Army II makes camp [MP left: 4, Vigor: 100%]
+Army II makes camp [MP left: 3, Vigor: 100%]
+Army II makes camp [MP left: 2, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 100%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY III (Raider) -------------
+Army III [Power: 172, E: 100 - P:31, S:13, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Ashvik (dist:0, recruits:90, needs_recruitment_armies:1, score: 63.0)
+Selected castle: Ashvik
+Recruiting at Ashvik
+Recruitment: Army Army III could not recruit at Ashvik (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Ashvik
+Army III makes camp [MP left: 4, Vigor: 100%]
+Army III makes camp [MP left: 3, Vigor: 100%]
+Army III makes camp [MP left: 2, Vigor: 100%]
+Army III makes camp [MP left: 1, Vigor: 100%]
+Army III makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY I (Raider) -------------
+Army I [Power: 172, E: 100 - P:29, S:13, A:8, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Ashvik (dist:0, recruits:90, needs_recruitment_armies:2, score: 42.0)
+Selected castle: Ashvik
+Recruiting at Ashvik
+Recruitment: Army Army I could not recruit at Ashvik (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Ashvik
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 13
+Iron: 10
+Stone: 10
+
+Recruitment: Score: 0.00 (r=7, a=3, dist=0.0, rec=68, gold=0) vs thr=0.50; Frontier2Army=2.33
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+[Player Player 6 (#6)]
+    
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████    ░██       
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███        ░███████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██         ░██   ░██ 
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██   ░██ 
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██          ░██████  
+												  ░██                                  
+										░███████                                   
+																		
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.000
+underpowered_ratio: 0.000
+castle_spacing: 7.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Army hires: Army I at Woodton: 19 units (P: 10, S: 4, A: 2, SW: 2, H: 1) - gold spent: 34, recruits left: 106, Army II at Woodton: 19 units (P: 11, S: 3, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 87, Army III at Woodton: 19 units (P: 11, S: 3, A: 2, SW: 2, H: 1) - gold spent: 33, recruits left: 68
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Woodton: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=7, a=3, dist=0.0, rec=68, gold=0) vs thr=0.50; Frontier2Army=2.33)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Woodton (#466) | total:100.0 (recruits:100.0, distance:100.0, dist:6, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Raider) -------------
+Army I [Power: 173, E: 100 - P:30, S:14, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Woodton (dist:0, recruits:68, needs_recruitment_armies:0, score: 95.2)
+Selected castle: Woodton
+Recruiting at Woodton
+Recruitment: Army Army I could not recruit at Woodton (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Woodton
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY III (Raider) -------------
+Army III [Power: 172, E: 100 - P:31, S:13, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Woodton (dist:0, recruits:68, needs_recruitment_armies:1, score: 47.6)
+Selected castle: Woodton
+Recruiting at Woodton
+Recruitment: Army Army III could not recruit at Woodton (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Woodton
+Army III makes camp [MP left: 4, Vigor: 100%]
+Army III makes camp [MP left: 3, Vigor: 100%]
+Army III makes camp [MP left: 2, Vigor: 100%]
+Army III makes camp [MP left: 1, Vigor: 100%]
+Army III makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Raider) -------------
+Army II [Power: 172, E: 100 - P:31, S:13, A:7, SW:7, H:1, K:1]
+[RECRUITMENT]
+Recruitment castle candidates:
+- Woodton (dist:0, recruits:68, needs_recruitment_armies:2, score: 30.8)
+Selected castle: Woodton
+Recruiting at Woodton
+Recruitment: Army Army II could not recruit at Woodton (reason: no_budget_assigned)
+
+Waiting for recruitment budget at Woodton
+Army II makes camp [MP left: 4, Vigor: 100%]
+Army II makes camp [MP left: 3, Vigor: 100%]
+Army II makes camp [MP left: 2, Vigor: 100%]
+Army II makes camp [MP left: 1, Vigor: 100%]
+Army II makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 14
+Iron: 10
+Stone: 10
+
+Recruitment: Score: 0.00 (r=8, a=3, dist=0.0, rec=105, gold=25) vs thr=0.50; Frontier2Army=4.00
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Economy: Bought 9 Food (gold change -19)
+
+--------------------------------------------------------
+[Turn 2]
+       
+ 222222222222222      
+2:::::::::::::::22    
+2::::::222222:::::2   
+2222222     2:::::2   
+			2:::::2   
+			2:::::2   
+		 2222::::2    
+	22222::::::22     
+  22::::::::222       
+ 2:::::22222          
+2:::::2               
+2:::::2               
+2:::::2       222222  
+2::::::2222222:::::2  
+2::::::::::::::::::2  
+22222222222222222222  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 25
+Food: 41
+Wood: 29
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 0.500
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Norththorpe: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.00 (r=8, a=3, dist=0.0, rec=105, gold=25) vs thr=0.50; Frontier2Army=4.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Norththorpe (#367) | total:100.0 (recruits:100.0, distance:100.0, dist:7, next:Castle)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Raider) -------------
+Army II [Power: 173, E: 100 - P:32, S:13, A:8, SW:7, K:1]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 10 candidates:
+Candidate 1: Oakby (#430), score: 67.4 (resources: 11.2, population: 6.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.9)
+Candidate 2: Riverfjell (#365), score: 51.0 (resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Greenstadir (#417), score: 43.3 (resources: 11.2, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Candidate 4: Stoneberg (#453), score: 43.1 (resources: 3.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.4)
+Candidate 5: Northton (#305), score: 41.0 (resources: 7.5, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.6)
+Candidate 6: Kingdon (#251), score: 39.2 (resources: 11.2, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 7: Blackley (#433), score: 37.4 (resources: 3.8, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+Candidate 8: Akrfjell (#234), score: 36.5 (resources: 11.2, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.2)
+Candidate 9: Woodfjord (#323), score: 31.4 (resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 10: Saintworth (#250), score: 20.7 (resources: 3.8, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.2)
+DecisionTree: Army II -> role_raider_expand (to Oakby)
+[MOVEMENT]
+Best target: Oakby (no enemy)
+Moves to Southfjord [MP left: 3, Vigor: 95%]
+Moves to Oakby [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Oakby
+Battle started
+Attacker: Army II [Power: 173 - P:32, S:13, A:8, SW:7, K:1]
+Defender Garrison (unknown) [Power: 6 - P:3]
+Defender Recruits (Oakby) (unknown) [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army II [Power: 170 - P:32, S:12, A:8, SW:7, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Oakby (unknown) [Power: 0 - none]
+
+Moving to Oakby [MP left: 1, Vigor: 85%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_expansion_role_raider (post_threat)
+Top 10 candidates:
+Candidate 1: Hvitthorpe (#390), score: 100.3 (resources: 32.2, population: 1.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.0)
+Candidate 2: Riverfjell (#365), score: 46.4 (resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Greenstadir (#417), score: 42.3 (resources: 11.2, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Candidate 4: Stoneberg (#453), score: 40.6 (resources: 3.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.4)
+Candidate 5: Blackley (#433), score: 38.6 (resources: 3.8, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+Candidate 6: Northton (#305), score: 37.5 (resources: 7.5, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.6)
+Candidate 7: Kingdon (#251), score: 37.2 (resources: 11.2, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 8: Akrfjell (#234), score: 37.2 (resources: 11.2, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.2)
+Candidate 9: Woodfjord (#323), score: 24.7 (resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 10: Saintworth (#250), score: 16.9 (resources: 3.8, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.2)
+DecisionTree: Army II -> role_raider_expand (to Blackley)
+[MOVEMENT]
+Best target: Blackley (no enemy)
+Out of movement points before reaching Blackley
+Movement blocked near Blackley
+Army II makes camp [MP left: 0, Vigor: 95%]
+-------------- ARMY I (Raider) -------------
+Army I [Power: 173, E: 100 - P:30, S:14, A:7, SW:7, H:1, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_expansion_role_raider (post_threat)
+Top 10 candidates:
+Candidate 1: Riverfjell (#365), score: 48.9 (resources: 11.2, population: 3.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 2: Greenstadir (#417), score: 43.9 (resources: 11.2, population: 4.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Candidate 3: Northton (#305), score: 42.8 (resources: 7.5, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.6)
+Candidate 4: Kingdon (#251), score: 41.1 (resources: 11.2, population: 3.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 5: Blackley (#433), score: 40.7 (resources: 3.8, population: 3.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+Candidate 6: Stoneberg (#453), score: 40.6 (resources: 3.0, population: 5.4, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.4)
+Candidate 7: Akrfjell (#234), score: 36.4 (resources: 11.2, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.2)
+Candidate 8: Woodfjord (#323), score: 31.3 (resources: 7.5, population: 2.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 9: Saintworth (#250), score: 23.5 (resources: 3.8, population: 2.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.2)
+Candidate 10: Hafnby (#452), score: 19.5 (resources: 1.0, population: 2.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.3)
+DecisionTree: Army I -> role_raider_expand (to Riverfjell)
+[MOVEMENT]
+Best target: Riverfjell (no enemy)
+Moves to Northworth [MP left: 3, Vigor: 95%]
+Moves to Riverfjell [MP left: 1, Vigor: 90%]

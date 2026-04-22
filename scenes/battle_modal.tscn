@@ -1002,12 +1002,14 @@ custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="Battle/VBoxContainer/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme = ExtResource("5_button_theme")
 text = "Continue"
 
 [node name="ProgressBarArmy1" type="ProgressBar" parent="."]
 custom_minimum_size = Vector2(125, 15)
+layout_mode = 0
 offset_left = 50.0
 offset_top = 892.0
 offset_right = 595.0
@@ -1022,6 +1024,7 @@ show_percentage = false
 
 [node name="ProgressBarArmy2" type="ProgressBar" parent="."]
 custom_minimum_size = Vector2(125, 15)
+layout_mode = 0
 offset_left = 840.0
 offset_top = 892.0
 offset_right = 1385.0

@@ -72,6 +72,45 @@ func handle_region_click(region: Region) -> bool:
 	_advance_step()
 	return true
 
+func should_block_region_click(button_index: int, has_selected_army: bool) -> bool:
+	if not active:
+		return false
+	if expected_action != "region":
+		return false
+	if not has_selected_army:
+		return false
+	if step_index < 0 or step_index >= steps.size():
+		return false
+	var step: Dictionary = steps[step_index]
+	var enforce_move_trigger_click: bool = bool(step.get("enforce_move_trigger_click", false))
+	if enforce_move_trigger_click and button_index != _get_move_trigger_button():
+		return true
+	return false
+
+func should_block_map_click() -> bool:
+	if not active:
+		return false
+	if step_index < 0 or step_index >= steps.size():
+		return false
+	var step: Dictionary = steps[step_index]
+	return bool(step.get("block_map_click", false))
+
+func _get_move_trigger_button() -> int:
+	var move_trigger_right: bool = GameParameters.get_army_move_trigger() == GameParameters.ArmyMoveTrigger.RIGHT_CLICK
+	if move_trigger_right:
+		return MOUSE_BUTTON_RIGHT
+	return MOUSE_BUTTON_LEFT
+
+func _get_move_click_hint_key() -> String:
+	if _get_move_trigger_button() == MOUSE_BUTTON_RIGHT:
+		return "tutorial_move_click_hint_right"
+	return "tutorial_move_click_hint_left"
+
+func _apply_tutorial_message_tokens(text: String) -> String:
+	if text.find("{move_click_hint}") == -1:
+		return text
+	return text.replace("{move_click_hint}", tr(_get_move_click_hint_key()))
+
 func _on_continue_clicked() -> void:
 	DebugLogger.log("Tutorial", "Continue clicked, expected_action=" + expected_action + ", active=" + str(active))
 	if not active:
@@ -219,7 +258,8 @@ func _apply_step(step: Dictionary) -> void:
 		var show_continue = bool(step.get("show_continue", false))
 		var block_input = bool(step.get("block_input", true))
 		var panel_pos: Vector2 = step.get("panel_position", Vector2.INF)
-		message_modal.show_tutorial_message(text, show_continue, block_input)
+		var translated_text: String = _apply_tutorial_message_tokens(tr(text))
+		message_modal.show_tutorial_message(translated_text, show_continue, block_input)
 		if panel_pos != Vector2.INF:
 			message_modal.set_panel_position(panel_pos)
 		else:
@@ -272,14 +312,14 @@ func _build_default_steps() -> Array:
 	var castle_region = _get_player_castle_region()
 	return [
 		{
-			"message": "Welcome to the tutorial.",
+			"message": "tutorial_step_1",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
 			"block": "trade,endturn"
 		},
 		{
-			"message": "This is your home region.\nClick it.",
+			"message": "tutorial_step_2",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
@@ -296,7 +336,7 @@ func _build_default_steps() -> Array:
 			"camera_focus": {"type": "region", "region_id": 190}
 		},
 		{
-			"message": "This panel shows information and actions for the selected region. \n\nNow switch to the Armies tab.",
+			"message": "tutorial_step_3",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -308,7 +348,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionactions",
 		},
 		{
-			"message": "This is your army. Use armies to conquer other regions.",
+			"message": "tutorial_step_4",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -319,7 +359,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn",
 		},
 		{
-			"message": "Before we march to battle, we need more soldiers. Click the Recruit button for the selected army.",
+			"message": "tutorial_step_5",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -332,7 +372,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,makecamp,cancelmove,regionactionsfull",
 		},
 		{
-			"message": "Here you can recruit different types of soldiers to strengthen your forces.",
+			"message": "tutorial_step_6",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -340,7 +380,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitmentall,recruitmentrecruit",
 		},
 		{
-			"message": "Each unit has its strengths and purpose. Hover over their abilities to learn how to use them effectively.",
+			"message": "tutorial_step_7",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -352,7 +392,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitmentall,recruitmentrecruit",
 		},
 		{
-			"message": "Add 10 Archers to your army.",
+			"message": "tutorial_step_8",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -365,7 +405,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitmentarchers,recruitmentrecruit",
 		},
 		{
-			"message": "Tip: Hold Shift while clicking to recruit 10 at once.\nYou can also hold the + button to recruit faster.",
+			"message": "tutorial_step_9",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -378,7 +418,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitmentarchers,recruitmentrecruit",
 		},
 		{
-			"message": "Perfect. This button recruits all selected units and closes the recruitment screen.",
+			"message": "tutorial_step_10",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -391,25 +431,26 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,recruitmentall",
 		},
 		{
-			"message": "Click on the highlighted region to attack it.",
+			"message": "tutorial_step_11",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
+			"enforce_move_trigger_click": true,
 			"target_region_id": 196,
 			"panel_position": Vector2(500, 200),
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3,regionactionsfull"
 		},
 		{
-			"message": "Before a battle you will get some intel on the region's defenders. \n\nPress the Attack button to start the battle.",
+			"message": "tutorial_step_12",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(100, 500),
-			"block": "endturn,trade,withdraw"
+			"block": "endturn,trade,battlewithdraw"
 		},
 		{
-			"message": "You don't have much control over the battle.\nIt's resolved automatically.",
+			"message": "tutorial_step_13",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -417,7 +458,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,battlecontinue,battlewithdraw"
 		},
 		{
-			"message": "But you can always withdraw if the battle starts to go wrong. Expect additional losses in the process.",
+			"message": "tutorial_step_14",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -434,7 +475,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,battlecontinue,battlewithdraw"
 		},
 		{
-			"message": "Let's click continue and see the battle summary.",
+			"message": "tutorial_step_15",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -447,7 +488,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,trade"
 		},
 		{
-			"message": "This is the battle summary screen.\nIt presents detailed information about the battle result.",
+			"message": "tutorial_step_16",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -455,7 +496,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,trade,continue"
 		},
 		{
-			"message": "On the left hand side you can find information about your wounded soldiers...",
+			"message": "tutorial_step_17",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -467,7 +508,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,trade,continue"
 		},
 		{
-			"message": "... and the fallen soldiers.\n\nFortunately, wounded soldiers are healed when the army rests.",
+			"message": "tutorial_step_18",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
@@ -479,7 +520,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,trade,continue"
 		},
 		{
-			"message": "Click continue.",
+			"message": "tutorial_step_19",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -488,7 +529,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn,trade"
 		},
 		{
-			"message": "Before we move on. Take a look here.\n It's your Army status screen.",
+			"message": "tutorial_step_20",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -500,7 +541,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Every action uses some move points. Especially travelling through a difficult terrain!",
+			"message": "tutorial_step_21",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -512,7 +553,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Vigor represents the army's morale and stamina. It replenishes when resting and affects battle effectiveness.",
+			"message": "tutorial_step_22",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -524,11 +565,12 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Let's make a camp, to heal our wounded and restore some vigor. ",
+			"message": "tutorial_step_23",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "MoveModal/make_camp",
+			"block_map_click": true,
 			"panel_position": Vector2(800, 100),
 			"arrow": {
 				"id": "10",
@@ -537,7 +579,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,armyactions3,regionactionsfull"
 		},
 		{
-			"message": "Vigor restored!\nTip: Any movement points left at the end of the turn are spent resting.",
+			"message": "tutorial_step_24",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -545,7 +587,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "We don't have enough movement points to move this turn.",
+			"message": "tutorial_step_25",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -553,7 +595,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
-			"message": "Let's cancel our move by deselecting the army. You can either click the region with the army or click the army in the list.",
+			"message": "tutorial_step_26",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -569,16 +611,16 @@ func _build_default_steps() -> Array:
 			},
 			"block": "trade,endturn,makecamp,armyactions3,cancelmove,regionactionsfull"
 		},
+		# {
+		# 	"message": "tutorial_step_27",
+		# 	"show_continue": false,
+		# 	"block_input": false,
+		# 	"expected_action": "closed_info_modal",
+		# 	"panel_position": Vector2(500, 300),
+		# 	"block": "trade,endturn,regionactionsfull,armyaction3,makecamp,cancelmove"
+		# },
 		{
-			"message": "You can close the Region or Armies window by pressing Esc or by clicking a region on the map that is not yours.",
-			"show_continue": false,
-			"block_input": false,
-			"expected_action": "closed_info_modal",
-			"panel_position": Vector2(500, 300),
-			"block": "trade,endturn,regionactionsfull,armyaction3,makecamp,cancelmove"
-		},
-		{
-			"message": "You can navigate the map by holding the right mouse button and moving the mouse, or by using the arrow keys/WASD. Try it.",
+			"message": "tutorial_step_28",
 			"show_continue": false,
 			"block_input": true,
 			"expected_action": "camera_move",
@@ -586,7 +628,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "You can also zoom in and out. Use the mouse wheel, a pinch gesture on your touchpad, or press Q and E.",
+			"message": "tutorial_step_29",
 			"show_continue": false,
 			"block_input": true,
 			"expected_action": "camera_zoom",
@@ -594,7 +636,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "We can end our turn now.",
+			"message": "tutorial_step_30",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -607,7 +649,7 @@ func _build_default_steps() -> Array:
 			"block": "trade"
 		},
 		{
-			"message": "New turn, new movement points. Let's attack the last region. Try it on your own.",
+			"message": "tutorial_step_31",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -615,30 +657,32 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Select your army and click the region you wish to attack.",
+			"message": "tutorial_step_32",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
+			"enforce_move_trigger_click": true,
 			"target_region_id": 196,
 			"panel_position": Vector2(800, 100),
 			"block": "trade,endturn",
 			"camera_focus": {"type": "region", "region_id": 228}
 		},
 		{
-			"message": "When an army is selected, movement is the default action. Simply click a region on the map to move there.",
+			"message": "tutorial_step_33",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
+			"enforce_move_trigger_click": true,
 			"target_region_id": 228,
 			"panel_position": Vector2(800, 100),
 			"block": "trade,endturn,cancelmove,makecamp,armyactions3,regionactionsfull"
 		},
 		{
-			"message": "During siege battles, defenders receive a defense bonus, which reduces damage taken.",
+			"message": "tutorial_step_34",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "14",
@@ -646,11 +690,11 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Engaged shows how many of your soldiers will participate in direct melee combat.",
+			"message": "tutorial_step_35",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "24",
@@ -658,11 +702,11 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Use Siege Points to construct siege equipment. Some troops increase your Siege Points.",
+			"message": "tutorial_step_36",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "27",
@@ -670,11 +714,11 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Build trebuchets to reduce defense value, with a chance to breach the walls. ",
+			"message": "tutorial_step_37",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "25",
@@ -682,11 +726,11 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Siege rams attack the gates. Once breached, they gradually increase the Engaged value.",
+			"message": "tutorial_step_38",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "26",
@@ -694,11 +738,11 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Ladders are the simplest way to increase the Engaged value by storming the walls directly.",
+			"message": "tutorial_step_39",
 			"show_continue": true,
 			"block_input": false,
 			"expected_action": "continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "13",
@@ -706,16 +750,16 @@ func _build_default_steps() -> Array:
 			},
 		},
 		{
-			"message": "Construct some ladders and let's attack.",
+			"message": "tutorial_step_40",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
-			"panel_position": Vector2(200, 800),
+			"panel_position": Vector2(50, 800),
 			"block": "trade,withdraw,endturn,continue3,nonladders",
 		},
 		{
-			"message": "This battle should be easy.",
+			"message": "tutorial_step_41",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "battle_finished",
@@ -723,7 +767,7 @@ func _build_default_steps() -> Array:
 			"block": "continue3,endturn,battlewithdraw,battlecontinue"
 		},
 		{
-			"message": "Let's move to the battle summary.",
+			"message": "tutorial_step_42",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -736,7 +780,7 @@ func _build_default_steps() -> Array:
 			"block": "endturn"
 		},
 		{
-			"message": "Click continue.",
+			"message": "tutorial_step_43",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "ui",
@@ -747,7 +791,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "We finished our conquests for now. Let's talk about economy and resources.",
+			"message": "tutorial_step_44",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -755,19 +799,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Population is your main source of gold income and recruits for your armies.",
-			"show_continue": true,
-			"block_input": true,
-			"expected_action": "continue",
-			"panel_position": Vector2(500, 300),
-			"arrow": {
-				"id": "15",
-				"anchor": "screen"
-			},
-			"block": "trade,endturn"
-		},
-		{
-			"message": "Promoting a region boosts its growth. Hiring soldiers reduces it.",
+			"message": "tutorial_step_45",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -779,7 +811,19 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "You need food to maintain your armies. Every soldier consumes 0.1 Food per turn.",
+			"message": "tutorial_step_46",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(500, 300),
+			"arrow": {
+				"id": "15",
+				"anchor": "screen"
+			},
+			"block": "trade,endturn"
+		},
+		{
+			"message": "tutorial_step_47",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -791,7 +835,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Hungry armies will drain resources from local regions, bringing death and starvation.",
+			"message": "tutorial_step_48",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -803,7 +847,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Wood is your basic building resource. You need it to build outposts, upgrade castles or regions.",
+			"message": "tutorial_step_49",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -815,7 +859,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "You will also need it to hire ranged units and build siege equipment.",
+			"message": "tutorial_step_50",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -827,7 +871,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Stone is mostly needed for your keeps, castles and strongholds.",
+			"message": "tutorial_step_51",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -839,7 +883,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Iron is a crucial resource used to produce the armour required by your top-tier units — Knights.",
+			"message": "tutorial_step_52",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -851,7 +895,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "To gain access to iron you need mines. Conquer regions with hills and look for iron ore!",
+			"message": "tutorial_step_53",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -863,7 +907,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Raising armies, promoting regions, building, recruiting - you will need gold for all of it.\nA lot! ",
+			"message": "tutorial_step_54",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -875,7 +919,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn"
 		},
 		{
-			"message": "Last few points before we finish the tutorial. Click your region again.",
+			"message": "tutorial_step_55",
 			"show_continue": false,
 			"block_input": false,
 			"expected_action": "region",
@@ -892,7 +936,7 @@ func _build_default_steps() -> Array:
 			"camera_focus": {"type": "region", "region_id": 190}
 		},
 		{
-			"message": "Let's return to the Region screen.",
+			"message": "tutorial_step_56",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -900,7 +944,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Region promotion grants a temporary bonus to growth, increases the recruit pool, and improves income and the size of local resources. ",
+			"message": "tutorial_step_57",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -912,7 +956,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "To recruit better units you need better castles. Greater castles will also increase region's defense bonus.",
+			"message": "tutorial_step_58",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -924,7 +968,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Regions with hills may contain precious iron or gold deposits. Their presence and size are random. Each region has three chances to discover them.",
+			"message": "tutorial_step_59",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -936,7 +980,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "You will need more armies to conquer your enemies. If you build a Keep, you will be able to raise new armies.",
+			"message": "tutorial_step_60",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -948,7 +992,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Units can serve in your armies or remain in the region’s garrison. Garrisoned soldiers defend the region but can be reassigned at any time.",
+			"message": "tutorial_step_61",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -960,7 +1004,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "If you build at least an Outpost (Level 1 defense), you gain access to recruits from all neighboring owned regions.",
+			"message": "tutorial_step_62",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -972,7 +1016,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "This is your local garrison — units hired to defend this region. Any unhired recruits will automatically join the defense if the region is attacked.",
+			"message": "tutorial_step_63",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -984,7 +1028,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Finally, here you can see the local population, growth, income, and resource output added to your pool each turn.",
+			"message": "tutorial_step_64",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",
@@ -996,7 +1040,7 @@ func _build_default_steps() -> Array:
 			"block": "trade,endturn,regionsactions"
 		},
 		{
-			"message": "Congratulations!\nYou have finished the tutorial. Click Continue to exit.",
+			"message": "tutorial_step_65",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

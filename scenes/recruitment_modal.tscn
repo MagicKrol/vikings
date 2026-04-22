@@ -208,7 +208,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Double atack against mounted units or when defending."
+text = "trait_desc_long_spears"
 autowrap_mode = 2
 
 [node name="Trait2" type="HBoxContainer" parent="Info/Header"]
@@ -239,7 +239,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Can attack all units."
+text = "trait_desc_ranged"
 autowrap_mode = 2
 
 [node name="Trait3" type="HBoxContainer" parent="Info/Header"]
@@ -271,7 +271,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Allows chasing retreating units dealing additional damage."
+text = "trait_desc_mobility"
 autowrap_mode = 2
 
 [node name="Trait4" type="HBoxContainer" parent="Info/Header"]
@@ -303,7 +303,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Can directly attack enemy ranged units."
+text = "trait_desc_flanker"
 autowrap_mode = 2
 
 [node name="Trait5" type="HBoxContainer" parent="Info/Header"]
@@ -335,7 +335,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Doubles attack power when fighting in grassland regions."
+text = "trait_desc_charge"
 autowrap_mode = 2
 
 [node name="Trait6" type="HBoxContainer" parent="Info/Header"]
@@ -367,7 +367,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Provides additional attack"
+text = "trait_desc_multi_attack"
 autowrap_mode = 2
 
 [node name="Trait7" type="HBoxContainer" parent="Info/Header"]
@@ -399,7 +399,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Halves enemy defense"
+text = "trait_desc_armor_piercing"
 autowrap_mode = 2
 
 [node name="Trait8" type="HBoxContainer" parent="Info/Header"]
@@ -431,7 +431,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Can constuct siege equipment"
+text = "trait_desc_siege_laborer"
 autowrap_mode = 2
 
 [node name="Trait9" type="HBoxContainer" parent="Info/Header"]
@@ -463,7 +463,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Protected by melee units from close combat damage."
+text = "trait_desc_back_rank"
 autowrap_mode = 2
 
 [node name="Trait10" type="HBoxContainer" parent="Info/Header"]
@@ -495,7 +495,7 @@ custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 theme = ExtResource("3_standard")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "50% attack bonus when defending"
+text = "trait_desc_defender"
 autowrap_mode = 2
 
 [node name="Recruitment" type="Panel" parent="."]
@@ -1470,7 +1470,7 @@ offset_right = 293.0
 offset_bottom = 125.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "• Back Rank"
+text = "• Back rank"
 
 [node name="ArmorPiercing" type="Label" parent="Recruitment/HBoxContainer/Body/Units/SecondRow/Crossbowmen"]
 layout_mode = 0

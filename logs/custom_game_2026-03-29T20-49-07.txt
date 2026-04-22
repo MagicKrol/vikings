@@ -1,0 +1,759 @@
+AI Log File: custom_game
+
+Recruitment: Score: 0.16 (r=8, a=3, dist=0.0, rec=144, gold=100) vs thr=0.50; Frontier2Army=4.00
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Economy: Bought 7 Food (gold change -15)
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 100
+Food: 50
+Wood: 20
+Iron: 10
+Stone: 10
+
+Signals:
+frontier_pressure: 1.500
+underpowered_ratio: 0.000
+castle_spacing: 8.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Northvik: level=0 total=0 threats=0
+
+Economy: Raise Army: guards_failed (Score: 0.16 (r=8, a=3, dist=0.0, rec=144, gold=100) vs thr=0.50; Frontier2Army=4.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- none
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Northvik (#367) | total:100.0 (recruits:100.0, distance:100.0, dist:8, next:Castle)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY III (Raider) -------------
+Army III [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 50.9 (resources: 7.5, population: 4.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+Candidate 2: Greenhavn (#365), score: 49.7 (resources: 11.2, population: 3.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.6)
+Candidate 3: Oakvik (#430), score: 46.1 (resources: 7.5, population: 1.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.9)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Moves to Ashholme [MP left: 3, Vigor: 95%]
+Moves to Sandhavn [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Sandhavn
+Battle started
+Attacker: Army III [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Garrison (unknown) [Power: 2 - P:1]
+Defender Recruits (Sandhavn) (unknown) [Power: 24 - P:12]
+Battle Result: Won
+Attacker After: Army III [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Sandhavn (unknown) [Power: 0 - none]
+
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.0 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.0 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.0 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.2 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.2 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.2 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.3 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.0 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.2 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.3 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.0 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.7 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.0 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.3 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.2 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 53.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.1 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.2 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 56.5 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 52.9 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 54.8 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 57.4 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.3 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)
+Arrived at Sandhavn
+Moving to Sandhavn [MP left: 1, Vigor: 85%]
+DecisionTree: Army III -> threat_no_action (no_threatened_castles)
+DecisionTree: Army III -> mode_expansion_role_raider (post_threat)
+Candidate 1: Sandhavn (#433), score: 55.6 (resources: 7.5, population: 4.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.8)
+DecisionTree: Army III -> role_raider_expand (neutral_targets)
+[MOVEMENT]
+Best target: Sandhavn (no enemy)

@@ -39,7 +39,7 @@
 [ext_resource type="PackedScene" uid="uid://cs8o70rk3hgp4" path="res://scenes/game_menu_modal.tscn" id="38_gamemenu"]
 [ext_resource type="Script" path="res://clouds.gd" id="39_clouds"]
 [ext_resource type="PackedScene" uid="uid://d0hu4g0lacpku" path="res://scenes/options.tscn" id="40_options"]
-[ext_resource type="PackedScene" path="res://scenes/save_game_modal.tscn" id="41_savegamemodal"]
+[ext_resource type="PackedScene" uid="uid://h42eo1s0dxyd" path="res://scenes/save_game_modal.tscn" id="41_savegamemodal"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")

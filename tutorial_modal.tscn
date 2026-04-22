@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://5d88xtt84ehc"]
 
 [ext_resource type="Script" path="res://tutorial_modal.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://cef4a8vfbpqtt" path="res://images/icons/arrow.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bvg0alcsspsf3" path="res://images/icons/arrow_blue.png" id="2"]
 
 [node name="TutorialModal" type="Node2D"]
 z_index = 2000
@@ -99,8 +99,8 @@ flip_h = true
 
 [node name="Arrow14" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(1308, 372)
-rotation = 0.230383
+position = Vector2(1420, 380)
+rotation = 0.523599
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 flip_h = true
@@ -171,39 +171,39 @@ texture = ExtResource("2")
 
 [node name="Arrow24" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(630, 330)
-rotation = 0.230383
+position = Vector2(630, 380)
+rotation = -0.523599
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow25" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(650, 722)
+position = Vector2(620, 900)
 rotation = -0.879646
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow26" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(650, 698)
+position = Vector2(620, 850)
+rotation = -0.879646
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2")
+
+[node name="Arrow13" type="Sprite2D" parent="Arrows"]
+visible = false
+position = Vector2(620, 810)
 rotation = -0.879646
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow27" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(1295, 465)
+position = Vector2(1350, 570)
 rotation = -0.881391
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 flip_h = true
-
-[node name="Arrow13" type="Sprite2D" parent="Arrows"]
-visible = false
-position = Vector2(650, 661)
-rotation = -0.879646
-scale = Vector2(0.4, 0.4)
-texture = ExtResource("2")
 
 [node name="Arrow28" type="Sprite2D" parent="Arrows"]
 visible = false
@@ -704,9 +704,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1040.0
+offset_left = 1014.0
 offset_top = 958.0
-offset_right = 1240.0
+offset_right = 1214.0
 offset_bottom = 1013.0
 grow_horizontal = 2
 grow_vertical = 2

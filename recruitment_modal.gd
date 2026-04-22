@@ -45,6 +45,30 @@ const HOLD_STEP: int = 10
 const TUTORIAL_TARGET_TEN_ARCHERS: String = "RecruitmentModal/10archers"
 const TUTORIAL_TARGET_ONE_ARCHER: String = "RecruitmentModal/1archers"
 const TUTORIAL_TARGET_RECRUIT_ALL: String = "RecruitmentModal/recruit_all"
+const TRAIT_KEY_BY_LABEL_NAME := {
+	"LongSpears": "long_spears",
+	"Ranged": "ranged",
+	"Mobility": "mobility",
+	"Flanker": "flanker",
+	"Charge": "charge",
+	"MultiAttack": "multi_attack",
+	"ArmorPiercing": "armor_piercing",
+	"SiegeLaborer": "siege_laborer",
+	"BackRank": "back_rank",
+	"Defender": "defender"
+}
+const TRAIT_DESCRIPTION_KEY_BY_TRAIT_KEY := {
+	"long_spears": "trait_desc_long_spears",
+	"ranged": "trait_desc_ranged",
+	"mobility": "trait_desc_mobility",
+	"flanker": "trait_desc_flanker",
+	"charge": "trait_desc_charge",
+	"multi_attack": "trait_desc_multi_attack",
+	"armor_piercing": "trait_desc_armor_piercing",
+	"siege_laborer": "trait_desc_siege_laborer",
+	"back_rank": "trait_desc_back_rank",
+	"defender": "trait_desc_defender"
+}
 const TRAIT_KEY_ALIASES := {
 	"multi attack": "master-at-arms",
 	"multiattack": "master-at-arms",
@@ -160,13 +184,9 @@ func _connect_button_signals() -> void:
 
 func _build_trait_descriptions() -> void:
 	_trait_descriptions.clear()
-	var info_node: Control = get_node("Info") as Control
-	for i in range(1, 11):
-		var trait_name: Label = info_node.get_node("Header/Trait" + str(i) + "/Name") as Label
-		var trait_desc: Label = info_node.get_node("Header/TraitDesc" + str(i) + "/Name") as Label
-		var key := _normalize_trait_key(trait_name.text)
-		if key != "":
-			_trait_descriptions[key] = trait_desc.text
+	for trait_key in TRAIT_DESCRIPTION_KEY_BY_TRAIT_KEY.keys():
+		var desc_key: String = String(TRAIT_DESCRIPTION_KEY_BY_TRAIT_KEY[trait_key])
+		_trait_descriptions[trait_key] = tr(desc_key)
 
 func _connect_trait_tooltips() -> void:
 	for section_data in UNIT_SECTIONS:
@@ -190,6 +210,8 @@ func _normalize_trait_key(text: String) -> String:
 	return key.strip_edges()
 
 func _get_label_trait_key(label: Label) -> String:
+	if TRAIT_KEY_BY_LABEL_NAME.has(label.name):
+		return String(TRAIT_KEY_BY_LABEL_NAME[label.name])
 	var key := _normalize_trait_key(label.text)
 	if key == "" or key == "none":
 		return ""

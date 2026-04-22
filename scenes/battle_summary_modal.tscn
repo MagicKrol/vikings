@@ -159,6 +159,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Remain"
+horizontal_alignment = 1
 
 [node name="UnitsSection" type="VBoxContainer" parent="Panel/Army"]
 layout_mode = 2
@@ -916,12 +917,14 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Army/ButtonSection"]
 layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
-custom_minimum_size = Vector2(410, 0)
-layout_mode = 2
+alignment = 1
 
 [node name="Button" type="Button" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme = ExtResource("5_button_theme")
 text = "Continue"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/Army/ButtonSection/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2

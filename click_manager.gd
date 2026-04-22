@@ -140,6 +140,14 @@ func _on_map_click(screen_pos: Vector2, button_index: int) -> void:
 	if _is_ui_click(screen_pos, screen_pos):
 		DebugLogger.log("click", "ClickManager: UI click detected in _on_left_click")
 		return
+	if _tutorial_manager != null and _tutorial_manager.should_block_map_click():
+		DebugLogger.log("Tutorial", "Map click blocked for current tutorial step")
+		return
+	if _tutorial_manager != null and _tutorial_manager.is_active() and _tutorial_manager.get_expected_action() == "region":
+		var has_selected_army: bool = _army_manager != null and _army_manager.selected_army != null
+		if _tutorial_manager.should_block_region_click(button_index, has_selected_army):
+			DebugLogger.log("Tutorial", "Map click blocked due to wrong trigger button for tutorial region step")
+			return
 	# Check if any modal is active and close them first, but allow move flow to proceed
 	if _ui_manager and _ui_manager.is_modal_active:
 		if _ui_manager.has_blocking_modal():
@@ -264,6 +272,10 @@ func _handle_region_click(region_container: Node, button_index: int) -> void:
 		if region.is_ocean_region():
 			return
 		if _is_mountain_region(region):
+			return
+		var has_selected_army: bool = _army_manager != null and _army_manager.selected_army != null
+		if _tutorial_manager.should_block_region_click(button_index, has_selected_army):
+			DebugLogger.log("Tutorial", "Blocked tutorial region click due to step-specific button rule")
 			return
 		if not _tutorial_manager.handle_region_click(region):
 			return
