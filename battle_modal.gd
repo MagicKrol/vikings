@@ -586,6 +586,11 @@ func _run_battle_simulation() -> void:
 		var gc = garrison_comp.get_soldier_count(unit_type)
 		if gc > 0:
 			current_defender_composition[unit_type] = current_defender_composition.get(unit_type, 0) + gc
+	# Add recruits to live defender composition (used by round UI + power bar baseline)
+	var summary_recruits: int = defending_region.get_base_available_recruits()
+	_defender_start_recruits = summary_recruits
+	if summary_recruits > 0:
+		current_defender_composition[SoldierTypeEnum.Type.PEASANTS] = current_defender_composition.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
 	
 	# Store initial compositions for battle summary
 	initial_attacker_comp = current_attacker_composition.duplicate()
@@ -593,11 +598,6 @@ func _run_battle_simulation() -> void:
 	# Power bars baseline must match the exact live starting compositions.
 	_initial_attacker_power = _compute_dict_power(current_attacker_composition)
 	_initial_defender_power = _compute_dict_power(current_defender_composition)
-	# Add recruits to initial defender composition
-	var summary_recruits = defending_region.get_base_available_recruits()
-	_defender_start_recruits = summary_recruits
-	if summary_recruits > 0:
-		initial_defender_comp[SoldierTypeEnum.Type.PEASANTS] = initial_defender_comp.get(SoldierTypeEnum.Type.PEASANTS, 0) + summary_recruits
 	_update_army_power_bars()
 	
 	# During battle, show withdraw functionality

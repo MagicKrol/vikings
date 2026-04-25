@@ -414,8 +414,13 @@ func _start_scenario() -> void:
 	var scen := scen_mgr.load_scenario(scenario_path)
 	_initialize_victory_conditions_from_scenario_data(scen)
 	_initialize_trade_rules_from_scenario_data(scen)
+	_apply_scenario_player_settings_from_data(scen)
 	# Apply to runtime
 	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager)
+	var heat_calc := StrategicPointsHeatmap.new()
+	heat_calc.initialize(_region_manager, map_generator)
+	heat_calc.enable_key_toggle = false
+	heat_calc.compute_and_store()
 	_initialize_scenario_events_from_data(scen)
 
 	# Initialize AI system (now with proper PlayerManagerNode reference)
@@ -458,6 +463,19 @@ func _start_scenario() -> void:
 	if _show_scenario_intro_message_if_any(scen):
 		return
 	_start_first_turn()
+
+func _apply_scenario_player_settings_from_data(scenario_data: Dictionary) -> void:
+	if not scenario_data.has("player_settings"):
+		return
+	var raw_settings: Variant = scenario_data.get("player_settings", [])
+	if not (raw_settings is Array):
+		return
+	var settings: Array = raw_settings
+	if settings.is_empty():
+		return
+	_apply_custom_map_player_settings(settings)
+	player_manager._initialize_players(player_types)
+	_apply_starting_resources_for_difficulty()
 
 func _show_scenario_intro_message_if_any(scenario_data: Dictionary) -> bool:
 	var intro_text: String = String(scenario_data.get("intro_message", "")).strip_edges()
@@ -1232,9 +1250,9 @@ func _execute_scenario_event(event_index: int) -> void:
 		var composition: Dictionary = _normalize_event_composition(event_data.get("composition", {}))
 		var player_id: int = int(event_data.get("player_id", 1))
 		var spawned_army: Army = _spawn_scenario_event_army_in_region(region, player_id, composition)
-		var region_owner: int = _region_manager.get_region_owner(region_id)
 		var army_player_id: int = spawned_army.get_player_id()
-		if region_owner != -1 and region_owner != army_player_id:
+		var battle_needed: bool = _should_trigger_battle(spawned_army, region)
+		if battle_needed:
 			await handle_army_battle(spawned_army, region_id)
 			await _await_pending_battles()
 			check_victory_conditions_for_player(army_player_id)

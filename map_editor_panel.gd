@@ -45,9 +45,6 @@ var _save_scenario_button: Button
 var _save_map_button: Button
 var _exit_button: Button
 var _scenario_name_edit: LineEdit
-var _intro_message_edit: LineEdit
-var _scenario_description_edit: LineEdit
-var _objectives_edit: LineEdit
 var _scenario_type_option: OptionButton
 var _mission_number_row: HBoxContainer
 var _mission_number_option: OptionButton
@@ -131,9 +128,6 @@ func _ready() -> void:
 	_save_scenario_button = get_node("Panel/TabContainer/Main/SaveButtonRow/SaveScenarioButton") as Button
 	_save_map_button = get_node("Panel/TabContainer/Main/SaveMapButtonRow/SaveMapButton") as Button
 	_scenario_name_edit = get_node("Panel/TabContainer/Main/SaveRow/ScenarioNameEdit") as LineEdit
-	_intro_message_edit = get_node("Panel/TabContainer/Main/IntroMessageRow/IntroMessageEdit") as LineEdit
-	_scenario_description_edit = get_node("Panel/TabContainer/Main/DescriptionRow/DescriptionEdit") as LineEdit
-	_objectives_edit = get_node("Panel/TabContainer/Main/ObjectivesRow/ObjectivesEdit") as LineEdit
 	_scenario_type_option = get_node("Panel/TabContainer/Main/ScenarioTypeRow/ScenarioTypeOption") as OptionButton
 	_mission_number_row = get_node("Panel/TabContainer/Main/MissionNumberRow") as HBoxContainer
 	_mission_number_option = get_node("Panel/TabContainer/Main/MissionNumberRow/MissionNumberOption") as OptionButton
@@ -330,9 +324,6 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 		if loaded_resources is Array:
 			_apply_loaded_player_resources(loaded_resources)
 			DebugLogger.log("MapEditorPanel", "Loaded player resources from scenario")
-	_intro_message_edit.text = String(data.get("intro_message", ""))
-	_scenario_description_edit.text = String(data.get("description", ""))
-	_objectives_edit.text = String(data.get("objectives", ""))
 	_set_scenario_type_from_data(String(data.get("scenario_type", "scenario")))
 	var mission_number: int = maxi(1, int(data.get("mission_number", 1)))
 	var mission_index: int = mini(_mission_number_option.item_count - 1, mission_number - 1)
@@ -1105,6 +1096,7 @@ func _on_close_garrison_pressed() -> void:
 
 func _on_save_scenario_pressed() -> void:
 	var mg: MapGenerator = get_node("../../Map") as MapGenerator
+	var map_editor: MapEditor = get_node("../../MapEditor") as MapEditor
 	var regions_node: Node = mg.get_node("Regions")
 	var regions_data: Array = []
 	var armies_data: Array = []
@@ -1115,14 +1107,19 @@ func _on_save_scenario_pressed() -> void:
 			for sub in region.get_children():
 				if sub is Army:
 					armies_data.append(_serialize_army(sub as Army, region.get_region_id()))
+	var scenario_name: String = _resolve_scenario_save_name()
+	var translation_keys: Dictionary = map_editor.ensure_scenario_translation_keys(scenario_name)
+	var intro_key: String = String(translation_keys.get("intro_message", scenario_name + "_intro"))
+	var description_key: String = String(translation_keys.get("description", scenario_name + "_description"))
+	var objectives_key: String = String(translation_keys.get("objectives", scenario_name + "_objectives"))
 	var scenario_type: String = _get_selected_scenario_type()
 	var scenario := {
 		"map_file": mg.data_file_path,
 		"regions": regions_data,
 		"armies": armies_data,
-		"intro_message": _intro_message_edit.text.strip_edges(),
-		"description": _scenario_description_edit.text.strip_edges(),
-		"objectives": _objectives_edit.text.strip_edges(),
+		"intro_message": intro_key,
+		"description": description_key,
+		"objectives": objectives_key,
 		"scenario_type": scenario_type,
 		"player_settings": player_settings,
 		"player_resources": player_resources,
@@ -1133,7 +1130,13 @@ func _on_save_scenario_pressed() -> void:
 	}
 	if scenario_type == "campaign":
 		scenario["mission_number"] = _mission_number_option.selected + 1
-	_write_scenario(scenario)
+	_write_scenario(scenario, scenario_name)
+
+func _resolve_scenario_save_name() -> String:
+	var name: String = _scenario_name_edit.text.strip_edges()
+	if name == "":
+		return "last_saved_scenario"
+	return name
 
 func _serialize_region(region: Region) -> Dictionary:
 	var data: Dictionary = {}
@@ -1187,10 +1190,9 @@ func _serialize_army(army: Army, region_id: int) -> Dictionary:
 	return data
 
 
-func _write_scenario(scenario: Dictionary) -> void:
+func _write_scenario(scenario: Dictionary, scenario_name: String) -> void:
 	DirAccess.make_dir_recursive_absolute("res://scenarios")
-	var name := _scenario_name_edit.text.strip_edges()
-	var filename := (name if name != "" else "last_saved_scenario") + ".json"
+	var filename: String = scenario_name + ".json"
 	var path := "res://scenarios/" + filename
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	var json_text := JSON.stringify(scenario, "\t")

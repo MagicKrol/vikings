@@ -265,6 +265,7 @@ Reachability handling:
 - if none reachable, far targets are ordered by:
 	- lowest mp_cost first
 	- final_score tie-break
+- for `MAIN` hard-target selection (`require_reachable_this_turn=true`), if no hard target is reachable now, AI advances toward the best unreachable hard target by score (higher `final_score`, then lower `mp_cost`) instead of camping in place
 
 ### 4.4 Known Enemy Gate Before Scoring
 
@@ -351,6 +352,12 @@ AI uses tracked enemy memory in target and merge decisions.
 	- pursuit bonus
 	- score adjustment/nullification
 	- merge/halt/proceed policy
+- Raider unknown hard targets:
+	- if hard target enemy strength is unknown, raider now rolls attack permission by difficulty:
+		- Easy: 25%
+		- Normal: 50%
+		- Hard: 75%
+	- failed roll rejects that candidate with `raider_unknown_hard_target`; successful roll allows regular move execution
 
 ## 9. Key Constants Used Most in Army Movement
 

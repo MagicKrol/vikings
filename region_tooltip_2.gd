@@ -5,6 +5,7 @@ const MOUSE_OFFSET = Vector2(20, 30)
 
 # UI element references
 @onready var region_name_label: Label = $Panel/Army/HeaderSection/RegionName
+@onready var _game_manager: GameManager = get_node("../../GameManager") as GameManager
 
 # Icon references
 @onready var population_icon: TextureRect = $Panel/Army/ValuesSection/Images/PopulationIcon
@@ -49,7 +50,10 @@ func show_region_tooltip(region: Region, mouse_pos: Vector2):
 	# Update region name with level (e.g., "Shire of Hornhold")
 	var region_level = region.get_region_level()
 	var level_text = RegionLevelEnum.level_to_display_string(region_level)
-	region_name_label.text = tr("%s of %s") % [level_text, region.get_region_name()]
+	var region_name_text: String = tr("%s of %s") % [level_text, region.get_region_name()]
+	if _should_show_region_id():
+		region_name_text += " [#" + str(region.get_region_id()) + "]"
+	region_name_label.text = region_name_text
 	
 	# Update population
 	population_value.text = str(region.get_population())
@@ -176,3 +180,6 @@ func _should_show_ore_hint(region: Region) -> bool:
 	if not region.get_discovered_ores().is_empty():
 		return false
 	return region.get_ore_search_attempts_remaining() > 0
+
+func _should_show_region_id() -> bool:
+	return _game_manager.debug_mode or _game_manager.enable_map_editor

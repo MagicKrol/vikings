@@ -1,6 +1,8 @@
 extends Node
 class_name MapEditor
 
+const HOTW_TRANSLATIONS_CSV_PATH: String = "res://translations/hotw_translations.csv"
+
 # ============================================================================
 # MAP EDITOR CONTROLLER
 # ============================================================================
@@ -20,6 +22,102 @@ class_name MapEditor
 var initialized: bool = false
 var map_editor_panel: Control = null
 var _last_region_id: int = -1
+
+func ensure_scenario_translation_keys(scenario_name: String) -> Dictionary:
+	var intro_key: String = scenario_name + "_intro"
+	var description_key: String = scenario_name + "_description"
+	var objectives_key: String = scenario_name + "_objectives"
+	var translation_rows: Array[Dictionary] = [
+		{
+			"key": intro_key,
+			"explanation": "Scenario metadata key used for intro popup text at scenario start."
+		},
+		{
+			"key": description_key,
+			"explanation": "Scenario metadata key used for scenario description text in the main menu."
+		},
+		{
+			"key": objectives_key,
+			"explanation": "Scenario metadata key used for scenario objectives text in the main menu."
+		}
+	]
+	_ensure_translation_rows(translation_rows)
+	return {
+		"intro_message": intro_key,
+		"description": description_key,
+		"objectives": objectives_key
+	}
+
+func _ensure_translation_rows(rows: Array[Dictionary]) -> void:
+	var csv_text: String = FileAccess.get_file_as_string(HOTW_TRANSLATIONS_CSV_PATH)
+	if csv_text == "":
+		DebugLogger.log("MapEditor", "Could not read translation file: " + HOTW_TRANSLATIONS_CSV_PATH)
+		return
+	var existing_keys: Dictionary = {}
+	var csv_lines: PackedStringArray = csv_text.split("\n", false)
+	for line in csv_lines:
+		var trimmed_line: String = line.strip_edges()
+		if trimmed_line == "":
+			continue
+		var key: String = _extract_csv_first_column(trimmed_line)
+		if key != "":
+			existing_keys[key] = true
+	var rows_to_append: Array[String] = []
+	for row_data in rows:
+		var key: String = String(row_data.get("key", ""))
+		if key == "" or existing_keys.has(key):
+			continue
+		var explanation: String = String(row_data.get("explanation", ""))
+		rows_to_append.append(_build_translation_csv_row(key, explanation))
+	if rows_to_append.is_empty():
+		return
+	var newline: String = "\n"
+	if csv_text.contains("\r\n"):
+		newline = "\r\n"
+	var output_text: String = csv_text
+	if not output_text.ends_with("\n") and not output_text.ends_with("\r\n"):
+		output_text += newline
+	for row_line in rows_to_append:
+		output_text += row_line + newline
+	var file: FileAccess = FileAccess.open(HOTW_TRANSLATIONS_CSV_PATH, FileAccess.WRITE)
+	file.store_string(output_text)
+	file.close()
+
+func _build_translation_csv_row(key: String, explanation: String) -> String:
+	var escaped_key: String = _csv_escape(key)
+	var escaped_explanation: String = _csv_escape(explanation)
+	return ",".join([
+		escaped_key,
+		escaped_explanation,
+		escaped_key,
+		escaped_key,
+		escaped_key,
+		escaped_key
+	])
+
+func _csv_escape(value: String) -> String:
+	var escaped_value: String = value.replace("\"", "\"\"")
+	if value.contains(",") or value.contains("\"") or value.contains("\n") or value.contains("\r"):
+		return "\"" + escaped_value + "\""
+	return escaped_value
+
+func _extract_csv_first_column(line: String) -> String:
+	if line.begins_with("\""):
+		var key: String = ""
+		var index: int = 1
+		while index < line.length():
+			var char: String = line.substr(index, 1)
+			if char == "\"":
+				var next_index: int = index + 1
+				if next_index < line.length() and line.substr(next_index, 1) == "\"":
+					key += "\""
+					index += 2
+					continue
+				break
+			key += char
+			index += 1
+		return key
+	return line.get_slice(",", 0).strip_edges()
 
 func _apply_region_data_updates(mg: MapGenerator, region_id: int, updates: Dictionary) -> void:
 	var region_data = mg.region_by_id.get(region_id, null)

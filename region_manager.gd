@@ -121,6 +121,7 @@ func get_neighbor_regions(region_id: int) -> Array[int]:
 
 func set_region_ownership(region_id: int, player_id: int) -> void:
 	"""Set ownership of a region to a specific player"""
+	var previous_owner: int = get_region_owner(region_id)
 	# Neutral/clear ownership when player_id <= 0
 	if player_id <= 0:
 		if region_ownership.has(region_id):
@@ -131,6 +132,7 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 			var region = region_container as Region
 			if region != null:
 				region.set_region_owner(0)
+				region.just_conquered_this_turn = false
 		# Remove overlay if present
 		if map_generator and map_generator.has_method("remove_ownership_overlay"):
 			map_generator.remove_ownership_overlay(region_id)
@@ -138,7 +140,6 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 			visual_manager.clear_region_highlight_state(region_id)
 	else:
 		# Assign ownership to player_id
-		var previous_owner: int = get_region_owner(region_id)
 		region_ownership[region_id] = player_id
 		# Update the region's ownership tracking
 		var region_container2 = map_generator.get_region_container_by_id(region_id)
@@ -146,6 +147,7 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 			var region2 = region_container2 as Region
 			if region2 != null:
 				region2.set_region_owner(player_id)
+				region2.just_conquered_this_turn = previous_owner != player_id
 				# Create or update colored overlay for owned region
 				if map_generator:
 					if previous_owner == -1:

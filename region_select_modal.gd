@@ -263,7 +263,7 @@ func _on_promote_region_pressed() -> void:
 	if player_manager == null:
 		return
 	
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return
 	if not current_player.pay_cost(promotion_cost):
@@ -317,7 +317,7 @@ func _calculate_repair_cost() -> Dictionary:
 func _can_player_afford_repair() -> bool:
 	if player_manager == null:
 		return false
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return false
 	var repair_cost = _calculate_repair_cost()
@@ -355,7 +355,7 @@ func _on_repair_castle_pressed() -> void:
 		return
 	if player_manager == null or region_manager == null:
 		return
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return
 	if not region_manager.try_repair_castle(current_region, current_player):
@@ -374,7 +374,7 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	if construction_cost.is_empty() or player_manager == null:
 		return
 	
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null or not current_player.pay_cost(construction_cost):
 		return
 	
@@ -411,7 +411,7 @@ func _on_ore_search_pressed() -> void:
 	if current_region == null or region_manager == null or player_manager == null:
 		return
 	
-	var search_result = region_manager.perform_ore_search(current_region, 1, player_manager)
+	var search_result: Dictionary = region_manager.perform_ore_search(current_region, _get_current_turn_player_id(), player_manager)
 	
 	if search_result.success and search_result.has("ore_type"):
 		var ore_type = search_result.ore_type
@@ -454,16 +454,17 @@ func _on_raise_army_pressed() -> void:
 	if not _region_has_army_capacity():
 		return
 	
-	var current_player = player_manager.get_player(game_manager.get_current_player())
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return
 	
-	var raise_army_cost = GameParameters.get_raise_army_cost()
+	var current_player_id: int = _get_current_turn_player_id()
+	var raise_army_cost: int = GameParameters.get_raise_army_cost()
 	if current_player.get_resource_amount(ResourcesEnum.Type.GOLD) < raise_army_cost:
 		return
 	
 	current_player.remove_resources(ResourcesEnum.Type.GOLD, raise_army_cost)
-	var new_army = army_manager.create_raised_army(current_region, game_manager.get_current_player())
+	var new_army: Army = army_manager.create_raised_army(current_region, current_player_id)
 	
 	if new_army != null:
 		current_region.mark_raise_army_used()
@@ -536,7 +537,7 @@ func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 	if promotion_cost.is_empty():
 		return false
 	
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return false
 	
@@ -558,7 +559,7 @@ func _can_player_afford_promotion(target_level: RegionLevelEnum.Level) -> bool:
 func _passes_food_upgrade_safeguard(player_id: int, promotion_cost: Dictionary) -> bool:
 	if player_manager == null:
 		return false
-	var food_cost = int(promotion_cost.get(ResourcesEnum.Type.FOOD, 0))
+	var food_cost: int = int(promotion_cost.get(ResourcesEnum.Type.FOOD, 0))
 	return player_manager.meets_food_upgrade_safeguard(player_id, food_cost)
 
 func _request_player_status_refresh() -> void:
@@ -568,7 +569,7 @@ func _can_player_afford_castle(castle_type: CastleTypeEnum.Type) -> bool:
 	if player_manager == null:
 		return false
 	
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return false
 	
@@ -585,26 +586,32 @@ func _can_player_afford_castle(castle_type: CastleTypeEnum.Type) -> bool:
 func _can_player_afford_any_castle() -> bool:
 	return _can_player_afford_castle(CastleTypeEnum.Type.OUTPOST)
 
+func _get_current_turn_player_id() -> int:
+	return game_manager.get_current_player_id()
+
+func _get_current_turn_player() -> Player:
+	return player_manager.get_player(_get_current_turn_player_id())
+
 func _can_player_afford_ore_search() -> bool:
 	if player_manager == null:
 		return false
 	
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return false
 	
-	var search_cost = GameParameters.get_ore_search_cost()
+	var search_cost: int = GameParameters.get_ore_search_cost()
 	return current_player.get_resource_amount(ResourcesEnum.Type.GOLD) >= search_cost
 
 func _can_player_afford_raise_army() -> bool:
 	if player_manager == null:
 		return false
 	
-	var current_player = player_manager.get_player(1)
+	var current_player: Player = _get_current_turn_player()
 	if current_player == null:
 		return false
 	
-	var raise_army_cost = GameParameters.get_raise_army_cost()
+	var raise_army_cost: int = GameParameters.get_raise_army_cost()
 	return current_player.get_resource_amount(ResourcesEnum.Type.GOLD) >= raise_army_cost
 
 func _get_armies_in_current_region() -> Array[Army]:

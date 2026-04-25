@@ -72,6 +72,11 @@ const AI_THREAT_RESPONSE_MIN_LEVEL: int = 2
 const AI_RECRUITMENT_BREAKTHROUGH_MAX_EXPLORED_NODES: int = 120
 const AI_RECRUITMENT_BREAKTHROUGH_MAX_NON_FRIENDLY_REGIONS: int = 3
 const AI_RECRUITMENT_HALF_THRESHOLD_RATIO: float = 0.5
+const AI_RAIDER_UNKNOWN_HARD_ATTACK_CHANCE_BY_DIFFICULTY: Dictionary = {
+	GameParameters.Difficulty.EASY: 0.25,
+	GameParameters.Difficulty.NORMAL: 0.5,
+	GameParameters.Difficulty.HARD: 0.75
+}
 
 enum AIMode {
 	EXPANSION,
@@ -518,6 +523,7 @@ func _select_frontier_reachable_move_for_targets(army: Army, targets: Array[int]
 	_log_target_candidates(moves)
 	var rejected_candidates: Array[Dictionary] = _copy_latest_candidate_rejections()
 	var best_halt: Dictionary = {}
+	var best_unreachable: Dictionary = {}
 	for move_variant in moves:
 		var move: Dictionary = move_variant as Dictionary
 		if not bool(move.get("can_reach_now", false)):
@@ -528,6 +534,8 @@ func _select_frontier_reachable_move_for_targets(army: Army, targets: Array[int]
 				float(move.get("final_score", 0.0)),
 				true
 			)
+			if _is_unreachable_candidate_better(move, best_unreachable):
+				best_unreachable = move
 			continue
 		var target_region_id: int = int(move.get("target_id", -1))
 		if target_region_id < 0:
@@ -561,6 +569,14 @@ func _select_frontier_reachable_move_for_targets(army: Army, targets: Array[int]
 			"target_id": int(best_halt.get("target_id", -1)),
 			"enemy_info": best_halt.get("enemy_info", {})
 		}
+	if not best_unreachable.is_empty():
+		var target_region_id: int = int(best_unreachable.get("target_id", -1))
+		var enemy_info: Dictionary = _build_enemy_info(target_region_id, army.get_player_id(), army)
+		best_unreachable["goal"] = "attack"
+		best_unreachable["enemy_info"] = enemy_info
+		best_unreachable["merge_decision"] = "proceed"
+		_log_rejected_candidates(rejected_candidates)
+		return best_unreachable
 	_log_rejected_candidates(rejected_candidates)
 	return {}
 
@@ -642,16 +658,21 @@ func _select_raider_scored_move(army: Army) -> Dictionary:
 		var target_has_castle: bool = int(enemy_info.get("castle_level", 0)) > 0
 		var is_hard_target: bool = target_has_enemy_army or target_has_castle
 		var raider_branch: String = "role_raider_expand"
+		var raider_reason_prefix: String = "to "
 		if is_hard_target:
 			if not bool(enemy_info.get("known", false)):
-				_append_rejected_candidate(
-					rejected_candidates,
-					target_region_id,
-					"raider_unknown_hard_target",
-					float(move.get("final_score", 0.0)),
-					true
-				)
-				continue
+				var roll_passed: bool = _roll_raider_unknown_hard_target_attack()
+				if not roll_passed:
+					_append_rejected_candidate(
+						rejected_candidates,
+						target_region_id,
+						"raider_unknown_hard_target",
+						float(move.get("final_score", 0.0)),
+						true
+					)
+					continue
+				raider_branch = "role_raider_hard_unknown_roll"
+				raider_reason_prefix = "unknown_hard_roll to "
 			var enemy_power: int = int(enemy_info.get("power", 0))
 			if enemy_power <= 0:
 				enemy_power = 1
@@ -692,11 +713,34 @@ func _select_raider_scored_move(army: Army) -> Dictionary:
 		move["enemy_info"] = enemy_info
 		move["merge_decision"] = merge_decision
 		move["raider_branch"] = raider_branch
-		move["raider_reason"] = "to " + _get_region_name_by_id(target_region_id)
+		move["raider_reason"] = raider_reason_prefix + _get_region_name_by_id(target_region_id)
 		_log_rejected_candidates(rejected_candidates)
 		return move
 	_log_rejected_candidates(rejected_candidates)
 	return {}
+
+func _is_unreachable_candidate_better(candidate: Dictionary, current_best: Dictionary) -> bool:
+	if current_best.is_empty():
+		return true
+	var candidate_score: float = float(candidate.get("final_score", 0.0))
+	var best_score: float = float(current_best.get("final_score", 0.0))
+	if abs(candidate_score - best_score) > 0.001:
+		return candidate_score > best_score
+	var candidate_cost: int = int(candidate.get("mp_cost", AI_PATH_UNREACHABLE_COST))
+	var best_cost: int = int(current_best.get("mp_cost", AI_PATH_UNREACHABLE_COST))
+	if candidate_cost != best_cost:
+		return candidate_cost < best_cost
+	var candidate_target_id: int = int(candidate.get("target_id", -1))
+	var best_target_id: int = int(current_best.get("target_id", -1))
+	return candidate_target_id < best_target_id
+
+func _roll_raider_unknown_hard_target_attack() -> bool:
+	var attack_chance: float = _get_raider_unknown_hard_target_attack_chance()
+	return randf() < attack_chance
+
+func _get_raider_unknown_hard_target_attack_chance() -> float:
+	var difficulty: int = GameParameters.normalize_game_difficulty(game_manager.get_game_difficulty())
+	return float(AI_RAIDER_UNKNOWN_HARD_ATTACK_CHANCE_BY_DIFFICULTY.get(difficulty, 0.5))
 
 func _select_support_main_merge_target(army: Army, current_region_id: int) -> Dictionary:
 	if _main_army_ids.is_empty():

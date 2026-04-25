@@ -570,13 +570,13 @@ const REGION_RESOURCES = {
 	},
 	RegionTypeEnum.Type.HILLS: {
 		ResourcesEnum.Type.STONE: {"min": 1, "max": 3},
-		ResourcesEnum.Type.IRON: {"min": 2, "max": 5},
+		ResourcesEnum.Type.IRON: {"min": 1, "max": 3},
 		ResourcesEnum.Type.GOLD: {"min": 5, "max": 12}
 	},
 	RegionTypeEnum.Type.FOREST_HILLS: {
 		ResourcesEnum.Type.WOOD: {"min": 1, "max": 2},
 		ResourcesEnum.Type.STONE: {"min": 0, "max": 2},
-		ResourcesEnum.Type.IRON: {"min": 1, "max": 3},
+		ResourcesEnum.Type.IRON: {"min": 1, "max": 2},
 		ResourcesEnum.Type.GOLD: {"min": 3, "max": 9}
 	},
 	RegionTypeEnum.Type.MOUNTAINS: {

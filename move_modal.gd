@@ -198,7 +198,7 @@ func _update_action_buttons_state() -> void:
 	_set_action_button_disabled_state(make_camp_button, disabled)
 	_set_action_button_disabled_state(cancel_button, disabled)
 	_set_action_button_disabled_state(army_actions_button, disabled)
-	_set_action_button_disabled_state(next_army_button, disabled)
+	_set_action_button_disabled_state(next_army_button, false)
 	_hide_no_actions()
 
 func _set_action_button_disabled_state(button: Button, disabled: bool) -> void:
@@ -257,10 +257,6 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			accept_event()
 			return
-		if next_army_button.disabled:
-			get_viewport().set_input_as_handled()
-			accept_event()
-			return
 		_cycle_to_next_army()
 		get_viewport().set_input_as_handled()
 		accept_event()
@@ -278,9 +274,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			if ui_manager.is_recruitment_or_transfer_modal_visible():
 				get_viewport().set_input_as_handled()
 				return
-			if next_army_button.disabled:
-				get_viewport().set_input_as_handled()
-				return
 			_cycle_to_next_army()
 			get_viewport().set_input_as_handled()
 
@@ -289,8 +282,6 @@ func set_army_manager(manager: ArmyManager) -> void:
 	army_manager = manager
 
 func _on_next_army_pressed() -> void:
-	if next_army_button.disabled:
-		return
 	if sound_manager:
 		sound_manager.click_sound()
 	_cycle_to_next_army()
