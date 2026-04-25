@@ -156,7 +156,6 @@ visible = false
 visible = false
 
 [node name="NextPlayerModal" parent="UI" instance=ExtResource("24_nextplayermodal")]
-visible = false
 
 [node name="PlayerStatusModal2" parent="UI" instance=ExtResource("25_8wafx")]
 

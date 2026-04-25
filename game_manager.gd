@@ -1973,10 +1973,10 @@ func _get_human_player_count() -> int:
 	return human_players
 
 func _should_show_next_player_modal() -> bool:
-	return _get_human_player_count() > 1
+	return true
 
 func _should_require_next_player_modal_ack(player_id: int) -> bool:
-	return is_player_human(player_id) and _should_show_next_player_modal()
+	return is_player_human(player_id) and _get_human_player_count() > 1
 
 func is_player_ai(player_id: int) -> bool:
 	"""Check if a player is AI controlled (alias for is_player_computer)"""

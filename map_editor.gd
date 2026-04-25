@@ -162,6 +162,8 @@ func _setup_editor_panel() -> void:
 	# Connect selection changed from panel
 	if map_editor_panel.has_signal("region_type_changed"):
 		map_editor_panel.connect("region_type_changed", Callable(self, "_on_region_type_changed"))
+	if map_editor_panel.has_signal("region_data_changed"):
+		map_editor_panel.connect("region_data_changed", Callable(self, "_on_region_type_changed"))
 	if map_editor_panel.has_signal("army_edit_saved"):
 		map_editor_panel.connect("army_edit_saved", Callable(self, "_on_army_edit_saved"))
 	
@@ -178,6 +180,7 @@ func get_editor_panel() -> Control:
 func set_current_region(region: Region) -> void:
 	_last_region_id = region.get_region_id()
 	var panel := map_editor_panel as MapEditorPanel
+	panel.commit_pending_region_edits()
 	panel.update_from_region(region)
 
 func _on_region_type_changed(region_id: int, selection: String) -> void:

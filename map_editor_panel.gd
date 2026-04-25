@@ -16,6 +16,7 @@ class_name MapEditorPanel
 # ============================================================================
 
 signal region_type_changed(region_id: int, selection: String)
+signal region_data_changed(region_id: int, selection: String)
 signal army_edit_saved(region_id: int, data: Dictionary)
 
 var _option: OptionButton
@@ -197,11 +198,15 @@ func _ready() -> void:
 	_ownership_option.item_selected.connect(_on_ownership_selected)
 	for rt in _resource_edits.keys():
 		(_resource_edits[rt] as LineEdit).text_submitted.connect(Callable(self, "_on_resource_changed").bind(rt))
+		(_resource_edits[rt] as LineEdit).focus_exited.connect(Callable(self, "_on_resource_focus_exited").bind(rt))
 	_population_edit.text_submitted.connect(_on_population_changed)
+	_population_edit.focus_exited.connect(_on_population_focus_exited)
 	_ore_check.toggled.connect(_on_ore_toggled)
 	_ore_guarantee_attempt_edit.text_submitted.connect(_on_ore_guarantee_attempt_changed)
+	_ore_guarantee_attempt_edit.focus_exited.connect(_on_ore_guarantee_attempt_focus_exited)
 	_ore_guarantee_type_option.item_selected.connect(_on_ore_guarantee_type_selected)
 	_name_edit.text_submitted.connect(_on_name_changed)
+	_name_edit.focus_exited.connect(_on_name_focus_exited)
 	_army_toggle_button.pressed.connect(_on_army_toggle_pressed)
 	_edit_army_button.pressed.connect(_on_edit_army_pressed)
 	_close_army_button.pressed.connect(_on_close_army_pressed)
@@ -944,6 +949,16 @@ func update_from_region(region: Region) -> void:
 	# Ensure default Region tab content is visible by default
 	_set_region_default_visible(true)
 
+func commit_pending_region_edits() -> void:
+	if _current_region_id < 0:
+		return
+	_on_name_changed(_name_edit.text)
+	for rt in _resource_edits.keys():
+		var edit: LineEdit = _resource_edits[rt] as LineEdit
+		_on_resource_changed(edit.text, rt)
+	_on_population_changed(_population_edit.text)
+	_on_ore_guarantee_attempt_changed(_ore_guarantee_attempt_edit.text)
+
 func _set_region_default_visible(visible: bool) -> void:
 	for n in _region_default_nodes:
 		n.visible = visible
@@ -1007,20 +1022,30 @@ func _on_type_selected(index: int) -> void:
 
 func _on_level_selected(index: int) -> void:
 	var sel := _level_option.get_item_text(index)
-	emit_signal("region_type_changed", _current_region_id, "LEVEL:" + sel)
+	emit_signal("region_data_changed", _current_region_id, "LEVEL:" + sel)
 
 func _on_castle_selected(index: int) -> void:
 	var sel := _castle_option.get_item_text(index)
-	emit_signal("region_type_changed", _current_region_id, "CASTLE:" + sel)
+	emit_signal("region_data_changed", _current_region_id, "CASTLE:" + sel)
 
 func _on_name_changed(text: String) -> void:
-	emit_signal("region_type_changed", _current_region_id, "NAME:" + text)
+	emit_signal("region_data_changed", _current_region_id, "NAME:" + text)
+
+func _on_name_focus_exited() -> void:
+	_on_name_changed(_name_edit.text)
 
 func _on_resource_changed(text: String, rt: ResourcesEnum.Type) -> void:
-	emit_signal("region_type_changed", _current_region_id, "RES:" + str(int(text)) + ":" + str(rt))
+	var value: int = int(text)
+	if _current_region_node.get_resource_amount(rt) == value:
+		return
+	emit_signal("region_data_changed", _current_region_id, "RES:" + str(value) + ":" + str(rt))
+
+func _on_resource_focus_exited(rt: ResourcesEnum.Type) -> void:
+	var edit: LineEdit = _resource_edits[rt] as LineEdit
+	_on_resource_changed(edit.text, rt)
 
 func _on_ore_toggled(pressed: bool) -> void:
-	emit_signal("region_type_changed", _current_region_id, "ORE:" + ("1" if pressed else "0"))
+	emit_signal("region_data_changed", _current_region_id, "ORE:" + ("1" if pressed else "0"))
 
 func _on_ore_guarantee_attempt_changed(text: String) -> void:
 	var attempt: int = maxi(0, int(text))
@@ -1028,30 +1053,36 @@ func _on_ore_guarantee_attempt_changed(text: String) -> void:
 	if selected_type == "None":
 		attempt = 0
 		_ore_guarantee_attempt_edit.text = "0"
-	emit_signal("region_type_changed", _current_region_id, "ORECFG_ATTEMPT:" + str(attempt))
+	emit_signal("region_data_changed", _current_region_id, "ORECFG_ATTEMPT:" + str(attempt))
+
+func _on_ore_guarantee_attempt_focus_exited() -> void:
+	_on_ore_guarantee_attempt_changed(_ore_guarantee_attempt_edit.text)
 
 func _on_ore_guarantee_type_selected(index: int) -> void:
 	var ore_type: String = _ore_guarantee_type_option.get_item_text(index)
 	if ore_type == "None":
 		_ore_guarantee_attempt_edit.text = "0"
-	emit_signal("region_type_changed", _current_region_id, "ORECFG_TYPE:" + ore_type)
+	emit_signal("region_data_changed", _current_region_id, "ORECFG_TYPE:" + ore_type)
 
 func _on_population_changed(text: String) -> void:
-	emit_signal("region_type_changed", _current_region_id, "POP:" + str(int(text)))
+	emit_signal("region_data_changed", _current_region_id, "POP:" + str(int(text)))
+
+func _on_population_focus_exited() -> void:
+	_on_population_changed(_population_edit.text)
 
 func _on_ownership_selected(index: int) -> void:
 	if _current_region_id < 0:
 		return
 	# index 0 = Neutral (owner 0), index 1..6 = Player 1..6
 	var owner_id = index  # Neutral maps to 0
-	emit_signal("region_type_changed", _current_region_id, "OWNER:" + str(owner_id))
+	emit_signal("region_data_changed", _current_region_id, "OWNER:" + str(owner_id))
 
 func _on_army_toggle_pressed() -> void:
 	if _current_region_id < 0:
 		return
 	# Toggle based on last-known state
 	var action := "ARMY_REMOVE" if _has_army_cached else "ARMY_ADD"
-	emit_signal("region_type_changed", _current_region_id, action)
+	emit_signal("region_data_changed", _current_region_id, action)
 	# Optimistically flip cached state and button label
 	_has_army_cached = not _has_army_cached
 	_army_toggle_button.text = "Remove Army" if _has_army_cached else "Add Army"
@@ -1095,6 +1126,7 @@ func _on_close_garrison_pressed() -> void:
 	_set_region_default_visible(true)
 
 func _on_save_scenario_pressed() -> void:
+	commit_pending_region_edits()
 	var mg: MapGenerator = get_node("../../Map") as MapGenerator
 	var map_editor: MapEditor = get_node("../../MapEditor") as MapEditor
 	var regions_node: Node = mg.get_node("Regions")

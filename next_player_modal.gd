@@ -54,7 +54,7 @@ func _resolve_ui_refs() -> void:
 func show_next_player(player_id: int, turn_number: int, manual_ack_required: bool = false) -> void:
 	"""Display next player modal with player-specific styling"""
 	_resolve_ui_refs()
-	var player_color = _get_player_label_color(GameParameters.get_player_color(player_id))
+	var player_color: Color = GameParameters.get_player_color(player_id)
 	_active_player_id = player_id
 	_manual_ack_required = manual_ack_required
 	
@@ -100,6 +100,3 @@ func hide_modal() -> void:
 	
 	# Set modal mode inactive
 	ui_manager.set_modal_active(false)
-
-func _get_player_label_color(base_color: Color) -> Color:
-	return Color.from_hsv(base_color.h, base_color.s, 0.6, base_color.a)
