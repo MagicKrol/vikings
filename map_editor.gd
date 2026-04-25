@@ -150,11 +150,11 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 				castle.name = "Castle"
 				castle.texture = load(icon_path)
 				var castle_scale := 0.12
-				var map_size_scale := Utils.get_map_size_icon_scale(mg.map_size)
-				castle_scale = castle_scale * mg.polygon_scale * map_size_scale
+				var map_visual_scale := mg.get_map_visual_scale()
+				castle_scale = castle_scale * mg.polygon_scale * map_visual_scale
 				var polygon := container.get_node("Polygon") as Polygon2D
 				var center: Vector2 = polygon.get_meta("center")
-				castle.position = center + Vector2(-5 * map_size_scale, -5 * map_size_scale)
+				castle.position = center + Vector2(-5 * map_visual_scale, -5 * map_visual_scale)
 				castle.scale = Vector2(castle_scale, castle_scale)
 				castle.z_index = 100
 				container.add_child(castle)

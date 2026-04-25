@@ -43,19 +43,18 @@ const MOUNTAIN_ICONS := [
 
 static var _rng: RandomNumberGenerator = null
 
-static func place_region_icon(parent_pg: Polygon2D, region_data: Dictionary, polygon_scale: float, map_size_setting: int) -> void:
+static func place_region_icon(parent_pg: Polygon2D, region_data: Dictionary, polygon_scale: float, map_visual_scale: float) -> void:
 	var biome_name := String(region_data.get("biome", ""))
 	if biome_name == "":
 		return
-	var map_size_scale := Utils.get_map_size_icon_scale(map_size_setting)
 	var biome_lower := biome_name.to_lower()
 	if biome_lower == "mountains":
-		_place_mountain_icon(parent_pg, region_data, polygon_scale, map_size_scale)
+		_place_mountain_icon(parent_pg, region_data, polygon_scale, map_visual_scale)
 		return
 	var icon_path := _resolve_icon_path(biome_name, biome_lower)
 	if icon_path == "":
 		return
-	_place_standard_icon(parent_pg, region_data, icon_path, biome_lower, polygon_scale, map_size_scale)
+	_place_standard_icon(parent_pg, region_data, icon_path, biome_lower, polygon_scale, map_visual_scale)
 
 static func _resolve_icon_path(biome_name: String, biome_lower: String) -> String:
 	var normalized_key := biome_lower.replace(" ", "_")
@@ -68,7 +67,7 @@ static func _pick_variant_path(base_name: String) -> String:
 	var variant_index := rng.randi_range(1, VARIANT_COUNT)
 	return "res://images/icons/%s_%d.png" % [base_name, variant_index]
 
-static func _place_standard_icon(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, biome_lower: String, polygon_scale: float, map_size_scale: float) -> void:
+static func _place_standard_icon(parent_pg: Polygon2D, region_data: Dictionary, icon_path: String, biome_lower: String, polygon_scale: float, map_visual_scale: float) -> void:
 	var center_data = region_data.get("center", [500, 500])
 	if center_data.size() != 2:
 		return
@@ -80,9 +79,9 @@ static func _place_standard_icon(parent_pg: Polygon2D, region_data: Dictionary, 
 	if biome_lower.find("hill") != -1:
 		icon.position = center
 	else:
-		icon.position = center + Vector2(0, STANDARD_ICON_OFFSET_Y * map_size_scale)
+		icon.position = center + Vector2(0, STANDARD_ICON_OFFSET_Y * map_visual_scale)
 	var icon_scale := _get_standard_icon_scale(biome_lower)
-	var final_scale := icon_scale * polygon_scale * map_size_scale
+	var final_scale := icon_scale * polygon_scale * map_visual_scale
 	icon.scale = Vector2(final_scale, final_scale)
 	icon.z_index = parent_pg.z_index + 10
 	icon.modulate.a = STANDARD_ICON_ALPHA
@@ -93,7 +92,7 @@ static func _get_standard_icon_scale(biome_lower: String) -> float:
 		return GameParameters.FOREST_ICON_SCALE
 	return GameParameters.BIOME_ICON_SCALE
 
-static func _place_mountain_icon(parent_pg: Polygon2D, region_data: Dictionary, polygon_scale: float, map_size_scale: float) -> void:
+static func _place_mountain_icon(parent_pg: Polygon2D, region_data: Dictionary, polygon_scale: float, map_visual_scale: float) -> void:
 	var polygon := parent_pg.polygon
 	if polygon.size() < 3:
 		return
@@ -109,7 +108,7 @@ static func _place_mountain_icon(parent_pg: Polygon2D, region_data: Dictionary, 
 	icon.texture = load(icon_info.get("path", ""))
 	if icon.texture == null:
 		return
-	icon.position = center + Vector2(0, MOUNTAIN_OFFSET_Y * map_size_scale)
+	icon.position = center + Vector2(0, MOUNTAIN_OFFSET_Y * map_visual_scale)
 	var is_internal := _is_internal_mountain(region_data)
 	var scale_factor := _compute_mountain_scale(analysis, icon_info, is_internal)
 	icon.scale = Vector2(scale_factor, scale_factor)

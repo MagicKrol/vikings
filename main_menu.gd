@@ -117,6 +117,7 @@ const ROW_HIGHLIGHT_HOVER_COLOR: Color = Color(0, 0, 0, 0.2)
 const ROW_HIGHLIGHT_SELECTED_COLOR: Color = Color(0, 0, 0, 0.4)
 const ROW_TEXT_COLOR: Color = Color(1, 1, 1, 1)
 const MAP_SIZE_ORDER := {"T": 0, "S": 1, "M": 2, "L": 3}
+const SCENARIO_DIFFICULTY_ALL: String = "all"
 var map_items: Array = []
 var scenario_items: Array = []
 var selected_map_item: Dictionary = {}
@@ -748,15 +749,45 @@ func _setup_scenario_difficulty_buttons():
 		btn.toggle_mode = true
 		btn.button_group = scenario_difficulty_group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	for btn in scenario_difficulty_buttons:
-		var selected: bool = btn.name == "Normal"
-		btn.button_pressed = selected
+	_set_scenario_difficulty_buttons_enabled(true)
+	_select_scenario_difficulty("normal")
 
 func _difficulty_from_buttons(buttons: Array[Button]) -> String:
 	for btn in buttons:
 		if btn.button_pressed:
 			return btn.name.to_lower()
 	return "normal"
+
+func _normalize_scenario_difficulty(difficulty_value: String) -> String:
+	var normalized: String = difficulty_value.to_lower()
+	match normalized:
+		"easy", "normal", "hard":
+			return normalized
+		_:
+			return SCENARIO_DIFFICULTY_ALL
+
+func _set_scenario_difficulty_buttons_enabled(enabled: bool) -> void:
+	for btn in scenario_difficulty_buttons:
+		btn.disabled = not enabled
+
+func _select_scenario_difficulty(difficulty_value: String) -> void:
+	var normalized: String = _normalize_scenario_difficulty(difficulty_value)
+	var selected_name: String = "normal"
+	if normalized != SCENARIO_DIFFICULTY_ALL:
+		selected_name = normalized
+	for btn in scenario_difficulty_buttons:
+		var selected: bool = btn.name.to_lower() == selected_name
+		_update_button_gold_state(btn, selected)
+
+func _apply_scenario_difficulty_constraints(item: Dictionary) -> void:
+	var scenario_difficulty: String = _normalize_scenario_difficulty(String(item.get("difficulty", SCENARIO_DIFFICULTY_ALL)))
+	if scenario_difficulty == SCENARIO_DIFFICULTY_ALL:
+		_set_scenario_difficulty_buttons_enabled(true)
+		return
+	_select_scenario_difficulty(scenario_difficulty)
+	for btn in scenario_difficulty_buttons:
+		var btn_difficulty: String = btn.name.to_lower()
+		btn.disabled = btn_difficulty != scenario_difficulty
 
 func _get_selected_custom_map_difficulty() -> String:
 	return _difficulty_from_buttons(custom_map_difficulty_buttons)
@@ -1044,6 +1075,7 @@ func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 	if for_scenario:
 		selected_scenario_button_custom = row
 		selected_scenario_item = item
+		_apply_scenario_difficulty_constraints(item)
 		_update_info_labels(item)
 		_update_preview_with_item(item, true)
 		_set_scenario_select_enabled(true)
@@ -1144,6 +1176,8 @@ func _clear_map_selection():
 		_set_row_highlight_color(selected_scenario_button_custom, ROW_HIGHLIGHT_NONE_COLOR)
 	selected_map_button = null
 	selected_scenario_button_custom = null
+	_set_scenario_difficulty_buttons_enabled(true)
+	_select_scenario_difficulty("normal")
 	_set_custom_map_select_enabled(false)
 	_set_scenario_select_enabled(false)
 	custom_map_map_name_label.text = tr("Map Name")
@@ -1173,13 +1207,16 @@ func _gather_map_items() -> Array:
 				if base.begins_with("mission"):
 					file_name = dir.get_next()
 					continue
-				var size_code := _extract_size_code(base)
-				var exact_size: String = _extract_exact_size_name(base)
+				var map_profile: Dictionary = _resolve_map_profile_for_file(file_name)
+				var size_code: String = String(map_profile.get("frontend_size_code", "S"))
+				var exact_size: String = String(map_profile.get("canonical_size_token", "small"))
+				var region_count: int = int(map_profile.get("region_count", 0))
 				items.append({
 					"file": base,
 					"display_name": _display_name_for_map(base),
 					"size": size_code,
-					"map_size_exact": exact_size
+					"map_size_exact": exact_size,
+					"region_count": region_count
 				})
 			file_name = dir.get_next()
 		dir.list_dir_end()
@@ -1198,6 +1235,7 @@ func _gather_scenario_items(requested_type: String) -> Array:
 				var map_file_base: String = ""
 				var size_code: String = "S"
 				var scenario_type: String = "scenario"
+				var scenario_difficulty: String = SCENARIO_DIFFICULTY_ALL
 				var description: String = ""
 				var objectives: String = ""
 				var file_path: String = "res://scenarios/" + file_name
@@ -1209,8 +1247,10 @@ func _gather_scenario_items(requested_type: String) -> Array:
 						var dict_data: Dictionary = data
 						if dict_data.has("map_file"):
 							map_file_base = str(dict_data["map_file"]).trim_suffix(".json")
-							size_code = _extract_size_code(map_file_base)
+							var map_profile: Dictionary = _resolve_map_profile_for_file(map_file_base + ".json")
+							size_code = String(map_profile.get("frontend_size_code", "S"))
 						scenario_type = String(dict_data.get("scenario_type", "scenario")).to_lower()
+						scenario_difficulty = _normalize_scenario_difficulty(String(dict_data.get("difficulty", SCENARIO_DIFFICULTY_ALL)))
 						description = String(dict_data.get("description", ""))
 						objectives = String(dict_data.get("objectives", ""))
 				if scenario_type != requested_type:
@@ -1221,6 +1261,7 @@ func _gather_scenario_items(requested_type: String) -> Array:
 					"display_name": scenario_name.capitalize().replace("_", " "),
 					"size": size_code,
 					"map_file_base": map_file_base,
+					"difficulty": scenario_difficulty,
 					"description": description,
 					"objectives": objectives
 				})
@@ -1228,6 +1269,23 @@ func _gather_scenario_items(requested_type: String) -> Array:
 		dir.list_dir_end()
 	items.sort_custom(Callable(self, "_sort_items"))
 	return items
+
+func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
+	var file_only: String = map_file_name.get_file()
+	var file_name: String = file_only if file_only.ends_with(".json") else (file_only + ".json")
+	var file_path: String = "res://mapdata/" + file_name
+	var region_count: int = 0
+	var content: String = FileAccess.get_file_as_string(file_path)
+	if content != "":
+		var json := JSON.new()
+		if json.parse(content) == OK:
+			var data: Variant = json.get_data()
+			if typeof(data) == TYPE_DICTIONARY:
+				var dict_data: Dictionary = data
+				var regions_value: Variant = dict_data.get("regions", [])
+				if typeof(regions_value) == TYPE_ARRAY:
+					region_count = (regions_value as Array).size()
+	return Utils.resolve_map_profile(file_name, region_count)
 
 func _sort_items(a: Dictionary, b: Dictionary) -> bool:
 	var sa: int = MAP_SIZE_ORDER.get(a.get("size", "S"), 4)
@@ -1276,11 +1334,12 @@ func _size_full_name(code: String) -> String:
 			return tr("Unknown")
 
 func _display_name_for_map(base: String) -> String:
-	var parts := base.split("-")
+	var normalized: String = base.replace("_", "-")
+	var parts := normalized.split("-")
 	if parts.size() >= 2:
 		parts = parts.slice(0, parts.size() - 1)
 		var name_part := " ".join(parts)
-		return name_part.capitalize().replace("_", " ")
+		return name_part.capitalize()
 	return base.capitalize().replace("_", " ")
 
 func _on_scenario_hovered(scenario_name: String):

@@ -57,7 +57,7 @@ func _on_edit_map_pressed() -> void:
 	if idx < 0:
 		return
 	var filename := _map_select.get_item_text(idx)
-	var size_str := _extract_size_from_map_filename(filename)
+	var size_str := _resolve_map_size_token_for_map_file(filename)
 	var payload = {
 		"type": "map",
 		"map_file": filename,
@@ -74,7 +74,7 @@ func _on_edit_scenario_pressed() -> void:
 	# Load scenario to get map_file and infer map size
 	var scen := ScenarioManager.new().load_scenario(scen_file)
 	var map_file := String(scen.get("map_file", "")).get_file()
-	var size_str := _extract_size_from_map_filename(map_file)
+	var size_str := _resolve_map_size_token_for_map_file(map_file)
 	var payload = {
 		"type": "scenario",
 		"scenario_path": scen_file,
@@ -84,48 +84,32 @@ func _on_edit_scenario_pressed() -> void:
 	get_tree().set_meta("editor_start_payload", payload)
 	get_tree().change_scene_to_file("res://main.tscn")
 
-func _convert_size_name(old_size: String) -> String:
-	"""Convert old size names to new display names: XTiny->Small, Tiny->Medium, Small->Large, Medium->Huge"""
-	var size_lower = old_size.to_lower()
-	match size_lower:
-		"xtiny":
-			return "Small"
-		"tiny":
-			return "Medium"
-		"small":
-			return "Large"
-		"medium":
-			return "Huge"
-		_:
-			# For any other size (including already new names), just capitalize
-			return old_size.capitalize()
-
 func _is_valid_map_file(filename: String) -> bool:
 	"""Check if filename follows valid map file pattern (old or new format)"""
 	if not filename.to_lower().ends_with(".json"):
 		return false
-		
-	var name_without_extension = filename.trim_suffix(".json")
-	var parts = name_without_extension.split("-")
-	
-	# Old format: mapdata-id-size (3 parts)
-	if parts.size() == 3 and parts[0] == "mapdata":
-		return true
-	
-	# New format: MapName-id-size (at least 3 parts, but could be more for multi-word names)
-	if parts.size() >= 3:
-		var size_part = parts[parts.size() - 1].to_lower()
-		# Check if last part is a valid size (old or new naming)
-		var valid_old_sizes = ["xtiny", "tiny", "small", "medium", "large", "huge"]
-		var valid_new_sizes = ["small", "medium", "large", "huge"]
-		return size_part in valid_old_sizes or size_part in valid_new_sizes
-	
-	return false
+	var token: String = Utils.extract_map_size_token(filename)
+	if token == "":
+		return false
+	if token.is_valid_int():
+		return int(token) > 0
+	var canonical: String = Utils.canonical_label_from_token(token)
+	return canonical != ""
 
-func _extract_size_from_map_filename(name: String) -> String:
-	# Expected: mapdata-XXX-small.json or Road_to_Hell-34-small.json → returns "small"
-	var base := name.get_basename()
-	var parts := base.split("-")
-	if parts.size() >= 3:
-		return parts[parts.size() - 1]
-	return "small"
+func _resolve_map_size_token_for_map_file(map_file_name: String) -> String:
+	var file_only: String = map_file_name.get_file()
+	var file_name: String = file_only if file_only.ends_with(".json") else (file_only + ".json")
+	var file_path: String = "res://mapdata/" + file_name
+	var region_count: int = 0
+	var content: String = FileAccess.get_file_as_string(file_path)
+	if content != "":
+		var json := JSON.new()
+		if json.parse(content) == OK:
+			var data: Variant = json.get_data()
+			if typeof(data) == TYPE_DICTIONARY:
+				var dict_data: Dictionary = data
+				var regions_value: Variant = dict_data.get("regions", [])
+				if typeof(regions_value) == TYPE_ARRAY:
+					region_count = (regions_value as Array).size()
+	var profile: Dictionary = Utils.resolve_map_profile(file_name, region_count)
+	return String(profile.get("canonical_size_token", "small"))

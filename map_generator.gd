@@ -49,6 +49,8 @@ var edges: Array = []
 var region_by_id: Dictionary = {}
 var non_ocean_graph: Dictionary = {}
 var non_ocean_centers: Dictionary = {}
+var map_profile: Dictionary = {}
+var map_region_count: int = 264
 
 # Map content containers
 var map_root: Node2D
@@ -132,6 +134,9 @@ func _load_json_data() -> void:
 	regions = map_data.get("regions", [])
 	edges = map_data.get("edges", [])
 	DebugLogger.log("MapGeneration", "Loaded map: regions=" + str(regions.size()) + ", edges=" + str(edges.size()) + ", file=" + path)
+	map_profile = Utils.resolve_map_profile(data_file_path, regions.size())
+	map_region_count = int(map_profile.get("region_count", regions.size()))
+	_set_compatibility_map_size_from_profile()
 	region_by_id.clear()
 	for r in regions:
 		var rid = int(r.get("id", -1))
@@ -145,6 +150,40 @@ func _load_json_data() -> void:
 	# Scale all coordinates if polygon_scale != 1.0
 	if polygon_scale != 1.0:
 		_scale_map_data()
+
+func _set_compatibility_map_size_from_profile() -> void:
+	var token: String = String(map_profile.get("canonical_size_token", "small"))
+	match token:
+		"tiny":
+			map_size = MapSize.TINY
+		"small":
+			map_size = MapSize.SMALL
+		"medium":
+			map_size = MapSize.MEDIUM
+		"large":
+			map_size = MapSize.LARGE
+		"huge":
+			map_size = MapSize.HUGE
+		_:
+			map_size = MapSize.SMALL
+
+func get_map_visual_scale() -> float:
+	return float(map_profile.get("visual_scale", Utils.get_map_size_icon_scale(map_size)))
+
+func get_map_initial_zoom() -> float:
+	return float(map_profile.get("initial_zoom", 1.0))
+
+func get_map_region_count() -> int:
+	return map_region_count
+
+func get_frontend_size_code() -> String:
+	return String(map_profile.get("frontend_size_code", "S"))
+
+func get_frontend_size_label() -> String:
+	return String(map_profile.get("frontend_size_label", "Small"))
+
+func get_canonical_size_token() -> String:
+	return String(map_profile.get("canonical_size_token", "small"))
 
 func _tag_mountain_neighbor_info() -> void:
 	for region in regions:
@@ -584,7 +623,7 @@ func _add_region_polygon_node(region_data: Dictionary, polygon_color, node_name:
 	# Add biome icons based on mapping rules
 	var biome_name := String(region_data.get("biome", ""))
 	if biome_name != "":
-		RegionIconManager.place_region_icon(pg, region_data, polygon_scale, map_size)
+		RegionIconManager.place_region_icon(pg, region_data, polygon_scale, get_map_visual_scale())
 
 	return pg
 
@@ -1143,7 +1182,7 @@ func refresh_region_visual(region_id: int) -> void:
 			biome_str = "hill_forest"
 		rdata["biome"] = biome_str
 		region_by_id[region_id] = rdata
-		RegionIconManager.place_region_icon(polygon, rdata, polygon_scale, map_size)
+		RegionIconManager.place_region_icon(polygon, rdata, polygon_scale, get_map_visual_scale())
 	# Regenerate borders for region and neighbors
 	regenerate_borders_for_region(region_id)
 	_sort_mountain_icon_z_indices()

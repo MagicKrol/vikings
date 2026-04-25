@@ -2,6 +2,35 @@ extends RefCounted
 
 class_name Utils
 
+const MAP_REGION_COUNT_BY_LABEL: Dictionary = {
+	"tiny": 137,
+	"small": 264,
+	"medium": 504,
+	"large": 1040,
+	"huge": 2104
+}
+
+const MAP_VISUAL_SCALE_BY_LABEL: Dictionary = {
+	"tiny": (38.0 / 26.0) * 1.3,
+	"small": 1.0 * 1.3,
+	"medium": (18.0 / 26.0) * 1.3,
+	"large": (12.8 / 26.0) * 1.3,
+	"huge": (9.0 / 26.0) * 1.3
+}
+
+const MAP_INITIAL_ZOOM_BY_LABEL: Dictionary = {
+	"tiny": 1.0,
+	"small": 1.0,
+	"medium": 1.5,
+	"large": 2.0,
+	"huge": 2.5
+}
+
+const MAP_ANCHOR_ORDER: Array[String] = ["tiny", "small", "medium", "large", "huge"]
+const FRONTEND_TINY_MAX: int = 200
+const FRONTEND_SMALL_MAX: int = 384
+const FRONTEND_MEDIUM_MAX: int = 772
+
 static func hex_to_color(hex: String) -> Color:
 	# Convert hex string like "#44447a" to Color
 	# Remove # and parse as hex
@@ -198,6 +227,149 @@ static func get_map_size_icon_scale(map_size: int) -> float:
 	var size = map_size_scales.get(map_size, 1.0)
 	
 	return size * 1.3
+
+static func extract_map_size_token(name: String) -> String:
+	var base_name: String = name.get_file().get_basename().to_lower()
+	if base_name == "":
+		return ""
+	var normalized: String = base_name.replace("-", "_")
+	var parts: Array = normalized.split("_")
+	for i in range(parts.size() - 1, -1, -1):
+		var token: String = String(parts[i]).strip_edges()
+		if token != "":
+			return token
+	return ""
+
+static func resolve_map_profile(filename_or_token: String, json_region_count: int) -> Dictionary:
+	var token: String = extract_map_size_token(filename_or_token)
+	var canonical_token: String = ""
+	var resolved_region_count: int = 0
+	var source: String = "fallback"
+	
+	if token.is_valid_int():
+		var numeric_region_count: int = int(token)
+		if numeric_region_count > 0:
+			resolved_region_count = numeric_region_count
+			canonical_token = get_nearest_anchor_label_from_region_count(numeric_region_count)
+			source = "token_numeric"
+	
+	if resolved_region_count == 0:
+		canonical_token = canonical_label_from_token(token)
+		if canonical_token != "":
+			resolved_region_count = int(MAP_REGION_COUNT_BY_LABEL[canonical_token])
+			source = "token_label"
+	
+	if resolved_region_count == 0 and json_region_count > 0:
+		resolved_region_count = json_region_count
+		canonical_token = get_nearest_anchor_label_from_region_count(json_region_count)
+		source = "json_regions"
+	
+	if resolved_region_count == 0:
+		canonical_token = "small"
+		resolved_region_count = int(MAP_REGION_COUNT_BY_LABEL[canonical_token])
+	
+	var visual_scale: float = get_map_visual_scale_from_region_count(resolved_region_count)
+	var initial_zoom: float = get_initial_zoom_from_region_count(resolved_region_count)
+	var frontend_code: String = get_frontend_size_code_from_region_count(resolved_region_count)
+	var frontend_label: String = get_frontend_size_label_from_code(frontend_code)
+	return {
+		"token": token,
+		"region_count": resolved_region_count,
+		"canonical_size_token": canonical_token,
+		"visual_scale": visual_scale,
+		"initial_zoom": initial_zoom,
+		"frontend_size_code": frontend_code,
+		"frontend_size_label": frontend_label,
+		"source": source
+	}
+
+static func canonical_label_from_token(token: String) -> String:
+	var lowered: String = token.to_lower()
+	match lowered:
+		"tiny", "small", "medium", "large", "huge":
+			return lowered
+		"xtiny":
+			return "small"
+		"xxtiny":
+			return "tiny"
+		_:
+			return ""
+
+static func get_nearest_anchor_label_from_region_count(region_count: int) -> String:
+	var nearest_label: String = "small"
+	var nearest_diff: int = 2147483647
+	for label in MAP_ANCHOR_ORDER:
+		var anchor_count: int = int(MAP_REGION_COUNT_BY_LABEL[label])
+		var diff: int = absi(region_count - anchor_count)
+		if diff < nearest_diff:
+			nearest_diff = diff
+			nearest_label = label
+	return nearest_label
+
+static func get_map_visual_scale_from_region_count(region_count: int) -> float:
+	var anchor_counts: Array[float] = []
+	var anchor_values: Array[float] = []
+	for label in MAP_ANCHOR_ORDER:
+		anchor_counts.append(float(MAP_REGION_COUNT_BY_LABEL[label]))
+		anchor_values.append(float(MAP_VISUAL_SCALE_BY_LABEL[label]))
+	return _interpolate_log_anchored(region_count, anchor_counts, anchor_values)
+
+static func get_initial_zoom_from_region_count(region_count: int) -> float:
+	var anchor_counts: Array[float] = []
+	var anchor_values: Array[float] = []
+	for label in MAP_ANCHOR_ORDER:
+		anchor_counts.append(float(MAP_REGION_COUNT_BY_LABEL[label]))
+		anchor_values.append(float(MAP_INITIAL_ZOOM_BY_LABEL[label]))
+	return _interpolate_log_anchored(region_count, anchor_counts, anchor_values)
+
+static func get_frontend_size_code_from_region_count(region_count: int) -> String:
+	if region_count <= FRONTEND_TINY_MAX:
+		return "T"
+	if region_count <= FRONTEND_SMALL_MAX:
+		return "S"
+	if region_count <= FRONTEND_MEDIUM_MAX:
+		return "M"
+	return "L"
+
+static func get_frontend_size_label_from_code(code: String) -> String:
+	match code:
+		"T":
+			return "Tiny"
+		"S":
+			return "Small"
+		"M":
+			return "Medium"
+		"L":
+			return "Large"
+		_:
+			return "Small"
+
+static func _interpolate_log_anchored(region_count: int, anchor_counts: Array[float], anchor_values: Array[float]) -> float:
+	var rc: float = maxf(1.0, float(region_count))
+	if anchor_counts.is_empty():
+		return 1.0
+	if anchor_counts.size() == 1:
+		return anchor_values[0]
+	var rc_log: float = log(rc)
+	var first_log: float = log(anchor_counts[0])
+	if rc_log <= first_log:
+		return _interpolate_log_between(rc_log, log(anchor_counts[0]), log(anchor_counts[1]), anchor_values[0], anchor_values[1])
+	var last_index: int = anchor_counts.size() - 1
+	var last_log: float = log(anchor_counts[last_index])
+	if rc_log >= last_log:
+		return _interpolate_log_between(rc_log, log(anchor_counts[last_index - 1]), last_log, anchor_values[last_index - 1], anchor_values[last_index])
+	for i in range(last_index):
+		var low_log: float = log(anchor_counts[i])
+		var high_log: float = log(anchor_counts[i + 1])
+		if rc_log >= low_log and rc_log <= high_log:
+			return _interpolate_log_between(rc_log, low_log, high_log, anchor_values[i], anchor_values[i + 1])
+	return anchor_values[last_index]
+
+static func _interpolate_log_between(target_log: float, low_log: float, high_log: float, low_value: float, high_value: float) -> float:
+	if is_equal_approx(low_log, high_log):
+		return low_value
+	var t: float = (target_log - low_log) / (high_log - low_log)
+	return lerpf(low_value, high_value, t)
 
 static func take_screenshot(filename: String = "res://screenshots/screenshot.png") -> void:
 	var tree := Engine.get_main_loop() as SceneTree

@@ -220,7 +220,7 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"mode": game_manager.game_mode,
 		"scenario_path": game_manager.scenario_path,
 		"map_file": map_generator.data_file_path,
-		"map_size": _map_size_to_string(map_generator.map_size),
+		"map_size": map_generator.get_canonical_size_token(),
 		"player_settings": _player_types_to_settings(game_manager.player_types),
 		"trade_disabled": game_manager.scenario_trade_disabled,
 		"victory_conditions": game_manager.get_victory_conditions_for_save()

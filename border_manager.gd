@@ -7,7 +7,7 @@ enum BorderType {
 	INTERNAL
 }
 
-const OCEAN_WIDTH := 10.4
+const OCEAN_WIDTH_BASE := 4.0
 const OCEAN_COLOR := Color.BLACK
 const INTERNAL_COLOR := Color8(0x00, 0x00, 0x00, 50)
 
@@ -26,11 +26,11 @@ class BorderRecord extends RefCounted:
 var _map_generator: MapGenerator
 var _border_records: Dictionary = {}
 var _region_keys: Dictionary = {}
-var _map_size_scale: float = 1.0
+var _map_visual_scale: float = 1.0
 
 func setup(generator: MapGenerator) -> void:
 	_map_generator = generator
-	_map_size_scale = Utils.get_map_size_icon_scale(_map_generator.map_size)
+	_map_visual_scale = _map_generator.get_map_visual_scale()
 	_clear_existing_borders()
 	_build_initial_borders()
 
@@ -155,7 +155,7 @@ func _apply_border_state(record: BorderRecord) -> void:
 	match new_type:
 		BorderType.OCEAN:
 			record.line.points = record.base_points
-			record.line.width = OCEAN_WIDTH
+			record.line.width = _ocean_width()
 			record.line.default_color = OCEAN_COLOR
 		BorderType.INTERNAL:
 			record.line.points = record.base_points
@@ -189,7 +189,7 @@ func _build_line_name(border_type: int, edge_id: int) -> String:
 func _build_offset_points(record: BorderRecord) -> PackedVector2Array:
 	var points := record.base_points
 	var offset_points := PackedVector2Array()
-	var offset_distance := 1.0 * _map_generator.polygon_scale * _map_size_scale
+	var offset_distance := 1.0 * _map_generator.polygon_scale * _map_visual_scale
 	for i in range(points.size()):
 		var current_point := points[i]
 		var offset_vector := _offset_vector(points, i, record.offset_direction, offset_distance)
@@ -216,10 +216,13 @@ func _offset_vector(points: PackedVector2Array, index: int, direction: float, di
 	return Vector2(-avg_dir.y, avg_dir.x) * distance * direction
 
 func _internal_width() -> float:
-	return 1.5 * _map_generator.polygon_scale * _map_size_scale
+	return 1.5 * _map_generator.polygon_scale * _map_visual_scale
+
+func _ocean_width() -> float:
+	return OCEAN_WIDTH_BASE * _map_generator.polygon_scale * _map_visual_scale
 
 func _ownership_width() -> float:
-	return 4.0 * _map_generator.polygon_scale * _map_size_scale
+	return 4.0 * _map_generator.polygon_scale * _map_visual_scale
 
 func _get_owner(region_id: int) -> int:
 	var region: Region = _map_generator.region_container_by_id[region_id]

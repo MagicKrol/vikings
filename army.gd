@@ -72,8 +72,8 @@ func _init() -> void:
 
 func apply_map_size_scaling(map_generator: MapGenerator) -> void:
 	"""Apply map size scaling to the army visual"""
-	var map_size_scale: float = Utils.get_map_size_icon_scale(map_generator.map_size)
-	scale = Vector2.ONE * map_size_scale * 0.4
+	var map_visual_scale: float = map_generator.get_map_visual_scale()
+	scale = Vector2.ONE * map_visual_scale * 0.4
 
 func setup_army(new_player_id: int, roman_number: String, starting_composition: Dictionary = {}) -> void:
 	"""Setup the army with player ID and default composition"""

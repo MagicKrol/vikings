@@ -716,32 +716,22 @@ func _apply_custom_map_player_settings(settings: Array) -> void:
 func _apply_initial_camera_zoom() -> void:
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 	var camera_controller: CameraController = get_node("../Camera2D") as CameraController
-	var zoom_value := _get_initial_zoom_value(map_generator.map_size)
+	var zoom_value := _get_initial_zoom_value(map_generator)
 	camera_controller.set_zoom_immediate(zoom_value)
 
-func _get_initial_zoom_value(map_size: MapGenerator.MapSize) -> float:
-	match map_size:
-		MapGenerator.MapSize.MEDIUM:
-			return 1.5
-		MapGenerator.MapSize.LARGE:
-			return 2.0
-		_:
-			return 1.0
+func _get_initial_zoom_value(map_generator: MapGenerator) -> float:
+	return map_generator.get_map_initial_zoom()
 
 func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
-	# First check if it's a new size name that needs conversion
-	var old_size_names = ["xtiny", "tiny", "small", "medium", "large", "huge"]
-	var input_lower = size_str.to_lower()
-	
-	# If it's not an old size name, try to convert from new naming
-	var actual_size = size_str
-	if not input_lower in old_size_names:
-		actual_size = _convert_new_size_to_old(size_str)
-	
-	var s := actual_size.to_lower()
-	match s:
-		"xtiny":
-			mg.map_size = MapGenerator.MapSize.XTINY
+	var token: String = Utils.extract_map_size_token(size_str)
+	if token == "":
+		token = size_str.to_lower()
+	var canonical_token: String = Utils.canonical_label_from_token(token)
+	if canonical_token == "" and token.is_valid_int():
+		canonical_token = Utils.get_nearest_anchor_label_from_region_count(int(token))
+	if canonical_token == "":
+		canonical_token = "small"
+	match canonical_token:
 		"tiny":
 			mg.map_size = MapGenerator.MapSize.TINY
 		"small":
@@ -754,21 +744,6 @@ func _map_set_size_from_string(mg: MapGenerator, size_str: String) -> void:
 			mg.map_size = MapGenerator.MapSize.HUGE
 		_:
 			mg.map_size = MapGenerator.MapSize.SMALL
-
-func _convert_new_size_to_old(new_size: String) -> String:
-	"""Convert new size names back to old internal names for MapGenerator"""
-	var size_lower = new_size.to_lower()
-	match size_lower:
-		"small":
-			return "xtiny"  # New Small maps to old XTiny
-		"medium":
-			return "tiny"   # New Medium maps to old Tiny  
-		"large":
-			return "small"  # New Large maps to old Small
-		"huge":
-			return "medium" # New Huge maps to old Medium
-		_:
-			return new_size  # Return as-is for old names or unknown
 
 func _on_map_generated() -> void:
 	_apply_center_marker_setting()
@@ -871,6 +846,8 @@ func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
 		match condition_type_from_string:
 			"conquer":
 				return {"type": "conquer"}
+			"conquer_after_events":
+				return {"type": "conquer_after_events"}
 			"dominate":
 				return {
 					"type": "dominate",
@@ -887,6 +864,11 @@ func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
 		"conquer":
 			return {
 				"type": "conquer",
+				"player_id": target_player_id
+			}
+		"conquer_after_events", "conquer_events", "event_conquer":
+			return {
+				"type": "conquer_after_events",
 				"player_id": target_player_id
 			}
 		"dominate":
@@ -947,6 +929,8 @@ func _is_victory_condition_met(player_id: int, condition: Dictionary) -> bool:
 	match condition_type:
 		"conquer":
 			return _is_conquer_victory_met(player_id)
+		"conquer_after_events":
+			return _is_conquer_after_events_victory_met(player_id)
 		"dominate":
 			return _is_dominate_victory_met(player_id, condition)
 		"own_region":
@@ -967,6 +951,17 @@ func _is_conquer_victory_met(player_id: int) -> bool:
 		if _player_has_any_castle(other_player_id):
 			return false
 		if _player_has_any_army(other_player_id):
+			return false
+	return true
+
+func _is_conquer_after_events_victory_met(player_id: int) -> bool:
+	if not _are_all_scenario_events_triggered():
+		return false
+	return _is_conquer_victory_met(player_id)
+
+func _are_all_scenario_events_triggered() -> bool:
+	for event_data in _scenario_events_runtime:
+		if not bool(event_data.get("triggered", false)):
 			return false
 	return true
 

@@ -362,17 +362,17 @@ func create_raised_army(region_container: Node, player_id: int) -> Army:
 func _get_army_position_offset(region_container: Node) -> Vector2:
 	"""Get the appropriate position offset for army based on region contents"""
 	# Get map size scaling factor
-	var map_size_scale := 1.0
+	var map_visual_scale := 1.0
 	if map_generator != null:
-		map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+		map_visual_scale = map_generator.get_map_visual_scale()
 	
 	# Check if there's a castle in the region
 	var castle = region_container.get_node_or_null("Castle")
 	if castle != null:
-		return Vector2(15 * map_size_scale, -10 * map_size_scale)  # Army positioned to the right of castle (scaled)
+		return Vector2(15 * map_visual_scale, -10 * map_visual_scale)  # Army positioned to the right of castle (scaled)
 	
 	# Default positioning when no castle is present (scaled)
-	return Vector2(0, -5 * map_size_scale)  # Army positioned slightly above center
+	return Vector2(0, -5 * map_visual_scale)  # Army positioned slightly above center
 
 func _on_army_movement_points_changed(army: Army, new_points: int) -> void:
 	if army == null or not is_instance_valid(army):
@@ -427,9 +427,9 @@ func _apply_army_offsets_for_region(region_container: Node, skip_army: Army = nu
 		return
 	var center := center_meta as Vector2
 	var base_offset := _get_army_position_offset(region_container)
-	var map_size_scale := 1.0
+	var map_visual_scale := 1.0
 	if map_generator != null:
-		map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+		map_visual_scale = map_generator.get_map_visual_scale()
 	var extra_offsets: Array[Vector2] = [
 		Vector2(0, 0),
 		Vector2(-15, -10),
@@ -444,7 +444,7 @@ func _apply_army_offsets_for_region(region_container: Node, skip_army: Army = nu
 	for i in armies.size():
 		var army := armies[i]
 		var idx := i if i < extra_offsets.size() else 0
-		var extra: Vector2 = (extra_offsets[idx] as Vector2) * map_size_scale
+		var extra: Vector2 = (extra_offsets[idx] as Vector2) * map_visual_scale
 		var base_z := 125 + army.get_player_id()
 		if i >= 1 and i <= 4:
 			army.z_index = base_z - i
@@ -460,9 +460,9 @@ func _compute_army_target_position(region_container: Node, army: Army) -> Vector
 	var center_meta = polygon.get_meta("center")
 	var center := center_meta as Vector2
 	var base_offset := _get_army_position_offset(region_container)
-	var map_size_scale := 1.0
+	var map_visual_scale := 1.0
 	if map_generator != null:
-		map_size_scale = Utils.get_map_size_icon_scale(map_generator.map_size)
+		map_visual_scale = map_generator.get_map_visual_scale()
 	var extra_offsets: Array[Vector2] = [
 		Vector2(0, 0),
 		Vector2(-15, -10),
@@ -479,7 +479,7 @@ func _compute_army_target_position(region_container: Node, army: Army) -> Vector
 		if armies[i] == army:
 			idx = i
 			break
-	var extra: Vector2 = (extra_offsets[idx if idx < extra_offsets.size() else 0] as Vector2) * map_size_scale
+	var extra: Vector2 = (extra_offsets[idx if idx < extra_offsets.size() else 0] as Vector2) * map_visual_scale
 	return center + base_offset + extra
 
 func select_army(army: Army, region_container: Node, current_player_id: int = -1) -> void:
@@ -832,11 +832,11 @@ func _create_move_arrow(from_pos: Vector2, to_pos: Vector2, disabled: bool = fal
 
 		return null
 	
-	# Scale arrows like castle icons: baseline × polygon_scale × map_size_scale
+	# Scale arrows like castle icons: baseline × polygon_scale × map_visual_scale
 	var scale_factor := 0.12
 	if map_generator != null:
-		var mss := Utils.get_map_size_icon_scale(map_generator.map_size)
-		scale_factor *= (map_generator.polygon_scale * mss)
+		var map_visual_scale := map_generator.get_map_visual_scale()
+		scale_factor *= (map_generator.polygon_scale * map_visual_scale)
 	arrow.scale = Vector2(scale_factor, scale_factor)
 	
 	# Calculate position (65% towards target, 35% from source)

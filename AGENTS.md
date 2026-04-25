@@ -20,6 +20,9 @@ Always Keep functions in appropiate classes based on their role, and use existin
 PROJECT structure and roles are defined in PROJECT_MAP.MD
 
 You MUST use tab indentation instead of space.
+Indentation MUST preserve logical block structure (`if/elif/else`, `match`, loops, and function scope). Do not leave nested code under the wrong parent block.
+After every edited GDScript file, you MUST verify indentation correctness by reviewing changed lines (for example with `nl -ba` / `cat -vet`) before finalizing.
+If any indentation ambiguity appears in a changed block, rewrite the whole block immediately so tab levels are explicit and consistent.
 Ensure that all new variables and params have a proper type to prevent these errors from happening:
 Cannot infer the type of "X" variable because the value doesn't have a set type.
 The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)

@@ -83,7 +83,8 @@ var _victory_unit_type_option: OptionButton
 var _victory_units_hired_row: HBoxContainer
 var _victory_units_hired_value: LineEdit
 var _scenario_trade_disabled_check: CheckBox
-var _victory_type_keys: Array[String] = ["conquer", "dominate", "own_region", "survive_turns", "economy"]
+var _scenario_difficulty_option: OptionButton
+var _victory_type_keys: Array[String] = ["conquer", "conquer_after_events", "dominate", "own_region", "survive_turns", "economy"]
 var _event_name_add_edit: LineEdit
 var _event_add_button: Button
 var _event_list_view: VBoxContainer
@@ -242,6 +243,7 @@ func _ready() -> void:
 	_victory_units_hired_row = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow") as HBoxContainer
 	_victory_units_hired_value = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow/VictoryUnitsHiredValue") as LineEdit
 	_scenario_trade_disabled_check = get_node("Panel/TabContainer/Scenario/TradeDisabledRow/TradeDisabledCheck") as CheckBox
+	_scenario_difficulty_option = get_node("Panel/TabContainer/Scenario/DifficultyRow/DifficultyOption") as OptionButton
 	_event_name_add_edit = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/EventNameEdit") as LineEdit
 	_event_add_button = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/AddEventButton") as Button
 	_event_list_view = get_node("Panel/TabContainer/Event/EventListView") as VBoxContainer
@@ -261,6 +263,7 @@ func _ready() -> void:
 	_initialize_player_settings()
 	_initialize_player_resources()
 	_initialize_scenario_type_ui()
+	_initialize_scenario_difficulty_ui()
 	_initialize_victory_condition_ui()
 	_initialize_events_ui()
 	
@@ -335,6 +338,7 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 	var mission_index: int = mini(_mission_number_option.item_count - 1, mission_number - 1)
 	_mission_number_option.select(maxi(0, mission_index))
 	_scenario_trade_disabled_check.button_pressed = bool(data.get("trade_disabled", false))
+	_set_scenario_difficulty_from_data(String(data.get("difficulty", "all")))
 	_load_victory_conditions_from_scenario(data)
 	_load_events_from_scenario(data)
 
@@ -348,6 +352,14 @@ func _initialize_scenario_type_ui() -> void:
 		_mission_number_option.add_item(str(i))
 	_mission_number_option.select(0)
 	_update_mission_number_visibility()
+
+func _initialize_scenario_difficulty_ui() -> void:
+	_scenario_difficulty_option.clear()
+	_scenario_difficulty_option.add_item("All")
+	_scenario_difficulty_option.add_item("Easy")
+	_scenario_difficulty_option.add_item("Normal")
+	_scenario_difficulty_option.add_item("Hard")
+	_scenario_difficulty_option.select(0)
 
 func _on_scenario_type_selected(_index: int) -> void:
 	_update_mission_number_visibility()
@@ -365,12 +377,36 @@ func _get_selected_scenario_type() -> String:
 		return "campaign"
 	return "scenario"
 
+func _set_scenario_difficulty_from_data(difficulty_value: String) -> void:
+	var normalized: String = difficulty_value.to_lower()
+	match normalized:
+		"easy":
+			_scenario_difficulty_option.select(1)
+		"normal":
+			_scenario_difficulty_option.select(2)
+		"hard":
+			_scenario_difficulty_option.select(3)
+		_:
+			_scenario_difficulty_option.select(0)
+
+func _get_selected_scenario_difficulty() -> String:
+	match _scenario_difficulty_option.selected:
+		1:
+			return "easy"
+		2:
+			return "normal"
+		3:
+			return "hard"
+		_:
+			return "all"
+
 func _update_mission_number_visibility() -> void:
 	_mission_number_row.visible = _get_selected_scenario_type() == "campaign"
 
 func _initialize_victory_condition_ui() -> void:
 	_victory_type_option.clear()
 	_victory_type_option.add_item("Conquer")
+	_victory_type_option.add_item("Conquer After Events")
 	_victory_type_option.add_item("Dominate")
 	_victory_type_option.add_item("Own Region")
 	_victory_type_option.add_item("Survive Turns")
@@ -435,7 +471,7 @@ func _load_victory_conditions_from_scenario(data: Dictionary) -> void:
 	var first_condition: Variant = victory_conditions[0]
 	if first_condition is String:
 		var key: String = String(first_condition).to_lower()
-		if key == "conquer" or key == "dominate":
+		if key == "conquer" or key == "conquer_after_events" or key == "dominate":
 			_select_victory_type(key)
 		else:
 			_select_victory_type("conquer")
@@ -448,6 +484,8 @@ func _load_victory_conditions_from_scenario(data: Dictionary) -> void:
 	match type_key:
 		"conquer":
 			_select_victory_type("conquer")
+		"conquer_after_events", "conquer_events", "event_conquer":
+			_select_victory_type("conquer_after_events")
 		"dominate":
 			_select_victory_type("dominate")
 		"own_region":
@@ -482,6 +520,8 @@ func _build_victory_conditions_for_save() -> Array:
 	match victory_type:
 		"conquer":
 			return ["conquer"]
+		"conquer_after_events":
+			return ["conquer_after_events"]
 		"dominate":
 			return ["dominate"]
 		"own_region":
@@ -1087,6 +1127,7 @@ func _on_save_scenario_pressed() -> void:
 		"player_settings": player_settings,
 		"player_resources": player_resources,
 		"trade_disabled": _scenario_trade_disabled_check.button_pressed,
+		"difficulty": _get_selected_scenario_difficulty(),
 		"victory_conditions": _build_victory_conditions_for_save(),
 		"events": _build_events_for_save()
 	}

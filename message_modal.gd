@@ -11,6 +11,10 @@ const SHADOW_OFFSET = Vector2(4, 4)
 const SHADOW_COLOR = Color(0, 0, 0, 0.3)
 const BORDER_WIDTH = 4.0
 const CLOSE_KEYCODES: Array[int] = [KEY_ESCAPE, KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]
+const LONG_TEXT_THRESHOLD_1: int = 150
+const LONG_TEXT_THRESHOLD_2: int = 160
+const LONG_TEXT_FONT_REDUCTION_1: int = 1
+const LONG_TEXT_FONT_REDUCTION_2: int = 2
 
 @onready var ui_manager: UIManager = get_node("../UIManager") as UIManager
 @onready var sound_manager: SoundManager = get_node("../../SoundManager") as SoundManager
@@ -18,10 +22,12 @@ const CLOSE_KEYCODES: Array[int] = [KEY_ESCAPE, KEY_SPACE, KEY_ENTER, KEY_KP_ENT
 @onready var continue_button: Button = get_node("PanelRoot/ContentContainer/ContinueButton")
 @onready var panel_root: Control = get_node("PanelRoot")
 var original_panel_offsets: Rect2
+var default_message_font_size: int = 22
 
 func _ready():
 	visible = false
 	continue_button.pressed.connect(_on_continue_pressed)
+	default_message_font_size = message_label.get_theme_font_size(&"font_size", &"Label")
 	original_panel_offsets = Rect2(
 		panel_root.position,
 		panel_root.size
@@ -30,6 +36,7 @@ func _ready():
 func displayMessage(text: String) -> void:
 	continue_button.visible = true
 	message_label.text = text
+	_apply_message_font_size_for_text(text)
 	_set_mouse_block(true)
 	_show_modal()
 
@@ -41,6 +48,7 @@ func display_message(header: String, message: String = "") -> void:
 
 func show_tutorial_message(text: String, show_continue: bool, block_input: bool) -> void:
 	message_label.text = text
+	_apply_message_font_size_for_text(text)
 	continue_button.visible = show_continue
 	_set_mouse_block(block_input)
 	_move_modal_to_front()
@@ -78,6 +86,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _draw():
 	pass
+
+func _apply_message_font_size_for_text(text: String) -> void:
+	var adjusted_font_size: int = default_message_font_size
+	var text_length: int = text.length()
+	if text_length > LONG_TEXT_THRESHOLD_2:
+		adjusted_font_size -= LONG_TEXT_FONT_REDUCTION_2
+	elif text_length > LONG_TEXT_THRESHOLD_1:
+		adjusted_font_size -= LONG_TEXT_FONT_REDUCTION_1
+	message_label.add_theme_font_size_override(&"font_size", adjusted_font_size)
 
 func _set_mouse_block(blocked: bool) -> void:
 	var mode = Control.MOUSE_FILTER_STOP if blocked else Control.MOUSE_FILTER_IGNORE
