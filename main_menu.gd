@@ -62,7 +62,7 @@ const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/b
 @onready var custom_map_map_name_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer/MapName
 @onready var custom_map_map_size_label: Label = $CustomMap/Panel2/VBoxContainer/HBoxContainer2/MapSize
 @onready var scenario_header_label: Label = $CustomMap/Scenario/VBoxContainer/Label
-@onready var scenario_description_label: Label = $CustomMap/Scenario/VBoxContainer/Description
+@onready var scenario_description_label: RichTextLabel = $CustomMap/Scenario/VBoxContainer/Description
 @onready var scenario_objectives_label: Label = $CustomMap/Scenario/VBoxContainer/Description2
 @onready var map_size_label: Label = $CustomMap/Panel3/VBoxContainer/MapSize
 @onready var map_size_margin1: MarginContainer = $CustomMap/Panel3/VBoxContainer/MapSizeMargin1
@@ -839,7 +839,7 @@ func _load_scenario_list():
 func _add_scenario_button(scenario_name: String):
 	"""Add a button for a scenario to the list"""
 	var button = Button.new()
-	button.text = scenario_name.capitalize().replace("_", " ")
+	button.text = tr(scenario_name.capitalize().replace("_", " "))
 	
 	# Create the scenario theme dynamically to match the scene theme
 	var scenario_theme = Theme.new()
@@ -902,7 +902,7 @@ func _load_scenario_list_for_scenario():
 func _add_scenario_button_for_scenario(scenario_name: String):
 	"""Add a button for a scenario to the scenario menu list"""
 	var button = Button.new()
-	button.text = scenario_name.capitalize().replace("_", " ")
+	button.text = tr(scenario_name.capitalize().replace("_", " "))
 	
 	# Create the scenario theme dynamically to match the scene theme
 	var scenario_theme = Theme.new()
@@ -1043,7 +1043,7 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		var size_label: Label = row.get_node("Size")
 		var name_label: Label = row.get_node("Name")
 		size_label.text = item.get("size", "S")
-		name_label.text = item.get("display_name", "Map")
+		name_label.text = _resolve_item_display_name(item)
 		size_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		name_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		_set_row_highlight_color(row, ROW_HIGHLIGHT_NONE_COLOR)
@@ -1120,7 +1120,7 @@ func _update_button_gold_state(button: Button, selected: bool):
 	button.button_pressed = selected
 
 func _update_info_labels(item: Dictionary):
-	custom_map_map_name_label.text = item.get("display_name", "Map Name")
+	custom_map_map_name_label.text = _resolve_item_display_name(item)
 	var size_code: String = item.get("size", "S")
 	custom_map_map_size_label.text = _size_full_name(size_code)
 	if is_scenario_mode:
@@ -1213,6 +1213,7 @@ func _gather_map_items() -> Array:
 				var region_count: int = int(map_profile.get("region_count", 0))
 				items.append({
 					"file": base,
+					"display_name_key": _display_key_for_map(base),
 					"display_name": _display_name_for_map(base),
 					"size": size_code,
 					"map_size_exact": exact_size,
@@ -1238,6 +1239,8 @@ func _gather_scenario_items(requested_type: String) -> Array:
 				var scenario_difficulty: String = SCENARIO_DIFFICULTY_ALL
 				var description: String = ""
 				var objectives: String = ""
+				var scenario_title_key: String = ""
+				var mission_number: int = 0
 				var file_path: String = "res://scenarios/" + file_name
 				var content: String = FileAccess.get_file_as_string(file_path)
 				var json = JSON.new()
@@ -1253,12 +1256,23 @@ func _gather_scenario_items(requested_type: String) -> Array:
 						scenario_difficulty = _normalize_scenario_difficulty(String(dict_data.get("difficulty", SCENARIO_DIFFICULTY_ALL)))
 						description = String(dict_data.get("description", ""))
 						objectives = String(dict_data.get("objectives", ""))
+						scenario_title_key = String(dict_data.get("name", "")).strip_edges()
+						mission_number = int(dict_data.get("mission_number", 0))
 				if scenario_type != requested_type:
 					file_name = dir.get_next()
 					continue
+				var display_name: String = scenario_name.capitalize().replace("_", " ")
+				var display_name_key: String = scenario_title_key
+				if scenario_type == "campaign" and mission_number > 0:
+					display_name = "Mission " + str(mission_number)
+					if display_name_key == "":
+						display_name_key = "mission" + str(mission_number) + "-name"
+				elif display_name_key == "":
+					display_name_key = scenario_name
 				items.append({
 					"name": scenario_name,
-					"display_name": scenario_name.capitalize().replace("_", " "),
+					"display_name_key": display_name_key,
+					"display_name": display_name,
 					"size": size_code,
 					"map_file_base": map_file_base,
 					"difficulty": scenario_difficulty,
@@ -1341,6 +1355,24 @@ func _display_name_for_map(base: String) -> String:
 		var name_part := " ".join(parts)
 		return name_part.capitalize()
 	return base.capitalize().replace("_", " ")
+
+func _display_key_for_map(base: String) -> String:
+	var normalized: String = base.replace("_", "-")
+	var parts := normalized.split("-")
+	if parts.size() >= 3:
+		var leading: String = String(parts[0]).strip_edges()
+		if leading != "":
+			return leading + "_map"
+	return ""
+
+func _resolve_item_display_name(item: Dictionary) -> String:
+	var fallback: String = String(item.get("display_name", "Map Name"))
+	var key: String = String(item.get("display_name_key", "")).strip_edges()
+	if key != "":
+		var translated_key: String = tr(key)
+		if translated_key != key:
+			return translated_key
+	return tr(fallback)
 
 func _on_scenario_hovered(scenario_name: String):
 	current_hovered_item = scenario_name

@@ -675,6 +675,7 @@ texture = ExtResource("9_ygwey")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1385,7 +1386,6 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1433,12 +1433,14 @@ text = "Scenario Description"
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
 
-[node name="Description" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
+[node name="Description" type="RichTextLabel" parent="CustomMap/Scenario/VBoxContainer"]
 custom_minimum_size = Vector2(20, 200)
 layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("15_std_modal")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/default_color = Color(1, 1, 1, 1)
 text = "Scenario description LOREM IPSUM"
+autowrap_mode = 2
 
 [node name="Label5" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
 custom_minimum_size = Vector2(20, 0)

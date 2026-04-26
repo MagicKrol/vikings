@@ -104,6 +104,7 @@ var enable_map_editor: bool = false  # Configurable flag to enable map editor mo
 var click_manager: Node = null
 
 const FAMINE_POINTS_PER_FOOD: float = 10.0
+const FAMINE_POINTS_LOOKUP_BY_ROLL: Array[int] = [5, 7, 9, 13, 16, 16, 13, 9, 7, 5]
 const DOMINATE_DEFAULT_THRESHOLD: float = 0.7
 const DEBUG_LANGUAGE_CYCLE: Array[String] = ["en", "de", "pl", "br"]
 
@@ -1528,7 +1529,9 @@ func famine_regions(player_id: int, missing_food: float) -> Dictionary:
 	if clamped_missing_food <= 0.0:
 		return result
 	
-	var target_points: int = int(floor(clamped_missing_food * FAMINE_POINTS_PER_FOOD))
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.randomize()
+	var target_points: int = _roll_famine_points(clamped_missing_food, rng)
 	result["target_points"] = target_points
 	if target_points <= 0:
 		return result
@@ -1544,8 +1547,6 @@ func famine_regions(player_id: int, missing_food: float) -> Dictionary:
 	if total_force_points <= 0:
 		return result
 	
-	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.randomize()
 	var points_to_apply: int = min(target_points, total_force_points)
 	_allocate_points_proportionally(force_entries, points_to_apply, "upkeep_points", "allocated_points", rng)
 	
@@ -1672,6 +1673,18 @@ func _get_composition_famine_points(composition: ArmyComposition) -> int:
 func _get_unit_famine_points(unit_type: SoldierTypeEnum.Type) -> int:
 	var food_cost: float = float(GameParameters.get_unit_food_cost(unit_type))
 	return max(0, int(round(food_cost * FAMINE_POINTS_PER_FOOD)))
+
+func _roll_famine_points(missing_food: float, rng: RandomNumberGenerator) -> int:
+	var clamped_missing_food: float = max(0.0, missing_food)
+	if clamped_missing_food <= 0.0:
+		return 0
+	var lookup_points: int = _roll_famine_lookup_points(rng)
+	var target_points: int = int(floor(clamped_missing_food * float(lookup_points)))
+	return max(0, target_points)
+
+func _roll_famine_lookup_points(rng: RandomNumberGenerator) -> int:
+	var roll: int = rng.randi_range(1, FAMINE_POINTS_LOOKUP_BY_ROLL.size())
+	return int(FAMINE_POINTS_LOOKUP_BY_ROLL[roll - 1])
 
 func _allocate_points_proportionally(entries: Array[Dictionary], points_to_allocate: int, capacity_key: String, allocation_key: String, rng: RandomNumberGenerator) -> int:
 	if points_to_allocate <= 0 or entries.is_empty():
