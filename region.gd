@@ -356,11 +356,24 @@ func get_max_recruits() -> int:
 
 func hire_recruits(count: int) -> int:
 	"""Hire recruits from this region, returns actual hired count"""
-	var modified_available = get_available_recruits()  # Get ownership-modified available recruits
-	var actual_hired = min(count, modified_available)
-	if actual_hired > 0:
-		# Use the centralized function to reduce recruits and population
-		_reduce_recruits_and_population(actual_hired)
+	var ownership_modifier: float = get_ownership_recruitment_modifier()
+	var modified_available: int = get_available_recruits()
+	var actual_hired: int = min(count, modified_available)
+	if actual_hired <= 0:
+		return 0
+
+	var new_population: int = max(0, population - actual_hired)
+	var new_modified_available: int = max(0, modified_available - actual_hired)
+	var new_base_available: int = 0
+
+	if ownership_modifier >= 1.0:
+		new_base_available = new_modified_available
+	elif ownership_modifier > 0.0:
+		new_base_available = ceili(float(new_modified_available) / ownership_modifier)
+
+	population = new_population
+	var max_recruits: int = GameParameters.calculate_max_recruits(population, region_level)
+	available_recruits = min(new_base_available, max_recruits)
 	return actual_hired
 
 func reduce_recruits(count: int) -> int:

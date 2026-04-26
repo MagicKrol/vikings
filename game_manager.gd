@@ -417,12 +417,20 @@ func _start_scenario() -> void:
 	_initialize_trade_rules_from_scenario_data(scen)
 	_apply_scenario_player_settings_from_data(scen)
 	# Apply to runtime
-	scen_mgr.apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager)
+	scen_mgr.apply_to_runtime(
+		map_generator,
+		_region_manager,
+		_army_manager,
+		_visual_manager,
+		scen,
+		player_manager,
+		GameParameters.game_difficulty_to_string(game_difficulty)
+	)
 	var heat_calc := StrategicPointsHeatmap.new()
 	heat_calc.initialize(_region_manager, map_generator)
 	heat_calc.enable_key_toggle = false
 	heat_calc.compute_and_store()
-	_initialize_scenario_events_from_data(scen)
+	_initialize_scenario_events_from_data(scen, GameParameters.game_difficulty_to_string(game_difficulty))
 
 	# Initialize AI system (now with proper PlayerManagerNode reference)
 	_ai_region_scorer = RegionScorer.new(_region_manager, map_generator)
@@ -672,7 +680,7 @@ func _initialize_map_editor() -> void:
 		var scen: Dictionary = get_tree().get_meta("__scenario_to_apply__") as Dictionary
 		get_tree().set_meta("__scenario_to_apply__", null)
 		var player_manager_node = get_node("../PlayerManager") as PlayerManagerNode
-		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, null, scen, player_manager_node)
+		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, null, scen, player_manager_node, "all")
 
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")
@@ -1139,19 +1147,26 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
 	_message_modal.display_message(tr("Player %d Won") % player_id)
 
-func _initialize_scenario_events_from_data(scenario_data: Dictionary) -> void:
+func _initialize_scenario_events_from_data(scenario_data: Dictionary, difficulty_token: String = "all") -> void:
 	_scenario_events_runtime.clear()
 	if game_mode != "scenario":
 		return
 	if not scenario_data.has("events"):
 		return
 	var source_events: Array = scenario_data.get("events", [])
+	var normalized_difficulty: String = _normalize_scenario_difficulty_token(difficulty_token)
+	var event_composition_overrides: Dictionary = _resolve_event_composition_overrides_for_difficulty(scenario_data, normalized_difficulty)
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	for raw_event in source_events:
+	for event_index in range(source_events.size()):
+		var raw_event: Variant = source_events[event_index]
 		if not (raw_event is Dictionary):
 			continue
 		var event_definition: Dictionary = _normalize_scenario_event_definition(raw_event)
+		if event_composition_overrides.has(event_index):
+			var raw_override: Variant = event_composition_overrides.get(event_index, {})
+			if raw_override is Dictionary:
+				event_definition["composition"] = _normalize_event_composition(raw_override)
 		var turn_start: int = int(event_definition.get("turn_start", 1))
 		var turn_end: int = int(event_definition.get("turn_end", turn_start))
 		var selected_turn: int = rng.randi_range(turn_start, turn_end)
@@ -1174,6 +1189,43 @@ func _initialize_scenario_events_from_data(scenario_data: Dictionary) -> void:
 			"triggered": false
 		}
 		_scenario_events_runtime.append(runtime_event)
+
+func _normalize_scenario_difficulty_token(raw_token: String) -> String:
+	var normalized: String = raw_token.to_lower().strip_edges()
+	match normalized:
+		"easy", "normal", "hard":
+			return normalized
+		_:
+			return "all"
+
+func _resolve_event_composition_overrides_for_difficulty(scenario_data: Dictionary, difficulty_token: String) -> Dictionary:
+	if difficulty_token == "all":
+		return {}
+	var raw_overrides: Variant = scenario_data.get("difficulty_overrides", {})
+	if not (raw_overrides is Dictionary):
+		return {}
+	var overrides: Dictionary = raw_overrides as Dictionary
+	var raw_difficulty_block: Variant = overrides.get(difficulty_token, {})
+	if not (raw_difficulty_block is Dictionary):
+		return {}
+	var difficulty_block: Dictionary = raw_difficulty_block as Dictionary
+	var raw_event_entries: Variant = difficulty_block.get("event_compositions", [])
+	if not (raw_event_entries is Array):
+		return {}
+	var result: Dictionary = {}
+	var event_entries: Array = raw_event_entries as Array
+	for raw_entry in event_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry as Dictionary
+		var event_index: int = int(entry.get("event_index", -1))
+		if event_index < 0:
+			continue
+		var raw_composition: Variant = entry.get("composition", {})
+		if not (raw_composition is Dictionary):
+			continue
+		result[event_index] = _normalize_event_composition(raw_composition)
+	return result
 
 func _normalize_scenario_event_definition(raw_event: Dictionary) -> Dictionary:
 	var event_name: String = String(raw_event.get("name", "Event")).strip_edges()

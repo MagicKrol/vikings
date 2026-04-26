@@ -41,18 +41,88 @@ func _resolve_scenario_path(name: String) -> String:
 		return "res://scenarios/" + name.get_file()
 	return "res://scenarios/" + name.get_file()
 
-func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager, visual_manager: VisualManager, scenario: Dictionary, player_manager: PlayerManagerNode) -> void:
+func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager, visual_manager: VisualManager, scenario: Dictionary, player_manager: PlayerManagerNode, difficulty_token: String = "all") -> void:
 	# 1) Ensure map is generated from the scenario's map file (caller should set data_file_path prior to generation)
 	# 2) Apply region deltas, ownership, castles, armies (single pass, order matters)
-	_apply_region_deltas(map_generator, region_manager, scenario)
+	var resolved_difficulty: String = _normalize_runtime_difficulty_token(difficulty_token)
+	var garrison_composition_overrides: Dictionary = _resolve_garrison_override_map(scenario, resolved_difficulty)
+	var army_composition_overrides: Dictionary = _resolve_army_override_map(scenario, resolved_difficulty)
+	var effective_player_resources: Array = _resolve_player_resources_for_difficulty(scenario, resolved_difficulty)
+	_apply_region_deltas(map_generator, region_manager, scenario, garrison_composition_overrides)
 	_apply_ownership(map_generator, region_manager, scenario)
 	_apply_castles(map_generator, visual_manager, scenario)
-	_apply_armies(map_generator, army_manager, scenario)
-	_apply_player_resources(player_manager, scenario)
+	_apply_armies(map_generator, army_manager, scenario, army_composition_overrides)
+	_apply_player_resources(player_manager, effective_player_resources)
+
+func _normalize_runtime_difficulty_token(raw_token: String) -> String:
+	var normalized: String = raw_token.to_lower().strip_edges()
+	match normalized:
+		"easy", "normal", "hard":
+			return normalized
+		_:
+			return "all"
+
+func _get_difficulty_override_block(scenario: Dictionary, difficulty_token: String) -> Dictionary:
+	if difficulty_token == "all":
+		return {}
+	var raw_overrides: Variant = scenario.get("difficulty_overrides", {})
+	if not (raw_overrides is Dictionary):
+		return {}
+	var overrides: Dictionary = raw_overrides as Dictionary
+	var raw_block: Variant = overrides.get(difficulty_token, {})
+	if raw_block is Dictionary:
+		return raw_block as Dictionary
+	return {}
+
+func _resolve_player_resources_for_difficulty(scenario: Dictionary, difficulty_token: String) -> Array:
+	var raw_baseline: Variant = scenario.get("player_resources", [])
+	var baseline_resources: Array = []
+	if raw_baseline is Array:
+		baseline_resources = raw_baseline as Array
+	if difficulty_token == "all":
+		return baseline_resources
+	var block: Dictionary = _get_difficulty_override_block(scenario, difficulty_token)
+	var raw_override: Variant = block.get("player_resources", null)
+	if raw_override is Array:
+		return raw_override as Array
+	return baseline_resources
+
+func _resolve_army_override_map(scenario: Dictionary, difficulty_token: String) -> Dictionary:
+	return _resolve_composition_override_map(scenario, difficulty_token, "army_compositions")
+
+func _resolve_garrison_override_map(scenario: Dictionary, difficulty_token: String) -> Dictionary:
+	return _resolve_composition_override_map(scenario, difficulty_token, "garrison_compositions")
+
+func _resolve_composition_override_map(scenario: Dictionary, difficulty_token: String, key_name: String) -> Dictionary:
+	var block: Dictionary = _get_difficulty_override_block(scenario, difficulty_token)
+	var raw_entries: Variant = block.get(key_name, [])
+	if not (raw_entries is Array):
+		return {}
+	var entries: Array = raw_entries as Array
+	var result: Dictionary = {}
+	for raw_entry in entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry as Dictionary
+		var region_id: int = int(entry.get("region_id", -1))
+		if region_id <= 0:
+			continue
+		var raw_composition: Variant = entry.get("composition", {})
+		if not (raw_composition is Dictionary):
+			continue
+		result[region_id] = _sanitize_unit_composition(raw_composition as Dictionary)
+	return result
+
+func _sanitize_unit_composition(raw_composition: Dictionary) -> Dictionary:
+	var sanitized: Dictionary = {}
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		sanitized[unit_key] = maxi(0, int(raw_composition.get(unit_key, 0)))
+	return sanitized
 
 # Internal helpers -------------------------------------------------------------
 
-func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary) -> void:
+func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary, garrison_composition_overrides: Dictionary) -> void:
 	var regions: Array = scenario.get("regions", [])
 	for r in regions:
 		var region_id: int = int(r.get("id", -1))
@@ -107,6 +177,16 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 				var key := SoldierTypeEnum.type_to_string(t)
 				if gdict.has(key):
 					g.set_soldier_count(t, int(gdict.get(key)))
+		# Difficulty-specific garrison composition override
+		if garrison_composition_overrides.has(region_id):
+			var raw_override: Variant = garrison_composition_overrides.get(region_id, {})
+			if raw_override is Dictionary:
+				var override_composition: Dictionary = raw_override as Dictionary
+				var garrison = region.get_garrison()
+				for t in SoldierTypeEnum.get_all_types():
+					var key := SoldierTypeEnum.type_to_string(t)
+					if override_composition.has(key):
+						garrison.set_soldier_count(t, int(override_composition.get(key)))
 
 func _apply_ownership(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary) -> void:
 	var regions: Array = scenario.get("regions", [])
@@ -156,7 +236,7 @@ func _apply_castles(map_generator: MapGenerator, visual_manager: VisualManager, 
 						castle.z_index = 100
 						container.add_child(castle)
 
-func _apply_armies(map_generator: MapGenerator, army_manager: ArmyManager, scenario: Dictionary) -> void:
+func _apply_armies(map_generator: MapGenerator, army_manager: ArmyManager, scenario: Dictionary, army_composition_overrides: Dictionary) -> void:
 	var armies: Array = scenario.get("armies", [])
 	for a in armies:
 		var region_id: int = int(a.get("region_id", -1))
@@ -173,11 +253,16 @@ func _apply_armies(map_generator: MapGenerator, army_manager: ArmyManager, scena
 				var key := SoldierTypeEnum.type_to_string(t)
 				if comp.has(key):
 					army.get_composition().set_soldier_count(t, int(comp.get(key)))
+		if army_composition_overrides.has(region_id):
+			var raw_override: Variant = army_composition_overrides.get(region_id, {})
+			if raw_override is Dictionary:
+				var override_composition: Dictionary = raw_override as Dictionary
+				for t in SoldierTypeEnum.get_all_types():
+					var key := SoldierTypeEnum.type_to_string(t)
+					if override_composition.has(key):
+						army.get_composition().set_soldier_count(t, int(override_composition.get(key)))
 
-func _apply_player_resources(player_manager: PlayerManagerNode, scenario: Dictionary) -> void:
-	if not scenario.has("player_resources"):
-		return
-	var entries: Array = scenario["player_resources"]
+func _apply_player_resources(player_manager: PlayerManagerNode, entries: Array) -> void:
 	for entry in entries:
 		if entry is Dictionary:
 			var player_id := int(entry.get("player_id", 0))

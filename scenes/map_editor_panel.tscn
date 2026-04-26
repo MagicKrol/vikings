@@ -80,6 +80,18 @@ text = "Mission number:"
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="SetDifficultyRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="SetDifficultyLabel" type="Label" parent="Panel/TabContainer/Main/SetDifficultyRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Set for Difficulty:"
+
+[node name="SetDifficultyOption" type="OptionButton" parent="Panel/TabContainer/Main/SetDifficultyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="SaveButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 

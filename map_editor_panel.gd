@@ -19,6 +19,8 @@ signal region_type_changed(region_id: int, selection: String)
 signal region_data_changed(region_id: int, selection: String)
 signal army_edit_saved(region_id: int, data: Dictionary)
 
+const SCENARIO_EDIT_DIFFICULTIES: Array[String] = ["all", "easy", "normal", "hard"]
+
 var _option: OptionButton
 var _current_region_id: int = -1
 var _name_edit: LineEdit
@@ -47,6 +49,7 @@ var _save_map_button: Button
 var _exit_button: Button
 var _scenario_name_edit: LineEdit
 var _scenario_type_option: OptionButton
+var _edit_difficulty_option: OptionButton
 var _mission_number_row: HBoxContainer
 var _mission_number_option: OptionButton
 var _tab_container: TabContainer
@@ -65,6 +68,11 @@ var _player_resource_fields: Dictionary = {}
 var player_resources: Array = []  # Array of dictionaries storing starting resources per player
 var _current_resource_player_index: int = 0
 var _is_updating_player_resources_ui: bool = false
+var _edit_difficulty_target: String = "all"
+var _difficulty_player_resources_overrides: Dictionary = {}
+var _difficulty_army_compositions_overrides: Dictionary = {}
+var _difficulty_garrison_compositions_overrides: Dictionary = {}
+var _difficulty_event_compositions_overrides: Dictionary = {}
 var _victory_type_option: OptionButton
 var _victory_target_player_row: HBoxContainer
 var _victory_target_player_option: OptionButton
@@ -130,6 +138,7 @@ func _ready() -> void:
 	_save_map_button = get_node("Panel/TabContainer/Main/SaveMapButtonRow/SaveMapButton") as Button
 	_scenario_name_edit = get_node("Panel/TabContainer/Main/SaveRow/ScenarioNameEdit") as LineEdit
 	_scenario_type_option = get_node("Panel/TabContainer/Main/ScenarioTypeRow/ScenarioTypeOption") as OptionButton
+	_edit_difficulty_option = get_node("Panel/TabContainer/Main/SetDifficultyRow/SetDifficultyOption") as OptionButton
 	_mission_number_row = get_node("Panel/TabContainer/Main/MissionNumberRow") as HBoxContainer
 	_mission_number_option = get_node("Panel/TabContainer/Main/MissionNumberRow/MissionNumberOption") as OptionButton
 	_exit_button = get_node("Panel/TabContainer/Main/ExitButtonRow/ExitButton") as Button
@@ -262,6 +271,7 @@ func _ready() -> void:
 	_initialize_player_settings()
 	_initialize_player_resources()
 	_initialize_scenario_type_ui()
+	_initialize_edit_difficulty_ui()
 	_initialize_scenario_difficulty_ui()
 	_initialize_victory_condition_ui()
 	_initialize_events_ui()
@@ -273,6 +283,7 @@ func _ready() -> void:
 		field.focus_exited.connect(_on_player_resource_focus_exited.bind(rt))
 	_victory_type_option.item_selected.connect(_on_victory_type_selected)
 	_scenario_type_option.item_selected.connect(_on_scenario_type_selected)
+	_edit_difficulty_option.item_selected.connect(_on_edit_difficulty_selected)
 	_event_add_button.pressed.connect(_on_event_add_pressed)
 	_event_back_button.pressed.connect(_on_event_back_pressed)
 	_event_save_button.pressed.connect(_on_event_save_pressed)
@@ -329,12 +340,15 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 		if loaded_resources is Array:
 			_apply_loaded_player_resources(loaded_resources)
 			DebugLogger.log("MapEditorPanel", "Loaded player resources from scenario")
+	_apply_loaded_difficulty_overrides(data)
 	_set_scenario_type_from_data(String(data.get("scenario_type", "scenario")))
 	var mission_number: int = maxi(1, int(data.get("mission_number", 1)))
 	var mission_index: int = mini(_mission_number_option.item_count - 1, mission_number - 1)
 	_mission_number_option.select(maxi(0, mission_index))
 	_scenario_trade_disabled_check.button_pressed = bool(data.get("trade_disabled", false))
 	_set_scenario_difficulty_from_data(String(data.get("difficulty", "all")))
+	_set_edit_difficulty_target_from_data("all")
+	_refresh_difficulty_scoped_editor_views()
 	_load_victory_conditions_from_scenario(data)
 	_load_events_from_scenario(data)
 
@@ -348,6 +362,391 @@ func _initialize_scenario_type_ui() -> void:
 		_mission_number_option.add_item(str(i))
 	_mission_number_option.select(0)
 	_update_mission_number_visibility()
+
+func _initialize_edit_difficulty_ui() -> void:
+	_edit_difficulty_option.clear()
+	_edit_difficulty_option.add_item("All")
+	_edit_difficulty_option.add_item("Easy")
+	_edit_difficulty_option.add_item("Normal")
+	_edit_difficulty_option.add_item("Hard")
+	_edit_difficulty_option.select(0)
+	_edit_difficulty_target = "all"
+
+func _normalize_edit_difficulty_token(raw_value: String) -> String:
+	var normalized: String = raw_value.to_lower().strip_edges()
+	match normalized:
+		"easy", "normal", "hard":
+			return normalized
+		_:
+			return "all"
+
+func _set_edit_difficulty_target_from_data(raw_value: String) -> void:
+	var normalized: String = _normalize_edit_difficulty_token(raw_value)
+	match normalized:
+		"easy":
+			_edit_difficulty_option.select(1)
+		"normal":
+			_edit_difficulty_option.select(2)
+		"hard":
+			_edit_difficulty_option.select(3)
+		_:
+			_edit_difficulty_option.select(0)
+	_edit_difficulty_target = normalized
+
+func _on_edit_difficulty_selected(index: int) -> void:
+	var selected_token: String = "all"
+	match index:
+		1:
+			selected_token = "easy"
+		2:
+			selected_token = "normal"
+		3:
+			selected_token = "hard"
+	_edit_difficulty_target = selected_token
+	_refresh_difficulty_scoped_editor_views()
+
+func _refresh_difficulty_scoped_editor_views() -> void:
+	var army_panel_was_open: bool = _army_edit_panel.visible
+	var garrison_panel_was_open: bool = _garrison_edit_panel.visible
+	var event_editor_was_open: bool = _event_editor_view.visible
+	var edited_event_index: int = _editing_event_index
+	_show_player_resources_for_index(_current_resource_player_index)
+	if _current_region_node != null:
+		update_from_region(_current_region_node)
+		if garrison_panel_was_open:
+			_on_edit_garrison_pressed()
+		if army_panel_was_open:
+			_populate_army_panel()
+			_tab_container.current_tab = 3
+			_army_default_content.visible = false
+			_army_edit_panel.visible = true
+	_refresh_events_list()
+	if event_editor_was_open and edited_event_index >= 0:
+		_show_event_editor_by_index(edited_event_index)
+
+func _apply_loaded_difficulty_overrides(data: Dictionary) -> void:
+	_difficulty_player_resources_overrides.clear()
+	_difficulty_army_compositions_overrides.clear()
+	_difficulty_garrison_compositions_overrides.clear()
+	_difficulty_event_compositions_overrides.clear()
+	var raw_overrides: Variant = data.get("difficulty_overrides", {})
+	if not (raw_overrides is Dictionary):
+		return
+	var overrides: Dictionary = raw_overrides as Dictionary
+	for difficulty_token in SCENARIO_EDIT_DIFFICULTIES:
+		if difficulty_token == "all":
+			continue
+		var raw_block: Variant = overrides.get(difficulty_token, null)
+		if not (raw_block is Dictionary):
+			continue
+		var block: Dictionary = raw_block as Dictionary
+		var raw_player_resources: Variant = block.get("player_resources", null)
+		if raw_player_resources is Array:
+			_difficulty_player_resources_overrides[difficulty_token] = _sanitize_player_resources_entries(raw_player_resources as Array, true)
+		var raw_army_entries: Variant = block.get("army_compositions", null)
+		if raw_army_entries is Array:
+			var army_map: Dictionary = _extract_composition_override_map_from_entries(raw_army_entries as Array)
+			if not army_map.is_empty():
+				_difficulty_army_compositions_overrides[difficulty_token] = army_map
+		var raw_garrison_entries: Variant = block.get("garrison_compositions", null)
+		if raw_garrison_entries is Array:
+			var garrison_map: Dictionary = _extract_composition_override_map_from_entries(raw_garrison_entries as Array)
+			if not garrison_map.is_empty():
+				_difficulty_garrison_compositions_overrides[difficulty_token] = garrison_map
+		var raw_event_entries: Variant = block.get("event_compositions", null)
+		if raw_event_entries is Array:
+			var event_map: Dictionary = _extract_event_composition_override_map_from_entries(raw_event_entries as Array)
+			if not event_map.is_empty():
+				_difficulty_event_compositions_overrides[difficulty_token] = event_map
+
+func _extract_composition_override_map_from_entries(raw_entries: Array) -> Dictionary:
+	var result: Dictionary = {}
+	for raw_entry in raw_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry as Dictionary
+		var region_id: int = int(entry.get("region_id", -1))
+		if region_id <= 0:
+			continue
+		var raw_composition: Variant = entry.get("composition", {})
+		if not (raw_composition is Dictionary):
+			continue
+		result[region_id] = _sanitize_unit_composition(raw_composition as Dictionary)
+	return result
+
+func _extract_event_composition_override_map_from_entries(raw_entries: Array) -> Dictionary:
+	var result: Dictionary = {}
+	for raw_entry in raw_entries:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry as Dictionary
+		var event_index: int = int(entry.get("event_index", -1))
+		if event_index < 0:
+			continue
+		var raw_composition: Variant = entry.get("composition", {})
+		if not (raw_composition is Dictionary):
+			continue
+		result[event_index] = _sanitize_unit_composition(raw_composition as Dictionary)
+	return result
+
+func _sanitize_unit_composition(raw_composition: Dictionary) -> Dictionary:
+	var sanitized: Dictionary = {}
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		sanitized[unit_key] = maxi(0, int(raw_composition.get(unit_key, 0)))
+	return sanitized
+
+func _build_default_player_resources_entries() -> Array:
+	var defaults: Array = []
+	for i in range(6):
+		defaults.append(_build_default_player_resource_entry(i + 1))
+	return defaults
+
+func _sanitize_player_resources_entries(resources_data: Array, seed_from_baseline: bool) -> Array:
+	var sanitized: Array = []
+	if seed_from_baseline and player_resources.size() == 6:
+		sanitized = player_resources.duplicate(true)
+	else:
+		sanitized = _build_default_player_resources_entries()
+	for raw_entry in resources_data:
+		if not (raw_entry is Dictionary):
+			continue
+		var entry: Dictionary = raw_entry as Dictionary
+		var player_id: int = int(entry.get("player_id", 0))
+		if player_id < 1 or player_id > sanitized.size():
+			continue
+		var target_entry: Dictionary = sanitized[player_id - 1]
+		target_entry["player_id"] = player_id
+		var target_resources: Dictionary = target_entry.get("resources", {})
+		var raw_resources: Variant = entry.get("resources", {})
+		if raw_resources is Dictionary:
+			var source_resources: Dictionary = raw_resources as Dictionary
+			for resource_type in ResourcesEnum.get_all_types():
+				var resource_key: String = ResourcesEnum.type_to_string(resource_type)
+				if source_resources.has(resource_key):
+					target_resources[resource_key] = maxi(0, int(source_resources.get(resource_key, target_resources.get(resource_key, 0))))
+		target_entry["resources"] = target_resources
+		sanitized[player_id - 1] = target_entry
+	return sanitized
+
+func _get_effective_player_resources_entries() -> Array:
+	if _edit_difficulty_target == "all":
+		return player_resources
+	var raw_override: Variant = _difficulty_player_resources_overrides.get(_edit_difficulty_target, null)
+	if raw_override is Array:
+		return raw_override as Array
+	return player_resources
+
+func _ensure_edit_target_player_resources_override() -> Array:
+	if _edit_difficulty_target == "all":
+		return player_resources
+	if not _difficulty_player_resources_overrides.has(_edit_difficulty_target):
+		_difficulty_player_resources_overrides[_edit_difficulty_target] = player_resources.duplicate(true)
+	var raw_entries: Variant = _difficulty_player_resources_overrides.get(_edit_difficulty_target, [])
+	if raw_entries is Array:
+		return raw_entries as Array
+	var fallback: Array = player_resources.duplicate(true)
+	_difficulty_player_resources_overrides[_edit_difficulty_target] = fallback
+	return fallback
+
+func _get_army_override_map_for_target() -> Dictionary:
+	var raw_map: Variant = _difficulty_army_compositions_overrides.get(_edit_difficulty_target, {})
+	if raw_map is Dictionary:
+		return raw_map as Dictionary
+	return {}
+
+func _get_garrison_override_map_for_target() -> Dictionary:
+	var raw_map: Variant = _difficulty_garrison_compositions_overrides.get(_edit_difficulty_target, {})
+	if raw_map is Dictionary:
+		return raw_map as Dictionary
+	return {}
+
+func _ensure_army_override_map_for_target() -> Dictionary:
+	if not _difficulty_army_compositions_overrides.has(_edit_difficulty_target):
+		_difficulty_army_compositions_overrides[_edit_difficulty_target] = {}
+	var raw_map: Variant = _difficulty_army_compositions_overrides.get(_edit_difficulty_target, {})
+	if raw_map is Dictionary:
+		return raw_map as Dictionary
+	var fallback: Dictionary = {}
+	_difficulty_army_compositions_overrides[_edit_difficulty_target] = fallback
+	return fallback
+
+func _ensure_garrison_override_map_for_target() -> Dictionary:
+	if not _difficulty_garrison_compositions_overrides.has(_edit_difficulty_target):
+		_difficulty_garrison_compositions_overrides[_edit_difficulty_target] = {}
+	var raw_map: Variant = _difficulty_garrison_compositions_overrides.get(_edit_difficulty_target, {})
+	if raw_map is Dictionary:
+		return raw_map as Dictionary
+	var fallback: Dictionary = {}
+	_difficulty_garrison_compositions_overrides[_edit_difficulty_target] = fallback
+	return fallback
+
+func _get_event_override_map_for_target() -> Dictionary:
+	var raw_map: Variant = _difficulty_event_compositions_overrides.get(_edit_difficulty_target, {})
+	if raw_map is Dictionary:
+		return raw_map as Dictionary
+	return {}
+
+func _ensure_event_override_map_for_target() -> Dictionary:
+	if not _difficulty_event_compositions_overrides.has(_edit_difficulty_target):
+		_difficulty_event_compositions_overrides[_edit_difficulty_target] = {}
+	var raw_map: Variant = _difficulty_event_compositions_overrides.get(_edit_difficulty_target, {})
+	if raw_map is Dictionary:
+		return raw_map as Dictionary
+	var fallback: Dictionary = {}
+	_difficulty_event_compositions_overrides[_edit_difficulty_target] = fallback
+	return fallback
+
+func _get_first_army_from_region(region: Region) -> Army:
+	for child in region.get_children():
+		if child is Army:
+			return child as Army
+	return null
+
+func _build_named_composition_from_army(army: Army) -> Dictionary:
+	var composition: Dictionary = {}
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		composition[unit_key] = 0
+	if army == null:
+		return composition
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		composition[unit_key] = army.get_soldier_count(unit_type)
+	return composition
+
+func _build_named_composition_from_garrison(region: Region) -> Dictionary:
+	var composition: Dictionary = {}
+	var garrison = region.get_garrison()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		composition[unit_key] = garrison.get_soldier_count(unit_type)
+	return composition
+
+func _get_effective_army_composition_for_region(region: Region) -> Dictionary:
+	var composition: Dictionary = _build_named_composition_from_army(_get_first_army_from_region(region))
+	if _edit_difficulty_target == "all":
+		return composition
+	var overrides: Dictionary = _get_army_override_map_for_target()
+	if overrides.has(region.get_region_id()):
+		var raw_override: Variant = overrides.get(region.get_region_id(), {})
+		if raw_override is Dictionary:
+			return _sanitize_unit_composition(raw_override as Dictionary)
+	return composition
+
+func _get_effective_garrison_composition_for_region(region: Region) -> Dictionary:
+	var composition: Dictionary = _build_named_composition_from_garrison(region)
+	if _edit_difficulty_target == "all":
+		return composition
+	var overrides: Dictionary = _get_garrison_override_map_for_target()
+	if overrides.has(region.get_region_id()):
+		var raw_override: Variant = overrides.get(region.get_region_id(), {})
+		if raw_override is Dictionary:
+			return _sanitize_unit_composition(raw_override as Dictionary)
+	return composition
+
+func _apply_named_composition_to_edits(unit_edits: Dictionary, composition: Dictionary) -> void:
+	for unit_type in unit_edits.keys():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		var unit_value: int = maxi(0, int(composition.get(unit_key, 0)))
+		(unit_edits[unit_type] as LineEdit).text = str(unit_value)
+
+func _read_named_composition_from_edits(unit_edits: Dictionary) -> Dictionary:
+	var composition: Dictionary = {}
+	for unit_type in unit_edits.keys():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		var value: int = maxi(0, int((unit_edits[unit_type] as LineEdit).text))
+		composition[unit_key] = value
+	return composition
+
+func _are_named_compositions_equal(left: Dictionary, right: Dictionary) -> bool:
+	for unit_type in SoldierTypeEnum.get_all_types():
+		var unit_key: String = SoldierTypeEnum.type_to_string(unit_type)
+		if int(left.get(unit_key, 0)) != int(right.get(unit_key, 0)):
+			return false
+	return true
+
+func _save_army_override_for_current_region() -> void:
+	var edited: Dictionary = _read_named_composition_from_edits(_unit_edits)
+	var current_effective: Dictionary = _get_effective_army_composition_for_region(_current_region_node)
+	if _are_named_compositions_equal(edited, current_effective):
+		return
+	var overrides: Dictionary = _ensure_army_override_map_for_target()
+	overrides[_current_region_id] = edited
+	_difficulty_army_compositions_overrides[_edit_difficulty_target] = overrides
+
+func _save_garrison_override_for_current_region() -> void:
+	var edited: Dictionary = _read_named_composition_from_edits(_garrison_unit_edits)
+	var current_effective: Dictionary = _get_effective_garrison_composition_for_region(_current_region_node)
+	if _are_named_compositions_equal(edited, current_effective):
+		return
+	var overrides: Dictionary = _ensure_garrison_override_map_for_target()
+	overrides[_current_region_id] = edited
+	_difficulty_garrison_compositions_overrides[_edit_difficulty_target] = overrides
+
+func _build_composition_override_entries(overrides_map: Dictionary) -> Array:
+	var region_ids: Array[int] = []
+	for key in overrides_map.keys():
+		var region_id: int = int(key)
+		if region_id > 0:
+			region_ids.append(region_id)
+	region_ids.sort()
+	var entries: Array = []
+	for region_id in region_ids:
+		var raw_composition: Variant = overrides_map.get(region_id, {})
+		if not (raw_composition is Dictionary):
+			continue
+		entries.append({
+			"region_id": region_id,
+			"composition": _sanitize_unit_composition(raw_composition as Dictionary)
+		})
+	return entries
+
+func _build_difficulty_overrides_for_save() -> Dictionary:
+	var result: Dictionary = {}
+	for difficulty_token in SCENARIO_EDIT_DIFFICULTIES:
+		if difficulty_token == "all":
+			continue
+		var block: Dictionary = {}
+		var raw_player_resources: Variant = _difficulty_player_resources_overrides.get(difficulty_token, null)
+		if raw_player_resources is Array:
+			block["player_resources"] = _sanitize_player_resources_entries(raw_player_resources as Array, true)
+		var raw_army_overrides: Variant = _difficulty_army_compositions_overrides.get(difficulty_token, {})
+		if raw_army_overrides is Dictionary:
+			var army_entries: Array = _build_composition_override_entries(raw_army_overrides as Dictionary)
+			if not army_entries.is_empty():
+				block["army_compositions"] = army_entries
+		var raw_garrison_overrides: Variant = _difficulty_garrison_compositions_overrides.get(difficulty_token, {})
+		if raw_garrison_overrides is Dictionary:
+			var garrison_entries: Array = _build_composition_override_entries(raw_garrison_overrides as Dictionary)
+			if not garrison_entries.is_empty():
+				block["garrison_compositions"] = garrison_entries
+		var raw_event_overrides: Variant = _difficulty_event_compositions_overrides.get(difficulty_token, {})
+		if raw_event_overrides is Dictionary:
+			var event_entries: Array = _build_event_composition_override_entries(raw_event_overrides as Dictionary)
+			if not event_entries.is_empty():
+				block["event_compositions"] = event_entries
+		if not block.is_empty():
+			result[difficulty_token] = block
+	return result
+
+func _build_event_composition_override_entries(overrides_map: Dictionary) -> Array:
+	var event_indexes: Array[int] = []
+	for key in overrides_map.keys():
+		var event_index: int = int(key)
+		if event_index >= 0:
+			event_indexes.append(event_index)
+	event_indexes.sort()
+	var entries: Array = []
+	for event_index in event_indexes:
+		var raw_composition: Variant = overrides_map.get(event_index, {})
+		if not (raw_composition is Dictionary):
+			continue
+		entries.append({
+			"event_index": event_index,
+			"composition": _sanitize_unit_composition(raw_composition as Dictionary)
+		})
+	return entries
 
 func _initialize_scenario_difficulty_ui() -> void:
 	_scenario_difficulty_option.clear()
@@ -572,6 +971,7 @@ func _initialize_events_ui() -> void:
 	_event_list_view.visible = true
 	_event_editor_view.visible = false
 	_events.clear()
+	_difficulty_event_compositions_overrides.clear()
 	_refresh_events_list()
 
 func _build_event_unit_inputs() -> void:
@@ -593,6 +993,8 @@ func _build_event_unit_inputs() -> void:
 		_event_units_container.add_child(row)
 
 func _on_event_add_pressed() -> void:
+	if _edit_difficulty_target != "all":
+		return
 	var name: String = _event_name_add_edit.text.strip_edges()
 	if name == "":
 		name = "Event " + str(_events.size() + 1)
@@ -617,6 +1019,8 @@ func _build_default_event(name: String) -> Dictionary:
 	}
 
 func _refresh_events_list() -> void:
+	var can_edit_baseline_event_fields: bool = _edit_difficulty_target == "all"
+	_event_add_button.disabled = not can_edit_baseline_event_fields
 	for child in _event_list_container.get_children():
 		child.queue_free()
 	for i in range(_events.size()):
@@ -633,6 +1037,7 @@ func _refresh_events_list() -> void:
 		row.add_child(edit_button)
 		var delete_button := Button.new()
 		delete_button.text = "Delete"
+		delete_button.disabled = not can_edit_baseline_event_fields
 		delete_button.pressed.connect(_on_event_delete_pressed.bind(i))
 		row.add_child(delete_button)
 		_event_list_container.add_child(row)
@@ -640,10 +1045,11 @@ func _refresh_events_list() -> void:
 func _on_event_edit_pressed(index: int) -> void:
 	if index < 0 or index >= _events.size():
 		return
-	_editing_event_index = index
-	_show_event_editor(_events[index])
+	_show_event_editor_by_index(index)
 
 func _on_event_delete_pressed(index: int) -> void:
+	if _edit_difficulty_target != "all":
+		return
 	if index < 0 or index >= _events.size():
 		return
 	_events.remove_at(index)
@@ -653,9 +1059,14 @@ func _on_event_delete_pressed(index: int) -> void:
 		_event_editor_view.visible = false
 	elif _editing_event_index > index:
 		_editing_event_index -= 1
+	_shift_event_overrides_after_delete(index)
 	_refresh_events_list()
 
-func _show_event_editor(event_data: Dictionary) -> void:
+func _show_event_editor_by_index(event_index: int) -> void:
+	if event_index < 0 or event_index >= _events.size():
+		return
+	var event_data: Dictionary = _events[event_index]
+	_editing_event_index = event_index
 	_event_list_view.visible = false
 	_event_editor_view.visible = true
 	_event_edit_name.text = String(event_data.get("name", ""))
@@ -665,11 +1076,74 @@ func _show_event_editor(event_data: Dictionary) -> void:
 	var player_id: int = maxi(1, mini(6, int(event_data.get("player_id", 1))))
 	_event_player_option.select(player_id - 1)
 	_event_message_text.text = String(event_data.get("message", ""))
-	var composition: Dictionary = event_data.get("composition", {})
-	for unit_type in _event_unit_edits.keys():
-		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
-		var edit: LineEdit = _event_unit_edits[unit_type] as LineEdit
-		edit.text = str(maxi(0, int(composition.get(unit_name, 0))))
+	_set_event_editor_baseline_fields_editable(_edit_difficulty_target == "all")
+	var composition: Dictionary = _get_effective_event_composition_for_index(event_index)
+	_apply_named_composition_to_edits(_event_unit_edits, composition)
+
+func _set_event_editor_baseline_fields_editable(editable: bool) -> void:
+	_event_edit_name.editable = editable
+	_event_regions_edit.editable = editable
+	_event_turn_start_edit.editable = editable
+	_event_turn_end_edit.editable = editable
+	_event_player_option.disabled = not editable
+	_event_message_text.editable = editable
+
+func _get_effective_event_composition_for_index(event_index: int) -> Dictionary:
+	if event_index < 0 or event_index >= _events.size():
+		return _sanitize_unit_composition({})
+	var baseline_raw: Variant = _events[event_index].get("composition", {})
+	var baseline_source: Dictionary = {}
+	if baseline_raw is Dictionary:
+		baseline_source = baseline_raw as Dictionary
+	var baseline_composition: Dictionary = _sanitize_unit_composition(baseline_source)
+	if _edit_difficulty_target == "all":
+		return baseline_composition
+	var overrides: Dictionary = _get_event_override_map_for_target()
+	if overrides.has(event_index):
+		var raw_override: Variant = overrides.get(event_index, {})
+		if raw_override is Dictionary:
+			return _sanitize_unit_composition(raw_override as Dictionary)
+	return baseline_composition
+
+func _save_event_composition_override_for_index(event_index: int, edited_composition: Dictionary) -> void:
+	if event_index < 0 or event_index >= _events.size():
+		return
+	var normalized_edited: Dictionary = _sanitize_unit_composition(edited_composition)
+	var baseline_raw: Variant = _events[event_index].get("composition", {})
+	var baseline_source: Dictionary = {}
+	if baseline_raw is Dictionary:
+		baseline_source = baseline_raw as Dictionary
+	var baseline_composition: Dictionary = _sanitize_unit_composition(baseline_source)
+	var overrides: Dictionary = _ensure_event_override_map_for_target()
+	if _are_named_compositions_equal(normalized_edited, baseline_composition):
+		overrides.erase(event_index)
+	else:
+		overrides[event_index] = normalized_edited
+	if overrides.is_empty():
+		_difficulty_event_compositions_overrides.erase(_edit_difficulty_target)
+	else:
+		_difficulty_event_compositions_overrides[_edit_difficulty_target] = overrides
+
+func _shift_event_overrides_after_delete(deleted_index: int) -> void:
+	for difficulty_token in _difficulty_event_compositions_overrides.keys():
+		var raw_map: Variant = _difficulty_event_compositions_overrides[difficulty_token]
+		if not (raw_map is Dictionary):
+			continue
+		var source_map: Dictionary = raw_map as Dictionary
+		var shifted_map: Dictionary = {}
+		for key in source_map.keys():
+			var event_index: int = int(key)
+			var raw_composition: Variant = source_map.get(key, {})
+			if event_index == deleted_index:
+				continue
+			if event_index > deleted_index:
+				shifted_map[event_index - 1] = raw_composition
+			else:
+				shifted_map[event_index] = raw_composition
+		if shifted_map.is_empty():
+			_difficulty_event_compositions_overrides.erase(difficulty_token)
+		else:
+			_difficulty_event_compositions_overrides[difficulty_token] = shifted_map
 
 func _on_event_back_pressed() -> void:
 	_editing_event_index = -1
@@ -678,6 +1152,12 @@ func _on_event_back_pressed() -> void:
 
 func _on_event_save_pressed() -> void:
 	if _editing_event_index < 0 or _editing_event_index >= _events.size():
+		return
+	var composition: Dictionary = _read_named_composition_from_edits(_event_unit_edits)
+	if _edit_difficulty_target != "all":
+		_save_event_composition_override_for_index(_editing_event_index, composition)
+		_refresh_events_list()
+		_on_event_back_pressed()
 		return
 	var start_turn: int = maxi(1, int(_event_turn_start_edit.text))
 	var end_turn: int = maxi(1, int(_event_turn_end_edit.text))
@@ -694,11 +1174,6 @@ func _on_event_save_pressed() -> void:
 	event_data["turn_end"] = end_turn
 	event_data["player_id"] = _event_player_option.selected + 1
 	event_data["message"] = _event_message_text.text.strip_edges()
-	var composition: Dictionary = {}
-	for unit_type in _event_unit_edits.keys():
-		var unit_name: String = SoldierTypeEnum.type_to_string(unit_type)
-		var value: int = maxi(0, int((_event_unit_edits[unit_type] as LineEdit).text))
-		composition[unit_name] = value
 	event_data["composition"] = composition
 	_events[_editing_event_index] = event_data
 	_refresh_events_list()
@@ -784,9 +1259,11 @@ func _update_player_settings_ui() -> void:
 					child.button_pressed = false
 
 func _initialize_player_resources() -> void:
-	player_resources.clear()
-	for i in range(6):
-		player_resources.append(_build_default_player_resource_entry(i + 1))
+	player_resources = _build_default_player_resources_entries()
+	_difficulty_player_resources_overrides.clear()
+	_difficulty_army_compositions_overrides.clear()
+	_difficulty_garrison_compositions_overrides.clear()
+	_difficulty_event_compositions_overrides.clear()
 	_current_resource_player_index = 0
 	_populate_player_resource_selector()
 	_show_player_resources_for_index(_current_resource_player_index)
@@ -809,17 +1286,19 @@ func _populate_player_resource_selector() -> void:
 	_player_resource_selector.select(_current_resource_player_index)
 
 func _show_player_resources_for_index(index: int) -> void:
+	if index < 0:
+		return
+	var effective_entries: Array = _get_effective_player_resources_entries()
+	if index >= effective_entries.size():
+		return
 	_is_updating_player_resources_ui = true
-	var entry: Dictionary = player_resources[index]
+	var entry: Dictionary = effective_entries[index]
 	var resources: Dictionary = entry.get("resources", {})
-	for rt in _player_resource_fields.keys():
+	for rt in ResourcesEnum.get_all_types():
 		var field := _player_resource_fields[rt] as LineEdit
-		var key := ResourcesEnum.type_to_string(rt)
-		if not resources.has(key):
-			resources[key] = GameParameters.get_starting_resource_amount(rt)
-		field.text = str(int(resources[key]))
-	entry["resources"] = resources
-	player_resources[index] = entry
+		var key: String = ResourcesEnum.type_to_string(rt)
+		var default_value: int = GameParameters.get_starting_resource_amount(rt)
+		field.text = str(maxi(0, int(resources.get(key, default_value))))
 	_is_updating_player_resources_ui = false
 
 func _on_player_resource_selected(index: int) -> void:
@@ -836,42 +1315,32 @@ func _on_player_resource_focus_exited(resource_type: ResourcesEnum.Type) -> void
 func _commit_player_resource_value(resource_type: ResourcesEnum.Type, value_text: String) -> void:
 	if _is_updating_player_resources_ui:
 		return
-	var entry: Dictionary = player_resources[_current_resource_player_index]
-	var resources: Dictionary = entry.get("resources", {})
-	var sanitized_text := value_text.strip_edges()
+	var sanitized_text: String = value_text.strip_edges()
 	if sanitized_text == "":
 		sanitized_text = "0"
-	var amount := sanitized_text.to_int()
+	var amount: int = sanitized_text.to_int()
 	if amount < 0:
 		amount = 0
-	var key := ResourcesEnum.type_to_string(resource_type)
+	var key: String = ResourcesEnum.type_to_string(resource_type)
+	var target_entries: Array = player_resources
+	if _edit_difficulty_target != "all":
+		target_entries = _ensure_edit_target_player_resources_override()
+	var entry: Dictionary = target_entries[_current_resource_player_index]
+	var resources: Dictionary = entry.get("resources", {})
 	resources[key] = amount
 	entry["resources"] = resources
-	player_resources[_current_resource_player_index] = entry
+	target_entries[_current_resource_player_index] = entry
+	if _edit_difficulty_target == "all":
+		player_resources = target_entries
+	else:
+		_difficulty_player_resources_overrides[_edit_difficulty_target] = target_entries
 	_is_updating_player_resources_ui = true
 	var field := _player_resource_fields[resource_type] as LineEdit
 	field.text = str(amount)
 	_is_updating_player_resources_ui = false
 
 func _apply_loaded_player_resources(resources_data: Array) -> void:
-	var sanitized: Array = []
-	for i in range(6):
-		sanitized.append(_build_default_player_resource_entry(i + 1))
-	for entry in resources_data:
-		if entry is Dictionary:
-			var player_id := int(entry.get("player_id", 0))
-			if player_id >= 1 and player_id <= sanitized.size():
-				var target: Dictionary = sanitized[player_id - 1]
-				var target_resources: Dictionary = target.get("resources", {})
-				if entry.has("resources") and entry["resources"] is Dictionary:
-					var source_resources: Dictionary = entry["resources"] as Dictionary
-					for rt in ResourcesEnum.get_all_types():
-						var key := ResourcesEnum.type_to_string(rt)
-						if source_resources.has(key):
-							target_resources[key] = int(source_resources.get(key))
-					target["resources"] = target_resources
-					sanitized[player_id - 1] = target
-	player_resources = sanitized
+	player_resources = _sanitize_player_resources_entries(resources_data, false)
 	_current_resource_player_index = clamp(_current_resource_player_index, 0, player_resources.size() - 1)
 	_populate_player_resource_selector()
 	_player_resource_selector.select(_current_resource_player_index)
@@ -925,18 +1394,17 @@ func update_from_region(region: Region) -> void:
 	# Ownership
 	_select_ownership(region.get_region_owner())
 	# Army button state (single-army assumption)
-	var has_army := false
-	for child in region.get_children():
-		if child is Army:
-			has_army = true
-			break
+	var has_army: bool = _get_first_army_from_region(region) != null
 	_has_army_cached = has_army
-	var owner_id = region.get_region_owner()
+	var owner_id: int = region.get_region_owner()
+	var can_edit_army_presence: bool = _edit_difficulty_target == "all"
 	if owner_id <= 0:
 		_army_toggle_button.visible = false
+		_army_toggle_button.disabled = true
 	else:
 		_army_toggle_button.visible = true
 		_army_toggle_button.text = "Remove Army" if has_army else "Add Army"
+		_army_toggle_button.disabled = not can_edit_army_presence
 	# Enable Edit Army only if an army exists to edit
 	_edit_army_button.disabled = not has_army
 	# Default to Region tab when a region is selected
@@ -1080,6 +1548,8 @@ func _on_ownership_selected(index: int) -> void:
 func _on_army_toggle_pressed() -> void:
 	if _current_region_id < 0:
 		return
+	if _edit_difficulty_target != "all":
+		return
 	# Toggle based on last-known state
 	var action := "ARMY_REMOVE" if _has_army_cached else "ARMY_ADD"
 	emit_signal("region_data_changed", _current_region_id, action)
@@ -1100,28 +1570,32 @@ func _on_close_army_pressed() -> void:
 	for t in _unit_edits.keys():
 		var e: LineEdit = _unit_edits[t]
 		data[t] = int(e.text)
-	army_edit_saved.emit(_current_region_id, data)
+	if _edit_difficulty_target == "all":
+		army_edit_saved.emit(_current_region_id, data)
+	else:
+		_save_army_override_for_current_region()
 	# Show default army content, hide edit panel
 	_army_edit_panel.visible = false
 	_army_default_content.visible = true
 
 func _on_edit_garrison_pressed() -> void:
 	# Populate garrison panel with current garrison counts
-	var g := _current_region_node.get_garrison()
-	for t in _garrison_unit_edits.keys():
-		var count := g.get_soldier_count(t)
-		(_garrison_unit_edits[t] as LineEdit).text = str(count)
+	var garrison_composition: Dictionary = _get_effective_garrison_composition_for_region(_current_region_node)
+	_apply_named_composition_to_edits(_garrison_unit_edits, garrison_composition)
 	# Show panel
 	_garrison_edit_panel.visible = true
 	_set_region_default_visible(false)
 
 func _on_close_garrison_pressed() -> void:
-	# Save garrison edits to region and mark as customized
-	var g := _current_region_node.get_garrison()
-	for t in _garrison_unit_edits.keys():
-		var e: LineEdit = _garrison_unit_edits[t]
-		g.set_soldier_count(t, int(e.text))
-	_garrison_customized[_current_region_id] = true
+	if _edit_difficulty_target == "all":
+		# Save garrison edits to region and mark as customized
+		var g = _current_region_node.get_garrison()
+		for t in _garrison_unit_edits.keys():
+			var e: LineEdit = _garrison_unit_edits[t]
+			g.set_soldier_count(t, int(e.text))
+		_garrison_customized[_current_region_id] = true
+	else:
+		_save_garrison_override_for_current_region()
 	_garrison_edit_panel.visible = false
 	_set_region_default_visible(true)
 
@@ -1160,6 +1634,9 @@ func _on_save_scenario_pressed() -> void:
 		"victory_conditions": _build_victory_conditions_for_save(),
 		"events": _build_events_for_save()
 	}
+	var difficulty_overrides: Dictionary = _build_difficulty_overrides_for_save()
+	if not difficulty_overrides.is_empty():
+		scenario["difficulty_overrides"] = difficulty_overrides
 	if scenario_type == "campaign":
 		scenario["mission_number"] = _mission_number_option.selected + 1
 	_write_scenario(scenario, scenario_name)
@@ -1299,11 +1776,7 @@ func _on_save_map_pressed() -> void:
 func _populate_army_panel() -> void:
 	_region_id_value_army.text = str(_current_region_id)
 	_region_name_value_army.text = _current_region_node.get_region_name()
-	var army_found: Army = null
-	for child in _current_region_node.get_children():
-		if child is Army:
-			army_found = child as Army
-			break
+	var army_found: Army = _get_first_army_from_region(_current_region_node)
 	
 	# Check if army was found before trying to access it
 	if army_found == null:
@@ -1315,9 +1788,8 @@ func _populate_army_panel() -> void:
 		return
 	
 	_army_name_value.text = army_found.name
-	for t in _unit_edits.keys():
-		var count = army_found.get_soldier_count(t)
-		(_unit_edits[t] as LineEdit).text = str(count)
+	var army_composition: Dictionary = _get_effective_army_composition_for_region(_current_region_node)
+	_apply_named_composition_to_edits(_unit_edits, army_composition)
 
 func _initialize_player_settings() -> void:
 	"""Initialize the player settings UI with 6 player rows"""
