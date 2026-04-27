@@ -109,6 +109,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+metadata/_edit_vertical_guides_ = [680.0, 1294.0]
+metadata/_edit_horizontal_guides_ = [197.0, 827.0]
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -650,7 +652,7 @@ offset_left = 80.0
 offset_top = 197.0
 offset_right = 1616.0
 offset_bottom = 1733.0
-scale = Vector2(0.35, 0.41)
+scale = Vector2(0.35, 0.43)
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
@@ -660,7 +662,7 @@ offset_left = 1360.0
 offset_top = 197.0
 offset_right = 2896.0
 offset_bottom = 1733.0
-scale = Vector2(0.35, 0.41)
+scale = Vector2(0.35, 0.43)
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
@@ -670,7 +672,7 @@ offset_left = 680.0
 offset_top = 197.0
 offset_right = 2216.0
 offset_bottom = 1733.0
-scale = Vector2(0.4, 0.41)
+scale = Vector2(0.4, 0.43)
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
@@ -1274,7 +1276,7 @@ text = "All"
 custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
-[node name="Tiny" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
+[node name="XS" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
@@ -1398,7 +1400,7 @@ layout_mode = 0
 offset_left = 30.0
 offset_top = 15.0
 offset_right = 585.0
-offset_bottom = 595.0
+offset_bottom = 640.0
 
 [node name="Label" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
@@ -1507,11 +1509,11 @@ text = "Victory Conditions"
 layout_mode = 2
 
 [node name="Description2" type="Label" parent="CustomMap/Scenario/VBoxContainer"]
-custom_minimum_size = Vector2(20, 60)
+custom_minimum_size = Vector2(20, 90)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd"
+text = "Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd asdajksd asjdaklsjd laksj dlkajlksdjal ksjdlaj dlsdkal"
 autowrap_mode = 2
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
@@ -2221,20 +2223,20 @@ text = "English"
 horizontal_alignment = 1
 
 [node name="CustomTooltip" type="TextureRect" parent="."]
-visible = false
 layout_mode = 0
-offset_left = 791.0
-offset_top = 840.0
-offset_right = 1050.0
-offset_bottom = 927.0
+offset_left = 680.0
+offset_top = 862.0
+offset_right = 939.0
+offset_bottom = 949.0
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("3_701y0")
 
 [node name="Label" type="Label" parent="CustomTooltip"]
 custom_minimum_size = Vector2(20, 60)
-offset_left = 13.0
+layout_mode = 0
+offset_left = 11.0
 offset_top = 11.0
-offset_right = 244.0
+offset_right = 249.0
 offset_bottom = 77.0
 theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)

@@ -246,23 +246,24 @@ static func resolve_map_profile(filename_or_token: String, json_region_count: in
 	var resolved_region_count: int = 0
 	var source: String = "fallback"
 	
-	if token.is_valid_int():
-		var numeric_region_count: int = int(token)
-		if numeric_region_count > 0:
-			resolved_region_count = numeric_region_count
-			canonical_token = get_nearest_anchor_label_from_region_count(numeric_region_count)
-			source = "token_numeric"
+	if json_region_count > 0:
+		resolved_region_count = json_region_count
+		canonical_token = get_nearest_anchor_label_from_region_count(json_region_count)
+		source = "json_regions"
+	
+	if resolved_region_count == 0:
+		if token.is_valid_int():
+			var numeric_region_count: int = int(token)
+			if numeric_region_count > 0:
+				resolved_region_count = numeric_region_count
+				canonical_token = get_nearest_anchor_label_from_region_count(numeric_region_count)
+				source = "token_numeric"
 	
 	if resolved_region_count == 0:
 		canonical_token = canonical_label_from_token(token)
 		if canonical_token != "":
 			resolved_region_count = int(MAP_REGION_COUNT_BY_LABEL[canonical_token])
 			source = "token_label"
-	
-	if resolved_region_count == 0 and json_region_count > 0:
-		resolved_region_count = json_region_count
-		canonical_token = get_nearest_anchor_label_from_region_count(json_region_count)
-		source = "json_regions"
 	
 	if resolved_region_count == 0:
 		canonical_token = "small"
@@ -324,7 +325,7 @@ static func get_initial_zoom_from_region_count(region_count: int) -> float:
 
 static func get_frontend_size_code_from_region_count(region_count: int) -> String:
 	if region_count <= FRONTEND_TINY_MAX:
-		return "T"
+		return "XS"
 	if region_count <= FRONTEND_SMALL_MAX:
 		return "S"
 	if region_count <= FRONTEND_MEDIUM_MAX:
@@ -333,8 +334,8 @@ static func get_frontend_size_code_from_region_count(region_count: int) -> Strin
 
 static func get_frontend_size_label_from_code(code: String) -> String:
 	match code:
-		"T":
-			return "Tiny"
+		"XS", "T":
+			return "Extra Small"
 		"S":
 			return "Small"
 		"M":

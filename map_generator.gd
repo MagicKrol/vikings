@@ -177,10 +177,16 @@ func get_map_region_count() -> int:
 	return map_region_count
 
 func get_frontend_size_code() -> String:
-	return String(map_profile.get("frontend_size_code", "S"))
+	var frontend_code: String = String(map_profile.get("frontend_size_code", "S"))
+	if frontend_code == "T":
+		return "XS"
+	return frontend_code
 
 func get_frontend_size_label() -> String:
-	return String(map_profile.get("frontend_size_label", "Small"))
+	var frontend_label: String = String(map_profile.get("frontend_size_label", "Small"))
+	if frontend_label == "Tiny":
+		return "Extra Small"
+	return frontend_label
 
 func get_canonical_size_token() -> String:
 	return String(map_profile.get("canonical_size_token", "small"))

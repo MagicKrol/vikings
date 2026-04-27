@@ -106,8 +106,11 @@ var click_manager: Node = null
 
 const FAMINE_POINTS_PER_FOOD: float = 10.0
 const FAMINE_POINTS_LOOKUP_BY_ROLL: Array[int] = [5, 7, 9, 13, 16, 16, 13, 9, 7, 5]
-const DOMINATE_DEFAULT_THRESHOLD: float = 0.7
+const DOMINATE_DEFAULT_THRESHOLD: float = 0.75
 const DEBUG_LANGUAGE_CYCLE: Array[String] = ["en", "de", "pl", "br"]
+const MAIN_MENU_TARGET_META_KEY: String = "main_menu_target"
+const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
+const DEFAULT_CAMPAIGN_OUTRO_TEXT: String = "Mission completed."
 
 var _player_initial_turn_completed: Dictionary = {}
 var _latest_famine_result_by_player: Dictionary = {}
@@ -501,20 +504,17 @@ func _show_scenario_intro_message_if_any(scenario_data: Dictionary) -> bool:
 	var intro_text: String = String(scenario_data.get("intro_message", "")).strip_edges()
 	if intro_text == "":
 		return false
-	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
-		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
+	_disconnect_intro_message_modal_handlers()
 	_intro_message_modal.continue_clicked.connect(_on_scenario_intro_continue)
 	_intro_message_modal.display_intro_text(intro_text)
 	return true
 
 func _on_scenario_intro_continue() -> void:
-	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
-		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
+	_disconnect_intro_message_modal_handlers()
 	_start_first_turn()
 
 func show_intro_message_modal_again() -> void:
-	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
-		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
+	_disconnect_intro_message_modal_handlers()
 	if scenario_path != "":
 		var scen_mgr := ScenarioManager.new()
 		var scenario_data: Dictionary = scen_mgr.load_scenario(scenario_path)
@@ -523,6 +523,18 @@ func show_intro_message_modal_again() -> void:
 			_intro_message_modal.display_intro_text(intro_text)
 			return
 	_intro_message_modal.display_default_intro_text_with_continue()
+
+func _disconnect_intro_message_modal_handlers() -> void:
+	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
+		_intro_message_modal.continue_clicked.disconnect(_on_scenario_intro_continue)
+	if _intro_message_modal.continue_clicked.is_connected(_on_campaign_outro_end_mission):
+		_intro_message_modal.continue_clicked.disconnect(_on_campaign_outro_end_mission)
+
+func _on_campaign_outro_end_mission() -> void:
+	_disconnect_intro_message_modal_handlers()
+	get_tree().paused = false
+	get_tree().set_meta(MAIN_MENU_TARGET_META_KEY, MAIN_MENU_TARGET_CAMPAIGN_LIST)
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
@@ -1156,7 +1168,30 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	winning_player_id = player_id
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
+	if _should_show_campaign_outro(player_id):
+		_disconnect_intro_message_modal_handlers()
+		_intro_message_modal.continue_clicked.connect(_on_campaign_outro_end_mission)
+		_intro_message_modal.display_outro_text(_resolve_campaign_outro_text())
+		return
 	_message_modal.display_message(tr("Player %d Won") % player_id)
+
+func _should_show_campaign_outro(player_id: int) -> bool:
+	if player_id != 1:
+		return false
+	if game_mode != "scenario":
+		return false
+	if scenario_path == "":
+		return false
+	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
+	var scenario_type: String = String(scenario_data.get("scenario_type", "scenario")).to_lower()
+	return scenario_type == "campaign"
+
+func _resolve_campaign_outro_text() -> String:
+	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
+	var outro_text: String = String(scenario_data.get("outro_message", "")).strip_edges()
+	if outro_text == "":
+		return DEFAULT_CAMPAIGN_OUTRO_TEXT
+	return outro_text
 
 func _initialize_scenario_events_from_data(scenario_data: Dictionary, difficulty_token: String = "all") -> void:
 	_scenario_events_runtime.clear()

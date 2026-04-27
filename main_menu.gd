@@ -8,6 +8,8 @@ const LANGUAGE_ENGLISH_FLAG: Texture2D = preload("res://images/flags/english.png
 const LANGUAGE_GERMAN_FLAG: Texture2D = preload("res://images/flags/germany.png")
 const LANGUAGE_POLISH_FLAG: Texture2D = preload("res://images/flags/poland.png")
 const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/brazil.png")
+const MAIN_MENU_TARGET_META_KEY: String = "main_menu_target"
+const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -68,7 +70,7 @@ const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/b
 @onready var map_size_margin1: MarginContainer = $CustomMap/Panel3/VBoxContainer/MapSizeMargin1
 @onready var map_sizes_container: HBoxContainer = $CustomMap/Panel3/VBoxContainer/Sizes
 @onready var map_size_button_all: Button = $CustomMap/Panel3/VBoxContainer/Sizes/All
-@onready var map_size_button_tiny: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Tiny
+@onready var map_size_button_xs: Button = $CustomMap/Panel3/VBoxContainer/Sizes/XS
 @onready var map_size_button_small: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Small
 @onready var map_size_button_medium: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Medium
 @onready var map_size_button_large: Button = $CustomMap/Panel3/VBoxContainer/Sizes/Hard
@@ -100,6 +102,8 @@ const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/b
 @onready var language_right_arrow: TextureRect = $Language/RightButton
 @onready var language_left_arrow: TextureRect = $Language/LeftButton
 @onready var language_label: Label = $Language/Text
+@onready var custom_tooltip: TextureRect = $CustomTooltip
+@onready var custom_tooltip_label: Label = $CustomTooltip/Label
 
 var hover_timer: Timer
 var current_hovered_item: String = ""
@@ -116,7 +120,7 @@ const ROW_HIGHLIGHT_NONE_COLOR: Color = Color(0, 0, 0, 0)
 const ROW_HIGHLIGHT_HOVER_COLOR: Color = Color(0, 0, 0, 0.2)
 const ROW_HIGHLIGHT_SELECTED_COLOR: Color = Color(0, 0, 0, 0.4)
 const ROW_TEXT_COLOR: Color = Color(1, 1, 1, 1)
-const MAP_SIZE_ORDER := {"T": 0, "S": 1, "M": 2, "L": 3}
+const MAP_SIZE_ORDER := {"XS": 0, "T": 0, "S": 1, "M": 2, "L": 3}
 const SCENARIO_DIFFICULTY_ALL: String = "all"
 var map_items: Array = []
 var scenario_items: Array = []
@@ -189,7 +193,7 @@ func _ready():
 	scenario_back_button_custom.pressed.connect(_on_custom_map_back_pressed)
 	scenario_select_button_custom.pressed.connect(_on_scenario_select_pressed)
 	map_size_button_all.pressed.connect(_on_size_filter_pressed.bind("All", map_size_button_all))
-	map_size_button_tiny.pressed.connect(_on_size_filter_pressed.bind("T", map_size_button_tiny))
+	map_size_button_xs.pressed.connect(_on_size_filter_pressed.bind("XS", map_size_button_xs))
 	map_size_button_small.pressed.connect(_on_size_filter_pressed.bind("S", map_size_button_small))
 	map_size_button_medium.pressed.connect(_on_size_filter_pressed.bind("M", map_size_button_medium))
 	map_size_button_large.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_large))
@@ -213,11 +217,25 @@ func _ready():
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	_update_primary_main_menu_button()
 
+	if _apply_start_target_from_meta():
+		return
+
 	# Show demo or standard menu based on USE_DEMO_MENU constant
 	if USE_DEMO_MENU:
 		_show_demo_menu()
 	else:
 		_show_main_menu()
+
+func _apply_start_target_from_meta() -> bool:
+	if not get_tree().has_meta(MAIN_MENU_TARGET_META_KEY):
+		return false
+	var target_variant: Variant = get_tree().get_meta(MAIN_MENU_TARGET_META_KEY)
+	get_tree().set_meta(MAIN_MENU_TARGET_META_KEY, null)
+	var target: String = String(target_variant)
+	if target == MAIN_MENU_TARGET_CAMPAIGN_LIST:
+		_show_campaign_menu()
+		return true
+	return false
 
 func _apply_font_outlines():
 	"""Apply black outline to all menu buttons"""
@@ -689,7 +707,7 @@ func _setup_custom_map_preview():
 
 func _setup_size_filter_group():
 	size_filter_button_group = ButtonGroup.new()
-	var buttons: Array = [map_size_button_all, map_size_button_tiny, map_size_button_small, map_size_button_medium, map_size_button_large]
+	var buttons: Array = [map_size_button_all, map_size_button_xs, map_size_button_small, map_size_button_medium, map_size_button_large]
 	for i in range(buttons.size()):
 		var btn: Button = buttons[i]
 		btn.toggle_mode = true
@@ -737,6 +755,8 @@ func _setup_difficulty_buttons():
 		btn.toggle_mode = true
 		btn.button_group = group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.mouse_entered.connect(_on_difficulty_button_hovered.bind(btn))
+		btn.mouse_exited.connect(_on_custom_tooltip_unhovered)
 	for btn in custom_map_difficulty_buttons:
 		var selected: bool = btn.name == "Normal"
 		btn.button_pressed = selected
@@ -749,6 +769,8 @@ func _setup_scenario_difficulty_buttons():
 		btn.toggle_mode = true
 		btn.button_group = scenario_difficulty_group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.mouse_entered.connect(_on_difficulty_button_hovered.bind(btn))
+		btn.mouse_exited.connect(_on_custom_tooltip_unhovered)
 	_set_scenario_difficulty_buttons_enabled(true)
 	_select_scenario_difficulty("normal")
 
@@ -805,10 +827,43 @@ func _setup_victory_buttons():
 		btn.toggle_mode = true
 		btn.button_group = group
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.mouse_entered.connect(_on_victory_button_hovered.bind(btn))
+		btn.mouse_exited.connect(_on_custom_tooltip_unhovered)
 	for btn in buttons:
 		var selected: bool = btn.name == "Conquer"
 		btn.button_pressed = selected
 		_update_button_gold_state(btn, selected)
+
+func _on_difficulty_button_hovered(button: Button) -> void:
+	var description_key: String = ""
+	match button.name:
+		"Easy":
+			description_key = "difficulty_easy_description"
+		"Normal":
+			description_key = "difficulty_normal_description"
+		"Hard":
+			description_key = "difficulty_hard_description"
+		_:
+			return
+	_show_custom_tooltip(description_key)
+
+func _on_victory_button_hovered(button: Button) -> void:
+	var description_key: String = ""
+	match button.name:
+		"Conquer":
+			description_key = "conquer_condition_description"
+		"Dominate":
+			description_key = "dominate_condition_description"
+		_:
+			return
+	_show_custom_tooltip(description_key)
+
+func _show_custom_tooltip(description_key: String) -> void:
+	custom_tooltip_label.text = tr(description_key)
+	custom_tooltip.visible = true
+
+func _on_custom_tooltip_unhovered() -> void:
+	custom_tooltip.visible = false
 
 func _get_selected_custom_map_victory() -> String:
 	var conquer_button: Button = get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Conquer")
@@ -997,15 +1052,18 @@ func _load_scenario_items():
 
 func _apply_map_filter():
 	_clear_map_selection()
+	var filter_code: String = _normalize_frontend_size_code(current_map_filter)
 	var items: Array = []
 	if is_scenario_mode:
 		for item in scenario_items:
-			if current_map_filter == "All" or item.get("size", "S") == current_map_filter:
+			var item_size: String = _normalize_frontend_size_code(String(item.get("size", "S")))
+			if filter_code == "ALL" or item_size == filter_code:
 				items.append(item)
 		_populate_map_list(items, true)
 	else:
 		for item in map_items:
-			if current_map_filter == "All" or item.get("size", "S") == current_map_filter:
+			var item_size: String = _normalize_frontend_size_code(String(item.get("size", "S")))
+			if filter_code == "ALL" or item_size == filter_code:
 				items.append(item)
 		_populate_map_list(items, false)
 
@@ -1042,7 +1100,10 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		row.visible = true
 		var size_label: Label = row.get_node("Size")
 		var name_label: Label = row.get_node("Name")
-		size_label.text = item.get("size", "S")
+		if for_scenario and is_campaign_mode:
+			size_label.text = str(int(item.get("mission_number", 0)))
+		else:
+			size_label.text = item.get("size", "S")
 		name_label.text = _resolve_item_display_name(item)
 		size_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		name_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -1137,12 +1198,9 @@ func _update_scenario_details_labels(item: Dictionary) -> void:
 func _update_preview_with_item(item: Dictionary, for_scenario: bool):
 	var candidates: Array = []
 	if for_scenario:
-		var scen_name: String = item.get("name", "")
-		if scen_name != "":
-			candidates.append(scen_name)
-		var map_base: String = item.get("map_file_base", "")
-		if map_base != "":
-			candidates.append(map_base)
+		var scenario_file_base: String = String(item.get("scenario_file_base", item.get("name", "")))
+		if scenario_file_base != "":
+			candidates.append(scenario_file_base)
 	else:
 		var file_base: String = item.get("file", "")
 		if file_base != "":
@@ -1164,8 +1222,8 @@ func _set_custom_map_preview_texture(base_name: String) -> bool:
 	return false
 
 func _clear_map_selection():
-	selected_map_item.clear()
-	selected_scenario_item.clear()
+	selected_map_item = {}
+	selected_scenario_item = {}
 	if selected_map_button and not is_instance_valid(selected_map_button):
 		selected_map_button = null
 	if selected_scenario_button_custom and not is_instance_valid(selected_scenario_button_custom):
@@ -1208,7 +1266,7 @@ func _gather_map_items() -> Array:
 					file_name = dir.get_next()
 					continue
 				var map_profile: Dictionary = _resolve_map_profile_for_file(file_name)
-				var size_code: String = String(map_profile.get("frontend_size_code", "S"))
+				var size_code: String = _normalize_frontend_size_code(String(map_profile.get("frontend_size_code", "S")))
 				var exact_size: String = String(map_profile.get("canonical_size_token", "small"))
 				var region_count: int = int(map_profile.get("region_count", 0))
 				items.append({
@@ -1251,7 +1309,7 @@ func _gather_scenario_items(requested_type: String) -> Array:
 						if dict_data.has("map_file"):
 							map_file_base = str(dict_data["map_file"]).trim_suffix(".json")
 							var map_profile: Dictionary = _resolve_map_profile_for_file(map_file_base + ".json")
-							size_code = String(map_profile.get("frontend_size_code", "S"))
+							size_code = _normalize_frontend_size_code(String(map_profile.get("frontend_size_code", "S")))
 						scenario_type = String(dict_data.get("scenario_type", "scenario")).to_lower()
 						scenario_difficulty = _normalize_scenario_difficulty(String(dict_data.get("difficulty", SCENARIO_DIFFICULTY_ALL)))
 						description = String(dict_data.get("description", ""))
@@ -1263,25 +1321,26 @@ func _gather_scenario_items(requested_type: String) -> Array:
 					continue
 				var display_name: String = scenario_name.capitalize().replace("_", " ")
 				var display_name_key: String = scenario_title_key
-				if scenario_type == "campaign" and mission_number > 0:
-					display_name = "Mission " + str(mission_number)
-					if display_name_key == "":
-						display_name_key = "mission" + str(mission_number) + "-name"
-				elif display_name_key == "":
+				if display_name_key == "":
 					display_name_key = scenario_name
 				items.append({
 					"name": scenario_name,
+					"scenario_file_base": scenario_name,
 					"display_name_key": display_name_key,
 					"display_name": display_name,
 					"size": size_code,
 					"map_file_base": map_file_base,
+					"mission_number": mission_number,
 					"difficulty": scenario_difficulty,
 					"description": description,
 					"objectives": objectives
 				})
 			file_name = dir.get_next()
 		dir.list_dir_end()
-	items.sort_custom(Callable(self, "_sort_items"))
+	if requested_type == "campaign":
+		items.sort_custom(Callable(self, "_sort_campaign_items"))
+	else:
+		items.sort_custom(Callable(self, "_sort_items"))
 	return items
 
 func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
@@ -1299,21 +1358,56 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 				var regions_value: Variant = dict_data.get("regions", [])
 				if typeof(regions_value) == TYPE_ARRAY:
 					region_count = (regions_value as Array).size()
+	if region_count > 0:
+		var frontend_size_code: String = Utils.get_frontend_size_code_from_region_count(region_count)
+		return {
+			"token": Utils.extract_map_size_token(file_name),
+			"region_count": region_count,
+			"canonical_size_token": Utils.get_nearest_anchor_label_from_region_count(region_count),
+			"visual_scale": Utils.get_map_visual_scale_from_region_count(region_count),
+			"initial_zoom": Utils.get_initial_zoom_from_region_count(region_count),
+			"frontend_size_code": frontend_size_code,
+			"frontend_size_label": Utils.get_frontend_size_label_from_code(frontend_size_code),
+			"source": "json_regions"
+		}
 	return Utils.resolve_map_profile(file_name, region_count)
 
 func _sort_items(a: Dictionary, b: Dictionary) -> bool:
-	var sa: int = MAP_SIZE_ORDER.get(a.get("size", "S"), 4)
-	var sb: int = MAP_SIZE_ORDER.get(b.get("size", "S"), 4)
+	var sa: int = MAP_SIZE_ORDER.get(_normalize_frontend_size_code(String(a.get("size", "S"))), 4)
+	var sb: int = MAP_SIZE_ORDER.get(_normalize_frontend_size_code(String(b.get("size", "S"))), 4)
 	if sa == sb:
 		return a.get("display_name", "") < b.get("display_name", "")
 	return sa < sb
+
+func _sort_campaign_items(a: Dictionary, b: Dictionary) -> bool:
+	var ma: int = int(a.get("mission_number", 0))
+	var mb: int = int(b.get("mission_number", 0))
+	if ma > 0 and mb > 0 and ma != mb:
+		return ma < mb
+	return a.get("display_name", "") < b.get("display_name", "")
+
+func _normalize_frontend_size_code(code: String) -> String:
+	var normalized: String = code.strip_edges().to_upper()
+	match normalized:
+		"ALL":
+			return "ALL"
+		"XS", "T", "XTINY", "XXTINY", "TINY":
+			return "XS"
+		"S", "SMALL":
+			return "S"
+		"M", "MEDIUM":
+			return "M"
+		"L", "LARGE", "HUGE":
+			return "L"
+		_:
+			return normalized
 
 func _extract_size_code(base_name: String) -> String:
 	var parts = base_name.split("-")
 	var size_part = parts[parts.size() - 1].to_lower()
 	match size_part:
 		"xtiny", "tiny":
-			return "T"
+			return "XS"
 		"small":
 			return "S"
 		"medium":
@@ -1336,8 +1430,8 @@ func _extract_exact_size_name(base_name: String) -> String:
 
 func _size_full_name(code: String) -> String:
 	match code:
-		"T":
-			return tr("Tiny")
+		"XS", "T":
+			return tr("Extra Small")
 		"S":
 			return tr("Small")
 		"M":
