@@ -2,6 +2,7 @@ extends Node
 class_name GameManager
 
 signal player_status_refresh_requested
+signal spawn_event_target_selected(region_id: int)
 
 # ============================================================================
 # GAME MANAGER
@@ -130,6 +131,11 @@ var _scenario_events_runtime: Array[Dictionary] = []
 var scenario_trade_disabled: bool = false
 var _player_hired_units: Dictionary = {}
 var game_difficulty: int = GameParameters.GAME_DIFFICULTY_DEFAULT
+var _spawn_event_placement_active: bool = false
+var _spawn_event_placement_army: Army = null
+var _spawn_event_allowed_target_ids: Array[int] = []
+var _spawn_event_source_region_by_target: Dictionary = {}
+var _spawn_event_pending_event_index: int = -1
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -139,6 +145,11 @@ func _ready():
 	_scenario_events_runtime.clear()
 	scenario_trade_disabled = false
 	_reset_player_hired_units_tracking()
+	_spawn_event_placement_active = false
+	_spawn_event_placement_army = null
+	_spawn_event_allowed_target_ids.clear()
+	_spawn_event_source_region_by_target.clear()
+	_spawn_event_pending_event_index = -1
 
 	# Early init gate: check if map editor is enabled BEFORE normal init
 	if enable_map_editor:
@@ -1294,22 +1305,11 @@ func _execute_scenario_event(event_index: int) -> void:
 	if event_message != "":
 		_message_modal.display_message(tr(event_message))
 		await _message_modal.continue_clicked
-	var spawn_plan: Dictionary = _resolve_scenario_event_spawn_region(event_data)
-	event_data = spawn_plan.get("event", event_data)
-	if bool(spawn_plan.get("spawnable", false)):
-		var region_id: int = int(spawn_plan.get("region_id", -1))
-		var region: Region = spawn_plan.get("region") as Region
-		await _ai_camera_director.await_focus_on_region(region)
-		var composition: Dictionary = _normalize_event_composition(event_data.get("composition", {}))
-		var player_id: int = int(event_data.get("player_id", 1))
-		var spawned_army: Army = _spawn_scenario_event_army_in_region(region, player_id, composition)
-		var army_player_id: int = spawned_army.get_player_id()
-		var battle_needed: bool = _should_trigger_battle(spawned_army, region)
-		if battle_needed:
-			await handle_army_battle(spawned_army, region_id)
-			await _await_pending_battles()
-			check_victory_conditions_for_player(army_player_id)
-	event_data["triggered"] = true
+	var player_id: int = int(event_data.get("player_id", 1))
+	if is_player_human(player_id):
+		event_data = await _execute_human_spawn_event_with_manual_placement(event_index, event_data)
+	else:
+		event_data = await _execute_scenario_event_auto_spawn(event_data)
 	_scenario_events_runtime[event_index] = event_data
 
 func _resolve_scenario_event_spawn_region(event_data: Dictionary) -> Dictionary:
@@ -1341,12 +1341,252 @@ func _resolve_scenario_event_spawn_region(event_data: Dictionary) -> Dictionary:
 		"event": event_data
 	}
 
-func _spawn_scenario_event_army_in_region(region: Region, player_id: int, composition: Dictionary) -> Army:
+func _spawn_scenario_event_army_in_region(region: Region, player_id: int, composition: Dictionary, set_zero_movement: bool = true) -> Army:
 	var spawned_army: Army = _army_manager.create_army(region, player_id)
+	if spawned_army == null:
+		return null
 	_apply_scenario_event_army_composition(spawned_army, composition)
-	spawned_army.movement_points = 0
+	if set_zero_movement:
+		spawned_army.movement_points = 0
 	spawned_army.just_raised = false
 	return spawned_army
+
+func _execute_scenario_event_auto_spawn(event_data: Dictionary) -> Dictionary:
+	var updated_event: Dictionary = event_data
+	var spawn_plan: Dictionary = _resolve_scenario_event_spawn_region(updated_event)
+	updated_event = spawn_plan.get("event", updated_event)
+	if bool(spawn_plan.get("spawnable", false)):
+		var region_id: int = int(spawn_plan.get("region_id", -1))
+		var region: Region = spawn_plan.get("region") as Region
+		await _ai_camera_director.await_focus_on_region(region)
+		var composition: Dictionary = _normalize_event_composition(updated_event.get("composition", {}))
+		var player_id: int = int(updated_event.get("player_id", 1))
+		var spawned_army: Army = _spawn_scenario_event_army_in_region(region, player_id, composition, true)
+		if spawned_army != null:
+			var army_player_id: int = spawned_army.get_player_id()
+			var battle_needed: bool = _should_trigger_battle(spawned_army, region)
+			if battle_needed:
+				await handle_army_battle(spawned_army, region_id)
+				await _await_pending_battles()
+				check_victory_conditions_for_player(army_player_id)
+	updated_event["triggered"] = true
+	return updated_event
+
+func _execute_human_spawn_event_with_manual_placement(event_index: int, event_data: Dictionary) -> Dictionary:
+	var updated_event: Dictionary = event_data
+	var placement_context: Dictionary = _build_human_spawn_event_placement_context(updated_event)
+	var target_ids: Array[int] = placement_context.get("target_ids", [])
+	var staging_region: Region = placement_context.get("staging_region") as Region
+	if target_ids.is_empty() or staging_region == null:
+		DebugLogger.log("TurnProcessing", "Human event spawn placement fallback: no valid placement context for event index " + str(event_index))
+		return await _execute_scenario_event_auto_spawn(updated_event)
+	var composition: Dictionary = _normalize_event_composition(updated_event.get("composition", {}))
+	var player_id: int = int(updated_event.get("player_id", 1))
+	var spawned_army: Army = _spawn_scenario_event_army_in_region(staging_region, player_id, composition, false)
+	if spawned_army == null:
+		DebugLogger.log("TurnProcessing", "Human event spawn placement fallback: failed to create staging army for event index " + str(event_index))
+		return await _execute_scenario_event_auto_spawn(updated_event)
+	spawned_army.visible = false
+	_activate_spawn_event_placement_mode(
+		event_index,
+		spawned_army,
+		target_ids,
+		placement_context.get("source_region_by_target", {})
+	)
+	var selected_variant: Variant = await spawn_event_target_selected
+	var selected_region_id: int = int(selected_variant)
+	_deactivate_spawn_event_placement_mode()
+	if not target_ids.has(selected_region_id):
+		selected_region_id = int(target_ids[0])
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var target_region: Region = map_generator.get_region_container_by_id(selected_region_id) as Region
+	await _ai_camera_director.await_focus_on_region(target_region)
+	_relocate_spawn_event_army_to_region(spawned_army, target_region)
+	var battle_needed: bool = _should_trigger_battle(spawned_army, target_region)
+	if battle_needed:
+		await handle_army_battle(spawned_army, selected_region_id)
+		await _await_pending_battles()
+		check_victory_conditions_for_player(player_id)
+	if spawned_army != null and is_instance_valid(spawned_army):
+		spawned_army.movement_points = 0
+	updated_event["selected_region_id"] = selected_region_id
+	updated_event["triggered"] = true
+	return updated_event
+
+func _build_human_spawn_event_placement_context(event_data: Dictionary) -> Dictionary:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var target_ids: Array[int] = []
+	var source_region_by_target: Dictionary = {}
+	var candidate_ocean_sources: Array[int] = []
+	var region_ids: Array[int] = _normalize_event_regions(event_data.get("regions", []))
+	for region_id in region_ids:
+		if not map_generator.region_container_by_id.has(region_id):
+			continue
+		var target_region: Region = map_generator.region_container_by_id[region_id] as Region
+		if target_region.is_ocean_region():
+			continue
+		if _army_manager.is_region_at_army_cap(target_region):
+			continue
+		target_ids.append(region_id)
+		var ocean_source_id: int = _find_first_adjacent_ocean_region_id(region_id)
+		if ocean_source_id != -1:
+			source_region_by_target[region_id] = ocean_source_id
+			if not candidate_ocean_sources.has(ocean_source_id):
+				candidate_ocean_sources.append(ocean_source_id)
+	var fallback_source_id: int = -1
+	if not candidate_ocean_sources.is_empty():
+		fallback_source_id = int(candidate_ocean_sources[0])
+	for target_id in target_ids:
+		if source_region_by_target.has(target_id):
+			continue
+		var resolved_source_id: int = _find_nearest_ocean_region_id(target_id)
+		if resolved_source_id != -1:
+			source_region_by_target[target_id] = resolved_source_id
+			if not candidate_ocean_sources.has(resolved_source_id):
+				candidate_ocean_sources.append(resolved_source_id)
+			if fallback_source_id == -1:
+				fallback_source_id = resolved_source_id
+			continue
+		if fallback_source_id != -1:
+			source_region_by_target[target_id] = fallback_source_id
+			continue
+		source_region_by_target[target_id] = target_id
+	var staging_region: Region = _resolve_spawn_event_staging_region(candidate_ocean_sources, target_ids)
+	return {
+		"target_ids": target_ids,
+		"source_region_by_target": source_region_by_target,
+		"staging_region": staging_region
+	}
+
+func _resolve_spawn_event_staging_region(candidate_ocean_sources: Array[int], target_ids: Array[int]) -> Region:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	for source_id in candidate_ocean_sources:
+		if not map_generator.region_container_by_id.has(source_id):
+			continue
+		var source_region: Region = map_generator.region_container_by_id[source_id] as Region
+		if source_region == null:
+			continue
+		if _army_manager.is_region_at_army_cap(source_region):
+			continue
+		return source_region
+	for target_id in target_ids:
+		if not map_generator.region_container_by_id.has(target_id):
+			continue
+		var target_region: Region = map_generator.region_container_by_id[target_id] as Region
+		if target_region == null:
+			continue
+		if _army_manager.is_region_at_army_cap(target_region):
+			continue
+		return target_region
+	return null
+
+func _find_first_adjacent_ocean_region_id(target_region_id: int) -> int:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	for raw_edge in map_generator.edges:
+		if not (raw_edge is Dictionary):
+			continue
+		var edge: Dictionary = raw_edge as Dictionary
+		var region1: int = int(edge.get("region1", -1))
+		var region2: int = int(edge.get("region2", -1))
+		if region1 != target_region_id and region2 != target_region_id:
+			continue
+		var neighbor_id: int = region1 if region2 == target_region_id else region2
+		if not map_generator.region_by_id.has(neighbor_id):
+			continue
+		var neighbor_data: Dictionary = map_generator.region_by_id[neighbor_id] as Dictionary
+		if bool(neighbor_data.get("ocean", false)):
+			return neighbor_id
+	return -1
+
+func _find_nearest_ocean_region_id(target_region_id: int) -> int:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var target_region: Region = map_generator.get_region_container_by_id(target_region_id) as Region
+	var target_center: Vector2 = target_region.center
+	var nearest_id: int = -1
+	var nearest_distance_sq: float = INF
+	for raw_region_id in map_generator.region_by_id.keys():
+		var ocean_region_id: int = int(raw_region_id)
+		var region_data: Dictionary = map_generator.region_by_id[ocean_region_id] as Dictionary
+		if not bool(region_data.get("ocean", false)):
+			continue
+		var ocean_region: Region = map_generator.get_region_container_by_id(ocean_region_id) as Region
+		var distance_sq: float = target_center.distance_squared_to(ocean_region.center)
+		if distance_sq >= nearest_distance_sq:
+			continue
+		nearest_distance_sq = distance_sq
+		nearest_id = ocean_region_id
+	return nearest_id
+
+func _activate_spawn_event_placement_mode(event_index: int, spawned_army: Army, target_ids: Array[int], source_region_by_target: Dictionary) -> void:
+	_spawn_event_pending_event_index = event_index
+	_spawn_event_placement_army = spawned_army
+	_spawn_event_allowed_target_ids = target_ids.duplicate()
+	_spawn_event_source_region_by_target = source_region_by_target.duplicate(true)
+	_spawn_event_placement_active = true
+	var ui_node: Node = get_node("../UI")
+	var info_modal: InfoModal = ui_node.get_node("InfoModal") as InfoModal
+	var move_modal: MoveModal = ui_node.get_node("MoveModal") as MoveModal
+	info_modal.set_spawn_event_armies_only_mode(true)
+	info_modal.show_army_info(spawned_army)
+	_army_manager.select_army(spawned_army, spawned_army.get_parent() as Region, current_player)
+	move_modal.hide_move_modal()
+	if _next_player_modal and _next_player_modal.visible:
+		_next_player_modal.hide_modal()
+	_army_manager.show_custom_target_arrows(_spawn_event_allowed_target_ids, _spawn_event_source_region_by_target)
+
+func _deactivate_spawn_event_placement_mode() -> void:
+	_spawn_event_placement_active = false
+	_army_manager.clear_custom_target_arrows()
+	var ui_node: Node = get_node("../UI")
+	var info_modal: InfoModal = ui_node.get_node("InfoModal") as InfoModal
+	info_modal.set_spawn_event_armies_only_mode(false)
+	if _spawn_event_placement_army != null and is_instance_valid(_spawn_event_placement_army):
+		if _army_manager.selected_army == _spawn_event_placement_army:
+			_army_manager.deselect_army()
+	_spawn_event_placement_army = null
+	_spawn_event_allowed_target_ids.clear()
+	_spawn_event_source_region_by_target.clear()
+	_spawn_event_pending_event_index = -1
+
+func _relocate_spawn_event_army_to_region(army: Army, target_region: Region) -> void:
+	if army == null or not is_instance_valid(army):
+		return
+	var source_region: Region = army.get_parent() as Region
+	if source_region == null:
+		return
+	if source_region == target_region:
+		army.visible = true
+		_army_manager._apply_army_offsets_for_region(target_region)
+		return
+	var start_global: Vector2 = army.global_position
+	source_region.remove_child(army)
+	target_region.add_child(army)
+	army.global_position = start_global
+	army.visible = true
+	_army_manager.on_army_moved(army, source_region, target_region)
+	_army_manager._apply_army_offsets_for_region(source_region)
+	_army_manager._apply_army_offsets_for_region(target_region)
+
+func is_spawn_event_placement_active() -> bool:
+	return _spawn_event_placement_active
+
+func try_handle_spawn_event_region_click(region: Region, button_index: int) -> bool:
+	if not _spawn_event_placement_active:
+		return false
+	if region == null:
+		return true
+	if button_index != MOUSE_BUTTON_RIGHT:
+		return true
+	if region.is_ocean_region():
+		return true
+	var region_id: int = region.get_region_id()
+	if not _spawn_event_allowed_target_ids.has(region_id):
+		return true
+	if _army_manager.is_region_at_army_cap(region):
+		return true
+	_spawn_event_placement_active = false
+	emit_signal("spawn_event_target_selected", region_id)
+	return true
 
 func _apply_scenario_event_army_composition(army: Army, composition: Dictionary) -> void:
 	for unit_type in SoldierTypeEnum.get_all_types():

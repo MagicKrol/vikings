@@ -222,6 +222,8 @@ func _on_map_click(screen_pos: Vector2, button_index: int) -> void:
 
 	# If no region was clicked and we have a selected army, deselect it (cancels move)
 	if not region_clicked and _army_manager and _army_manager.selected_army != null:
+		if _game_manager and _game_manager.is_spawn_event_placement_active():
+			return
 		var move_trigger_right: bool = GameParameters.get_army_move_trigger() == GameParameters.ArmyMoveTrigger.RIGHT_CLICK
 		if not (move_trigger_right and button_index == MOUSE_BUTTON_RIGHT):
 			_army_manager.deselect_army()
@@ -266,6 +268,9 @@ func _handle_region_click(region_container: Node, button_index: int) -> void:
 		return
 	var tutorial_region_matched: bool = false
 	var region: Region = region_container as Region
+	if _game_manager and _game_manager.is_spawn_event_placement_active():
+		if _game_manager.try_handle_spawn_event_region_click(region, button_index):
+			return
 	if _tutorial_manager != null and _tutorial_manager.is_active() and _tutorial_manager.get_expected_action() == "region":
 		if region == null:
 			return
@@ -399,9 +404,14 @@ func _handle_mouse_motion() -> void:
 		visual_manager.set_map_hover_region(-1)
 		if hovered_move_region_id != -1:
 			visual_manager.set_move_region_hover(hovered_move_region_id)
-			_show_move_tooltip(hovered_move_region)
-			var tooltip_offset: Vector2 = Vector2(-2, 35)
-			var region_tooltip_anchor_pos: Vector2 = _move_tooltip.position + tooltip_offset
+			var region_tooltip_anchor_pos: Vector2
+			if _game_manager.is_spawn_event_placement_active():
+				_move_tooltip.hide_tooltip()
+				region_tooltip_anchor_pos = get_viewport().get_mouse_position()
+			else:
+				_show_move_tooltip(hovered_move_region)
+				var tooltip_offset: Vector2 = Vector2(-2, 35)
+				region_tooltip_anchor_pos = _move_tooltip.position + tooltip_offset
 			_ui_manager.show_region_tooltip_for_move(hovered_move_region, region_tooltip_anchor_pos)
 		else:
 			visual_manager.clear_move_region_hover()
@@ -428,6 +438,9 @@ func _is_move_flow_active() -> bool:
 	return move_modal.visible and _army_manager != null and _army_manager.selected_army != null
 
 func _show_move_tooltip(region: Region) -> void:
+	if _game_manager.is_spawn_event_placement_active():
+		_move_tooltip.hide_tooltip()
+		return
 	var selected_army := _army_manager.selected_army
 	var terrain_cost := _army_manager.get_terrain_cost(region, selected_army.get_player_id())
 	var mouse_pos := get_viewport().get_mouse_position()
@@ -435,7 +448,7 @@ func _show_move_tooltip(region: Region) -> void:
 
 func _hide_move_hover_tooltips() -> void:
 	_move_tooltip.hide_tooltip()
-	if _is_move_flow_active():
+	if _is_move_flow_active() or _game_manager.is_spawn_event_placement_active():
 		_ui_manager.hide_region_tooltip()
 
 func _is_mountain_region(region: Region) -> bool:

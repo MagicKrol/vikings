@@ -2219,3 +2219,24 @@ theme_override_fonts/font = ExtResource("21_dujlr")
 theme_override_font_sizes/font_size = 20
 text = "English"
 horizontal_alignment = 1
+
+[node name="CustomTooltip" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 791.0
+offset_top = 840.0
+offset_right = 1050.0
+offset_bottom = 927.0
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_701y0")
+
+[node name="Label" type="Label" parent="CustomTooltip"]
+custom_minimum_size = Vector2(20, 60)
+offset_left = 13.0
+offset_top = 11.0
+offset_right = 244.0
+offset_bottom = 77.0
+theme = ExtResource("15_std_modal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2

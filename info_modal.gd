@@ -62,6 +62,7 @@ var _action_tooltip_base_pos_nores: Vector2 = Vector2.ZERO
 var _action_tooltip_base_button_y: float = 0.0
 var _action_tooltip_base_nores_ready: bool = false
 var _action_tooltip_base_button_ready: bool = false
+var _spawn_event_armies_only_mode: bool = false
 
 enum TabType { REGION, ARMIES }
 var _active_tab: TabType = TabType.REGION
@@ -1157,6 +1158,15 @@ func _refresh_current_region() -> void:
 	else:
 		_update_region_display()
 
+func set_spawn_event_armies_only_mode(enabled: bool) -> void:
+	_spawn_event_armies_only_mode = enabled
+	if enabled:
+		_region_tab_label.mouse_default_cursor_shape = Control.CURSOR_ARROW
+		_set_active_tab(TabType.ARMIES)
+		_update_army_display()
+		return
+	_region_tab_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
 func _set_active_tab(tab: TabType) -> void:
 	_active_tab = tab
 	_apply_tab_visibility()
@@ -1178,10 +1188,14 @@ func _apply_tab_colors() -> void:
 		_region_tab_label.add_theme_color_override("font_color", _inactive_tab_color)
 
 func _on_region_tab_mouse_entered() -> void:
+	if _spawn_event_armies_only_mode:
+		return
 	if _active_tab != TabType.REGION:
 		_region_tab_label.add_theme_color_override("font_color", Color.WHITE)
 
 func _on_region_tab_mouse_exited() -> void:
+	if _spawn_event_armies_only_mode:
+		return
 	if _active_tab != TabType.REGION:
 		_region_tab_label.add_theme_color_override("font_color", _inactive_tab_color)
 
@@ -1195,6 +1209,10 @@ func _on_armies_tab_mouse_exited() -> void:
 
 func _on_region_tab_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if _spawn_event_armies_only_mode:
+			_region_tab_label.accept_event()
+			get_viewport().set_input_as_handled()
+			return
 		DebugLogger.log("click", "InfoModal: Region tab click")
 		if _active_tab != TabType.REGION:
 			current_army = null
@@ -1222,6 +1240,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+		if _spawn_event_armies_only_mode:
+			get_viewport().set_input_as_handled()
+			return
 		if ui_manager.is_recruitment_or_transfer_modal_visible():
 			get_viewport().set_input_as_handled()
 			return

@@ -321,12 +321,8 @@ func create_army(region_container: Node, player_id: int, is_raised: bool = false
 		army.setup_army(player_id, roman_number, starting_composition)
 	
 	# Position army at region center with appropriate offset
-	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
-	if polygon != null:
-		var center_meta = polygon.get_meta("center")
-		if center_meta != null:
-			var center := center_meta as Vector2
-			army.position = center + _get_army_position_offset(region_container)
+	var center: Vector2 = _get_region_center(region_container)
+	army.position = center + _get_army_position_offset(region_container)
 	
 	# Apply map size scaling
 	if map_generator != null:
@@ -419,13 +415,7 @@ func update_ready_highlights_for_player(player_id: int) -> void:
 func _apply_army_offsets_for_region(region_container: Node, skip_army: Army = null) -> void:
 	"""Reposition all armies in a region using stacked offsets and z-index order.
 	If skip_army is provided, its position will not be set here (useful for animation)."""
-	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
-	if polygon == null:
-		return
-	var center_meta = polygon.get_meta("center")
-	if center_meta == null:
-		return
-	var center := center_meta as Vector2
+	var center: Vector2 = _get_region_center(region_container)
 	var base_offset := _get_army_position_offset(region_container)
 	var map_visual_scale := 1.0
 	if map_generator != null:
@@ -456,9 +446,7 @@ func _apply_army_offsets_for_region(region_container: Node, skip_army: Army = nu
 
 func _compute_army_target_position(region_container: Node, army: Army) -> Vector2:
 	"""Compute the stacked target position for a specific army in a region."""
-	var polygon := region_container.get_node_or_null("Polygon") as Polygon2D
-	var center_meta = polygon.get_meta("center")
-	var center := center_meta as Vector2
+	var center: Vector2 = _get_region_center(region_container)
 	var base_offset := _get_army_position_offset(region_container)
 	var map_visual_scale := 1.0
 	if map_generator != null:
@@ -748,17 +736,7 @@ func _show_move_arrows(region_container: Node) -> void:
 		return
 	
 	# Get source region center
-	var source_polygon = region_container.get_node_or_null("Polygon") as Polygon2D
-	if source_polygon == null:
-
-		return
-	
-	var source_center_meta = source_polygon.get_meta("center")
-	if source_center_meta == null:
-
-		return
-	
-	var source_center = source_center_meta as Vector2
+	var source_center: Vector2 = _get_region_center(region_container)
 	
 	# Create arrows container if it doesn't exist
 	if arrows_container == null:
@@ -788,15 +766,7 @@ func _show_move_arrows(region_container: Node) -> void:
 			continue
 		
 		# Get neighbor region center
-		var neighbor_polygon = neighbor_container.get_node_or_null("Polygon") as Polygon2D
-		if neighbor_polygon == null:
-			continue
-		
-		var neighbor_center_meta = neighbor_polygon.get_meta("center")
-		if neighbor_center_meta == null:
-			continue
-		
-		var neighbor_center = neighbor_center_meta as Vector2
+		var neighbor_center: Vector2 = _get_region_center(neighbor_container)
 		
 		# Check if move is possible (not impassable and enough points)
 		var can_move = false
@@ -815,8 +785,56 @@ func _show_move_arrows(region_container: Node) -> void:
 			visual_manager.clear_move_region_highlights()
 		else:
 			visual_manager.animate_move_region_highlights(move_target_regions)
-	
 
+func show_custom_target_arrows(target_region_ids: Array[int], source_region_by_target: Dictionary = {}) -> void:
+	"""Show custom arrows and move highlights for explicit region targets."""
+	_clear_move_arrows()
+	var unique_targets: Array[int] = []
+	for raw_target_id in target_region_ids:
+		var target_id: int = int(raw_target_id)
+		if target_id <= 0:
+			continue
+		if unique_targets.has(target_id):
+			continue
+		unique_targets.append(target_id)
+	if unique_targets.is_empty():
+		return
+	if arrows_container == null:
+		arrows_container = Node2D.new()
+		arrows_container.name = "MoveArrows"
+		arrows_container.z_index = 200
+		if map_generator != null:
+			map_generator.add_child(arrows_container)
+		else:
+			return
+	for target_id in unique_targets:
+		var target_region: Region = map_generator.get_region_container_by_id(target_id) as Region
+		if target_region == null:
+			continue
+		var source_id: int = int(source_region_by_target.get(target_id, target_id))
+		var source_region: Region = map_generator.get_region_container_by_id(source_id) as Region
+		if source_region == null:
+			source_region = target_region
+		var source_center: Vector2 = _get_region_center(source_region)
+		var target_center: Vector2 = _get_region_center(target_region)
+		var arrow: Node = _create_move_arrow(source_center, target_center, false)
+		if arrow != null:
+			move_arrows.append(arrow)
+			arrows_container.add_child(arrow)
+	if visual_manager:
+		visual_manager.animate_move_region_highlights(unique_targets)
+
+func _get_region_center(region_container: Node) -> Vector2:
+	var region: Region = region_container as Region
+	if region != null:
+		return region.center
+	var polygon: Polygon2D = region_container.get_node_or_null("Polygon") as Polygon2D
+	if polygon.has_meta("center"):
+		return polygon.get_meta("center") as Vector2
+	return Vector2.ZERO
+
+func clear_custom_target_arrows() -> void:
+	_clear_move_arrows()
 
 func _create_move_arrow(from_pos: Vector2, to_pos: Vector2, disabled: bool = false) -> Node:
 	"""Create an arrow sprite pointing from one position to another"""
@@ -832,7 +850,7 @@ func _create_move_arrow(from_pos: Vector2, to_pos: Vector2, disabled: bool = fal
 
 		return null
 	
-	# Scale arrows like castle icons: baseline × polygon_scale × map_visual_scale
+	# Scale arrows like castle icons: baseline * polygon_scale * map_visual_scale
 	var scale_factor := 0.12
 	if map_generator != null:
 		var map_visual_scale := map_generator.get_map_visual_scale()
