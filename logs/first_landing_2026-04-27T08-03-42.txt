@@ -1,0 +1,2126 @@
+AI Log File: first_landing
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 50
+Food: 50
+Wood: 0
+Iron: 0
+Stone: 0
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 3.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (turn_1)
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Bought 15 Food (gold change -33)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:5.7 (strategy:35.7, neighbor:-30.0, distance_status:True, score:5.7<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=10.
+
+Economy: Ore discoveries: Vatnhaug
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Raider) -------------
+Region: Vatnhaug
+Army II [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+-------------- ARMY I (Main) -------------
+Region: Vatnhaug
+Army I [Power: 340, E: 95 - P:49, S:24, A:15, SW:15, K:5]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 2 Wood for 4 gold
+
+Resources (end):
+Gold: 3
+Food: 65
+Wood: 2
+Iron: 0
+Stone: 0
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 10
+Food: 60
+Wood: 10
+Iron: 0
+Stone: 0
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.033
+underpowered_ratio: 0.000
+castle_spacing: 15.000
+bank_ratio: 0.200
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 104 - P:18, S:8, A:7, SW:4]
+Keep Saintthwaite [Power: 134 - P:20, S:10, A:10, SW:6]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (turn_1)
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Could not buy needed resources for upgrade: insufficient gold for top-up
+
+Economy: Insufficient funds to upgrade Outpost.
+
+Recruitment: Score: 0.00 (r=30, a=1, dist=2.0, rec=63, gold=0) vs thr=0.50; Frontier2Army=1.00
+
+Economy: Could not buy needed resources for build: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=4 total=6 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Vatnhaug (#96): accepted, intel=known, power=340, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Vatnhaug (#96): accepted, intel=unknown, power=unknown, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Vatnhaug (#96): threat=big(level=4), intel=known, power=340, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Vatnhaug (#96): threat=unknown(level=3), intel=unknown, power=unknown, sim_castle_only=n/a, sim_with_army=n/a
+
+Economy: Castle Reserve (pre): Saintthwaite reserve -> gold:10 wood:10 iron:0 recruits:63
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30); frontier pressure too low (1.00 vs 3.00) (Score: 0.00 (r=30, a=1, dist=2.0, rec=63, gold=0) vs thr=0.50; Frontier2Army=1.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Torfell (#113) | total:103.9 (strategy:73.9, neighbor:30.0, distance_status:Not Checked, score:103.9>[100.0])
+- Hafnley (#110) | total:92.2 (strategy:32.2, neighbor:60.0, distance_status:Not Checked, score:92.2<[100.0])
+- Vatnberg (#114) | total:92.0 (strategy:32.0, neighbor:60.0, distance_status:Not Checked, score:92.0<[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hellaby (#87) | total:86.4 (strategy:56.4, neighbor:30.0, distance_status:Not Checked, score:86.4<[100.0])
+- Sandworth (#108) | total:84.7 (strategy:54.7, neighbor:30.0, distance_status:Not Checked, score:84.7<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Hafnvik (#107) | total:74.3 (strategy:44.3, neighbor:30.0, distance_status:Not Checked, score:74.3<[100.0])
+- Hvitthwaite (#97) | total:69.0 (strategy:64.0, neighbor:5.0, distance_status:Not Checked, score:69.0<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Westton (#116) | total:51.6 (strategy:46.6, neighbor:5.0, distance_status:Not Checked, score:51.6<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Ashton (#106) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Akrham (#60) | total:8.0 (strategy:8.0, neighbor:0.0, distance_status:Not Checked, score:8.0<[100.0])
+- Fossley (#92) | total:7.4 (strategy:7.4, neighbor:0.0, distance_status:Not Checked, score:7.4<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:10 short:20
+- Wood need:25 have:10 short:15
+
+Build Castle top-up:
+- Top-up failed: needed resources beyond acceptable threshold
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: insufficient gold for top-up)
+
+- Sandhaug (#85) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Keep)
+- Saintthwaite (#118) | total:49.2 (recruits:98.4, distance:0.0, dist:9999, next:Castle)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Westton
+Army I [Power: 240, E: 100 - P:35, S:20, A:15, SW:10, K:1]
+DecisionTree: Army I -> threat_grouped_context (known_total=340 unknown=true entries=2)
+DecisionTree: Army I -> threat_reposition_needed_known_gap (to Saintthwaite)
+Moves to Saintthwaite [MP left: 3, Vigor: 95%]
+Arrived at Saintthwaite
+Moving to Saintthwaite [MP left: 3, Vigor: 95%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+Economy: Castle Reserve (post): Saintthwaite reserve -> gold:0 wood:8 iron:0 recruits:63
+
+Castle Recruitment Post-Move:
+- Saintthwaite: 6 units (P: 4, A: 2) - gold spent: 10, recruits left: 57
+
+Resources (end):
+Gold: 0
+Food: 60
+Wood: 8
+Iron: 0
+Stone: 0
+
+--------------------------------------------------------
+[Turn 2]
+       
+ 222222222222222      
+2:::::::::::::::22    
+2::::::222222:::::2   
+2222222     2:::::2   
+			2:::::2   
+			2:::::2   
+		 2222::::2    
+	22222::::::22     
+  22::::::::222       
+ 2:::::22222          
+2:::::2               
+2:::::2               
+2:::::2       222222  
+2::::::2222222:::::2  
+2::::::::::::::::::2  
+22222222222222222222  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 6
+Food: 50
+Wood: 3
+Iron: 2
+Stone: 0
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 3.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 0.120
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (no_spendable_gold)
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Bought 2 Food (gold change -4)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:5.7 (strategy:35.7, neighbor:-30.0, distance_status:True, score:5.7<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Raider) -------------
+Region: Vatnhaug
+Army II [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_raider (post_threat)
+Top 3 candidates:
+Candidate 1: Hvitthwaite (#97), score: 78.0 (mp_cost: 3, resources: 15.0, population: 3.1, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.4)
+Candidate 2: Westton (#116), score: 50.8 (mp_cost: 2, resources: 3.8, population: 5.4, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.7)
+Candidate 3: Hellastadir (#95), score: 34.2 (mp_cost: 2, resources: 7.5, population: 1.3, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 1.4)
+DecisionTree: Army II -> role_raider_expand (to Hvitthwaite)
+[MOVEMENT]
+Best target: Hvitthwaite (Player 2 (unknown))
+Transfering units from Army I to Army II
+Moves to Hvitthwaite [MP left: 2, Vigor: 95%]
+[BATTLE]
+Fight at Hvitthwaite
+Battle started
+Attacker: Army II [Power: 460 - P:69, S:34, A:20, SW:20, K:6]
+Defender Garrison (unknown) [Power: 10 - P:5]
+Defender Recruits (Hvitthwaite) (unknown) [Power: 10 - P:5]
+Battle Result: Won
+Attacker After: Army II [Power: 460 - P:69, S:34, A:20, SW:20, K:6]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hvitthwaite (unknown) [Power: 0 - none]
+
+Moving to Hvitthwaite [MP left: 2, Vigor: 90%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_raider (post_threat)
+Top 2 candidates:
+Candidate 1: Hellaby (#87), score: 57.8 (mp_cost: 2, resources: 7.5, population: 6.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.6)
+Candidate 2: Westton (#116), score: 49.6 (mp_cost: 2, resources: 3.8, population: 5.4, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.7)
+DecisionTree: Army II -> role_raider_expand (to Hellaby)
+[MOVEMENT]
+Best target: Hellaby (Player 2 (unknown))
+Moves to Hellaby [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Hellaby
+Battle started
+Attacker: Army II [Power: 460 - P:69, S:34, A:20, SW:20, K:6]
+Defender Garrison (unknown) [Power: 20 - P:10]
+Defender Recruits (Hellaby) (unknown) [Power: 22 - P:11]
+Battle Result: Won
+Attacker After: Army II [Power: 457 - P:69, S:33, A:20, SW:20, K:6]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hellaby (unknown) [Power: 0 - none]
+
+Moving to Hellaby [MP left: 0, Vigor: 80%]
+-------------- ARMY I (Raider) -------------
+Region: Vatnhaug
+Army I [Power: 2, E: 95 - P:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+[RECRUITMENT]
+No reachable recruitment castles available from Vatnhaug
+No breakthrough recruitment castles available (below_half_threshold) from Vatnhaug
+DecisionTree: Army I -> recruit_mark_transfer_half_power (below_half_threshold)
+Recruitment state -> TRANSFER_TO_CLOSEST (below_half_threshold)
+DecisionTree: Army I -> recruit_transfer_to_friendly (to Hellaby)
+Moves to Hvitthwaite [MP left: 3, Vigor: 90%]
+Moves to Hellaby [MP left: 2, Vigor: 85%]
+Arrived at Hellaby
+Moving to Hellaby [MP left: 2, Vigor: 85%]
+Transfering units from Army I to Army II
+Recruitment state -> RECRUIT_OR_DEFEND (transfer_complete)
+Army I makes camp [MP left: 1, Vigor: 95%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 2
+Food: 52
+Wood: 3
+Iron: 2
+Stone: 0
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 54
+Food: 47
+Wood: 34
+Iron: 0
+Stone: 7
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.107
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 104 - P:18, S:8, A:7, SW:4]
+Keep Saintthwaite [Power: 150 - P:24, S:10, A:12, SW:6]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:5 bank:5 cap:125
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=28, a=1, dist=0.0, rec=56, gold=0) vs thr=0.50; Frontier2Army=3.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=4 total=8 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=known, power=340, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Hellaby (#87): accepted, intel=known, power=457, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Hellaby (#87): threat=big(level=4), intel=known, power=457, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=big(level=4), intel=known, power=340, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre): Saintthwaite: level=2 total=4 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=known, power=340, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Hellaby (#87): accepted, intel=known, power=457, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Hellaby (#87): threat=needs_army(level=2), intel=known, power=457, sim_castle_only=lose, sim_with_army=hold
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=needs_army(level=2), intel=known, power=340, sim_castle_only=lose, sim_with_army=hold
+
+Economy: Castle Reserve (pre): Sandhaug reserve -> gold:25 wood:17 iron:0 recruits:54
+
+Economy: Castle Reserve (pre): Saintthwaite reserve -> gold:24 wood:17 iron:0 recruits:56
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30) (Score: 0.00 (r=28, a=1, dist=0.0, rec=56, gold=0) vs thr=0.50; Frontier2Army=3.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Torfell (#113) | total:103.9 (strategy:73.9, neighbor:30.0, distance_status:Not Checked, score:103.9>[100.0])
+- Hafnley (#110) | total:92.2 (strategy:32.2, neighbor:60.0, distance_status:Not Checked, score:92.2<[100.0])
+- Vatnberg (#114) | total:92.0 (strategy:32.0, neighbor:60.0, distance_status:Not Checked, score:92.0<[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Sandworth (#108) | total:59.7 (strategy:54.7, neighbor:5.0, distance_status:Not Checked, score:59.7<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Ashton (#106) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Westton (#116) | total:26.6 (strategy:46.6, neighbor:-20.0, distance_status:Not Checked, score:26.6<[100.0])
+- Hafnvik (#107) | total:24.3 (strategy:44.3, neighbor:-20.0, distance_status:Not Checked, score:24.3<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Fossley (#92) | total:7.4 (strategy:7.4, neighbor:0.0, distance_status:Not Checked, score:7.4<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Akrham (#60) | total:-17.0 (strategy:8.0, neighbor:-25.0, distance_status:Not Checked, score:-17.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:54 short:0
+- Wood need:25 have:34 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:48.2 (recruits:96.4, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Saintthwaite
+Army I [Power: 240, E: 100 - P:35, S:20, A:15, SW:10, K:1]
+DecisionTree: Army I -> threat_grouped_context (known_total=797 unknown=false entries=2)
+DecisionTree: Army I -> threat_garrison_sortie_skipped_ratio (to Hellaby)
+DecisionTree: Army I -> threat_grouped_context (known_total=797 unknown=false entries=2)
+DecisionTree: Army I -> threat_reposition_needed_known_gap (to Sandhaug)
+Moves to Hafnvik [MP left: 3, Vigor: 95%]
+Moves to Sandworth [MP left: 2, Vigor: 90%]
+Moves to Sandhaug [MP left: 1, Vigor: 85%]
+Arrived at Sandhaug
+Moving to Sandhaug [MP left: 1, Vigor: 85%]
+Army I makes camp [MP left: 0, Vigor: 95%]
+Economy: Castle Reserve (post): Sandhaug reserve -> gold:0 wood:19 iron:0 recruits:54
+
+Economy: Castle Reserve (post): Saintthwaite reserve -> gold:0 wood:9 iron:0 recruits:56
+
+Castle Recruitment Post-Move:
+- Sandhaug: 19 units (P: 9, S: 6, A: 4) - gold spent: 33, recruits left: 35
+- Saintthwaite: 10 units (P: 6, S: 2, A: 2) - gold spent: 16, recruits left: 46
+
+Economy: Bought: 1 Stone for 4 gold
+
+Resources (end):
+Gold: 1
+Food: 47
+Wood: 28
+Iron: 0
+Stone: 8
+
+--------------------------------------------------------
+[Turn 3]
+  
+  3333333333333333  
+3::::::::::::::::::33  
+3:::::::33333:::::::3  
+3333333     3::::::3  
+			3::::::3  
+			3::::::3  
+   33333333::::::3  
+   3:::::::::::::3  
+   33333333::::::3  
+			3:::::3  
+			3:::::3  
+			3:::::3  
+3333333     3:::::3  
+3:::::::33333:::::3  
+3:::::::::::::::::33  
+ 3333333333333333  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 9
+Food: 38
+Wood: 9
+Iron: 4
+Stone: 0
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 2.333
+underpowered_ratio: 0.500
+castle_spacing: 0.000
+bank_ratio: 0.180
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (no_spendable_gold)
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Bought 3 Food (gold change -7)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:30.7 (strategy:35.7, neighbor:-5.0, distance_status:True, score:30.7<[100.0])
+- Hvitthwaite (#97) | total:19.0 (strategy:64.0, neighbor:-45.0, distance_status:True, score:19.0<[100.0])
+- Hellaby (#87) | total:-13.6 (strategy:56.4, neighbor:-70.0, distance_status:True, score:-13.6<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Raider) -------------
+Region: Hellaby
+Army I [Power: 2, E: 100 - P:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+[RECRUITMENT]
+No reachable recruitment castles available from Hellaby
+No breakthrough recruitment castles available (below_half_threshold) from Hellaby
+DecisionTree: Army I -> recruit_or_defend_camp (no_reachable_or_breakthrough_castle)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Main) -------------
+Region: Hellaby
+Army II [Power: 461, E: 80 - P:71, S:33, A:20, SW:20, K:6]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Army II makes camp [MP left: 4, Vigor: 90%]
+Top 1 candidates:
+Candidate 1: Sandhaug (#85), score: 51.7 (mp_cost: 2, resources: 3.8, population: 3.5, level: 2, castle_bonus: 5.0, pursue_bonus: 0.0, strategy: 4.9)
+DecisionTree: Army II -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Sandhaug (Player 2 (unknown - UnknownArmies:1 (total:0)))
+Transfering units from Army I to Army II
+Moves to Sandhaug [MP left: 2, Vigor: 85%]
+Siege breach rolls - Sim vs Sandhaug
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 1 Trebuchets, 0 Battling Rams, 8 Ladders
+Assault: 31%
+Defense: 35%
+Simulation started
+Attacker: Army II [Power: 463 - P:72, S:33, A:20, SW:20, K:6]
+Defender Army I (unknown) [Power: 240 - P:35, S:20, A:15, SW:10, K:1]
+Defender Garrison (unknown) [Power: 156 - P:27, S:14, A:11, SW:4]
+Defender Recruits (Sandhaug) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army II [Power: 463 - P:72, S:33, A:20, SW:20, K:6]
+Army I: Army I [Power: 0 - none]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Sandhaug): Recruits (Sandhaug) [Power: 0 - none]
+
+Siege equipement
+Available points: 12
+Available wood: 9 (growth limit)
+Bought: 1 Trebuchets, 0 Battling Rams, 8 Ladders
+Breached sections: 1, Damaged sections: 1
+
+[BATTLE]
+Fight at Sandhaug
+Withdrew to Hellaby
+Battle started
+Attacker: Army II [Power: 463 - P:72, S:33, A:20, SW:20, K:6]
+Defender Army I (unknown) [Power: 240 - P:35, S:20, A:15, SW:10, K:1]
+Defender Garrison (unknown) [Power: 156 - P:27, S:14, A:11, SW:4]
+Defender Recruits (Sandhaug) (unknown) [Power: 14 - P:7]
+Battle Result: Withdrew
+Withdrawal: Attacker
+Attacker After: Army II [Power: 409 - P:59, S:29, A:18, SW:18, K:6]
+Defender After: Army I (unknown) [Power: 240 - P:35, S:20, A:15, SW:10, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 156 - P:27, S:14, A:11, SW:4]
+Defender After (Recruits): Sandhaug (unknown) [Power: 14 - P:7]
+
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Army II makes camp [MP left: 1, Vigor: 90%]
+Top 1 candidates:
+Candidate 1: Saintthwaite (#118), score: 106.5 (mp_cost: 5, resources: 47.5, population: 6.0, level: 2, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 9.9)
+Rejected candidates:
+Reason: unreachable_this_turn Candidate 1: Saintthwaite (#118), score: 106.5
+Reason: known_overmatched_filter Candidate 2: Sandhaug (#85), enemies: Army I:240
+DecisionTree: Army II -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Saintthwaite (Player 2 (unknown))
+Out of movement points before reaching Hvitthwaite
+Movement blocked near Hvitthwaite
+Army II makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 2
+Food: 41
+Wood: 4
+Iron: 4
+Stone: 0
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 57
+Food: 31
+Wood: 54
+Iron: 0
+Stone: 15
+Upgrade Saved Gold: 5
+
+Signals:
+frontier_pressure: 0.107
+underpowered_ratio: 0.000
+castle_spacing: 14.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 156 - P:27, S:14, A:11, SW:4]
+Keep Saintthwaite [Power: 176 - P:30, S:12, A:14, SW:6]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:5 bank:10 cap:125
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=28, a=1, dist=5.0, rec=56, gold=0) vs thr=0.50; Frontier2Army=3.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=2 total=4 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=known, power=340, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Hellaby (#87): accepted, intel=known, power=409, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Hellaby (#87): threat=needs_army(level=2), intel=known, power=409, sim_castle_only=lose, sim_with_army=hold
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=needs_army(level=2), intel=known, power=340, sim_castle_only=lose, sim_with_army=hold
+
+Economy: Castle Threat (pre): Saintthwaite: level=4 total=8 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=known, power=340, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Hellaby (#87): accepted, intel=known, power=409, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Hellaby (#87): threat=big(level=4), intel=known, power=409, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=big(level=4), intel=known, power=340, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Reserve (pre): Sandhaug reserve -> gold:24 wood:22 iron:0 recruits:45
+
+Economy: Castle Reserve (pre): Saintthwaite reserve -> gold:23 wood:27 iron:0 recruits:56
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30) (Score: 0.00 (r=28, a=1, dist=5.0, rec=56, gold=0) vs thr=0.50; Frontier2Army=3.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Torfell (#113) | total:103.9 (strategy:73.9, neighbor:30.0, distance_status:Not Checked, score:103.9>[100.0])
+- Hafnley (#110) | total:92.2 (strategy:32.2, neighbor:60.0, distance_status:Not Checked, score:92.2<[100.0])
+- Vatnberg (#114) | total:92.0 (strategy:32.0, neighbor:60.0, distance_status:Not Checked, score:92.0<[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Sandworth (#108) | total:59.7 (strategy:54.7, neighbor:5.0, distance_status:Not Checked, score:59.7<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Ashton (#106) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Westton (#116) | total:26.6 (strategy:46.6, neighbor:-20.0, distance_status:Not Checked, score:26.6<[100.0])
+- Hafnvik (#107) | total:24.3 (strategy:44.3, neighbor:-20.0, distance_status:Not Checked, score:24.3<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Fossley (#92) | total:7.4 (strategy:7.4, neighbor:0.0, distance_status:Not Checked, score:7.4<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Akrham (#60) | total:-17.0 (strategy:8.0, neighbor:-25.0, distance_status:Not Checked, score:-17.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:57 short:0
+- Wood need:25 have:54 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:40.2 (recruits:80.4, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Sandhaug
+Army I [Power: 240, E: 95 - P:35, S:20, A:15, SW:10, K:1]
+DecisionTree: Army I -> threat_grouped_context (known_total=749 unknown=false entries=2)
+DecisionTree: Army I -> threat_garrison_sortie_skipped_ratio (to Hellaby)
+DecisionTree: Army I -> threat_grouped_context (known_total=749 unknown=false entries=2)
+DecisionTree: Army I -> threat_reposition_needed_known_gap (to Saintthwaite)
+Moves to Sandworth [MP left: 4, Vigor: 90%]
+Moves to Torfell [MP left: 2, Vigor: 85%]
+Moves to Saintthwaite [MP left: 0, Vigor: 80%]
+Arrived at Saintthwaite
+Moving to Saintthwaite [MP left: 0, Vigor: 80%]
+Economy: Castle Reserve (post): Sandhaug reserve -> gold:0 wood:16 iron:0 recruits:45
+
+Economy: Castle Reserve (post): Saintthwaite reserve -> gold:0 wood:24 iron:0 recruits:56
+
+Castle Recruitment Post-Move:
+- Sandhaug: 9 units (P: 4, S: 3, A: 2) - gold spent: 16, recruits left: 36
+- Saintthwaite: 17 units (P: 8, S: 4, A: 4, SW: 1) - gold spent: 31, recruits left: 39
+
+Economy: Bought: 1 Iron for 6 gold
+
+Resources (end):
+Gold: 4
+Food: 31
+Wood: 48
+Iron: 1
+Stone: 15
+
+--------------------------------------------------------
+[Turn 4]
+          
+	   444444444    
+	  4::::::::4    
+	 4:::::::::4    
+	4::::44::::4    
+   4::::4 4::::4    
+  4::::4  4::::4    
+ 4::::4   4::::4    
+4::::444444::::444  
+4::::::::::::::::4  
+4444444444:::::444  
+		  4::::4    
+		  4::::4    
+		  4::::4    
+		44::::::44  
+		4::::::::4  
+		4444444444  
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 9
+Food: 29
+Wood: 10
+Iron: 6
+Stone: 0
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 2.333
+underpowered_ratio: 0.500
+castle_spacing: 0.000
+bank_ratio: 0.180
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (no_spendable_gold)
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Bought 3 Food (gold change -7)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:30.7 (strategy:35.7, neighbor:-5.0, distance_status:True, score:30.7<[100.0])
+- Hvitthwaite (#97) | total:19.0 (strategy:64.0, neighbor:-45.0, distance_status:True, score:19.0<[100.0])
+- Hellaby (#87) | total:-13.6 (strategy:56.4, neighbor:-70.0, distance_status:True, score:-13.6<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Raider) -------------
+Region: Hellaby
+Army I [Power: 2, E: 100 - P:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+[RECRUITMENT]
+No reachable recruitment castles available from Hellaby
+No breakthrough recruitment castles available (below_half_threshold) from Hellaby
+DecisionTree: Army I -> recruit_or_defend_camp (no_reachable_or_breakthrough_castle)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+-------------- ARMY II (Main) -------------
+Region: Hellaby
+Army II [Power: 422, E: 100 - P:62, S:30, A:19, SW:18, K:6]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Sandhaug (#85), enemies: none
+Reason: known_overmatched_filter Candidate 2: Saintthwaite (#118), enemies: Army I:240
+Top 4 candidates:
+Candidate 1: Sandworth (#108), score: 68.6 (mp_cost: 2, resources: 11.2, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.5)
+Candidate 2: Akrham (#60), score: 54.0 (mp_cost: 2, resources: 11.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.8)
+Candidate 3: Westton (#116), score: 49.9 (mp_cost: 4, resources: 3.8, population: 5.4, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.7)
+Candidate 4: Hafnvik (#107), score: 45.4 (mp_cost: 3, resources: 5.0, population: 2.8, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+DecisionTree: Army II -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Sandworth (Player 2 (unknown))
+Transfering units from Army I to Army II
+Moves to Sandworth [MP left: 3, Vigor: 95%]
+[BATTLE]
+Fight at Sandworth
+Battle started
+Attacker: Army II [Power: 424 - P:63, S:30, A:19, SW:18, K:6]
+Defender Garrison (unknown) [Power: 18 - P:9]
+Defender Recruits (Sandworth) (unknown) [Power: 20 - P:10]
+Battle Result: Won
+Attacker After: Army II [Power: 424 - P:63, S:30, A:19, SW:18, K:6]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Sandworth (unknown) [Power: 0 - none]
+
+Moving to Sandworth [MP left: 3, Vigor: 90%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Sandhaug (#85), enemies: none
+Reason: known_overmatched_filter Candidate 2: Saintthwaite (#118), enemies: Army I:240
+Top 4 candidates:
+Candidate 1: Torfell (#113), score: 84.4 (mp_cost: 3, resources: 18.8, population: 1.2, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 7.4)
+Candidate 2: Akrham (#60), score: 48.8 (mp_cost: 3, resources: 11.2, population: 4.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.8)
+Candidate 3: Hafnvik (#107), score: 43.3 (mp_cost: 3, resources: 5.0, population: 2.8, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 4: Fossley (#92), score: 42.7 (mp_cost: 2, resources: 7.5, population: 3.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+DecisionTree: Army II -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Torfell (Player 2 (unknown))
+Moves to Torfell [MP left: 0, Vigor: 85%]
+[BATTLE]
+Fight at Torfell
+Battle started
+Attacker: Army II [Power: 424 - P:63, S:30, A:19, SW:18, K:6]
+Defender Garrison (unknown) [Power: 16 - P:8]
+Defender Recruits (Torfell) (unknown) [Power: 4 - P:2]
+Battle Result: Won
+Attacker After: Army II [Power: 424 - P:63, S:30, A:19, SW:18, K:6]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Torfell (unknown) [Power: 0 - none]
+
+Moving to Torfell [MP left: 0, Vigor: 80%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 2
+Food: 32
+Wood: 10
+Iron: 6
+Stone: 0
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 57
+Food: 11
+Wood: 74
+Iron: 1
+Stone: 21
+Upgrade Saved Gold: 10
+
+Signals:
+frontier_pressure: 0.192
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 181 - P:31, S:17, A:13, SW:4]
+Keep Saintthwaite [Power: 224 - P:38, S:16, A:18, SW:7]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:4 bank:14 cap:125
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=26, a=1, dist=0.0, rec=47, gold=0) vs thr=0.50; Frontier2Army=5.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=4 total=5 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=known, power=340, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Torfell (#113): accepted, intel=known, power=424, reason=reachable, path_cost=3
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Torfell (#113): threat=big(level=4), intel=known, power=424, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=castle_safe(level=1), intel=known, power=340, sim_castle_only=hold, sim_with_army=hold
+
+Economy: Castle Threat (pre): Saintthwaite: level=1 total=2 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Torfell (#113): accepted, intel=known, power=424, reason=reachable, path_cost=3
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=known, power=340, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Torfell (#113): threat=castle_safe(level=1), intel=known, power=424, sim_castle_only=hold, sim_with_army=hold
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=castle_safe(level=1), intel=known, power=340, sim_castle_only=hold, sim_with_army=hold
+
+Economy: Castle Reserve (pre): Sandhaug reserve -> gold:43 wood:18 iron:1 recruits:36
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30) (Score: 0.00 (r=26, a=1, dist=0.0, rec=47, gold=0) vs thr=0.50; Frontier2Army=5.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Hafnley (#110) | total:92.2 (strategy:32.2, neighbor:60.0, distance_status:Not Checked, score:92.2<[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Vatnberg (#114) | total:67.0 (strategy:32.0, neighbor:35.0, distance_status:Not Checked, score:67.0<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Ashton (#106) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Westton (#116) | total:26.6 (strategy:46.6, neighbor:-20.0, distance_status:Not Checked, score:26.6<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Riverthwaite (#112) | total:5.0 (strategy:0.0, neighbor:5.0, distance_status:Not Checked, score:5.0<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Akrham (#60) | total:-17.0 (strategy:8.0, neighbor:-25.0, distance_status:Not Checked, score:-17.0<[100.0])
+- Fossley (#92) | total:-17.6 (strategy:7.4, neighbor:-25.0, distance_status:Not Checked, score:-17.6<[100.0])
+- Hafnvik (#107) | total:-25.7 (strategy:44.3, neighbor:-70.0, distance_status:Not Checked, score:-25.7<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:57 short:0
+- Wood need:25 have:74 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:38.3 (recruits:76.6, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Saintthwaite
+Army I [Power: 240, E: 80 - P:35, S:20, A:15, SW:10, K:1]
+DecisionTree: Army I -> threat_grouped_context (known_total=424 unknown=false entries=1)
+DecisionTree: Army I -> threat_grouped_context (known_total=340 unknown=false entries=1)
+DecisionTree: Army I -> threat_reposition_skipped_unreachable (Sandhaug)
+DecisionTree: Army I -> threat_no_action (no_reachable_threat_action)
+DecisionTree: Army I -> threat_release_level1_castle_safe (Saintthwaite)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Army I makes camp [MP left: 4, Vigor: 90%]
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Hellaby (#87), enemies: Army I:340
+Reason: known_overmatched_filter Candidate 2: Torfell (#113), enemies: Army II:424
+Top 2 candidates:
+Candidate 1: Sandworth (#108), score: 65.0 (mp_cost: 4, resources: 11.2, population: 5.7, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.5)
+Candidate 2: Hvitthwaite (#97), score: 53.0 (mp_cost: 3, resources: 5.0, population: 3.0, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 6.4)
+DecisionTree: Army I -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Sandworth (Player 1 (unknown))
+Moves to Hafnvik [MP left: 2, Vigor: 85%]
+Moves to Sandworth [MP left: 0, Vigor: 80%]
+[BATTLE]
+Fight at Sandworth
+Battle started
+Attacker: Army I [Power: 240 - P:35, S:20, A:15, SW:10, K:1]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Sandworth) (unknown) [Power: 0 - none]
+Battle Result: Won
+Attacker After: Army I [Power: 240 - P:35, S:20, A:15, SW:10, K:1]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Sandworth (unknown) [Power: 0 - none]
+
+Moving to Sandworth [MP left: 0, Vigor: 75%]
+Economy: Castle Reserve (post): Sandhaug reserve -> gold:0 wood:13 iron:1 recruits:36
+
+Castle Recruitment Post-Move:
+- Sandhaug: 24 units (P: 10, S: 9, A: 5) - gold spent: 43, recruits left: 13
+
+Economy: Bought: 2 Iron for 12 gold
+
+Resources (end):
+Gold: 2
+Food: 11
+Wood: 69
+Iron: 3
+Stone: 21
+
+--------------------------------------------------------
+[Turn 5]
+   
+555555555555555555   
+5::::::::::::::::5   
+5::::::::::::::::5   
+5:::::555555555555   
+5:::::5              
+5:::::5              
+5:::::5555555555     
+5:::::::::::::::5    
+555555555555:::::5   
+			5:::::5  
+			5:::::5  
+5555555     5:::::5  
+5::::::55555::::::5  
+ 55:::::::::::::55   
+   55:::::::::55     
+	 555555555       
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 10
+Food: 20
+Wood: 16
+Iron: 8
+Stone: 1
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 2.250
+underpowered_ratio: 0.500
+castle_spacing: 0.000
+bank_ratio: 0.200
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:1 bank:1 cap:125
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Castle Upgrade Bank: released:1 bank:0 cap:125 reason:no_upgrade_candidates
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:30.7 (strategy:35.7, neighbor:-5.0, distance_status:True, score:30.7<[100.0])
+- Hvitthwaite (#97) | total:19.0 (strategy:64.0, neighbor:-45.0, distance_status:True, score:19.0<[100.0])
+- Hellaby (#87) | total:-13.6 (strategy:56.4, neighbor:-70.0, distance_status:True, score:-13.6<[100.0])
+- Torfell (#113) | total:-21.1 (strategy:73.9, neighbor:-95.0, distance_status:True, score:-21.1<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=10.
+
+Economy: Ore discoveries: Torfell
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Main) -------------
+Region: Torfell
+Army II [Power: 424, E: 80 - P:63, S:30, A:19, SW:18, K:6]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Army II makes camp [MP left: 4, Vigor: 90%]
+Top 2 candidates:
+Candidate 1: Saintthwaite (#118), score: 112.7 (mp_cost: 3, resources: 47.5, population: 6.1, level: 2, castle_bonus: 6.0, pursue_bonus: 0.0, strategy: 9.9)
+Candidate 2: Sandworth (#108), score: 77.4 (mp_cost: 2, resources: 11.2, population: 5.7, level: 1, castle_bonus: 0.0, pursue_bonus: 5.0, strategy: 5.5)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Sandhaug (#85), enemies: none
+DecisionTree: Army II -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Saintthwaite (Player 2 (unknown))
+Moves to Saintthwaite [MP left: 1, Vigor: 85%]
+Siege breach rolls - Sim vs Saintthwaite
+
+[Simulation - budgeted]
+Wood Cap: Budgeted
+Bought: 1 Trebuchets, 0 Battling Rams, 7 Ladders
+Assault: 46%
+Defense: 41%
+Simulation started
+Attacker: Army II [Power: 429 - P:64, S:31, A:19, SW:18, K:6]
+Defender Garrison (unknown) [Power: 224 - P:38, S:16, A:18, SW:7]
+Defender Recruits (Saintthwaite) (unknown) [Power: 30 - P:15]
+Battle Result: Won
+Attacker After: Army II [Power: 429 - P:64, S:31, A:19, SW:18, K:6]
+Garrison: Garrison [Power: 0 - none]
+Recruits (Saintthwaite): Recruits (Saintthwaite) [Power: 0 - none]
+
+Siege equipement
+Available points: 11
+Available wood: 16 (growth limit)
+Bought: 1 Trebuchets, 0 Battling Rams, 7 Ladders
+Breached sections: 1, Damaged sections: 0
+
+[BATTLE]
+Fight at Saintthwaite
+Withdrew to Torfell
+Battle started
+Attacker: Army II [Power: 429 - P:64, S:31, A:19, SW:18, K:6]
+Defender Garrison (unknown) [Power: 224 - P:38, S:16, A:18, SW:7]
+Defender Recruits (Saintthwaite) (unknown) [Power: 30 - P:15]
+Battle Result: Withdrew
+Withdrawal: Attacker
+Attacker After: Army II [Power: 295 - P:42, S:17, A:18, SW:12, K:4]
+Defender After (Garrison): Garrison (unknown) [Power: 187 - P:30, S:13, A:17, SW:5]
+Defender After (Recruits): Saintthwaite (unknown) [Power: 24 - P:12]
+
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Army II makes camp [MP left: 0, Vigor: 90%]
+-------------- ARMY I (Raider) -------------
+Region: Hellaby
+Army I [Power: 2, E: 100 - P:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+[RECRUITMENT]
+No reachable recruitment castles available from Hellaby
+No breakthrough recruitment castles available (below_half_threshold) from Hellaby
+DecisionTree: Army I -> recruit_or_defend_camp (no_reachable_or_breakthrough_castle)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 20
+Wood: 11
+Iron: 8
+Stone: 1
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 57
+Food: 0
+Wood: 95
+Iron: 3
+Stone: 27
+Upgrade Saved Gold: 14
+
+Signals:
+frontier_pressure: 0.148
+underpowered_ratio: 0.000
+castle_spacing: 13.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 202 - P:33, S:20, A:15, SW:4]
+Keep Saintthwaite [Power: 160 - P:26, S:12, A:15, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:4 bank:18 cap:125
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=27, a=1, dist=4.0, rec=50, gold=0) vs thr=0.50; Frontier2Army=4.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=4 total=6 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=unknown, power=unknown, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Torfell (#113): accepted, intel=known, power=295, reason=reachable, path_cost=4
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Torfell (#113): threat=big(level=4), intel=known, power=295, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=unknown(level=3), intel=unknown, power=unknown, sim_castle_only=n/a, sim_with_army=n/a
+
+Economy: Castle Threat (pre): Saintthwaite: level=4 total=6 threats=2
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Torfell (#113): accepted, intel=known, power=295, reason=reachable, path_cost=3
+
+Economy: Castle Threat (pre):   - nearby army_391597001069 @ Hellaby (#87): accepted, intel=unknown, power=unknown, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Torfell (#113): threat=big(level=4), intel=known, power=295, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre):   - army_391597001069 @ Hellaby (#87): threat=unknown(level=3), intel=unknown, power=unknown, sim_castle_only=n/a, sim_with_army=n/a
+
+Economy: Castle Reserve (pre): Sandhaug reserve -> gold:20 wood:11 iron:2 recruits:22
+
+Economy: Castle Reserve (pre): Saintthwaite reserve -> gold:19 wood:25 iron:1 recruits:50
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30) (Score: 0.00 (r=27, a=1, dist=4.0, rec=50, gold=0) vs thr=0.50; Frontier2Army=4.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Hafnley (#110) | total:92.2 (strategy:32.2, neighbor:60.0, distance_status:Not Checked, score:92.2<[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Vatnberg (#114) | total:67.0 (strategy:32.0, neighbor:35.0, distance_status:Not Checked, score:67.0<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Sandworth (#108) | total:34.7 (strategy:54.7, neighbor:-20.0, distance_status:Not Checked, score:34.7<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Ashton (#106) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Westton (#116) | total:26.6 (strategy:46.6, neighbor:-20.0, distance_status:Not Checked, score:26.6<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Fossley (#92) | total:7.4 (strategy:7.4, neighbor:0.0, distance_status:Not Checked, score:7.4<[100.0])
+- Riverthwaite (#112) | total:5.0 (strategy:0.0, neighbor:5.0, distance_status:Not Checked, score:5.0<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Hafnvik (#107) | total:-0.7 (strategy:44.3, neighbor:-45.0, distance_status:Not Checked, score:-0.7<[100.0])
+- Akrham (#60) | total:-17.0 (strategy:8.0, neighbor:-25.0, distance_status:Not Checked, score:-17.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:45 short:0
+- Wood need:25 have:95 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:22.0 (recruits:44.0, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Sandworth
+Army I [Power: 197, E: 75 - P:28, S:17, A:13, SW:7, K:1]
+DecisionTree: Army I -> threat_grouped_context (known_total=295 unknown=false entries=1)
+DecisionTree: Army I -> threat_grouped_context (known_total=0 unknown=true entries=1)
+DecisionTree: Army I -> threat_direct_attack (to Hellaby (known_total=0 unknown=true entries=1))
+Army I makes camp [MP left: 4, Vigor: 85%]
+Moves to Hellaby [MP left: 2, Vigor: 80%]
+[BATTLE]
+Fight at Hellaby
+Battle started
+Attacker: Army I [Power: 197 - P:28, S:17, A:13, SW:7, K:1]
+Defender Army I (unknown) [Power: 2 - P:1]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Hellaby) (unknown) [Power: 20 - P:10]
+Battle Result: Withdrew
+Withdrawal: Defender
+Attacker After: Army I [Power: 197 - P:28, S:17, A:13, SW:7, K:1]
+Defender After: Army I (unknown) [Power: 0 - none]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Hellaby (unknown) [Power: 8 - P:4]
+
+DecisionTree: Army I -> threat_reposition_skipped_unreachable (Saintthwaite)
+DecisionTree: Army I -> threat_no_action (no_reachable_threat_action)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Army I makes camp [MP left: 0, Vigor: 85%]
+Economy: Castle Threat (post): Sandhaug: threat 6->4, level 4->4
+
+Economy: Castle Threat (post): Saintthwaite: threat 6->4, level 4->4
+
+Economy: Castle Reserve (post): Sandhaug reserve -> gold:0 wood:9 iron:2 recruits:22
+
+Economy: Castle Reserve (post): Saintthwaite reserve -> gold:0 wood:23 iron:1 recruits:50
+
+Castle Recruitment Post-Move:
+- Sandhaug: 8 units (P: 4, S: 2, A: 2) - gold spent: 14, recruits left: 16
+- Saintthwaite: 8 units (P: 5, S: 1, A: 2) - gold spent: 13, recruits left: 42
+
+Economy: Bought: 2 Iron for 12 gold
+
+Resources (end):
+Gold: 6
+Food: 0
+Wood: 91
+Iron: 5
+Stone: 30
+
+--------------------------------------------------------
+[Turn 6]
+      
+		66666666     
+	   6::::::6      
+	  6::::::6       
+	 6::::::6        
+	6::::::6         
+   6::::::6          
+  6::::::6           
+ 6::::::::66666      
+6::::::::::::::66    
+6::::::66666:::::6   
+6:::::6     6:::::6  
+6:::::6     6:::::6  
+6::::::66666::::::6  
+ 66:::::::::::::66   
+   66:::::::::66     
+	 666666666       
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 6
+Food: 9
+Wood: 17
+Iron: 11
+Stone: 2
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 2.667
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 0.120
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (no_spendable_gold)
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Bought 2 Food (gold change -4)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:30.7 (strategy:35.7, neighbor:-5.0, distance_status:True, score:30.7<[100.0])
+- Hvitthwaite (#97) | total:-6.0 (strategy:64.0, neighbor:-70.0, distance_status:True, score:-6.0<[100.0])
+- Torfell (#113) | total:-21.1 (strategy:73.9, neighbor:-95.0, distance_status:True, score:-21.1<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Main) -------------
+Region: Torfell
+Army II [Power: 353, E: 90 - P:47, S:21, A:19, SW:15, K:6]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Saintthwaite (#118), enemies: none
+Top 4 candidates:
+Candidate 1: Vatnberg (#114), score: 87.2 (mp_cost: 3, resources: 23.2, population: 4.0, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.2)
+Candidate 2: Sandworth (#108), score: 68.9 (mp_cost: 2, resources: 11.2, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.5)
+Candidate 3: Riverthwaite (#112), score: 45.8 (mp_cost: 2, resources: 11.2, population: 2.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 4: Hafnvik (#107), score: 45.3 (mp_cost: 3, resources: 5.0, population: 2.7, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Rejected candidates:
+Reason: no_friendly_path Candidate 1: Hellaby (#87), score: n/a
+Reason: no_friendly_path Candidate 2: Hellastadir (#95), score: n/a
+Reason: no_friendly_path Candidate 3: Westton (#116), score: n/a
+DecisionTree: Army II -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Vatnberg (Player 2 (unknown))
+Moves to Vatnberg [MP left: 2, Vigor: 85%]
+[BATTLE]
+Fight at Vatnberg
+Battle started
+Attacker: Army II [Power: 353 - P:47, S:21, A:19, SW:15, K:6]
+Defender Garrison (unknown) [Power: 12 - P:6]
+Defender Recruits (Vatnberg) (unknown) [Power: 14 - P:7]
+Battle Result: Won
+Attacker After: Army II [Power: 353 - P:47, S:21, A:19, SW:15, K:6]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Vatnberg (unknown) [Power: 0 - none]
+
+Moving to Vatnberg [MP left: 2, Vigor: 80%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Army II makes camp [MP left: 1, Vigor: 90%]
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Saintthwaite (#118), enemies: none
+Top 5 candidates:
+Candidate 1: Sandworth (#108), score: 65.7 (mp_cost: 4, resources: 11.2, population: 5.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.5)
+Candidate 2: Ashton (#106), score: 58.9 (mp_cost: 2, resources: 11.2, population: 7.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hafnley (#110), score: 55.1 (mp_cost: 3, resources: 9.8, population: 5.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.2)
+Candidate 4: Hafnvik (#107), score: 44.6 (mp_cost: 5, resources: 5.0, population: 2.7, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 5: Riverthwaite (#112), score: 43.8 (mp_cost: 2, resources: 11.2, population: 2.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Rejected candidates:
+Reason: no_friendly_path Candidate 1: Hellaby (#87), score: n/a
+Reason: no_friendly_path Candidate 2: Hellastadir (#95), score: n/a
+Reason: no_friendly_path Candidate 3: Westton (#116), score: n/a
+DecisionTree: Army II -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Ashton (Player 2 (unknown))
+Out of movement points before reaching Ashton
+Movement blocked near Ashton
+Army II makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 2
+Food: 11
+Wood: 17
+Iron: 11
+Stone: 2
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 62
+Food: 0
+Wood: 117
+Iron: 5
+Stone: 34
+Upgrade Saved Gold: 18
+
+Signals:
+frontier_pressure: 0.148
+underpowered_ratio: 0.000
+castle_spacing: 13.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 202 - P:33, S:20, A:16, SW:3]
+Keep Saintthwaite [Power: 162 - P:27, S:12, A:15, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:4 bank:22 cap:125
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Sold 17 Wood for 15 gold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=27, a=1, dist=5.0, rec=50, gold=0) vs thr=0.50; Frontier2Army=4.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=4 total=4 threats=1
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Vatnberg (#114): accepted, intel=known, power=353, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Vatnberg (#114): threat=big(level=4), intel=known, power=353, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Reserve (pre): Saintthwaite reserve -> gold:40 wood:25 iron:5 recruits:50
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30) (Score: 0.00 (r=27, a=1, dist=5.0, rec=50, gold=0) vs thr=0.50; Frontier2Army=4.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Hafnley (#110) | total:67.2 (strategy:32.2, neighbor:35.0, distance_status:Not Checked, score:67.2<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Hellaby (#87) | total:61.4 (strategy:56.4, neighbor:5.0, distance_status:Not Checked, score:61.4<[100.0])
+- Sandworth (#108) | total:59.7 (strategy:54.7, neighbor:5.0, distance_status:Not Checked, score:59.7<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Westton (#116) | total:26.6 (strategy:46.6, neighbor:-20.0, distance_status:Not Checked, score:26.6<[100.0])
+- Hafnvik (#107) | total:24.3 (strategy:44.3, neighbor:-20.0, distance_status:Not Checked, score:24.3<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Akrham (#60) | total:8.0 (strategy:8.0, neighbor:0.0, distance_status:Not Checked, score:8.0<[100.0])
+- Fossley (#92) | total:7.4 (strategy:7.4, neighbor:0.0, distance_status:Not Checked, score:7.4<[100.0])
+- Ashton (#106) | total:5.0 (strategy:0.0, neighbor:5.0, distance_status:Not Checked, score:5.0<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Riverthwaite (#112) | total:-20.0 (strategy:0.0, neighbor:-20.0, distance_status:Not Checked, score:-20.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:44 short:0
+- Wood need:25 have:100 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up purchases: 5 Iron (gold -33) | total gold change: -33)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:26.0 (recruits:52.0, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Sandhaug
+Army I [Power: 173, E: 85 - P:25, S:15, A:11, SW:6, K:1]
+DecisionTree: Army I -> castle_garrison_merge (no_nearby_threats)
+DecisionTree: Army I -> threat_reposition_needed_known_gap (to Saintthwaite)
+Moves to Sandworth [MP left: 4, Vigor: 80%]
+Moves to Hafnvik [MP left: 2, Vigor: 75%]
+Moves to Saintthwaite [MP left: 0, Vigor: 70%]
+Arrived at Saintthwaite
+Moving to Saintthwaite [MP left: 0, Vigor: 70%]
+Economy: Castle Reserve (post): Saintthwaite reserve -> gold:0 wood:22 iron:10 recruits:50
+
+Castle Recruitment Post-Move:
+- Saintthwaite: 12 units (P: 6, S: 2, A: 3, SW: 1) - gold spent: 22, recruits left: 39
+
+Resources (end):
+Gold: 22
+Food: 0
+Wood: 97
+Iron: 10
+Stone: 34
+
+--------------------------------------------------------
+[Turn 7]
+   
+77777777777777777777  
+7::::::::::::::::::7  
+7::::::::::::::::::7  
+777777777777:::::::7  
+		   7::::::7   
+		  7::::::7    
+		 7::::::7     
+		7::::::7      
+	   7::::::7       
+	  7::::::7        
+	 7::::::7         
+	7::::::7          
+   7::::::7           
+  7::::::7            
+ 7::::::7             
+77777777              
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 10
+Food: 0
+Wood: 23
+Iron: 14
+Stone: 5
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 2.250
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 0.200
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:1 bank:1 cap:125
+
+Economy: Raise Army Reserve: skipped (no_raise_intent)
+
+Economy: Castle Upgrade Bank: released:1 bank:0 cap:125 reason:no_upgrade_candidates
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:30.7 (strategy:35.7, neighbor:-5.0, distance_status:True, score:30.7<[100.0])
+- Vatnberg (#114) | total:17.0 (strategy:32.0, neighbor:-15.0, distance_status:True, score:17.0<[100.0])
+- Torfell (#113) | total:3.9 (strategy:73.9, neighbor:-70.0, distance_status:True, score:3.9<[100.0])
+- Hvitthwaite (#97) | total:-6.0 (strategy:64.0, neighbor:-70.0, distance_status:True, score:-6.0<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=10.
+
+Economy: Ore discoveries: Vatnberg
+
+______ ARMY ACTIONS ______
+-------------- ARMY II (Main) -------------
+Region: Vatnberg
+Army II [Power: 353, E: 100 - P:49, S:21, A:17, SW:16, K:6]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Saintthwaite (#118), enemies: Army I:197
+Top 5 candidates:
+Candidate 1: Sandworth (#108), score: 63.2 (mp_cost: 4, resources: 11.2, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.5)
+Candidate 2: Ashton (#106), score: 60.0 (mp_cost: 2, resources: 11.2, population: 7.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hafnley (#110), score: 53.7 (mp_cost: 3, resources: 9.8, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.2)
+Candidate 4: Riverthwaite (#112), score: 43.5 (mp_cost: 2, resources: 11.2, population: 2.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 5: Hafnvik (#107), score: 42.0 (mp_cost: 5, resources: 5.0, population: 2.7, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Rejected candidates:
+Reason: no_friendly_path Candidate 1: Hellaby (#87), score: n/a
+Reason: no_friendly_path Candidate 2: Hellastadir (#95), score: n/a
+Reason: no_friendly_path Candidate 3: Westton (#116), score: n/a
+DecisionTree: Army II -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Sandworth (Player 2 (unknown))
+Moves to Torfell [MP left: 3, Vigor: 95%]
+Moves to Sandworth [MP left: 1, Vigor: 90%]
+[BATTLE]
+Fight at Sandworth
+Battle started
+Attacker: Army II [Power: 353 - P:49, S:21, A:17, SW:16, K:6]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Sandworth) (unknown) [Power: 18 - P:9]
+Battle Result: Won
+Attacker After: Army II [Power: 353 - P:49, S:21, A:17, SW:16, K:6]
+Defender After (Garrison): Garrison (unknown) [Power: 0 - none]
+Defender After (Recruits): Sandworth (unknown) [Power: 0 - none]
+
+Moving to Sandworth [MP left: 1, Vigor: 85%]
+DecisionTree: Army II -> threat_no_action (no_threatened_castles)
+DecisionTree: Army II -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Sandhaug (#85), enemies: none
+Reason: known_overmatched_filter Candidate 2: Saintthwaite (#118), enemies: Army I:197
+Top 6 candidates:
+Candidate 1: Hellaby (#87), score: 60.3 (mp_cost: 2, resources: 7.5, population: 5.9, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 5.6)
+Candidate 2: Ashton (#106), score: 55.4 (mp_cost: 6, resources: 11.2, population: 7.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 3: Hafnley (#110), score: 50.2 (mp_cost: 7, resources: 9.8, population: 5.2, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 3.2)
+Candidate 4: Hafnvik (#107), score: 44.6 (mp_cost: 3, resources: 5.0, population: 2.7, level: 2, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 4.4)
+Candidate 5: Riverthwaite (#112), score: 43.2 (mp_cost: 4, resources: 11.2, population: 2.5, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Candidate 6: Fossley (#92), score: 42.0 (mp_cost: 2, resources: 7.5, population: 3.6, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Rejected candidates:
+Reason: no_friendly_path Candidate 1: Hellastadir (#95), score: n/a
+Reason: no_friendly_path Candidate 2: Westton (#116), score: n/a
+DecisionTree: Army II -> role_main_attack (soft_targets)
+[MOVEMENT]
+Best target: Hellaby (Player 2 (unknown))
+Out of movement points before reaching Hellaby
+Movement blocked near Hellaby
+Army II makes camp [MP left: 0, Vigor: 95%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 0
+Wood: 23
+Iron: 14
+Stone: 5
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 76
+Food: 0
+Wood: 123
+Iron: 10
+Stone: 38
+Upgrade Saved Gold: 22
+
+Signals:
+frontier_pressure: 0.192
+underpowered_ratio: 0.000
+castle_spacing: 13.000
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 0 - none]
+Keep Saintthwaite [Power: 162 - P:27, S:12, A:15, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:5 bank:27 cap:125
+
+Economy: Raise Army Reserve: skipped (severe_castle_threat)
+
+Economy: Sold 23 Wood for 18 gold
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=26, a=1, dist=0.0, rec=49, gold=18) vs thr=0.50; Frontier2Army=5.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Bought 3 Food (gold change -6)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=4 total=4 threats=1
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Sandworth (#108): accepted, intel=known, power=353, reason=reachable, path_cost=2
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Sandworth (#108): threat=big(level=4), intel=known, power=353, sim_castle_only=lose, sim_with_army=lose
+
+Economy: Castle Threat (pre): Saintthwaite: level=1 total=1 threats=1
+
+Economy: Castle Threat (pre):   - nearby army_411629005014 @ Sandworth (#108): accepted, intel=known, power=353, reason=reachable, path_cost=5
+
+Economy: Castle Threat (pre):   - army_411629005014 @ Sandworth (#108): threat=castle_safe(level=1), intel=known, power=353, sim_castle_only=hold, sim_with_army=hold
+
+Economy: Castle Reserve (pre): Sandhaug reserve -> gold:49 wood:17 iron:10 recruits:35
+
+Economy: Raise Army: not enough gold reserve after raise (-2 vs 30) (Score: 0.00 (r=26, a=1, dist=0.0, rec=49, gold=18) vs thr=0.50; Frontier2Army=5.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:173.9 (strategy:68.9, neighbor:105.0, distance_status:Not Checked, score:173.9>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:107.5 (strategy:32.5, neighbor:75.0, distance_status:Not Checked, score:107.5>[100.0])
+- Southfjord (#101) | total:106.2 (strategy:31.2, neighbor:75.0, distance_status:Not Checked, score:106.2>[100.0])
+- Riverworth (#120) | total:86.5 (strategy:56.5, neighbor:30.0, distance_status:Not Checked, score:86.5<[100.0])
+- Hvitoy (#105) | total:84.2 (strategy:24.2, neighbor:60.0, distance_status:Not Checked, score:84.2<[100.0])
+- Ashdon (#111) | total:78.3 (strategy:18.3, neighbor:60.0, distance_status:Not Checked, score:78.3<[100.0])
+- Hafnley (#110) | total:67.2 (strategy:32.2, neighbor:35.0, distance_status:Not Checked, score:67.2<[100.0])
+- Hellafjell (#86) | total:64.6 (strategy:19.6, neighbor:45.0, distance_status:Not Checked, score:64.6<[100.0])
+- Greenfjell (#103) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Hvitwich (#99) | total:47.5 (strategy:2.5, neighbor:45.0, distance_status:Not Checked, score:47.5<[100.0])
+- Eyfjord (#98) | total:45.7 (strategy:0.7, neighbor:45.0, distance_status:Not Checked, score:45.7<[100.0])
+- Hellaby (#87) | total:36.4 (strategy:56.4, neighbor:-20.0, distance_status:Not Checked, score:36.4<[100.0])
+- Fossmere (#82) | total:36.3 (strategy:6.3, neighbor:30.0, distance_status:Not Checked, score:36.3<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Westton (#116) | total:26.6 (strategy:46.6, neighbor:-20.0, distance_status:Not Checked, score:26.6<[100.0])
+- Hellastadir (#95) | total:19.4 (strategy:14.4, neighbor:5.0, distance_status:Not Checked, score:19.4<[100.0])
+- Akrham (#60) | total:8.0 (strategy:8.0, neighbor:0.0, distance_status:Not Checked, score:8.0<[100.0])
+- Ashton (#106) | total:5.0 (strategy:0.0, neighbor:5.0, distance_status:Not Checked, score:5.0<[100.0])
+- Hvithavn (#84) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Sandthwaite (#55) | total:0.7 (strategy:0.7, neighbor:0.0, distance_status:Not Checked, score:0.7<[100.0])
+- Hafnvik (#107) | total:-0.7 (strategy:44.3, neighbor:-45.0, distance_status:Not Checked, score:-0.7<[100.0])
+- Fossley (#92) | total:-17.6 (strategy:7.4, neighbor:-25.0, distance_status:Not Checked, score:-17.6<[100.0])
+- Riverthwaite (#112) | total:-20.0 (strategy:0.0, neighbor:-20.0, distance_status:Not Checked, score:-20.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:94 short:0
+- Wood need:25 have:100 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:35.7 (recruits:71.4, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Saintthwaite
+Army I [Power: 310, E: 70 - P:48, S:28, A:23, SW:7, K:1]
+DecisionTree: Army I -> threat_grouped_context (known_total=353 unknown=false entries=1)
+DecisionTree: Army I -> threat_reposition_needed_known_gap (to Sandhaug)
+Army I makes camp [MP left: 4, Vigor: 80%]
+Army I makes camp [MP left: 3, Vigor: 90%]
+Moves to Hafnvik [MP left: 1, Vigor: 85%]
+Moves to Hellaby [MP left: 0, Vigor: 80%]
+Out of movement points before reaching Sandhaug
+Out of movement points before reaching Hellaby
+Economy: Castle Reserve (post): Sandhaug reserve -> gold:0 wood:11 iron:10 recruits:35
+
+Castle Recruitment Post-Move:
+- Sandhaug: 26 units (P: 9, S: 11, A: 6) - gold spent: 49, recruits left: 13
+
+Resources (end):
+Gold: 27
+Food: 3
+Wood: 84
+Iron: 10
+Stone: 38
+
+--------------------------------------------------------
+[Turn 8]
+       
+	 888888888       
+   88:::::::::88     
+ 88:::::::::::::88   
+8::::::88888::::::8  
+8:::::8     8:::::8  
+8:::::8     8:::::8  
+ 8:::::88888:::::8   
+  8:::::::::::::8    
+ 8:::::88888:::::8   
+8:::::8     8:::::8  
+8:::::8     8:::::8  
+8:::::8     8:::::8  
+8::::::88888::::::8  
+ 88:::::::::::::88   
+   88:::::::::88     
+	 888888888       
+  
+--------------------------------------------------------
+
+[Player Player 1 (#1)]
+  
+░█████████  ░██                                                ░██   
+░██     ░██ ░██                                              ░████   
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████      ░██   
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░██   
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██           ░██   
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██           ░██   
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░██████ 
+												  ░██                                
+										░███████                                 
+																	 
+
+Wealth: Poor
+Resources:
+Gold: 10
+Food: 0
+Wood: 29
+Iron: 20
+Stone: 8
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 2.000
+underpowered_ratio: 0.000
+castle_spacing: 0.000
+bank_ratio: 0.200
+power_gap_norm: 0.000
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:1 bank:1 cap:125
+
+Economy: Raise Army Reserve: added:9 bank:9 cap:20
+
+Economy: Castle Upgrade Bank: released:1 bank:0 cap:125 reason:no_upgrade_candidates
+
+Economy: Raise Army Reserve: released:9 bank:0 cap:20 reason:no_candidate
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Raise Army: no_candidate (Score: 0.00)
+
+Economy: Build Castle: no_viable_candidate.
+
+Canidates:
+- Vatnhaug (#96) | total:30.7 (strategy:35.7, neighbor:-5.0, distance_status:True, score:30.7<[100.0])
+- Torfell (#113) | total:28.9 (strategy:73.9, neighbor:-45.0, distance_status:True, score:28.9<[100.0])
+- Vatnberg (#114) | total:17.0 (strategy:32.0, neighbor:-15.0, distance_status:True, score:17.0<[100.0])
+- Hvitthwaite (#97) | total:-6.0 (strategy:64.0, neighbor:-70.0, distance_status:True, score:-6.0<[100.0])
+- Sandworth (#108) | total:-15.3 (strategy:54.7, neighbor:-70.0, distance_status:True, score:-15.3<[100.0])
+
+Economy: Upgrade Castle: no_upgrade_candidates.
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 2 Stone, 1 Wood for 10 gold
+
+Resources (end):
+Gold: 0
+Food: 0
+Wood: 30
+Iron: 20
+Stone: 10
+

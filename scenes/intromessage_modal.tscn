@@ -42,12 +42,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
+offset_left = 20.0
 offset_top = 5.0
-offset_right = -10.0
+offset_right = -20.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Spacer3" type="Control" parent="PanelRoot/ContentContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
 
 [node name="MessageLabel" type="Label" parent="PanelRoot/ContentContainer"]
 visible = false
@@ -68,12 +72,12 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="MessageScroll" type="ScrollContainer" parent="PanelRoot/ContentContainer"]
-custom_minimum_size = Vector2(0, 520)
+custom_minimum_size = Vector2(0, 510)
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 3
 
 [node name="ScrollMessageLabel" type="Label" parent="PanelRoot/ContentContainer/MessageScroll"]
-custom_minimum_size = Vector2(0, 520)
+custom_minimum_size = Vector2(0, 510)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("1_22bth")

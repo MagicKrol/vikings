@@ -2223,6 +2223,7 @@ text = "English"
 horizontal_alignment = 1
 
 [node name="CustomTooltip" type="TextureRect" parent="."]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 862.0

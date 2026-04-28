@@ -110,7 +110,7 @@ const DOMINATE_DEFAULT_THRESHOLD: float = 0.75
 const DEBUG_LANGUAGE_CYCLE: Array[String] = ["en", "de", "pl", "br"]
 const MAIN_MENU_TARGET_META_KEY: String = "main_menu_target"
 const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
-const DEFAULT_CAMPAIGN_OUTRO_TEXT: String = "Mission completed."
+const CAMPAIGN_OUTRO_KEY_TEMPLATE: String = "mission-%d_outro"
 
 var _player_initial_turn_completed: Dictionary = {}
 var _latest_famine_result_by_player: Dictionary = {}
@@ -233,14 +233,7 @@ func _ready():
 	if tutorial_enabled:
 		_sound_manager.set_active_playlist("tutorial")
 	
-	# Start the game audio sequence after a brief delay to ensure sound manager is ready
-	await get_tree().process_frame
-	if _sound_manager:
-		DebugLogger.log("GameInit", "Starting game audio sequence...")
-		# Respect user's music setting; do not force-enable
-		_sound_manager.play_game_start_sequence()
-	else:
-		DebugLogger.log("GameInit", "Error: Sound manager not found!")
+	# Intro horn is handled on IntroMessageModal Continue click.
 
 func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = false):
 	"""Initialize all game managers and establish dependencies"""
@@ -501,7 +494,7 @@ func _apply_scenario_player_settings_from_data(scenario_data: Dictionary) -> voi
 	_apply_starting_resources_for_difficulty()
 
 func _show_scenario_intro_message_if_any(scenario_data: Dictionary) -> bool:
-	var intro_text: String = String(scenario_data.get("intro_message", "")).strip_edges()
+	var intro_text: String = _build_scenario_intro_modal_text(scenario_data)
 	if intro_text == "":
 		return false
 	_disconnect_intro_message_modal_handlers()
@@ -518,11 +511,26 @@ func show_intro_message_modal_again() -> void:
 	if scenario_path != "":
 		var scen_mgr := ScenarioManager.new()
 		var scenario_data: Dictionary = scen_mgr.load_scenario(scenario_path)
-		var intro_text: String = String(scenario_data.get("intro_message", "")).strip_edges()
+		var intro_text: String = _build_scenario_intro_modal_text(scenario_data)
 		if intro_text != "":
 			_intro_message_modal.display_intro_text(intro_text)
 			return
 	_intro_message_modal.display_default_intro_text_with_continue()
+
+func _build_scenario_intro_modal_text(scenario_data: Dictionary) -> String:
+	var intro_key: String = String(scenario_data.get("intro_message", "")).strip_edges()
+	var objectives_key: String = String(scenario_data.get("objectives", "")).strip_edges()
+	var intro_text: String = ""
+	var objectives_text: String = ""
+	if intro_key != "":
+		intro_text = tr(intro_key)
+	if objectives_key != "":
+		objectives_text = tr(objectives_key)
+	if intro_text != "" and objectives_text != "":
+		return intro_text + "\n\n" + objectives_text
+	if intro_text != "":
+		return intro_text
+	return objectives_text
 
 func _disconnect_intro_message_modal_handlers() -> void:
 	if _intro_message_modal.continue_clicked.is_connected(_on_scenario_intro_continue):
@@ -1188,10 +1196,8 @@ func _should_show_campaign_outro(player_id: int) -> bool:
 
 func _resolve_campaign_outro_text() -> String:
 	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
-	var outro_text: String = String(scenario_data.get("outro_message", "")).strip_edges()
-	if outro_text == "":
-		return DEFAULT_CAMPAIGN_OUTRO_TEXT
-	return outro_text
+	var mission_number: int = int(scenario_data.get("mission_number", 0))
+	return CAMPAIGN_OUTRO_KEY_TEMPLATE % mission_number
 
 func _initialize_scenario_events_from_data(scenario_data: Dictionary, difficulty_token: String = "all") -> void:
 	_scenario_events_runtime.clear()

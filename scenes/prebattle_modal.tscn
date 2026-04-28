@@ -955,7 +955,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Battle/VBoxContainer/Body/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
-text = "Siege rams"
+text = "Siege Rams"
 
 [node name="HiredRecruits" type="Label" parent="Battle/VBoxContainer/Body/SiegeSection/Available/BatteringRams"]
 custom_minimum_size = Vector2(60, 0)

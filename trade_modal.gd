@@ -24,12 +24,15 @@ var gold_value_label: Label
 var total_label: Label
 var total_icon: TextureRect
 var close_button: Button
+var close_button_disabled: Button
 var game_manager: GameManager
 var info_modal: InfoModal
 var sound_manager: SoundManager
 var allow_for_current_turn: bool = true
 var units_container: VBoxContainer
 var trade_disabled_label: Label
+var button_enabled_container: HBoxContainer
+var button_disabled_container: HBoxContainer
 
 var base_resources: Dictionary = {}
 var buy_amounts: Dictionary = {}
@@ -62,10 +65,13 @@ func _ready() -> void:
 	trade_manager = TradeManager.new(player_manager)
 	units_container = get_node("Trade/HBoxContainer/Body/Units") as VBoxContainer
 	trade_disabled_label = get_node("Trade/HBoxContainer/Body/TradeDisabledLabel") as Label
-	total_label = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TotalLabel") as Label
-	total_icon = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TextureRect2") as TextureRect
-	gold_value_label = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/TotalGold") as Label
-	close_button = get_node("Trade/HBoxContainer/TotalSection/HBoxContainer/Button") as Button
+	button_enabled_container = get_node("Trade/HBoxContainer/TotalSection/ButtonEnabled") as HBoxContainer
+	button_disabled_container = get_node("Trade/HBoxContainer/TotalSection/ButtonDisabled") as HBoxContainer
+	total_label = get_node("Trade/HBoxContainer/TotalSection/ButtonEnabled/TotalLabel") as Label
+	total_icon = get_node("Trade/HBoxContainer/TotalSection/ButtonEnabled/TextureRect2") as TextureRect
+	gold_value_label = get_node("Trade/HBoxContainer/TotalSection/ButtonEnabled/TotalGold") as Label
+	close_button = get_node("Trade/HBoxContainer/TotalSection/ButtonEnabled/Button") as Button
+	close_button_disabled = get_node("Trade/HBoxContainer/TotalSection/ButtonDisabled/VBoxContainer/Button") as Button
 	_init_sections()
 	_connect_buttons()
 	_apply_trade_disabled_view(false)
@@ -128,6 +134,7 @@ func _build_section(section_path: String) -> Dictionary:
 
 func _connect_buttons() -> void:
 	close_button.pressed.connect(_on_close_pressed)
+	close_button_disabled.pressed.connect(_on_close_pressed)
 	for resource_type in RESOURCE_TYPES:
 		_connect_resource_buttons(resource_type)
 
@@ -428,6 +435,8 @@ func _apply_trade_disabled_view(trade_disabled: bool) -> void:
 		_stop_hold()
 	units_container.visible = not trade_disabled
 	trade_disabled_label.visible = trade_disabled
+	button_enabled_container.visible = not trade_disabled
+	button_disabled_container.visible = trade_disabled
 	total_label.visible = not trade_disabled
 	total_icon.visible = not trade_disabled
 	gold_value_label.visible = not trade_disabled

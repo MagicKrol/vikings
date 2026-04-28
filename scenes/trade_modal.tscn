@@ -734,6 +734,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Units" type="VBoxContainer" parent="Trade/HBoxContainer/Body"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -842,7 +843,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -948,7 +948,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1063,7 +1062,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -1169,7 +1167,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1289,7 +1286,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -1395,7 +1391,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1510,7 +1505,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Sell"
 
@@ -1616,7 +1610,6 @@ offset_bottom = 227.0
 size_flags_horizontal = 0
 theme = ExtResource("8_2dxbd")
 theme_override_font_sizes/font_size = 18
-toggle_mode = false
 button_group = SubResource("ButtonGroup_bj80o")
 text = "Buy"
 
@@ -1632,10 +1625,11 @@ text = "2"
 horizontal_alignment = 1
 
 [node name="TradeDisabledLabel" type="Label" parent="Trade/HBoxContainer/Body"]
-visible = false
+custom_minimum_size = Vector2(0, 280)
 layout_mode = 2
 text = "Trade is disabled in this scenario"
 horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Trade/HBoxContainer"]
 layout_mode = 2
@@ -1647,36 +1641,55 @@ layout_mode = 2
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Trade/HBoxContainer/TotalSection"]
+[node name="ButtonEnabled" type="HBoxContainer" parent="Trade/HBoxContainer/TotalSection"]
+visible = false
 layout_mode = 2
 
-[node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/ButtonEnabled"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="TotalLabel" type="Label" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TotalLabel" type="Label" parent="Trade/HBoxContainer/TotalSection/ButtonEnabled"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 text = "Gold Balance"
 
-[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TextureRect2" type="TextureRect" parent="Trade/HBoxContainer/TotalSection/ButtonEnabled"]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 texture = ExtResource("12_boxd3")
 expand_mode = 2
 
-[node name="TotalGold" type="Label" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="TotalGold" type="Label" parent="Trade/HBoxContainer/TotalSection/ButtonEnabled"]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "1231
 "
 
-[node name="MarginContainer3" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/ButtonEnabled"]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Trade/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="Button" type="Button" parent="Trade/HBoxContainer/TotalSection/ButtonEnabled"]
+clip_contents = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme = ExtResource("8_2dxbd")
+text = "Close"
+
+[node name="ButtonDisabled" type="HBoxContainer" parent="Trade/HBoxContainer/TotalSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Trade/HBoxContainer/TotalSection/ButtonDisabled"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Trade/HBoxContainer/TotalSection/ButtonDisabled/VBoxContainer"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Trade/HBoxContainer/TotalSection/ButtonDisabled/VBoxContainer"]
 clip_contents = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2

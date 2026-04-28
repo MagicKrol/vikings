@@ -820,9 +820,9 @@ const AI_TRADE_THRESHOLD_IRON = 50
 
 ## Region Garrison Generation by Region Level
 const GARRISON_BY_LEVEL = {
-	RegionLevelEnum.Level.L1: {"min": 1, "max": 10},
-	RegionLevelEnum.Level.L2: {"min": 1, "max": 15},
-	RegionLevelEnum.Level.L3: {"min": 1, "max": 20},
+	RegionLevelEnum.Level.L1: {"min": 1, "max": 15},
+	RegionLevelEnum.Level.L2: {"min": 10, "max": 20},
+	RegionLevelEnum.Level.L3: {"min": 15, "max": 30},
 	RegionLevelEnum.Level.L4: {"min": 1, "max": 0},
 	RegionLevelEnum.Level.L5: {"min": 1, "max": 0}
 }
@@ -840,23 +840,23 @@ const POPULATION_BY_LEVEL = {
 # Costs required to promote a region to the specified level
 const REGION_PROMOTION_COSTS = {
 	RegionLevelEnum.Level.L2: {  # Cost to promote from L1 to L2
-		ResourcesEnum.Type.GOLD: 10,
+		ResourcesEnum.Type.GOLD: 5,
 		ResourcesEnum.Type.FOOD: 10
 	},
 	RegionLevelEnum.Level.L3: {  # Cost to promote from L2 to L3
-		ResourcesEnum.Type.GOLD: 15,
+		ResourcesEnum.Type.GOLD: 10,
 		ResourcesEnum.Type.FOOD: 20,
-		ResourcesEnum.Type.WOOD: 10,
+		ResourcesEnum.Type.WOOD: 5,
 	},
 	RegionLevelEnum.Level.L4: {  # Cost to promote from L3 to L4
-		ResourcesEnum.Type.GOLD: 20,
-		ResourcesEnum.Type.FOOD: 30,
+		ResourcesEnum.Type.GOLD: 15,
+		ResourcesEnum.Type.FOOD: 25,
 		ResourcesEnum.Type.WOOD: 10,
 		ResourcesEnum.Type.STONE: 0,
 	},
 	RegionLevelEnum.Level.L5: {  # Cost to promote from L4 to L5
-		ResourcesEnum.Type.GOLD: 25,
-		ResourcesEnum.Type.FOOD: 40,
+		ResourcesEnum.Type.GOLD: 20,
+		ResourcesEnum.Type.FOOD: 30,
 		ResourcesEnum.Type.WOOD: 15,
 		ResourcesEnum.Type.STONE: 0,
 		ResourcesEnum.Type.IRON: 0

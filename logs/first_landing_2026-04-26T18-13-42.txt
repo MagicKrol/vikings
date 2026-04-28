@@ -1,0 +1,927 @@
+AI Log File: first_landing
+
+--------------------------------------------------------
+[Turn 1]
+    
+  1111111     
+ 1::::::1     
+1:::::::1     
+111:::::1     
+   1::::1     
+   1::::1     
+   1::::1     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+   1::::l     
+111::::::111  
+1::::::::::1  
+1::::::::::1  
+111111111111  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 0
+Food: 50
+Wood: 0
+Iron: 0
+Stone: 0
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.069
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 0.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 67 - P:12, S:5, A:5, SW:2]
+Keep Saintthwaite [Power: 77 - P:15, S:5, A:5, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: skipped (turn_1)
+
+Economy: Raise Army Reserve: skipped (no_spendable_gold)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=29, a=1, dist=1.0, rec=50, gold=0) vs thr=0.50; Frontier2Army=2.00
+
+Economy: Could not buy needed resources for build: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (-20 vs 30); frontier pressure too low (2.00 vs 3.00) (Score: 0.00 (r=29, a=1, dist=1.0, rec=50, gold=0) vs thr=0.50; Frontier2Army=2.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+Canidates:
+- Southholme (#115) | total:175.7 (strategy:70.7, neighbor:105.0, distance_status:Not Checked, score:175.7>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:108.8 (strategy:33.8, neighbor:75.0, distance_status:Not Checked, score:108.8>[100.0])
+- Southfjord (#101) | total:107.3 (strategy:32.3, neighbor:75.0, distance_status:Not Checked, score:107.3>[100.0])
+- Torfell (#113) | total:96.8 (strategy:66.8, neighbor:30.0, distance_status:Not Checked, score:96.8<[100.0])
+- Hvitthwaite (#97) | total:93.8 (strategy:63.8, neighbor:30.0, distance_status:Not Checked, score:93.8<[100.0])
+- Riverworth (#120) | total:87.6 (strategy:57.6, neighbor:30.0, distance_status:Not Checked, score:87.6<[100.0])
+- Hellaby (#87) | total:86.3 (strategy:56.3, neighbor:30.0, distance_status:Not Checked, score:86.3<[100.0])
+- Hvitoy (#105) | total:84.9 (strategy:24.9, neighbor:60.0, distance_status:Not Checked, score:84.9<[100.0])
+- Vatnhaug (#96) | total:80.3 (strategy:35.3, neighbor:45.0, distance_status:Not Checked, score:80.3<[100.0])
+- Westton (#116) | total:79.4 (strategy:49.4, neighbor:30.0, distance_status:Not Checked, score:79.4<[100.0])
+- Ashdon (#111) | total:79.0 (strategy:19.0, neighbor:60.0, distance_status:Not Checked, score:79.0<[100.0])
+- Hafnvik (#107) | total:69.7 (strategy:39.7, neighbor:30.0, distance_status:Not Checked, score:69.7<[100.0])
+- Hafnley (#110) | total:69.0 (strategy:34.0, neighbor:35.0, distance_status:Not Checked, score:69.0<[100.0])
+- Vatnberg (#114) | total:65.6 (strategy:30.6, neighbor:35.0, distance_status:Not Checked, score:65.6<[100.0])
+- Sandworth (#108) | total:48.6 (strategy:33.6, neighbor:15.0, distance_status:Not Checked, score:48.6<[100.0])
+- Greenfjell (#103) | total:47.9 (strategy:2.9, neighbor:45.0, distance_status:Not Checked, score:47.9<[100.0])
+- Hvitwich (#99) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Eyfjord (#98) | total:45.8 (strategy:0.8, neighbor:45.0, distance_status:Not Checked, score:45.8<[100.0])
+- Hellafjell (#86) | total:41.1 (strategy:21.1, neighbor:20.0, distance_status:Not Checked, score:41.1<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:18.9 (strategy:13.9, neighbor:5.0, distance_status:Not Checked, score:18.9<[100.0])
+- Region 92 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Region 55 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Akrham (#60) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:Not Checked, score:-15.0<[100.0])
+- Hvithavn (#84) | total:-30.0 (strategy:0.0, neighbor:-30.0, distance_status:Not Checked, score:-30.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:0 short:30
+- Wood need:25 have:0 short:25
+
+Build Castle top-up:
+- Top-up failed: needed resources beyond acceptable threshold
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:40.0 (recruits:80.0, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: insufficient_for_min_upgrade.
+
+Economy: Ore search: skipped (no eligible regions).
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Westton
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Fossmere (#82), enemies: Army I:339
+Reason: known_overmatched_filter Candidate 2: Ashton (#106), enemies: Army II:120
+DecisionTree: Army I -> role_main_camp (no_reachable_targets)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 0
+Food: 50
+Wood: 0
+Iron: 0
+Stone: 0
+
+--------------------------------------------------------
+[Turn 2]
+       
+ 222222222222222      
+2:::::::::::::::22    
+2::::::222222:::::2   
+2222222     2:::::2   
+			2:::::2   
+			2:::::2   
+		 2222::::2    
+	22222::::::22     
+  22::::::::222       
+ 2:::::22222          
+2:::::2               
+2:::::2               
+2:::::2       222222  
+2::::::2222222:::::2  
+2::::::::::::::::::2  
+22222222222222222222  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 46
+Food: 46
+Wood: 21
+Iron: 0
+Stone: 6
+Upgrade Saved Gold: 0
+
+Signals:
+frontier_pressure: 0.069
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 0.920
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 67 - P:12, S:5, A:5, SW:2]
+Keep Saintthwaite [Power: 77 - P:15, S:5, A:5, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:4 bank:4 cap:125
+
+Economy: Raise Army Reserve: added:20 bank:20 cap:20
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=29, a=1, dist=1.0, rec=51, gold=34) vs thr=0.50; Frontier2Army=2.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Bought 2 Food (gold change -4)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (14 vs 30); frontier pressure too low (2.00 vs 3.00) (Score: 0.00 (r=29, a=1, dist=1.0, rec=51, gold=34) vs thr=0.50; Frontier2Army=2.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:175.7 (strategy:70.7, neighbor:105.0, distance_status:Not Checked, score:175.7>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:108.8 (strategy:33.8, neighbor:75.0, distance_status:Not Checked, score:108.8>[100.0])
+- Southfjord (#101) | total:107.3 (strategy:32.3, neighbor:75.0, distance_status:Not Checked, score:107.3>[100.0])
+- Torfell (#113) | total:96.8 (strategy:66.8, neighbor:30.0, distance_status:Not Checked, score:96.8<[100.0])
+- Hvitthwaite (#97) | total:93.8 (strategy:63.8, neighbor:30.0, distance_status:Not Checked, score:93.8<[100.0])
+- Riverworth (#120) | total:87.6 (strategy:57.6, neighbor:30.0, distance_status:Not Checked, score:87.6<[100.0])
+- Hellaby (#87) | total:86.3 (strategy:56.3, neighbor:30.0, distance_status:Not Checked, score:86.3<[100.0])
+- Hvitoy (#105) | total:84.9 (strategy:24.9, neighbor:60.0, distance_status:Not Checked, score:84.9<[100.0])
+- Vatnhaug (#96) | total:80.3 (strategy:35.3, neighbor:45.0, distance_status:Not Checked, score:80.3<[100.0])
+- Westton (#116) | total:79.4 (strategy:49.4, neighbor:30.0, distance_status:Not Checked, score:79.4<[100.0])
+- Ashdon (#111) | total:79.0 (strategy:19.0, neighbor:60.0, distance_status:Not Checked, score:79.0<[100.0])
+- Hafnvik (#107) | total:69.7 (strategy:39.7, neighbor:30.0, distance_status:Not Checked, score:69.7<[100.0])
+- Hafnley (#110) | total:69.0 (strategy:34.0, neighbor:35.0, distance_status:Not Checked, score:69.0<[100.0])
+- Vatnberg (#114) | total:65.6 (strategy:30.6, neighbor:35.0, distance_status:Not Checked, score:65.6<[100.0])
+- Sandworth (#108) | total:48.6 (strategy:33.6, neighbor:15.0, distance_status:Not Checked, score:48.6<[100.0])
+- Greenfjell (#103) | total:47.9 (strategy:2.9, neighbor:45.0, distance_status:Not Checked, score:47.9<[100.0])
+- Hvitwich (#99) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Eyfjord (#98) | total:45.8 (strategy:0.8, neighbor:45.0, distance_status:Not Checked, score:45.8<[100.0])
+- Hellafjell (#86) | total:41.1 (strategy:21.1, neighbor:20.0, distance_status:Not Checked, score:41.1<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:18.9 (strategy:13.9, neighbor:5.0, distance_status:Not Checked, score:18.9<[100.0])
+- Region 92 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Region 55 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Akrham (#60) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:Not Checked, score:-15.0<[100.0])
+- Hvithavn (#84) | total:-30.0 (strategy:0.0, neighbor:-30.0, distance_status:Not Checked, score:-30.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:38 short:0
+- Wood need:25 have:25 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:40.2 (recruits:80.4, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=1, discoveries=1, gold_spent=10.
+
+Economy: Ore discoveries: Vatnhaug
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Westton
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Fossmere (#82), enemies: Army I:339
+Reason: known_overmatched_filter Candidate 2: Ashton (#106), enemies: Army II:120
+DecisionTree: Army I -> role_main_camp (no_reachable_targets)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 3 Iron, 1 Stone for 22 gold
+
+Resources (end):
+Gold: 2
+Food: 48
+Wood: 25
+Iron: 3
+Stone: 7
+
+--------------------------------------------------------
+[Turn 3]
+  
+  3333333333333333  
+3::::::::::::::::::33  
+3:::::::33333:::::::3  
+3333333     3::::::3  
+			3::::::3  
+			3::::::3  
+   33333333::::::3  
+   3:::::::::::::3  
+   33333333::::::3  
+			3:::::3  
+			3:::::3  
+			3:::::3  
+3333333     3:::::3  
+3:::::::33333:::::3  
+3:::::::::::::::::33  
+ 3333333333333333  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 49
+Food: 44
+Wood: 46
+Iron: 5
+Stone: 13
+Upgrade Saved Gold: 4
+
+Signals:
+frontier_pressure: 0.069
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 0.980
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 67 - P:12, S:5, A:5, SW:2]
+Keep Saintthwaite [Power: 77 - P:15, S:5, A:5, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:2 bank:6 cap:125
+
+Economy: Raise Army Reserve: skipped (at_cap, bank:20 cap:20)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=29, a=1, dist=1.0, rec=52, gold=43) vs thr=0.50; Frontier2Army=2.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Bought 1 Food (gold change -2)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (23 vs 30); frontier pressure too low (2.00 vs 3.00) (Score: 0.00 (r=29, a=1, dist=1.0, rec=52, gold=43) vs thr=0.50; Frontier2Army=2.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:175.7 (strategy:70.7, neighbor:105.0, distance_status:Not Checked, score:175.7>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:108.8 (strategy:33.8, neighbor:75.0, distance_status:Not Checked, score:108.8>[100.0])
+- Southfjord (#101) | total:107.3 (strategy:32.3, neighbor:75.0, distance_status:Not Checked, score:107.3>[100.0])
+- Torfell (#113) | total:96.8 (strategy:66.8, neighbor:30.0, distance_status:Not Checked, score:96.8<[100.0])
+- Hvitthwaite (#97) | total:93.8 (strategy:63.8, neighbor:30.0, distance_status:Not Checked, score:93.8<[100.0])
+- Riverworth (#120) | total:87.6 (strategy:57.6, neighbor:30.0, distance_status:Not Checked, score:87.6<[100.0])
+- Hellaby (#87) | total:86.3 (strategy:56.3, neighbor:30.0, distance_status:Not Checked, score:86.3<[100.0])
+- Hvitoy (#105) | total:84.9 (strategy:24.9, neighbor:60.0, distance_status:Not Checked, score:84.9<[100.0])
+- Vatnhaug (#96) | total:80.3 (strategy:35.3, neighbor:45.0, distance_status:Not Checked, score:80.3<[100.0])
+- Westton (#116) | total:79.4 (strategy:49.4, neighbor:30.0, distance_status:Not Checked, score:79.4<[100.0])
+- Ashdon (#111) | total:79.0 (strategy:19.0, neighbor:60.0, distance_status:Not Checked, score:79.0<[100.0])
+- Hafnvik (#107) | total:69.7 (strategy:39.7, neighbor:30.0, distance_status:Not Checked, score:69.7<[100.0])
+- Hafnley (#110) | total:69.0 (strategy:34.0, neighbor:35.0, distance_status:Not Checked, score:69.0<[100.0])
+- Vatnberg (#114) | total:65.6 (strategy:30.6, neighbor:35.0, distance_status:Not Checked, score:65.6<[100.0])
+- Sandworth (#108) | total:48.6 (strategy:33.6, neighbor:15.0, distance_status:Not Checked, score:48.6<[100.0])
+- Greenfjell (#103) | total:47.9 (strategy:2.9, neighbor:45.0, distance_status:Not Checked, score:47.9<[100.0])
+- Hvitwich (#99) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Eyfjord (#98) | total:45.8 (strategy:0.8, neighbor:45.0, distance_status:Not Checked, score:45.8<[100.0])
+- Hellafjell (#86) | total:41.1 (strategy:21.1, neighbor:20.0, distance_status:Not Checked, score:41.1<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:18.9 (strategy:13.9, neighbor:5.0, distance_status:Not Checked, score:18.9<[100.0])
+- Region 92 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Region 55 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Akrham (#60) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:Not Checked, score:-15.0<[100.0])
+- Hvithavn (#84) | total:-30.0 (strategy:0.0, neighbor:-30.0, distance_status:Not Checked, score:-30.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:49 short:0
+- Wood need:25 have:46 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:40.4 (recruits:80.8, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=2, discoveries=0, gold_spent=20.
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Westton
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Fossmere (#82), enemies: Army I:339
+Reason: known_overmatched_filter Candidate 2: Ashton (#106), enemies: Army II:120
+DecisionTree: Army I -> role_main_camp (no_reachable_targets)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 5 Stone for 21 gold
+
+Resources (end):
+Gold: 6
+Food: 45
+Wood: 46
+Iron: 5
+Stone: 18
+
+--------------------------------------------------------
+[Turn 4]
+          
+	   444444444    
+	  4::::::::4    
+	 4:::::::::4    
+	4::::44::::4    
+   4::::4 4::::4    
+  4::::4  4::::4    
+ 4::::4   4::::4    
+4::::444444::::444  
+4::::::::::::::::4  
+4444444444:::::444  
+		  4::::4    
+		  4::::4    
+		  4::::4    
+		44::::::44  
+		4::::::::4  
+		4444444444  
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 55
+Food: 41
+Wood: 67
+Iron: 7
+Stone: 24
+Upgrade Saved Gold: 6
+
+Signals:
+frontier_pressure: 0.069
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 67 - P:12, S:5, A:5, SW:2]
+Keep Saintthwaite [Power: 77 - P:15, S:5, A:5, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:2 bank:8 cap:125
+
+Economy: Raise Army Reserve: skipped (at_cap, bank:20 cap:20)
+
+Economy: Could not buy needed resources for upgrade: needed resources beyond acceptable threshold
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=29, a=1, dist=1.0, rec=53, gold=47) vs thr=0.50; Frontier2Army=2.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+Economy: Bought 3 Food (gold change -6)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (27 vs 30); frontier pressure too low (2.00 vs 3.00) (Score: 0.00 (r=29, a=1, dist=1.0, rec=53, gold=47) vs thr=0.50; Frontier2Army=2.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:175.7 (strategy:70.7, neighbor:105.0, distance_status:Not Checked, score:175.7>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:108.8 (strategy:33.8, neighbor:75.0, distance_status:Not Checked, score:108.8>[100.0])
+- Southfjord (#101) | total:107.3 (strategy:32.3, neighbor:75.0, distance_status:Not Checked, score:107.3>[100.0])
+- Torfell (#113) | total:96.8 (strategy:66.8, neighbor:30.0, distance_status:Not Checked, score:96.8<[100.0])
+- Hvitthwaite (#97) | total:93.8 (strategy:63.8, neighbor:30.0, distance_status:Not Checked, score:93.8<[100.0])
+- Riverworth (#120) | total:87.6 (strategy:57.6, neighbor:30.0, distance_status:Not Checked, score:87.6<[100.0])
+- Hellaby (#87) | total:86.3 (strategy:56.3, neighbor:30.0, distance_status:Not Checked, score:86.3<[100.0])
+- Hvitoy (#105) | total:84.9 (strategy:24.9, neighbor:60.0, distance_status:Not Checked, score:84.9<[100.0])
+- Vatnhaug (#96) | total:80.3 (strategy:35.3, neighbor:45.0, distance_status:Not Checked, score:80.3<[100.0])
+- Westton (#116) | total:79.4 (strategy:49.4, neighbor:30.0, distance_status:Not Checked, score:79.4<[100.0])
+- Ashdon (#111) | total:79.0 (strategy:19.0, neighbor:60.0, distance_status:Not Checked, score:79.0<[100.0])
+- Hafnvik (#107) | total:69.7 (strategy:39.7, neighbor:30.0, distance_status:Not Checked, score:69.7<[100.0])
+- Hafnley (#110) | total:69.0 (strategy:34.0, neighbor:35.0, distance_status:Not Checked, score:69.0<[100.0])
+- Vatnberg (#114) | total:65.6 (strategy:30.6, neighbor:35.0, distance_status:Not Checked, score:65.6<[100.0])
+- Sandworth (#108) | total:48.6 (strategy:33.6, neighbor:15.0, distance_status:Not Checked, score:48.6<[100.0])
+- Greenfjell (#103) | total:47.9 (strategy:2.9, neighbor:45.0, distance_status:Not Checked, score:47.9<[100.0])
+- Hvitwich (#99) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Eyfjord (#98) | total:45.8 (strategy:0.8, neighbor:45.0, distance_status:Not Checked, score:45.8<[100.0])
+- Hellafjell (#86) | total:41.1 (strategy:21.1, neighbor:20.0, distance_status:Not Checked, score:41.1<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:18.9 (strategy:13.9, neighbor:5.0, distance_status:Not Checked, score:18.9<[100.0])
+- Region 92 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Region 55 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Akrham (#60) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:Not Checked, score:-15.0<[100.0])
+- Hvithavn (#84) | total:-30.0 (strategy:0.0, neighbor:-30.0, distance_status:Not Checked, score:-30.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:55 short:0
+- Wood need:25 have:67 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: needed resources beyond acceptable threshold)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:41.5 (recruits:83.0, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=2, discoveries=1, gold_spent=20.
+
+Economy: Ore discoveries: Hafnley
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Westton
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Rejected candidates:
+Reason: known_overmatched_filter Candidate 1: Fossmere (#82), enemies: Army I:339
+Reason: known_overmatched_filter Candidate 2: Ashton (#106), enemies: Army II:120
+DecisionTree: Army I -> role_main_camp (no_reachable_targets)
+Army I makes camp [MP left: 4, Vigor: 100%]
+Army I makes camp [MP left: 3, Vigor: 100%]
+Army I makes camp [MP left: 2, Vigor: 100%]
+Army I makes camp [MP left: 1, Vigor: 100%]
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Economy: Bought: 3 Iron, 2 Stone for 27 gold
+
+Resources (end):
+Gold: 2
+Food: 44
+Wood: 67
+Iron: 10
+Stone: 26
+
+--------------------------------------------------------
+[Turn 5]
+   
+555555555555555555   
+5::::::::::::::::5   
+5::::::::::::::::5   
+5:::::555555555555   
+5:::::5              
+5:::::5              
+5:::::5555555555     
+5:::::::::::::::5    
+555555555555:::::5   
+			5:::::5  
+			5:::::5  
+5555555     5:::::5  
+5::::::55555::::::5  
+ 55:::::::::::::55   
+   55:::::::::55     
+	 555555555       
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 51
+Food: 40
+Wood: 88
+Iron: 15
+Stone: 32
+Upgrade Saved Gold: 8
+
+Signals:
+frontier_pressure: 0.069
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 67 - P:12, S:5, A:5, SW:2]
+Keep Saintthwaite [Power: 77 - P:15, S:5, A:5, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:2 bank:10 cap:125
+
+Economy: Raise Army Reserve: skipped (at_cap, bank:20 cap:20)
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=29, a=1, dist=1.0, rec=55, gold=41) vs thr=0.50; Frontier2Army=2.00
+
+Economy: Could not buy needed resources for build: no purchases made
+
+Economy: Insufficient funds to build Outpost.
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=0 total=0 threats=0
+
+Economy: Raise Army: not enough gold reserve after raise (21 vs 30); frontier pressure too low (2.00 vs 3.00) (Score: 0.00 (r=29, a=1, dist=1.0, rec=55, gold=41) vs thr=0.50; Frontier2Army=2.00)
+
+Economy: Build Castle: insufficient_resources (Top-up failed: no purchases made)
+
+Canidates:
+- Southholme (#115) | total:175.7 (strategy:70.7, neighbor:105.0, distance_status:Not Checked, score:175.7>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:108.8 (strategy:33.8, neighbor:75.0, distance_status:Not Checked, score:108.8>[100.0])
+- Southfjord (#101) | total:107.3 (strategy:32.3, neighbor:75.0, distance_status:Not Checked, score:107.3>[100.0])
+- Torfell (#113) | total:96.8 (strategy:66.8, neighbor:30.0, distance_status:Not Checked, score:96.8<[100.0])
+- Hvitthwaite (#97) | total:93.8 (strategy:63.8, neighbor:30.0, distance_status:Not Checked, score:93.8<[100.0])
+- Riverworth (#120) | total:87.6 (strategy:57.6, neighbor:30.0, distance_status:Not Checked, score:87.6<[100.0])
+- Hellaby (#87) | total:86.3 (strategy:56.3, neighbor:30.0, distance_status:Not Checked, score:86.3<[100.0])
+- Hvitoy (#105) | total:84.9 (strategy:24.9, neighbor:60.0, distance_status:Not Checked, score:84.9<[100.0])
+- Vatnhaug (#96) | total:80.3 (strategy:35.3, neighbor:45.0, distance_status:Not Checked, score:80.3<[100.0])
+- Westton (#116) | total:79.4 (strategy:49.4, neighbor:30.0, distance_status:Not Checked, score:79.4<[100.0])
+- Ashdon (#111) | total:79.0 (strategy:19.0, neighbor:60.0, distance_status:Not Checked, score:79.0<[100.0])
+- Hafnvik (#107) | total:69.7 (strategy:39.7, neighbor:30.0, distance_status:Not Checked, score:69.7<[100.0])
+- Hafnley (#110) | total:69.0 (strategy:34.0, neighbor:35.0, distance_status:Not Checked, score:69.0<[100.0])
+- Vatnberg (#114) | total:65.6 (strategy:30.6, neighbor:35.0, distance_status:Not Checked, score:65.6<[100.0])
+- Sandworth (#108) | total:48.6 (strategy:33.6, neighbor:15.0, distance_status:Not Checked, score:48.6<[100.0])
+- Greenfjell (#103) | total:47.9 (strategy:2.9, neighbor:45.0, distance_status:Not Checked, score:47.9<[100.0])
+- Hvitwich (#99) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Eyfjord (#98) | total:45.8 (strategy:0.8, neighbor:45.0, distance_status:Not Checked, score:45.8<[100.0])
+- Hellafjell (#86) | total:41.1 (strategy:21.1, neighbor:20.0, distance_status:Not Checked, score:41.1<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:18.9 (strategy:13.9, neighbor:5.0, distance_status:Not Checked, score:18.9<[100.0])
+- Region 92 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Region 55 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Akrham (#60) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:Not Checked, score:-15.0<[100.0])
+- Hvithavn (#84) | total:-30.0 (strategy:0.0, neighbor:-30.0, distance_status:Not Checked, score:-30.0<[100.0])
+
+Build Castle resources:
+- Gold need:30 have:51 short:0
+- Wood need:25 have:88 short:0
+
+Build Castle top-up:
+- Top-up failed: no purchases made
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:40.0 (recruits:80.0, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=2, discoveries=1, gold_spent=20.
+
+Economy: Ore discoveries: Hvitoy
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Westton
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Top 2 candidates:
+Candidate 1: Fossmere (#82), score: 38.7 (mp_cost: 6, resources: 7.5, population: 3.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+Candidate 2: Ashton (#106), score: 34.1 (mp_cost: 7, resources: 11.2, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Rejected candidates:
+Reason: unreachable_this_turn Candidate 1: Fossmere (#82), score: 38.7
+Reason: unreachable_this_turn Candidate 2: Ashton (#106), score: 34.1
+DecisionTree: Army I -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Fossmere (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Vatnhaug [MP left: 2, Vigor: 95%]
+Moves to Hellastadir [MP left: 1, Vigor: 90%]
+Out of movement points before reaching Fossmere
+Movement blocked near Fossmere
+Army I makes camp [MP left: 0, Vigor: 100%]
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 31
+Food: 40
+Wood: 88
+Iron: 15
+Stone: 32
+
+--------------------------------------------------------
+[Turn 6]
+      
+		66666666     
+	   6::::::6      
+	  6::::::6       
+	 6::::::6        
+	6::::::6         
+   6::::::6          
+  6::::::6           
+ 6::::::::66666      
+6::::::::::::::66    
+6::::::66666:::::6   
+6:::::6     6:::::6  
+6:::::6     6:::::6  
+6::::::66666::::::6  
+ 66:::::::::::::66   
+   66:::::::::66     
+	 666666666       
+  
+--------------------------------------------------------
+
+[Player Player 2 (#2)]
+     
+░█████████  ░██                                               ░██████  
+░██     ░██ ░██                                              ░██   ░██ 
+░██     ░██ ░██  ░██████   ░██    ░██  ░███████  ░██░████          ░██ 
+░█████████  ░██       ░██  ░██    ░██ ░██    ░██ ░███          ░█████  
+░██         ░██  ░███████  ░██    ░██ ░█████████ ░██          ░██      
+░██         ░██ ░██   ░██  ░██   ░███ ░██        ░██         ░██       
+░██         ░██  ░█████░██  ░█████░██  ░███████  ░██         ░████████ 
+												  ░██                                  
+										░███████                                   
+																	   
+
+Wealth: Poor
+Resources:
+Gold: 82
+Food: 36
+Wood: 109
+Iron: 21
+Stone: 38
+Upgrade Saved Gold: 10
+
+Signals:
+frontier_pressure: 0.069
+underpowered_ratio: 0.000
+castle_spacing: 14.500
+bank_ratio: 1.000
+power_gap_norm: 0.000
+
+Outpost Sandhaug [Power: 67 - P:12, S:5, A:5, SW:2]
+Keep Saintthwaite [Power: 77 - P:15, S:5, A:5, SW:3]
+
+______ ECONOMY ______
+Economy: Castle Upgrade Bank: added:5 bank:15 cap:125
+
+Economy: Raise Army Reserve: skipped (at_cap, bank:20 cap:20)
+
+Economy: Sold 9 Wood for 9 gold
+
+Economy: Could not buy needed resources for upgrade: no purchases made
+
+Economy: Insufficient funds to upgrade Keep.
+
+Recruitment: Score: 0.00 (r=29, a=1, dist=5.0, rec=56, gold=76) vs thr=0.50; Frontier2Army=2.00
+
+Economy: Bought 2 Food (gold change -4)
+
+No Castle Defense Recruitment (deferred_to_post_move)
+
+Economy: Castle Threat (pre): Sandhaug: level=0 total=0 threats=0
+
+Economy: Castle Threat (pre): Saintthwaite: level=0 total=0 threats=0
+
+Economy: Raise Army: frontier pressure too low (2.00 vs 3.00); score below threshold (0.00 vs 0.50) (Score: 0.00 (r=29, a=1, dist=5.0, rec=56, gold=76) vs thr=0.50; Frontier2Army=2.00)
+
+Economy: Build Castle: built.
+
+Canidates:
+- Southholme (#115) | total:175.7 (strategy:70.7, neighbor:105.0, distance_status:Not Checked, score:175.7>[100.0])
+- Greenhavn (#109) | total:160.0 (strategy:100.0, neighbor:60.0, distance_status:Not Checked, score:160.0>[100.0])
+- Woodfell (#94) | total:108.8 (strategy:33.8, neighbor:75.0, distance_status:Not Checked, score:108.8>[100.0])
+- Southfjord (#101) | total:107.3 (strategy:32.3, neighbor:75.0, distance_status:Not Checked, score:107.3>[100.0])
+- Torfell (#113) | total:96.8 (strategy:66.8, neighbor:30.0, distance_status:Not Checked, score:96.8<[100.0])
+- Hvitthwaite (#97) | total:93.8 (strategy:63.8, neighbor:30.0, distance_status:Not Checked, score:93.8<[100.0])
+- Riverworth (#120) | total:87.6 (strategy:57.6, neighbor:30.0, distance_status:Not Checked, score:87.6<[100.0])
+- Hellaby (#87) | total:86.3 (strategy:56.3, neighbor:30.0, distance_status:Not Checked, score:86.3<[100.0])
+- Hvitoy (#105) | total:84.9 (strategy:24.9, neighbor:60.0, distance_status:Not Checked, score:84.9<[100.0])
+- Vatnhaug (#96) | total:80.3 (strategy:35.3, neighbor:45.0, distance_status:Not Checked, score:80.3<[100.0])
+- Westton (#116) | total:79.4 (strategy:49.4, neighbor:30.0, distance_status:Not Checked, score:79.4<[100.0])
+- Ashdon (#111) | total:79.0 (strategy:19.0, neighbor:60.0, distance_status:Not Checked, score:79.0<[100.0])
+- Hafnvik (#107) | total:69.7 (strategy:39.7, neighbor:30.0, distance_status:Not Checked, score:69.7<[100.0])
+- Hafnley (#110) | total:69.0 (strategy:34.0, neighbor:35.0, distance_status:Not Checked, score:69.0<[100.0])
+- Vatnberg (#114) | total:65.6 (strategy:30.6, neighbor:35.0, distance_status:Not Checked, score:65.6<[100.0])
+- Sandworth (#108) | total:48.6 (strategy:33.6, neighbor:15.0, distance_status:Not Checked, score:48.6<[100.0])
+- Greenfjell (#103) | total:47.9 (strategy:2.9, neighbor:45.0, distance_status:Not Checked, score:47.9<[100.0])
+- Hvitwich (#99) | total:47.7 (strategy:2.7, neighbor:45.0, distance_status:Not Checked, score:47.7<[100.0])
+- Eyfjord (#98) | total:45.8 (strategy:0.8, neighbor:45.0, distance_status:Not Checked, score:45.8<[100.0])
+- Hellafjell (#86) | total:41.1 (strategy:21.1, neighbor:20.0, distance_status:Not Checked, score:41.1<[100.0])
+- Riverthwaite (#112) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Kingbury (#102) | total:30.0 (strategy:0.0, neighbor:30.0, distance_status:Not Checked, score:30.0<[100.0])
+- Hellastadir (#95) | total:18.9 (strategy:13.9, neighbor:5.0, distance_status:Not Checked, score:18.9<[100.0])
+- Region 92 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Region 55 | total:0.0 (strategy:0.0, neighbor:0.0, distance_status:Not Checked, score:0.0<[100.0])
+- Akrham (#60) | total:-15.0 (strategy:0.0, neighbor:-15.0, distance_status:Not Checked, score:-15.0<[100.0])
+- Hvithavn (#84) | total:-30.0 (strategy:0.0, neighbor:-30.0, distance_status:Not Checked, score:-30.0<[100.0])
+
+Economy: Upgrade Castle: insufficient_resources (Top-up failed: no purchases made)
+
+- Saintthwaite (#118) | total:50.0 (recruits:100.0, distance:0.0, dist:9999, next:Castle)
+- Sandhaug (#85) | total:40.2 (recruits:80.4, distance:0.0, dist:9999, next:Keep)
+
+Economy: Upgrade Region: skipped_all.
+
+Economy: Ore search: attempts=2, discoveries=0, gold_spent=20.
+
+______ ARMY ACTIONS ______
+-------------- ARMY I (Main) -------------
+Region: Hellastadir
+Army I [Power: 120, E: 100 - P:20, S:10, A:5, SW:5, K:1]
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Top 1 candidates:
+Candidate 1: Fossmere (#82), score: 38.5 (mp_cost: 2, resources: 7.5, population: 3.8, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.7)
+DecisionTree: Army I -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Fossmere (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Fossmere [MP left: 3, Vigor: 95%]
+[BATTLE]
+Fight at Fossmere
+Withdrew to Hellastadir
+Battle started
+Attacker: Army I [Power: 120 - P:20, S:10, A:5, SW:5, K:1]
+Defender Army I (unknown) [Power: 342 - P:50, S:24, A:15, SW:15, K:5]
+Defender Garrison (unknown) [Power: 0 - none]
+Defender Recruits (Fossmere) (unknown) [Power: 14 - P:7]
+Battle Result: withdrawal (pre-battle)
+Reason: post_siege_power_check
+
+DecisionTree: Army I -> threat_no_action (no_threatened_castles)
+DecisionTree: Army I -> mode_war_role_main (post_threat)
+Top 1 candidates:
+Candidate 1: Ashton (#106), score: 31.1 (mp_cost: 11, resources: 11.2, population: 1.1, level: 1, castle_bonus: 0.0, pursue_bonus: 0.0, strategy: 0.0)
+Rejected candidates:
+Reason: unreachable_this_turn Candidate 1: Ashton (#106), score: 31.1
+Reason: known_overmatched_filter Candidate 2: Fossmere (#82), enemies: Army I:342
+DecisionTree: Army I -> role_main_attack (hard_targets)
+[MOVEMENT]
+Best target: Ashton (Player 1 (unknown - UnknownArmies:1 (total:0)))
+Moves to Vatnhaug [MP left: 0, Vigor: 85%]
+Out of movement points before reaching Westton
+Out of movement points before reaching Vatnhaug
+No Castle Recruitment Post-Move (no_threatened_castles)
+
+Resources (end):
+Gold: 37
+Food: 38
+Wood: 75
+Iron: 21
+Stone: 38
+
