@@ -349,8 +349,7 @@ layout_mode = 2
 [node name="UnitName" type="Label" parent="Panel/Army/UnitsSection/Spearmen"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-text = "Spearmen
-"
+text = "Spearmen"
 horizontal_alignment = 1
 
 [node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/UnitsSection/Spearmen"]
@@ -424,7 +423,7 @@ layout_mode = 2
 [node name="UnitName" type="Label" parent="Panel/Army/UnitsSection/Swordmen"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-text = "Swordmen"
+text = "Swordsmen"
 horizontal_alignment = 1
 
 [node name="MarginContainer4" type="MarginContainer" parent="Panel/Army/UnitsSection/Swordmen"]

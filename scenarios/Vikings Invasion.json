@@ -478,7 +478,7 @@
 				"Spearmen": 25,
 				"Swordsmen": 20
 			},
-			"message": "Vikings have arrived!",
+			"message": "Vikings Invasion_event1",
 			"name": "spawn1",
 			"player_id": 5,
 			"regions": [
@@ -505,7 +505,7 @@
 				"Spearmen": 35,
 				"Swordsmen": 25
 			},
-			"message": "Vikings arrived!",
+			"message": "Vikings Invasion_event2",
 			"name": "spawn2",
 			"player_id": 5,
 			"regions": [
@@ -532,7 +532,7 @@
 				"Spearmen": 30,
 				"Swordsmen": 25
 			},
-			"message": "Vikings arrived!",
+			"message": "Vikings Invasion_event3",
 			"name": "spawn3",
 			"player_id": 5,
 			"regions": [

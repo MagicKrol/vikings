@@ -13,6 +13,7 @@ extends Control
 
 var sound_manager: SoundManager
 var ui_manager: UIManager
+var _save_load_enabled: bool = true
 
 signal main_menu_pressed
 signal exit_pressed
@@ -54,10 +55,14 @@ func _on_main_menu_pressed() -> void:
 	main_menu_pressed.emit()
 
 func _on_load_game_pressed() -> void:
+	if not _save_load_enabled:
+		return
 	DebugLogger.log("UISystem", "Game Menu - Load Game pressed")
 	load_game_pressed.emit()
 
 func _on_save_game_pressed() -> void:
+	if not _save_load_enabled:
+		return
 	DebugLogger.log("UISystem", "Game Menu - Save Game pressed")
 	save_game_pressed.emit()
 
@@ -82,10 +87,17 @@ func _show_options_menu() -> void:
 	button_container.visible = false
 	options_panel.visible = true
 
+func set_save_load_enabled(enabled: bool) -> void:
+	_save_load_enabled = enabled
+	load_game_button.disabled = not enabled
+	save_game_button.disabled = not enabled
+
 func show_modal() -> void:
 	visible = true
 	ui_manager.set_modal_active(true)
 	get_tree().paused = true
+	var game_manager_node: GameManager = get_node("/root/Main/GameManager") as GameManager
+	set_save_load_enabled(not game_manager_node.tutorial_enabled)
 	sound_manager = get_node("/root/Main/SoundManager") as SoundManager
 	options_panel.configure(sound_manager, true, tr("Back"))
 	_show_main_menu()

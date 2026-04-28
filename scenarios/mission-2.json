@@ -1544,8 +1544,8 @@
 			"resources": {
 				"Food": 0,
 				"Gold": 6,
-				"Iron": 3,
-				"Stone": 1,
+				"Iron": 2,
+				"Stone": 2,
 				"Wood": 0
 			},
 			"type_display": "Hills"
@@ -2079,7 +2079,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"garrison": {
@@ -2098,15 +2098,15 @@
 			"name": "Hvithavn",
 			"ocean": false,
 			"owner": 2,
-			"population": 273,
+			"population": 295,
 			"resources": {
-				"Food": 2,
+				"Food": 0,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 0
+				"Wood": 2
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest"
 		},
 		{
 			"biome": "grassland",
@@ -2401,8 +2401,8 @@
 			"population": 343,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
-				"Iron": 2,
+				"Gold": 0,
+				"Iron": 1,
 				"Stone": 0,
 				"Wood": 1
 			},
@@ -2434,7 +2434,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 8
+				"Wood": 1
 			},
 			"type_display": "Forest"
 		},
@@ -2659,7 +2659,7 @@
 			"population": 168,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 3,
 				"Iron": 1,
 				"Stone": 0,
 				"Wood": 1
@@ -2722,7 +2722,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 8
+				"Wood": 1
 			},
 			"type_display": "Forest"
 		},
@@ -2782,7 +2782,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 8
+				"Wood": 3
 			},
 			"type_display": "Forest"
 		},
@@ -2810,8 +2810,8 @@
 			"resources": {
 				"Food": 0,
 				"Gold": 6,
-				"Iron": 3,
-				"Stone": 1,
+				"Iron": 0,
+				"Stone": 0,
 				"Wood": 0
 			},
 			"type_display": "Hills"
@@ -2899,7 +2899,7 @@
 			"population": 59,
 			"resources": {
 				"Food": 0,
-				"Gold": 38,
+				"Gold": 0,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -2929,9 +2929,9 @@
 			"population": 184,
 			"resources": {
 				"Food": 0,
-				"Gold": 12,
-				"Iron": 3,
-				"Stone": 2,
+				"Gold": 4,
+				"Iron": 0,
+				"Stone": 0,
 				"Wood": 0
 			},
 			"type_display": "Hills"
@@ -3033,12 +3033,14 @@
 			"level": "County",
 			"name": "Saintthwaite",
 			"ocean": false,
+			"ore_guaranteed_discovery_attempt": 3,
+			"ore_guaranteed_discovery_type": "Iron",
 			"owner": 2,
 			"population": 293,
 			"resources": {
 				"Food": 0,
-				"Gold": 45,
-				"Iron": 13,
+				"Gold": 5,
+				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
 			},
@@ -3097,10 +3099,10 @@
 			"population": 196,
 			"resources": {
 				"Food": 0,
-				"Gold": 20,
-				"Iron": 8,
+				"Gold": 2,
+				"Iron": 1,
 				"Stone": 1,
-				"Wood": 8
+				"Wood": 1
 			},
 			"type_display": "Forest Hills"
 		}

@@ -92,6 +92,8 @@ var _audio_cache: Dictionary = {}
 var _hammer_playback_token: int = 0
 var _defeat_playback_token: int = 0
 var _mining_playback_token: int = 0
+var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _battle_loop_enabled: bool = false
 
 func _ready():
 	# Add the audio players to the scene tree
@@ -118,10 +120,12 @@ func _ready():
 	recruit_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	trade_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.finished.connect(_on_music_finished)
+	battle_player.finished.connect(_on_battle_player_finished)
 	battle_player.volume_db = linear_to_db(0.5)
 	defeat_player.volume_db = linear_to_db(0.5)
 	mining_player.volume_db = linear_to_db(0.5)
 	music_player.volume_db = linear_to_db(0.5)
+	_rng.randomize()
 	
 	# Load the click sound
 	var click_sound = load("res://sounds/click.wav") as AudioStream
@@ -289,19 +293,36 @@ func play_retreat_horn() -> void:
 
 func play_battle_sound() -> void:
 	if battle_sound and sound_enabled:
+		var clip_length_seconds: float = maxf(0.0, battle_sound.get_length())
+		var max_start_seconds: float = clip_length_seconds * 0.5
+		var start_position_seconds: float = 0.0
+		if max_start_seconds > 0.0:
+			start_position_seconds = _rng.randf_range(0.0, max_start_seconds)
 		battle_player.stream = battle_sound
 		battle_player.volume_db = linear_to_db(0.5)
-		battle_player.play()
+		_battle_loop_enabled = true
+		battle_player.play(start_position_seconds)
 
 func stop_battle_sound() -> void:
+	_battle_loop_enabled = false
 	battle_player.stop()
 
 func fade_out_battle_sound(duration: float = 2.0) -> void:
+	_battle_loop_enabled = false
 	var tween := create_tween()
 	tween.tween_property(battle_player, "volume_db", -80.0, duration)
 	tween.finished.connect(func():
 		battle_player.stop()
 		battle_player.volume_db = linear_to_db(0.5))
+
+func _on_battle_player_finished() -> void:
+	if not _battle_loop_enabled:
+		return
+	if not sound_enabled:
+		return
+	if battle_player.stream != battle_sound:
+		return
+	battle_player.play()
 
 func play_main_menu_music() -> void:
 	"""Play main menu music"""

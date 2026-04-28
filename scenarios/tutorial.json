@@ -17,12 +17,12 @@
 			"region_id": 190
 		}
 	],
-	"description": "",
+	"description": "tutorial_description",
 	"difficulty": "normal",
 	"events": [],
-	"intro_message": "",
+	"intro_message": "tutorial_intro",
 	"map_file": "tutorial-207-small.json",
-	"objectives": "",
+	"objectives": "tutorial_objectives",
 	"player_resources": [
 		{
 			"player_id": 1,
@@ -4940,6 +4940,17 @@
 			"biome": "grassland",
 			"castle_type": "Outpost",
 			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 11,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
 			"id": 228,
 			"level": "Shire",
 			"name": "Vatnford",
@@ -6009,6 +6020,10 @@
 	"scenario_type": "scenario",
 	"trade_disabled": false,
 	"victory_conditions": [
-		"conquer"
+		{
+			"player_id": 1,
+			"turns": 99,
+			"type": "survive_turns"
+		}
 	]
 }

@@ -345,7 +345,7 @@ func _build_default_steps() -> Array:
 				"id": "28",
 				"anchor": "screen",
 			},
-			"block": "trade,endturn,regionactions",
+			"block": "endturn,regionactions",
 		},
 		{
 			"message": "tutorial_step_4",
@@ -356,7 +356,7 @@ func _build_default_steps() -> Array:
 				"id": "29",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn",
+			"block": "endturn",
 		},
 		{
 			"message": "tutorial_step_5",
@@ -369,7 +369,7 @@ func _build_default_steps() -> Array:
 				"id": "23",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,makecamp,cancelmove,regionactionsfull",
+			"block": "endturn,makecamp,cancelmove,regionactionsfull",
 		},
 		{
 			"message": "tutorial_step_6",
@@ -377,7 +377,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(100, 400),
-			"block": "trade,endturn,recruitmentall,recruitmentrecruit",
+			"block": "endturn,recruitmentall,recruitmentrecruit",
 		},
 		{
 			"message": "tutorial_step_7",
@@ -389,7 +389,7 @@ func _build_default_steps() -> Array:
 				"id": "9",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,recruitmentall,recruitmentrecruit",
+			"block": "endturn,recruitmentall,recruitmentrecruit",
 		},
 		{
 			"message": "tutorial_step_8",
@@ -402,7 +402,7 @@ func _build_default_steps() -> Array:
 				"id": "3",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,recruitmentarchers,recruitmentrecruit",
+			"block": "endturn,recruitmentarchers,recruitmentrecruit",
 		},
 		{
 			"message": "tutorial_step_9",
@@ -415,7 +415,7 @@ func _build_default_steps() -> Array:
 				"id": "3",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,recruitmentarchers,recruitmentrecruit",
+			"block": "endturn,recruitmentarchers,recruitmentrecruit",
 		},
 		{
 			"message": "tutorial_step_10",
@@ -428,7 +428,7 @@ func _build_default_steps() -> Array:
 				"id": "4",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,recruitmentall",
+			"block": "endturn,recruitmentall",
 		},
 		{
 			"message": "tutorial_step_11",
@@ -438,7 +438,7 @@ func _build_default_steps() -> Array:
 			"enforce_move_trigger_click": true,
 			"target_region_id": 196,
 			"panel_position": Vector2(500, 200),
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3,regionactionsfull"
+			"block": "endturn,cancelmove,makecamp,armyactions3,regionactionsfull"
 		},
 		{
 			"message": "tutorial_step_12",
@@ -447,7 +447,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(100, 500),
-			"block": "endturn,trade,battlewithdraw"
+			"block": "endturn,battlewithdraw"
 		},
 		{
 			"message": "tutorial_step_13",
@@ -485,7 +485,7 @@ func _build_default_steps() -> Array:
 				"id": "5",
 				"anchor": "screen"
 			},
-			"block": "endturn,trade"
+			"block": "endturn,"
 		},
 		{
 			"message": "tutorial_step_16",
@@ -493,7 +493,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(0, 50),
-			"block": "endturn,trade,continue"
+			"block": "endturn,continue"
 		},
 		{
 			"message": "tutorial_step_17",
@@ -505,7 +505,7 @@ func _build_default_steps() -> Array:
 				"id": "6",
 				"anchor": "screen"
 			},
-			"block": "endturn,trade,continue"
+			"block": "endturn,continue"
 		},
 		{
 			"message": "tutorial_step_18",
@@ -517,7 +517,7 @@ func _build_default_steps() -> Array:
 				"id": "7",
 				"anchor": "screen"
 			},
-			"block": "endturn,trade,continue"
+			"block": "endturn,continue"
 		},
 		{
 			"message": "tutorial_step_19",
@@ -526,7 +526,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"panel_position": Vector2(0, 50),
 			"ui_target": "BattleSummaryModal/continue",
-			"block": "endturn,trade"
+			"block": "endturn,"
 		},
 		{
 			"message": "tutorial_step_20",
@@ -538,7 +538,7 @@ func _build_default_steps() -> Array:
 				"id": "29",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+			"block": "endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "tutorial_step_21",
@@ -550,7 +550,7 @@ func _build_default_steps() -> Array:
 				"id": "29",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+			"block": "endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "tutorial_step_22",
@@ -562,7 +562,7 @@ func _build_default_steps() -> Array:
 				"id": "29",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+			"block": "endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "tutorial_step_23",
@@ -576,7 +576,7 @@ func _build_default_steps() -> Array:
 				"id": "10",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,cancelmove,armyactions3,regionactionsfull"
+			"block": "endturn,cancelmove,armyactions3,regionactionsfull"
 		},
 		{
 			"message": "tutorial_step_24",
@@ -584,7 +584,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(800, 100),
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+			"block": "endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "tutorial_step_25",
@@ -592,7 +592,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(800, 100),
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3"
+			"block": "endturn,cancelmove,makecamp,armyactions3"
 		},
 		{
 			"message": "tutorial_step_26",
@@ -609,7 +609,7 @@ func _build_default_steps() -> Array:
 				"offset": Vector2(-150, 0),
 				"rotation": -25.0
 			},
-			"block": "trade,endturn,makecamp,armyactions3,cancelmove,regionactionsfull"
+			"block": "endturn,makecamp,armyactions3,cancelmove,regionactionsfull"
 		},
 		# {
 		# 	"message": "tutorial_step_27",
@@ -617,7 +617,7 @@ func _build_default_steps() -> Array:
 		# 	"block_input": false,
 		# 	"expected_action": "closed_info_modal",
 		# 	"panel_position": Vector2(500, 300),
-		# 	"block": "trade,endturn,regionactionsfull,armyaction3,makecamp,cancelmove"
+		# 	"block": "endturn,regionactionsfull,armyaction3,makecamp,cancelmove"
 		# },
 		{
 			"message": "tutorial_step_28",
@@ -625,7 +625,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "camera_move",
 			"panel_position": Vector2(500, 300),
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_29",
@@ -633,7 +633,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "camera_zoom",
 			"panel_position": Vector2(500, 300),
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_30",
@@ -675,7 +675,7 @@ func _build_default_steps() -> Array:
 			"enforce_move_trigger_click": true,
 			"target_region_id": 228,
 			"panel_position": Vector2(800, 100),
-			"block": "trade,endturn,cancelmove,makecamp,armyactions3,regionactionsfull"
+			"block": "endturn,cancelmove,makecamp,armyactions3,regionactionsfull"
 		},
 		{
 			"message": "tutorial_step_34",
@@ -683,7 +683,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"block": "withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "14",
 				"anchor": "screen"
@@ -695,7 +695,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"block": "withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "24",
 				"anchor": "screen"
@@ -707,7 +707,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"block": "withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "27",
 				"anchor": "screen"
@@ -719,7 +719,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"block": "withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "25",
 				"anchor": "screen"
@@ -731,7 +731,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"block": "withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "26",
 				"anchor": "screen"
@@ -743,7 +743,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,continue2,continue3,endturn,siegeeq",
+			"block": "withdraw,continue2,continue3,endturn,siegeeq",
 			"arrow": {
 				"id": "13",
 				"anchor": "screen"
@@ -756,7 +756,7 @@ func _build_default_steps() -> Array:
 			"expected_action": "ui",
 			"ui_target": "PrebattleModal/continue",
 			"panel_position": Vector2(50, 800),
-			"block": "trade,withdraw,endturn,continue3,nonladders",
+			"block": "withdraw,endturn,continue3,nonladders",
 		},
 		{
 			"message": "tutorial_step_41",
@@ -788,7 +788,7 @@ func _build_default_steps() -> Array:
 			"ui_target": "BattleSummaryModal/continue",
 			"on_complete_deselect_army": true,
 			"on_complete_close_info_modal": true,
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_44",
@@ -796,7 +796,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(500, 300),
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_45",
@@ -808,7 +808,7 @@ func _build_default_steps() -> Array:
 				"id": "15",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_46",
@@ -820,7 +820,7 @@ func _build_default_steps() -> Array:
 				"id": "15",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_47",
@@ -832,7 +832,7 @@ func _build_default_steps() -> Array:
 				"id": "16",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_48",
@@ -844,7 +844,7 @@ func _build_default_steps() -> Array:
 				"id": "16",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_49",
@@ -856,7 +856,7 @@ func _build_default_steps() -> Array:
 				"id": "17",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_50",
@@ -868,7 +868,7 @@ func _build_default_steps() -> Array:
 				"id": "17",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_51",
@@ -880,7 +880,7 @@ func _build_default_steps() -> Array:
 				"id": "18",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_52",
@@ -892,7 +892,7 @@ func _build_default_steps() -> Array:
 				"id": "19",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_53",
@@ -904,7 +904,7 @@ func _build_default_steps() -> Array:
 				"id": "19",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_54",
@@ -916,7 +916,7 @@ func _build_default_steps() -> Array:
 				"id": "20",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_55",
@@ -932,7 +932,7 @@ func _build_default_steps() -> Array:
 				"offset": Vector2(-150, 0),
 				"rotation": -25.0
 			},
-			"block": "trade,endturn,armyactions3,makecamp,cancelmove,regionactionsfull",
+			"block": "endturn,armyactions3,makecamp,cancelmove,regionactionsfull",
 			"camera_focus": {"type": "region", "region_id": 190}
 		},
 		{
@@ -941,7 +941,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(700, 400),
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_57",
@@ -953,7 +953,7 @@ func _build_default_steps() -> Array:
 				"id": "30",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_58",
@@ -965,7 +965,7 @@ func _build_default_steps() -> Array:
 				"id": "31",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_59",
@@ -977,7 +977,7 @@ func _build_default_steps() -> Array:
 				"id": "32",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_60",
@@ -989,7 +989,7 @@ func _build_default_steps() -> Array:
 				"id": "33",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_61",
@@ -1001,7 +1001,7 @@ func _build_default_steps() -> Array:
 				"id": "34",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_62",
@@ -1013,7 +1013,7 @@ func _build_default_steps() -> Array:
 				"id": "34",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_63",
@@ -1025,7 +1025,7 @@ func _build_default_steps() -> Array:
 				"id": "35",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_64",
@@ -1037,7 +1037,7 @@ func _build_default_steps() -> Array:
 				"id": "36",
 				"anchor": "screen"
 			},
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		},
 		{
 			"message": "tutorial_step_65",
@@ -1045,7 +1045,7 @@ func _build_default_steps() -> Array:
 			"block_input": true,
 			"expected_action": "continue",
 			"panel_position": Vector2(700, 400),
-			"block": "trade,endturn,regionsactions"
+			"block": "endturn,regionsactions"
 		}
 	]
 

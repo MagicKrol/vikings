@@ -289,9 +289,23 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 950.0
-offset_right = 240.0
-offset_bottom = 1100.0
+offset_left = 1774.0
+offset_top = 56.0
+offset_right = 1915.0
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
+[node name="ColorRect2" type="ColorRect" parent="Blocks/trade"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1774.0
+offset_top = 282.0
+offset_right = 1915.0
+offset_bottom = 390.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)

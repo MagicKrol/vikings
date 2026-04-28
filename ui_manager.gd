@@ -43,6 +43,7 @@ var _info_modal: InfoModal
 var _move_modal: MoveModal
 var _prebattle_modal: PrebattleModal
 var _message_modal: MessageModal
+var _event_message_modal: MessageModal
 var _intro_message_modal: MessageModal
 var _trade_modal: TradeModal
 var _recruitment_modal: RecruitmentModal
@@ -94,6 +95,7 @@ func _ready():
 	_move_modal = get_parent().get_node("MoveModal") as MoveModal
 	_prebattle_modal = get_parent().get_node("PrebattleModal") as PrebattleModal
 	_message_modal = get_parent().get_node("MessageModal") as MessageModal
+	_event_message_modal = get_parent().get_node("EventMessageModal") as MessageModal
 	_intro_message_modal = get_parent().get_node_or_null("IntroMessageModal") as MessageModal
 	_trade_modal = get_parent().get_node("TradeModal") as TradeModal
 	_recruitment_modal = get_parent().get_node("RecruitmentModal") as RecruitmentModal
@@ -162,6 +164,7 @@ func _build_modal_list() -> void:
 		_info_modal,
 		_prebattle_modal,
 		_message_modal,
+		_event_message_modal,
 		_intro_message_modal,
 		_trade_modal,
 		_recruitment_modal,
@@ -181,6 +184,7 @@ func _build_blocking_modal_list() -> void:
 		_battle_summary_modal,
 		_recruitment_modal,
 		_transfer_soldiers_modal,
+		_event_message_modal,
 		_intro_message_modal
 	]
 
@@ -253,6 +257,10 @@ func handle_escape_action() -> bool:
 		return true
 	if _message_modal.visible:
 		_message_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _event_message_modal.visible:
+		_event_message_modal.hide_modal()
 		get_viewport().set_input_as_handled()
 		return true
 	if _intro_message_modal.visible:
@@ -447,6 +455,8 @@ func close_all_active_modals(include_blocking: bool = false) -> void:
 		_prebattle_modal.hide_prebattle()
 	if _trade_modal and _trade_modal.visible:
 		_trade_modal.hide_modal()
+	if _event_message_modal and _event_message_modal.visible:
+		_event_message_modal.hide_modal()
 	if _recruitment_modal and _recruitment_modal.visible:
 		_recruitment_modal.hide_modal()
 	if _transfer_select_modal and _transfer_select_modal.visible:

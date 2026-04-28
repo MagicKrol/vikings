@@ -70,6 +70,7 @@ var _trade_manager: TradeManager
 var _tutorial_manager: TutorialManager
 var _ai_camera_director: AICameraDirector
 var _message_modal: MessageModal
+var _event_message_modal: EventMessageModal
 var _intro_message_modal: IntroMessageModal
 var ai_step_requires_shift: bool = false
 
@@ -272,6 +273,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	_game_menu_modal = ui_node.get_node("GameMenuModal") as Control
 	_save_game_modal = ui_node.get_node("SaveGameModal") as SaveGameModal
 	_message_modal = ui_node.get_node("MessageModal") as MessageModal
+	_event_message_modal = ui_node.get_node("EventMessageModal") as EventMessageModal
 	_intro_message_modal = ui_node.get_node("IntroMessageModal") as IntroMessageModal
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
@@ -494,6 +496,9 @@ func _apply_scenario_player_settings_from_data(scenario_data: Dictionary) -> voi
 	_apply_starting_resources_for_difficulty()
 
 func _show_scenario_intro_message_if_any(scenario_data: Dictionary) -> bool:
+	var skip_intro: bool = bool(scenario_data.get("skip_intro", false))
+	if skip_intro:
+		return false
 	var intro_text: String = _build_scenario_intro_modal_text(scenario_data)
 	if intro_text == "":
 		return false
@@ -1344,8 +1349,8 @@ func _execute_scenario_event(event_index: int) -> void:
 	var event_data: Dictionary = _scenario_events_runtime[event_index]
 	var event_message: String = String(event_data.get("message", "")).strip_edges()
 	if event_message != "":
-		_message_modal.display_message(tr(event_message))
-		await _message_modal.continue_clicked
+		_event_message_modal.display_message(tr(event_message))
+		await _event_message_modal.continue_clicked
 	var player_id: int = int(event_data.get("player_id", 1))
 	if is_player_human(player_id):
 		event_data = await _execute_human_spawn_event_with_manual_placement(event_index, event_data)
