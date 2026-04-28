@@ -129,10 +129,13 @@ func _setup_info_panel() -> void:
 	info_ladders_body = get_node("Info/Body/Ladders")
 	info_rams_body = get_node("Info/Body/SiegeRams")
 	info_trebuchet_body = get_node("Info/Body/Trebuchet")
+	info_ladders_body.text = tr("prebattle_info_ladders")
+	info_rams_body.text = tr("prebattle_info_siege_rams")
+	info_trebuchet_body.text = tr("prebattle_info_trebuchet")
 	info_body_map = {
 		"Ladders": info_ladders_body,
 		"Siege Rams": info_rams_body,
-		"Trebuchet": info_trebuchet_body
+		"Trebuchets": info_trebuchet_body
 	}
 	_reset_info_panel()
 
@@ -142,7 +145,7 @@ func _connect_info_signals() -> void:
 	var trebuchet_row: HBoxContainer = get_node("Battle/VBoxContainer/Body/SiegeSection/Available/Trebuchets")
 	_connect_info_hover_group(ladders_row, ladders_plus, ladders_minus, "Ladders")
 	_connect_info_hover_group(rams_row, rams_plus, rams_minus, "Siege Rams")
-	_connect_info_hover_group(trebuchet_row, treb_plus, treb_minus, "Trebuchet")
+	_connect_info_hover_group(trebuchet_row, treb_plus, treb_minus, "Trebuchets")
 
 func _connect_info_hover_group(container: Control, add_button: Button, remove_button: Button, label: String) -> void:
 	container.mouse_entered.connect(func(): _show_info(label))

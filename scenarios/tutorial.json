@@ -21,6 +21,7 @@
 	"difficulty": "normal",
 	"events": [],
 	"intro_message": "tutorial_intro",
+	"skip_intro": true,
 	"map_file": "tutorial-207-small.json",
 	"objectives": "tutorial_objectives",
 	"player_resources": [

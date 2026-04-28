@@ -1619,11 +1619,13 @@ func _on_save_scenario_pressed() -> void:
 	var description_key: String = String(translation_keys.get("description", scenario_name + "_description"))
 	var objectives_key: String = String(translation_keys.get("objectives", scenario_name + "_objectives"))
 	var scenario_type: String = _get_selected_scenario_type()
+	var skip_intro: bool = _resolve_skip_intro_for_save(scenario_name)
 	var scenario := {
 		"map_file": mg.data_file_path,
 		"regions": regions_data,
 		"armies": armies_data,
 		"intro_message": intro_key,
+		"skip_intro": skip_intro,
 		"description": description_key,
 		"objectives": objectives_key,
 		"scenario_type": scenario_type,
@@ -1646,6 +1648,24 @@ func _resolve_scenario_save_name() -> String:
 	if name == "":
 		return "last_saved_scenario"
 	return name
+
+func _resolve_skip_intro_for_save(scenario_name: String) -> bool:
+	var scenario_path: String = "res://scenarios/" + scenario_name + ".json"
+	if not FileAccess.file_exists(scenario_path):
+		return false
+	var scenario_file: FileAccess = FileAccess.open(scenario_path, FileAccess.READ)
+	if scenario_file == null:
+		return false
+	var scenario_json_text: String = scenario_file.get_as_text()
+	scenario_file.close()
+	var scenario_json: JSON = JSON.new()
+	if scenario_json.parse(scenario_json_text) != OK:
+		return false
+	var parsed_data: Variant = scenario_json.data
+	if not (parsed_data is Dictionary):
+		return false
+	var existing_scenario: Dictionary = parsed_data
+	return bool(existing_scenario.get("skip_intro", false))
 
 func _serialize_region(region: Region) -> Dictionary:
 	var data: Dictionary = {}

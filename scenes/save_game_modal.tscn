@@ -11,7 +11,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_modal_panel"]
 
 [node name="SaveGameModal" type="Control"]
-z_index = 120
+z_index = 1400
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

@@ -21,7 +21,7 @@ const MAP_VISUAL_SCALE_BY_LABEL: Dictionary = {
 const MAP_INITIAL_ZOOM_BY_LABEL: Dictionary = {
 	"tiny": 1.0,
 	"small": 1.0,
-	"medium": 1.5,
+	"medium": 1.0,
 	"large": 2.0,
 	"huge": 2.5
 }
@@ -316,12 +316,9 @@ static func get_map_visual_scale_from_region_count(region_count: int) -> float:
 	return _interpolate_log_anchored(region_count, anchor_counts, anchor_values)
 
 static func get_initial_zoom_from_region_count(region_count: int) -> float:
-	var anchor_counts: Array[float] = []
-	var anchor_values: Array[float] = []
-	for label in MAP_ANCHOR_ORDER:
-		anchor_counts.append(float(MAP_REGION_COUNT_BY_LABEL[label]))
-		anchor_values.append(float(MAP_INITIAL_ZOOM_BY_LABEL[label]))
-	return _interpolate_log_anchored(region_count, anchor_counts, anchor_values)
+	var small_visual_scale: float = float(MAP_VISUAL_SCALE_BY_LABEL["small"])
+	var visual_scale: float = get_map_visual_scale_from_region_count(region_count)
+	return small_visual_scale / visual_scale
 
 static func get_frontend_size_code_from_region_count(region_count: int) -> String:
 	if region_count <= FRONTEND_TINY_MAX:

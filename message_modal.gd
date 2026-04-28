@@ -80,9 +80,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey:
 		var key_event: InputEventKey = event as InputEventKey
+		if key_event.keycode == KEY_ESCAPE and _is_tutorial_mode_active():
+			return
 		if key_event.pressed and not key_event.echo and CLOSE_KEYCODES.has(key_event.keycode):
 			_on_continue_pressed()
 			get_viewport().set_input_as_handled()
+
+func _is_tutorial_mode_active() -> bool:
+	var game_manager: GameManager = get_node("../../GameManager") as GameManager
+	return game_manager.tutorial_enabled
 
 func _draw():
 	pass

@@ -267,6 +267,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 		
 	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_ESCAPE and _is_tutorial_mode_active():
+			return
 		if event.keycode == KEY_ESCAPE:
 			_cancel_move()
 			get_viewport().set_input_as_handled()
@@ -276,6 +278,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				return
 			_cycle_to_next_army()
 			get_viewport().set_input_as_handled()
+
+func _is_tutorial_mode_active() -> bool:
+	return game_manager != null and game_manager.tutorial_enabled
 
 func set_army_manager(manager: ArmyManager) -> void:
 	"""Set the army manager reference"""

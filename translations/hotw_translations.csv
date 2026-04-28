@@ -316,7 +316,7 @@ Famine strikes your armies.,Famine strikes your armies.,Famine strikes your armi
 trait_desc_long_spears,Unit Trait,Double attack against mounted units.,Doppelter Angriff gegen berittene Einheiten.,Podwójny atak przeciw jednostkom konnym.,Ataque duplo contra unidades montadas.
 trait_desc_mobility,Unit Trait,Allows chasing retreating units dealing additional damage.,Ermöglicht das Verfolgen fliehender Einheiten und verursacht zusätzlichen Schaden.,"Pozwala ścigać wycofujące się jednostki, zadając dodatkowe obrażenia.","Permite perseguir unidades em retirada, causando dano adicional."
 trait_desc_flanker,Unit Trait,Can directly attack enemy ranged units.,Kann feindliche Fernkampfeinheiten direkt angreifen.,Można bezpośrednio atakować jednostki dystansowe wroga.,Pode atacar diretamente unidades de longo alcance inimigas.
-trait_desc_charge,Unit Trait,Doubles attack power when fighting in grassland regions.,Verdoppelt die Angriffskraft in Graslandregionen.,Podwaja siłę ataku w regionach trawiastych.,Dobra o poder de ataque em regiões de pastagem.
+trait_desc_charge,Unit Trait,Doubles attack power when fighting in lowland regions.,Verdoppelt die Angriffskraft beim Kampf in Tieflandregionen.,Podwaja siłę ataku w regionach nizinnych.,Dobra o poder de ataque ao lutar em regiões de planície.
 trait_desc_multi_attack,Unit Trait,Provides additional attack,Gewährt zusätzlichen Angriff.,Zapewnia dodatkowy atak.,Concede ataque adicional.
 trait_desc_armor_piercing,Unit Trait,Halves enemy defense.,Halbiert die Verteidigung des Gegners.,Zmniejsza obronę wroga o połowę.,Reduz a defesa do inimigo pela metade.
 trait_desc_siege_laborer,Unit Trait,Can constuct siege equipment.,Kann Belagerungsgeräte bauen.,Pozwala budować machiny oblężnicze.,Pode construir equipamentos de cerco.
@@ -424,3 +424,74 @@ Vikings Invasion_event3,Event 3 popup message,"The largest host yet now descends
 tutorial_intro,Scenario metadata key used for intro popup text at scenario start.,tutorial_intro,tutorial_intro,tutorial_intro,tutorial_intro
 tutorial_description,Scenario metadata key used for scenario description text in the main menu.,tutorial_description,tutorial_description,tutorial_description,tutorial_description
 tutorial_objectives,Scenario metadata key used for scenario objectives text in the main menu.,tutorial_objectives,tutorial_objectives,tutorial_objectives,tutorial_objectives
+prebattle_info_ladders,Prebattle info panel body text describing ladders siege equipment.,"Basic siege equipment that allows storming walls.
+
+The number of ladders is limited to 5 per wall section.
+
+Each ladder allows 5 warriors to engage in combat on the walls.","Einfache Belagerungsausrüstung, mit der Mauern erstürmt werden können.
+
+Die Anzahl der Leitern ist auf 5 pro Mauerabschnitt begrenzt.
+
+Jede Leiter ermöglicht 5 Kriegern, auf den Mauern in den Kampf einzugreifen.","Podstawowy sprzęt oblężniczy, który pozwala szturmować mury.
+
+Liczba drabin jest ograniczona do 5 na każdy odcinek muru.
+
+Każda drabina pozwala 5 wojownikom walczyć na murach.","Equipamento básico de cerco que permite escalar muralhas.
+
+O número de escadas é limitado a 5 por seção de muralha.
+
+Cada escada permite que 5 guerreiros entrem em combate sobre as muralhas."
+prebattle_info_siege_rams,Prebattle info panel body text describing siege rams equipment.,"Heavy siege equipment used to break through castle gates.
+
+Rams deal damage to targeted gates each turn.
+
+Once a gate is breached, soldiers can enter,
+gradually increasing the number of engaged soldiers.
+
+Ranged units can disrupt siege rams while they attack gates.","Schwere Belagerungsausrüstung, die zum Durchbrechen von Burgtoren eingesetzt wird.
+
+Rammen verursachen in jeder Runde Schaden an den gewählten Toren.
+
+Sobald ein Tor durchbrochen ist, können Soldaten eindringen,
+wodurch sich die Zahl der kämpfenden Soldaten schrittweise erhöht.
+
+Fernkampfeinheiten können Belagerungsrammen stören, während sie Tore angreifen.","Ciężki sprzęt oblężniczy używany do wyłamywania bram zamkowych.
+
+Taran zadaje obrażenia wybranym bramom w każdej turze.
+
+Gdy brama zostanie wyłamana, żołnierze mogą wejść do środka,
+stopniowo zwiększając liczbę zaangażowanych żołnierzy.
+
+Jednostki dystansowe mogą zakłócać działanie taranów oblężniczych, gdy te atakują bramy.","Equipamento pesado de cerco usado para romper portões de castelos.
+
+Arietes causam dano aos portões alvo a cada turno.
+
+Quando um portão é rompido, os soldados podem entrar,
+aumentando gradualmente o número de soldados engajados.
+
+Unidades de ataque à distância podem atrapalhar os arietes enquanto eles atacam os portões."
+prebattle_info_trebuchet,Prebattle info panel body text describing trebuchet equipment.,"Powerful siege engine used to bombard castle walls.
+
+Trebuchets can damage or breach wall sections before an assault.
+
+Breached walls allow additional warriors to enter the castle.
+
+Damaged walls reduce the castle’s defensive advantage.","Mächtige Belagerungsmaschine, die zum Beschuss von Burgmauern eingesetzt wird.
+
+Trebuchets können vor einem Sturmangriff Mauerabschnitte beschädigen oder durchbrechen.
+
+Durchbrochene Mauern erlauben zusätzlichen Kriegern, in die Burg einzudringen.
+
+Beschädigte Mauern verringern den Verteidigungsvorteil der Burg.","Potężna machina oblężnicza używana do bombardowania murów zamkowych.
+
+Trebusze mogą uszkadzać lub przełamywać odcinki murów przed szturmem.
+
+Przełamane mury pozwalają dodatkowym wojownikom wejść do zamku.
+
+Uszkodzone mury zmniejszają przewagę obronną zamku.","Poderosa máquina de cerco usada para bombardear muralhas de castelos.
+
+Trabucos podem danificar ou romper seções de muralha antes de um assalto.
+
+Muralhas rompidas permitem que guerreiros adicionais entrem no castelo.
+
+Muralhas danificadas reduzem a vantagem defensiva do castelo."

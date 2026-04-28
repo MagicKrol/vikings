@@ -27,7 +27,7 @@ region_rect = Rect2(-0.0961876, -0.077363, 299.121, 21.3567)
 
 [node name="Options" type="Control"]
 process_mode = 2
-z_index = 200
+z_index = 1300
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

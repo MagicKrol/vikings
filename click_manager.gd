@@ -57,6 +57,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_editor_ownership_mode = false
 				# fallthrough to any deselection below
 		if event.keycode == KEY_ESCAPE:
+			if _game_manager != null and _game_manager.tutorial_enabled and not _game_manager.enable_map_editor:
+				return
 			_ui_manager.handle_escape_action()
 
 # Core system references
