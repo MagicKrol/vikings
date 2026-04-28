@@ -248,7 +248,13 @@ func _unhandled_input(event):
 		_handle_mouse_motion(event)
 		return
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if _is_tutorial_escape_routed_to_game_menu():
+			return
 		handle_escape_action()
+
+func _is_tutorial_escape_routed_to_game_menu() -> bool:
+	var game_manager: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
+	return game_manager.tutorial_enabled
 
 func handle_escape_action() -> bool:
 	var game_manager_spawn_event: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager

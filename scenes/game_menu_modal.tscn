@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cs8o70rk3hgp4"]
+[gd_scene load_steps=17 format=3 uid="uid://cs8o70rk3hgp4"]
 
 [ext_resource type="Script" path="res://game_menu_modal.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://c3duu81d31031" path="res://images/selectmenu.png" id="2_texture"]
@@ -21,6 +21,16 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxTopDisabled"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.15, 0.15, 0.15, 0.5)
 border_color = Color(0.717647, 0.592157, 0.368627, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -51,6 +61,14 @@ content_margin_bottom = 10.0
 bg_color = Color(0, 0, 0, 0)
 border_color = Color(0.717647, 0.592157, 0.368627, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxMidDisabled"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.15, 0.15, 0.15, 0.5)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxMidPressed"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -79,6 +97,16 @@ border_color = Color(0.717647, 0.592157, 0.368627, 1)
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxBottomDisabled"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.15, 0.15, 0.15, 0.5)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxBottomPressed"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -91,7 +119,7 @@ corner_radius_bottom_left = 10
 
 [node name="GameMenuModal" type="Control"]
 process_mode = 2
-z_index = 100
+z_index = 1100
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -126,7 +154,7 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="HeaderSection" type="Control" parent="InnerPanel"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -148,17 +176,17 @@ size_flags_vertical = 3
 theme_override_constants/separation = 0
 
 [node name="ContinueButton" type="Button" parent="InnerPanel/ButtonContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxTopHover")
-theme_override_styles/disabled = SubResource("StyleBoxTopNormal")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
 theme_override_styles/hover = SubResource("StyleBoxTopHover")
 theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
 theme_override_styles/normal = SubResource("StyleBoxTopNormal")
@@ -171,17 +199,17 @@ size_flags_horizontal = 3
 color = Color(0.392157, 0.294118, 0.133333, 1)
 
 [node name="OptionsButton" type="Button" parent="InnerPanel/ButtonContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxMidHover")
-theme_override_styles/disabled = SubResource("StyleBoxMidNormal")
+theme_override_styles/disabled = SubResource("StyleBoxMidDisabled")
 theme_override_styles/hover = SubResource("StyleBoxMidHover")
 theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
 theme_override_styles/normal = SubResource("StyleBoxMidNormal")
@@ -194,17 +222,17 @@ size_flags_horizontal = 3
 color = Color(0.392157, 0.294118, 0.133333, 1)
 
 [node name="SaveGameButton" type="Button" parent="InnerPanel/ButtonContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxMidHover")
-theme_override_styles/disabled = SubResource("StyleBoxMidNormal")
+theme_override_styles/disabled = SubResource("StyleBoxMidDisabled")
 theme_override_styles/hover = SubResource("StyleBoxMidHover")
 theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
 theme_override_styles/normal = SubResource("StyleBoxMidNormal")
@@ -217,17 +245,17 @@ size_flags_horizontal = 3
 color = Color(0.392157, 0.294118, 0.133333, 1)
 
 [node name="MainMenuButton" type="Button" parent="InnerPanel/ButtonContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxMidHover")
-theme_override_styles/disabled = SubResource("StyleBoxMidNormal")
+theme_override_styles/disabled = SubResource("StyleBoxMidDisabled")
 theme_override_styles/hover = SubResource("StyleBoxMidHover")
 theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
 theme_override_styles/normal = SubResource("StyleBoxMidNormal")
@@ -240,17 +268,17 @@ size_flags_horizontal = 3
 color = Color(0.392157, 0.294118, 0.133333, 1)
 
 [node name="ExitButton" type="Button" parent="InnerPanel/ButtonContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxBottomHover")
-theme_override_styles/disabled = SubResource("StyleBoxBottomNormal")
+theme_override_styles/disabled = SubResource("StyleBoxBottomDisabled")
 theme_override_styles/hover = SubResource("StyleBoxBottomHover")
 theme_override_styles/pressed = SubResource("StyleBoxBottomPressed")
 theme_override_styles/normal = SubResource("StyleBoxBottomNormal")
@@ -270,17 +298,17 @@ size_flags_vertical = 3
 theme_override_constants/separation = 0
 
 [node name="BackButton" type="Button" parent="InnerPanel/OptionsContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxTopHover")
-theme_override_styles/disabled = SubResource("StyleBoxTopNormal")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
 theme_override_styles/hover = SubResource("StyleBoxTopHover")
 theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
 theme_override_styles/normal = SubResource("StyleBoxTopNormal")
@@ -293,17 +321,17 @@ size_flags_horizontal = 3
 color = Color(0.392157, 0.294118, 0.133333, 1)
 
 [node name="AudioButton" type="Button" parent="InnerPanel/OptionsContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxBottomHover")
-theme_override_styles/disabled = SubResource("StyleBoxBottomNormal")
+theme_override_styles/disabled = SubResource("StyleBoxBottomDisabled")
 theme_override_styles/hover = SubResource("StyleBoxBottomHover")
 theme_override_styles/pressed = SubResource("StyleBoxBottomPressed")
 theme_override_styles/normal = SubResource("StyleBoxBottomNormal")
@@ -323,17 +351,17 @@ size_flags_vertical = 3
 theme_override_constants/separation = 0
 
 [node name="BackButton" type="Button" parent="InnerPanel/AudioContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 62)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_pressed_color = Color(0.996078, 0.917647, 0.764706, 1)
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxTopHover")
-theme_override_styles/disabled = SubResource("StyleBoxTopNormal")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
 theme_override_styles/hover = SubResource("StyleBoxTopHover")
 theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
 theme_override_styles/normal = SubResource("StyleBoxTopNormal")
@@ -359,7 +387,7 @@ theme_override_constants/separation = 10
 [node name="MusicLabel" type="Label" parent="InnerPanel/AudioContainer/AudioPanel/MusicRow"]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 18
 text = "Music"
@@ -384,7 +412,7 @@ theme_override_constants/separation = 10
 [node name="SoundLabel" type="Label" parent="InnerPanel/AudioContainer/AudioPanel/SoundRow"]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.996078, 0.917647, 0.764706, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 18
 text = "Sound"
