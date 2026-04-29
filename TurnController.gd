@@ -203,6 +203,8 @@ func _process_army_turns(player_id: int) -> void:
 	var armies := _get_available_armies(player_id)
 	armies.shuffle()
 	for army in armies:
+		if not is_instance_valid(army):
+			continue
 		if game_manager.has_victory_been_declared():
 			return
 		await _process_single_army(army)
@@ -827,8 +829,13 @@ func _get_army_number_for_log(army: Army) -> String:
 		return display_name.substr(5, display_name.length() - 5)
 	return display_name
 
-func _can_army_continue_decision_cycle(army: Army) -> bool:
-	return is_instance_valid(army) and army.get_movement_points() > 0
+func _can_army_continue_decision_cycle(army_ref: Variant) -> bool:
+	if not is_instance_valid(army_ref):
+		return false
+	if not (army_ref is Army):
+		return false
+	var army: Army = army_ref as Army
+	return army.get_movement_points() > 0
 
 func _process_single_army(army: Army) -> void:
 	if not is_instance_valid(army):

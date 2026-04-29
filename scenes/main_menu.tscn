@@ -677,6 +677,7 @@ texture = ExtResource("9_ygwey")
 expand_mode = 2
 
 [node name="Panel" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1392,7 +1393,6 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1446,6 +1446,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("15_std_modal")
 theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/bold_italics_font_size = 19
+theme_override_font_sizes/italics_font_size = 19
+theme_override_font_sizes/mono_font_size = 19
+theme_override_font_sizes/normal_font_size = 19
+theme_override_font_sizes/bold_font_size = 19
 text = "Scenario description LOREM IPSUM"
 autowrap_mode = 2
 
@@ -1518,6 +1523,7 @@ custom_minimum_size = Vector2(20, 90)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 19
 text = "Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd asdajksd asjdaklsjd laksj dlkajlksdjal ksjdlaj dlsdkal"
 autowrap_mode = 2
 

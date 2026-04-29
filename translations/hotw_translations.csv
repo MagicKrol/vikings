@@ -399,7 +399,7 @@ tutorial_move_click_hint_right,Runtime hint appended to tutorial attack/move pro
 tutorial_move_click_hint_left,Runtime hint appended to tutorial attack/move prompts for left-click movement setting.,LMB (left mouse button),LMT (linke Maustaste),LPM (Lewym Przyciskiem Myszy),LMB (botão esquerdo do mouse)
 Vikings Invasion_intro,Scenario metadata key used for intro popup text at scenario start.,"Warlord, the seas grow restless. Viking longships have set sail and are heading for your shores. You have little time to prepare your kingdom for the coming storm. Strengthen your defenses, raise your armies, and be ready, for the raiders may strike at any moment once they arrive.","Kriegsherr, die See wird unruhig. Wikinger-Langschiffe haben die Segel gesetzt und steuern auf deine Küsten zu. Du hast nur wenig Zeit, dein Reich auf den kommenden Sturm vorzubereiten. Stärke deine Verteidigung, stelle Armeen auf und sei bereit, denn die Plünderer könnten jederzeit zuschlagen, sobald sie eintreffen.","Wodzu, morza stają się niespokojne. Wikińskie drakkary wypłynęły i zmierzają ku twoim brzegom. Masz niewiele czasu, by przygotować swoje królestwo na nadchodzącą burzę. Wzmocnij obronę, wystaw armie i bądź gotów, bo najeźdźcy mogą uderzyć w każdej chwili, gdy tylko dotrą.","Senhor da guerra, os mares estão inquietos. Dracares vikings zarparam e estão a caminho de suas costas. Você tem pouco tempo para preparar seu reino para a tempestade que se aproxima. Fortaleça suas defesas, mobilize seus exércitos e esteja pronto, pois os invasores podem atacar a qualquer momento quando chegarem."
 Vikings Invasion_description,Scenario metadata key used for scenario description text in the main menu.,"You are a young warlord, forging a kingdom from fragile beginnings. The threat of Viking invasion draws near. Prepare your lands before they arrive. Will you meet them in open battle, fortify your castles and endure the siege, or strike first with raids of your own? The fate of your realm rests on your choices.","Du bist ein junger Kriegsherr, der aus bescheidenen Anfängen ein Reich formt. Die Bedrohung durch eine Wikingerinvasion rückt näher. Bereite dein Land vor, bevor sie eintreffen. Wirst du ihnen im offenen Feld begegnen, deine Burgen befestigen und die Belagerung überstehen oder zuerst mit eigenen Raubzügen zuschlagen? Das Schicksal deines Reiches liegt in deinen Händen.","Jesteś młodym wodzem, który buduje królestwo od podstaw. Zagrożenie wikińskiej inwazji zbliża się. Przygotuj swoje ziemie, zanim dotrą. Czy staniesz do walki na otwartym polu, umocnisz zamki i przetrwasz oblężenie, czy może uderzysz pierwszy własnymi najazdami? Los twojego królestwa zależy od twoich decyzji.","Você é um jovem senhor da guerra, erguendo um reino a partir de começos frágeis. A ameaça de uma invasão viking se aproxima. Prepare suas terras antes que eles cheguem. Você os enfrentará em batalha aberta, fortalecerá seus castelos e resistirá ao cerco, ou atacará primeiro com seus próprios saques? O destino do seu reino depende de suas escolhas."
-Vikings Invasion_objectives,Scenario metadata key used for scenario objectives text in the main menu.,Defeat all Viking raiding armies.,Besiege alle plündernden Wikingerarmeen.,Pokonaj wszystkie najazdowe armie wikingów.,Derrote todos os exércitos vikings invasores.
+Vikings Invasion_objectives,Scenario metadata key used for scenario objectives text in the main menu.,Defeat all Viking raiding armies.,Besiege alle plündernden Wikingerarmeen.,Pokonaj wszystkie armie wikingów.,Derrote todos os exércitos vikings invasores.
 Vikings Invasion,Scenario Name,Vikings Invasion,Vikingerinvasion,Inwazja Wikingów,Invasão Viking
 difficulty_easy_description,difficulty easy description,More starting resources and stronger armies. Less aggressive AI.,Mehr Startressourcen und stärkere Armeen. Weniger aggressive KI.,Więcej zasobów na start i silniejsze armie. Mniej agresywna SI.,Mais recursos iniciais e exércitos mais fortes. IA menos agressiva.
 difficulty_normal_description,difficulty normal description,Fair starting resources and standard armies. Semi aggressive AI.,Ausgewogene Startressourcen und Standardarmeen. Mäßig aggressive KI.,Zrównoważone zasoby na start i standardowe armie. Umiarkowanie agresywna SI.,Recursos iniciais equilibrados e exércitos padrão. IA moderadamente agressiva.
@@ -422,76 +422,8 @@ Vikings Invasion_event1,Event 1 popup message,"Scouts return with grim news: the
 Vikings Invasion_event2,Event 2 popup message,"Another fleet cuts through the storm and reaches your shores. A second Viking warband strikes deeper, forcing your kingdom to fight on a new front. Hold the line, or watch your lands splinter.","Eine weitere Flotte durchschneidet den Sturm und erreicht deine Küsten. Eine zweite Wikinger-Kriegsschar stößt tiefer vor und zwingt dein Reich, an einer neuen Front zu kämpfen. Halte die Linie, oder sieh zu, wie dein Land zerbricht.","Kolejna flota przebija się przez burzę i dociera do twoich wybrzeży. Drugi wikiński oddział uderza głębiej, zmuszając twoje królestwo do walki na nowym froncie. Utrzymaj linię albo patrz, jak twoje ziemie pękają.","Outra frota corta a tempestade e alcança suas costas. Uma segunda força viking avança mais fundo, forçando seu reino a lutar em uma nova frente. Mantenha a linha, ou veja suas terras se partirem."
 Vikings Invasion_event3,Event 3 popup message,"The largest host yet now descends upon your realm. Their banners darken the horizon as drums of war shake the countryside. Warlord, this battle will decide whether your kingdom endures or falls.","Die größte Streitmacht bisher fällt nun über dein Reich her. Ihre Banner verdunkeln den Horizont, während Kriegstrommeln das Land erzittern lassen. Kriegsherr, diese Schlacht wird entscheiden, ob dein Reich besteht oder fällt.","Największa dotąd armia spada teraz na twoje królestwo. Ich sztandary zaciemniają horyzont, a bębny wojny wstrząsają całym krajem. Wodzu, ta bitwa zdecyduje, czy twoje królestwo przetrwa, czy upadnie.","A maior hoste até agora cai sobre seu reino. Seus estandartes escurecem o horizonte enquanto tambores de guerra fazem o campo tremer. Senhor da guerra, esta batalha decidirá se seu reino resistirá ou cairá."
 tutorial_intro,Scenario metadata key used for intro popup text at scenario start.,tutorial_intro,tutorial_intro,tutorial_intro,tutorial_intro
-tutorial_description,Scenario metadata key used for scenario description text in the main menu.,tutorial_description,tutorial_description,tutorial_description,tutorial_description
-tutorial_objectives,Scenario metadata key used for scenario objectives text in the main menu.,tutorial_objectives,tutorial_objectives,tutorial_objectives,tutorial_objectives
-prebattle_info_ladders,Prebattle info panel body text describing ladders siege equipment.,"Basic siege equipment that allows storming walls.
-
-The number of ladders is limited to 5 per wall section.
-
-Each ladder allows 5 warriors to engage in combat on the walls.","Einfache Belagerungsausrüstung, mit der Mauern erstürmt werden können.
-
-Die Anzahl der Leitern ist auf 5 pro Mauerabschnitt begrenzt.
-
-Jede Leiter ermöglicht 5 Kriegern, auf den Mauern in den Kampf einzugreifen.","Podstawowy sprzęt oblężniczy, który pozwala szturmować mury.
-
-Liczba drabin jest ograniczona do 5 na każdy odcinek muru.
-
-Każda drabina pozwala 5 wojownikom walczyć na murach.","Equipamento básico de cerco que permite escalar muralhas.
-
-O número de escadas é limitado a 5 por seção de muralha.
-
-Cada escada permite que 5 guerreiros entrem em combate sobre as muralhas."
-prebattle_info_siege_rams,Prebattle info panel body text describing siege rams equipment.,"Heavy siege equipment used to break through castle gates.
-
-Rams deal damage to targeted gates each turn.
-
-Once a gate is breached, soldiers can enter,
-gradually increasing the number of engaged soldiers.
-
-Ranged units can disrupt siege rams while they attack gates.","Schwere Belagerungsausrüstung, die zum Durchbrechen von Burgtoren eingesetzt wird.
-
-Rammen verursachen in jeder Runde Schaden an den gewählten Toren.
-
-Sobald ein Tor durchbrochen ist, können Soldaten eindringen,
-wodurch sich die Zahl der kämpfenden Soldaten schrittweise erhöht.
-
-Fernkampfeinheiten können Belagerungsrammen stören, während sie Tore angreifen.","Ciężki sprzęt oblężniczy używany do wyłamywania bram zamkowych.
-
-Taran zadaje obrażenia wybranym bramom w każdej turze.
-
-Gdy brama zostanie wyłamana, żołnierze mogą wejść do środka,
-stopniowo zwiększając liczbę zaangażowanych żołnierzy.
-
-Jednostki dystansowe mogą zakłócać działanie taranów oblężniczych, gdy te atakują bramy.","Equipamento pesado de cerco usado para romper portões de castelos.
-
-Arietes causam dano aos portões alvo a cada turno.
-
-Quando um portão é rompido, os soldados podem entrar,
-aumentando gradualmente o número de soldados engajados.
-
-Unidades de ataque à distância podem atrapalhar os arietes enquanto eles atacam os portões."
-prebattle_info_trebuchet,Prebattle info panel body text describing trebuchet equipment.,"Powerful siege engine used to bombard castle walls.
-
-Trebuchets can damage or breach wall sections before an assault.
-
-Breached walls allow additional warriors to enter the castle.
-
-Damaged walls reduce the castle’s defensive advantage.","Mächtige Belagerungsmaschine, die zum Beschuss von Burgmauern eingesetzt wird.
-
-Trebuchets können vor einem Sturmangriff Mauerabschnitte beschädigen oder durchbrechen.
-
-Durchbrochene Mauern erlauben zusätzlichen Kriegern, in die Burg einzudringen.
-
-Beschädigte Mauern verringern den Verteidigungsvorteil der Burg.","Potężna machina oblężnicza używana do bombardowania murów zamkowych.
-
-Trebusze mogą uszkadzać lub przełamywać odcinki murów przed szturmem.
-
-Przełamane mury pozwalają dodatkowym wojownikom wejść do zamku.
-
-Uszkodzone mury zmniejszają przewagę obronną zamku.","Poderosa máquina de cerco usada para bombardear muralhas de castelos.
-
-Trabucos podem danificar ou romper seções de muralha antes de um assalto.
-
-Muralhas rompidas permitem que guerreiros adicionais entrem no castelo.
-
-Muralhas danificadas reduzem a vantagem defensiva do castelo."
+tutorial_description,Scenario metadata key used for scenario description text in the main menu.,"Learn the core systems of war and rule. You will practice growing your realm through economy, recruiting and moving armies, and understanding key battle mechanics. By the end, you will know how to expand, defend, and command your kingdom.","Lerne die zentralen Systeme von Krieg und Herrschaft. Du übst, dein Reich durch Wirtschaft auszubauen, Armeen zu rekrutieren und zu bewegen sowie die wichtigsten Kampfmechaniken zu verstehen. Am Ende weißt du, wie du dein Königreich ausbaust, verteidigst und führst.","Poznaj kluczowe systemy wojny i rządzenia. Nauczysz się rozwijać swoje królestwo poprzez ekonomię, rekrutować i przemieszczać armie oraz rozumieć najważniejsze mechaniki bitew. Na końcu będziesz wiedzieć, jak rozszerzać, bronić i prowadzić swoje królestwo.","Aprenda os sistemas centrais de guerra e governo. Você praticará o crescimento do seu reino por meio da economia, recrutando e movendo exércitos, e compreendendo as principais mecânicas de batalha. Ao final, você saberá como expandir, defender e comandar seu reino."
+tutorial_objectives,Scenario metadata key used for scenario objectives text in the main menu.,"• Learn the basics of region management and economy.\n• Recruit units, move armies, and engage in battle.","• Lerne die Grundlagen von Regionsverwaltung und Wirtschaft.\n• Rekrutiere Einheiten, bewege Armeen und führe Kämpfe.","• Poznaj podstawy zarządzania regionem i ekonomii.\n• Rekrutuj jednostki, przemieszczaj armie i bierz udział w bitwach.","• Aprenda os fundamentos da gestão de regiões e da economia.\n• Recrute unidades, mova exércitos e entre em batalha."
+prebattle_info_ladders,Prebattle info panel body text describing ladders siege equipment.,Basic siege equipment that allows storming walls.\n\nThe number of ladders is limited to 5 per wall section.\n\nEach ladder allows 5 warriors to engage in combat on the walls.,"Einfache Belagerungsausrüstung, mit der Mauern erstürmt werden können.\n\nDie Anzahl der Leitern ist auf 5 pro Mauerabschnitt begrenzt.\n\nJede Leiter ermöglicht 5 Kriegern, auf den Mauern in den Kampf einzugreifen.","Podstawowy sprzęt oblężniczy, który pozwala szturmować mury.\n\nLiczba drabin jest ograniczona do 5 na każdy odcinek muru.\n\nKażda drabina pozwala 5 wojownikom walczyć na murach.",Equipamento básico de cerco que permite escalar muralhas.\n\nO número de escadas é limitado a 5 por seção de muralha.\n\nCada escada permite que 5 guerreiros entrem em combate sobre as muralhas.
+prebattle_info_siege_rams,Prebattle info panel body text describing siege rams equipment.,"Heavy siege equipment used to break through castle gates.\n\nRams deal damage to targeted gates each turn.\n\nOnce a gate is breached, soldiers can enter,\ngradually increasing the number of engaged soldiers.\n\nRanged units can disrupt siege rams while they attack gates.","Schwere Belagerungsausrüstung, die zum Durchbrechen von Burgtoren eingesetzt wird.\n\nRammen verursachen in jeder Runde Schaden an den gewählten Toren.\n\nSobald ein Tor durchbrochen ist, können Soldaten eindringen,\nwodurch sich die Zahl der kämpfenden Soldaten schrittweise erhöht.\n\nFernkampfeinheiten können Belagerungsrammen stören, während sie Tore angreifen.","Ciężki sprzęt oblężniczy używany do wyłamywania bram zamkowych.\n\nTaran zadaje obrażenia wybranym bramom w każdej turze.\n\nGdy brama zostanie wyłamana, żołnierze mogą wejść do środka,\nstopniowo zwiększając liczbę zaangażowanych żołnierzy.\n\nJednostki dystansowe mogą zakłócać działanie taranów oblężniczych, gdy te atakują bramy.","Equipamento pesado de cerco usado para romper portões de castelos.\n\nArietes causam dano aos portões alvo a cada turno.\n\nQuando um portão é rompido, os soldados podem entrar,\naumentando gradualmente o número de soldados engajados.\n\nUnidades de ataque à distância podem atrapalhar os arietes enquanto eles atacam os portões."
+prebattle_info_trebuchet,Prebattle info panel body text describing trebuchet equipment.,Powerful siege engine used to bombard castle walls.\n\nTrebuchets can damage or breach wall sections before an assault.\n\nBreached walls allow additional warriors to enter the castle.\n\nDamaged walls reduce the castle’s defensive advantage.,"Mächtige Belagerungsmaschine, die zum Beschuss von Burgmauern eingesetzt wird.\n\nTrebuchets können vor einem Sturmangriff Mauerabschnitte beschädigen oder durchbrechen.\n\nDurchbrochene Mauern erlauben zusätzlichen Kriegern, in die Burg einzudringen.\n\nBeschädigte Mauern verringern den Verteidigungsvorteil der Burg.",Potężna machina oblężnicza używana do bombardowania murów zamkowych.\n\nTrebusze mogą uszkadzać lub przełamywać odcinki murów przed szturmem.\n\nPrzełamane mury pozwalają dodatkowym wojownikom wejść do zamku.\n\nUszkodzone mury zmniejszają przewagę obronną zamku.,Poderosa máquina de cerco usada para bombardear muralhas de castelos.\n\nTrabucos podem danificar ou romper seções de muralha antes de um assalto.\n\nMuralhas rompidas permitem que guerreiros adicionais entrem no castelo.\n\nMuralhas danificadas reduzem a vantagem defensiva do castelo.

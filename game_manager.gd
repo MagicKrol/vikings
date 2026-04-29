@@ -1951,6 +1951,8 @@ func _show_turn_start_famine_message_if_needed(player_id: int, famine_result: Di
 	if not is_player_human(player_id):
 		return
 	var soldiers_lost: int = int(famine_result.get("soldiers_lost", 0))
+	if soldiers_lost <= 0:
+		return
 	var header_text: String = tr("Famine strikes your armies.")
 	var body_text: String = tr("%d soldiers died from starvation.") % soldiers_lost
 	_message_modal.display_message(header_text, body_text)
@@ -2028,8 +2030,11 @@ func _roll_famine_points(missing_food: float, rng: RandomNumberGenerator) -> int
 	return max(0, target_points)
 
 func _roll_famine_lookup_points(rng: RandomNumberGenerator) -> int:
-	var roll: int = rng.randi_range(1, FAMINE_POINTS_LOOKUP_BY_ROLL.size())
-	return int(FAMINE_POINTS_LOOKUP_BY_ROLL[roll - 1])
+	var weights: Array[float] = []
+	for weight_value in FAMINE_POINTS_LOOKUP_BY_ROLL:
+		weights.append(float(max(0, int(weight_value))))
+	var picked_index: int = _pick_weighted_index(weights, rng)
+	return picked_index + 1
 
 func _allocate_points_proportionally(entries: Array[Dictionary], points_to_allocate: int, capacity_key: String, allocation_key: String, rng: RandomNumberGenerator) -> int:
 	if points_to_allocate <= 0 or entries.is_empty():
