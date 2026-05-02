@@ -80,14 +80,14 @@ UNIT_STATS = {
     },
     SPEARMEN: {
         "attack": 8,
-        "defense": 20,
+        "defense": 25,
         "traits": [LONG_SPEARS, SIEGE_LABORER, DEFENDER],
         "power": 3,
         "cost": 2,
     },
     SWORDSMEN: {
         "attack": 12,
-        "defense": 30,
+        "defense": 35,
         "traits": [SIEGE_LABORER],
         "power": 4,
         "cost": 3,

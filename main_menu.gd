@@ -1,8 +1,7 @@
 extends Control
 class_name MainMenu
 
-# Set to true for demo menu, false for standard menu
-const USE_DEMO_MENU: bool = false
+const DEMO_MODE_ENABLED: bool = GameParameters.DEMO_MODE_ENABLED
 const TUTORIAL_SCENARIO_PATH: String = "res://scenarios/tutorial.json"
 const LANGUAGE_ENGLISH_FLAG: Texture2D = preload("res://images/flags/english.png")
 const LANGUAGE_GERMAN_FLAG: Texture2D = preload("res://images/flags/germany.png")
@@ -10,12 +9,15 @@ const LANGUAGE_POLISH_FLAG: Texture2D = preload("res://images/flags/poland.png")
 const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/brazil.png")
 const MAIN_MENU_TARGET_META_KEY: String = "main_menu_target"
 const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
+const FEEDBACK_URL: String = "https://steamcommunity.com/app/4380120/discussions/0/"
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
 @onready var load_game_button: Button = $MenuContainer/LoadGameButton
 @onready var options_button: Button = $MenuContainer/OptionsButton
 @onready var exit_button: Button = $MenuContainer/ExitButton
+@onready var feedback_container: Control = $Feedback
+@onready var feedback_button: Button = $Feedback/TextureRect/FeedbackButton
 @onready var save_game_modal: MainMenuSaveGameModal = $SaveGameModal
 
 # New Game menu buttons
@@ -83,12 +85,6 @@ const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
 @onready var scenario_container: VBoxContainer = $Scenario
 @onready var demo_container: VBoxContainer = $Demo
 
-# Demo menu buttons
-@onready var demo_tutorial_button: Button = $Demo/TutorialButton
-@onready var demo_map_button: Button = $Demo/DemoMapButton
-@onready var demo_options_button: Button = $Demo/OptionsButton
-@onready var demo_exit_button: Button = $Demo/ExitButton
-
 @onready var button_bg1 = $TextureRect1
 @onready var button_bg2 = $TextureRect2
 @onready var button_bg3 = $TextureRect3
@@ -140,8 +136,8 @@ var default_scenario_objectives_text: String = ""
 var player_settings: Array = []  # Array of dictionaries with player configuration
 
 func _ready():
-	
-	TranslationServer.set_locale("en")
+
+	TranslationServer.set_locale(_resolve_startup_locale())
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
@@ -169,6 +165,7 @@ func _ready():
 	load_game_button.pressed.connect(_on_load_game_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
+	feedback_button.pressed.connect(_on_feedback_pressed)
 	save_game_modal.back_requested.connect(_on_save_game_modal_back_requested)
 	save_game_modal.action_requested.connect(_on_save_game_modal_action_requested)
 	
@@ -198,12 +195,6 @@ func _ready():
 	map_size_button_medium.pressed.connect(_on_size_filter_pressed.bind("M", map_size_button_medium))
 	map_size_button_large.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_large))
 
-	# Connect demo menu button signals
-	demo_tutorial_button.pressed.connect(_on_demo_tutorial_pressed)
-	demo_map_button.pressed.connect(_on_demo_map_pressed)
-	demo_options_button.pressed.connect(_on_options_pressed)
-	demo_exit_button.pressed.connect(_on_exit_pressed)
-
 	# Hover sounds removed - no sound on mouse enter
 
 	_setup_custom_map_preview()
@@ -220,11 +211,7 @@ func _ready():
 	if _apply_start_target_from_meta():
 		return
 
-	# Show demo or standard menu based on USE_DEMO_MENU constant
-	if USE_DEMO_MENU:
-		_show_demo_menu()
-	else:
-		_show_main_menu()
+	_show_main_menu()
 
 func _apply_start_target_from_meta() -> bool:
 	if not get_tree().has_meta(MAIN_MENU_TARGET_META_KEY):
@@ -285,6 +272,7 @@ func _apply_language_by_index(index: int, persist: bool) -> void:
 	TranslationServer.set_locale(locale)
 	language_label.text = _label_for_language_index(_language_index)
 	language_flag_icon.texture = _flag_for_language_index(_language_index)
+	_update_primary_main_menu_button()
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	if persist:
 		SaveGameManager.save_settings(sound_manager)
@@ -332,6 +320,41 @@ func _flag_for_language_index(index: int) -> Texture2D:
 		_:
 			return LANGUAGE_ENGLISH_FLAG
 
+func _resolve_startup_locale() -> String:
+	var saved_locale: String = SaveGameManager.get_saved_locale()
+	if saved_locale != "":
+		return _normalize_supported_locale(saved_locale)
+	var steam_locale: String = _get_steam_language_locale()
+	if steam_locale != "":
+		return _normalize_supported_locale(steam_locale)
+	var os_locale: String = OS.get_locale_language()
+	if os_locale == "":
+		os_locale = OS.get_locale()
+	return _normalize_supported_locale(os_locale)
+
+func _get_steam_language_locale() -> String:
+	if not Engine.has_singleton("Steam"):
+		return ""
+	var steam_singleton: Object = Engine.get_singleton("Steam")
+	if steam_singleton == null:
+		return ""
+	var steam_language: String = ""
+	if steam_singleton.has_method("getCurrentGameLanguage"):
+		steam_language = String(steam_singleton.call("getCurrentGameLanguage"))
+	elif steam_singleton.has_method("get_current_game_language"):
+		steam_language = String(steam_singleton.call("get_current_game_language"))
+	return steam_language.strip_edges().to_lower()
+
+func _normalize_supported_locale(raw_locale: String) -> String:
+	var normalized_locale: String = raw_locale.strip_edges().to_lower()
+	if normalized_locale.begins_with("de"):
+		return "de"
+	if normalized_locale.begins_with("pl"):
+		return "pl"
+	if normalized_locale.begins_with("br") or normalized_locale.begins_with("pt"):
+		return "br"
+	return "en"
+
 func _on_continue_pressed():
 	var has_save_file: bool = SaveGameManager.has_save_file()
 	if has_save_file:
@@ -365,10 +388,7 @@ func _on_load_game_pressed():
 
 func _on_save_game_modal_back_requested() -> void:
 	save_game_modal.visible = false
-	if USE_DEMO_MENU:
-		_show_demo_menu()
-	else:
-		_show_main_menu()
+	_show_main_menu()
 
 func _on_save_game_modal_action_requested(mode: int, selected_file_name: String, _entered_file_name: String) -> void:
 	if mode != MainMenuSaveGameModal.Mode.LOAD:
@@ -390,6 +410,11 @@ func _on_options_pressed():
 func _on_exit_pressed():
 	DebugLogger.log("UISystem", "Exit button pressed")
 	get_tree().quit()
+
+func _on_feedback_pressed() -> void:
+	DebugLogger.log("UISystem", "Feedback button pressed")
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+	OS.shell_open(FEEDBACK_URL)
 
 func _on_campaign_pressed():
 	DebugLogger.log("UISystem", "Campaign button pressed")
@@ -426,10 +451,7 @@ func _on_campaign_play_pressed():
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
-	if USE_DEMO_MENU:
-		_show_demo_menu()
-	else:
-		_show_main_menu()
+	_show_main_menu()
 
 func _on_scenario_back_pressed():
 	DebugLogger.log("UISystem", "Scenario Back button pressed")  
@@ -489,55 +511,6 @@ func _on_scenario_select_pressed():
 		sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
 
-func _on_demo_tutorial_pressed():
-	DebugLogger.log("UISystem", "Demo Tutorial button pressed")
-	# Disable button to prevent re-triggering
-	demo_tutorial_button.disabled = true
-	var scen_path := "res://scenarios/tutorial.json"
-	get_tree().set_meta("start_payload", {
-		"type": "scenario",
-		"scenario_path": scen_path,
-		"difficulty": "normal"
-	})
-	if sound_manager:
-		sound_manager.stop_main_menu_music()
-	# Wait for mouse button release to prevent click leaking to next scene
-	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		await get_tree().process_frame
-	# Small delay to absorb any rapid subsequent clicks
-	await get_tree().create_timer(0.15).timeout
-	get_tree().change_scene_to_file("res://main.tscn")
-
-func _on_demo_map_pressed():
-	DebugLogger.log("UISystem", "Demo Map button pressed")
-	# Disable button to prevent re-triggering
-	# demo_map_button.disabled = true
-	var map_path := "res://mapdata/demo-999-small.json"
-	var demo_player_settings := [
-		{"player_id": 1, "control_type": "Player"},
-		{"player_id": 2, "control_type": "Computer"},
-		{"player_id": 3, "control_type": "Computer"},
-		{"player_id": 4, "control_type": "Off"},
-		{"player_id": 5, "control_type": "Off"},
-		{"player_id": 6, "control_type": "Off"}
-	]
-	get_tree().set_meta("start_payload", {
-		"type": "map",
-		"map_file": map_path,
-		"map_size": "small",
-		"player_settings": demo_player_settings,
-		"victory_condition": "conquer",
-		"difficulty": "normal"
-	})
-	if sound_manager:
-		sound_manager.stop_main_menu_music()
-	# Wait for mouse button release to prevent click leaking to next scene
-	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		await get_tree().process_frame
-	# Small delay to absorb any rapid subsequent clicks
-	await get_tree().create_timer(0.15).timeout
-	get_tree().change_scene_to_file("res://main.tscn")
-
 func _show_main_menu():
 	"""Show the main menu and hide other menus"""
 	_update_primary_main_menu_button()
@@ -554,6 +527,7 @@ func _show_main_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
+	feedback_container.visible = true
 
 func _update_primary_main_menu_button() -> void:
 	var has_save_file: bool = SaveGameManager.has_save_file()
@@ -577,6 +551,7 @@ func _show_new_game_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
+	feedback_container.visible = false
 
 func _show_options_menu():
 	"""Show the options menu"""
@@ -591,6 +566,7 @@ func _show_options_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
+	feedback_container.visible = false
 
 func _show_campaign_menu():
 	"""Show campaign using the Scenario node layout"""
@@ -607,6 +583,7 @@ func _show_campaign_menu():
 	custom_map_container.visible = true
 	demo_container.visible = false
 	map_preview.visible = false
+	feedback_container.visible = false
 	is_scenario_mode = true
 	is_campaign_mode = true
 	custom_map_panel.visible = false
@@ -634,6 +611,7 @@ func _show_scenario_menu():
 	custom_map_container.visible = true
 	demo_container.visible = false
 	map_preview.visible = false
+	feedback_container.visible = false
 	is_scenario_mode = true
 	is_campaign_mode = false
 	custom_map_panel.visible = false
@@ -661,6 +639,7 @@ func _show_custom_map_menu():
 	custom_map_container.visible = true
 	demo_container.visible = false
 	map_preview.visible = false
+	feedback_container.visible = false
 	is_scenario_mode = false
 	custom_map_panel.visible = true
 	scenario_panel.visible = false
@@ -671,23 +650,6 @@ func _show_custom_map_menu():
 	_set_campaign_ui(false)
 	_clear_map_selection()
 	_load_custom_map_items()
-
-func _show_demo_menu():
-	"""Show the demo menu"""
-	button_bg1.visible = true
-	button_bg2.visible = true
-	button_bg3.visible = true
-	button_bg4.visible = true
-	button_bg5.visible = false
-	menu_container.visible = false
-	new_game_container.visible = false
-	options_container.visible = false
-	campaign_container.visible = false
-	scenario_container.visible = false
-	custom_map_container.visible = false
-	demo_container.visible = true
-	map_preview.visible = false
-	custom_map_preview.visible = false
 
 func _set_campaign_ui(enabled: bool):
 	scenario_header_label.text = tr("Campaign") if enabled else tr("Scenario")
@@ -741,6 +703,10 @@ func _setup_player_buttons():
 		human_btn.button_pressed = default_control == "Player"
 		computer_btn.button_pressed = default_control == "Computer"
 		off_btn.button_pressed = default_control == "Off"
+		if DEMO_MODE_ENABLED and player_num >= 5:
+			human_btn.disabled = true
+			computer_btn.disabled = true
+			off_btn.button_pressed = true
 		player_settings.append({"player_id": player_num, "control_type": default_control})
 		human_btn.toggled.connect(_on_player_control_changed.bind(player_num, "Player", human_btn))
 		computer_btn.toggled.connect(_on_player_control_changed.bind(player_num, "Computer", computer_btn))
@@ -1255,12 +1221,16 @@ func _set_scenario_select_enabled(enabled: bool):
 
 func _gather_map_items() -> Array:
 	var items: Array = []
+	var allowed_custom_maps: Array[String] = GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES
 	var dir = DirAccess.open("res://mapdata")
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".json"):
+				if DEMO_MODE_ENABLED and not allowed_custom_maps.has(file_name):
+					file_name = dir.get_next()
+					continue
 				var base := file_name.trim_suffix(".json")
 				if base.begins_with("mission"):
 					file_name = dir.get_next()
@@ -1284,12 +1254,16 @@ func _gather_map_items() -> Array:
 
 func _gather_scenario_items(requested_type: String) -> Array:
 	var items: Array = []
+	var allowed_scenarios: Array[String] = GameParameters.DEMO_ALLOWED_SCENARIO_FILES
 	var dir = DirAccess.open("res://scenarios")
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".json"):
+				if DEMO_MODE_ENABLED and not allowed_scenarios.has(file_name):
+					file_name = dir.get_next()
+					continue
 				var scenario_name := file_name.trim_suffix(".json")
 				var map_file_base: String = ""
 				var size_code: String = "S"

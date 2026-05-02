@@ -91,7 +91,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = true
+@export var debug_mode: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -170,27 +170,31 @@ func _ready():
 
 	# Main menu start payload (scenario/custom)
 	if get_tree().has_meta("start_payload") and get_tree().get_meta("start_payload") != null:
-		var payload = get_tree().get_meta("start_payload")
-		var kind := String(payload.get("type", ""))
+		var payload: Dictionary = get_tree().get_meta("start_payload")
+		var kind: String = String(payload.get("type", ""))
 		var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 		if kind == "scenario":
 			game_mode = "scenario"
-			scenario_path = String(payload.get("scenario_path", ""))
+			var requested_scenario_file: String = String(payload.get("scenario_path", "")).get_file()
+			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_SCENARIO_FILES.has(requested_scenario_file):
+				requested_scenario_file = "tutorial.json"
+			scenario_path = "res://scenarios/" + requested_scenario_file
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
 		elif kind == "map":
 			game_mode = "custom"
 			scenario_path = ""
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
-			var map_path := String(payload.get("map_file", ""))
-			var size_str := String(payload.get("map_size", "small"))
+			var map_file_name: String = String(payload.get("map_file", "")).get_file()
+			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
+				map_file_name = "demo-999-small.json"
+			var map_path: String = "res://mapdata/" + map_file_name
+			var size_str: String = String(payload.get("map_size", "small"))
 			map_generator.data_file_path = map_path.get_file()
 			_map_set_size_from_string(map_generator, size_str)
-			
 			# Apply player settings from CustomMap
 			if payload.has("player_settings"):
 				_apply_custom_map_player_settings(payload.get("player_settings"))
 			_initialize_victory_conditions_from_custom_payload(payload)
-			
 			map_generator.generate_map()
 		elif kind == "save":
 			var save_path: String = String(payload.get("save_path", SaveGameManager.SAVE_FILE_PATH))
@@ -569,9 +573,12 @@ func _unhandled_input(event: InputEvent) -> void:
 					_game_menu_modal.show_modal()
 		elif event.keycode == KEY_0:
 			# Toggle AI debug visualization
-			if _ai_debug_visualizer:
+			if debug_mode and _ai_debug_visualizer:
 				_ai_debug_visualizer.toggle_debug_display(current_player)
 				DebugLogger.log("TurnProcessing", "AI debug toggle for Player " + str(current_player))
+			elif _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
+				_ai_debug_visualizer.clear_scores()
+				DebugLogger.log("TurnProcessing", "AI debug display hidden because debug_mode is disabled")
 		elif event.keycode == KEY_9:
 			# Toggle step-by-step AI debug mode (only during actual turns, not castle placement)
 			if _ai_debug_visualizer and not castle_placing_mode:
@@ -854,6 +861,21 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 func _initialize_victory_conditions_from_custom_payload(payload: Dictionary) -> void:
 	var selected_condition: String = String(payload.get("victory_condition", "")).to_lower()
 	_set_victory_conditions_from_raw([selected_condition])
+
+func get_custom_victory_condition_description() -> String:
+	if game_mode != "custom":
+		return ""
+	if victory_conditions.is_empty():
+		return ""
+	var condition: Dictionary = victory_conditions[0]
+	var condition_type: String = String(condition.get("type", "")).to_lower()
+	match condition_type:
+		"conquer":
+			return tr("conquer_condition_description")
+		"dominate":
+			return tr("dominate_condition_description")
+		_:
+			return ""
 
 func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary) -> void:
 	if scenario_data.has("victory_conditions"):
@@ -1411,14 +1433,15 @@ func _execute_scenario_event_auto_spawn(event_data: Dictionary) -> Dictionary:
 	if bool(spawn_plan.get("spawnable", false)):
 		var region_id: int = int(spawn_plan.get("region_id", -1))
 		var region: Region = spawn_plan.get("region") as Region
-		await _ai_camera_director.await_focus_on_region(region)
 		var composition: Dictionary = _normalize_event_composition(updated_event.get("composition", {}))
 		var player_id: int = int(updated_event.get("player_id", 1))
 		var spawned_army: Army = _spawn_scenario_event_army_in_region(region, player_id, composition, true)
 		if spawned_army != null:
+			await _ai_camera_director.await_focus_on_region(region)
 			var army_player_id: int = spawned_army.get_player_id()
 			var battle_needed: bool = _should_trigger_battle(spawned_army, region)
 			if battle_needed:
+				await get_tree().create_timer(1.0).timeout
 				await handle_army_battle(spawned_army, region_id)
 				await _await_pending_battles()
 				check_victory_conditions_for_player(army_player_id)
@@ -2614,12 +2637,11 @@ func _advance_castle_placement_turn() -> void:
 		turn_modal.show_and_update()
 	
 	# Update AI debug scores if debug mode is active (for next player's perspective)
-	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
+	if debug_mode and _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
 		# Get the next player who will be placing a castle
-		var next_player_for_scoring = current_player
+		var next_player_for_scoring: int = current_player
 		if castles_placed < total_players:
 			next_player_for_scoring = _get_next_player()
-		
 		DebugLogger.log("GameInit", "Recalculating AI debug scores for Player " + str(next_player_for_scoring) + " after castle placement")
 		_ai_debug_visualizer._update_scores_for_player(next_player_for_scoring)
 		_ai_debug_visualizer.queue_redraw()
@@ -2742,6 +2764,10 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 			await _battle_manager.withdraw_attacking_army(army)
 			return "withdrawal"
 	var attacker_effectiveness_ratio := _compute_attacker_effectiveness_ratio(army, siege_payload, target_region)
+	_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
+	var defender_owner_id: int = _region_manager.get_region_owner(target_region_id)
+	if defender_owner_id > 0:
+		_record_attacker_for_defender(defender_owner_id, [army])
 
 	# Start the battle using BattleManager (will bypass modal if debug_disable_battle_modal && AI)
 	_battle_manager.start_battle(army, target_region_id, attacker_effectiveness_ratio, siege_payload)
@@ -3658,8 +3684,6 @@ func _format_comp_line(prefix: String, name: String, comp: ArmyComposition) -> S
 	return "%s: %s [Power: %d - %s]" % [prefix, name, power, _format_composition_suffix(comp)]
 
 func _record_attacker_for_defender(defender_player_id: int, attacking_armies: Array[Army]) -> void:
-	if not is_player_computer(defender_player_id):
-		return
 	for atk in attacking_armies:
 		if atk == null or not is_instance_valid(atk):
 			continue
@@ -3992,7 +4016,7 @@ func claim_peaceful_region(region_id: int, player_id: int) -> void:
 
 func refresh_ai_debug_scores():
 	"""Refresh AI debug scores for the current player (callable from external systems)"""
-	if _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
+	if debug_mode and _ai_debug_visualizer and _ai_debug_visualizer.is_debug_visible():
 		DebugLogger.log("TurnProcessing", "Manually refreshing AI debug scores for Player " + str(current_player))
 		# Use the new recalculation method that handles ownership changes
 		if _ai_debug_visualizer.has_method("recalculate_scores_on_ownership_change"):
@@ -4002,6 +4026,18 @@ func refresh_ai_debug_scores():
 			_ai_debug_visualizer._update_scores_for_player(current_player)
 			_ai_debug_visualizer._update_display_cache_from_regions()
 			_ai_debug_visualizer.queue_redraw()
+
+func _sync_ai_debug_display_for_player(player_id: int) -> void:
+	if _ai_debug_visualizer == null:
+		return
+	if debug_mode:
+		if not _ai_debug_visualizer.is_debug_visible():
+			_ai_debug_visualizer.toggle_debug_display(player_id)
+			return
+		_ai_debug_visualizer.refresh_scores(player_id)
+		return
+	if _ai_debug_visualizer.is_debug_visible():
+		_ai_debug_visualizer.clear_scores()
 
 # All AI turn processing is now handled by TurnController
 # Legacy AI processing methods removed since TurnController handles all turn logic
@@ -4445,6 +4481,8 @@ func _start_first_turn() -> void:
 	DebugLogger.log("TurnProcessing", "_start_first_turn called for Player " + str(current_player))
 	DebugLogger.log("TurnProcessing", "Player " + str(current_player) + " is human: " + str(is_player_human(current_player)))
 	DebugLogger.log("TurnProcessing", "Player type: " + PlayerTypeEnum.type_to_string(get_player_type(current_player)))
+	if _sound_manager:
+		_sound_manager.play_game_music()
 
 	# Ensure PlayerStatusModal2 and IconsModal are visible for human players
 	if is_player_human(current_player):
@@ -4480,9 +4518,7 @@ func _start_first_turn() -> void:
 		DebugLogger.log("TurnProcessing", "AI Player " + str(current_player) + " starting first turn with TurnController...")
 		
 		# Enable debug display for AI turns
-		if _ai_debug_visualizer:
-			_ai_debug_visualizer.toggle_debug_display(current_player)
-			DebugLogger.log("TurnProcessing", "Enabled AI debug display for Player " + str(current_player))
+		_sync_ai_debug_display_for_player(current_player)
 		
 		await _turn_controller.start_turn(current_player)
 		await _await_pending_battles()

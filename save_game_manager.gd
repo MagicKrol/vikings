@@ -150,6 +150,17 @@ static func _apply_sound_settings(sound_manager: SoundManager, sound_enabled: bo
 	if not music_enabled:
 		sound_manager.stop_all_music()
 
+static func get_saved_locale() -> String:
+	if not FileAccess.file_exists(SETTINGS_FILE_PATH):
+		return ""
+	var config: ConfigFile = ConfigFile.new()
+	var error: int = config.load(SETTINGS_FILE_PATH)
+	if error != OK:
+		return ""
+	if not config.has_section_key("language", "locale"):
+		return ""
+	return String(config.get_value("language", "locale", "")).strip_edges()
+
 static func apply_save_data(game_manager: GameManager, save_data: Dictionary) -> void:
 	var game_state: Dictionary = save_data.get("game_state", {})
 	var source: Dictionary = save_data.get("source", {})

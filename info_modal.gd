@@ -319,6 +319,8 @@ func _set_region_action_sections_visible(is_visible: bool) -> void:
 func _apply_region_intel_overrides() -> void:
 	var is_intel_mode: bool = _is_current_region_intel_mode()
 	if not is_intel_mode:
+		_raise_army_action_section.visible = true
+		_garrison_action_section.visible = true
 		return
 	_set_region_action_sections_visible(false)
 	var mine_status: Label = get_node("RegionPanel/Body/Region/Actions/Mine/Info/Search/SearchStatus") as Label

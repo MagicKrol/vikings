@@ -627,7 +627,7 @@
 			"player_id": 3
 		},
 		{
-			"control_type": "Computer",
+			"control_type": "Player",
 			"player_id": 4
 		},
 		{
@@ -1922,7 +1922,7 @@
 			"owner": 0,
 			"population": 63,
 			"resources": {
-				"Food": 1,
+				"Food": 3,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -2708,7 +2708,7 @@
 			"owner": 0,
 			"population": 134,
 			"resources": {
-				"Food": 1,
+				"Food": 3,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -3575,7 +3575,7 @@
 				"Food": 0,
 				"Gold": 9,
 				"Iron": 2,
-				"Stone": 1,
+				"Stone": 2,
 				"Wood": 0
 			},
 			"type_display": "Hills"
@@ -3635,7 +3635,7 @@
 				"Food": 0,
 				"Gold": 10,
 				"Iron": 2,
-				"Stone": 1,
+				"Stone": 3,
 				"Wood": 0
 			},
 			"type_display": "Hills"
@@ -3846,7 +3846,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 1
+				"Wood": 2
 			},
 			"type_display": "Forest"
 		},
@@ -4040,7 +4040,7 @@
 			"owner": 4,
 			"population": 384,
 			"resources": {
-				"Food": 1,
+				"Food": 3,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -4070,7 +4070,7 @@
 			"owner": 4,
 			"population": 288,
 			"resources": {
-				"Food": 1,
+				"Food": 2,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -4260,6 +4260,7 @@
 		}
 	],
 	"scenario_type": "scenario",
+	"skip_intro": false,
 	"trade_disabled": true,
 	"victory_conditions": [
 		"conquer_after_events"

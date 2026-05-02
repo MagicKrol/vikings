@@ -253,7 +253,7 @@ animation = &"victory"
 
 [node name="Victory" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0, 1, 0)
-position = Vector2(6, 0)
+position = Vector2(7, 0)
 scale = Vector2(1.02, 1.02)
 sprite_frames = SubResource("SpriteFrames_nx4lj")
 animation = &"victory"

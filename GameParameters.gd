@@ -84,6 +84,16 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
+const DEMO_MODE_ENABLED: bool = true
+const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
+	"mission-1.json",
+	"mission-2.json",
+	"tutorial.json",
+	"Vikings Invasion.json"
+]
+const DEMO_ALLOWED_CUSTOM_MAP_FILES: Array[String] = [
+	"demo-999-small.json"
+]
 
 enum Difficulty {
 	EASY = 0,
@@ -461,7 +471,7 @@ const UNIT_STATS = {
 	},
 	SoldierTypeEnum.Type.SPEARMEN: {
 		"attack": 8,     # 10	% hit chance per unit
-		"defense": 20,    # 25% chance to deflect hits
+		"defense": 25,    # 25% chance to deflect hits
 		"cost": 2,        # Recruitment cost
 		"gold_cost": 2,
 		"food_cost": 0.1,

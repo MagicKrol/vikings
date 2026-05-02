@@ -64,13 +64,15 @@ func _process(delta: float) -> void:
 		return
 		
 	# Smooth camera movement
+	var pan_weight: float = clampf(pan_smoothing * delta, 0.0, 1.0)
+	var zoom_weight: float = clampf(zoom_smoothing * delta, 0.0, 1.0)
 	if smooth_pan:
-		global_position = global_position.lerp(target_position, pan_smoothing * delta)
+		global_position = global_position.lerp(target_position, pan_weight)
 	else:
 		global_position = target_position
 		
 	if smooth_zoom:
-		zoom = zoom.lerp(target_zoom, zoom_smoothing * delta)
+		zoom = zoom.lerp(target_zoom, zoom_weight)
 	else:
 		zoom = target_zoom
 

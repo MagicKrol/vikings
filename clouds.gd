@@ -13,6 +13,7 @@ const SHADOW_X_OFFSET: float = 50.0
 const SHADOW_Y_BASE: float = 100.0
 const SHADOW_Y_RANDOM: float = 100.0
 const SHADOW_BLUR_RADIUS: float = 18.0
+const CLOUD_TEXTURE_FILTER: int = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 static var _global_clouds_enabled: bool = true
 
 var _cloud_textures: Array[Texture2D] = []
@@ -67,6 +68,7 @@ func _spawn_cloud_pair_at(x_pos: float, y_pos: float) -> void:
 
 	var shadow := Sprite2D.new()
 	shadow.texture = texture
+	shadow.texture_filter = CLOUD_TEXTURE_FILTER
 	shadow.material = _shadow_material
 	shadow.scale = Vector2(scale_value, scale_value)
 	shadow.position = Vector2(SHADOW_X_OFFSET, SHADOW_Y_BASE + _rng.randf_range(0.0, SHADOW_Y_RANDOM))
@@ -76,6 +78,7 @@ func _spawn_cloud_pair_at(x_pos: float, y_pos: float) -> void:
 
 	var cloud := Sprite2D.new()
 	cloud.texture = texture
+	cloud.texture_filter = CLOUD_TEXTURE_FILTER
 	cloud.scale = Vector2(scale_value, scale_value)
 	cloud.z_index = 0
 	cloud_pair.add_child(cloud)

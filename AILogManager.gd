@@ -6,8 +6,12 @@ var current_file_path: String = ""
 var current_game_label: String = ""
 var ascii = preload("res://ascii_utils.gd")
 var last_logged_turn: int = -1
+var logging_enabled: bool = not GameParameters.DEMO_MODE_ENABLED
 
 func start_new_game_log(raw_label: String) -> void:
+	if not logging_enabled:
+		current_file_path = ""
+		return
 	current_game_label = _sanitize_label(raw_label)
 	_prepare_logs_directory()
 	last_logged_turn = -1
@@ -214,6 +218,10 @@ func _append_turn_header(turn_number: int) -> void:
 	_append_lines(lines)
 
 func _append_lines(lines: Array[String]) -> void:
+	if not logging_enabled:
+		return
+	if current_file_path == "":
+		return
 	var file := _open_file(current_file_path, FileAccess.READ_WRITE)
 	file.seek_end()
 	for line in lines:
