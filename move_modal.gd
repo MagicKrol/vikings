@@ -93,7 +93,7 @@ func show_move_modal(army: Army) -> void:
 	modal_ui_manager.set_modal_active(false)
 	visible = true
 	modal_ui_manager.set_overlay_suppressed(true)
-	army_manager.ensure_selected_move_targets_highlighted()
+	army_manager.refresh_selected_move_targets()
 	
 	# Position at bottom center of screen
 	# Modal is already positioned in the scene file at offset_top = 360

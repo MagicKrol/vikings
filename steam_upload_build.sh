@@ -8,9 +8,17 @@ WIN_TARGET_DIR="$CONTENT_BUILDER_ROOT/content/windows"
 APP_BUILD_VDF="../scripts/app_build_4694060.vdf"
 STEAM_LOGIN="jjmelior"
 EXPORT_DIR="/Users/magic/vikings/pcexport"
+PROJECT_DIR="/Users/magic/vikings"
+MAC_EXPORT_PRESET="macos"
+WIN_EXPORT_PRESET="windows"
 MAC_APP_SRC="$EXPORT_DIR/HornOfTheWarlord.app"
 WIN_EXE_SRC="$EXPORT_DIR/HornOfTheWarlord.exe"
 WIN_PCK_SRC="$EXPORT_DIR/HornOfTheWarlord.pck"
+
+mkdir -p "$EXPORT_DIR"
+
+godot4 --headless --path "$PROJECT_DIR" --export-release "$WIN_EXPORT_PRESET" "$WIN_EXE_SRC"
+godot4 --headless --path "$PROJECT_DIR" --export-release "$MAC_EXPORT_PRESET" "$MAC_APP_SRC"
 
 if [ -d "$EXPORT_DIR/hornofthewarlord.app" ] && [ ! -d "$MAC_APP_SRC" ]; then
 	mv "$EXPORT_DIR/hornofthewarlord.app" "$MAC_APP_SRC"

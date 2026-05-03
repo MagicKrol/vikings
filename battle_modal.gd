@@ -66,6 +66,7 @@ var _power_progress_style_yellow: StyleBoxTexture
 var _power_progress_style_red: StyleBoxTexture
 var _initial_attacker_power: int = 0
 var _initial_defender_power: int = 0
+var _initial_defender_vigor_percent: int = 100
 
 const POWER_PROGRESS_TEX_EMPTY: Texture2D = preload("res://images/progressbar_empty.png")
 const POWER_PROGRESS_TEX_GREEN: Texture2D = preload("res://images/progressbar_green.png")
@@ -297,9 +298,28 @@ func _update_effectiveness_displays() -> void:
 	var attacker_vigor = attacking_army.get_efficiency()
 	attacker_effectiveness.text = str(attacker_vigor) + "%"
 	
-	# Defender vigor: garrison always 100%, armies use their efficiency
-	# For now, we're always fighting against garrison, so it's 100%
-	defender_effectiveness.text = tr("100%")
+	defender_effectiveness.text = str(_initial_defender_vigor_percent) + "%"
+
+
+func _calculate_initial_defender_vigor_percent(defending_armies: Array[Army], garrison_comp: ArmyComposition) -> int:
+	var weighted_vigor_sum: int = 0
+	var total_units: int = 0
+	for defending_army in defending_armies:
+		var defending_army_units: int = 0
+		for unit_type in SoldierTypeEnum.get_all_types():
+			defending_army_units += defending_army.get_soldier_count(unit_type)
+		if defending_army_units <= 0:
+			continue
+		var defending_army_vigor: int = defending_army.get_efficiency()
+		weighted_vigor_sum += defending_army_units * defending_army_vigor
+		total_units += defending_army_units
+	var garrison_units: int = garrison_comp.get_total_soldiers()
+	if garrison_units > 0:
+		weighted_vigor_sum += garrison_units * 100
+		total_units += garrison_units
+	if total_units <= 0:
+		return 100
+	return int(round(float(weighted_vigor_sum) / float(total_units)))
 
 
 func _display_battle_report() -> void:
@@ -560,6 +580,7 @@ func _run_battle_simulation() -> void:
 	# Reset display data
 	current_attacker_composition = {}
 	current_defender_composition = {}
+	_initial_defender_vigor_percent = 100
 	
 	# Store initial compositions for display (aggregate attackers/defenders via BattleManager)
 	var gm = get_node("../../GameManager") as GameManager
@@ -575,6 +596,7 @@ func _run_battle_simulation() -> void:
 				current_attacker_composition[unit_type] = current_attacker_composition.get(unit_type, 0) + c
 	# Aggregate defenders: armies + garrison + recruits
 	var def_comps: Array = bm.get_pending_defending_compositions()
+	var pending_defending_armies: Array[Army] = bm.get_pending_defending_armies()
 	for comp in def_comps:
 		for unit_type in SoldierTypeEnum.get_all_types():
 			var c = comp.get_soldier_count(unit_type)
@@ -582,6 +604,7 @@ func _run_battle_simulation() -> void:
 				current_defender_composition[unit_type] = current_defender_composition.get(unit_type, 0) + c
 	# Add garrison to display
 	var garrison_comp = defending_region.get_garrison()
+	_initial_defender_vigor_percent = _calculate_initial_defender_vigor_percent(pending_defending_armies, garrison_comp)
 	for unit_type in SoldierTypeEnum.get_all_types():
 		var gc = garrison_comp.get_soldier_count(unit_type)
 		if gc > 0:
