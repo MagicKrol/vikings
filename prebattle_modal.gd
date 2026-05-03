@@ -654,6 +654,9 @@ func _update_attack_button_text() -> void:
 		attack_button.text = tr(CONTINUE_TEXT)
 
 func _update_attack_button_state() -> void:
+	if _should_bombard_first():
+		attack_button.disabled = false
+		return
 	var ladders: int = siege_counts.get("ladders", 0)
 	var rams: int = siege_counts.get("rams", 0)
 	var assault_ratio: float = _calculate_assault_effectiveness_ratio()

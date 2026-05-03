@@ -370,18 +370,18 @@ const SIEGE_RAM_FOCUS_RANGED = 25				# Number of ranged attackers that prioritiz
 ## Castle Defense Bonuses
 const CASTLE_DEFENSE_BONUSES = {
 	CastleTypeEnum.Type.NONE: 0,          # No castle
-	CastleTypeEnum.Type.OUTPOST: 40,      # Outpost 
-	CastleTypeEnum.Type.KEEP: 55,         # Keep
-	CastleTypeEnum.Type.CASTLE: 70,       # Castle 
-	CastleTypeEnum.Type.STRONGHOLD: 85    # Stronghold 
+	CastleTypeEnum.Type.OUTPOST: 60,      # Outpost 
+	CastleTypeEnum.Type.KEEP: 70,         # Keep
+	CastleTypeEnum.Type.CASTLE: 80,       # Castle 
+	CastleTypeEnum.Type.STRONGHOLD: 90    # Stronghold 
 }
 
 const CASTLE_DEFENSE_BONUSES_MIN = {
 	CastleTypeEnum.Type.NONE: 0,          # No castle - 0% hit avoidance
-	CastleTypeEnum.Type.OUTPOST: 10,      # Outpost - 20% hit avoidance  
-	CastleTypeEnum.Type.KEEP: 25,         # Keep - 40% hit avoidance
-	CastleTypeEnum.Type.CASTLE: 30,       # Castle - 60% hit avoidance
-	CastleTypeEnum.Type.STRONGHOLD: 40    # Stronghold - 75% hit avoidance
+	CastleTypeEnum.Type.OUTPOST: 30,      # Outpost - 20% hit avoidance  
+	CastleTypeEnum.Type.KEEP: 45,         # Keep - 40% hit avoidance
+	CastleTypeEnum.Type.CASTLE: 50,       # Castle - 60% hit avoidance
+	CastleTypeEnum.Type.STRONGHOLD: 60    # Stronghold - 75% hit avoidance
 }
 
 const CASTLE_WALLS_GATES = {
@@ -391,7 +391,7 @@ const CASTLE_WALLS_GATES = {
 		"wall_sections": 2,
 		"wall_hp": 2,
 		"trebuchet_damage_to_defense": 10,
-		"wall_section_assault": 10
+		"wall_section_assault": 20
 	},      # Outpost 
 	CastleTypeEnum.Type.KEEP: {
 		"gates": 1,
@@ -399,7 +399,7 @@ const CASTLE_WALLS_GATES = {
 		"wall_sections": 4,
 		"wall_hp": 2,
 		"trebuchet_damage_to_defense": 7,
-		"wall_section_assault": 10
+		"wall_section_assault": 20
 	},         # Keep
 	CastleTypeEnum.Type.CASTLE: {
 		"gates": 2,
@@ -407,15 +407,15 @@ const CASTLE_WALLS_GATES = {
 		"wall_sections": 6,
 		"wall_hp": 3,
 		"trebuchet_damage_to_defense": 6,
-		"wall_section_assault": 10
+		"wall_section_assault": 20
 	},      # Castle 
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"gates": 3,
 		"gate_hp": 7,
 		"wall_sections": 8,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 5.,
-		"wall_section_assault": 10
+		"trebuchet_damage_to_defense": 5,
+		"wall_section_assault": 20
 	}, 
 }
 

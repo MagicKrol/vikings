@@ -968,6 +968,9 @@ func get_pending_attacking_compositions() -> Array:
 func get_pending_defending_compositions() -> Array:
 	return _compositions_from_armies(_pending_defenders)
 
+func get_pending_defending_armies() -> Array[Army]:
+	return _pending_defenders
+
 func get_pending_garrison() -> ArmyComposition:
 	return _pending_garrison
 
