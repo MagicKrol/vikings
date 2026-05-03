@@ -345,6 +345,7 @@ const ARMOR_PIERCING_DEFENSE_REDUCTION = 0.5    # Halves enemy defense (50% redu
 
 ## Long-Spears Bonuses
 const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry units
+const DEFENDER_ATTACK_MULTIPLIER = 2.0          # 100% attack bonus when defending for defender-trait units
 
 # Wounded system
 const WOUNDED_CHANCE = 0.30						# Base chance per casualty to become wounded (0..1)
@@ -460,7 +461,7 @@ const CASTLE_RECRUITMENT_TIERS = {
 const UNIT_STATS = {
 	SoldierTypeEnum.Type.PEASANTS: {
 		"attack": 5,      # 5% hit chance per unit
-		"defense": 10,    # 10% chance to deflect hits
+		"defense": 8,    # 10% chance to deflect hits
 		"cost": 1,        # Free recruitment (food cost 0.1 handled separately)
 		"gold_cost": 1,
 		"food_cost": 0.1,
@@ -526,7 +527,7 @@ const UNIT_STATS = {
 	},
 	SoldierTypeEnum.Type.KNIGHTS: {
 		"attack": 35,     # 60% hit chance per unit
-		"defense": 65,    # 60% chance to deflect hits
+		"defense": 70,    # 60% chance to deflect hits
 		"cost": 6,       # Recruitment cost
 		"gold_cost": 6,
 		"food_cost": 0.1,
@@ -536,10 +537,10 @@ const UNIT_STATS = {
 		"power": 10
 	},
 	SoldierTypeEnum.Type.MOUNTED_KNIGHTS: {
-		"attack": 35,     # 65% hit chance per unit
+		"attack": 40,     # 65% hit chance per unit
 		"defense": 70,    # 60% chance to deflect hits
-		"cost": 9,       # Recruitment cost
-		"gold_cost": 9,
+		"cost": 8,       # Recruitment cost
+		"gold_cost": 8,
 		"food_cost": 0.2,
 		"wood_cost": 0,
 		"iron_cost": 1,
@@ -549,7 +550,7 @@ const UNIT_STATS = {
 	SoldierTypeEnum.Type.ROYAL_GUARD: {
 		"attack": 40,     # 80% hit chance per unit
 		"defense": 85,    # 80% chance to deflect hits
-		"cost": 12,       # Recruitment cost
+		"cost": 10,       # Recruitment cost
 		"gold_cost": 12,
 		"food_cost": 0.1,
 		"wood_cost": 0,

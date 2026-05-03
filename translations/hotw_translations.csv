@@ -321,8 +321,8 @@ trait_desc_multi_attack,Unit Trait,Provides additional attack,Gewährt zusätzli
 trait_desc_armor_piercing,Unit Trait,Halves enemy defense.,Halbiert die Verteidigung des Gegners.,Zmniejsza obronę wroga o połowę.,Reduz a defesa do inimigo pela metade.
 trait_desc_siege_laborer,Unit Trait,Can constuct siege equipment.,Kann Belagerungsgeräte bauen.,Pozwala budować machiny oblężnicze.,Pode construir equipamentos de cerco.
 trait_desc_back_rank,Unit Trait,Protected by melee units from close combat damage.,Wird durch Nahkampfeinheiten vor Schaden im Nahkampf geschützt.,Chroniony przez jednostki walczące wręcz przed obrażeniami w zwarciu.,Protegido por unidades corpo a corpo contra dano em combate próximo.
-trait_desc_defender,Unit Trait,50% attack bonus when defending.,50 % Angriffsbonus bei der Verteidigung.,50% bonusu do ataku podczas obrony.,Bônus de 50% no ataque ao defender.
-trait_desc_ranged,Unit Trait,Can attack all units.,Kann alle Einheiten angreifen.,Może atakować wszystkie jednostki.,Pode atacar todas as unidades.
+trait_desc_defender,Unit Trait,Doubled attack when defending.,Doppelter Angriff bei der Verteidigung.,Podwójny atak podczas obrony.,Ataque dobrado ao defender.
+trait_desc_ranged,Unit Trait,Free Opening Volley,Kostenlose Eröffnungssalve zu Beginn der Schlacht,Otwierająca salwa na początku bitwy,Salva de abertura gratuita no início da batalha
 Filename,Save game filename,Filename,Dateiname,Nazwa pliku,Nome do arquivo
 Type,"Game Type (skirmish, campaign)",Type,Typ,Typ,Tipo
 Time,Save game time,Time,Zeit,Czas,Tempo

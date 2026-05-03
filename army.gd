@@ -130,6 +130,15 @@ func spend_movement_points(cost: int) -> void:
 	movement_points -= cost
 	_emit_movement_points_changed()
 
+func set_movement_points_clamped(new_points: int) -> void:
+	"""Set movement points with non-negative clamp and emit signal."""
+	movement_points = maxi(0, new_points)
+	_emit_movement_points_changed()
+
+func spend_movement_points_clamped(cost: int) -> void:
+	"""Spend movement points with non-negative clamp."""
+	set_movement_points_clamped(movement_points - cost)
+
 func make_camp() -> void:
 	"""Make camp - reduces movement points and restores efficiency"""
 	if movement_points <= 0:

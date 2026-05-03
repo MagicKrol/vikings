@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cwr00tkaux1gm"]
+[gd_scene load_steps=7 format=3 uid="uid://cwr00tkaux1gm"]
 
 [ext_resource type="Script" path="res://transfer_select_modal.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://c3duu81d31031" path="res://images/selectmenu.png" id="2_djmmn"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="3_8g2pb"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="4_standard"]
+[ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="5_noactions"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oefgf"]
 
@@ -72,3 +73,10 @@ vertical_alignment = 1
 [node name="ButtonContainer" type="VBoxContainer" parent="InnerPanel"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="NoActions" parent="." instance=ExtResource("5_noactions")]
+layout_mode = 1
+offset_left = 160.0
+offset_top = -90.0
+offset_right = 560.0
+offset_bottom = 60.0

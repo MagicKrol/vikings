@@ -1694,9 +1694,24 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="Transfer/VBoxContainer"]
-custom_minimum_size = Vector2(150, 0)
+[node name="Buttons" type="HBoxContainer" parent="Transfer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Transfer" type="Button" parent="Transfer/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("4_1d8nt")
-text = "Close"
+text = "Transfer"
+
+[node name="MarginContainer" type="MarginContainer" parent="Transfer/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="Cancel" type="Button" parent="Transfer/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("4_1d8nt")
+text = "Cancel"

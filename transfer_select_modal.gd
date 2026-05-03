@@ -14,6 +14,7 @@ const HEADER_TEXT := "Select Target"
 const BUTTON_FONT: Font = preload("res://fonts/Cinzel.ttf")
 
 @onready var header_label: Label = get_node("InnerPanel/HeaderSection/HeaderLabel")
+@onready var no_actions_tooltip: SelectTooltipModalNoRes = get_node("NoActions") as SelectTooltipModalNoRes
 
 func _ready():
 	super._ready()
@@ -97,7 +98,8 @@ func _create_army_definition(army: Army) -> Dictionary:
 
 	return {
 		"text": tr("Army %s") % army.number,
-		"enabled": true,
+		"enabled": army.get_movement_points() > 0,
+		"tooltip_key": "army_has_no_movement_points",
 		"action": "_on_army_button_pressed",
 		"action_target": army
 	}
@@ -114,6 +116,7 @@ func _create_button_from_definition(definition: Dictionary, is_first: bool, is_l
 	else:
 		button = _make_disabled_action_button(text, is_first, is_last, BUTTON_FONT)
 		_prepare_disabled_button(button)
+		_connect_disabled_button_tooltip(button, definition)
 
 	return button
 
@@ -144,6 +147,25 @@ func _connect_button_action(button: Button, definition: Dictionary) -> void:
 		button.pressed.connect(Callable(self, action_name).bind(definition.action_target))
 	else:
 		button.pressed.connect(Callable(self, action_name))
+
+func _connect_disabled_button_tooltip(button: Button, definition: Dictionary) -> void:
+	if not definition.has("tooltip_key"):
+		return
+	var tooltip_key: String = String(definition.get("tooltip_key", ""))
+	if tooltip_key == "":
+		return
+	button.mouse_entered.connect(func(): _show_disabled_button_tooltip(tooltip_key))
+	button.mouse_exited.connect(func(): _hide_disabled_button_tooltip())
+
+func _show_disabled_button_tooltip(tooltip_key: String) -> void:
+	no_actions_tooltip.show_tooltip(tooltip_key)
+
+func _hide_disabled_button_tooltip() -> void:
+	no_actions_tooltip.hide_tooltip()
+
+func hide_tooltips() -> void:
+	super.hide_tooltips()
+	_hide_disabled_button_tooltip()
 
 
 func _on_back_button_pressed() -> void:

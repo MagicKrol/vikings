@@ -65,7 +65,7 @@ NAMES = {
 CHARGE_BONUS_GRASSLAND = 1.0             # adds to multiplier (=> 2.0x total)
 ARMOR_PIERCING_DEFENSE_REDUCTION = 0.5   # subtract from defense chance
 LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0
-DEFENDER_ATTACK_MULTIPLIER = 1.5
+DEFENDER_ATTACK_MULTIPLIER = 2.0
 MAX_ROUNDS = 1000
 
 # =========================================
@@ -82,14 +82,14 @@ UNIT_STATS = {
 	},
 	SPEARMEN: {
 		"attack": 8,
-		"defense": 20,
+		"defense": 25,
 		"power": 3,
 		"cost": 2,
 		"traits": [LONG_SPEARS, SIEGE_LABORER, DEFENDER],
 	},
 	SWORDSMEN: {
-		"attack": 14,
-		"defense": 35,
+		"attack": 15,
+		"defense": 40,
 		"power": 4,
 		"cost": 3,
 		"traits": [SIEGE_LABORER],
@@ -103,13 +103,13 @@ UNIT_STATS = {
 	},
 	CROSSBOWMEN: {
 		"attack": 10,
-		"defense": 15,
+		"defense": 20,
 		"power": 4,
 		"cost": 3,
 		"traits": [RANGED, ARMOR_PIERCING, BACK_RANK],
 	},
 	HORSEMEN: {
-		"attack": 15,
+		"attack": 20,
 		"defense": 25,
 		"power": 5,
 		"cost": 4,
@@ -117,23 +117,23 @@ UNIT_STATS = {
 	},
 	KNIGHTS: {
 		"attack": 35,
-		"defense": 65,
+		"defense": 70,
 		"power": 10,
-		"cost": 7,
+		"cost": 6,
 		"traits": [],
 	},
 	MOUNTED_KNIGHTS: {
-		"attack": 35,
+		"attack": 40,
 		"defense": 70,
 		"power": 12,
-		"cost": 10,
+		"cost": 9,
 		"traits": [FLANKER, CHARGE],
 	},
 	ROYAL_GUARD: {
 		"attack": 40,
 		"defense": 85,
 		"power": 30,
-		"cost": 18,
+		"cost": 12,
 		"traits": [MULTI_ATTACK, ARMOR_PIERCING],
 	},
 }
@@ -639,13 +639,13 @@ class BattleApp:
 				assault = self._read_percentage_var(self.assault_var, 100)
 				defense_bonus = self._read_percentage_var(self.defense_var, 0)
 				defense_mod = self._read_ratio_var(self.defense_mod_var, 1.0)
-				self.snapshot = (att0, def0, seed, grass, assault, defense_bonus, defense_mod)
+				self.snapshot = (dict(att0), dict(def0), seed, grass, assault, defense_bonus, defense_mod)
 				self.fight_text.set("Repeat")
 			else:
 				# Repeat
 				att0, def0, _, grass, assault, defense_bonus, defense_mod = self.snapshot
 				seed = self._get_seed_int(force_new=not self.keep_seed_var.get())
-				self.snapshot = (att0, def0, seed, grass, assault, defense_bonus, defense_mod)
+				self.snapshot = (dict(att0), dict(def0), seed, grass, assault, defense_bonus, defense_mod)
 			self.grassland_var.set(grass)
 			self.seed_var.set(str(seed))
 			self.assault_var.set(str(assault))

@@ -44,6 +44,7 @@ const TOOLTIP_TEXTS = {
 	"call_to_arms": "Gather recruits from neighboring regions.",
 	"ore_search": "Search for gold or iron ores.",
 	"conquered_region_blocked": "This region cannot be managed on the turn it was conquered.",
+	"army_has_no_movement_points": "Army has no movement points.",
 	
 	# Generic army tooltip (for army buttons in SelectModal)
 	"army": "Select this army to view available actions: movement, recruitment, transfers."

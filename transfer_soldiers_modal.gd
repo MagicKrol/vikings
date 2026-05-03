@@ -22,7 +22,8 @@ var unit_sliders: Array[HSlider] = []
 var unit_total_counts: Array[int] = []
 var unit_original_target_counts: Array[int] = []
 var unit_desired_target_counts: Array[int] = []
-var continue_button: Button
+var transfer_button: Button
+var cancel_button: Button
 
 # Transfer data
 var source_army: Army = null
@@ -53,14 +54,16 @@ func _ready():
 	# Get references to static UI elements from scene
 	target_name_label = get_node("Transfer/VBoxContainer/SubHeader/HBoxContainer/Target")
 	source_name_label = get_node("Transfer/VBoxContainer/SubHeader/HBoxContainer/Source")
-	continue_button = get_node("Transfer/VBoxContainer/Button")
+	transfer_button = get_node("Transfer/VBoxContainer/Buttons/Transfer")
+	cancel_button = get_node("Transfer/VBoxContainer/Buttons/Cancel")
 	
 	# Get references to unit UI elements
 	_get_unit_ui_references()
 	_connect_unit_sliders()
 	
-	# Connect button signal
-	continue_button.pressed.connect(_on_continue_pressed)
+	# Connect button signals
+	transfer_button.pressed.connect(_on_transfer_pressed)
+	cancel_button.pressed.connect(_on_cancel_pressed)
 	
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
@@ -117,6 +120,7 @@ func show_transfer_to_garrison(army: Army, region: Region) -> void:
 	# Set modal mode active
 	if ui_manager:
 		ui_manager.set_modal_active(true)
+	_update_transfer_button_state()
 
 func show_transfer_to_army(source: Army, target: Army, region: Region) -> void:
 	"""Show the transfer soldiers modal with army to army transfer"""
@@ -137,6 +141,7 @@ func show_transfer_to_army(source: Army, target: Army, region: Region) -> void:
 	# Set modal mode active
 	if ui_manager:
 		ui_manager.set_modal_active(true)
+	_update_transfer_button_state()
 
 # Legacy function for backwards compatibility
 func show_transfer(army: Army, region: Region) -> void:
@@ -159,6 +164,15 @@ func hide_modal() -> void:
 		ui_manager.restore_select_context()
 	if move_modal != null and reopen_army != null:
 		move_modal.show_move_modal(reopen_army)
+
+func _has_pending_changes() -> bool:
+	for i in range(unit_desired_target_counts.size()):
+		if int(unit_desired_target_counts[i]) != int(unit_original_target_counts[i]):
+			return true
+	return false
+
+func _update_transfer_button_state() -> void:
+	transfer_button.disabled = not _has_pending_changes()
 
 func _update_display() -> void:
 	"""Update the display with current transfer information"""
@@ -198,7 +212,7 @@ func _update_unit_displays() -> void:
 		DebugLogger.log("UISystem", "Unit " + SoldierTypeEnum.type_to_string(unit_type) + ": target=" + str(target_count) + ", source=" + str(source_count))
 		target_value_label.text = str(target_count)
 		source_value_label.text = str(source_count)
-		var total_units = source_count + target_count
+		var total_units: int = source_count + target_count
 		unit_total_counts.append(total_units)
 		unit_original_target_counts.append(target_count)
 		unit_desired_target_counts.append(target_count)
@@ -208,6 +222,7 @@ func _update_unit_displays() -> void:
 		slider.value = float(source_count)
 		slider.editable = total_units > 0
 	_ui_lock = false
+	_update_transfer_button_state()
 
 func _on_unit_slider_changed(value: float, unit_index: int) -> void:
 	"""Handle transfer adjustments triggered by sliders"""
@@ -229,6 +244,7 @@ func _on_unit_slider_changed(value: float, unit_index: int) -> void:
 	unit_desired_target_counts[unit_index] = new_target
 	unit_target_value_labels[unit_index].text = str(new_target)
 	unit_source_value_labels[unit_index].text = str(new_source)
+	_update_transfer_button_state()
 
 func _clamp_target_count_for_army_constraints(unit_index: int, proposed_target_count: int) -> int:
 	var total_units_for_type: int = unit_total_counts[unit_index]
@@ -259,8 +275,10 @@ func _sum_all_unit_totals() -> int:
 		total += int(count)
 	return total
 
-func _on_continue_pressed() -> void:
-	"""Handle Continue button press"""
+func _on_transfer_pressed() -> void:
+	"""Handle Transfer button press"""
+	if transfer_button.disabled:
+		return
 	# Play click sound
 	if sound_manager:
 		sound_manager.click_sound()
@@ -271,9 +289,17 @@ func _on_continue_pressed() -> void:
 	# Hide modal
 	hide_modal()
 
+func _on_cancel_pressed() -> void:
+	"""Handle Cancel button press"""
+	if sound_manager:
+		sound_manager.click_sound()
+	hide_modal()
+
 func _apply_transfer_changes() -> void:
 	"""Apply transfers based on current button selections"""
 	var has_transfers = false
+	var total_to_target: int = 0
+	var total_to_source: int = 0
 	for i in range(unit_types.size()):
 		var unit_type = unit_types[i]
 		var original_target_count = unit_original_target_counts[i]
@@ -283,6 +309,7 @@ func _apply_transfer_changes() -> void:
 			continue
 		has_transfers = true
 		if transfer_amount > 0:
+			total_to_target += transfer_amount
 			# Transfer from source to target
 			if source_army != null:
 				source_army.remove_soldiers(unit_type, transfer_amount)
@@ -294,6 +321,7 @@ func _apply_transfer_changes() -> void:
 		else:
 			# Transfer from target to source
 			var actual_transfer = -transfer_amount
+			total_to_source += actual_transfer
 			target_army.remove_soldiers(unit_type, actual_transfer)
 			if source_army != null:
 				source_army.add_soldiers(unit_type, actual_transfer)
@@ -302,5 +330,18 @@ func _apply_transfer_changes() -> void:
 				target_region.get_garrison().add_soldiers(unit_type, actual_transfer)
 				DebugLogger.log("UISystem", "Transferred " + str(actual_transfer) + " " + SoldierTypeEnum.type_to_string(unit_type) + " from army " + str(target_army.number) + " to garrison")
 	if has_transfers:
-		target_army.spend_movement_points(1)
-		DebugLogger.log("UISystem", "Army " + str(target_army.number) + " spent 1 movement point for transfer (remaining: " + str(target_army.get_movement_points()) + ")")
+		if source_army != null:
+			var target_mp_before: int = target_army.get_movement_points()
+			var source_mp_before: int = source_army.get_movement_points()
+			var receiver_army: Army = target_army
+			if total_to_source > total_to_target:
+				receiver_army = source_army
+			var min_mp: int = mini(target_mp_before, source_mp_before)
+			receiver_army.set_movement_points_clamped(min_mp)
+			target_army.spend_movement_points_clamped(1)
+			source_army.spend_movement_points_clamped(1)
+			DebugLogger.log("UISystem", "Army transfer MP update: receiver=Army " + str(receiver_army.number) + " min_mp=" + str(min_mp) + " | Army " + str(target_army.number) + " MP " + str(target_mp_before) + "->" + str(target_army.get_movement_points()) + ", Army " + str(source_army.number) + " MP " + str(source_mp_before) + "->" + str(source_army.get_movement_points()))
+		else:
+			var army_mp_before: int = target_army.get_movement_points()
+			target_army.spend_movement_points_clamped(1)
+			DebugLogger.log("UISystem", "Army " + str(target_army.number) + " spent 1 movement point for transfer with garrison (MP " + str(army_mp_before) + "->" + str(target_army.get_movement_points()) + ")")
