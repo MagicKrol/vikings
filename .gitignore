@@ -43,6 +43,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 export/
+pcexport/
+logs/
 
 # OS generated files
 .DS_Store
@@ -53,3 +55,4 @@ export/
 ehthumbs.db
 Thumbs.dbPSDs/background_cean.psd
 PSDs/background_cean.psd
+

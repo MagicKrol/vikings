@@ -1,0 +1,2 @@
+extends MessageModal
+class_name EventMessageModal
