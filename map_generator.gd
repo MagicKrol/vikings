@@ -133,6 +133,12 @@ func _load_json_data() -> void:
 	map_data = json.data
 	regions = map_data.get("regions", [])
 	edges = map_data.get("edges", [])
+	for region in regions:
+		var biome_name: String = String(region.get("biome", "")).to_lower()
+		if biome_name == "lake":
+			region["ocean"] = true
+			region["water"] = true
+			region["biome"] = "ocean"
 	DebugLogger.log("MapGeneration", "Loaded map: regions=" + str(regions.size()) + ", edges=" + str(edges.size()) + ", file=" + path)
 	map_profile = Utils.resolve_map_profile(data_file_path, regions.size())
 	map_region_count = int(map_profile.get("region_count", regions.size()))

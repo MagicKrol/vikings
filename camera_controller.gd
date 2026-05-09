@@ -46,6 +46,7 @@ var last_mouse_position: Vector2
 var touch_enabled: bool = true
 var drag_button: int = 0
 var tutorial_signal_enabled: bool = false
+@onready var ui_manager: UIManager = get_node("../UI/UIManager") as UIManager
 
 func _ready() -> void:
 	# Initialize target values to current values
@@ -104,6 +105,8 @@ func _handle_mouse_input(event: InputEventMouseButton) -> void:
 	if event.pressed:
 		var zoom_amount = 0.1
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			if _is_zoom_blocked_by_modal():
+				return
 			var new_zoom = target_zoom * (1.0 + zoom_amount)
 			target_zoom = Vector2(
 				clamp(new_zoom.x, min_zoom, max_zoom),
@@ -111,6 +114,8 @@ func _handle_mouse_input(event: InputEventMouseButton) -> void:
 			)
 			_emit_camera_zoomed()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			if _is_zoom_blocked_by_modal():
+				return
 			var new_zoom = target_zoom * (1.0 - zoom_amount)
 			target_zoom = Vector2(
 				clamp(new_zoom.x, min_zoom, max_zoom),
@@ -164,6 +169,8 @@ func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 
 	match event.keycode:
 		KEY_Q:
+			if _is_zoom_blocked_by_modal():
+				return
 			var new_zoom = target_zoom * (1.0 + zoom_amount)
 			target_zoom = Vector2(
 				clamp(new_zoom.x, min_zoom, max_zoom),
@@ -171,6 +178,8 @@ func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 			)
 			_emit_camera_zoomed()
 		KEY_E:
+			if _is_zoom_blocked_by_modal():
+				return
 			var new_zoom = target_zoom * (1.0 - zoom_amount)
 			target_zoom = Vector2(
 				clamp(new_zoom.x, min_zoom, max_zoom),
@@ -210,6 +219,8 @@ func _handle_drag_event(event: InputEventScreenDrag) -> void:
 
 func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 	# Handle pinch-to-zoom using magnify gesture (preferred on macOS)
+	if _is_zoom_blocked_by_modal():
+		return
 	var zoom_factor = event.factor
 	var new_zoom = target_zoom * zoom_factor
 	target_zoom = Vector2(
@@ -217,6 +228,9 @@ func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 		clamp(new_zoom.y, min_zoom, max_zoom)
 	)
 	_emit_camera_zoomed()
+
+func _is_zoom_blocked_by_modal() -> bool:
+	return ui_manager.is_modal_active and not ui_manager.is_only_info_modal_visible()
 
 func _handle_pan_gesture(event: InputEventPanGesture) -> void:
 	# Handle two-finger pan gesture (macOS trackpad primary method)

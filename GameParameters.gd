@@ -84,7 +84,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = true
+const DEMO_MODE_ENABLED: bool = false
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",

@@ -888,26 +888,31 @@ func _update_region_resource_values() -> void:
 		growth_value.modulate = Color.WHITE
 
 	var income_value = get_node("RegionPanel/Body/Region/RegionResources/Income/Value") as Label
-	income_value.text = str(current_region.get_income())
+	income_value.text = _format_income_value(current_region.get_income())
 
 	var food_value = get_node("RegionPanel/Body/Region/RegionResources/Food/Value") as Label
-	food_value.text = str(current_region.get_resource_amount(ResourcesEnum.Type.FOOD))
+	food_value.text = _format_income_value(current_region.get_resource_amount(ResourcesEnum.Type.FOOD))
 	var wood_value = get_node("RegionPanel/Body/Region/RegionResources/Wood/Value") as Label
-	wood_value.text = str(current_region.get_resource_amount(ResourcesEnum.Type.WOOD))
+	wood_value.text = _format_income_value(current_region.get_resource_amount(ResourcesEnum.Type.WOOD))
 	var stone_value = get_node("RegionPanel/Body/Region/RegionResources/Stone/Value") as Label
-	stone_value.text = str(current_region.get_resource_amount(ResourcesEnum.Type.STONE))
+	stone_value.text = _format_income_value(current_region.get_resource_amount(ResourcesEnum.Type.STONE))
 
 	var iron_amount: int = current_region.get_resource_amount(ResourcesEnum.Type.IRON)
 	var iron_container = get_node("RegionPanel/Body/Region/RegionResources/Iron") as HBoxContainer
 	iron_container.visible = iron_amount > 0 and current_region.can_collect_resource(ResourcesEnum.Type.IRON)
 	var iron_value = get_node("RegionPanel/Body/Region/RegionResources/Iron/Value") as Label
-	iron_value.text = str(iron_amount)
+	iron_value.text = _format_income_value(iron_amount)
 
 	var gold_amount: int = current_region.get_resource_amount(ResourcesEnum.Type.GOLD)
 	var gold_container = get_node("RegionPanel/Body/Region/RegionResources/Gold") as HBoxContainer
 	gold_container.visible = gold_amount > 0 and current_region.can_collect_resource(ResourcesEnum.Type.GOLD)
 	var gold_value = get_node("RegionPanel/Body/Region/RegionResources/Gold/Value") as Label
-	gold_value.text = str(gold_amount)
+	gold_value.text = _format_income_value(gold_amount)
+
+func _format_income_value(value: int) -> String:
+	if value == 0:
+		return "0"
+	return "+" + str(value)
 
 func _update_construction_status() -> void:
 	"""Update construction status label"""

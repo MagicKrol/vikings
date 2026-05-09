@@ -135,8 +135,8 @@ func _ready():
 	total_wood_label = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TotalWood")
 	total_iron_label = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/TotalIron")
 	available_recruits_label = get_node("Recruitment/HBoxContainer/AvailableRecruits/HBoxContainer/Value")
-	continue_button = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/Button")
-	recruit_all_button = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/RecruitAll")
+	continue_button = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/Buttons/Button")
+	recruit_all_button = get_node("Recruitment/HBoxContainer/TotalSection/HBoxContainer/Buttons/RecruitAll")
 	continue_button.name = "continue"
 	
 	# Connect button signal
@@ -527,9 +527,13 @@ func _update_total_row() -> void:
 	total_gold_label.text = str(gold_total)
 	total_wood_label.text = str(wood_total)
 	total_iron_label.text = str(iron_total)
+	_update_recruit_all_button_state(total_to_hire, gold_total)
 
 	if available_recruits_label:
 		available_recruits_label.text = str(remaining_recruits)
+
+func _update_recruit_all_button_state(total_to_hire: int, gold_total: int) -> void:
+	recruit_all_button.disabled = total_to_hire <= 0 or gold_total <= 0
 
 func _adjust_recruitment(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
 	if target_region == null or delta == 0 or player_manager == null:

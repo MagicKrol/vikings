@@ -2262,26 +2262,34 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "343"
 
 [node name="MarginContainer3" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(35, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
-[node name="RecruitAll" type="Button" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="Buttons" type="HBoxContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RecruitAll" type="Button" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer/Buttons"]
 clip_contents = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("5_s8e3m")
 text = "Recruit All"
 
-[node name="MarginContainer4" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
-custom_minimum_size = Vector2(300, 0)
+[node name="Spacer" type="Control" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer/Buttons"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Button" type="Button" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+[node name="Button" type="Button" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer/Buttons"]
 clip_contents = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme = ExtResource("5_s8e3m")
 text = "Close"
+
+[node name="MarginContainer" type="MarginContainer" parent="Recruitment/HBoxContainer/TotalSection/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
 
 [node name="MarginContainer4" type="MarginContainer" parent="Recruitment/HBoxContainer"]
 visible = false

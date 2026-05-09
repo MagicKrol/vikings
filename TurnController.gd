@@ -1494,6 +1494,11 @@ func _handle_castle_hold_cycle(army: Army) -> bool:
 	if threat_level == 2:
 		_log_decision_tree_branch(army, "threat_hold_level2_needs_army", castle_name)
 	else:
+		var current_defense_power: int = game_manager._compute_region_total_defender_power(current_region)
+		var unknown_defense_floor_power: int = _get_unknown_threat_min_defense_power(_get_current_turn())
+		if current_defense_power >= unknown_defense_floor_power:
+			_log_decision_tree_branch(army, "threat_release_level3_unknown_floor_met", castle_name)
+			return false
 		_log_decision_tree_branch(army, "threat_hold_level3_unknown", castle_name)
 	_spend_all_on_camp(army)
 	return true
@@ -1592,18 +1597,18 @@ func _try_garrison_sortie_for_threat(army: Army, threat_context: Dictionary, cas
 	if not current_region.has_castle():
 		return false
 	var threat_known: bool = bool(threat_context.get("known", false))
-	if not threat_known:
-		_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_unknown", "to " + _get_region_name_by_id(threat_region_id))
-		return false
-	var enemy_power: int = int(threat_context.get("power", -1))
-	if enemy_power <= 0:
-		_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_ratio", "to " + _get_region_name_by_id(threat_region_id))
-		return false
-	var army_power_before_pull: int = army.get_army_power()
-	var pull_plan_info: Dictionary = _build_garrison_pull_plan_for_threat(current_region, army_power_before_pull, enemy_power)
-	if not bool(pull_plan_info.get("success", false)):
-		_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_ratio", "to " + _get_region_name_by_id(threat_region_id))
-		return false
+	var pull_plan: Dictionary = {}
+	if threat_known:
+		var enemy_power: int = int(threat_context.get("power", -1))
+		if enemy_power <= 0:
+			_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_ratio", "to " + _get_region_name_by_id(threat_region_id))
+			return false
+		var army_power_before_pull: int = army.get_army_power()
+		var pull_plan_info: Dictionary = _build_garrison_pull_plan_for_threat(current_region, army_power_before_pull, enemy_power)
+		if not bool(pull_plan_info.get("success", false)):
+			_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_ratio", "to " + _get_region_name_by_id(threat_region_id))
+			return false
+		pull_plan = pull_plan_info.get("plan", {})
 	var requires_roundtrip: bool = active_threat_count > 1
 	if requires_roundtrip:
 		var attack_cost: int = int(attack_path.get("cost", AI_PATH_UNREACHABLE_COST))
@@ -1615,9 +1620,8 @@ func _try_garrison_sortie_for_threat(army: Army, threat_context: Dictionary, cas
 		if attack_cost + return_cost > army.get_movement_points():
 			_log_decision_tree_branch(army, "threat_garrison_sortie_skipped_multithreat_roundtrip", "to " + _get_region_name_by_id(threat_region_id))
 			return false
-	var pull_plan: Dictionary = pull_plan_info.get("plan", {})
 	_apply_garrison_pull_plan_to_army(current_region, army, pull_plan)
-	var sortie_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, threat_context, threat_region_id)
+	var sortie_eval: Dictionary = _evaluate_threat_direct_attack_viability(army, threat_context, threat_region_id, true)
 	if not bool(sortie_eval.get("can_attack", false)):
 		_revert_garrison_pull_plan_from_army(current_region, army, pull_plan)
 		return false
@@ -1762,15 +1766,25 @@ func _evaluate_castle_defense_need(castle_region_id: int, player_id: int, threat
 	var current_defense_power: int = game_manager._compute_region_total_defender_power(castle_region)
 	var has_friendly_army_in_castle: bool = _castle_has_friendly_army(castle_region, player_id)
 	var unknown_marked_defended: bool = bool(_unknown_threat_defended_by_region.get(castle_region_id, false))
-	var unknown_needs_defender: bool = has_unknown_threat and not has_friendly_army_in_castle and not unknown_marked_defended
+	var unknown_defense_floor_power: int = _get_unknown_threat_min_defense_power(_get_current_turn())
+	var unknown_needs_defender: bool = has_unknown_threat and current_defense_power < unknown_defense_floor_power and not has_friendly_army_in_castle and not unknown_marked_defended
 	var known_needs_more_defenders: bool = known_enemy_power_total > current_defense_power
 	return {
 		"has_unknown_threat": has_unknown_threat,
 		"known_enemy_power_total": known_enemy_power_total,
 		"current_defense_power": current_defense_power,
+		"unknown_defense_floor_power": unknown_defense_floor_power,
 		"unknown_needs_defender": unknown_needs_defender,
 		"known_needs_more_defenders": known_needs_more_defenders
 	}
+
+func _get_unknown_threat_min_defense_power(turn_number: int) -> int:
+	var effective_turn_number: int = turn_number
+	if effective_turn_number > 40:
+		effective_turn_number = 40
+	var peasant_power: int = GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")
+	var threshold: float = float(10) * (1.0 + 0.03 * float(effective_turn_number)) * float(peasant_power) * 2.0
+	return int(ceil(threshold))
 
 func _castle_has_friendly_army(castle_region: Region, player_id: int) -> bool:
 	var armies_in_region: Array[Army] = army_manager.get_armies_in_region(castle_region)
@@ -1974,7 +1988,7 @@ func _mark_threat_local_merge_attempt(army_id: int, target_region_id: int) -> vo
 	army_attempts[target_region_id] = true
 	_threat_local_merge_attempt_by_army[army_id] = army_attempts
 
-func _evaluate_threat_direct_attack_viability(army: Army, threat_context: Dictionary, threat_region_id: int) -> Dictionary:
+func _evaluate_threat_direct_attack_viability(army: Army, threat_context: Dictionary, threat_region_id: int, allow_unknown_castle: bool = false) -> Dictionary:
 	var army_id: int = army.get_instance_id()
 	if _is_threat_direct_blocked(army_id, threat_region_id):
 		return {
@@ -1986,6 +2000,8 @@ func _evaluate_threat_direct_attack_viability(army: Army, threat_context: Dictio
 	var threat_known: bool = bool(threat_context.get("known", false))
 	if has_castle:
 		if not threat_known:
+			if allow_unknown_castle:
+				return {"can_attack": true}
 			_set_threat_direct_block(army_id, threat_region_id, "unknown_castle")
 			return {
 				"can_attack": false,

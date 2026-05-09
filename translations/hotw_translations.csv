@@ -253,7 +253,7 @@ Resources,Resources,Resources,Ressourcen,Zasoby,Recursos
 Armies,,Armies,Armeen,Armie,Exércitos
 Transfer,Action to move units between armies,Transfer,Verlegen,Przenieś,Transferir
 Abilities:,Abilities:,Abilities:,Fähigkeiten,Zdolności,Habilidades
-Recruit All,Button to recruit all,Recruit all,Rekrutiert alle,Rekrutuj wszystkich,Recrute todos
+Recruit All,Button to recruit selected units,Recruit selected,Ausgewählte rekrutieren,Rekrutuj wybranych,Recrutar selecionados
 Close,Close button,Close,Schließen,Zamknij,Fechar
 Requires,Requires <castle>,Requires,Erfordert,Wymaga,Requer
 Total Cost:,Total cost:,Total cost:,Gesamtkosten:,Całkowity koszt:,Custo total:
@@ -307,6 +307,7 @@ Remain,Remain,Remain,Verbleibend,Pozostali,Restantes
 Left click,Mouse buttons,Left click,Linksklick,Lewy przycisk,Botão esquerdo
 Right click,Mouse buttons,Right click,Rechtsklick,Prawy przycisk,Botão direito
 Not enough movement points,Not enough points to perform an action,Not enough movement points,Nicht genügend Bewegungspunkte,Za mało punktów ruchu,Pontos de movimento insuficientes
+Army has no movement points.,Tooltip warning shown when an army cannot act because it has zero movement points.,Army has no movement points.,Die Armee hat keine Bewegungspunkte.,Armia nie ma punktów ruchu.,O exército não tem pontos de movimento.
 Army Move,Option to select how army should move (which button),Army Move,Armeebewegung,Ruch Armii,Movimento do Exército
 Quick Resolve,Button to speed up battle resolution,Quick Resolve,Auflösen,Rozstrzygnij,Resolver
 Map Settings,Screen tile for a window that allows to set map settings.,Map Settings,Karteneinstellungen,Ustawienia mapy,Configurações do mapa
