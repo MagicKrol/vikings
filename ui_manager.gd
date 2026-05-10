@@ -491,6 +491,20 @@ func is_only_info_modal_visible() -> bool:
 			return false
 	return true
 
+func is_only_info_or_message_modal_visible() -> bool:
+	var info_visible: bool = _info_modal.visible
+	var message_visible: bool = _message_modal.visible
+	if not info_visible and not message_visible:
+		return false
+	for modal in _modal_nodes:
+		if modal == _move_modal and _move_selection_active:
+			continue
+		if modal == _info_modal or modal == _message_modal:
+			continue
+		if modal != null and _is_modal_forcing_active(modal):
+			return false
+	return true
+
 func get_player_status_modal2() -> PlayerStatusModal2:
 	"""Get the PlayerStatusModal2 instance"""
 	return _player_status_modal2

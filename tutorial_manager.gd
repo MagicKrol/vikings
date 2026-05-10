@@ -364,6 +364,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "ui",
 			"ui_target": "MoveModal/recruit_soldiers",
+			"block_map_click": true,
 			"panel_position": Vector2(300, 600),
 			"arrow": {
 				"id": "23",

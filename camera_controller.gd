@@ -230,7 +230,11 @@ func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 	_emit_camera_zoomed()
 
 func _is_zoom_blocked_by_modal() -> bool:
-	return ui_manager.is_modal_active and not ui_manager.is_only_info_modal_visible()
+	if ui_manager == null:
+		return false
+	if not ui_manager.is_any_modal_visible():
+		return false
+	return not ui_manager.is_only_info_or_message_modal_visible()
 
 func _handle_pan_gesture(event: InputEventPanGesture) -> void:
 	# Handle two-finger pan gesture (macOS trackpad primary method)

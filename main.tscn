@@ -139,10 +139,12 @@ visible = false
 
 [node name="PrebattleModal" parent="UI" instance=ExtResource("31_prebattle")]
 visible = false
+offset_left = -440.0
+offset_right = 210.0
 
 [node name="BattleModal" parent="UI" instance=ExtResource("16_dtrwa")]
-visible = false
-offset_right = 170.0
+offset_left = -440.0
+offset_right = 120.0
 
 [node name="RecruitmentModal" parent="UI" instance=ExtResource("18_recru")]
 visible = false
@@ -160,10 +162,13 @@ visible = false
 visible = false
 
 [node name="NextPlayerModal" parent="UI" instance=ExtResource("24_nextplayermodal")]
+visible = false
 
 [node name="PlayerStatusModal2" parent="UI" instance=ExtResource("25_8wafx")]
+visible = false
 
 [node name="TurnModal" parent="UI" instance=ExtResource("27_o7y1n")]
+visible = false
 
 [node name="TransferSelectModal" parent="UI" instance=ExtResource("24_xybgh")]
 visible = false
