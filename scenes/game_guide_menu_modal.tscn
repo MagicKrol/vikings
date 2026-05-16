@@ -1,0 +1,454 @@
+[gd_scene load_steps=17 format=3 uid="uid://bbm283f7b0m06"]
+
+[ext_resource type="Script" path="res://game_guide_menu_modal.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://tg5hwda7xvgr" path="res://images/gamemenu.png" id="2_yea66"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="3_header_theme"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="4_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxTopHover"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.18, 0.125, 0.047, 0.7)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxTopDisabled"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.15, 0.15, 0.15, 0.5)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxTopPressed"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.18, 0.14, 0.1, 0.97)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxTopNormal"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxMidHover"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.18, 0.125, 0.047, 0.7)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxMidDisabled"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.15, 0.15, 0.15, 0.5)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxMidPressed"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.18, 0.14, 0.1, 0.97)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxMidNormal"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxBottomHover"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.18, 0.125, 0.047, 0.7)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxBottomDisabled"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.15, 0.15, 0.15, 0.5)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxBottomPressed"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.18, 0.14, 0.1, 0.97)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxBottomNormal"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="GameGuideMenuModal" type="Control"]
+process_mode = 2
+z_index = 1100
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -200.0
+offset_right = 150.0
+offset_bottom = 265.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+metadata/_edit_horizontal_guides_ = [534.0, 599.0]
+
+[node name="Top" type="TextureRect" parent="."]
+layout_mode = 2
+offset_right = 300.0
+offset_bottom = 400.0
+size_flags_horizontal = 3
+texture = ExtResource("2_yea66")
+
+[node name="InnerPanel" type="VBoxContainer" parent="."]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = -10.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderSection" type="Control" parent="InnerPanel"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeaderLabel" type="Label" parent="InnerPanel/HeaderSection"]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_header_theme")
+text = "Game Guide"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonContainer" type="VBoxContainer" parent="InnerPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="ContinueButton" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxTopHover")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
+theme_override_styles/hover = SubResource("StyleBoxTopHover")
+theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
+theme_override_styles/normal = SubResource("StyleBoxTopNormal")
+text = "Back"
+
+[node name="Separator1" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="OptionsButton" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxMidHover")
+theme_override_styles/disabled = SubResource("StyleBoxMidDisabled")
+theme_override_styles/hover = SubResource("StyleBoxMidHover")
+theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
+theme_override_styles/normal = SubResource("StyleBoxMidNormal")
+text = "Region"
+
+[node name="Separator2" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="SaveGameButton" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxMidHover")
+theme_override_styles/disabled = SubResource("StyleBoxMidDisabled")
+theme_override_styles/hover = SubResource("StyleBoxMidHover")
+theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
+theme_override_styles/normal = SubResource("StyleBoxMidNormal")
+text = "Economy"
+
+[node name="SeparatorSave" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="MainMenuButton" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxMidHover")
+theme_override_styles/disabled = SubResource("StyleBoxMidDisabled")
+theme_override_styles/hover = SubResource("StyleBoxMidHover")
+theme_override_styles/pressed = SubResource("StyleBoxMidPressed")
+theme_override_styles/normal = SubResource("StyleBoxMidNormal")
+text = "Recruitment"
+
+[node name="Separator3" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="Help" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxTopHover")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
+theme_override_styles/hover = SubResource("StyleBoxTopHover")
+theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
+theme_override_styles/normal = SubResource("StyleBoxTopNormal")
+text = "Battles"
+
+[node name="Separator5" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="ExitButton" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxBottomHover")
+theme_override_styles/disabled = SubResource("StyleBoxBottomDisabled")
+theme_override_styles/hover = SubResource("StyleBoxBottomHover")
+theme_override_styles/pressed = SubResource("StyleBoxBottomPressed")
+theme_override_styles/normal = SubResource("StyleBoxBottomNormal")
+text = "Tips"
+
+[node name="Separator4" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="OptionsContainer" type="VBoxContainer" parent="InnerPanel"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="BackButton" type="Button" parent="InnerPanel/OptionsContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxTopHover")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
+theme_override_styles/hover = SubResource("StyleBoxTopHover")
+theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
+theme_override_styles/normal = SubResource("StyleBoxTopNormal")
+text = "Back"
+
+[node name="Separator1" type="ColorRect" parent="InnerPanel/OptionsContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="AudioButton" type="Button" parent="InnerPanel/OptionsContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxBottomHover")
+theme_override_styles/disabled = SubResource("StyleBoxBottomDisabled")
+theme_override_styles/hover = SubResource("StyleBoxBottomHover")
+theme_override_styles/pressed = SubResource("StyleBoxBottomPressed")
+theme_override_styles/normal = SubResource("StyleBoxBottomNormal")
+text = "Audio"
+
+[node name="Separator3" type="ColorRect" parent="InnerPanel/OptionsContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="AudioContainer" type="VBoxContainer" parent="InnerPanel"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="BackButton" type="Button" parent="InnerPanel/AudioContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxTopHover")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
+theme_override_styles/hover = SubResource("StyleBoxTopHover")
+theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
+theme_override_styles/normal = SubResource("StyleBoxTopNormal")
+text = "Back"
+
+[node name="Separator1" type="ColorRect" parent="InnerPanel/AudioContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="AudioPanel" type="VBoxContainer" parent="InnerPanel/AudioContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="MusicRow" type="HBoxContainer" parent="InnerPanel/AudioContainer/AudioPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="MusicLabel" type="Label" parent="InnerPanel/AudioContainer/AudioPanel/MusicRow"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 18
+text = "Music"
+vertical_alignment = 1
+
+[node name="MusicToggle" type="CheckButton" parent="InnerPanel/AudioContainer/AudioPanel/MusicRow"]
+layout_mode = 2
+button_pressed = true
+
+[node name="MusicSlider" type="HSlider" parent="InnerPanel/AudioContainer/AudioPanel/MusicRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+value = 100.0
+
+[node name="SoundRow" type="HBoxContainer" parent="InnerPanel/AudioContainer/AudioPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="SoundLabel" type="Label" parent="InnerPanel/AudioContainer/AudioPanel/SoundRow"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 18
+text = "Sound"
+vertical_alignment = 1
+
+[node name="SoundToggle" type="CheckButton" parent="InnerPanel/AudioContainer/AudioPanel/SoundRow"]
+layout_mode = 2
+button_pressed = true
+
+[node name="SoundSlider" type="HSlider" parent="InnerPanel/AudioContainer/AudioPanel/SoundRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+value = 100.0
