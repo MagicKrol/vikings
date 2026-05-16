@@ -275,7 +275,7 @@ func is_showing_for(army: Army, region: Region) -> bool:
 func _update_labels() -> void:
 	region_label.text = tr("Battle for %s") % defending_region.get_region_name()
 	attacker_label.text = tr("Army %s (Player %d)") % [attacking_army.number, attacking_army.get_player_id()]
-	attacker_vigor_label.text = str(attacking_army.get_efficiency()) + "%"
+	attacker_vigor_label.text = str(GameParameters.get_battle_attacker_effective_vigor(attacking_army.get_efficiency(), defending_region.get_region_type())) + "%"
 	defender_label.text = tr("%s defenders") % defending_region.get_region_name()
 	defender_vigor_label.text = tr("100%")
 	var defense_bonus = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())

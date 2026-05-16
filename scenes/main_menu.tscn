@@ -1452,7 +1452,7 @@ theme_override_fonts/normal_font = ExtResource("15_puawt")
 theme_override_font_sizes/bold_italics_font_size = 19
 theme_override_font_sizes/italics_font_size = 19
 theme_override_font_sizes/mono_font_size = 19
-theme_override_font_sizes/normal_font_size = 19
+theme_override_font_sizes/normal_font_size = 20
 theme_override_font_sizes/bold_font_size = 19
 text = "Scenario description LOREM IPSUM"
 autowrap_mode = 2
@@ -1527,7 +1527,7 @@ layout_mode = 2
 theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("15_puawt")
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "Scenario description LOREM IPSUM asdasd asda sasdasdasdasdadsadasd asdajksd asjdaklsjd laksj dlkajlksdjal ksjdlaj dlsdkal"
 autowrap_mode = 2
 

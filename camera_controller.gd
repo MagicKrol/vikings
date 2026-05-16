@@ -123,6 +123,8 @@ func _handle_mouse_input(event: InputEventMouseButton) -> void:
 			)
 			_emit_camera_zoomed()
 		elif (event.button_index == MOUSE_BUTTON_LEFT and Input.is_key_pressed(KEY_SHIFT)) or event.button_index == MOUSE_BUTTON_RIGHT:
+			if _is_pan_blocked_by_modal():
+				return
 			is_mouse_dragging = true
 			last_mouse_position = event.position
 			drag_button = event.button_index
@@ -134,6 +136,10 @@ func _handle_mouse_input(event: InputEventMouseButton) -> void:
 
 func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 	if is_mouse_dragging:
+		if _is_pan_blocked_by_modal():
+			is_mouse_dragging = false
+			drag_button = 0
+			return
 		var mouse_delta = last_mouse_position - event.position
 		var pan_delta = mouse_delta * pan_speed / zoom.x
 		target_position += pan_delta
@@ -143,6 +149,8 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 
 func _handle_continuous_keyboard_input(delta: float) -> void:
 	"""Handle continuous keyboard input for smooth camera movement"""
+	if _is_pan_blocked_by_modal():
+		return
 	var pan_speed_per_second = 400.0 / zoom.x  # Pixels per second, scaled by zoom
 	var pan_amount = pan_speed_per_second * delta
 	var moved := false
@@ -207,6 +215,8 @@ func _handle_drag_event(event: InputEventScreenDrag) -> void:
 		touch_points[event.index] = event.position
 		
 	_update_gesture_state()
+	if _is_pan_blocked_by_modal():
+		return
 	
 	# Handle two-finger pan
 	if is_panning and touch_points.size() == 2:
@@ -236,8 +246,17 @@ func _is_zoom_blocked_by_modal() -> bool:
 		return false
 	return not ui_manager.is_only_info_or_message_modal_visible()
 
+func _is_pan_blocked_by_modal() -> bool:
+	if ui_manager == null:
+		return false
+	if not ui_manager.is_any_modal_visible():
+		return false
+	return not ui_manager.is_only_info_modal_visible()
+
 func _handle_pan_gesture(event: InputEventPanGesture) -> void:
 	# Handle two-finger pan gesture (macOS trackpad primary method)
+	if _is_pan_blocked_by_modal():
+		return
 	var pan_delta = event.delta * pan_speed / zoom.x
 	target_position += pan_delta
 	_emit_camera_moved()

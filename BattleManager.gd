@@ -171,9 +171,9 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 			var recruits_comp = ArmyComposition.new()
 			recruits_comp.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, _pending_recruits_count)
 			def_comps.append(recruits_comp)
-		var attacker_eff = attacker.get_efficiency()
-		var defender_eff = 100
 		var terrain_type = target_region.get_region_type()
+		var attacker_eff: int = GameParameters.get_battle_attacker_effective_vigor(attacker.get_efficiency(), terrain_type)
+		var defender_eff = 100
 		var castle_type = target_region.get_castle_type()
 		var sim = BattleSimulator.new()
 		var attacker_label = "Attacker " + str(attacker.name)

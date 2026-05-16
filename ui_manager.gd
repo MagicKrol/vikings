@@ -45,6 +45,8 @@ var _prebattle_modal: PrebattleModal
 var _message_modal: MessageModal
 var _event_message_modal: MessageModal
 var _intro_message_modal: MessageModal
+var _game_guide_menu_modal: GameGuideMenuModal
+var _game_guide_modal: GameGuideModal
 var _trade_modal: TradeModal
 var _recruitment_modal: RecruitmentModal
 var _transfer_select_modal: TransferSelectModal
@@ -97,6 +99,8 @@ func _ready():
 	_message_modal = get_parent().get_node("MessageModal") as MessageModal
 	_event_message_modal = get_parent().get_node("EventMessageModal") as MessageModal
 	_intro_message_modal = get_parent().get_node_or_null("IntroMessageModal") as MessageModal
+	_game_guide_menu_modal = get_parent().get_node("GameGuideMenuModal") as GameGuideMenuModal
+	_game_guide_modal = get_parent().get_node("GameGuideModal") as GameGuideModal
 	_trade_modal = get_parent().get_node("TradeModal") as TradeModal
 	_recruitment_modal = get_parent().get_node("RecruitmentModal") as RecruitmentModal
 	_transfer_select_modal = get_parent().get_node("TransferSelectModal") as TransferSelectModal
@@ -166,6 +170,8 @@ func _build_modal_list() -> void:
 		_message_modal,
 		_event_message_modal,
 		_intro_message_modal,
+		_game_guide_menu_modal,
+		_game_guide_modal,
 		_trade_modal,
 		_recruitment_modal,
 		_transfer_select_modal,
@@ -185,7 +191,9 @@ func _build_blocking_modal_list() -> void:
 		_recruitment_modal,
 		_transfer_soldiers_modal,
 		_event_message_modal,
-		_intro_message_modal
+		_intro_message_modal,
+		_game_guide_menu_modal,
+		_game_guide_modal,
 	]
 
 func _sync_modal_state() -> void:
@@ -259,6 +267,14 @@ func _is_tutorial_escape_routed_to_game_menu() -> bool:
 func handle_escape_action() -> bool:
 	var game_manager_spawn_event: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
 	if game_manager_spawn_event.is_spawn_event_placement_active():
+		get_viewport().set_input_as_handled()
+		return true
+	if _game_guide_modal.visible:
+		_game_guide_modal.close_modal()
+		get_viewport().set_input_as_handled()
+		return true
+	if _game_guide_menu_modal.visible:
+		_game_guide_menu_modal.close_modal()
 		get_viewport().set_input_as_handled()
 		return true
 	if _message_modal.visible:
@@ -463,6 +479,10 @@ func close_all_active_modals(include_blocking: bool = false) -> void:
 		_trade_modal.hide_modal()
 	if _event_message_modal and _event_message_modal.visible:
 		_event_message_modal.hide_modal()
+	if _game_guide_modal.visible:
+		_game_guide_modal.hide_modal()
+	if _game_guide_menu_modal.visible:
+		_game_guide_menu_modal.hide_modal()
 	if _recruitment_modal and _recruitment_modal.visible:
 		_recruitment_modal.hide_modal()
 	if _transfer_select_modal and _transfer_select_modal.visible:

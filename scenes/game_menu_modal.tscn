@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://cs8o70rk3hgp4"]
 
 [ext_resource type="Script" path="res://game_menu_modal.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://c3duu81d31031" path="res://images/selectmenu.png" id="2_texture"]
+[ext_resource type="Texture2D" uid="uid://tg5hwda7xvgr" path="res://images/gamemenu.png" id="2_yea66"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="3_header_theme"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="4_font"]
 
@@ -11,16 +11,6 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.18, 0.125, 0.047, 0.7)
-border_color = Color(0.717647, 0.592157, 0.368627, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxTopNormal"]
-content_margin_left = 10.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
-bg_color = Color(0, 0, 0, 0)
 border_color = Color(0.717647, 0.592157, 0.368627, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
@@ -45,20 +35,22 @@ border_color = Color(0.717647, 0.592157, 0.368627, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxTopNormal"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxMidHover"]
 content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.18, 0.125, 0.047, 0.7)
-border_color = Color(0.717647, 0.592157, 0.368627, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxMidNormal"]
-content_margin_left = 10.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
-bg_color = Color(0, 0, 0, 0)
 border_color = Color(0.717647, 0.592157, 0.368627, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxMidDisabled"]
@@ -77,22 +69,20 @@ content_margin_bottom = 10.0
 bg_color = Color(0.18, 0.14, 0.1, 0.97)
 border_color = Color(0.717647, 0.592157, 0.368627, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxMidNormal"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxBottomHover"]
 content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.18, 0.125, 0.047, 0.7)
-border_color = Color(0.717647, 0.592157, 0.368627, 1)
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxBottomNormal"]
-content_margin_left = 10.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
-bg_color = Color(0, 0, 0, 0)
 border_color = Color(0.717647, 0.592157, 0.368627, 1)
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
@@ -117,6 +107,16 @@ border_color = Color(0.717647, 0.592157, 0.368627, 1)
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxBottomNormal"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(0.717647, 0.592157, 0.368627, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [node name="GameMenuModal" type="Control"]
 process_mode = 2
 z_index = 1100
@@ -129,17 +129,18 @@ anchor_bottom = 0.5
 offset_left = -150.0
 offset_top = -200.0
 offset_right = 150.0
-offset_bottom = 200.0
+offset_bottom = 265.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+metadata/_edit_horizontal_guides_ = [534.0, 599.0]
 
 [node name="Top" type="TextureRect" parent="."]
 layout_mode = 2
 offset_right = 300.0
 offset_bottom = 400.0
 size_flags_horizontal = 3
-texture = ExtResource("2_texture")
+texture = ExtResource("2_yea66")
 
 [node name="InnerPanel" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -262,6 +263,29 @@ theme_override_styles/normal = SubResource("StyleBoxMidNormal")
 text = "Save Game"
 
 [node name="Separator3" type="ColorRect" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.392157, 0.294118, 0.133333, 1)
+
+[node name="Help" type="Button" parent="InnerPanel/ButtonContainer"]
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_disabled_color = Color(0.705882, 0.705882, 0.705882, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxTopHover")
+theme_override_styles/disabled = SubResource("StyleBoxTopDisabled")
+theme_override_styles/hover = SubResource("StyleBoxTopHover")
+theme_override_styles/pressed = SubResource("StyleBoxTopPressed")
+theme_override_styles/normal = SubResource("StyleBoxTopNormal")
+text = "Game Guide"
+
+[node name="Separator5" type="ColorRect" parent="InnerPanel/ButtonContainer"]
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 size_flags_horizontal = 3

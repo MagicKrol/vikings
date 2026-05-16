@@ -8,8 +8,10 @@ extends Control
 @onready var options_button: Button = $InnerPanel/ButtonContainer/OptionsButton
 @onready var load_game_button: Button = $InnerPanel/ButtonContainer/SaveGameButton
 @onready var save_game_button: Button = $InnerPanel/ButtonContainer/MainMenuButton
+@onready var help_button: Button = $InnerPanel/ButtonContainer/Help
 @onready var exit_button: Button = $InnerPanel/ButtonContainer/ExitButton
 @onready var options_panel: OptionsPanel = get_node("../Options") as OptionsPanel
+@onready var game_guide_menu_modal: GameGuideMenuModal = get_node("../GameGuideMenuModal") as GameGuideMenuModal
 
 var sound_manager: SoundManager
 var ui_manager: UIManager
@@ -26,8 +28,10 @@ func _ready() -> void:
 	options_button.pressed.connect(_on_options_pressed)
 	load_game_button.pressed.connect(_on_load_game_pressed)
 	save_game_button.pressed.connect(_on_save_game_pressed)
+	help_button.pressed.connect(_on_help_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	options_panel.back_requested.connect(_on_options_back_pressed)
+	game_guide_menu_modal.back_requested.connect(_on_game_guide_menu_back_requested)
 	sound_manager = get_node("/root/Main/SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	options_panel.configure(sound_manager, true, tr("Back"))
@@ -66,6 +70,11 @@ func _on_save_game_pressed() -> void:
 	DebugLogger.log("UISystem", "Game Menu - Save Game pressed")
 	save_game_pressed.emit()
 
+func _on_help_pressed() -> void:
+	DebugLogger.log("UISystem", "Game Menu - Game Guide pressed")
+	visible = false
+	game_guide_menu_modal.show_modal()
+
 func _on_exit_pressed() -> void:
 	DebugLogger.log("UISystem", "Game Menu - Exit pressed")
 	exit_pressed.emit()
@@ -76,6 +85,7 @@ func _on_options_back_pressed() -> void:
 
 func _show_main_menu() -> void:
 	header_label.text = tr("Game Menu")
+	header_label.visible = true
 	top_texture.visible = true
 	button_container.visible = true
 	options_panel.visible = false
@@ -83,9 +93,16 @@ func _show_main_menu() -> void:
 func _show_options_menu() -> void:
 	options_panel.configure(sound_manager, true, tr("Back"))
 	header_label.text = ""
+	header_label.visible = true
 	top_texture.visible = false
 	button_container.visible = false
 	options_panel.visible = true
+
+func _on_game_guide_menu_back_requested() -> void:
+	visible = true
+	ui_manager.set_modal_active(true)
+	move_to_front()
+	_show_main_menu()
 
 func set_save_load_enabled(enabled: bool) -> void:
 	_save_load_enabled = enabled
@@ -101,8 +118,12 @@ func show_modal() -> void:
 	sound_manager = get_node("/root/Main/SoundManager") as SoundManager
 	options_panel.configure(sound_manager, true, tr("Back"))
 	_show_main_menu()
+	if game_guide_menu_modal.visible:
+		game_guide_menu_modal.hide_modal()
 
 func hide_modal() -> void:
+	if game_guide_menu_modal.visible:
+		game_guide_menu_modal.hide_modal()
 	options_panel.visible = false
 	visible = false
 	ui_manager.set_modal_active(false)

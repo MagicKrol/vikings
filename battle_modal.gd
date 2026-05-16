@@ -12,12 +12,17 @@ var attacker_units_container: VBoxContainer
 var defender_units_container: VBoxContainer
 var continue_button: Button
 var withdraw_button: Button
+var battle_logs_button: Button
 var second_player_container: HBoxContainer
 var second_player_withdraw_button: Button
 var quick_resolve_button: Button
 var message_label: Label
 var defender_defense_value: Label
 var buttons_margin: MarginContainer
+var stats_panel: Control
+var stats_header_label: Label
+var logs_scroll: ScrollContainer
+var logs_data: RichTextLabel
 var progress_bar_army1: ProgressBar
 var progress_bar_army2: ProgressBar
 var siege_panel: SiegePanel
@@ -67,6 +72,10 @@ var _power_progress_style_red: StyleBoxTexture
 var _initial_attacker_power: int = 0
 var _initial_defender_power: int = 0
 var _initial_defender_vigor_percent: int = 100
+var _attacker_terrain_vigor_penalty_percent: int = 0
+var _ranged_terrain_penalty_percent: int = 0
+var _battle_logs_started: bool = false
+var _battle_withdrawal_logged_sides: Dictionary = {}
 
 const POWER_PROGRESS_TEX_EMPTY: Texture2D = preload("res://images/progressbar_empty.png")
 const POWER_PROGRESS_TEX_GREEN: Texture2D = preload("res://images/progressbar_green.png")
@@ -84,6 +93,7 @@ func _ready():
 	attacker_units_container = get_node("Battle/VBoxContainer/Body/Units")
 	defender_units_container = get_node("Battle/VBoxContainer/Body/Units")
 	continue_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/Button")
+	battle_logs_button = get_node("BattleLogs")
 	second_player_container = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/SecondPlayer")
 	second_player_withdraw_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/SecondPlayer/Withdraw")
 	quick_resolve_button = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/QuickResolve")
@@ -91,6 +101,10 @@ func _ready():
 	message_label = get_node("Battle/VBoxContainer/MessageSection/HBoxContainer/Message")
 	defender_defense_value = get_node("Battle/VBoxContainer/HBoxContainer2/DefenderDefenseValue")
 	buttons_margin = get_node("Battle/VBoxContainer/ButtonSection/HBoxContainer/ButtonsMargin") as MarginContainer
+	stats_panel = get_node("Stats") as Control
+	stats_header_label = get_node("Stats/Header/Name") as Label
+	logs_scroll = get_node("Stats/Body/LogsScroll") as ScrollContainer
+	logs_data = get_node("Stats/Body/LogsScroll/Logsdata") as RichTextLabel
 	progress_bar_army1 = get_node("ProgressBarArmy1") as ProgressBar
 	progress_bar_army2 = get_node("ProgressBarArmy2") as ProgressBar
 	siege_panel = get_node("Siege") as SiegePanel
@@ -99,10 +113,14 @@ func _ready():
 
 	# Connect button signals - single button handles both continue and withdraw
 	continue_button.pressed.connect(_on_button_pressed)
+	battle_logs_button.pressed.connect(_on_battle_logs_pressed)
 	second_player_withdraw_button.pressed.connect(_on_second_player_withdraw_pressed)
 	quick_resolve_button.pressed.connect(_on_quick_resolve_pressed)
 	withdraw_button = continue_button  # Both reference the same button
 	continue_button.name = "continue"
+	battle_logs_button.text = tr("Battle Logs Button").replace("|", "\n")
+	stats_header_label.text = tr("Battle Logs")
+	_apply_stats_panel_visibility()
 	_set_message("")
 	
 	# Get manager references
@@ -151,6 +169,15 @@ func _is_continue_hotkey(event: InputEvent) -> bool:
 			return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER or key_event.keycode == KEY_SPACE
 	return false
 
+func _on_battle_logs_pressed() -> void:
+	var next_visible: bool = not GameParameters.get_battle_logs_visible()
+	GameParameters.set_battle_logs_visible(next_visible)
+	_apply_stats_panel_visibility()
+	SaveGameManager.save_settings(sound_manager)
+
+func _apply_stats_panel_visibility() -> void:
+	stats_panel.visible = GameParameters.get_battle_logs_visible()
+
 func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> void:
 	"""Show the battle modal with army vs region information"""
 	if army == null or region == null:
@@ -171,6 +198,7 @@ func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> 
 	siege_panel.visible = _is_siege_battle
 
 	_set_message("")
+	_reset_battle_logs()
 	sound_manager.play_battle_sound()
 	quick_resolve_button.visible = true
 	if buttons_margin:
@@ -183,6 +211,7 @@ func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> 
 	# Show initial display BEFORE starting battle
 	_apply_siege_state()
 	_update_display()
+	_apply_stats_panel_visibility()
 	visible = true
 	
 	# Set modal mode active
@@ -219,6 +248,7 @@ func hide_modal() -> void:
 	current_defender_composition.clear()
 	assault_ratio_override = -1.0
 	_set_message("")
+	_reset_battle_logs()
 	_reset_army_power_bars()
 
 	# Reset withdrawal state
@@ -295,7 +325,7 @@ func _update_effectiveness_displays() -> void:
 		return
 	
 	# Get attacking army vigor
-	var attacker_vigor = attacking_army.get_efficiency()
+	var attacker_vigor: int = GameParameters.get_battle_attacker_effective_vigor(attacking_army.get_efficiency(), defending_region.get_region_type())
 	attacker_effectiveness.text = str(attacker_vigor) + "%"
 	
 	defender_effectiveness.text = str(_initial_defender_vigor_percent) + "%"
@@ -641,8 +671,13 @@ func _run_battle_simulation() -> void:
 		defending_compositions.append(recruits_comp)
 	# Start the animated battle with attacker efficiency
 	animated_simulator.set_round_time(GameParameters.get_battle_round_time())
-	var attacker_efficiency = attacking_army.get_efficiency()
+	var attacker_base_efficiency: int = attacking_army.get_efficiency()
 	var terrain_type = defending_region.get_region_type()
+	_attacker_terrain_vigor_penalty_percent = GameParameters.get_battle_attacker_terrain_vigor_penalty(terrain_type)
+	_ranged_terrain_penalty_percent = GameParameters.get_battle_ranged_terrain_penalty_for_region(terrain_type)
+	var attacker_efficiency: int = GameParameters.get_battle_attacker_effective_vigor(attacker_base_efficiency, terrain_type)
+	_append_attacker_terrain_vigor_penalty_log()
+	_append_ranged_terrain_penalty_log()
 	var castle_type = defending_region.get_castle_type()
 	var defense_override = bm.get_effective_defense_for_region(defending_region)
 	var attacker_withdraw_allowed = bm.get_attacker_withdraw_allowed()
@@ -655,6 +690,8 @@ func _run_battle_simulation() -> void:
 
 func _on_battle_round_completed(round_data: Dictionary) -> void:
 	"""Handle completion of a battle round"""
+	if round_data.is_empty():
+		return
 	current_round = round_data["round"]
 	current_attacker_composition = round_data["current_attackers"]
 	current_defender_composition = round_data["current_defenders"]
@@ -677,6 +714,7 @@ func _on_battle_round_completed(round_data: Dictionary) -> void:
 	
 	# Update display with current round data
 	_update_display()
+	_append_battle_round_logs(round_data)
 	
 	DebugLogger.log("UISystem", "Round " + str(current_round) + " completed - Attackers: " + str(round_data["attacker_size"]) + ", Defenders: " + str(round_data["defender_size"]))
 
@@ -729,6 +767,7 @@ func _on_ai_withdrawal_started(side: int) -> void:
 	_play_retreat_sound()
 	withdrawal_in_progress = true
 	_update_action_button()
+	_append_withdrawal_log(side)
 
 func _on_quick_resolve_pressed() -> void:
 	if sound_manager:
@@ -913,6 +952,116 @@ func _update_action_button() -> void:
 		second_player_container.visible = false
 		second_player_withdraw_button.disabled = false
 
+func _reset_battle_logs() -> void:
+	logs_data.clear()
+	_battle_logs_started = false
+	_battle_withdrawal_logged_sides.clear()
+	_attacker_terrain_vigor_penalty_percent = 0
+	_ranged_terrain_penalty_percent = 0
+
+func _append_attacker_terrain_vigor_penalty_log() -> void:
+	if _attacker_terrain_vigor_penalty_percent <= 0:
+		return
+	var player_id: int = attacking_army.get_player_id()
+	_append_log_line(tr("Player %d is fighting in difficult terrain. Vigor reduced by %d%%.") % [player_id, _attacker_terrain_vigor_penalty_percent])
+
+func _append_ranged_terrain_penalty_log() -> void:
+	if _ranged_terrain_penalty_percent <= 0:
+		return
+	_append_log_line(tr("Ranged units' effectiveness is reduced by dense forest by %d%%.") % _ranged_terrain_penalty_percent)
+
+func _append_log_line(text: String = "") -> void:
+	logs_data.append_text(text + "\n")
+	_scroll_logs_to_bottom()
+
+func _append_log_center(text: String) -> void:
+	logs_data.append_text("[center]" + text + "[/center]\n")
+	_scroll_logs_to_bottom()
+
+func _scroll_logs_to_bottom() -> void:
+	call_deferred("_scroll_logs_to_bottom_deferred")
+
+func _scroll_logs_to_bottom_deferred() -> void:
+	logs_data.scroll_to_line(max(0, logs_data.get_line_count() - 1))
+	var vertical_scroll_bar: VScrollBar = logs_scroll.get_v_scroll_bar()
+	logs_scroll.scroll_vertical = int(vertical_scroll_bar.max_value)
+
+func _append_withdrawal_log(side: int) -> void:
+	if side <= 0:
+		return
+	if _battle_withdrawal_logged_sides.has(side):
+		return
+	_battle_withdrawal_logged_sides[side] = true
+	var player_id: int = _get_side_player_id(side == 1)
+	_append_log_center(tr("Player %d withdraws") % player_id)
+
+func _append_battle_round_logs(round_data: Dictionary) -> void:
+	var attacker_breakdown: Dictionary = round_data.get("attacker_kill_breakdown", {}) as Dictionary
+	var defender_breakdown: Dictionary = round_data.get("defender_kill_breakdown", {}) as Dictionary
+	var is_volley: bool = round_data.has("is_ranged_volley") and bool(round_data["is_ranged_volley"])
+	var is_withdrawal: bool = round_data.has("is_withdrawal") and bool(round_data["is_withdrawal"])
+	if round_data.has("withdrawing_side"):
+		_append_withdrawal_log(int(round_data.get("withdrawing_side", 0)))
+	if is_volley:
+		_append_log_line("")
+		_append_log_center(tr("Prebattle volleys:"))
+		var attacker_logged_volley: bool = _append_side_breakdown(attacker_breakdown, true)
+		var defender_logged_volley: bool = _append_side_breakdown(defender_breakdown, false)
+		if not attacker_logged_volley and not defender_logged_volley:
+			_append_log_line(tr("No casulties inflicted."))
+		return
+	if not _battle_logs_started:
+		_append_log_center(tr("Battle starts"))
+		_battle_logs_started = true
+	var round_number: int = int(round_data.get("round", 0))
+	_append_log_line("")
+	_append_log_center(tr("Round %d") % round_number)
+	if is_withdrawal:
+		_append_log_center("(" + tr("free hits") + ")")
+	var attacker_logged: bool = _append_side_breakdown(attacker_breakdown, true)
+	var defender_logged: bool = _append_side_breakdown(defender_breakdown, false)
+	if not attacker_logged and not defender_logged:
+		_append_log_line(tr("No casulties inflicted."))
+
+func _append_side_breakdown(side_breakdown: Dictionary, is_attacker_side: bool) -> bool:
+	var wrote_any: bool = false
+	for attacker_unit_type in SoldierTypeEnum.get_all_types():
+		if not side_breakdown.has(attacker_unit_type):
+			continue
+		var target_losses: Dictionary = side_breakdown.get(attacker_unit_type, {})
+		var total_casualties: int = 0
+		for target_unit_type in target_losses.keys():
+			total_casualties += int(target_losses.get(target_unit_type, 0))
+		if total_casualties <= 0:
+			continue
+		var player_id: int = _get_side_player_id(is_attacker_side)
+		var player_color_hex: String = _get_player_color_hex(player_id)
+		var unit_name: String = SoldierTypeEnum.type_to_display_string(attacker_unit_type)
+		var colored_name: String = "[color=#" + player_color_hex + "]" + unit_name + "[/color]"
+		var line_text: String = tr("%s inflicted %d casualties:") % [colored_name, total_casualties]
+		_append_log_line(line_text)
+		wrote_any = true
+		for target_unit_type in SoldierTypeEnum.get_all_types():
+			if not target_losses.has(target_unit_type):
+				continue
+			var target_hits: int = int(target_losses.get(target_unit_type, 0))
+			if target_hits <= 0:
+				continue
+			var target_name: String = SoldierTypeEnum.type_to_display_string(target_unit_type)
+			_append_log_line("- " + target_name + ": " + str(target_hits))
+	return wrote_any
+
+func _get_side_player_id(is_attacker_side: bool) -> int:
+	if is_attacker_side:
+		return attacking_army.get_player_id()
+	var gm = get_node("../../GameManager") as GameManager
+	return gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+
+func _get_player_color_hex(player_id: int) -> String:
+	if player_id <= 0:
+		return "f1d891"
+	return GameParameters.get_player_color(player_id).to_html(false)
+
 func _set_message(text: String) -> void:
 	message_label.text = text
 
@@ -958,7 +1107,7 @@ func _update_assault_value() -> void:
 	else:
 		var gm = get_node("../../GameManager") as GameManager
 		var bm = gm.get_battle_manager()
-		var ratio := bm.get_attacker_effectiveness_ratio()
+		var ratio: float = bm.get_attacker_effectiveness_ratio()
 		percent = int(round(ratio * 100.0))
 	assault_value_label.text = str(percent) + "%"
 

@@ -12,7 +12,6 @@ const CONTINUE_ACTION_END_MISSION: String = "end_mission"
 @onready var message_scroll: ScrollContainer = get_node("PanelRoot/ContentContainer/MessageScroll") as ScrollContainer
 @onready var scroll_message_label: Label = get_node("PanelRoot/ContentContainer/MessageScroll/ScrollMessageLabel") as Label
 var _continue_action: String = CONTINUE_ACTION_PLACE_CASTLE
-var _has_played_intro_horn: bool = false
 var _default_scroll_message_font_size: int = 22
 
 func _ready() -> void:
@@ -70,11 +69,7 @@ func show_tutorial_message(_text: String, show_continue: bool, block_input: bool
 		ui_manager.set_modal_active(false)
 
 func _on_continue_pressed() -> void:
-	if not _has_played_intro_horn:
-		sound_manager.play_horn_sound()
-		_has_played_intro_horn = true
-	else:
-		sound_manager.click_sound()
+	sound_manager.click_sound()
 	emit_signal("continue_clicked")
 	_hide_modal()
 

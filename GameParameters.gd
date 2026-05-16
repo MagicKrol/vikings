@@ -73,6 +73,7 @@ const RECRUIT_DIVERSITY_MIN_T = 24             # Apply diversity floor only when
 const POPULATION_GROWTH_RATE = 0.02            # Base population growth rate (%)
 const POPULATION_CONST_GROWTH_RATE = 0.00
 const WITHDRAWAL_FREE_HIT_ROUNDS = 2           # Number of free hit rounds enemy gets during withdrawal
+const PREBATTLE_VOLLEY_ROUNDS = 2              # Number of prebattle ranged volleys (archers/crossbowmen opening shots)
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 2    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
 const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
@@ -221,6 +222,7 @@ const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount f
 static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
 static var _battle_round_time: float = BATTLE_ROUND_TIME_NORMAL
 static var _army_move_trigger: int = ArmyMoveTrigger.RIGHT_CLICK
+static var _battle_logs_visible: bool = false
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -493,7 +495,7 @@ const UNIT_STATS = {
 		"power": 4
 	},
 	SoldierTypeEnum.Type.ARCHERS: {
-		"attack": 12,     # 25% hit chance per unit
+		"attack": 15,     # 25% hit chance per unit
 		"defense": 15,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
 		"gold_cost": 3,
@@ -504,7 +506,7 @@ const UNIT_STATS = {
 		"power": 4
 	},
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
-		"attack": 10,     # 20% hit chance per unit
+		"attack": 13,     # 20% hit chance per unit
 		"defense": 20,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
 		"gold_cost": 3,
@@ -568,6 +570,21 @@ const MOVEMENT_COSTS = {
 	RegionTypeEnum.Type.FOREST_HILLS: 4,  # Difficult terrain
 	RegionTypeEnum.Type.MOUNTAINS: -1     # Impassable terrain
 }
+const BATTLE_ATTACKER_TERRAIN_VIGOR_PENALTY_ENABLED: bool = true
+const BATTLE_ATTACKER_TERRAIN_VIGOR_PENALTIES: Dictionary = {
+	RegionTypeEnum.Type.HILLS: 20,
+	RegionTypeEnum.Type.FOREST_HILLS: 20
+}
+const BATTLE_RANGED_TERRAIN_PENALTY_ENABLED: bool = true
+const BATTLE_RANGED_TERRAIN_PENALTY_PERCENT: int = 30
+const BATTLE_RANGED_TERRAIN_TYPES: Array[RegionTypeEnum.Type] = [
+	RegionTypeEnum.Type.FOREST,
+	RegionTypeEnum.Type.FOREST_HILLS
+]
+const BATTLE_RANGED_TERRAIN_UNITS: Array[SoldierTypeEnum.Type] = [
+	SoldierTypeEnum.Type.ARCHERS,
+	SoldierTypeEnum.Type.CROSSBOWMEN
+]
 
 
 ## Resource Generation by Region Type
@@ -975,6 +992,27 @@ static func is_passable(region_type: RegionTypeEnum.Type) -> bool:
 	"""Check if terrain is passable (movement cost != -1)"""
 	return get_movement_cost(region_type) != -1
 
+static func get_battle_attacker_terrain_vigor_penalty(region_type: RegionTypeEnum.Type) -> int:
+	if not BATTLE_ATTACKER_TERRAIN_VIGOR_PENALTY_ENABLED:
+		return 0
+	return int(BATTLE_ATTACKER_TERRAIN_VIGOR_PENALTIES.get(region_type, 0))
+
+static func get_battle_attacker_effective_vigor(base_vigor: int, region_type: RegionTypeEnum.Type) -> int:
+	var terrain_penalty: int = get_battle_attacker_terrain_vigor_penalty(region_type)
+	return clampi(base_vigor - terrain_penalty, 0, 100)
+
+static func get_battle_ranged_terrain_penalty_for_region(region_type: RegionTypeEnum.Type) -> int:
+	if not BATTLE_RANGED_TERRAIN_PENALTY_ENABLED:
+		return 0
+	if not BATTLE_RANGED_TERRAIN_TYPES.has(region_type):
+		return 0
+	return BATTLE_RANGED_TERRAIN_PENALTY_PERCENT
+
+static func get_battle_ranged_terrain_penalty_percent(unit_type: SoldierTypeEnum.Type, region_type: RegionTypeEnum.Type) -> int:
+	if not BATTLE_RANGED_TERRAIN_UNITS.has(unit_type):
+		return 0
+	return get_battle_ranged_terrain_penalty_for_region(region_type)
+
 static func set_ai_move_speed_multiplier(multiplier: float) -> void:
 	_ai_move_speed_multiplier = max(AI_MOVE_SPEED_NORMAL, multiplier)
 
@@ -986,6 +1024,15 @@ static func set_battle_round_time(seconds: float) -> void:
 
 static func get_battle_round_time() -> float:
 	return _battle_round_time
+
+static func set_battle_logs_visible(is_visible: bool) -> void:
+	_battle_logs_visible = is_visible
+
+static func get_battle_logs_visible() -> bool:
+	return _battle_logs_visible
+
+static func get_prebattle_volley_rounds() -> int:
+	return maxi(0, PREBATTLE_VOLLEY_ROUNDS)
 
 static func set_army_move_trigger(trigger: int) -> void:
 	if trigger == ArmyMoveTrigger.RIGHT_CLICK:

@@ -140,6 +140,7 @@ var _spawn_event_placement_army: Army = null
 var _spawn_event_allowed_target_ids: Array[int] = []
 var _spawn_event_source_region_by_target: Dictionary = {}
 var _spawn_event_pending_event_index: int = -1
+var _has_played_start_horn: bool = false
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -238,7 +239,7 @@ func _ready():
 	if tutorial_enabled:
 		_sound_manager.set_active_playlist("tutorial")
 	
-	# Intro horn is handled on IntroMessageModal Continue click.
+	# Start horn is played once for new game starts (not saves/editor).
 
 func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = false):
 	"""Initialize all game managers and establish dependencies"""
@@ -842,6 +843,16 @@ func _show_custom_start_prompt() -> void:
 	if modal_to_use == null:
 		return
 	modal_to_use.call_deferred("display_message", "Click a region to choose your starting location")
+
+func _play_start_horn_if_needed() -> void:
+	if _has_played_start_horn:
+		return
+	if _loaded_from_save:
+		return
+	if enable_map_editor:
+		return
+	_sound_manager.play_horn_sound()
+	_has_played_start_horn = true
 
 func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenerator) -> void:
 	var source: Dictionary = save_data.get("source", {})
@@ -3110,7 +3121,7 @@ func simulate_siege_battle(attacker: Army, target_region: Region, use_full_wood:
 		[attacker_comp],
 		defender_armies,
 		garrison_comp,
-		attacker.get_efficiency(),
+		GameParameters.get_battle_attacker_effective_vigor(attacker.get_efficiency(), target_region.get_region_type()),
 		100,
 		target_region.get_region_type(),
 		target_region.get_castle_type(),
@@ -3153,7 +3164,7 @@ func simulate_castle_threat_battle(attacking_armies: Array[Army], target_region:
 		[merged_attacker],
 		defender_armies,
 		garrison_comp,
-		_get_average_efficiency_for_armies(attacking_armies),
+		GameParameters.get_battle_attacker_effective_vigor(_get_average_efficiency_for_armies(attacking_armies), target_region.get_region_type()),
 		100,
 		target_region.get_region_type(),
 		target_region.get_castle_type(),
@@ -4481,6 +4492,7 @@ func _start_first_turn() -> void:
 	DebugLogger.log("TurnProcessing", "_start_first_turn called for Player " + str(current_player))
 	DebugLogger.log("TurnProcessing", "Player " + str(current_player) + " is human: " + str(is_player_human(current_player)))
 	DebugLogger.log("TurnProcessing", "Player type: " + PlayerTypeEnum.type_to_string(get_player_type(current_player)))
+	_play_start_horn_if_needed()
 	if _sound_manager:
 		_sound_manager.play_game_music()
 

@@ -672,24 +672,17 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 		"losing_ratio_streak": 0
 	}
 	
-	# Ranged opening volley - both sides shoot simultaneously before main battle
-	var attacker_ranged_kills = _process_ranged_unit_attacks(merged_attackers, merged_defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_stats, castle_defense_bonus_override, is_siege_battle, siege_state, false)
-	var defender_ranged_kills = {}
-	
-	# Process garrison ranged attacks at 100% efficiency if garrison exists
-	if not current_garrison.is_empty():
-		var garrison_ranged_kills = _process_ranged_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, is_siege_battle, siege_state, true)
-		_merge_kill_results(defender_ranged_kills, garrison_ranged_kills)
-	
-	# Process defending army ranged attacks at their efficiency if any defending armies exist
-	var ranged_armies_only := _compute_army_composition(merged_defenders, current_garrison)
-	if not ranged_armies_only.is_empty():
-		var army_ranged_kills = _process_ranged_unit_attacks(ranged_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, is_siege_battle, siege_state, true)
-		_merge_kill_results(defender_ranged_kills, army_ranged_kills)
-	
-	# Apply ranged volley kills simultaneously
-	_apply_kills(merged_defenders, attacker_ranged_kills)
-	_apply_kills(merged_attackers, defender_ranged_kills)
+	# Ranged opening volleys - aggregate effects only, no separate volley rounds
+	var prebattle_volleys: int = GameParameters.get_prebattle_volley_rounds()
+	if prebattle_volleys > 0 and _army_size(merged_attackers) > 0 and _army_size(merged_defenders) > 0:
+		_apply_opening_volley_pass_simulation(merged_attackers, merged_defenders, current_garrison, rng, attacker_efficiency, defender_efficiency, terrain_type, castle_type, attacker_stats, defender_stats, castle_defense_bonus_override, is_siege_battle, siege_state)
+	if prebattle_volleys > 1 and _army_size(merged_attackers) > 0 and _army_size(merged_defenders) > 0:
+		_apply_opening_volley_pass_simulation(merged_attackers, merged_defenders, current_garrison, rng, attacker_efficiency, defender_efficiency, terrain_type, castle_type, attacker_stats, defender_stats, castle_defense_bonus_override, is_siege_battle, siege_state)
+	if prebattle_volleys > 2:
+		for _extra_volley_index in range(prebattle_volleys - 2):
+			if _army_size(merged_attackers) <= 0 or _army_size(merged_defenders) <= 0:
+				break
+			_apply_opening_volley_pass_simulation(merged_attackers, merged_defenders, current_garrison, rng, attacker_efficiency, defender_efficiency, terrain_type, castle_type, attacker_stats, defender_stats, castle_defense_bonus_override, is_siege_battle, siege_state)
 
 	var withdraw_side = _decide_withdrawal(merged_attackers, merged_defenders, current_garrison, attacker_can_withdraw, defender_can_withdraw, castle_type, rng, rounds, attacker_effectiveness_ratio, siege_state, withdrawal_tracker, ai_withdrawal_rules)
 	if withdraw_side != 0:
@@ -809,50 +802,42 @@ func process_opening_volley_session(session: BattleSession, rng: RandomNumberGen
 	if session == null or not session.is_battle_running or session.volley_done:
 		return result
 	session.volley_done = true
-	if session.is_siege_battle and not session.siege_state.is_empty():
-		_rebalance_active_rams(session.siege_state)
-	var attacker_ranged_kills = _process_ranged_unit_attacks(session.current_attackers, session.current_defenders, rng, session.attacker_efficiency, session.terrain_type, session.castle_type, null, session.castle_defense_override, session.is_siege_battle, session.siege_state, false)
-	var defender_ranged_kills = {}
-	if not session.current_garrison.is_empty():
-		var garrison_ranged_kills = _process_ranged_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, null, -1, session.is_siege_battle, session.siege_state, true)
-		_merge_kill_results(defender_ranged_kills, garrison_ranged_kills)
-	var armies_only := _get_armies_without_garrison(session.current_defenders, session.current_garrison)
-	if not armies_only.is_empty():
-		var army_ranged_kills = _process_ranged_unit_attacks(armies_only, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, null, -1, session.is_siege_battle, session.siege_state, true)
-		_merge_kill_results(defender_ranged_kills, army_ranged_kills)
-	var attacker_casualties := {}
-	var defender_casualties := {}
-	for unit_type in attacker_ranged_kills:
-		var kills = attacker_ranged_kills[unit_type]
-		var available = session.current_defenders.get(unit_type, 0)
-		var actual_kills = min(kills, available)
-		session.current_defenders[unit_type] = available - actual_kills
-		if session.current_defenders[unit_type] <= 0:
-			session.current_defenders.erase(unit_type)
-		if actual_kills > 0:
-			defender_casualties[unit_type] = actual_kills
-	for unit_type in defender_ranged_kills:
-		var kills_def = defender_ranged_kills[unit_type]
-		var available_def = session.current_attackers.get(unit_type, 0)
-		var actual_kills_def = min(kills_def, available_def)
-		session.current_attackers[unit_type] = available_def - actual_kills_def
-		if session.current_attackers[unit_type] <= 0:
-			session.current_attackers.erase(unit_type)
-		if actual_kills_def > 0:
-			attacker_casualties[unit_type] = actual_kills_def
-	var attacker_hits = 0
-	for unit_type in attacker_ranged_kills:
-		attacker_hits += attacker_ranged_kills[unit_type]
-	var defender_hits = 0
-	for unit_type in defender_ranged_kills:
-		defender_hits += defender_ranged_kills[unit_type]
-	if attacker_hits > 0 or defender_hits > 0:
+	var attacker_raw_breakdown: Dictionary = {}
+	var defender_raw_breakdown: Dictionary = {}
+	var attacker_casualties: Dictionary = {}
+	var defender_casualties: Dictionary = {}
+	var attacker_hits: int = 0
+	var defender_hits: int = 0
+	var prebattle_volleys: int = GameParameters.get_prebattle_volley_rounds()
+	if prebattle_volleys > 0 and _army_size(session.current_attackers) > 0 and _army_size(session.current_defenders) > 0:
+		var volley_pass_1: Dictionary = _run_opening_volley_pass_session(session, rng)
+		var volley_totals_1: Dictionary = _accumulate_opening_volley_session_data(volley_pass_1, attacker_raw_breakdown, defender_raw_breakdown, attacker_casualties, defender_casualties, attacker_hits, defender_hits)
+		attacker_hits = int(volley_totals_1.get("attacker_hits", attacker_hits))
+		defender_hits = int(volley_totals_1.get("defender_hits", defender_hits))
+	if prebattle_volleys > 1 and _army_size(session.current_attackers) > 0 and _army_size(session.current_defenders) > 0:
+		var volley_pass_2: Dictionary = _run_opening_volley_pass_session(session, rng)
+		var volley_totals_2: Dictionary = _accumulate_opening_volley_session_data(volley_pass_2, attacker_raw_breakdown, defender_raw_breakdown, attacker_casualties, defender_casualties, attacker_hits, defender_hits)
+		attacker_hits = int(volley_totals_2.get("attacker_hits", attacker_hits))
+		defender_hits = int(volley_totals_2.get("defender_hits", defender_hits))
+	if prebattle_volleys > 2:
+		for _extra_volley_index in range(prebattle_volleys - 2):
+			if _army_size(session.current_attackers) <= 0 or _army_size(session.current_defenders) <= 0:
+				break
+			var extra_volley_pass: Dictionary = _run_opening_volley_pass_session(session, rng)
+			var extra_volley_totals: Dictionary = _accumulate_opening_volley_session_data(extra_volley_pass, attacker_raw_breakdown, defender_raw_breakdown, attacker_casualties, defender_casualties, attacker_hits, defender_hits)
+			attacker_hits = int(extra_volley_totals.get("attacker_hits", attacker_hits))
+			defender_hits = int(extra_volley_totals.get("defender_hits", defender_hits))
+	if prebattle_volleys > 0:
+		var normalized_attacker_breakdown: Dictionary = _normalize_kill_breakdown_to_casualties(attacker_raw_breakdown, defender_casualties)
+		var normalized_defender_breakdown: Dictionary = _normalize_kill_breakdown_to_casualties(defender_raw_breakdown, attacker_casualties)
 		var volley_data := {
 			"round": 0,
 			"attacker_hits": attacker_hits,
 			"defender_hits": defender_hits,
 			"attacker_casualties": attacker_casualties,
 			"defender_casualties": defender_casualties,
+			"attacker_kill_breakdown": normalized_attacker_breakdown,
+			"defender_kill_breakdown": normalized_defender_breakdown,
 			"current_attackers": session.current_attackers.duplicate(),
 			"current_defenders": session.current_defenders.duplicate(),
 			"attacker_size": _army_size(session.current_attackers),
@@ -876,8 +861,6 @@ func process_opening_volley_session(session: BattleSession, rng: RandomNumberGen
 		result["withdrawing_side"] = withdraw_side
 	if _army_size(session.current_attackers) <= 0 or _army_size(session.current_defenders) <= 0:
 		result["battle_report"] = _finish_battle_session(session)
-	if result.get("round_data", null) == null:
-		result["round_data"] = {}
 	return result
 
 func process_next_round_session(session: BattleSession, rng: RandomNumberGenerator) -> Dictionary:
@@ -918,17 +901,23 @@ func process_next_round_session(session: BattleSession, rng: RandomNumberGenerat
 		defender_hit_totals = _new_hit_totals()
 	var attacker_snapshot := session.current_attackers.duplicate()
 	var defender_snapshot := session.current_defenders.duplicate()
+	var attacker_raw_breakdown: Dictionary = {}
+	var defender_raw_breakdown: Dictionary = {}
 	var attacker_hit_log: Dictionary = {}
-	var attacker_kills = _process_unit_attacks(session.current_attackers, session.current_defenders, rng, session.attacker_efficiency, session.terrain_type, session.castle_type, attacker_hit_log, null, session.castle_defense_override, attacker_effectiveness_value, session.is_siege_battle, attacker_hit_totals if track_hit_totals else null, session.siege_state, false)
+	var attacker_kills = _process_unit_attacks(session.current_attackers, session.current_defenders, rng, session.attacker_efficiency, session.terrain_type, session.castle_type, attacker_hit_log, null, session.castle_defense_override, attacker_effectiveness_value, session.is_siege_battle, attacker_hit_totals if track_hit_totals else null, session.siege_state, false, attacker_raw_breakdown)
 	var defender_kills: Dictionary = {}
 	var defender_hit_log: Dictionary = {}
 	if not session.current_garrison.is_empty():
-		var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true)
+		var garrison_breakdown: Dictionary = {}
+		var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true, garrison_breakdown)
 		_merge_kill_results(defender_kills, garrison_kills)
+		_merge_attacker_kill_breakdowns(defender_raw_breakdown, garrison_breakdown)
 	var defender_armies_only := _compute_army_composition(session.current_defenders, session.current_garrison)
 	if not defender_armies_only.is_empty():
-		var army_kills = _process_unit_attacks(defender_armies_only, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true)
+		var army_breakdown: Dictionary = {}
+		var army_kills = _process_unit_attacks(defender_armies_only, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true, army_breakdown)
 		_merge_kill_results(defender_kills, army_kills)
+		_merge_attacker_kill_breakdowns(defender_raw_breakdown, army_breakdown)
 	_apply_kills(session.current_defenders, attacker_kills)
 	_apply_kills(session.current_attackers, defender_kills)
 	_deduct_garrison_losses_from_snapshot(attacker_kills, defender_snapshot, session.current_garrison)
@@ -948,12 +937,16 @@ func process_next_round_session(session: BattleSession, rng: RandomNumberGenerat
 	var defender_hits = 0
 	for unit_type in defender_kills:
 		defender_hits += defender_kills[unit_type]
+	var normalized_attacker_breakdown: Dictionary = _normalize_kill_breakdown_to_casualties(attacker_raw_breakdown, defender_casualties)
+	var normalized_defender_breakdown: Dictionary = _normalize_kill_breakdown_to_casualties(defender_raw_breakdown, attacker_casualties)
 	var round_data := {
 		"round": session.current_round,
 		"attacker_hits": attacker_hits,
 		"defender_hits": defender_hits,
 		"attacker_casualties": attacker_casualties,
 		"defender_casualties": defender_casualties,
+		"attacker_kill_breakdown": normalized_attacker_breakdown,
+		"defender_kill_breakdown": normalized_defender_breakdown,
 		"current_attackers": session.current_attackers.duplicate(),
 		"current_defenders": session.current_defenders.duplicate(),
 		"attacker_size": _army_size(session.current_attackers),
@@ -977,32 +970,42 @@ func _process_withdrawal_round_session(session: BattleSession, rng: RandomNumber
 	var is_mobility_round = session.withdrawal_rounds_remaining <= 0 and session.mobility_withdrawal_rounds_remaining > 0
 	var attacker_effectiveness_value = session.attacker_effectiveness_ratio if session.is_siege_battle else 0.0
 	var defender_effectiveness_value = 0.0 if session.is_siege_battle and attacker_effectiveness_value <= 0.0 else -1.0
-	var attacker_kills = {}
-	var defender_kills = {}
+	var attacker_kills: Dictionary = {}
+	var defender_kills: Dictionary = {}
+	var attacker_raw_breakdown: Dictionary = {}
+	var defender_raw_breakdown: Dictionary = {}
 	if session.withdrawing_side == 1:
 		if is_mobility_round:
 			if not session.current_garrison.is_empty():
-				var mobility_garrison_kills = _process_mobility_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type)
+				var mobility_garrison_breakdown: Dictionary = {}
+				var mobility_garrison_kills = _process_mobility_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, mobility_garrison_breakdown)
 				_merge_kill_results(defender_kills, mobility_garrison_kills)
+				_merge_attacker_kill_breakdowns(defender_raw_breakdown, mobility_garrison_breakdown)
 			var armies_comp = _get_armies_without_garrison(session.current_defenders, session.current_garrison)
 			if not armies_comp.is_empty():
-				var mobility_army_kills = _process_mobility_attacks(armies_comp, session.current_attackers, rng, session.defender_efficiency, session.terrain_type)
+				var mobility_army_breakdown: Dictionary = {}
+				var mobility_army_kills = _process_mobility_attacks(armies_comp, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, mobility_army_breakdown)
 				_merge_kill_results(defender_kills, mobility_army_kills)
+				_merge_attacker_kill_breakdowns(defender_raw_breakdown, mobility_army_breakdown)
 		else:
 			if not session.current_garrison.is_empty():
-				var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true)
+				var garrison_breakdown: Dictionary = {}
+				var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true, garrison_breakdown)
 				_merge_kill_results(defender_kills, garrison_kills)
+				_merge_attacker_kill_breakdowns(defender_raw_breakdown, garrison_breakdown)
 			var armies_standard = _get_armies_without_garrison(session.current_defenders, session.current_garrison)
 			if not armies_standard.is_empty():
-				var army_kills = _process_unit_attacks(armies_standard, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true)
+				var army_breakdown: Dictionary = {}
+				var army_kills = _process_unit_attacks(armies_standard, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true, army_breakdown)
 				_merge_kill_results(defender_kills, army_kills)
+				_merge_attacker_kill_breakdowns(defender_raw_breakdown, army_breakdown)
 	else:
 		var armies_only = _get_armies_without_garrison(session.current_defenders, session.current_garrison)
 		if not armies_only.is_empty():
 			if is_mobility_round:
-				attacker_kills = _process_mobility_attacks(session.current_attackers, armies_only, rng, session.attacker_efficiency, session.terrain_type)
+				attacker_kills = _process_mobility_attacks(session.current_attackers, armies_only, rng, session.attacker_efficiency, session.terrain_type, attacker_raw_breakdown)
 			else:
-				attacker_kills = _process_unit_attacks(session.current_attackers, armies_only, rng, session.attacker_efficiency, session.terrain_type, session.castle_type, null, null, session.castle_defense_override, attacker_effectiveness_value, session.is_siege_battle, null, session.siege_state, false)
+				attacker_kills = _process_unit_attacks(session.current_attackers, armies_only, rng, session.attacker_efficiency, session.terrain_type, session.castle_type, null, null, session.castle_defense_override, attacker_effectiveness_value, session.is_siege_battle, null, session.siege_state, false, attacker_raw_breakdown)
 	var attacker_hits = 0
 	var defender_hits = 0
 	var attacker_casualties = {}
@@ -1026,12 +1029,17 @@ func _process_withdrawal_round_session(session: BattleSession, rng: RandomNumber
 		session.mobility_withdrawal_rounds_remaining -= 1
 	else:
 		session.withdrawal_rounds_remaining -= 1
+	var normalized_attacker_breakdown: Dictionary = _normalize_kill_breakdown_to_casualties(attacker_raw_breakdown, defender_casualties)
+	var normalized_defender_breakdown: Dictionary = _normalize_kill_breakdown_to_casualties(defender_raw_breakdown, attacker_casualties)
 	var round_data := {
 		"round": session.current_round,
 		"attacker_hits": attacker_hits,
 		"defender_hits": defender_hits,
 		"attacker_casualties": attacker_casualties,
 		"defender_casualties": defender_casualties,
+		"attacker_kill_breakdown": normalized_attacker_breakdown,
+		"defender_kill_breakdown": normalized_defender_breakdown,
+		"withdrawing_side": session.withdrawing_side,
 		"current_attackers": session.current_attackers.duplicate(),
 		"current_defenders": session.current_defenders.duplicate(),
 		"attacker_size": _army_size(session.current_attackers),
@@ -1174,7 +1182,7 @@ func _army_size(army: Dictionary) -> int:
 		total += army[unit_type]
 	return total
 
-func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, hit_log = null, stats_accumulator = null, castle_defense_bonus_override: int = -1, attack_effectiveness_ratio: float = -1.0, disable_siege_traits: bool = false, hit_totals = null, siege_state: Dictionary = {}, target_has_rams: bool = false) -> Dictionary:
+func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, hit_log = null, stats_accumulator = null, castle_defense_bonus_override: int = -1, attack_effectiveness_ratio: float = -1.0, disable_siege_traits: bool = false, hit_totals = null, siege_state: Dictionary = {}, target_has_rams: bool = false, kill_breakdown = null) -> Dictionary:
 	"""Process attacks unit-by-unit with trait-based targeting rules"""
 	var total_kills = {}
 	var apply_effectiveness := disable_siege_traits and attack_effectiveness_ratio >= 0.0
@@ -1247,10 +1255,12 @@ func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionar
 		
 		# Merge kills into total
 		_merge_kill_results(total_kills, target_kills)
-	
+		if kill_breakdown != null:
+			_record_attacker_target_kills(kill_breakdown, attacker_unit_type, target_kills)
+		
 	return total_kills
 
-func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND) -> Dictionary:
+func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, kill_breakdown = null) -> Dictionary:
 	var mobility_kills := {}
 	for defender_unit_type in defending_army.keys():
 		var defender_count = defending_army[defender_unit_type]
@@ -1270,8 +1280,10 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 			for target_unit_type in target_assigned.keys():
 				if GameParameters.is_cavalry_unit(target_unit_type):
 					target_assigned[target_unit_type] = _apply_multiplier_stochastic(target_assigned[target_unit_type], GameParameters.LONG_SPEARS_CAVALRY_MULTIPLIER, rng)
-		var target_kills = _defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, CastleTypeEnum.Type.NONE, -1)
-		_merge_kill_results(mobility_kills, target_kills)
+			var target_kills = _defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, CastleTypeEnum.Type.NONE, -1)
+			_merge_kill_results(mobility_kills, target_kills)
+			if kill_breakdown != null:
+				_record_attacker_target_kills(kill_breakdown, defender_unit_type, target_kills)
 	return mobility_kills
 
 func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_can_withdraw: bool, defender_can_withdraw: bool, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, current_round: int, attacker_effectiveness_ratio: float = 1.0, siege_state: Dictionary = {}, withdrawal_tracker: Dictionary = {}, ai_withdrawal_rules: Dictionary = {}) -> int:
@@ -1580,6 +1592,87 @@ func _apply_kills(army: Dictionary, kills: Dictionary) -> void:
 		if army[unit_type] <= 0:
 			army.erase(unit_type)
 
+func _apply_kills_with_casualties(army: Dictionary, kills: Dictionary) -> Dictionary:
+	var casualties: Dictionary = {}
+	for unit_type in kills.keys():
+		var kill_count: int = int(kills[unit_type])
+		if kill_count <= 0:
+			continue
+		var available: int = int(army.get(unit_type, 0))
+		if available <= 0:
+			continue
+		var actual_kills: int = min(kill_count, available)
+		army[unit_type] = available - actual_kills
+		if int(army[unit_type]) <= 0:
+			army.erase(unit_type)
+		if actual_kills > 0:
+			casualties[unit_type] = actual_kills
+	return casualties
+
+func _apply_opening_volley_pass_simulation(attackers: Dictionary, defenders: Dictionary, current_garrison: Dictionary, rng: RandomNumberGenerator, attacker_efficiency: int, defender_efficiency: int, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type, attacker_stats: Dictionary, defender_stats: Dictionary, castle_defense_bonus_override: int, is_siege_battle: bool, siege_state: Dictionary) -> void:
+	var attacker_ranged_kills: Dictionary = _process_ranged_unit_attacks(attackers, defenders, rng, attacker_efficiency, terrain_type, castle_type, attacker_stats, castle_defense_bonus_override, is_siege_battle, siege_state, false)
+	var defender_ranged_kills: Dictionary = {}
+	if not current_garrison.is_empty():
+		var garrison_ranged_kills: Dictionary = _process_ranged_unit_attacks(current_garrison, attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, is_siege_battle, siege_state, true)
+		_merge_kill_results(defender_ranged_kills, garrison_ranged_kills)
+	var ranged_armies_only: Dictionary = _compute_army_composition(defenders, current_garrison)
+	if not ranged_armies_only.is_empty():
+		var army_ranged_kills: Dictionary = _process_ranged_unit_attacks(ranged_armies_only, attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_stats, -1, is_siege_battle, siege_state, true)
+		_merge_kill_results(defender_ranged_kills, army_ranged_kills)
+	_apply_kills(defenders, attacker_ranged_kills)
+	_apply_kills(attackers, defender_ranged_kills)
+
+func _run_opening_volley_pass_session(session: BattleSession, rng: RandomNumberGenerator) -> Dictionary:
+	if session.is_siege_battle and not session.siege_state.is_empty():
+		_rebalance_active_rams(session.siege_state)
+	var volley_attacker_raw_breakdown: Dictionary = {}
+	var attacker_ranged_kills: Dictionary = _process_ranged_unit_attacks(session.current_attackers, session.current_defenders, rng, session.attacker_efficiency, session.terrain_type, session.castle_type, null, session.castle_defense_override, session.is_siege_battle, session.siege_state, false, volley_attacker_raw_breakdown)
+	var defender_ranged_kills: Dictionary = {}
+	var volley_defender_raw_breakdown: Dictionary = {}
+	if not session.current_garrison.is_empty():
+		var garrison_breakdown: Dictionary = {}
+		var garrison_ranged_kills: Dictionary = _process_ranged_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, null, -1, session.is_siege_battle, session.siege_state, true, garrison_breakdown)
+		_merge_kill_results(defender_ranged_kills, garrison_ranged_kills)
+		_merge_attacker_kill_breakdowns(volley_defender_raw_breakdown, garrison_breakdown)
+	var armies_only: Dictionary = _get_armies_without_garrison(session.current_defenders, session.current_garrison)
+	if not armies_only.is_empty():
+		var army_breakdown: Dictionary = {}
+		var army_ranged_kills: Dictionary = _process_ranged_unit_attacks(armies_only, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, null, -1, session.is_siege_battle, session.siege_state, true, army_breakdown)
+		_merge_kill_results(defender_ranged_kills, army_ranged_kills)
+		_merge_attacker_kill_breakdowns(volley_defender_raw_breakdown, army_breakdown)
+	var attacker_hits_value: int = 0
+	for unit_type in attacker_ranged_kills.keys():
+		attacker_hits_value += int(attacker_ranged_kills[unit_type])
+	var defender_hits_value: int = 0
+	for unit_type in defender_ranged_kills.keys():
+		defender_hits_value += int(defender_ranged_kills[unit_type])
+	var defender_volley_casualties: Dictionary = _apply_kills_with_casualties(session.current_defenders, attacker_ranged_kills)
+	var attacker_volley_casualties: Dictionary = _apply_kills_with_casualties(session.current_attackers, defender_ranged_kills)
+	return {
+		"attacker_raw_breakdown": volley_attacker_raw_breakdown,
+		"defender_raw_breakdown": volley_defender_raw_breakdown,
+		"attacker_casualties": attacker_volley_casualties,
+		"defender_casualties": defender_volley_casualties,
+		"attacker_hits": attacker_hits_value,
+		"defender_hits": defender_hits_value
+	}
+
+func _accumulate_opening_volley_session_data(volley_pass_data: Dictionary, attacker_raw_breakdown: Dictionary, defender_raw_breakdown: Dictionary, attacker_casualties: Dictionary, defender_casualties: Dictionary, attacker_hits: int, defender_hits: int) -> Dictionary:
+	var pass_attacker_breakdown: Dictionary = volley_pass_data.get("attacker_raw_breakdown", {})
+	var pass_defender_breakdown: Dictionary = volley_pass_data.get("defender_raw_breakdown", {})
+	var pass_attacker_casualties: Dictionary = volley_pass_data.get("attacker_casualties", {})
+	var pass_defender_casualties: Dictionary = volley_pass_data.get("defender_casualties", {})
+	_merge_attacker_kill_breakdowns(attacker_raw_breakdown, pass_attacker_breakdown)
+	_merge_attacker_kill_breakdowns(defender_raw_breakdown, pass_defender_breakdown)
+	_merge_kill_results(attacker_casualties, pass_attacker_casualties)
+	_merge_kill_results(defender_casualties, pass_defender_casualties)
+	var updated_attacker_hits: int = attacker_hits + int(volley_pass_data.get("attacker_hits", 0))
+	var updated_defender_hits: int = defender_hits + int(volley_pass_data.get("defender_hits", 0))
+	return {
+		"attacker_hits": updated_attacker_hits,
+		"defender_hits": updated_defender_hits
+	}
+
 func _calculate_losses(original: Dictionary, final: Dictionary) -> Dictionary:
 	"""Calculate losses by comparing original and final compositions"""
 	var losses = {}
@@ -1728,7 +1821,7 @@ func _get_terrain_attack_multiplier(unit_type: SoldierTypeEnum.Type, terrain_typ
 	
 	return multiplier
 
-func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, stats_accumulator = null, castle_defense_bonus_override: int = -1, disable_siege_traits: bool = false, siege_state: Dictionary = {}, target_has_rams: bool = false) -> Dictionary:
+func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, stats_accumulator = null, castle_defense_bonus_override: int = -1, disable_siege_traits: bool = false, siege_state: Dictionary = {}, target_has_rams: bool = false, kill_breakdown = null) -> Dictionary:
 	"""Process attacks from only ranged trait units during opening volley"""
 	var ranged_kills = {}
 	if target_has_rams:
@@ -1777,8 +1870,104 @@ func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Di
 		
 		# Merge kills into total
 		_merge_kill_results(ranged_kills, target_kills)
-	
+		if kill_breakdown != null:
+			_record_attacker_target_kills(kill_breakdown, attacker_unit_type, target_kills)
+		
 	return ranged_kills
+
+func _record_attacker_target_kills(kill_breakdown: Dictionary, attacker_unit_type: SoldierTypeEnum.Type, target_kills: Dictionary) -> void:
+	if not kill_breakdown.has(attacker_unit_type):
+		kill_breakdown[attacker_unit_type] = {}
+	var attacker_entry: Dictionary = kill_breakdown[attacker_unit_type]
+	for target_unit_type in target_kills.keys():
+		var added_kills: int = int(target_kills[target_unit_type])
+		if added_kills <= 0:
+			continue
+		attacker_entry[target_unit_type] = int(attacker_entry.get(target_unit_type, 0)) + added_kills
+	kill_breakdown[attacker_unit_type] = attacker_entry
+
+func _merge_attacker_kill_breakdowns(target: Dictionary, source: Dictionary) -> void:
+	for attacker_unit_type in source.keys():
+		var source_targets: Dictionary = source[attacker_unit_type]
+		if not target.has(attacker_unit_type):
+			target[attacker_unit_type] = {}
+		var target_targets: Dictionary = target[attacker_unit_type]
+		for target_unit_type in source_targets.keys():
+			target_targets[target_unit_type] = int(target_targets.get(target_unit_type, 0)) + int(source_targets.get(target_unit_type, 0))
+		target[attacker_unit_type] = target_targets
+
+func _normalize_kill_breakdown_to_casualties(raw_breakdown: Dictionary, actual_casualties: Dictionary) -> Dictionary:
+	var normalized: Dictionary = {}
+	for target_unit_type in actual_casualties.keys():
+		var actual_total: int = int(actual_casualties.get(target_unit_type, 0))
+		if actual_total <= 0:
+			continue
+		var contributors: Array = []
+		var raw_total: int = 0
+		for attacker_unit_type in raw_breakdown.keys():
+			var attacker_targets: Dictionary = raw_breakdown.get(attacker_unit_type, {})
+			var raw_value: int = int(attacker_targets.get(target_unit_type, 0))
+			if raw_value <= 0:
+				continue
+			raw_total += raw_value
+			contributors.append({
+				"attacker_unit_type": attacker_unit_type,
+				"raw_value": raw_value,
+				"allocated": 0,
+				"fractional": 0
+			})
+		if raw_total <= 0:
+			continue
+		var allocated_sum: int = 0
+		for i in range(contributors.size()):
+			var row: Dictionary = contributors[i]
+			var raw_value: int = int(row.get("raw_value", 0))
+			var scaled_numerator: int = raw_value * actual_total
+			var allocated_value: int = int(scaled_numerator / raw_total)
+			var fractional_value: int = scaled_numerator % raw_total
+			row["allocated"] = allocated_value
+			row["fractional"] = fractional_value
+			contributors[i] = row
+			allocated_sum += allocated_value
+		var remainder: int = actual_total - allocated_sum
+		for i in range(remainder):
+			var index: int = 0
+			var best_fractional: int = -1
+			var best_raw: int = -1
+			var best_order: int = 999
+			for j in range(contributors.size()):
+				var candidate: Dictionary = contributors[j]
+				var candidate_fractional: int = int(candidate.get("fractional", 0))
+				var candidate_raw: int = int(candidate.get("raw_value", 0))
+				var candidate_order: int = _unit_order_index(int(candidate.get("attacker_unit_type", 0)))
+				if candidate_fractional > best_fractional:
+					index = j
+					best_fractional = candidate_fractional
+					best_raw = candidate_raw
+					best_order = candidate_order
+				elif candidate_fractional == best_fractional:
+					if candidate_raw > best_raw:
+						index = j
+						best_raw = candidate_raw
+						best_order = candidate_order
+					elif candidate_raw == best_raw and candidate_order < best_order:
+						index = j
+						best_order = candidate_order
+			var row: Dictionary = contributors[index]
+			row["allocated"] = int(row.get("allocated", 0)) + 1
+			row["fractional"] = -1
+			contributors[index] = row
+		for row in contributors:
+			var attacker_unit_type: int = int(row.get("attacker_unit_type", 0))
+			var allocated: int = int(row.get("allocated", 0))
+			if allocated <= 0:
+				continue
+			if not normalized.has(attacker_unit_type):
+				normalized[attacker_unit_type] = {}
+			var attacker_entry: Dictionary = normalized[attacker_unit_type]
+			attacker_entry[target_unit_type] = int(attacker_entry.get(target_unit_type, 0)) + allocated
+			normalized[attacker_unit_type] = attacker_entry
+	return normalized
 
 func _scale_non_ranged_hit_records(hit_records: Array, target_total: int, rng: RandomNumberGenerator) -> void:
 	var non_ranged_indices := []
@@ -1843,6 +2032,10 @@ func _compute_attack_hits(unit_type: SoldierTypeEnum.Type, unit_count: int, effi
 	if GameParameters.unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_6):
 		effective_unit_count *= 2
 	var hits: int = _binomial_sample(rng, effective_unit_count, modified_attack_chance)
+	var ranged_terrain_penalty_percent: int = GameParameters.get_battle_ranged_terrain_penalty_percent(unit_type, terrain_type)
+	if hits > 0 and ranged_terrain_penalty_percent > 0:
+		var retained_ratio: float = float(100 - ranged_terrain_penalty_percent) / 100.0
+		hits = int(floor(float(hits) * retained_ratio))
 	return {
 		"hits": hits,
 		"effective_unit_count": effective_unit_count,

@@ -509,8 +509,9 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	card.visible = true
 	var intel_mode: bool = _is_current_region_intel_mode()
 	var is_selectable: bool = _is_army_selectable_for_current_player(army)
+	var show_intel_for_army: bool = intel_mode and not is_selectable
 	var selection_button = card.get_node("SelectionStatus") as Button
-	if intel_mode:
+	if show_intel_for_army:
 		selection_button.disabled = true
 		selection_button.theme = BUTTON_DEFAULT_THEME
 		var observer_id: int = game_manager.get_current_player_id()
@@ -534,14 +535,14 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	army_name_label.text = tr("Army %s") % army.number
 
 	var move_container = content.get_node("MP/MoveContainer") as HBoxContainer
-	if intel_mode:
+	if show_intel_for_army:
 		_update_move_points_icons(move_container, 0)
 	else:
 		_update_move_points_icons(move_container, army.get_movement_points())
 
 	var progress_bar = content.get_node("Vigor/ProgressBar") as ProgressBar
 	var vigor_value = content.get_node("Vigor/ProgressBar/Value") as Label
-	if intel_mode:
+	if show_intel_for_army:
 		_update_vigor_bar(progress_bar, 0)
 		vigor_value.text = "?"
 	else:
@@ -552,13 +553,13 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	var composition: ArmyComposition = army.get_composition()
 	var wounded_composition: ArmyComposition = army.get_wounded_composition()
 	var has_known_composition: bool = true
-	if intel_mode:
+	if show_intel_for_army:
 		composition = _get_enemy_army_intel_composition(army)
 		wounded_composition = _get_enemy_army_intel_wounded_composition(army)
 		if composition == null:
 			has_known_composition = false
 	var info_root = content.get_node("GarrisonInfo")
-	if intel_mode and not has_known_composition:
+	if show_intel_for_army and not has_known_composition:
 		_set_unknown_unit_values(info_root)
 	else:
 		_update_army_unit_values(composition, wounded_composition, info_root)
