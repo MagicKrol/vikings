@@ -139,6 +139,15 @@ enum ArmyMoveTrigger {
 	RIGHT_CLICK = 1
 }
 
+enum KeyboardAction {
+	CONTINUE_CLOSE = 0,
+	NEXT_ARMY = 1,
+	SWITCH_ARMY_REGION = 2,
+	RECRUIT = 3,
+	CAMP_REST = 4,
+	TRANSFER = 5
+}
+
 ## Border Enhancement Constants
 const BORDER_SATURATION_BOOST = 0.1           # Increase saturation by 20% for colored borders
 const BORDER_VALUE_REDUCTION = 0.15           # Darken borders by 15% 
@@ -223,6 +232,12 @@ static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
 static var _battle_round_time: float = BATTLE_ROUND_TIME_NORMAL
 static var _army_move_trigger: int = ArmyMoveTrigger.RIGHT_CLICK
 static var _battle_logs_visible: bool = false
+static var _continue_close_keycode: int = KEY_SPACE
+static var _next_army_keycode: int = KEY_SHIFT
+static var _switch_army_region_keycode: int = KEY_TAB
+static var _recruit_keycode: int = KEY_R
+static var _camp_rest_keycode: int = KEY_C
+static var _transfer_keycode: int = KEY_T
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -1042,6 +1057,83 @@ static func set_army_move_trigger(trigger: int) -> void:
 
 static func get_army_move_trigger() -> int:
 	return _army_move_trigger
+
+static func get_default_keyboard_keycode(action: int) -> int:
+	match action:
+		KeyboardAction.CONTINUE_CLOSE:
+			return KEY_SPACE
+		KeyboardAction.NEXT_ARMY:
+			return KEY_SHIFT
+		KeyboardAction.SWITCH_ARMY_REGION:
+			return KEY_TAB
+		KeyboardAction.RECRUIT:
+			return KEY_R
+		KeyboardAction.CAMP_REST:
+			return KEY_C
+		KeyboardAction.TRANSFER:
+			return KEY_T
+	return KEY_NONE
+
+static func get_keyboard_keycode(action: int) -> int:
+	match action:
+		KeyboardAction.CONTINUE_CLOSE:
+			return _continue_close_keycode
+		KeyboardAction.NEXT_ARMY:
+			return _next_army_keycode
+		KeyboardAction.SWITCH_ARMY_REGION:
+			return _switch_army_region_keycode
+		KeyboardAction.RECRUIT:
+			return _recruit_keycode
+		KeyboardAction.CAMP_REST:
+			return _camp_rest_keycode
+		KeyboardAction.TRANSFER:
+			return _transfer_keycode
+	return KEY_NONE
+
+static func set_keyboard_keycode(action: int, keycode: int) -> void:
+	var normalized_keycode: int = maxi(KEY_NONE, keycode)
+	match action:
+		KeyboardAction.CONTINUE_CLOSE:
+			_continue_close_keycode = normalized_keycode
+		KeyboardAction.NEXT_ARMY:
+			_next_army_keycode = normalized_keycode
+		KeyboardAction.SWITCH_ARMY_REGION:
+			_switch_army_region_keycode = normalized_keycode
+		KeyboardAction.RECRUIT:
+			_recruit_keycode = normalized_keycode
+		KeyboardAction.CAMP_REST:
+			_camp_rest_keycode = normalized_keycode
+		KeyboardAction.TRANSFER:
+			_transfer_keycode = normalized_keycode
+
+static func is_keyboard_action_pressed(event: InputEvent, action: int) -> bool:
+	if not (event is InputEventKey):
+		return false
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return false
+	var configured_keycode: int = get_keyboard_keycode(action)
+	if configured_keycode == KEY_NONE:
+		return false
+	return key_event.keycode == configured_keycode
+
+static func is_continue_close_key_pressed(event: InputEvent) -> bool:
+	return is_keyboard_action_pressed(event, KeyboardAction.CONTINUE_CLOSE)
+
+static func is_next_army_key_pressed(event: InputEvent) -> bool:
+	return is_keyboard_action_pressed(event, KeyboardAction.NEXT_ARMY)
+
+static func is_switch_army_region_key_pressed(event: InputEvent) -> bool:
+	return is_keyboard_action_pressed(event, KeyboardAction.SWITCH_ARMY_REGION)
+
+static func is_recruit_key_pressed(event: InputEvent) -> bool:
+	return is_keyboard_action_pressed(event, KeyboardAction.RECRUIT)
+
+static func is_camp_rest_key_pressed(event: InputEvent) -> bool:
+	return is_keyboard_action_pressed(event, KeyboardAction.CAMP_REST)
+
+static func is_transfer_key_pressed(event: InputEvent) -> bool:
+	return is_keyboard_action_pressed(event, KeyboardAction.TRANSFER)
 
 static func get_move_animation_duration(is_ai_player: bool) -> float:
 	if is_ai_player:

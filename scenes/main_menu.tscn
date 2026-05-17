@@ -2001,6 +2001,193 @@ toggle_mode = true
 button_pressed = true
 text = "Right click"
 
+[node name="MarginContainerMoveArmy2" type="MarginContainer" parent="Options/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LabelKeys" type="Label" parent="Options/Scenario/VBoxContainer"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Keyboard Mapping"
+
+[node name="KeysConfigure" type="HBoxContainer" parent="Options/Scenario/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MarginContainerLeft" type="MarginContainer" parent="Options/Scenario/VBoxContainer/KeysConfigure"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Configure" type="Button" parent="Options/Scenario/VBoxContainer/KeysConfigure"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "Configure Keys"
+
+[node name="Keys" type="Panel" parent="Options"]
+visible = false
+layout_mode = 0
+offset_left = 680.0
+offset_top = 200.0
+offset_right = 1290.0
+offset_bottom = 800.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ijsky")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Options/Keys"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 15.0
+offset_right = 585.0
+offset_bottom = 595.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Options/Keys/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("11_pot7t")
+text = "Keyboard Mapping"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Options/Keys/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Options/Keys/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="Options/Keys/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Options/Keys/VBoxContainer"]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Rows" type="VBoxContainer" parent="Options/Keys/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ContinueClose" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/ContinueClose"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Continue/Close Key"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/ContinueClose"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[Spacebar]"
+
+[node name="NextArmy" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/NextArmy"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Next army"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/NextArmy"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[Shift]"
+
+[node name="SwitchArmyRegion" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/SwitchArmyRegion"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Switch army/region key"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/SwitchArmyRegion"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[Tab]"
+
+[node name="Recruit" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/Recruit"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Recruit"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/Recruit"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[R]"
+
+[node name="CampRest" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/CampRest"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Camp / Rest Key"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/CampRest"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[C]"
+
+[node name="Transfer" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/Transfer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Transfer"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/Transfer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[T]"
+
 [node name="SaveGameModal" type="Control" parent="."]
 visible = false
 z_index = 120

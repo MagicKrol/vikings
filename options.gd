@@ -4,11 +4,16 @@ class_name OptionsPanel
 signal back_requested
 
 const CLOUDS_SCRIPT: Script = preload("res://clouds.gd")
+const NO_CAPTURE_ACTION: int = -1
 
 var sound_manager: SoundManager
 var _apply_runtime_clouds: bool = false
+var _captured_keyboard_action: int = NO_CAPTURE_ACTION
 
+@onready var scenario_panel: Panel = get_node("Scenario") as Panel
+@onready var keys_panel: Panel = get_node("Keys") as Panel
 @onready var back_button: Button = get_node("Scenario/VBoxContainer/HBoxContainer2/Back") as Button
+@onready var keys_back_button: Button = get_node("Keys/VBoxContainer/HBoxContainer2/Back") as Button
 @onready var sound_value_label: Label = get_node("Scenario/VBoxContainer/Sound/Labels/Header2") as Label
 @onready var sound_slider: HSlider = get_node("Scenario/VBoxContainer/Sound/HSlider") as HSlider
 @onready var music_value_label: Label = get_node("Scenario/VBoxContainer/Music/Labels/Header2") as Label
@@ -23,6 +28,13 @@ var _apply_runtime_clouds: bool = false
 @onready var battle_speed_very_fast_button: Button = get_node("Scenario/VBoxContainer/BattleSpeed/VeryFast") as Button
 @onready var move_army_left_click_button: Button = get_node("Scenario/VBoxContainer/MoveArmy/LeftClick") as Button
 @onready var move_army_right_click_button: Button = get_node("Scenario/VBoxContainer/MoveArmy/RightClick") as Button
+@onready var configure_keys_button: Button = get_node("Scenario/VBoxContainer/KeysConfigure/Configure") as Button
+@onready var continue_close_key_button: Button = get_node("Keys/VBoxContainer/Rows/ContinueClose/KeyButton") as Button
+@onready var next_army_key_button: Button = get_node("Keys/VBoxContainer/Rows/NextArmy/KeyButton") as Button
+@onready var switch_army_region_key_button: Button = get_node("Keys/VBoxContainer/Rows/SwitchArmyRegion/KeyButton") as Button
+@onready var recruit_key_button: Button = get_node("Keys/VBoxContainer/Rows/Recruit/KeyButton") as Button
+@onready var camp_rest_key_button: Button = get_node("Keys/VBoxContainer/Rows/CampRest/KeyButton") as Button
+@onready var transfer_key_button: Button = get_node("Keys/VBoxContainer/Rows/Transfer/KeyButton") as Button
 
 var _cloud_buttons_group: ButtonGroup
 var _ai_speed_buttons_group: ButtonGroup
@@ -49,6 +61,7 @@ func _ready() -> void:
 	move_army_left_click_button.button_group = _move_army_buttons_group
 	move_army_right_click_button.button_group = _move_army_buttons_group
 	back_button.pressed.connect(_on_back_pressed)
+	keys_back_button.pressed.connect(_on_keys_back_pressed)
 	sound_slider.value_changed.connect(_on_sound_slider_changed)
 	music_slider.value_changed.connect(_on_music_slider_changed)
 	clouds_show_button.pressed.connect(_on_clouds_show_pressed)
@@ -61,15 +74,31 @@ func _ready() -> void:
 	battle_speed_very_fast_button.pressed.connect(_on_battle_speed_very_fast_pressed)
 	move_army_left_click_button.pressed.connect(_on_move_army_left_click_pressed)
 	move_army_right_click_button.pressed.connect(_on_move_army_right_click_pressed)
+	configure_keys_button.pressed.connect(_on_configure_keys_pressed)
+	continue_close_key_button.pressed.connect(_on_continue_close_key_pressed)
+	next_army_key_button.pressed.connect(_on_next_army_key_pressed)
+	switch_army_region_key_button.pressed.connect(_on_switch_army_region_key_pressed)
+	recruit_key_button.pressed.connect(_on_recruit_key_pressed)
+	camp_rest_key_button.pressed.connect(_on_camp_rest_key_pressed)
+	transfer_key_button.pressed.connect(_on_transfer_key_pressed)
+	_show_scenario_panel()
+	_sync_keyboard_mapping_buttons()
 
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if get_tree().current_scene.name != "MainMenu":
+	if _captured_keyboard_action == NO_CAPTURE_ACTION:
 		return
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		var hovered: Control = get_viewport().gui_get_hovered_control()
-		var hovered_path: String = hovered.get_path() if hovered else "NONE"
+	if not (event is InputEventKey):
+		return
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return
+	var captured_action: int = _captured_keyboard_action
+	_captured_keyboard_action = NO_CAPTURE_ACTION
+	_set_keyboard_mapping(captured_action, key_event.keycode)
+	get_viewport().set_input_as_handled()
+	accept_event()
 
 func configure(sound_manager_ref: SoundManager, apply_runtime_clouds: bool, back_text: String) -> void:
 	sound_manager = sound_manager_ref
@@ -79,7 +108,9 @@ func configure(sound_manager_ref: SoundManager, apply_runtime_clouds: bool, back
 	if not is_node_ready():
 		await ready
 	back_button.text = back_text
+	keys_back_button.text = back_text
 	refresh_state()
+	_show_scenario_panel()
 
 func refresh_state() -> void:
 	var sound_percent: float = _db_to_percent(sound_manager.click_player.volume_db) if sound_manager.sound_enabled else 0.0
@@ -92,9 +123,118 @@ func refresh_state() -> void:
 	_sync_ai_speed_buttons()
 	_sync_battle_speed_buttons()
 	_sync_move_army_buttons()
+	_sync_keyboard_mapping_buttons()
 
 func _on_back_pressed() -> void:
+	_cancel_keyboard_capture()
 	back_requested.emit()
+
+func _on_keys_back_pressed() -> void:
+	_cancel_keyboard_capture()
+	_show_scenario_panel()
+
+func _on_configure_keys_pressed() -> void:
+	_cancel_keyboard_capture()
+	_sync_keyboard_mapping_buttons()
+	_show_keys_panel()
+
+func _on_continue_close_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.CONTINUE_CLOSE)
+
+func _on_next_army_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.NEXT_ARMY)
+
+func _on_switch_army_region_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.SWITCH_ARMY_REGION)
+
+func _on_recruit_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.RECRUIT)
+
+func _on_camp_rest_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.CAMP_REST)
+
+func _on_transfer_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.TRANSFER)
+
+func _begin_keyboard_capture(action: int) -> void:
+	_captured_keyboard_action = action
+	_sync_keyboard_mapping_buttons()
+	_get_button_for_keyboard_action(action).grab_focus()
+
+func _cancel_keyboard_capture() -> void:
+	if _captured_keyboard_action == NO_CAPTURE_ACTION:
+		return
+	_captured_keyboard_action = NO_CAPTURE_ACTION
+	_sync_keyboard_mapping_buttons()
+
+func _set_keyboard_mapping(action: int, keycode: int) -> void:
+	if keycode != KEY_NONE:
+		for other_action in _get_keyboard_actions():
+			if other_action == action:
+				continue
+			if GameParameters.get_keyboard_keycode(other_action) == keycode:
+				GameParameters.set_keyboard_keycode(other_action, KEY_NONE)
+	GameParameters.set_keyboard_keycode(action, keycode)
+	_sync_keyboard_mapping_buttons()
+	SaveGameManager.save_settings(sound_manager)
+
+func _get_keyboard_actions() -> Array[int]:
+	return [
+		GameParameters.KeyboardAction.CONTINUE_CLOSE,
+		GameParameters.KeyboardAction.NEXT_ARMY,
+		GameParameters.KeyboardAction.SWITCH_ARMY_REGION,
+		GameParameters.KeyboardAction.RECRUIT,
+		GameParameters.KeyboardAction.CAMP_REST,
+		GameParameters.KeyboardAction.TRANSFER
+	]
+
+func _get_button_for_keyboard_action(action: int) -> Button:
+	match action:
+		GameParameters.KeyboardAction.CONTINUE_CLOSE:
+			return continue_close_key_button
+		GameParameters.KeyboardAction.NEXT_ARMY:
+			return next_army_key_button
+		GameParameters.KeyboardAction.SWITCH_ARMY_REGION:
+			return switch_army_region_key_button
+		GameParameters.KeyboardAction.RECRUIT:
+			return recruit_key_button
+		GameParameters.KeyboardAction.CAMP_REST:
+			return camp_rest_key_button
+		GameParameters.KeyboardAction.TRANSFER:
+			return transfer_key_button
+	return continue_close_key_button
+
+func _sync_keyboard_mapping_buttons() -> void:
+	_update_keyboard_button(GameParameters.KeyboardAction.CONTINUE_CLOSE, continue_close_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.NEXT_ARMY, next_army_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.SWITCH_ARMY_REGION, switch_army_region_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.RECRUIT, recruit_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.CAMP_REST, camp_rest_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.TRANSFER, transfer_key_button)
+
+func _update_keyboard_button(action: int, button: Button) -> void:
+	if _captured_keyboard_action == action:
+		button.text = tr("Press Key")
+		return
+	button.text = _format_keyboard_button_text(GameParameters.get_keyboard_keycode(action))
+
+func _format_keyboard_button_text(keycode: int) -> String:
+	if keycode == KEY_NONE:
+		return "..."
+	var key_name: String = OS.get_keycode_string(keycode)
+	if keycode == KEY_SPACE:
+		key_name = tr("Spacebar")
+	if key_name.strip_edges() == "":
+		return "..."
+	return "[" + key_name + "]"
+
+func _show_scenario_panel() -> void:
+	scenario_panel.visible = true
+	keys_panel.visible = false
+
+func _show_keys_panel() -> void:
+	scenario_panel.visible = false
+	keys_panel.visible = true
 
 func _on_sound_slider_changed(value: float) -> void:
 	var clamped_value: float = clampf(value, 0.0, 100.0)

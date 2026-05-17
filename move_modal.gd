@@ -252,12 +252,27 @@ func _on_panel_mouse_entered() -> void:
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+	if GameParameters.is_next_army_key_pressed(event):
 		if ui_manager.is_recruitment_or_transfer_modal_visible():
 			get_viewport().set_input_as_handled()
 			accept_event()
 			return
 		_cycle_to_next_army()
+		get_viewport().set_input_as_handled()
+		accept_event()
+		return
+	if GameParameters.is_recruit_key_pressed(event):
+		_on_army_actions_pressed()
+		get_viewport().set_input_as_handled()
+		accept_event()
+		return
+	if GameParameters.is_camp_rest_key_pressed(event):
+		_on_make_camp_pressed()
+		get_viewport().set_input_as_handled()
+		accept_event()
+		return
+	if GameParameters.is_transfer_key_pressed(event):
+		_on_cancel_move_pressed()
 		get_viewport().set_input_as_handled()
 		accept_event()
 
@@ -272,11 +287,23 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode == KEY_ESCAPE:
 			_cancel_move()
 			get_viewport().set_input_as_handled()
-		if event.keycode == KEY_SPACE:
+		if GameParameters.is_next_army_key_pressed(event):
 			if ui_manager.is_recruitment_or_transfer_modal_visible():
 				get_viewport().set_input_as_handled()
 				return
 			_cycle_to_next_army()
+			get_viewport().set_input_as_handled()
+			return
+		if GameParameters.is_recruit_key_pressed(event):
+			_on_army_actions_pressed()
+			get_viewport().set_input_as_handled()
+			return
+		if GameParameters.is_camp_rest_key_pressed(event):
+			_on_make_camp_pressed()
+			get_viewport().set_input_as_handled()
+			return
+		if GameParameters.is_transfer_key_pressed(event):
+			_on_cancel_move_pressed()
 			get_viewport().set_input_as_handled()
 
 func _is_tutorial_mode_active() -> bool:

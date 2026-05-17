@@ -60,12 +60,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _is_continue_hotkey(event: InputEvent) -> bool:
-	if event.is_action_pressed("ui_accept"):
+	if GameParameters.is_continue_close_key_pressed(event):
 		return true
 	if event is InputEventKey:
 		var key_event: InputEventKey = event as InputEventKey
 		if key_event.pressed and not key_event.echo:
-			return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER or key_event.keycode == KEY_SPACE
+			return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
 	return false
 
 func show_battle_summary(army: Army, region: Region, report: BattleSimulator.BattleReport, initial_attacker: Dictionary, initial_defender: Dictionary) -> void:

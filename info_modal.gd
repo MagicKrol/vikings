@@ -1247,7 +1247,7 @@ func _on_armies_tab_gui_input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event is InputEventKey and event.pressed and event.keycode == KEY_TAB:
+	if GameParameters.is_switch_army_region_key_pressed(event):
 		if _spawn_event_armies_only_mode:
 			get_viewport().set_input_as_handled()
 			return
