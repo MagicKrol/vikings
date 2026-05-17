@@ -12,12 +12,10 @@ const CONTINUE_ACTION_END_MISSION: String = "end_mission"
 @onready var message_scroll: ScrollContainer = get_node("PanelRoot/ContentContainer/MessageScroll") as ScrollContainer
 @onready var scroll_message_label: Label = get_node("PanelRoot/ContentContainer/MessageScroll/ScrollMessageLabel") as Label
 var _continue_action: String = CONTINUE_ACTION_PLACE_CASTLE
-var _default_scroll_message_font_size: int = 22
 
 func _ready() -> void:
 	super._ready()
 	_continue_action = CONTINUE_ACTION_PLACE_CASTLE
-	_default_scroll_message_font_size = scroll_message_label.get_theme_font_size(&"font_size", &"Label")
 	_set_modal_text(_build_skirmish_intro_text())
 
 func displayMessage(_text: String) -> void:
@@ -84,15 +82,4 @@ func _build_skirmish_intro_text() -> String:
 func _set_modal_text(text: String) -> void:
 	message_label.text = text
 	scroll_message_label.text = text
-	_apply_message_font_size_for_text(text)
-	_apply_scroll_message_font_size_for_text(text)
 	message_scroll.scroll_vertical = 0
-
-func _apply_scroll_message_font_size_for_text(text: String) -> void:
-	var adjusted_font_size: int = _default_scroll_message_font_size
-	var text_length: int = text.length()
-	if text_length > LONG_TEXT_THRESHOLD_2:
-		adjusted_font_size -= LONG_TEXT_FONT_REDUCTION_2
-	elif text_length > LONG_TEXT_THRESHOLD_1:
-		adjusted_font_size -= LONG_TEXT_FONT_REDUCTION_1
-	scroll_message_label.add_theme_font_size_override(&"font_size", adjusted_font_size)
