@@ -85,7 +85,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = false
+const DEMO_MODE_ENABLED: bool = true
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",
@@ -408,31 +408,35 @@ const CASTLE_WALLS_GATES = {
 		"wall_sections": 2,
 		"wall_hp": 2,
 		"trebuchet_damage_to_defense": 10,
-		"wall_section_assault": 20
+		"wall_section_assault": 20,
+		"destroy_chance": 100
 	},      # Outpost 
 	CastleTypeEnum.Type.KEEP: {
 		"gates": 1,
 		"gate_hp": 5,
 		"wall_sections": 4,
 		"wall_hp": 2,
-		"trebuchet_damage_to_defense": 7,
-		"wall_section_assault": 20
+		"trebuchet_damage_to_defense": 8,
+		"wall_section_assault": 20,
+		"destroy_chance": 85
 	},         # Keep
 	CastleTypeEnum.Type.CASTLE: {
 		"gates": 2,
 		"gate_hp": 6,
 		"wall_sections": 6,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 6,
-		"wall_section_assault": 20
+		"trebuchet_damage_to_defense": 7,
+		"wall_section_assault": 20,
+		"destroy_chance": 65
 	},      # Castle 
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"gates": 3,
 		"gate_hp": 7,
 		"wall_sections": 8,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 5,
-		"wall_section_assault": 20
+		"trebuchet_damage_to_defense": 6,
+		"wall_section_assault": 20,
+		"destroy_chance": 50
 	}, 
 }
 
@@ -510,7 +514,7 @@ const UNIT_STATS = {
 		"power": 4
 	},
 	SoldierTypeEnum.Type.ARCHERS: {
-		"attack": 15,     # 25% hit chance per unit
+		"attack": 20,     # 25% hit chance per unit
 		"defense": 15,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
 		"gold_cost": 3,

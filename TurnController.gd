@@ -138,6 +138,8 @@ func start_turn(player_id: int) -> void:
 	"""Start a player's turn using the unified pipeline"""
 	if game_manager.has_victory_been_declared():
 		return
+	if game_manager.has_blocking_outcome_modal():
+		return
 	current_player_id = player_id
 	moved_armies.clear()
 	_castle_threat_level_snapshot_by_region.clear()
@@ -206,6 +208,8 @@ func _process_army_turns(player_id: int) -> void:
 		if not is_instance_valid(army):
 			continue
 		if game_manager.has_victory_been_declared():
+			return
+		if game_manager.has_blocking_outcome_modal():
 			return
 		await _process_single_army(army)
 
@@ -845,6 +849,8 @@ func _process_single_army(army: Army) -> void:
 	_refresh_recruitment_flag_for_army(army, turn_number, true)
 	while _can_army_continue_decision_cycle(army):
 		if game_manager.has_victory_been_declared():
+			return
+		if game_manager.has_blocking_outcome_modal():
 			return
 		_refresh_recruitment_flag_for_army(army, turn_number, false)
 		if _handle_castle_garrison_release_cycle(army):

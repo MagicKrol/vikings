@@ -10,7 +10,7 @@ const CONTINUE_ACTION_PLACE_CASTLE: String = "place_castle"
 const CONTINUE_ACTION_CONTINUE: String = "continue"
 const CONTINUE_ACTION_END_MISSION: String = "end_mission"
 @onready var message_scroll: ScrollContainer = get_node("PanelRoot/ContentContainer/MessageScroll") as ScrollContainer
-@onready var scroll_message_label: Label = get_node("PanelRoot/ContentContainer/MessageScroll/ScrollMessageLabel") as Label
+@onready var scroll_message_label: RichTextLabel = get_node("PanelRoot/ContentContainer/MessageScroll/ScrollMessageLabel") as RichTextLabel
 var _continue_action: String = CONTINUE_ACTION_PLACE_CASTLE
 
 func _ready() -> void:

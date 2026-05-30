@@ -42,6 +42,9 @@ func is_active() -> bool:
 func get_expected_action() -> String:
 	return expected_action
 
+func is_expected_action(action: String) -> bool:
+	return active and expected_action == action
+
 func is_ui_step_active() -> bool:
 	return active and expected_action == "ui"
 
@@ -473,7 +476,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(100, 500),
-			"block": "endturn,battlecontinue,battlewithdraw"
+			"block": "endturn,battlewithdraw"
 		},
 		{
 			"message": "tutorial_step_15",
@@ -486,7 +489,7 @@ func _build_default_steps() -> Array:
 				"id": "5",
 				"anchor": "screen"
 			},
-			"block": "endturn,"
+			"block": "endturn"
 		},
 		{
 			"message": "tutorial_step_16",
@@ -647,7 +650,7 @@ func _build_default_steps() -> Array:
 				"id": "12",
 				"anchor": "screen"
 			},
-			"block": "trade"
+			"block": "trade,regionactionsfull"
 		},
 		{
 			"message": "tutorial_step_31",
@@ -765,7 +768,7 @@ func _build_default_steps() -> Array:
 			"block_input": false,
 			"expected_action": "battle_finished",
 			"panel_position": Vector2(100, 600),
-			"block": "continue3,endturn,battlewithdraw,battlecontinue"
+			"block": "continue3,endturn,battlewithdraw"
 		},
 		{
 			"message": "tutorial_step_42",
@@ -1042,6 +1045,14 @@ func _build_default_steps() -> Array:
 		},
 		{
 			"message": "tutorial_step_65",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(700, 400),
+			"block": "endturn,regionsactions"
+		},
+		{
+			"message": "tutorial_step_66",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

@@ -80,9 +80,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey:
 		var key_event: InputEventKey = event as InputEventKey
-		if key_event.keycode == KEY_ESCAPE and _is_tutorial_mode_active():
+		var tutorial_mode_active: bool = _is_tutorial_mode_active()
+		if key_event.keycode == KEY_ESCAPE and tutorial_mode_active:
 			return
-		if key_event.pressed and not key_event.echo and (CLOSE_KEYCODES.has(key_event.keycode) or GameParameters.is_continue_close_key_pressed(event)):
+		var mapped_continue_close_pressed: bool = GameParameters.is_continue_close_key_pressed(event)
+		if tutorial_mode_active and mapped_continue_close_pressed:
+			return
+		if key_event.pressed and not key_event.echo and (CLOSE_KEYCODES.has(key_event.keycode) or mapped_continue_close_pressed):
 			_on_continue_pressed()
 			get_viewport().set_input_as_handled()
 

@@ -202,6 +202,8 @@ static func apply_save_data(game_manager: GameManager, save_data: Dictionary) ->
 	game_manager.scenario_path = String(source.get("scenario_path", ""))
 	game_manager.scenario_trade_disabled = bool(source.get("trade_disabled", false))
 	game_manager.load_victory_conditions_from_source(source)
+	game_manager.set_initial_human_player_count_from_save(int(game_state.get("initial_human_player_count", 0)))
+	game_manager.set_eliminated_human_players_from_save(_to_int_array(game_state.get("eliminated_human_players", [])))
 
 	var player_manager: PlayerManagerNode = game_manager.get_player_manager()
 	var player_manager_data: Dictionary = save_data.get("player_manager", {})
@@ -268,6 +270,8 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"players_per_round": game_manager.players_per_round.duplicate(),
 		"player_types": _serialize_player_types(game_manager.player_types),
 		"player_initial_turn_completed": _serialize_initial_turn_flags(game_manager._player_initial_turn_completed),
+		"initial_human_player_count": game_manager.get_initial_human_player_count_for_save(),
+		"eliminated_human_players": game_manager.get_eliminated_human_players_for_save(),
 		"scenario_events_runtime": game_manager.get_scenario_events_runtime_for_save(),
 		"player_hired_units": game_manager.get_player_hired_units_for_save()
 	}

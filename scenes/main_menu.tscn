@@ -644,6 +644,7 @@ theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
 [node name="CustomMap" type="Control" parent="."]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -1644,7 +1645,6 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Options" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -1656,17 +1656,18 @@ offset_left = 680.0
 offset_top = 197.0
 offset_right = 2216.0
 offset_bottom = 1733.0
-scale = Vector2(0.4, 0.41)
+scale = Vector2(0.4, 0.44)
 mouse_filter = 2
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
 [node name="Scenario" type="Panel" parent="Options"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
 offset_right = 1290.0
-offset_bottom = 800.0
+offset_bottom = 850.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ijsky")
 
@@ -1675,7 +1676,7 @@ layout_mode = 0
 offset_left = 30.0
 offset_top = 15.0
 offset_right = 585.0
-offset_bottom = 595.0
+offset_bottom = 645.0
 mouse_filter = 2
 
 [node name="Label" type="Label" parent="Options/Scenario/VBoxContainer"]
@@ -2030,12 +2031,11 @@ theme_override_font_sizes/font_size = 18
 text = "Configure Keys"
 
 [node name="Keys" type="Panel" parent="Options"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
 offset_right = 1290.0
-offset_bottom = 800.0
+offset_bottom = 850.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ijsky")
 
@@ -2044,7 +2044,7 @@ layout_mode = 0
 offset_left = 30.0
 offset_top = 15.0
 offset_right = 585.0
-offset_bottom = 595.0
+offset_bottom = 645.0
 mouse_filter = 2
 
 [node name="Label" type="Label" parent="Options/Keys/VBoxContainer"]
@@ -2085,13 +2085,13 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/ContinueClose"]
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Continue/Close Key"
+text = "Continue/Close"
 
 [node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/ContinueClose"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2109,7 +2109,7 @@ theme = ExtResource("15_std_modal")
 text = "Next army"
 
 [node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/NextArmy"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2124,10 +2124,10 @@ mouse_filter = 2
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Switch army/region key"
+text = "Switch army/region"
 
 [node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/SwitchArmyRegion"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2145,7 +2145,7 @@ theme = ExtResource("15_std_modal")
 text = "Recruit"
 
 [node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/Recruit"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2160,10 +2160,10 @@ mouse_filter = 2
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
-text = "Camp / Rest Key"
+text = "Make Camp"
 
 [node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/CampRest"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2181,7 +2181,7 @@ theme = ExtResource("15_std_modal")
 text = "Transfer"
 
 [node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/Transfer"]
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2449,6 +2449,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Feedback" type="Control" parent="."]
+visible = false
 anchors_preset = 0
 offset_left = 32.0
 offset_top = -21.0

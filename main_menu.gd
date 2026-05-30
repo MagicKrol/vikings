@@ -527,7 +527,7 @@ func _show_main_menu():
 	custom_map_container.visible = false
 	demo_container.visible = false
 	map_preview.visible = false
-	feedback_container.visible = true
+	feedback_container.visible = false
 
 func _update_primary_main_menu_button() -> void:
 	var has_save_file: bool = SaveGameManager.has_save_file()

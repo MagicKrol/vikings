@@ -2799,7 +2799,7 @@
 			"name": "Osbury",
 			"ocean": false,
 			"owner": 1,
-			"population": 0,
+			"population": 221,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -2895,8 +2895,8 @@
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
-				"Iron": 6,
-				"Stone": 49,
+				"Iron": 5,
+				"Stone": 1,
 				"Wood": 1
 			},
 			"type_display": "Forest Hills"
@@ -3059,7 +3059,7 @@
 			"name": "Riverbury",
 			"ocean": false,
 			"owner": 1,
-			"population": 0,
+			"population": 178,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -3101,6 +3101,7 @@
 		}
 	],
 	"scenario_type": "campaign",
+	"skip_intro": false,
 	"trade_disabled": true,
 	"victory_conditions": [
 		{

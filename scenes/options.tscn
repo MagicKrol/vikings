@@ -475,10 +475,10 @@ mouse_filter = 2
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 theme = ExtResource("9_2ix74")
-text = "Continue/Close Key"
+text = "Continue/Close"
 
 [node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/ContinueClose"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
@@ -496,7 +496,7 @@ theme = ExtResource("9_2ix74")
 text = "Next army"
 
 [node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/NextArmy"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
@@ -511,10 +511,10 @@ mouse_filter = 2
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 theme = ExtResource("9_2ix74")
-text = "Switch army/region key"
+text = "Switch army/region"
 
 [node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/SwitchArmyRegion"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
@@ -532,7 +532,7 @@ theme = ExtResource("9_2ix74")
 text = "Recruit"
 
 [node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/Recruit"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
@@ -547,10 +547,10 @@ mouse_filter = 2
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 theme = ExtResource("9_2ix74")
-text = "Camp / Rest Key"
+text = "Make Camp"
 
 [node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/CampRest"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
@@ -568,7 +568,7 @@ theme = ExtResource("9_2ix74")
 text = "Transfer"
 
 [node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/Transfer"]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")

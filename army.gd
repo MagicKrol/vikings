@@ -65,6 +65,47 @@ var _animations: AnimatedSprite2D
 var _victory: AnimatedSprite2D
 var _animation_speed_scale: float = 1.0
 var _victory_speed_scale: float = 1.0
+var _victory_base_scale: Vector2 = Vector2.ONE
+var _victory_base_position: Vector2 = Vector2.ZERO
+const EXHAUSTION_VICTORY_TUNING_BY_WARRIOR: Array[Dictionary] = [
+	{
+		"kneel": {"scale_bonus": 0.015, "offset": Vector2(-2.0, 0.0)},
+		"rest": {"scale_bonus": 0.015, "offset": Vector2(-2.0, 0.0)}
+	},
+	{
+		"kneel": {"scale_bonus": 0.0, "offset":  Vector2(-4.0, 0.0)},
+		"rest": {"scale_bonus": 0.0, "offset":  Vector2(-4.0, 0.0)},
+	},
+	{
+		"kneel": {"scale_bonus": 0.0, "offset":  Vector2(0.0, 0.0)},
+		"rest": {"scale_bonus": 0.0, "offset":  Vector2(0.0, 0.0)},
+	},
+	{
+		"kneel": {"scale_bonus": 0.0, "offset":  Vector2(0.0, 0.0)},
+		"rest": {"scale_bonus": 0.0, "offset":  Vector2(0.0, 0.0)},
+	},
+	{
+		"kneel": {"scale_bonus": 0.0, "offset":  Vector2(-4.0, 0.0)},
+		"rest": {"scale_bonus": 0.0, "offset":  Vector2(-4.0, 0.0)},
+	},
+	{
+		"kneel": {"scale_bonus": 0.0, "offset":  Vector2(-6.0, 0.0)},
+		"rest": {"scale_bonus": 0.0, "offset":  Vector2(-6.0, 0.0)},
+	}
+]
+var _exhaustion_kneel_scale_bonus: float = 0.0
+var _exhaustion_kneel_offset: Vector2 = Vector2.ZERO
+var _exhaustion_rest_scale_bonus: float = 0.0
+var _exhaustion_rest_offset: Vector2 = Vector2.ZERO
+enum ExhaustionAnimationState {
+	IDLE,
+	KNEEL_TO_REST,
+	RESTING,
+	KNEEL_TO_IDLE
+}
+var _exhaustion_animation_state: ExhaustionAnimationState = ExhaustionAnimationState.IDLE
+var _end_turn_stand_up_override: bool = false
+var _suppress_next_stand_up_animation: bool = false
 
 func _init() -> void:
 	z_index = 125
@@ -118,7 +159,10 @@ func setup_raised_army(new_player_id: int, roman_number: String) -> void:
 	DebugLogger.log("ArmyManagement", "[Army] Raised army setup complete - movement_points: " + str(movement_points) + ", soldiers: " + str(composition.get_total_soldiers()))
 
 func _emit_movement_points_changed() -> void:
+	if movement_points > 0:
+		_end_turn_stand_up_override = false
 	emit_signal("movement_points_changed", self, movement_points)
+	_refresh_exhaustion_animation()
 
 func reset_movement_points() -> void:
 	"""Reset movement points for a new turn"""
@@ -299,38 +343,159 @@ func _set_warrior_visual(player_number: int) -> void:
 	_victory = warrior_instance.get_node("Victory") as AnimatedSprite2D
 	_animation_speed_scale = _animations.speed_scale
 	_victory_speed_scale = _victory.speed_scale
-	_animations.visible = true
-	_victory.visible = false
-	var hidden_modulate: Color = _animations.modulate
-	hidden_modulate.a = 0.0
-	_victory.modulate = hidden_modulate
+	_victory_base_scale = _victory.scale
+	_victory_base_position = _victory.position
+	_apply_exhaustion_tuning_for_warrior(player_number)
+	_show_animations_layer()
 	_victory.animation_finished.connect(_on_victory_animation_finished)
-	_animations.play("idle")
+	play_idle()
 	DebugLogger.log("ArmyManagement", "[Army] Set warrior scene for Player " + str(player_number) + " to: " + str(scene_path))
 
 func play_walking(speed_multiplier: float) -> void:
-	_animations.visible = true
-	_victory.visible = false
+	_exhaustion_animation_state = ExhaustionAnimationState.IDLE
+	_end_turn_stand_up_override = false
+	_show_animations_layer()
 	_animations.speed_scale = _animation_speed_scale * speed_multiplier
 	_animations.play("walking")
 
 func play_idle() -> void:
-	_animations.visible = true
-	_victory.visible = false
+	if movement_points <= 0 and _has_exhaustion_animations() and not _end_turn_stand_up_override:
+		_enter_exhausted_animation_state()
+		return
+	if _exhaustion_animation_state == ExhaustionAnimationState.RESTING or _exhaustion_animation_state == ExhaustionAnimationState.KNEEL_TO_REST:
+		_exit_exhausted_animation_state()
+		return
+	_exhaustion_animation_state = ExhaustionAnimationState.IDLE
+	_show_animations_layer()
 	_animations.speed_scale = _animation_speed_scale
 	_animations.play("idle")
 
 func play_victory() -> void:
-	_animations.visible = false
-	_victory.visible = true
+	_exhaustion_animation_state = ExhaustionAnimationState.IDLE
+	_show_victory_layer()
 	_victory.speed_scale = _victory_speed_scale
-	var victory_modulate: Color = _animations.modulate
-	victory_modulate.a = 1.0
-	_victory.modulate = victory_modulate
+	_apply_victory_scale_for_animation("victory")
 	_victory.play("victory")
 
 func _on_victory_animation_finished() -> void:
-	play_idle()
+	if _victory.animation == "kneel":
+		if _exhaustion_animation_state == ExhaustionAnimationState.KNEEL_TO_REST:
+			_exhaustion_animation_state = ExhaustionAnimationState.RESTING
+			_show_victory_layer()
+			_victory.speed_scale = _victory_speed_scale
+			_apply_victory_scale_for_animation("rest")
+			_victory.play("rest")
+			return
+		if _exhaustion_animation_state == ExhaustionAnimationState.KNEEL_TO_IDLE:
+			_exhaustion_animation_state = ExhaustionAnimationState.IDLE
+			_show_animations_layer()
+			_animations.speed_scale = _animation_speed_scale
+			_animations.play("idle")
+			return
+	if _victory.animation == "victory":
+		play_idle()
+
+func _refresh_exhaustion_animation() -> void:
+	if not _has_exhaustion_animations():
+		return
+	if _end_turn_stand_up_override and movement_points <= 0:
+		return
+	if movement_points <= 0:
+		_enter_exhausted_animation_state()
+		return
+	if _suppress_next_stand_up_animation and (_exhaustion_animation_state == ExhaustionAnimationState.RESTING or _exhaustion_animation_state == ExhaustionAnimationState.KNEEL_TO_REST):
+		_suppress_next_stand_up_animation = false
+		_exhaustion_animation_state = ExhaustionAnimationState.IDLE
+		_show_animations_layer()
+		_animations.speed_scale = _animation_speed_scale
+		_animations.play("idle")
+		return
+	_suppress_next_stand_up_animation = false
+	_exit_exhausted_animation_state()
+
+func _enter_exhausted_animation_state() -> void:
+	if _exhaustion_animation_state == ExhaustionAnimationState.RESTING or _exhaustion_animation_state == ExhaustionAnimationState.KNEEL_TO_REST:
+		return
+	_show_victory_layer()
+	_victory.speed_scale = _victory_speed_scale
+	_exhaustion_animation_state = ExhaustionAnimationState.KNEEL_TO_REST
+	_apply_victory_scale_for_animation("kneel")
+	_victory.play("kneel")
+
+func _exit_exhausted_animation_state() -> void:
+	if _exhaustion_animation_state == ExhaustionAnimationState.IDLE or _exhaustion_animation_state == ExhaustionAnimationState.KNEEL_TO_IDLE:
+		return
+	_show_victory_layer()
+	_victory.speed_scale = _victory_speed_scale
+	_exhaustion_animation_state = ExhaustionAnimationState.KNEEL_TO_IDLE
+	_apply_victory_scale_for_animation("kneel")
+	_victory.play("kneel", -1.0, true)
+
+func _has_exhaustion_animations() -> bool:
+	return _victory.sprite_frames.has_animation("kneel") and _victory.sprite_frames.has_animation("rest")
+
+func stand_up_on_end_turn() -> void:
+	if not _has_exhaustion_animations():
+		return
+	if _exhaustion_animation_state != ExhaustionAnimationState.RESTING and _exhaustion_animation_state != ExhaustionAnimationState.KNEEL_TO_REST:
+		return
+	_end_turn_stand_up_override = true
+	_suppress_next_stand_up_animation = false
+	_exit_exhausted_animation_state()
+
+func suppress_next_stand_up_animation() -> void:
+	_suppress_next_stand_up_animation = true
+
+func _show_animations_layer() -> void:
+	_animations.visible = true
+	_victory.visible = false
+	_victory.scale = _victory_base_scale
+	_victory.position = _victory_base_position
+	var hidden_modulate: Color = _animations.modulate
+	hidden_modulate.a = 0.0
+	_victory.modulate = hidden_modulate
+
+func _show_victory_layer() -> void:
+	_animations.visible = false
+	_victory.visible = true
+	var victory_modulate: Color = _animations.modulate
+	victory_modulate.a = 1.0
+	_victory.modulate = victory_modulate
+
+func _apply_victory_scale_for_animation(animation_name: String) -> void:
+	if animation_name == "kneel":
+		_victory.scale = _victory_base_scale * (1.0 + _exhaustion_kneel_scale_bonus)
+		_victory.position = _victory_base_position + _exhaustion_kneel_offset
+		return
+	if animation_name == "rest":
+		_victory.scale = _victory_base_scale * (1.0 + _exhaustion_rest_scale_bonus)
+		_victory.position = _victory_base_position + _exhaustion_rest_offset
+		return
+	_victory.scale = _victory_base_scale
+	_victory.position = _victory_base_position
+
+func _apply_exhaustion_tuning_for_warrior(warrior_number: int) -> void:
+	_exhaustion_kneel_scale_bonus = 0.0
+	_exhaustion_kneel_offset = Vector2.ZERO
+	_exhaustion_rest_scale_bonus = 0.0
+	_exhaustion_rest_offset = Vector2.ZERO
+	var warrior_index: int = warrior_number - 1
+	if warrior_index < 0 or warrior_index >= EXHAUSTION_VICTORY_TUNING_BY_WARRIOR.size():
+		return
+	var warrior_tuning: Dictionary = EXHAUSTION_VICTORY_TUNING_BY_WARRIOR[warrior_index]
+	_apply_exhaustion_animation_tuning_entry("kneel", warrior_tuning)
+	_apply_exhaustion_animation_tuning_entry("rest", warrior_tuning)
+
+func _apply_exhaustion_animation_tuning_entry(animation_name: String, warrior_tuning: Dictionary) -> void:
+	var entry: Dictionary = warrior_tuning.get(animation_name, {}) as Dictionary
+	var scale_bonus: float = float(entry.get("scale_bonus", 0.0))
+	var offset: Vector2 = entry.get("offset", Vector2.ZERO) as Vector2
+	if animation_name == "kneel":
+		_exhaustion_kneel_scale_bonus = scale_bonus
+		_exhaustion_kneel_offset = offset
+		return
+	_exhaustion_rest_scale_bonus = scale_bonus
+	_exhaustion_rest_offset = offset
 
 # Recruitment system methods
 func request_recruitment() -> void:

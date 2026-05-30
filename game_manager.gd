@@ -131,6 +131,12 @@ var average_army_power: float = 0.0
 var victory_conditions: Array[Dictionary] = []
 var victory_declared: bool = false
 var winning_player_id: int = -1
+var _eliminated_human_players: Dictionary = {}
+var _initial_human_player_count: int = 0
+var _outcome_modal_blocking_active: bool = false
+var _pending_loss_exit_to_main_menu: bool = false
+var _pending_loss_exit_to_campaign_list: bool = false
+var _pending_next_turn_after_loss_ack: bool = false
 var _scenario_events_runtime: Array[Dictionary] = []
 var scenario_trade_disabled: bool = false
 var _player_hired_units: Dictionary = {}
@@ -334,6 +340,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 		player_manager.set_army_manager(_army_manager)
 		# Ensure players are initialized before any UI or scenario logic uses them
 		player_manager._initialize_players(player_types)
+		_capture_initial_human_player_count_if_unset()
 		_apply_starting_resources_for_difficulty()
 		_trade_manager = TradeManager.new(player_manager)
 		
@@ -498,6 +505,7 @@ func _apply_scenario_player_settings_from_data(scenario_data: Dictionary) -> voi
 		return
 	_apply_custom_map_player_settings(settings)
 	player_manager._initialize_players(player_types)
+	_capture_initial_human_player_count_if_unset()
 	_apply_starting_resources_for_difficulty()
 
 func _show_scenario_intro_message_if_any(scenario_data: Dictionary) -> bool:
@@ -630,6 +638,9 @@ func _next_turn_internal() -> void:
 	if victory_declared:
 		DebugLogger.log("Victory", "next_turn ignored after victory")
 		return
+	if _outcome_modal_blocking_active:
+		DebugLogger.log("TurnProcessing", "next_turn blocked by outcome modal")
+		return
 	if debug_heatmap:
 		DebugLogger.log("TurnProcessing", "Debug heatmap mode active - next_turn ignored")
 		return
@@ -668,6 +679,8 @@ func _next_turn_internal() -> void:
 	if not castle_placing_mode and is_player_computer(current_player):
 		DebugLogger.log("TurnProcessing", "AI Player " + str(current_player) + " starting turn processing with TurnController...")
 		await _turn_controller.start_turn(current_player)
+		if _outcome_modal_blocking_active:
+			return
 		await _await_pending_battles()
 		call_deferred("next_turn")  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
@@ -917,9 +930,29 @@ func get_victory_conditions_for_save() -> Array:
 func has_victory_been_declared() -> bool:
 	return victory_declared
 
+func has_blocking_outcome_modal() -> bool:
+	return _outcome_modal_blocking_active
+
 func check_victory_conditions_for_player(player_id: int) -> bool:
 	if victory_declared:
 		return true
+	if _check_and_declare_victory_for_any_player(player_id):
+		return true
+	if _process_new_human_elimination():
+		return true
+	return false
+
+func _check_and_declare_victory_for_any_player(triggering_player_id: int) -> bool:
+	if _check_and_declare_victory_for_player(triggering_player_id):
+		return true
+	for candidate_player_id: int in players_per_round:
+		if candidate_player_id == triggering_player_id:
+			continue
+		if _check_and_declare_victory_for_player(candidate_player_id):
+			return true
+	return false
+
+func _check_and_declare_victory_for_player(player_id: int) -> bool:
 	if not is_player_active(player_id):
 		return false
 	for condition: Dictionary in victory_conditions:
@@ -942,6 +975,12 @@ func _set_victory_conditions_from_raw(raw_conditions: Array) -> void:
 		victory_conditions.append(condition.duplicate(true))
 	victory_declared = false
 	winning_player_id = -1
+	_eliminated_human_players.clear()
+	_initial_human_player_count = 0
+	_outcome_modal_blocking_active = false
+	_pending_loss_exit_to_main_menu = false
+	_pending_loss_exit_to_campaign_list = false
+	_pending_next_turn_after_loss_ack = false
 
 func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
 	if raw_condition is String:
@@ -1214,11 +1253,87 @@ func _is_region_conquerable(region: Region) -> bool:
 		return false
 	return true
 
+func _process_new_human_elimination() -> bool:
+	if castle_placing_mode:
+		return false
+	var eliminated_player_id: int = _find_newly_eliminated_human_player()
+	if eliminated_player_id == -1:
+		return false
+	_mark_human_player_eliminated(eliminated_player_id)
+	_show_human_elimination_message(eliminated_player_id)
+	return true
+
+func _find_newly_eliminated_human_player() -> int:
+	for player_id in range(1, total_players + 1):
+		if not is_player_human(player_id):
+			continue
+		if _eliminated_human_players.has(player_id):
+			continue
+		if _player_has_any_castle(player_id):
+			continue
+		if _player_has_any_army(player_id):
+			continue
+		return player_id
+	return -1
+
+func _mark_human_player_eliminated(player_id: int) -> void:
+	_eliminated_human_players[player_id] = true
+	player_types[player_id - 1] = PlayerTypeEnum.Type.OFF
+
+func _show_human_elimination_message(player_id: int) -> void:
+	_capture_initial_human_player_count_if_unset()
+	var humans_remaining: int = _get_human_player_count()
+	var no_humans_left: bool = humans_remaining <= 0
+	_outcome_modal_blocking_active = true
+	_pending_loss_exit_to_main_menu = no_humans_left
+	_pending_loss_exit_to_campaign_list = no_humans_left and _is_campaign_scenario_mode()
+	_pending_next_turn_after_loss_ack = is_player_computer(current_player) and not no_humans_left
+	_disconnect_human_elimination_message_handler()
+	_message_modal.continue_clicked.connect(_on_human_elimination_continue)
+	if no_humans_left and _initial_human_player_count <= 1:
+		_message_modal.display_message(tr("You failed"))
+		return
+	_message_modal.display_message(tr("Player %d lost") % player_id)
+
+func _disconnect_human_elimination_message_handler() -> void:
+	if _message_modal.continue_clicked.is_connected(_on_human_elimination_continue):
+		_message_modal.continue_clicked.disconnect(_on_human_elimination_continue)
+
+func _disconnect_victory_message_handler() -> void:
+	if _message_modal.continue_clicked.is_connected(_on_victory_message_continue_to_main_menu):
+		_message_modal.continue_clicked.disconnect(_on_victory_message_continue_to_main_menu)
+
+func _on_victory_message_continue_to_main_menu() -> void:
+	_disconnect_victory_message_handler()
+	_on_game_menu_main_menu_pressed()
+
+func _on_human_elimination_continue() -> void:
+	_disconnect_human_elimination_message_handler()
+	_outcome_modal_blocking_active = false
+	if _pending_loss_exit_to_main_menu:
+		var should_open_campaign_list: bool = _pending_loss_exit_to_campaign_list
+		_pending_loss_exit_to_main_menu = false
+		_pending_loss_exit_to_campaign_list = false
+		_pending_next_turn_after_loss_ack = false
+		if should_open_campaign_list:
+			get_tree().set_meta(MAIN_MENU_TARGET_META_KEY, MAIN_MENU_TARGET_CAMPAIGN_LIST)
+		_on_game_menu_main_menu_pressed()
+		return
+	if _pending_next_turn_after_loss_ack:
+		_pending_next_turn_after_loss_ack = false
+		call_deferred("next_turn")
+
 func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	if victory_declared:
 		return
 	victory_declared = true
 	winning_player_id = player_id
+	_outcome_modal_blocking_active = false
+	_pending_loss_exit_to_main_menu = false
+	_pending_loss_exit_to_campaign_list = false
+	_pending_next_turn_after_loss_ack = false
+	_disconnect_human_elimination_message_handler()
+	_disconnect_victory_message_handler()
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
 	if _should_show_campaign_outro(player_id):
@@ -1226,6 +1341,7 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 		_intro_message_modal.continue_clicked.connect(_on_campaign_outro_end_mission)
 		_intro_message_modal.display_outro_text(_resolve_campaign_outro_text())
 		return
+	_message_modal.continue_clicked.connect(_on_victory_message_continue_to_main_menu)
 	_message_modal.display_message(tr("Player %d Won") % player_id)
 
 func _should_show_campaign_outro(player_id: int) -> bool:
@@ -1243,6 +1359,15 @@ func _resolve_campaign_outro_text() -> String:
 	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
 	var mission_number: int = int(scenario_data.get("mission_number", 0))
 	return CAMPAIGN_OUTRO_KEY_TEMPLATE % mission_number
+
+func _is_campaign_scenario_mode() -> bool:
+	if game_mode != "scenario":
+		return false
+	if scenario_path == "":
+		return false
+	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
+	var scenario_type: String = String(scenario_data.get("scenario_type", "scenario")).to_lower()
+	return scenario_type == "campaign"
 
 func _initialize_scenario_events_from_data(scenario_data: Dictionary, difficulty_token: String = "all") -> void:
 	_scenario_events_runtime.clear()
@@ -1836,6 +1961,8 @@ func _process_player_turn_start(player_id: int):
 func _process_turn_start_autosave(player_id: int) -> void:
 	if castle_placing_mode:
 		return
+	if tutorial_enabled:
+		return
 	if not is_player_human(player_id):
 		return
 	var autosave_ok: bool = SaveGameManager.save_auto_save(self)
@@ -2368,6 +2495,34 @@ func _get_human_player_count() -> int:
 		if is_player_human(player_id):
 			human_players += 1
 	return human_players
+
+func _capture_initial_human_player_count_if_unset() -> void:
+	if _initial_human_player_count > 0:
+		return
+	_initial_human_player_count = _get_human_player_count()
+
+func get_initial_human_player_count_for_save() -> int:
+	_capture_initial_human_player_count_if_unset()
+	return _initial_human_player_count
+
+func set_initial_human_player_count_from_save(value: int) -> void:
+	_initial_human_player_count = maxi(0, value)
+	_capture_initial_human_player_count_if_unset()
+
+func get_eliminated_human_players_for_save() -> Array[int]:
+	var players: Array[int] = []
+	for key in _eliminated_human_players.keys():
+		players.append(int(key))
+	players.sort()
+	return players
+
+func set_eliminated_human_players_from_save(raw_players: Array) -> void:
+	_eliminated_human_players.clear()
+	for raw_player in raw_players:
+		var player_id: int = int(raw_player)
+		if player_id <= 0:
+			continue
+		_eliminated_human_players[player_id] = true
 
 func _should_show_next_player_modal() -> bool:
 	return true
@@ -4533,6 +4688,8 @@ func _start_first_turn() -> void:
 		_sync_ai_debug_display_for_player(current_player)
 		
 		await _turn_controller.start_turn(current_player)
+		if _outcome_modal_blocking_active:
+			return
 		await _await_pending_battles()
 		call_deferred("next_turn")  # Advance to next player after turn completes
 		return  # Exit early since AI turn handling includes next_turn() call
@@ -4634,7 +4791,10 @@ func _on_game_menu_exit_pressed() -> void:
 	_on_game_menu_main_menu_pressed()
 
 func handle_human_end_turn() -> void:
+	var armies_to_stand_up: Array[Army] = _get_exhausted_armies_for_player(current_player)
 	_auto_camp_armies_for_player(current_player)
+	_suppress_turn_start_stand_up_for_auto_camped_armies(current_player, armies_to_stand_up)
+	_stand_up_exhausted_armies(armies_to_stand_up)
 	next_turn()
 
 func _auto_camp_armies_for_player(player_id: int) -> void:
@@ -4642,3 +4802,25 @@ func _auto_camp_armies_for_player(player_id: int) -> void:
 	for army in armies:
 		while army.get_movement_points() > 0:
 			army.make_camp()
+
+func _get_exhausted_armies_for_player(player_id: int) -> Array[Army]:
+	var exhausted_armies: Array[Army] = []
+	var armies: Array[Army] = _army_manager.get_player_armies(player_id)
+	for army in armies:
+		if army.get_movement_points() > 0:
+			continue
+		exhausted_armies.append(army)
+	return exhausted_armies
+
+func _stand_up_exhausted_armies(armies: Array[Army]) -> void:
+	for army in armies:
+		army.stand_up_on_end_turn()
+
+func _suppress_turn_start_stand_up_for_auto_camped_armies(player_id: int, exhausted_before_end_turn: Array[Army]) -> void:
+	var armies: Array[Army] = _army_manager.get_player_armies(player_id)
+	for army in armies:
+		if army.get_movement_points() > 0:
+			continue
+		if exhausted_before_end_turn.has(army):
+			continue
+		army.suppress_next_stand_up_animation()

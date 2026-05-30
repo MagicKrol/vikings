@@ -195,6 +195,8 @@ func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 			)
 			_emit_camera_zoomed()
 		KEY_R:
+			if _is_pan_blocked_by_modal():
+				return
 			# Reset camera
 			reset_camera()
 
@@ -244,6 +246,8 @@ func _is_zoom_blocked_by_modal() -> bool:
 		return false
 	if not ui_manager.is_any_modal_visible():
 		return false
+	if _is_tutorial_action_active("camera_zoom") and ui_manager.is_only_info_or_message_modal_visible():
+		return false
 	return not ui_manager.is_only_info_or_message_modal_visible()
 
 func _is_pan_blocked_by_modal() -> bool:
@@ -251,7 +255,17 @@ func _is_pan_blocked_by_modal() -> bool:
 		return false
 	if not ui_manager.is_any_modal_visible():
 		return false
+	if _is_tutorial_camera_pan_action_active() and ui_manager.is_only_info_or_message_modal_visible():
+		return false
 	return not ui_manager.is_only_info_modal_visible()
+
+func _is_tutorial_action_active(action: String) -> bool:
+	var game_manager: GameManager = get_node("../GameManager") as GameManager
+	var tutorial_manager: TutorialManager = game_manager.get_tutorial_manager()
+	return game_manager.tutorial_enabled and tutorial_manager.is_expected_action(action)
+
+func _is_tutorial_camera_pan_action_active() -> bool:
+	return _is_tutorial_action_active("camera_move") or _is_tutorial_action_active("camera_zoom")
 
 func _handle_pan_gesture(event: InputEventPanGesture) -> void:
 	# Handle two-finger pan gesture (macOS trackpad primary method)

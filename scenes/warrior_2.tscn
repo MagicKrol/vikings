@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://jrvmsh3berov"]
+[gd_scene load_steps=73 format=3 uid="uid://jrvmsh3berov"]
 
 [ext_resource type="Texture2D" uid="uid://bvw2cycpwrvh7" path="res://animation/warrior_2/idle/warrior_2_idle_001.png" id="1_5wyqg"]
 [ext_resource type="Texture2D" uid="uid://6dk72xjfn3r7" path="res://animation/warrior_2/idle/warrior_2_idle_002.png" id="2_r1jn8"]
@@ -20,26 +20,46 @@
 [ext_resource type="Texture2D" uid="uid://fvw1dbx1t8x4" path="res://animation/warrior_2/idle/warrior_2_idle_018.png" id="18_15h77"]
 [ext_resource type="Texture2D" uid="uid://d2l0lvcxrbuqg" path="res://animation/warrior_2/idle/warrior_2_idle_019.png" id="19_xi3v7"]
 [ext_resource type="Texture2D" uid="uid://ckebyshpykm4h" path="res://animation/warrior_2/idle/warrior_2_idle_020.png" id="20_tkp3c"]
+[ext_resource type="Texture2D" uid="uid://nad8kg8wwbkw" path="res://animation/warrior_2/kneel/warrior_2_kneel_001.png" id="21_fl8a7"]
 [ext_resource type="Texture2D" uid="uid://b2svm1npoveko" path="res://animation/warrior_2/victory/warrior_2_victory_001.png" id="21_rjk3d"]
+[ext_resource type="Texture2D" uid="uid://vv5lm05vyfby" path="res://animation/warrior_2/kneel/warrior_2_kneel_002.png" id="22_4c26g"]
 [ext_resource type="Texture2D" uid="uid://duya8i25dck3b" path="res://animation/warrior_2/victory/warrior_2_victory_002.png" id="22_uagno"]
+[ext_resource type="Texture2D" uid="uid://c76aipj50hhrk" path="res://animation/warrior_2/kneel/warrior_2_kneel_003.png" id="23_24glk"]
 [ext_resource type="Texture2D" uid="uid://bym2g8qbe1mhn" path="res://animation/warrior_2/victory/warrior_2_victory_003.png" id="23_ppqkt"]
 [ext_resource type="Texture2D" uid="uid://cu6176f0cg7w4" path="res://animation/warrior_2/victory/warrior_2_victory_004.png" id="24_2ke6s"]
+[ext_resource type="Texture2D" uid="uid://3h4pud7x2s14" path="res://animation/warrior_2/kneel/warrior_2_kneel_004.png" id="24_dqmsr"]
 [ext_resource type="Texture2D" uid="uid://re1dbtunxhfx" path="res://animation/warrior_2/victory/warrior_2_victory_005.png" id="25_2ei3k"]
+[ext_resource type="Texture2D" uid="uid://jewr3jwcrwhi" path="res://animation/warrior_2/kneel/warrior_2_kneel_005.png" id="25_sjv3g"]
 [ext_resource type="Texture2D" uid="uid://4d0t6qsgxim3" path="res://animation/warrior_2/victory/warrior_2_victory_006.png" id="26_le6io"]
+[ext_resource type="Texture2D" uid="uid://crrobukr5suoc" path="res://animation/warrior_2/kneel/warrior_2_kneel_006.png" id="26_s1apo"]
 [ext_resource type="Texture2D" uid="uid://n53158u7kmt5" path="res://animation/warrior_2/victory/warrior_2_victory_007.png" id="27_8aaqu"]
+[ext_resource type="Texture2D" uid="uid://ks4ib1rpym35" path="res://animation/warrior_2/kneel/warrior_2_kneel_007.png" id="27_erymu"]
 [ext_resource type="Texture2D" uid="uid://bukbqhwd0aqqn" path="res://animation/warrior_2/victory/warrior_2_victory_008.png" id="28_bao7v"]
+[ext_resource type="Texture2D" uid="uid://c1c5ockoqklhd" path="res://animation/warrior_2/kneel/warrior_2_kneel_008.png" id="28_rkw6k"]
+[ext_resource type="Texture2D" uid="uid://cwiyf4tk8ybbt" path="res://animation/warrior_2/kneel/warrior_2_kneel_009.png" id="29_37yso"]
 [ext_resource type="Texture2D" uid="uid://cbrekp77r3vjl" path="res://animation/warrior_2/victory/warrior_2_victory_009.png" id="29_pfm77"]
+[ext_resource type="Texture2D" uid="uid://dip5js30or25a" path="res://animation/warrior_2/kneel/warrior_2_kneel_010.png" id="30_ov4ux"]
 [ext_resource type="Texture2D" uid="uid://dylyc7h6v2c45" path="res://animation/warrior_2/victory/warrior_2_victory_010.png" id="30_p8m4t"]
 [ext_resource type="Texture2D" uid="uid://dogp8dlf5lv8c" path="res://animation/warrior_2/victory/warrior_2_victory_011.png" id="31_ium60"]
+[ext_resource type="Texture2D" uid="uid://c4a83wlphwaye" path="res://animation/warrior_2/kneel/warrior_2_kneel_011.png" id="31_nrivf"]
+[ext_resource type="Texture2D" uid="uid://bpq1yguq7htr5" path="res://animation/warrior_2/kneel/warrior_2_kneel_012.png" id="32_orqkl"]
 [ext_resource type="Texture2D" uid="uid://bqfiqh2e82r75" path="res://animation/warrior_2/victory/warrior_2_victory_012.png" id="32_rbjvk"]
 [ext_resource type="Texture2D" uid="uid://imgj1m73h5da" path="res://animation/warrior_2/victory/warrior_2_victory_013.png" id="33_5jxif"]
+[ext_resource type="Texture2D" uid="uid://df0u72abm3ypv" path="res://animation/warrior_2/kneel/warrior_2_kneel_013.png" id="33_jbck5"]
+[ext_resource type="Texture2D" uid="uid://padmnw2jxekw" path="res://animation/warrior_2/kneel/warrior_2_kneel_014.png" id="34_eavlt"]
 [ext_resource type="Texture2D" uid="uid://0dyql11pp3w1" path="res://animation/warrior_2/victory/warrior_2_victory_014.png" id="34_gqyjw"]
+[ext_resource type="Texture2D" uid="uid://cv5i0mxfillge" path="res://animation/warrior_2/kneel/warrior_2_kneel_015.png" id="35_4gj2o"]
 [ext_resource type="Texture2D" uid="uid://xjtwwt6usof5" path="res://animation/warrior_2/victory/warrior_2_victory_015.png" id="35_lvwk1"]
+[ext_resource type="Texture2D" uid="uid://bqtr3yil17xs1" path="res://animation/warrior_2/kneel/warrior_2_kneel_016.png" id="36_m3fe4"]
 [ext_resource type="Texture2D" uid="uid://bbg5j1735tdg0" path="res://animation/warrior_2/victory/warrior_2_victory_016.png" id="36_ubnwh"]
+[ext_resource type="Texture2D" uid="uid://bvnht55n1y1u0" path="res://animation/warrior_2/kneel/warrior_2_kneel_017.png" id="37_2mvgi"]
 [ext_resource type="Texture2D" uid="uid://uy70w24urmre" path="res://animation/warrior_2/victory/warrior_2_victory_017.png" id="37_s5qcl"]
 [ext_resource type="Texture2D" uid="uid://bmc8prbuwrxr0" path="res://animation/warrior_2/victory/warrior_2_victory_018.png" id="38_ajtoq"]
+[ext_resource type="Texture2D" uid="uid://ckyun7cp4y66m" path="res://animation/warrior_2/kneel/warrior_2_kneel_018.png" id="38_v52u1"]
 [ext_resource type="Texture2D" uid="uid://dtadsl42bw3sx" path="res://animation/warrior_2/victory/warrior_2_victory_019.png" id="39_dnwmo"]
+[ext_resource type="Texture2D" uid="uid://cnx3mi8t4hiuu" path="res://animation/warrior_2/kneel/warrior_2_kneel_019.png" id="39_u7uf8"]
 [ext_resource type="Texture2D" uid="uid://cguu5ai8vr635" path="res://animation/warrior_2/victory/warrior_2_victory_020.png" id="40_gf42l"]
+[ext_resource type="Texture2D" uid="uid://wwfjsjw26nub" path="res://animation/warrior_2/kneel/warrior_2_kneel_020.png" id="40_uu27r"]
 [ext_resource type="Texture2D" uid="uid://bexjv8q8k20jl" path="res://animation/warrior_2/walking/warrior_2_walking_010.png" id="43_6mmr6"]
 [ext_resource type="Texture2D" uid="uid://cmo16tdv7dfok" path="res://animation/warrior_2/walking/warrior_2_walking_011.png" id="44_am3jt"]
 [ext_resource type="Texture2D" uid="uid://chybml0bdmyic" path="res://animation/warrior_2/walking/warrior_2_walking_012.png" id="45_ygt8v"]
@@ -123,6 +143,76 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_fl8a7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_4c26g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_24glk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_dqmsr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_sjv3g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_s1apo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_erymu")
+}],
+"loop": false,
+"name": &"kneel",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("28_rkw6k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_37yso")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_ov4ux")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_nrivf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_orqkl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_jbck5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_eavlt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_4gj2o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_m3fe4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("37_2mvgi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_v52u1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_u7uf8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_uu27r")
+}],
+"loop": true,
+"name": &"rest",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -233,7 +323,7 @@ animations = [{
 [node name="Animations" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0.992157, 1, 1)
 sprite_frames = SubResource("SpriteFrames_nx4lj")
-animation = &"walking"
+animation = &"rest"
 
 [node name="Victory" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0, 1, 0)

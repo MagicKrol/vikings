@@ -252,6 +252,8 @@ func _on_panel_mouse_entered() -> void:
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
+	if _is_tutorial_mode_active():
+		return
 	if GameParameters.is_next_army_key_pressed(event):
 		if ui_manager.is_recruitment_or_transfer_modal_visible():
 			get_viewport().set_input_as_handled()
@@ -287,6 +289,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode == KEY_ESCAPE:
 			_cancel_move()
 			get_viewport().set_input_as_handled()
+		if _is_tutorial_mode_active():
+			return
 		if GameParameters.is_next_army_key_pressed(event):
 			if ui_manager.is_recruitment_or_transfer_modal_visible():
 				get_viewport().set_input_as_handled()

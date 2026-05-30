@@ -74,10 +74,10 @@ custom_minimum_size = Vector2(0, 510)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollMessageLabel" type="Label" parent="PanelRoot/ContentContainer/MessageScroll"]
-custom_minimum_size = Vector2(0, 510)
+[node name="ScrollMessageLabel" type="RichTextLabel" parent="PanelRoot/ContentContainer/MessageScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
+bbcode_enabled = true
 text = "My Lord,
 This a small size demo map, for a single human player and two AI opponents. 
 
@@ -87,9 +87,8 @@ Tips: Ensure your armies have always a strong range of units. Conquer new region
 
 Your goal:
 Conquer every enemy castle and crush all opposing armies."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
+fit_content = true
+scroll_active = false
 
 [node name="Spacer2" type="Control" parent="PanelRoot/ContentContainer"]
 custom_minimum_size = Vector2(0, 5)
