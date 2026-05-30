@@ -277,6 +277,18 @@ func get_resource_amount(resource_type: ResourcesEnum.Type) -> int:
 		return 0
 	return base_amount
 
+func get_base_resource_amount(resource_type: ResourcesEnum.Type) -> int:
+	"""Get base (pre-level-multiplier) amount of specific resource type."""
+	var base_amount: int = base_resources.get_resource_amount(resource_type)
+	if base_amount <= 0:
+		return 0
+	return base_amount
+
+func set_base_resource_amount(resource_type: ResourcesEnum.Type, amount: int) -> void:
+	"""Set base resource amount and rebuild scaled resources from current region level."""
+	base_resources.set_resource_amount(resource_type, amount)
+	_update_resources_from_base()
+
 func has_resources() -> bool:
 	"""Check if region has any resources"""
 	return resources.has_resources()
@@ -706,7 +718,7 @@ func get_castle_repair_cost() -> Dictionary:
 	for res_type in base_cost:
 		var val = base_cost[res_type]
 		if val > 0:
-			repair_cost[res_type] = int(ceil(float(val) * fraction))
+			repair_cost[res_type] = int(ceil((float(val) / 2.0) * fraction))
 	return repair_cost
 
 func process_castle_construction() -> bool:

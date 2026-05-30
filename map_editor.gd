@@ -270,7 +270,7 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		if parts.size() == 3:
 			var value = int(parts[1])
 			var rt = int(parts[2])
-			region.get_resources().set_resource_amount(rt, value)
+			region.set_base_resource_amount(rt, value)
 			mg.refresh_region_visual(region_id)
 		return
 	if selection.begins_with("POP:"):

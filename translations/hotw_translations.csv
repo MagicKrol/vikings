@@ -457,3 +457,6 @@ Switch army/region,Keyboard mapping row label for army/region tab switching.,Swi
 Press Key,Keyboard mapping button state while waiting for user key input.,Press Key,Taste drücken,Naciśnij klawisz,Pressione uma tecla
 Spacebar,Keyboard key display label for the space key.,Spacebar,Leertaste,Spacja,Barra de Espaço
 You failed,Defeat message shown when the only human player has no armies and no castles.,You failed,Du hast verloren,Przegrałeś,Você perdeu
+mission-3_intro,Scenario metadata key used for intro popup text at scenario start.,mission-3_intro,mission-3_intro,mission-3_intro,mission-3_intro
+mission-3_description,Scenario metadata key used for scenario description text in the main menu.,mission-3_description,mission-3_description,mission-3_description,mission-3_description
+mission-3_objectives,Scenario metadata key used for scenario objectives text in the main menu.,mission-3_objectives,mission-3_objectives,mission-3_objectives,mission-3_objectives

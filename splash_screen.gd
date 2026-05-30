@@ -4,10 +4,14 @@ class_name SplashScreen
 const FADE_IN_DURATION_SECONDS: float = 1.0
 const HOLD_AFTER_FADE_SECONDS: float = 1.0
 const MAIN_MENU_SCENE_PATH: String = "res://scenes/main_menu.tscn"
+const DEMO_MODE_ENABLED: bool = GameParameters.DEMO_MODE_ENABLED
 
 @onready var background: TextureRect = get_node("Background") as TextureRect
 
 func _ready() -> void:
+	if not DEMO_MODE_ENABLED:
+		get_tree().change_scene_to_file(MAIN_MENU_SCENE_PATH)
+		return
 	var start_color: Color = background.modulate
 	start_color.a = 0.0
 	background.modulate = start_color

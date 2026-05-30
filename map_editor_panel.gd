@@ -103,11 +103,14 @@ var _event_regions_edit: LineEdit
 var _event_turn_start_edit: LineEdit
 var _event_turn_end_edit: LineEdit
 var _event_player_option: OptionButton
+var _event_regions_select_button: Button
 var _event_message_text: TextEdit
 var _event_units_container: VBoxContainer
 var _event_unit_edits: Dictionary = {}
 var _events: Array[Dictionary] = []
 var _editing_event_index: int = -1
+var _event_region_select_mode: bool = false
+var _event_highlight_region_ids: Array[int] = []
 
 func _ready() -> void:
 	"""Initialize map editor panel"""
@@ -264,6 +267,7 @@ func _ready() -> void:
 	_event_turn_start_edit = get_node("Panel/TabContainer/Event/EventEditorView/EventTurnStartRow/EventTurnStartValue") as LineEdit
 	_event_turn_end_edit = get_node("Panel/TabContainer/Event/EventEditorView/EventTurnEndRow/EventTurnEndValue") as LineEdit
 	_event_player_option = get_node("Panel/TabContainer/Event/EventEditorView/EventPlayerRow/EventPlayerOption") as OptionButton
+	_event_regions_select_button = get_node("Panel/TabContainer/Event/EventEditorView/EventRegionsRow/EventRegionsSelectButton") as Button
 	_event_message_text = get_node("Panel/TabContainer/Event/EventEditorView/EventMessageValue") as TextEdit
 	_event_units_container = get_node("Panel/TabContainer/Event/EventEditorView/EventUnitsContainer") as VBoxContainer
 	
@@ -287,6 +291,8 @@ func _ready() -> void:
 	_event_add_button.pressed.connect(_on_event_add_pressed)
 	_event_back_button.pressed.connect(_on_event_back_pressed)
 	_event_save_button.pressed.connect(_on_event_save_pressed)
+	_event_regions_select_button.pressed.connect(_on_event_regions_select_button_pressed)
+	_event_regions_edit.text_changed.connect(_on_event_regions_text_changed)
 	
 	# Check for loaded scenario name after a short delay to ensure GameManager is ready
 	call_deferred("_check_and_populate_scenario_name")
@@ -963,6 +969,7 @@ func _select_option_by_text(option: OptionButton, text_value: String) -> void:
 	option.select(0)
 
 func _initialize_events_ui() -> void:
+	_set_event_region_select_mode(false)
 	_event_player_option.clear()
 	for i in range(1, 7):
 		_event_player_option.add_item("Player " + str(i))
@@ -1054,6 +1061,8 @@ func _on_event_delete_pressed(index: int) -> void:
 		return
 	_events.remove_at(index)
 	if _editing_event_index == index:
+		_set_event_region_select_mode(false)
+		_clear_event_region_highlights()
 		_editing_event_index = -1
 		_event_list_view.visible = true
 		_event_editor_view.visible = false
@@ -1069,6 +1078,7 @@ func _show_event_editor_by_index(event_index: int) -> void:
 	_editing_event_index = event_index
 	_event_list_view.visible = false
 	_event_editor_view.visible = true
+	_set_event_region_select_mode(false)
 	_event_edit_name.text = String(event_data.get("name", ""))
 	_event_regions_edit.text = _regions_to_csv(event_data.get("regions", []))
 	_event_turn_start_edit.text = str(int(event_data.get("turn_start", 1)))
@@ -1079,6 +1089,7 @@ func _show_event_editor_by_index(event_index: int) -> void:
 	_set_event_editor_baseline_fields_editable(_edit_difficulty_target == "all")
 	var composition: Dictionary = _get_effective_event_composition_for_index(event_index)
 	_apply_named_composition_to_edits(_event_unit_edits, composition)
+	_refresh_event_region_highlights_from_editor()
 
 func _set_event_editor_baseline_fields_editable(editable: bool) -> void:
 	_event_edit_name.editable = editable
@@ -1087,6 +1098,9 @@ func _set_event_editor_baseline_fields_editable(editable: bool) -> void:
 	_event_turn_end_edit.editable = editable
 	_event_player_option.disabled = not editable
 	_event_message_text.editable = editable
+	_event_regions_select_button.disabled = not editable
+	if not editable:
+		_set_event_region_select_mode(false)
 
 func _get_effective_event_composition_for_index(event_index: int) -> Dictionary:
 	if event_index < 0 or event_index >= _events.size():
@@ -1146,6 +1160,8 @@ func _shift_event_overrides_after_delete(deleted_index: int) -> void:
 			_difficulty_event_compositions_overrides[difficulty_token] = shifted_map
 
 func _on_event_back_pressed() -> void:
+	_set_event_region_select_mode(false)
+	_clear_event_region_highlights()
 	_editing_event_index = -1
 	_event_list_view.visible = true
 	_event_editor_view.visible = false
@@ -1153,6 +1169,7 @@ func _on_event_back_pressed() -> void:
 func _on_event_save_pressed() -> void:
 	if _editing_event_index < 0 or _editing_event_index >= _events.size():
 		return
+	_set_event_region_select_mode(false)
 	var composition: Dictionary = _read_named_composition_from_edits(_event_unit_edits)
 	if _edit_difficulty_target != "all":
 		_save_event_composition_override_for_index(_editing_event_index, composition)
@@ -1187,6 +1204,89 @@ func _regions_to_csv(regions: Variant) -> String:
 	for value in values:
 		parts.append(str(int(value)))
 	return ",".join(parts)
+
+func is_event_region_select_mode_active() -> bool:
+	return _event_region_select_mode
+
+func cancel_event_region_selection_mode() -> bool:
+	if not _event_region_select_mode:
+		return false
+	_set_event_region_select_mode(false)
+	return true
+
+func try_handle_event_region_click(region_id: int) -> bool:
+	if not _event_region_select_mode:
+		return false
+	if not _event_editor_view.visible or _editing_event_index < 0:
+		return false
+	var ids: Array[int] = _parse_event_region_ids_for_selection(_event_regions_edit.text)
+	var existing_index: int = ids.find(region_id)
+	if existing_index == -1:
+		ids.append(region_id)
+	else:
+		ids.remove_at(existing_index)
+	_event_regions_edit.text = _regions_to_csv(ids)
+	_refresh_event_region_highlights_from_editor()
+	return true
+
+func _on_event_regions_select_button_pressed() -> void:
+	if _event_regions_select_button.disabled:
+		return
+	_set_event_region_select_mode(not _event_region_select_mode)
+	if _event_region_select_mode:
+		_refresh_event_region_highlights_from_editor()
+
+func _on_event_regions_text_changed(_new_text: String) -> void:
+	if not _event_editor_view.visible or _editing_event_index < 0:
+		return
+	_refresh_event_region_highlights_from_editor()
+
+func _set_event_region_select_mode(enabled: bool) -> void:
+	_event_region_select_mode = enabled
+	_event_regions_select_button.button_pressed = enabled
+
+func _parse_event_region_ids_for_selection(value: String) -> Array[int]:
+	var ids: Array[int] = []
+	var seen: Dictionary = {}
+	var chunks: PackedStringArray = value.split(",", false)
+	for raw in chunks:
+		var trimmed: String = raw.strip_edges()
+		if trimmed == "":
+			continue
+		var region_id: int = int(trimmed)
+		if region_id <= 0:
+			continue
+		if seen.has(region_id):
+			continue
+		seen[region_id] = true
+		ids.append(region_id)
+	return ids
+
+func _refresh_event_region_highlights_from_editor() -> void:
+	var visual_manager: VisualManager = _get_visual_manager_for_event_editor()
+	if not _event_editor_view.visible or _editing_event_index < 0:
+		visual_manager.clear_move_region_highlights()
+		_event_highlight_region_ids.clear()
+		return
+	var ids: Array[int] = _parse_event_region_ids_for_selection(_event_regions_edit.text)
+	var highlight_ids: Array = []
+	for region_id in ids:
+		highlight_ids.append(region_id)
+	if highlight_ids.is_empty():
+		visual_manager.clear_move_region_highlights()
+		_event_highlight_region_ids.clear()
+		return
+	visual_manager.animate_move_region_highlights(highlight_ids)
+	_event_highlight_region_ids = ids.duplicate()
+
+func _clear_event_region_highlights() -> void:
+	var visual_manager: VisualManager = _get_visual_manager_for_event_editor()
+	visual_manager.clear_move_region_highlights()
+	_event_highlight_region_ids.clear()
+
+func _get_visual_manager_for_event_editor() -> VisualManager:
+	var game_manager: GameManager = get_node("../../GameManager") as GameManager
+	return game_manager.get_visual_manager()
 
 func _parse_regions_csv(value: String) -> Array[int]:
 	var result: Array[int] = []
@@ -1358,6 +1458,8 @@ func _populate_types() -> void:
 	_option.add_item("Ocean")
 
 func update_from_region(region: Region) -> void:
+	_set_event_region_select_mode(false)
+	_clear_event_region_highlights()
 	_current_region_id = region.get_region_id()
 	_id_value.text = str(_current_region_id)
 	_name_edit.text = region.get_region_name()
@@ -1376,7 +1478,7 @@ func update_from_region(region: Region) -> void:
 	# Resources
 	for rt in _resource_edits.keys():
 		var e: LineEdit = _resource_edits[rt]
-		e.text = str(region.get_resource_amount(rt))
+		e.text = str(region.get_base_resource_amount(rt))
 	# Ore
 	_ore_check.button_pressed = not region.get_discovered_ores().is_empty()
 	_ore_guarantee_attempt_edit.text = str(region.get_ore_guaranteed_discovery_attempt())
@@ -1504,7 +1606,7 @@ func _on_name_focus_exited() -> void:
 
 func _on_resource_changed(text: String, rt: ResourcesEnum.Type) -> void:
 	var value: int = int(text)
-	if _current_region_node.get_resource_amount(rt) == value:
+	if _current_region_node.get_base_resource_amount(rt) == value:
 		return
 	emit_signal("region_data_changed", _current_region_id, "RES:" + str(value) + ":" + str(rt))
 
@@ -1609,6 +1711,10 @@ func _on_save_scenario_pressed() -> void:
 	for child in regions_node.get_children():
 		if child is Region:
 			var region := child as Region
+			if region.is_ocean_region():
+				continue
+			if region.get_region_type() == RegionTypeEnum.Type.MOUNTAINS:
+				continue
 			regions_data.append(_serialize_region(region))
 			for sub in region.get_children():
 				if sub is Army:
@@ -1694,7 +1800,7 @@ func _serialize_region(region: Region) -> Dictionary:
 	var res: Dictionary = {}
 	for rt in ResourcesEnum.get_all_types():
 		var rt_name = ResourcesEnum.type_to_string(rt)
-		res[rt_name] = region.get_resource_amount(rt)
+		res[rt_name] = region.get_base_resource_amount(rt)
 	data["resources"] = res
 	var ores: Array = []
 	for ore in region.get_discovered_ores():

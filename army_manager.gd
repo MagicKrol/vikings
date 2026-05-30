@@ -491,7 +491,6 @@ func select_army(army: Army, region_container: Node, current_player_id: int = -1
 	selected_army = army
 	selected_region_container = region_container
 	if ui_manager:
-		ui_manager.suppress_turn_modal_for_movement(true)
 		ui_manager.set_move_selection_active(true)
 
 	# Show army modal
@@ -516,7 +515,6 @@ func deselect_army() -> void:
 	selected_army = null
 	selected_region_container = null
 	if ui_manager:
-		ui_manager.suppress_turn_modal_for_movement(false)
 		ui_manager.set_move_selection_active(false)
 	
 	# Hide move modal

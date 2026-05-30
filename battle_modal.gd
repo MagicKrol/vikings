@@ -182,8 +182,10 @@ func _on_battle_logs_pressed() -> void:
 
 func _apply_stats_panel_visibility() -> void:
 	if _is_tutorial_mode_active():
+		battle_logs_button.visible = false
 		stats_panel.visible = false
 		return
+	battle_logs_button.visible = true
 	stats_panel.visible = GameParameters.get_battle_logs_visible()
 
 func show_battle(army: Army, region: Region, siege_payload: Dictionary = {}) -> void:

@@ -734,6 +734,9 @@ func _initialize_map_editor() -> void:
 	_region_manager = RegionManager.new(map_generator)
 	_army_manager = ArmyManager.new(map_generator, _region_manager)
 	_region_manager.set_army_manager(_army_manager)
+	_visual_manager = VisualManager.new(map_generator, _region_manager, _army_manager)
+	_region_manager.set_visual_manager(_visual_manager)
+	_army_manager.set_visual_manager(_visual_manager)
 	# Provide to ClickManager so editor code can use them
 	click_manager = get_node("../ClickManager")
 	if click_manager.has_method("set_managers"):
@@ -744,7 +747,7 @@ func _initialize_map_editor() -> void:
 		var scen: Dictionary = get_tree().get_meta("__scenario_to_apply__") as Dictionary
 		get_tree().set_meta("__scenario_to_apply__", null)
 		var player_manager_node = get_node("../PlayerManager") as PlayerManagerNode
-		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, null, scen, player_manager_node, "all")
+		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager_node, "all")
 
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")
@@ -1514,6 +1517,7 @@ func _execute_scenario_event(event_index: int) -> void:
 	var event_data: Dictionary = _scenario_events_runtime[event_index]
 	var event_message: String = String(event_data.get("message", "")).strip_edges()
 	if event_message != "":
+		await _focus_camera_on_first_event_region(event_data)
 		_event_message_modal.display_message(tr(event_message))
 		await _event_message_modal.continue_clicked
 	var player_id: int = int(event_data.get("player_id", 1))
@@ -1522,6 +1526,17 @@ func _execute_scenario_event(event_index: int) -> void:
 	else:
 		event_data = await _execute_scenario_event_auto_spawn(event_data)
 	_scenario_events_runtime[event_index] = event_data
+
+func _focus_camera_on_first_event_region(event_data: Dictionary) -> void:
+	var region_ids: Array[int] = _normalize_event_regions(event_data.get("regions", []))
+	if region_ids.is_empty():
+		return
+	var first_region_id: int = int(region_ids[0])
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	if not map_generator.region_container_by_id.has(first_region_id):
+		return
+	var first_region: Region = map_generator.region_container_by_id[first_region_id] as Region
+	await _ai_camera_director.await_focus_on_region(first_region)
 
 func _resolve_scenario_event_spawn_region(event_data: Dictionary) -> Dictionary:
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator

@@ -48,14 +48,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		# Editor quick-ownership mode: number keys 1..6 select owner, ESC cancels
 		if _game_manager and _game_manager.enable_map_editor:
+			var map_editor_node: MapEditor = get_node("../MapEditor") as MapEditor
+			var map_editor_panel: MapEditorPanel = map_editor_node.get_editor_panel() as MapEditorPanel
 			var code: int = event.keycode
 			if code >= KEY_1 and code <= KEY_6:
 				_editor_ownership_mode = true
 				_editor_owner_id = code - KEY_1 + 1
 				return
 			if code == KEY_ESCAPE:
-				_editor_ownership_mode = false
-				# fallthrough to any deselection below
+				var consumed_editor_escape: bool = false
+				if _editor_ownership_mode:
+					_editor_ownership_mode = false
+					consumed_editor_escape = true
+				if map_editor_panel.is_event_region_select_mode_active():
+					map_editor_panel.cancel_event_region_selection_mode()
+					consumed_editor_escape = true
+				if consumed_editor_escape:
+					return
 		if event.keycode == KEY_ESCAPE:
 			if _game_manager != null and _game_manager.tutorial_enabled and not _game_manager.enable_map_editor:
 				return
@@ -472,18 +481,20 @@ func _handle_editor_region_click(region_container: Node) -> void:
 	var region = region_container as Region
 	if region == null:
 		return
+	var map_editor: MapEditor = get_node("../MapEditor") as MapEditor
+	var map_editor_panel: MapEditorPanel = map_editor.get_editor_panel() as MapEditorPanel
+	if map_editor_panel.try_handle_event_region_click(region.get_region_id()):
+		return
 
 	# If ownership mode is active, assign owner and update panel
 	if _editor_ownership_mode:
 		var region_id := region.get_region_id()
 		_region_manager.set_region_ownership(region_id, _editor_owner_id)
 		# Keep panel in sync with current region
-		var map_editor2: MapEditor = get_node("../MapEditor") as MapEditor
-		map_editor2.set_current_region(region)
+		map_editor.set_current_region(region)
 		return
 
 	# Update editor panel selection
-	var map_editor: MapEditor = get_node("../MapEditor") as MapEditor
 	map_editor.set_current_region(region)
 
 

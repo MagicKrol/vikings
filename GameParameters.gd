@@ -73,7 +73,7 @@ const RECRUIT_DIVERSITY_MIN_T = 24             # Apply diversity floor only when
 const POPULATION_GROWTH_RATE = 0.02            # Base population growth rate (%)
 const POPULATION_CONST_GROWTH_RATE = 0.00
 const WITHDRAWAL_FREE_HIT_ROUNDS = 2           # Number of free hit rounds enemy gets during withdrawal
-const PREBATTLE_VOLLEY_ROUNDS = 2              # Number of prebattle ranged volleys (archers/crossbowmen opening shots)
+const PREBATTLE_VOLLEY_ROUNDS = 1              # Number of prebattle ranged volleys (archers/crossbowmen opening shots)
 const MOBILITY_EXTRA_WITHDRAWAL_ROUNDS = 2    # Extra rounds mobility units get to attack withdrawing enemies
 const ENEMY_ARMY_MEMORY_ROUNDS = 5            # Rounds to retain enemy army power knowledge for AI players
 const AI_ENEMY_REGION_SCORE_BONUS = 5          # Bonus added when targeting enemy-owned regions
@@ -85,7 +85,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = true
+const DEMO_MODE_ENABLED: bool = false
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",

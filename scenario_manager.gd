@@ -48,11 +48,12 @@ func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager
 	var garrison_composition_overrides: Dictionary = _resolve_garrison_override_map(scenario, resolved_difficulty)
 	var army_composition_overrides: Dictionary = _resolve_army_override_map(scenario, resolved_difficulty)
 	var effective_player_resources: Array = _resolve_player_resources_for_difficulty(scenario, resolved_difficulty)
-	_apply_region_deltas(map_generator, region_manager, scenario, garrison_composition_overrides)
+	var region_visual_refresh_ids: Array[int] = _apply_region_deltas(map_generator, region_manager, scenario, garrison_composition_overrides)
 	_apply_ownership(map_generator, region_manager, scenario)
 	_apply_castles(map_generator, visual_manager, scenario)
 	_apply_armies(map_generator, army_manager, scenario, army_composition_overrides)
 	_apply_player_resources(player_manager, effective_player_resources)
+	_refresh_region_runtime_after_deltas(map_generator, region_visual_refresh_ids)
 
 func _normalize_runtime_difficulty_token(raw_token: String) -> String:
 	var normalized: String = raw_token.to_lower().strip_edges()
@@ -122,11 +123,14 @@ func _sanitize_unit_composition(raw_composition: Dictionary) -> Dictionary:
 
 # Internal helpers -------------------------------------------------------------
 
-func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary, garrison_composition_overrides: Dictionary) -> void:
+func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary, garrison_composition_overrides: Dictionary) -> Array[int]:
+	var region_visual_refresh_ids: Array[int] = []
 	var regions: Array = scenario.get("regions", [])
 	for r in regions:
 		var region_id: int = int(r.get("id", -1))
 		var region := map_generator.get_region_container_by_id(region_id) as Region
+		var previous_biome: String = region.get_biome().to_lower()
+		var previous_ocean: bool = region.is_ocean_region()
 		region.set_scenario_ore_rules_enabled(true)
 		var guaranteed_attempt: int = maxi(0, int(r.get("ore_guaranteed_discovery_attempt", 0)))
 		var guaranteed_type_name: String = String(r.get("ore_guaranteed_discovery_type", "None"))
@@ -150,6 +154,11 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 				var biome: String = String(r.get("biome"))
 				region.set_region_type(RegionTypeEnum.string_to_type(biome))
 			region.set_ocean(false)
+		var current_biome: String = region.get_biome().to_lower()
+		var current_ocean: bool = region.is_ocean_region()
+		if previous_biome != current_biome or previous_ocean != current_ocean:
+			_sync_map_region_runtime_data(map_generator, region_id, current_biome, current_ocean)
+			region_visual_refresh_ids.append(region_id)
 		# Level
 		if r.has("level"):
 			var lv = RegionLevelEnum.string_to_level(String(r.get("level")))
@@ -187,6 +196,35 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 					var key := SoldierTypeEnum.type_to_string(t)
 					if override_composition.has(key):
 						garrison.set_soldier_count(t, int(override_composition.get(key)))
+	return region_visual_refresh_ids
+
+func _sync_map_region_runtime_data(map_generator: MapGenerator, region_id: int, biome: String, is_ocean: bool) -> void:
+	if map_generator.region_by_id.has(region_id):
+		var region_data: Dictionary = map_generator.region_by_id[region_id]
+		region_data["biome"] = biome
+		region_data["ocean"] = is_ocean
+		map_generator.region_by_id[region_id] = region_data
+	for i in range(map_generator.regions.size()):
+		var entry: Dictionary = map_generator.regions[i]
+		if int(entry.get("id", -1)) != region_id:
+			continue
+		entry["biome"] = biome
+		entry["ocean"] = is_ocean
+		map_generator.regions[i] = entry
+		break
+
+func _refresh_region_runtime_after_deltas(map_generator: MapGenerator, region_ids: Array[int]) -> void:
+	if region_ids.is_empty():
+		return
+	var unique_region_ids: Dictionary = {}
+	for raw_region_id in region_ids:
+		var region_id: int = int(raw_region_id)
+		if region_id <= 0 or unique_region_ids.has(region_id):
+			continue
+		unique_region_ids[region_id] = true
+		map_generator.refresh_region_visual(region_id)
+	map_generator._build_non_ocean_graph_data()
+	map_generator._compute_nearby_regions_for_all_land(2)
 
 func _apply_ownership(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary) -> void:
 	var regions: Array = scenario.get("regions", [])

@@ -991,6 +991,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "1,5,20"
 
+[node name="EventRegionsSelectButton" type="Button" parent="Panel/TabContainer/Event/EventEditorView/EventRegionsRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+toggle_mode = true
+text = "Select regions"
+
 [node name="EventTurnStartRow" type="HBoxContainer" parent="Panel/TabContainer/Event/EventEditorView"]
 layout_mode = 2
 
