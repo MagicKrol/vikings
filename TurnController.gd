@@ -869,8 +869,9 @@ func _process_single_army(army: Army) -> void:
 			continue
 		if not _can_army_continue_decision_cycle(army):
 			break
-		if await _handle_peasant_cycle(army, turn_number):
-			continue
+		# KEEP COMMENTED: temporarily disable needs-peasant-recruitment execution.
+		# if await _handle_peasant_cycle(army, turn_number):
+		# 	continue
 		if not _can_army_continue_decision_cycle(army):
 			break
 		if _check_if_heal_wounded(army):
@@ -922,6 +923,9 @@ func _try_execute_threat_locked_local_recruitment(army: Army, current_region: Re
 func _handle_castle_garrison_release_cycle(army: Army) -> bool:
 	var current_region: Region = army.get_parent() as Region
 	if not current_region.has_castle():
+		return false
+	var current_region_id: int = current_region.get_region_id()
+	if _region_borders_enemy(current_region_id, army.get_player_id()):
 		return false
 	var enemy_army_ids: Dictionary = current_region.castle_nearby_entities.get("enemy_army_ids", {})
 	if not enemy_army_ids.is_empty():
@@ -1400,10 +1404,11 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 			if bool(direct_eval.get("can_attack", false)):
 				var attack_reason: String = "to " + _get_region_name_by_id(threat_region_id) + " (" + grouped_reason + ")"
 				_log_decision_tree_branch(army, "threat_direct_attack", attack_reason)
+				var attacking_army_id: int = army.get_instance_id()
 				var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 				var result_label: String = String(attack_result.get("result", "blocked"))
 				if result_label == "battle_withdrawal" or result_label == "battle_defeat":
-					_set_threat_direct_block(army.get_instance_id(), threat_region_id, result_label)
+					_set_threat_direct_block(attacking_army_id, threat_region_id, result_label)
 				return true
 			var block_branch: String = String(direct_eval.get("block_branch", ""))
 			if block_branch != "":
@@ -1554,10 +1559,11 @@ func _try_local_merge_attack_for_threat(army: Army, threat_context: Dictionary, 
 	if not bool(merged_eval.get("can_attack", false)):
 		return false
 	_log_decision_tree_branch(army, "threat_direct_attack", "to " + _get_region_name_by_id(threat_region_id))
+	var attacking_army_id: int = army.get_instance_id()
 	var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 	var result_label: String = String(attack_result.get("result", "blocked"))
 	if result_label == "battle_withdrawal" or result_label == "battle_defeat":
-		_set_threat_direct_block(army.get_instance_id(), threat_region_id, result_label)
+		_set_threat_direct_block(attacking_army_id, threat_region_id, result_label)
 	return true
 
 func _should_hold_in_castle_after_threat_lock(army: Army, castle_region_id: int) -> bool:
@@ -1632,10 +1638,11 @@ func _try_garrison_sortie_for_threat(army: Army, threat_context: Dictionary, cas
 		_revert_garrison_pull_plan_from_army(current_region, army, pull_plan)
 		return false
 	_log_decision_tree_branch(army, "threat_garrison_sortie_selected", "to " + _get_region_name_by_id(threat_region_id))
+	var attacking_army_id: int = army.get_instance_id()
 	var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 	var result_label: String = String(attack_result.get("result", "blocked"))
 	if result_label == "battle_withdrawal" or result_label == "battle_defeat":
-		_set_threat_direct_block(army.get_instance_id(), threat_region_id, result_label)
+		_set_threat_direct_block(attacking_army_id, threat_region_id, result_label)
 	if requires_roundtrip and is_instance_valid(army):
 		var army_region_after_attack: Region = army.get_parent() as Region
 		if army_region_after_attack.get_region_id() != castle_region_id:

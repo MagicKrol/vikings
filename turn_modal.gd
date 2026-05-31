@@ -80,10 +80,34 @@ func set_end_turn_button_visible(is_visible: bool) -> void:
 	end_turn_button = get_node("Panel/VBoxContainer/Button/EndTurnButton") as Button
 	end_turn_button.visible = is_visible
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if try_handle_end_turn_hotkey(event):
+		get_viewport().set_input_as_handled()
+
+func try_handle_end_turn_hotkey(event: InputEvent) -> bool:
+	if end_turn_button == null:
+		return false
+	if not end_turn_button.visible or end_turn_button.disabled:
+		return false
+	if _is_end_turn_hotkey(event):
+		end_turn_button.emit_signal("pressed")
+		return true
+	return false
+
+func _is_end_turn_hotkey(event: InputEvent) -> bool:
+	if not (event is InputEventKey):
+		return false
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return false
+	return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
+
 func _on_end_turn_button_pressed():
 	"""Handle end turn button press"""
 	if ui_manager:
-		ui_manager.close_all_active_modals()
+		ui_manager.close_all_active_modals(true)
 	if game_manager:
 		game_manager.handle_human_end_turn()
 	else:

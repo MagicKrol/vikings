@@ -375,6 +375,8 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	region.castle_repair_in_progress = bool(payload.get("castle_repair_in_progress", false))
 	region.gate_conditions = _to_int_array(payload.get("gate_conditions", []))
 	region.wall_section_conditions = _to_int_array(payload.get("wall_section_conditions", []))
+	region.repair_start_gate_conditions = _to_int_array(payload.get("repair_start_gate_conditions", []))
+	region.repair_start_wall_section_conditions = _to_int_array(payload.get("repair_start_wall_section_conditions", []))
 
 	var garrison_data: Dictionary = payload.get("garrison", {})
 	_apply_composition(region.get_garrison(), garrison_data)
@@ -461,6 +463,8 @@ static func _serialize_region(region: Region, region_manager: RegionManager) -> 
 		"castle_repair_in_progress": region.castle_repair_in_progress,
 		"gate_conditions": region.gate_conditions.duplicate(),
 		"wall_section_conditions": region.wall_section_conditions.duplicate(),
+		"repair_start_gate_conditions": region.repair_start_gate_conditions.duplicate(),
+		"repair_start_wall_section_conditions": region.repair_start_wall_section_conditions.duplicate(),
 		"garrison": _serialize_composition(region.get_garrison()),
 		"wounded_garrison": _serialize_composition(region.get_wounded_garrison()),
 		"wounded_recruits": _serialize_composition(region.get_wounded_recruits())

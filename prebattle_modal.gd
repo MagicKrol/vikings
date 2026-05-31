@@ -123,6 +123,21 @@ func _ready():
 		attack_button.pressed.connect(func(): tutorial_manager.handle_ui_click("PrebattleModal/" + attack_button.name))
 	visible = false
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if attack_button.disabled:
+		return
+	if _is_attack_hotkey(event):
+		attack_button.emit_signal("pressed")
+		get_viewport().set_input_as_handled()
+
+func _is_attack_hotkey(event: InputEvent) -> bool:
+	if not (event is InputEventKey):
+		return false
+	var key_event: InputEventKey = event as InputEventKey
+	return key_event.pressed and not key_event.echo and key_event.keycode == KEY_SPACE
+
 func _setup_info_panel() -> void:
 	info_panel = get_node("Info")
 	info_header_label = get_node("Info/Header/Name")

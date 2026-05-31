@@ -303,6 +303,14 @@ func _is_region_intel_mode(region: Region) -> bool:
 		return false
 	return _is_region_enemy_or_neutral(region)
 
+func _is_current_region_owned_by_current_player() -> bool:
+	var owner_id: int = region_manager.get_region_owner(current_region.get_region_id())
+	var current_player_id: int = game_manager.get_current_player_id()
+	return owner_id == current_player_id
+
+func _can_execute_current_region_actions() -> bool:
+	return _is_current_region_owned_by_current_player()
+
 func _is_current_region_intel_mode() -> bool:
 	if current_region == null:
 		return false
@@ -317,12 +325,32 @@ func _set_region_action_sections_visible(is_visible: bool) -> void:
 		_mine_action_section.visible = false
 
 func _apply_region_intel_overrides() -> void:
+	var is_owned_by_current_player: bool = _is_current_region_owned_by_current_player()
+	if not is_owned_by_current_player:
+		_set_region_action_sections_visible(false)
+		_promote_button.disabled = true
+		_build_button.disabled = true
+		_search_ore_button.disabled = true
+		_raise_army_button.disabled = true
+		_recruit_button.disabled = true
+		var mine_status_owned: Label = get_node("RegionPanel/Body/Region/Actions/Mine/Info/Search/SearchStatus") as Label
+		var next_army_name_owned: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName") as Label
+		var garrison_men_value_owned: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue") as Label
+		mine_status_owned.text = ""
+		next_army_name_owned.text = ""
+		garrison_men_value_owned.text = ""
+		return
 	var is_intel_mode: bool = _is_current_region_intel_mode()
 	if not is_intel_mode:
 		_raise_army_action_section.visible = true
 		_garrison_action_section.visible = true
 		return
 	_set_region_action_sections_visible(false)
+	_promote_button.disabled = true
+	_build_button.disabled = true
+	_search_ore_button.disabled = true
+	_raise_army_button.disabled = true
+	_recruit_button.disabled = true
 	var mine_status: Label = get_node("RegionPanel/Body/Region/Actions/Mine/Info/Search/SearchStatus") as Label
 	var next_army_name: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName") as Label
 	var garrison_men_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/Info/Men/GarrisonMenValue") as Label
@@ -955,6 +983,8 @@ func _update_mine_status() -> void:
 
 func _on_promote_region_pressed() -> void:
 	sound_manager.click_sound()
+	if not _can_execute_current_region_actions():
+		return
 	if current_region.get_region_level() >= RegionLevelEnum.Level.L5:
 		return
 	var next_level: RegionLevelEnum.Level = current_region.get_region_level() + 1
@@ -979,10 +1009,14 @@ func _on_promote_region_pressed() -> void:
 
 func _on_recruit_soldiers_pressed() -> void:
 	sound_manager.click_sound()
+	if not _can_execute_current_region_actions():
+		return
 	ui_manager.remember_region_select(current_region)
 	recruitment_modal.show_region_recruitment(current_region)
 
 func _on_build_button_pressed() -> void:
+	if not _can_execute_current_region_actions():
+		return
 	if current_region.is_castle_under_construction():
 		return
 	if current_region.is_castle_under_repair():
@@ -1043,6 +1077,8 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 
 func _on_ore_search_pressed() -> void:
 	sound_manager.click_sound()
+	if not _can_execute_current_region_actions():
+		return
 	if not GameParameters.can_search_for_ore_in_region(current_region.get_region_type()):
 		return
 	if not current_region.can_search_for_ore():
@@ -1075,6 +1111,8 @@ func _on_ore_search_pressed() -> void:
 
 func _on_raise_army_pressed() -> void:
 	sound_manager.click_sound()
+	if not _can_execute_current_region_actions():
+		return
 	if not _region_has_army_capacity():
 		return
 	if not _can_player_afford_raise_army():

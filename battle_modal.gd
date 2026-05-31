@@ -152,6 +152,15 @@ func _ready():
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
+	var turn_modal: TurnModal = get_node("../TurnModal") as TurnModal
+	if turn_modal.try_handle_end_turn_hotkey(event):
+		get_viewport().set_input_as_handled()
+		return
+	if _is_quick_resolve_hotkey(event):
+		if battle_in_progress and quick_resolve_button.visible and not quick_resolve_button.disabled:
+			_on_quick_resolve_pressed()
+			get_viewport().set_input_as_handled()
+			return
 	if battle_in_progress:
 		return
 	if battle_report == null:
@@ -159,6 +168,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _is_continue_hotkey(event):
 		_on_button_pressed()
 		get_viewport().set_input_as_handled()
+
+func _is_quick_resolve_hotkey(event: InputEvent) -> bool:
+	if not (event is InputEventKey):
+		return false
+	var key_event: InputEventKey = event as InputEventKey
+	return key_event.pressed and not key_event.echo and key_event.keycode == KEY_SPACE
 
 func _is_continue_hotkey(event: InputEvent) -> bool:
 	var mapped_continue_close_pressed: bool = GameParameters.is_continue_close_key_pressed(event)

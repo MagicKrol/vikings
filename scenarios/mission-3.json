@@ -2,15 +2,15 @@
 	"armies": [
 		{
 			"composition": {
-				"Archers": 15,
+				"Archers": 10,
 				"Crossbowmen": 5,
-				"Horsemen": 5,
-				"Knights": 5,
+				"Horsemen": 0,
+				"Knights": 1,
 				"Mounted Knights": 0,
-				"Peasants": 40,
+				"Peasants": 25,
 				"Royal Guard": 0,
-				"Spearmen": 15,
-				"Swordsmen": 15
+				"Spearmen": 10,
+				"Swordsmen": 10
 			},
 			"name": "Army I",
 			"player_id": 2,
@@ -18,15 +18,15 @@
 		},
 		{
 			"composition": {
-				"Archers": 15,
-				"Crossbowmen": 5,
-				"Horsemen": 2,
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
 				"Knights": 2,
 				"Mounted Knights": 0,
 				"Peasants": 20,
 				"Royal Guard": 0,
 				"Spearmen": 10,
-				"Swordsmen": 10
+				"Swordsmen": 5
 			},
 			"name": "Army II",
 			"player_id": 6,
@@ -42,7 +42,7 @@
 				"Peasants": 20,
 				"Royal Guard": 0,
 				"Spearmen": 10,
-				"Swordsmen": 10
+				"Swordsmen": 5
 			},
 			"name": "Army II",
 			"player_id": 2,
@@ -50,8 +50,8 @@
 		},
 		{
 			"composition": {
-				"Archers": 20,
-				"Crossbowmen": 10,
+				"Archers": 10,
+				"Crossbowmen": 5,
 				"Horsemen": 5,
 				"Knights": 5,
 				"Mounted Knights": 0,
@@ -69,12 +69,42 @@
 	"difficulty": "all",
 	"difficulty_overrides": {
 		"easy": {
+			"event_compositions": [
+				{
+					"composition": {
+						"Archers": 20,
+						"Crossbowmen": 15,
+						"Horsemen": 0,
+						"Knights": 8,
+						"Mounted Knights": 0,
+						"Peasants": 50,
+						"Royal Guard": 0,
+						"Spearmen": 30,
+						"Swordsmen": 25
+					},
+					"event_index": 0
+				},
+				{
+					"composition": {
+						"Archers": 25,
+						"Crossbowmen": 20,
+						"Horsemen": 0,
+						"Knights": 10,
+						"Mounted Knights": 0,
+						"Peasants": 80,
+						"Royal Guard": 0,
+						"Spearmen": 40,
+						"Swordsmen": 30
+					},
+					"event_index": 1
+				}
+			],
 			"player_resources": [
 				{
 					"player_id": 1,
 					"resources": {
-						"Food": 200,
-						"Gold": 100,
+						"Food": 300,
+						"Gold": 50,
 						"Iron": 0,
 						"Stone": 0,
 						"Wood": 0
@@ -133,12 +163,42 @@
 			]
 		},
 		"hard": {
+			"event_compositions": [
+				{
+					"composition": {
+						"Archers": 15,
+						"Crossbowmen": 5,
+						"Horsemen": 0,
+						"Knights": 5,
+						"Mounted Knights": 0,
+						"Peasants": 35,
+						"Royal Guard": 0,
+						"Spearmen": 20,
+						"Swordsmen": 15
+					},
+					"event_index": 0
+				},
+				{
+					"composition": {
+						"Archers": 15,
+						"Crossbowmen": 10,
+						"Horsemen": 0,
+						"Knights": 5,
+						"Mounted Knights": 0,
+						"Peasants": 50,
+						"Royal Guard": 0,
+						"Spearmen": 25,
+						"Swordsmen": 20
+					},
+					"event_index": 1
+				}
+			],
 			"player_resources": [
 				{
 					"player_id": 1,
 					"resources": {
 						"Food": 70,
-						"Gold": 30,
+						"Gold": 0,
 						"Iron": 0,
 						"Stone": 0,
 						"Wood": 0
@@ -202,7 +262,7 @@
 					"player_id": 1,
 					"resources": {
 						"Food": 100,
-						"Gold": 50,
+						"Gold": 20,
 						"Iron": 0,
 						"Stone": 0,
 						"Wood": 0
@@ -576,36 +636,6 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
-				"Royal Guard": 0,
-				"Spearmen": 0,
-				"Swordsmen": 0
-			},
-			"id": 127,
-			"level": "Shire",
-			"name": "Vatndon",
-			"ocean": false,
-			"owner": 2,
-			"population": 208,
-			"resources": {
-				"Food": 1,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 0
-			},
-			"type_display": "Grassland"
-		},
-		{
-			"biome": "grassland",
-			"castle_type": "None",
-			"discovered_ores": [],
-			"garrison": {
-				"Archers": 0,
-				"Crossbowmen": 0,
-				"Horsemen": 0,
-				"Knights": 0,
-				"Mounted Knights": 0,
 				"Peasants": 6,
 				"Royal Guard": 0,
 				"Spearmen": 0,
@@ -617,36 +647,6 @@
 			"ocean": false,
 			"owner": 2,
 			"population": 254,
-			"resources": {
-				"Food": 2,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 0
-			},
-			"type_display": "Grassland"
-		},
-		{
-			"biome": "grassland",
-			"castle_type": "None",
-			"discovered_ores": [],
-			"garrison": {
-				"Archers": 0,
-				"Crossbowmen": 0,
-				"Horsemen": 0,
-				"Knights": 0,
-				"Mounted Knights": 0,
-				"Peasants": 15,
-				"Royal Guard": 0,
-				"Spearmen": 0,
-				"Swordsmen": 0
-			},
-			"id": 138,
-			"level": "Shire",
-			"name": "Westley",
-			"ocean": false,
-			"owner": 2,
-			"population": 114,
 			"resources": {
 				"Food": 2,
 				"Gold": 0,
@@ -1189,36 +1189,6 @@
 			"population": 206,
 			"resources": {
 				"Food": 3,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 0
-			},
-			"type_display": "Grassland"
-		},
-		{
-			"biome": "grassland",
-			"castle_type": "None",
-			"discovered_ores": [],
-			"garrison": {
-				"Archers": 0,
-				"Crossbowmen": 0,
-				"Horsemen": 0,
-				"Knights": 0,
-				"Mounted Knights": 0,
-				"Peasants": 11,
-				"Royal Guard": 0,
-				"Spearmen": 0,
-				"Swordsmen": 0
-			},
-			"id": 178,
-			"level": "Shire",
-			"name": "Vatnstadir",
-			"ocean": false,
-			"owner": 2,
-			"population": 296,
-			"resources": {
-				"Food": 1,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -1861,14 +1831,14 @@
 			"castle_type": "Outpost",
 			"discovered_ores": [],
 			"garrison": {
-				"Archers": 15,
+				"Archers": 5,
 				"Crossbowmen": 5,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 30,
+				"Peasants": 15,
 				"Royal Guard": 0,
-				"Spearmen": 25,
+				"Spearmen": 10,
 				"Swordsmen": 0
 			},
 			"id": 227,
@@ -2361,7 +2331,7 @@
 				"Food": 0,
 				"Gold": 11,
 				"Iron": 1,
-				"Stone": 3,
+				"Stone": 1,
 				"Wood": 0
 			},
 			"type_display": "Hills"

@@ -257,7 +257,7 @@ const AI_MAX_EXPECTED_DISTANCE = 10            # Expected max distance for norma
 const ORE_SEARCH_COST = 10                      # Gold cost to perform ore search
 const ORE_SEARCH_CHANCES_PER_REGION = 3        # Number of ore search attempts per region
 const ORE_DISCOVERY_CHANCE = 0.25               # 20% chance to find ore per search
-const ORE_TYPE_IRON_CHANCE = 0.80              # 80% chance for iron, 20% for gold
+const ORE_TYPE_IRON_CHANCE = 0.70              # 80% chance for iron, 20% for gold
 
 ## Army Management Constants
 const RAISE_ARMY_COST = 20                     # Gold cost to raise a new army
@@ -316,7 +316,7 @@ const AI_NEED_MIN_STOCK = {
 	ResourcesEnum.Type.FOOD: 50,
 	ResourcesEnum.Type.WOOD: 30,
 	ResourcesEnum.Type.STONE: 30,
-	ResourcesEnum.Type.IRON: 20,
+	ResourcesEnum.Type.IRON: 15,
 	ResourcesEnum.Type.GOLD: 0
 }
 const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per resource
@@ -416,27 +416,27 @@ const CASTLE_WALLS_GATES = {
 		"gate_hp": 5,
 		"wall_sections": 4,
 		"wall_hp": 2,
-		"trebuchet_damage_to_defense": 8,
+		"trebuchet_damage_to_defense": 9,
 		"wall_section_assault": 20,
-		"destroy_chance": 85
+		"destroy_chance": 95
 	},         # Keep
 	CastleTypeEnum.Type.CASTLE: {
 		"gates": 2,
 		"gate_hp": 6,
 		"wall_sections": 6,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 7,
+		"trebuchet_damage_to_defense": 8,
 		"wall_section_assault": 20,
-		"destroy_chance": 65
+		"destroy_chance": 90
 	},      # Castle 
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"gates": 3,
 		"gate_hp": 7,
 		"wall_sections": 8,
 		"wall_hp": 3,
-		"trebuchet_damage_to_defense": 6,
+		"trebuchet_damage_to_defense": 7,
 		"wall_section_assault": 20,
-		"destroy_chance": 50
+		"destroy_chance": 85
 	}, 
 }
 
@@ -887,24 +887,24 @@ const POPULATION_BY_LEVEL = {
 # Costs required to promote a region to the specified level
 const REGION_PROMOTION_COSTS = {
 	RegionLevelEnum.Level.L2: {  # Cost to promote from L1 to L2
-		ResourcesEnum.Type.GOLD: 5,
+		ResourcesEnum.Type.GOLD: 0,
 		ResourcesEnum.Type.FOOD: 10
 	},
 	RegionLevelEnum.Level.L3: {  # Cost to promote from L2 to L3
-		ResourcesEnum.Type.GOLD: 10,
-		ResourcesEnum.Type.FOOD: 20,
-		ResourcesEnum.Type.WOOD: 5,
+		ResourcesEnum.Type.GOLD: 5,
+		ResourcesEnum.Type.FOOD: 15,
+		ResourcesEnum.Type.WOOD: 0,
 	},
 	RegionLevelEnum.Level.L4: {  # Cost to promote from L3 to L4
-		ResourcesEnum.Type.GOLD: 15,
-		ResourcesEnum.Type.FOOD: 25,
-		ResourcesEnum.Type.WOOD: 10,
+		ResourcesEnum.Type.GOLD: 10,
+		ResourcesEnum.Type.FOOD: 20,
+		ResourcesEnum.Type.WOOD: 0,
 		ResourcesEnum.Type.STONE: 0,
 	},
 	RegionLevelEnum.Level.L5: {  # Cost to promote from L4 to L5
-		ResourcesEnum.Type.GOLD: 20,
-		ResourcesEnum.Type.FOOD: 30,
-		ResourcesEnum.Type.WOOD: 15,
+		ResourcesEnum.Type.GOLD: 15,
+		ResourcesEnum.Type.FOOD: 25,
+		ResourcesEnum.Type.WOOD: 0,
 		ResourcesEnum.Type.STONE: 0,
 		ResourcesEnum.Type.IRON: 0
 	}
@@ -923,8 +923,8 @@ const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.KEEP: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 50,
-			ResourcesEnum.Type.WOOD: 15,
-			ResourcesEnum.Type.STONE: 15
+			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.STONE: 20
 		},
 		"build_time": 2  # 3 turns to complete
 	},
@@ -932,7 +932,7 @@ const CASTLE_BUILDING_COSTS = {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 75,
 			ResourcesEnum.Type.WOOD: 25,
-			ResourcesEnum.Type.STONE: 30,
+			ResourcesEnum.Type.STONE: 40,
 			ResourcesEnum.Type.IRON: 10
 		},
 		"build_time": 2  # 4 turns to complete
@@ -940,8 +940,8 @@ const CASTLE_BUILDING_COSTS = {
 	CastleTypeEnum.Type.STRONGHOLD: {
 		"cost": {
 			ResourcesEnum.Type.GOLD: 100,
-			ResourcesEnum.Type.WOOD: 30,
-			ResourcesEnum.Type.STONE: 50,
+			ResourcesEnum.Type.WOOD: 20,
+			ResourcesEnum.Type.STONE: 60,
 			ResourcesEnum.Type.IRON: 20
 		},
 		"build_time": 2  # 6 turns to complete

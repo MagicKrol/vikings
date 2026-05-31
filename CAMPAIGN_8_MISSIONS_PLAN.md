@@ -21,7 +21,7 @@ Kampania domyka się w 8 misjach. Oś historii to przejście od wyprawy przetrwa
 - Motyw: sprzeciw wobec uzurpacji regenta i złamania prawa dziedziczenia
 - Styl: lokalne zgrupowania, wojna manewrowa, wsparcie części rodów
 
-### Dom Marchii (frakcja nie-wikingowa #3)
+### Ród Avanle (frakcja nie-wikingowa #3)
 - Lider: Lord Garran Marchward
 - Motyw: przejęcie wpływów przy rozpadzie centrum, kontrola kluczowych miast i szlaków
 - Styl: oportunizm, selektywne interwencje, uderzenia w momentach osłabienia rywali
@@ -45,7 +45,7 @@ Po klęsce na Veyr Regent Aldric publikuje sfałszowany **Edict of Continuity**.
 1. Ravenmark jest na granicy wyczerpania i mobilizuje wyprawę.
 2. Sukces na Veyr kompromituje Koronę i uruchamia kryzys polityczny.
 3. Aldric fałszuje porządek sukcesyjny, co wywołuje bunt prowincji.
-4. Długie walki Korony z buntownikami otwierają przestrzeń dla Domu Marchii.
+4. Długie walki Korony z buntownikami otwierają przestrzeń dla Rodu Avanle.
 5. Rosnące zwycięstwa wikingów rozbijają sojusz Eirik-Torvald.
 6. Wielostronna wojna koncentruje się na punkcie, który daje legalny mandat do władzy.
 7. Korona przechodzi do skonsolidowanego kontrataku.
@@ -62,15 +62,15 @@ Po klęsce na Veyr Regent Aldric publikuje sfałszowany **Edict of Continuity**.
 - Układ konfliktu: gracz vs Korona (bez buntu na tym etapie).
 - Funkcja: pierwszy pełny test desantu i podboju.
 
-### Mission 3 - Wyspa zbuntowana
-- Cel fabularny: wejście gracza w konflikt Korona vs Buntownicy.
-- Tło: ujawniają się skutki fałszywego edyktu regenta.
-- Funkcja: nauka gry jako trzecia siła, wybór priorytetu osłabienia przeciwników.
-- Charakter mapy: leśno-wzgórzowa, 2 zamki, średnie armie, kilka stref lądowania.
+### Mission 3 - Zdrajcy
+- Cel fabularny: Gracz kontynuuje podboje, wchodząc na jedną z głównych wysp archipelagu, brama do serca królestwa.
+- Tło: Grupa zbudowanych lordów wykorzystuje sytuacje niestabilności królestwa by spróbować przejąć władzę. Niespowiedziają się jednak, ze oprócz walki przeciwko Caerwold będą równiez walczyć z najeźdźcami zza morza. Podczas kursu na wyspę gracz natknął się na wielki sztorm, który rozdzielił siły. Torvald Ironhand ląduje jako pierwszy. Nie wiadomo kiedy i gdzie główne siły Jarl Stormborn dotrną do celu.
+- Funkcja: nauka gry jako trzecia siła, wykorzystanie wojny dwóch stron, by umocnić swoją pozycję i zaatakować tam gdzie są najsłabsi.
+- Event1: Siły Torvald lądują na wschodzie wyspy po ciękich dniach na wodzie. Muszą zabiepieczyć zapasy, nim dotrą główne siły.
+- Event2: Jarl w końcu dobija do północnej części wyspy.
 
-### Mission 4 - Wojna o Marchię
-- Cel fabularny: Dom Marchii formalizuje własne roszczenia i wchodzi do wojny.
-- Event specjalny: nieprzewidywalny atak Domu Marchii w środku misji.
+### Mission 4 - Stepy Avanle
+- Cel fabularny: To juz wojna domowa. Ród Avanle wypowiedział lenno królestwo i zamierza odzyskać swoje historyczne ziemie. 
 - Funkcja: eskalacja do konfliktu wielostronnego i presja na elastyczne planowanie.
 
 ### Mission 5 - Dwaj wodzowie

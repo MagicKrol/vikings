@@ -67,6 +67,8 @@ var gate_conditions: Array[int] = []
 var wall_section_conditions: Array[int] = []
 var castle_repair_turns_remaining: int = 0
 var castle_repair_in_progress: bool = false
+var repair_start_gate_conditions: Array[int] = []
+var repair_start_wall_section_conditions: Array[int] = []
 
 # Mining system information
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
@@ -111,6 +113,7 @@ func setup_region(region_data: Dictionary) -> void:
 	base_resources = ResourceComposition.new()
 	castle_repair_turns_remaining = 0
 	castle_repair_in_progress = false
+	_clear_repair_snapshot()
 	_reset_defense_state_to_full()
 	
 	# Set basic garrison composition and population for non-ocean regions
@@ -485,6 +488,7 @@ func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
 	
 	# Recalculate recruitment limits when castle type changes
 	if old_castle_type != new_castle_type:
+		_clear_repair_snapshot()
 		_reset_defense_state_to_full()
 	if had_castle != has_castle_now:
 		var game_manager: GameManager = get_node("/root/Main/GameManager") as GameManager
@@ -687,6 +691,7 @@ func start_castle_construction(castle_type_to_build: CastleTypeEnum.Type) -> voi
 func start_castle_repair() -> void:
 	castle_repair_in_progress = true
 	castle_repair_turns_remaining = 1
+	_capture_repair_snapshot()
 	DebugLogger.log("RegionManagement", "Started castle repair in " + region_name + " (1 turn remaining)")
 
 func process_castle_repair() -> bool:
@@ -694,13 +699,46 @@ func process_castle_repair() -> bool:
 		return false
 	castle_repair_turns_remaining -= 1
 	if castle_repair_turns_remaining <= 0:
+		var gate_damage_during_repair: Array[int] = _compute_new_damage_during_repair(gate_conditions, repair_start_gate_conditions)
+		var wall_damage_during_repair: Array[int] = _compute_new_damage_during_repair(wall_section_conditions, repair_start_wall_section_conditions)
 		_reset_defense_state_to_full()
+		_apply_damage_after_repair(gate_damage_during_repair, wall_damage_during_repair)
+		_clear_repair_snapshot()
 		castle_repair_turns_remaining = 0
 		castle_repair_in_progress = false
 		_update_castle_visual()
 		DebugLogger.log("RegionManagement", "Castle repair completed in " + region_name)
 		return true
 	return false
+
+func _clear_repair_snapshot() -> void:
+	repair_start_gate_conditions.clear()
+	repair_start_wall_section_conditions.clear()
+
+func _capture_repair_snapshot() -> void:
+	repair_start_gate_conditions = gate_conditions.duplicate()
+	repair_start_wall_section_conditions = wall_section_conditions.duplicate()
+
+func _compute_new_damage_during_repair(current_values: Array[int], snapshot_values: Array[int]) -> Array[int]:
+	var result: Array[int] = []
+	result.resize(current_values.size())
+	for i in range(current_values.size()):
+		var snapshot_hp: int = current_values[i]
+		if i < snapshot_values.size():
+			snapshot_hp = snapshot_values[i]
+		var current_hp: int = current_values[i]
+		result[i] = maxi(0, snapshot_hp - current_hp)
+	return result
+
+func _apply_damage_after_repair(gate_damage: Array[int], wall_damage: Array[int]) -> void:
+	var base_gate_hp: int = _get_gate_hp()
+	for i in range(mini(gate_conditions.size(), gate_damage.size())):
+		var damage: int = maxi(0, gate_damage[i])
+		gate_conditions[i] = maxi(0, base_gate_hp - damage)
+	var base_wall_hp: int = _get_wall_section_hp()
+	for i in range(mini(wall_section_conditions.size(), wall_damage.size())):
+		var damage: int = maxi(0, wall_damage[i])
+		wall_section_conditions[i] = maxi(0, base_wall_hp - damage)
 
 func get_castle_repair_cost() -> Dictionary:
 	var castle_type = get_castle_type()

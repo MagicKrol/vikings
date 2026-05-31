@@ -460,3 +460,12 @@ You failed,Defeat message shown when the only human player has no armies and no 
 mission-3_intro,Scenario metadata key used for intro popup text at scenario start.,mission-3_intro,mission-3_intro,mission-3_intro,mission-3_intro
 mission-3_description,Scenario metadata key used for scenario description text in the main menu.,mission-3_description,mission-3_description,mission-3_description,mission-3_description
 mission-3_objectives,Scenario metadata key used for scenario objectives text in the main menu.,mission-3_objectives,mission-3_objectives,mission-3_objectives,mission-3_objectives
+last_saved_scenario_intro,Scenario metadata key used for intro popup text at scenario start.,last_saved_scenario_intro,last_saved_scenario_intro,last_saved_scenario_intro,last_saved_scenario_intro
+last_saved_scenario_description,Scenario metadata key used for scenario description text in the main menu.,last_saved_scenario_description,last_saved_scenario_description,last_saved_scenario_description,last_saved_scenario_description
+last_saved_scenario_objectives,Scenario metadata key used for scenario objectives text in the main menu.,last_saved_scenario_objectives,last_saved_scenario_objectives,last_saved_scenario_objectives,last_saved_scenario_objectives
+mission-4_intro,Scenario metadata key used for intro popup text at scenario start.,mission-4_intro,mission-4_intro,mission-4_intro,mission-4_intro
+mission-4_description,Scenario metadata key used for scenario description text in the main menu.,mission-4_description,mission-4_description,mission-4_description,mission-4_description
+mission-4_objectives,Scenario metadata key used for scenario objectives text in the main menu.,mission-4_objectives,mission-4_objectives,mission-4_objectives,mission-4_objectives
+mission-5_intro,Scenario metadata key used for intro popup text at scenario start.,mission-5_intro,mission-5_intro,mission-5_intro,mission-5_intro
+mission-5_description,Scenario metadata key used for scenario description text in the main menu.,mission-5_description,mission-5_description,mission-5_description,mission-5_description
+mission-5_objectives,Scenario metadata key used for scenario objectives text in the main menu.,mission-5_objectives,mission-5_objectives,mission-5_objectives,mission-5_objectives

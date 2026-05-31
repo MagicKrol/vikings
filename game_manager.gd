@@ -91,7 +91,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -1516,14 +1516,17 @@ func _execute_scenario_event(event_index: int) -> void:
 		return
 	var event_data: Dictionary = _scenario_events_runtime[event_index]
 	var event_message: String = String(event_data.get("message", "")).strip_edges()
-	if event_message != "":
-		await _focus_camera_on_first_event_region(event_data)
-		_event_message_modal.display_message(tr(event_message))
-		await _event_message_modal.continue_clicked
 	var player_id: int = int(event_data.get("player_id", 1))
 	if is_player_human(player_id):
+		if event_message != "":
+			await _focus_camera_on_first_event_region(event_data)
+			_event_message_modal.display_message(tr(event_message))
+			await _event_message_modal.continue_clicked
 		event_data = await _execute_human_spawn_event_with_manual_placement(event_index, event_data)
 	else:
+		if event_message != "":
+			_event_message_modal.display_message(tr(event_message))
+			await _event_message_modal.continue_clicked
 		event_data = await _execute_scenario_event_auto_spawn(event_data)
 	_scenario_events_runtime[event_index] = event_data
 
@@ -4389,7 +4392,7 @@ func _recheck_recruitment_need_after_transfer(army: Army) -> void:
 # ============================================================================
 
 func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
-	if army == null or lines.is_empty():
+	if army == null or not is_instance_valid(army) or lines.is_empty():
 		return
 	var key := _get_ai_battle_log_key(army)
 	var queue: Array = _ai_battle_log_queue.get(key, [])
@@ -4397,6 +4400,8 @@ func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
 	_ai_battle_log_queue[key] = queue
 
 func _get_ai_battle_log_key(army: Army) -> String:
+	if army == null or not is_instance_valid(army):
+		return ""
 	return str(army.get_instance_id())
 
 func _collect_defender_log_entries(defending_armies: Array, defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int, observer_id: int = -1, exclude_army: Army = null, exclude_player_id: int = -1) -> Array:
@@ -4618,14 +4623,16 @@ func get_ai_log_manager() -> AILogManager:
 	return _ai_log_manager
 
 func get_ai_battle_log_token(army: Army) -> String:
-	if army == null:
+	if army == null or not is_instance_valid(army):
 		return ""
 	return _get_ai_battle_log_key(army)
 
 func consume_ai_battle_log_for_army(army: Army) -> Array[String]:
-	if army == null:
+	if army == null or not is_instance_valid(army):
 		return []
 	var key := _get_ai_battle_log_key(army)
+	if key == "":
+		return []
 	if not _ai_battle_log_queue.has(key):
 		return []
 	var queue: Array = _ai_battle_log_queue.get(key, [])
