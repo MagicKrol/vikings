@@ -333,6 +333,7 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 		return
 	
 	var data: Dictionary = json.data
+	_rebuild_garrison_customized_from_scenario(data)
 	if data.has("player_settings"):
 		# Update our player settings array
 		var loaded_settings = data["player_settings"]
@@ -357,6 +358,23 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 	_refresh_difficulty_scoped_editor_views()
 	_load_victory_conditions_from_scenario(data)
 	_load_events_from_scenario(data)
+
+func _rebuild_garrison_customized_from_scenario(data: Dictionary) -> void:
+	_garrison_customized.clear()
+	var raw_regions: Variant = data.get("regions", [])
+	if not (raw_regions is Array):
+		return
+	var regions: Array = raw_regions as Array
+	for raw_region in regions:
+		if not (raw_region is Dictionary):
+			continue
+		var region_data: Dictionary = raw_region as Dictionary
+		if not region_data.has("garrison"):
+			continue
+		var region_id: int = int(region_data.get("id", -1))
+		if region_id <= 0:
+			continue
+		_garrison_customized[region_id] = true
 
 func _initialize_scenario_type_ui() -> void:
 	_scenario_type_option.clear()
@@ -1364,6 +1382,7 @@ func _initialize_player_resources() -> void:
 	_difficulty_army_compositions_overrides.clear()
 	_difficulty_garrison_compositions_overrides.clear()
 	_difficulty_event_compositions_overrides.clear()
+	_garrison_customized.clear()
 	_current_resource_player_index = 0
 	_populate_player_resource_selector()
 	_show_player_resources_for_index(_current_resource_player_index)
@@ -1787,10 +1806,8 @@ func _serialize_region(region: Region) -> Dictionary:
 	data["castle_type"] = CastleTypeEnum.type_to_string(region.get_castle_type())
 	data["population"] = region.get_population()
 	data["owner"] = region.get_region_owner()
-	# Optional garrison: include if present (total > 0), or if customized in editor
+	# Optional garrison: include only if explicitly customized in editor/scenario data
 	var include_garrison := _garrison_customized.has(region.get_region_id())
-	if not include_garrison:
-		include_garrison = region.get_garrison().get_total_soldiers() > 0
 	if include_garrison:
 		var gcomp: Dictionary = {}
 		for t in SoldierTypeEnum.get_all_types():

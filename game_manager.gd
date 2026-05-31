@@ -147,6 +147,7 @@ var _spawn_event_allowed_target_ids: Array[int] = []
 var _spawn_event_source_region_by_target: Dictionary = {}
 var _spawn_event_pending_event_index: int = -1
 var _has_played_start_horn: bool = false
+var _last_battle_withdrawing_side: int = 0
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -2914,6 +2915,7 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	Returns: 'victory', 'defeat', or 'withdrawal'
 	"""
 	var attacker_owner_id := army.get_player_id()
+	_last_battle_withdrawing_side = 0
 	var target_region := _region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
 	DebugLogger.log("TurnProcessing", "Starting unified battle for " + army.get_display_name() + " vs region " + str(target_region_id))
 	var siege_payload := {}
@@ -2930,22 +2932,25 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 			_log_ai_prebattle_withdraw(army, target_region, "siege_simulation_failure")
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after failed siege simulation.")
 			await _battle_manager.withdraw_attacking_army(army)
+			_last_battle_withdrawing_side = 1
 			return "withdrawal"
 	if is_player_computer(attacker_owner_id):
 		if not target_has_castle and _should_ai_withdraw_pre_siege(army, target_region):
 			_log_ai_prebattle_withdraw(army, target_region, "pre_siege_power_check")
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing before battle due to unfavorable power vs defense.")
 			await _battle_manager.withdraw_attacking_army(army)
+			_last_battle_withdrawing_side = 1
 			return "withdrawal"
 		siege_payload = _execute_ai_siege_preparation(army, target_region, use_uncapped_siege)
 		if not target_has_castle and _should_ai_withdraw_post_siege(army, target_region, siege_payload):
 			_log_ai_prebattle_withdraw(army, target_region, "post_siege_power_check")
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after battle prep due to unfavorable power ratio.")
 			_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
-			var defender_owner := _region_manager.get_region_owner(target_region_id)
+			var defender_owner: int = _region_manager.get_region_owner(target_region_id)
 			if defender_owner > 0:
 				_record_attacker_for_defender(defender_owner, [army])
 			await _battle_manager.withdraw_attacking_army(army)
+			_last_battle_withdrawing_side = 1
 			return "withdrawal"
 	var attacker_effectiveness_ratio := _compute_attacker_effectiveness_ratio(army, siege_payload, target_region)
 	_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
@@ -2959,9 +2964,25 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 	# Always wait for battle_finished signal - it contains the correct result
 	# The signal is emitted by BattleManager with the proper victory/defeat/withdrawal value
 	var result: String = await _battle_manager.battle_finished
+	if result == "withdrawal":
+		var report: BattleSimulator.BattleReport = _battle_manager.get_last_battle_report()
+		if report != null:
+			_last_battle_withdrawing_side = int(report.withdrawing_side)
+		if _last_battle_withdrawing_side == 0:
+			var attacker_can_withdraw: bool = _battle_manager.get_attacker_withdraw_allowed()
+			var defender_can_withdraw: bool = _battle_manager.get_defender_withdraw_allowed()
+			if defender_can_withdraw and not attacker_can_withdraw:
+				_last_battle_withdrawing_side = 2
+			elif attacker_can_withdraw and not defender_can_withdraw:
+				_last_battle_withdrawing_side = 1
+	else:
+		_last_battle_withdrawing_side = 0
 	DebugLogger.log("TurnProcessing", "Battle completed with result: " + result)
 	await _battle_manager.await_finalize_complete()
 	return result
+
+func get_last_battle_withdrawing_side() -> int:
+	return _last_battle_withdrawing_side
 
 func _execute_ai_siege_preparation(attacker: Army, target_region: Region, use_full_wood: bool = false) -> Dictionary:
 	var castle_defense := GameParameters.get_castle_defense_bonus(target_region.get_castle_type())
@@ -4295,7 +4316,10 @@ func ai_travel_to(army: Army, final_region_id: int) -> Dictionary:
 		# Check if this step should trigger battle
 		if _should_trigger_battle(army, next_region):
 			DebugLogger.log("AIMovement", "ai_travel_to: Contested step - using perform_region_entry")
-			var battle_result = await perform_region_entry(army, next_region_id, "ai")
+			var battle_result: String = await perform_region_entry(army, next_region_id, "ai")
+			var withdrawing_side: int = 0
+			if battle_result == "battle_withdrawal":
+				withdrawing_side = get_last_battle_withdrawing_side()
 			
 			# Log step result
 			DebugLogger.log("AIMovement", "ai_travel_to: Battle result for step %d: %s" % [i, battle_result])
@@ -4310,7 +4334,7 @@ func ai_travel_to(army: Army, final_region_id: int) -> Dictionary:
 				"battle_withdrawal":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army withdrew from battle")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)
-					return {"result": "battle_withdrawal", "battle_region_id": next_region_id}
+					return {"result": "battle_withdrawal", "battle_region_id": next_region_id, "withdrawing_side": withdrawing_side}
 				"battle_defeat":
 					DebugLogger.log("AIMovement", "ai_travel_to: Army defeated in battle")
 					await _ai_camera_director.await_delay(GameParameters.CAMERA_BATTLE_RESULT_DELAY)

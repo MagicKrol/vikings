@@ -559,14 +559,26 @@ func process_resource_income() -> void:
 
 func get_player_food_growth(player_id: int) -> float:
 	"""Calculate net food change per turn (income - upkeep)"""
-	var owned_regions = region_manager.get_player_regions(player_id)
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
 	var food_income := 0.0
+	DebugLogger.log_separator("ResourceCalculation")
+	DebugLogger.log("ResourceCalculation", "Food growth calculation for Player " + str(player_id))
 	for region_id in owned_regions:
 		var region_node = map_generator.get_region_container_by_id(region_id) as Region
 		if region_node != null and region_node.can_collect_resource(ResourcesEnum.Type.FOOD):
-			food_income += float(region_node.get_resource_amount(ResourcesEnum.Type.FOOD))
-	var total_food_cost = calculate_total_army_food_cost(player_id)
-	return food_income - total_food_cost
+			var region_food_income: float = float(region_node.get_resource_amount(ResourcesEnum.Type.FOOD))
+			food_income += region_food_income
+			DebugLogger.log(
+				"ResourceCalculation",
+				"Region #" + str(region_id) + " (" + region_node.get_region_name() + ") food income: " + str(region_food_income),
+				1
+			)
+	var total_food_cost: float = calculate_total_army_food_cost(player_id)
+	var net_food_growth: float = food_income - total_food_cost
+	DebugLogger.log_calculation("ResourceCalculation", "Total food income from regions", food_income)
+	DebugLogger.log_calculation("ResourceCalculation", "Total food upkeep", total_food_cost)
+	DebugLogger.log_calculation("ResourceCalculation", "Net food growth", net_food_growth)
+	return net_food_growth
 
 func meets_food_upgrade_safeguard(player_id: int, food_cost: int) -> bool:
 	"""Check if player keeps minimum food buffer after a region upgrade"""
@@ -580,13 +592,20 @@ func meets_food_upgrade_safeguard(player_id: int, food_cost: int) -> bool:
 func calculate_total_army_food_cost(player_id: int) -> float:
 	"""Calculate total food cost for all armies and garrisons owned by a player"""
 	var total_food_cost: float = 0.0
+	DebugLogger.log("ResourceCalculation", "Upkeep breakdown for Player " + str(player_id))
 	
 	# Add active garrison upkeep for all owned regions.
 	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
 	for region_id in owned_regions:
 		var region_node: Region = map_generator.get_region_container_by_id(region_id) as Region
 		var garrison: ArmyComposition = region_node.get_garrison()
-		total_food_cost += garrison.get_total_food_cost()
+		var garrison_food_cost: float = garrison.get_total_food_cost()
+		total_food_cost += garrison_food_cost
+		DebugLogger.log(
+			"ResourceCalculation",
+			"Garrison in region #" + str(region_id) + " (" + region_node.get_region_name() + "): " + str(garrison.get_total_soldiers()) + " soldiers, upkeep " + str(garrison_food_cost),
+			1
+		)
 	
 	# Add active army upkeep.
 	var all_armies: Array[Army] = army_manager.get_all_armies()
@@ -595,7 +614,14 @@ func calculate_total_army_food_cost(player_id: int) -> float:
 			var army_composition: ArmyComposition = army.get_composition()
 			var army_food_cost: float = army_composition.get_total_food_cost()
 			total_food_cost += army_food_cost
+			var army_region: Region = army.get_parent() as Region
+			DebugLogger.log(
+				"ResourceCalculation",
+				"Army " + army.name + " in region #" + str(army_region.get_region_id()) + " (" + army_region.get_region_name() + "): " + str(army_composition.get_total_soldiers()) + " soldiers, upkeep " + str(army_food_cost),
+				1
+			)
 	
+	DebugLogger.log_calculation("ResourceCalculation", "Total upkeep for Player " + str(player_id), total_food_cost)
 	return total_food_cost
 
 func get_player_resource_growth(player_id: int, resource_type: ResourcesEnum.Type) -> float:

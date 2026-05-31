@@ -2017,25 +2017,77 @@ func _evaluate_castle_threat_for_region(castle_region: Region, player_id: int, p
 		"scan_entries": scan_entries
 	}
 
-func _get_castle_reachability_in_one_turn(pathfinder: ArmyPathfinder, enemy_region_id: int, castle_region_id: int, enemy_player_id: int) -> Dictionary:
-	var path_result: Dictionary = pathfinder.find_path_to_target(enemy_region_id, castle_region_id, enemy_player_id, false, true)
-	if not bool(path_result.get("success", false)):
+func _get_castle_reachability_in_one_turn(_pathfinder: ArmyPathfinder, enemy_region_id: int, castle_region_id: int, enemy_player_id: int) -> Dictionary:
+	var mp_limit: int = GameParameters.MOVEMENT_POINTS_PER_TURN
+	if enemy_region_id == castle_region_id:
+		return {
+			"can_reach": true,
+			"reason": "reachable",
+			"cost": 0
+		}
+	var best_cost_by_region: Dictionary = {}
+	var open_nodes: Array[Dictionary] = []
+	best_cost_by_region[enemy_region_id] = 0
+	open_nodes.append({
+		"region_id": enemy_region_id,
+		"cost": 0
+	})
+	var best_target_cost: int = -1
+	while not open_nodes.is_empty():
+		var best_index: int = 0
+		var best_cost: int = int(open_nodes[0].get("cost", 0))
+		for i in range(1, open_nodes.size()):
+			var candidate_cost: int = int(open_nodes[i].get("cost", 0))
+			if candidate_cost < best_cost:
+				best_cost = candidate_cost
+				best_index = i
+		var current_node: Dictionary = open_nodes[best_index]
+		open_nodes.remove_at(best_index)
+		var current_region_id: int = int(current_node.get("region_id", -1))
+		var current_cost: int = int(current_node.get("cost", 0))
+		var known_best_cost: int = int(best_cost_by_region.get(current_region_id, -1))
+		if known_best_cost != -1 and current_cost > known_best_cost:
+			continue
+		if current_region_id == castle_region_id:
+			best_target_cost = current_cost
+			break
+		var neighbors: Array = region_manager.get_neighbor_regions(current_region_id)
+		for neighbor_variant in neighbors:
+			var neighbor_id: int = int(neighbor_variant)
+			var enter_cost: int = region_manager.calculate_terrain_cost(neighbor_id, enemy_player_id)
+			if enter_cost < 0:
+				continue
+			if neighbor_id != castle_region_id:
+				var neighbor_has_castle: bool = region_manager.get_castle_level(neighbor_id) > 0
+				if neighbor_has_castle:
+					var neighbor_owner_id: int = region_manager.get_region_owner(neighbor_id)
+					if neighbor_owner_id != enemy_player_id:
+						continue
+			var next_cost: int = current_cost + enter_cost
+			var previous_cost: int = int(best_cost_by_region.get(neighbor_id, -1))
+			if previous_cost != -1 and next_cost >= previous_cost:
+				continue
+			best_cost_by_region[neighbor_id] = next_cost
+			open_nodes.append({
+				"region_id": neighbor_id,
+				"cost": next_cost
+			})
+	if best_target_cost < 0:
 		return {
 			"can_reach": false,
 			"reason": "no_path",
 			"cost": -1
 		}
-	var movement_cost: int = int(path_result.get("cost", GameParameters.MOVEMENT_POINTS_PER_TURN + 1))
-	if movement_cost > GameParameters.MOVEMENT_POINTS_PER_TURN:
+	if best_target_cost > mp_limit:
 		return {
 			"can_reach": false,
 			"reason": "insufficient_mp",
-			"cost": movement_cost
+			"cost": best_target_cost
 		}
 	return {
 		"can_reach": true,
 		"reason": "reachable",
-		"cost": movement_cost
+		"cost": best_target_cost
 	}
 
 func _build_threat_scan_entry(army_entity_id: String, region_id: int, known: bool, power: int, accepted: bool, reason: String, path_cost: int) -> Dictionary:

@@ -129,6 +129,7 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 	for r in regions:
 		var region_id: int = int(r.get("id", -1))
 		var region := map_generator.get_region_container_by_id(region_id) as Region
+		var owner_id: int = int(r.get("owner", -1))
 		var previous_biome: String = region.get_biome().to_lower()
 		var previous_ocean: bool = region.is_ocean_region()
 		region.set_scenario_ore_rules_enabled(true)
@@ -179,7 +180,8 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 				new_ores.append(ResourcesEnum.string_to_type(String(ore_name)))
 			region.discovered_ores = new_ores
 		# Garrison (optional)
-		if r.has("garrison"):
+		var has_explicit_garrison: bool = r.has("garrison")
+		if has_explicit_garrison:
 			var gdict: Dictionary = r.get("garrison")
 			var g := region.get_garrison()
 			for t in SoldierTypeEnum.get_all_types():
@@ -187,7 +189,8 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 				if gdict.has(key):
 					g.set_soldier_count(t, int(gdict.get(key)))
 		# Difficulty-specific garrison composition override
-		if garrison_composition_overrides.has(region_id):
+		var has_garrison_override: bool = garrison_composition_overrides.has(region_id)
+		if has_garrison_override:
 			var raw_override: Variant = garrison_composition_overrides.get(region_id, {})
 			if raw_override is Dictionary:
 				var override_composition: Dictionary = raw_override as Dictionary
@@ -196,7 +199,14 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 					var key := SoldierTypeEnum.type_to_string(t)
 					if override_composition.has(key):
 						garrison.set_soldier_count(t, int(override_composition.get(key)))
+		if owner_id > 0 and not has_explicit_garrison and not has_garrison_override:
+			_clear_region_garrison(region)
 	return region_visual_refresh_ids
+
+func _clear_region_garrison(region: Region) -> void:
+	var garrison: ArmyComposition = region.get_garrison()
+	for unit_type in SoldierTypeEnum.get_all_types():
+		garrison.set_soldier_count(unit_type, 0)
 
 func _sync_map_region_runtime_data(map_generator: MapGenerator, region_id: int, biome: String, is_ocean: bool) -> void:
 	if map_generator.region_by_id.has(region_id):

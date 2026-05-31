@@ -8,6 +8,7 @@ You MUST apply KISS rule when it comes to scripts and code structure, logic.
 You MUST use get_node instead of get_node_or_null. Always assume that node exists. Unless nodes are created dynamically, in the runtime. 
 YOU MUST NOT CHANGE CODE PARAMETERS, CONSTS, OR OTHER CONFIG IF NOT DIRECTLY RELATED TO THE TASK YOU ARE DOING.
 You MUST ALWAYS UPDATE AND MAINTAIN A PROJECT_MAP.MD file that contains the list of scenes and scripts with it's purpose and major functions. Do not overextend it. Keep it compact
+You MUST ALWAYS UPDATE AND MAINTAIN CASTLE_THREAT_LOGIC.md when any castle threat logic is changed.
 If there is no easy way to fullfil the request, or it would require a lot of complex coding simply decline the request, and if possible propose an alternative solution.
 For static game elements like UI you MUST always create a Node and add it to the main scene file. 
 For static game element do not modify attributes in _ready function. Instead directly apply them to the node definition in the scene file.

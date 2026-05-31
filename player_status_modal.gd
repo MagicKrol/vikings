@@ -222,9 +222,14 @@ func _calculate_region_income(player_id: int, initial_turn: bool = false) -> Dic
 		return income
 
 	# Subtract army food costs from food income to show net food income
+	DebugLogger.log_separator("ResourceCalculation")
+	DebugLogger.log("ResourceCalculation", "PlayerStatusModal food projection for Player " + str(player_id))
+	DebugLogger.log_calculation("ResourceCalculation", "UI total food income from regions", income[ResourcesEnum.Type.FOOD])
 	var total_army_food_cost = game_manager.player_manager.calculate_total_army_food_cost(player_id)
 	var food_cost_int = int(ceil(total_army_food_cost))
+	DebugLogger.log_calculation("ResourceCalculation", "UI rounded upkeep deduction", food_cost_int, "from raw upkeep " + str(total_army_food_cost))
 	income[ResourcesEnum.Type.FOOD] -= food_cost_int
+	DebugLogger.log_calculation("ResourceCalculation", "UI net food income shown", income[ResourcesEnum.Type.FOOD])
 	
 	return income
 

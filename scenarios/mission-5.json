@@ -132,9 +132,9 @@
 		{
 			"player_id": 1,
 			"resources": {
-				"Food": 50,
+				"Food": 30,
 				"Gold": 100,
-				"Iron": 10,
+				"Iron": 0,
 				"Stone": 10,
 				"Wood": 20
 			}
@@ -192,7 +192,7 @@
 	],
 	"player_settings": [
 		{
-			"control_type": "Computer",
+			"control_type": "Player",
 			"player_id": 1
 		},
 		{
@@ -227,7 +227,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -257,7 +257,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 12,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -287,7 +287,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -317,7 +317,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -347,7 +347,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -377,7 +377,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -407,7 +407,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -437,7 +437,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -467,7 +467,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -497,7 +497,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -527,7 +527,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 16,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -557,7 +557,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 7,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -587,7 +587,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -617,7 +617,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 15,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -647,7 +647,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -677,7 +677,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 17,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -737,7 +737,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 13,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -767,7 +767,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -827,7 +827,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -857,7 +857,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 17,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -887,7 +887,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 6,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -917,7 +917,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -947,7 +947,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 15,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -977,7 +977,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1007,7 +1007,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 7,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1037,7 +1037,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 13,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1067,7 +1067,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1127,7 +1127,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 6,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1157,7 +1157,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 12,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1187,7 +1187,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1217,7 +1217,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1247,7 +1247,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 15,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1277,7 +1277,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1307,7 +1307,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1337,7 +1337,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 10,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1367,7 +1367,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 13,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1427,7 +1427,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 9,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1457,7 +1457,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1487,7 +1487,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 7,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1517,7 +1517,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 13,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1547,7 +1547,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1577,7 +1577,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 9,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1607,7 +1607,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 12,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1637,7 +1637,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 6,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1667,7 +1667,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 16,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1697,7 +1697,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 10,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1727,7 +1727,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 16,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1757,7 +1757,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1787,7 +1787,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 7,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1817,7 +1817,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 6,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1847,7 +1847,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 17,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1877,7 +1877,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 5,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1907,7 +1907,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 12,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1937,7 +1937,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 13,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1967,7 +1967,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 9,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -1997,7 +1997,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 9,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2027,7 +2027,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2057,7 +2057,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 9,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2087,7 +2087,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2117,7 +2117,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2147,7 +2147,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2177,7 +2177,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2207,7 +2207,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2237,7 +2237,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2267,7 +2267,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2327,7 +2327,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 9,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2357,7 +2357,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2387,7 +2387,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 17,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2417,7 +2417,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 17,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2447,7 +2447,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2477,7 +2477,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 15,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2507,7 +2507,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 14,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2537,7 +2537,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2567,7 +2567,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2597,7 +2597,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 12,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2627,7 +2627,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2657,7 +2657,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2687,7 +2687,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 7,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2717,7 +2717,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 16,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2747,7 +2747,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 16,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2777,7 +2777,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2837,7 +2837,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 5,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2867,7 +2867,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 10,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2897,7 +2897,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 4,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2927,7 +2927,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 17,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2957,7 +2957,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 6,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -2987,7 +2987,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 7,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -3077,7 +3077,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 6,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -3107,7 +3107,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 12,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -3137,7 +3137,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 8,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -3167,7 +3167,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 3,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -3197,7 +3197,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 16,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -3227,7 +3227,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 11,
+				"Peasants": 0,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0

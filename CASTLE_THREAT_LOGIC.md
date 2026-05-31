@@ -65,6 +65,7 @@ If tracked enemy power is missing, threat is `unknown` (level 3), no power compa
 
 2. **Army action phase**
 - each army processes threat behavior using snapshot.
+- if AI captures a region during movement (`battle_victory`, or defender-side withdrawal conquest), TurnController refreshes the in-turn snapshot immediately.
 
 3. **Post-move economy phase**
 - refresh threat after movement,

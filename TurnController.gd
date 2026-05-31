@@ -213,6 +213,24 @@ func _process_army_turns(player_id: int) -> void:
 			return
 		await _process_single_army(army)
 
+func _refresh_castle_threat_snapshot_for_player(player_id: int) -> void:
+	var econ: EconomyAIManager = EconomyAIManager.new(region_manager, army_manager, player_manager, game_manager)
+	econ.analyze_castle_threats_pre_move(player_id)
+	var threat_snapshot: Dictionary = econ.get_castle_threat_snapshot(player_id)
+	_castle_threat_level_snapshot_by_region = threat_snapshot.get("threat_levels_by_region", {})
+	_castle_threat_registry_snapshot_by_region = threat_snapshot.get("threat_registry_by_region", {})
+
+func _refresh_castle_threat_snapshot_after_conquest_if_needed(acting_player_id: int, battle_region_id: int, result: String, withdrawing_side: int = 0) -> void:
+	var conquest_result: bool = result == "battle_victory" or (result == "battle_withdrawal" and withdrawing_side == 2)
+	if not conquest_result:
+		return
+	if battle_region_id < 0:
+		return
+	var region_owner: int = region_manager.get_region_owner(battle_region_id)
+	if region_owner != acting_player_id:
+		return
+	_refresh_castle_threat_snapshot_for_player(acting_player_id)
+
 func _execute_ai_resource_top_up(player_id: int) -> void:
 	var player = player_manager.get_player(player_id)
 	var deficits: Array[Dictionary] = []
@@ -1407,7 +1425,8 @@ func _handle_threatened_castle_cycle(army: Army) -> bool:
 				var attacking_army_id: int = army.get_instance_id()
 				var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 				var result_label: String = String(attack_result.get("result", "blocked"))
-				if result_label == "battle_withdrawal" or result_label == "battle_defeat":
+				var withdrawing_side: int = int(attack_result.get("withdrawing_side", 0))
+				if result_label == "battle_defeat" or (result_label == "battle_withdrawal" and withdrawing_side != 2):
 					_set_threat_direct_block(attacking_army_id, threat_region_id, result_label)
 				return true
 			var block_branch: String = String(direct_eval.get("block_branch", ""))
@@ -1562,7 +1581,8 @@ func _try_local_merge_attack_for_threat(army: Army, threat_context: Dictionary, 
 	var attacking_army_id: int = army.get_instance_id()
 	var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 	var result_label: String = String(attack_result.get("result", "blocked"))
-	if result_label == "battle_withdrawal" or result_label == "battle_defeat":
+	var withdrawing_side: int = int(attack_result.get("withdrawing_side", 0))
+	if result_label == "battle_defeat" or (result_label == "battle_withdrawal" and withdrawing_side != 2):
 		_set_threat_direct_block(attacking_army_id, threat_region_id, result_label)
 	return true
 
@@ -1641,7 +1661,8 @@ func _try_garrison_sortie_for_threat(army: Army, threat_context: Dictionary, cas
 	var attacking_army_id: int = army.get_instance_id()
 	var attack_result: Dictionary = await _move_army_to_region_with_result(army, threat_region_id, "attack", {})
 	var result_label: String = String(attack_result.get("result", "blocked"))
-	if result_label == "battle_withdrawal" or result_label == "battle_defeat":
+	var withdrawing_side: int = int(attack_result.get("withdrawing_side", 0))
+	if result_label == "battle_defeat" or (result_label == "battle_withdrawal" and withdrawing_side != 2):
 		_set_threat_direct_block(attacking_army_id, threat_region_id, result_label)
 	if requires_roundtrip and is_instance_valid(army):
 		var army_region_after_attack: Region = army.get_parent() as Region
@@ -2335,16 +2356,20 @@ func _move_army_to_region_with_result(army: Army, target_region_id: int, goal: S
 	var travel_result: Dictionary = await game_manager.ai_travel_to(army, target_region_id)
 	var result: String = String(travel_result.get("result", "blocked"))
 	var battle_region_id: int = int(travel_result.get("battle_region_id", target_region_id))
+	var withdrawing_side: int = int(travel_result.get("withdrawing_side", 0))
 	var log_army: Army = army if is_instance_valid(army) else null
 	_log_army_move_result(log_army, target_region_id, result, army_log_token, battle_region_id)
-	if result == "arrived" or result == "battle_victory":
+	var conquest_result: bool = result == "battle_victory" or (result == "battle_withdrawal" and withdrawing_side == 2)
+	if result == "arrived" or conquest_result:
 		_log_move_status(army, target_region_id)
-	if result == "battle_victory":
+	if conquest_result:
 		emit_signal("region_conquered", target_region_id, army.get_player_id())
+		_refresh_castle_threat_snapshot_after_conquest_if_needed(acting_player_id, battle_region_id, result, withdrawing_side)
 	if result == "blocked" or result == "out_of_movement_points":
 		if is_instance_valid(army):
 			_spend_all_on_camp(army)
-	if result == "battle_withdrawal" or result == "battle_defeat":
+	var should_retreat_after_battle: bool = result == "battle_defeat" or (result == "battle_withdrawal" and withdrawing_side != 2)
+	if should_retreat_after_battle:
 		if is_instance_valid(army):
 			await _retreat_to_strong_friendly_region(army)
 			if army.is_recruitment_requested():
@@ -2354,18 +2379,21 @@ func _move_army_to_region_with_result(army: Army, target_region_id: int, goal: S
 		return {
 			"moved": false,
 			"result": result,
-			"battle_region_id": battle_region_id
+			"battle_region_id": battle_region_id,
+			"withdrawing_side": withdrawing_side
 		}
 	if not is_instance_valid(army):
 		return {
 			"moved": false,
 			"result": result,
-			"battle_region_id": battle_region_id
+			"battle_region_id": battle_region_id,
+			"withdrawing_side": withdrawing_side
 		}
 	return {
 		"moved": army.get_movement_points() > 0,
 		"result": result,
-		"battle_region_id": battle_region_id
+		"battle_region_id": battle_region_id,
+		"withdrawing_side": withdrawing_side
 	}
 
 func _emit_move_prepared(army: Army, target_id: int, move: Dictionary) -> void:
@@ -2383,13 +2411,17 @@ func _execute_move_to_target(army: Army, move: Dictionary) -> bool:
 	var travel_result: Dictionary = await game_manager.ai_travel_to(army, target_id)
 	var result: String = String(travel_result.get("result", "blocked"))
 	var battle_region_id: int = int(travel_result.get("battle_region_id", target_id))
+	var withdrawing_side: int = int(travel_result.get("withdrawing_side", 0))
 	var log_army: Army = army if is_instance_valid(army) else null
 	_log_army_move_result(log_army, target_id, result, army_log_token, battle_region_id)
-	if result == "arrived" or result == "battle_victory":
+	var conquest_result: bool = result == "battle_victory" or (result == "battle_withdrawal" and withdrawing_side == 2)
+	if result == "arrived" or conquest_result:
 		_log_move_status(army, target_id)
-	if result == "battle_victory":
+	if conquest_result:
 		emit_signal("region_conquered", target_id, army.get_player_id())
-	if result == "battle_withdrawal" or result == "battle_defeat":
+		_refresh_castle_threat_snapshot_after_conquest_if_needed(acting_player_id, battle_region_id, result, withdrawing_side)
+	var should_retreat_after_battle: bool = result == "battle_defeat" or (result == "battle_withdrawal" and withdrawing_side != 2)
+	if should_retreat_after_battle:
 		if is_instance_valid(army):
 			await _retreat_to_strong_friendly_region(army)
 	if result == "battle_defeat":
