@@ -195,15 +195,28 @@ Additional post-movement top-up in `TurnController`:
 
 Each movable army is processed in a loop while MP > 0 (`_process_single_army`):
 
-1. Recruitment cycle
-2. Peasants-only cycle
-3. Rest (camp) to vigor threshold
-4. Frontier target selection
-5. Merge/halt/proceed policy
-6. Execute movement and battle
-7. Repeat until no MP or blocked
+1. Castle garrison release when the army starts in a quiet castle.
+2. Under-strength threatened-castle recruitment gate.
+3. Threatened-castle response.
+4. Castle-hold response.
+5. Recruitment cycle.
+6. Wounded healing.
+7. Role target selection (`MAIN` / `RAIDER` / `SUPPORT`).
+8. Merge/halt/proceed policy.
+9. Execute movement and battle.
+10. Repeat until no MP or blocked.
 
 If no valid action, army spends remaining MP on camping.
+
+The peasants-only cycle remains intentionally commented out.
+
+### 3.1 Threatened Owned Castles
+
+If an army is inside its own threatened castle and is below the minimal recruitment threshold, it requests recruitment and runs recruitment routing before threatened-castle decisions. This prevents token armies from being trapped in castle-defense logic.
+
+For home-castle threats, TurnController groups threats by enemy region and treats any group with unknown power as unknown-risk. Known attacks require `>= 120%` of known enemy power and pull only the minimum needed garrison, capped at `150%`. Unknown non-castle attacks require attack-and-return to the home castle in the same turn.
+
+When a castle can defend itself, the army is released to normal role target scoring. When it cannot, the army attacks only if the attack is safe, or it holds/recruits. On repeated same-threat holds, it can leave a minimal safe garrison and resume normal target scoring if the castle remains defensible.
 
 ## 4. How Targets Are Built and Scored
 
@@ -375,11 +388,12 @@ AI uses tracked enemy memory in target and merge decisions.
 
 In current implementation, each army effectively follows:
 
-1. If needs core recruitment -> go to best friendly recruitment castle and recruit
-2. Else if peasants ratio too low and food growth allows -> move to best owned peasant pool and hire peasants
-3. Else pick best frontier target by score
-4. If enemy unknown or stronger -> merge nearby armies if possible
-5. If still unfavorable -> halt and camp
-6. If favorable -> move step-by-step, fight when contested
-7. After withdrawal/defeat -> retreat to strongest reachable friendly region
-8. Burn remaining MP by camping
+1. If below minimal recruitment threshold inside a threatened owned castle -> request recruitment and route to recruitment first
+2. Else resolve threatened-castle actions, including attack-and-return, safe known attacks, minimal-garrison release, or hold/recruit
+3. Else if needs core recruitment -> go to best friendly recruitment castle and recruit
+4. Else pick best role/frontier target by score
+5. If enemy unknown or stronger -> merge nearby armies if possible
+6. If still unfavorable -> halt and camp
+7. If favorable -> move step-by-step, fight when contested
+8. After withdrawal/defeat -> retreat to strongest reachable friendly region
+9. Burn remaining MP by camping

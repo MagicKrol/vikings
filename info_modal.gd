@@ -824,6 +824,7 @@ func _update_garrison_section() -> void:
 
 	var recruits_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Recruits")
 	var recruits_max: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/RecruitsMax")
+	var replenish_value: Label = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population/Replenish")
 	if current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
 		recruits_value.text = str(current_region.get_available_recruits())
 		recruits_max.text = str(current_region.get_max_recruits())
@@ -833,7 +834,30 @@ func _update_garrison_section() -> void:
 		var pooled_max: int = region_manager.get_max_recruits_total_from_region_and_neighbors(current_region.get_region_id(), owner_id)
 		recruits_value.text = str(pooled_available)
 		recruits_max.text = str(pooled_max)
+	replenish_value.text = _format_replenish_value(_get_replenish_preview_total())
 	_recruit_button.disabled = false
+
+func _get_replenish_preview_total() -> float:
+	if current_region.get_castle_type() == CastleTypeEnum.Type.NONE:
+		return _get_replenish_preview_for_region(current_region)
+	var owner_id: int = current_region.get_region_owner()
+	var total_replenish: float = 0.0
+	if region_manager.get_region_owner(current_region.get_region_id()) == owner_id:
+		total_replenish += _get_replenish_preview_for_region(current_region)
+	var neighbors: Array = region_manager.get_neighbor_regions(current_region.get_region_id())
+	for neighbor_id in neighbors:
+		if region_manager.get_region_owner(neighbor_id) != owner_id:
+			continue
+		var neighbor_region: Region = region_manager.map_generator.get_region_container_by_id(neighbor_id) as Region
+		total_replenish += _get_replenish_preview_for_region(neighbor_region)
+	return total_replenish
+
+func _get_replenish_preview_for_region(region: Region) -> float:
+	return region.get_replenishment_base_amount()
+
+func _format_replenish_value(value: float) -> String:
+	var floored_tenth: float = floor(value * 10.0) / 10.0
+	return "+%.1f" % floored_tenth
 
 func _update_defenders_section() -> void:
 	"""Update garrison unit composition values"""

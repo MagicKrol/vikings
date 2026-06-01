@@ -85,23 +85,29 @@ Food is therefore both an economic resource and a military resource. A realm wit
 
 ### How region growth actually works
 
-Population growth depends on several pressures at once: base growth, recruit availability, local food, and promotion bonuses. The most important idea is that recruitment and growth are linked. Heavy recruitment pulls people out of the region pool, and a drained recruit pool slows the region's future population growth.
+Population growth depends on several pressures at once: base growth, recruit availability, local food, and level-based promotion bonus. The most important idea is that recruitment and growth are linked. Heavy recruitment pulls people out of the region pool, and a drained recruit pool slows the region's future population growth.
 
-For example, if a region could receive up to 2% base growth but its recruit pool is only about 20% full, the base growth contribution is only about 0.4% before other bonuses. Local food can help recover that momentum, and promotion bonuses can create a strong temporary growth window, but constant over-recruitment keeps a region from developing quickly.
+For example, if a region could receive up to 2% base growth but its recruit pool is only about 20% full, the base growth contribution is only about 0.4% before other bonuses. Local food can help recover that momentum, while constant over-recruitment keeps a region from developing quickly.
 
 Local food adds +0.1% growth per food point in the region. This is why food regions are more than supply depots: they become healthier population centers and better long-term manpower bases.
 
-### Promotion timing and the 5-turn bonus window
+### Promotion effects on growth and replenish
 
-Promotion is not only a permanent level increase. It also creates a short burst of faster growth and faster recruit recovery.
+Promotion three separate effects.
 
-1. Turn 1 after promotion: +4.0% growth
-2. Turn 2 after promotion: +3.5% growth
-3. Turn 3 after promotion: +3.0% growth
-4. Turn 4 after promotion: +2.5% growth
-5. Turn 5 after promotion: +2.0% growth
+1. **Growth bonus (permanent, level-based)**: each level above L1 adds +0.5% to growth.
 
-During this window, recruit replenishment is doubled. The strongest use of promotion is to build rhythm: promote, let the region recover and grow, then recruit from the stronger base rather than stripping the same region every turn.
+2.  **Growth boost (temporary, 5 turns)**
+
+Turn 1 after promotion: +4.0% growth
+Turn 2 after promotion: +3.5% growth
+Turn 3 after promotion: +3.0% growth
+Turn 4 after promotion: +2.5% growth
+Turn 5 after promotion: +2.0% growth
+
+
+3. **Recruits Replenish pool bonus (temporary, 2 turns)**: after promotion, recruitment replenish pool gets a 2-turn boost.
+
 
 ### Region levels and what they represent
 
@@ -117,7 +123,32 @@ Region level defines how much of the population can be available as recruits and
 
 **Province (L5)** - A Province is a mature power base. Its 8% recruit cap gives it the strongest manpower ceiling, and its resource output is the best a region can reach. Provinces are late-game assets: they help replace losses, support elite armies, and keep pressure alive after expensive battles.
 
-Base recruit replenishment is 1% of population per turn. High-level, high-population regions are therefore your long-war engine.
+Base recruit replenishment starts at 1% of population per turn, with +0.2% per level above L1.
+
+### Upkeep costs from promoted regions and castles
+
+Prosperity is not free. A larger, promoted region represents more roads, mills, storehouses, workshops, and day-to-day logistics that must be repaired and supplied. As your realm grows, basic materials become a constant requirement, not a one-time expense. Wood is the backbone of that maintenance economy.
+
+This means rapid expansion can create a hidden pressure point: your income may look strong, but your net wood can stall or fall if too many regions are promoted before your production base catches up. Promotions are powerful, but the long war rewards players who can sustain their upkeep, not only pay for upgrades.
+
+Region upkeep by level:
+
+1. L1-L2: 0 Wood
+2. L3: 1 Wood
+3. L4: 2 Wood
+4. L5: 3 Wood
+
+Castles follow the same principle. A fortress is not only a battle asset, it is a permanent burden on your economy. Walls, gates, towers, garrisons, and supply lines all consume materials every turn. Higher-tier castles are harder to break, but they are also heavier to maintain.
+
+If your front is wide and your castle network is deep, your wood and stone flow can be strained even when your gross income looks healthy. This is why strong players build in rhythm: secure production, then expand fortifications, then stabilize before the next wave.
+
+Castle upkeep by tier:
+
+1. No castle: 0 Wood, 0 Stone
+2. Outpost: 2 Wood, 0 Stone
+3. Keep: 2 Wood, 1 Stone
+4. Castle: 2 Wood, 2 Stone
+5. Stronghold: 2 Wood, 4 Stone
 
 ### Difficulty and opening pressure
 

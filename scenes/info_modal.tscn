@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=38 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="3_ewtj7"]
@@ -30,6 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://b70mdm3jj65x5" path="res://images/army_item3.png" id="27_army_item3"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="28_kuof1"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="29_fbacg"]
+[ext_resource type="PackedScene" uid="uid://dvl7q8v2dnpwh" path="res://scenes/select_tooltip_modal_upkeep.tscn" id="31_pd0lt"]
 
 [sub_resource type="Theme" id="Theme_7jnog"]
 
@@ -805,6 +806,32 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "10"
+
+[node name="MarginContainer2" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Replenish" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.254902, 0.705882, 0.243137, 1)
+theme_override_font_sizes/font_size = 18
+text = "+1"
+
+[node name="RecruitsMax4" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "/"
+
+[node name="RecruitsMax3" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
+visible = false
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Turn"
 
 [node name="DefendersSection" type="VBoxContainer" parent="RegionPanel/Body/Region"]
 layout_mode = 2
@@ -1916,3 +1943,10 @@ offset_left = 278.0
 offset_top = -340.0
 offset_right = 678.0
 offset_bottom = -110.0
+
+[node name="ActionTooltipUpkeep" parent="." instance=ExtResource("31_pd0lt")]
+layout_mode = 1
+offset_left = 281.0
+offset_top = -342.0
+offset_right = 681.0
+offset_bottom = -112.0

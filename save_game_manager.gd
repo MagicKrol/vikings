@@ -345,6 +345,7 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	var base_resources_data: Dictionary = payload.get("base_resources", payload.get("resources", {}))
 	region.set_resources_from_dict(base_resources_data)
 	region.available_recruits = int(payload.get("available_recruits", region.get_base_available_recruits()))
+	region.recruit_replenish_carry = float(payload.get("recruit_replenish_carry", 0.0))
 
 	var discovered_ores: Array[ResourcesEnum.Type] = []
 	var ores_payload: Array = payload.get("discovered_ores", [])
@@ -364,6 +365,7 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	region.raise_army_used_this_turn = bool(payload.get("raise_army_used_this_turn", false))
 	region.promotion_used_this_turn = bool(payload.get("promotion_used_this_turn", false))
 	region.promotion_growth_bonus_turns_remaining = int(payload.get("promotion_growth_bonus_turns_remaining", 0))
+	region.promotion_replenish_bonus_turns_remaining = int(payload.get("promotion_replenish_bonus_turns_remaining", 0))
 	region.promotion_cooldown_turns = int(payload.get("promotion_cooldown_turns", 0))
 
 	var castle_type_text: String = String(payload.get("castle_type", CastleTypeEnum.type_to_string(region.get_castle_type())))
@@ -442,6 +444,7 @@ static func _serialize_region(region: Region, region_manager: RegionManager) -> 
 		"level": RegionLevelEnum.level_to_string(region.get_region_level()),
 		"population": region.get_population(),
 		"available_recruits": region.get_base_available_recruits(),
+		"recruit_replenish_carry": region.recruit_replenish_carry,
 		"owner": region_manager.get_region_owner(region.get_region_id()),
 		"ownership_turns_counter": region.ownership_turns_counter,
 		"just_conquered_this_turn": region.just_conquered_this_turn,
@@ -455,6 +458,7 @@ static func _serialize_region(region: Region, region_manager: RegionManager) -> 
 		"raise_army_used_this_turn": region.raise_army_used_this_turn,
 		"promotion_used_this_turn": region.promotion_used_this_turn,
 		"promotion_growth_bonus_turns_remaining": region.promotion_growth_bonus_turns_remaining,
+		"promotion_replenish_bonus_turns_remaining": region.promotion_replenish_bonus_turns_remaining,
 		"promotion_cooldown_turns": region.promotion_cooldown_turns,
 		"castle_type": CastleTypeEnum.type_to_string(region.get_castle_type()),
 		"castle_under_construction": CastleTypeEnum.type_to_string(region.castle_under_construction),

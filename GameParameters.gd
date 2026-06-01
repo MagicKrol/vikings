@@ -185,6 +185,7 @@ const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
 ## Region Level Bonuses
 const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
+const PROMOTION_REPLENISH_BONUS_TURNS = 2       # Number of turns promotion replenish bonus lasts
 
 ## Promotion Growth Bonus by Turn (added to base growth rate)
 const PROMOTION_GROWTH_BONUS_BY_TURN = {

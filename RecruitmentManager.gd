@@ -363,19 +363,49 @@ func _deduct_recruits_proportionally(total_to_deduct: int, recruit_sources: Arra
 		total_available += int(s.amount)
 	if total_available <= 0:
 		return
-	var remaining: int = total_to_deduct
-	for i in range(recruit_sources.size()):
-		var src = recruit_sources[i]
-		var reg: Region = region_manager.map_generator.get_region_container_by_id(src.region_id)
-		var to_deduct: int = 0
-		if i == recruit_sources.size() - 1:
-			to_deduct = remaining
-		else:
-			var proportion: float = float(src.amount) / float(total_available)
-			to_deduct = int(proportion * float(total_to_deduct))
-		if to_deduct > 0:
-			var actual: int = reg.hire_recruits(to_deduct)
-			remaining -= actual
+	var deduction_target: int = min(total_to_deduct, total_available)
+	var shares: Array[Dictionary] = []
+	var assigned_total: int = 0
+	for src in recruit_sources:
+		var amount: int = int(src.amount)
+		var ideal: float = (float(amount) / float(total_available)) * float(deduction_target)
+		var base_share: int = min(amount, int(floor(ideal)))
+		assigned_total += base_share
+		shares.append({
+			"region_id": int(src.region_id),
+			"amount": amount,
+			"assigned": base_share,
+			"fraction": ideal - float(base_share)
+		})
+	var remaining: int = deduction_target - assigned_total
+	while remaining > 0:
+		var best_idx: int = -1
+		var best_fraction: float = -1.0
+		var best_amount: int = -1
+		var best_region_id: int = 2147483647
+		for i in range(shares.size()):
+			var share: Dictionary = shares[i]
+			var amount: int = int(share.get("amount", 0))
+			var assigned: int = int(share.get("assigned", 0))
+			if assigned >= amount:
+				continue
+			var fraction: float = float(share.get("fraction", 0.0))
+			var region_id: int = int(share.get("region_id", 0))
+			if fraction > best_fraction or (is_equal_approx(fraction, best_fraction) and (amount > best_amount or (amount == best_amount and region_id < best_region_id))):
+				best_idx = i
+				best_fraction = fraction
+				best_amount = amount
+				best_region_id = region_id
+		if best_idx == -1:
+			break
+		shares[best_idx]["assigned"] = int(shares[best_idx].get("assigned", 0)) + 1
+		remaining -= 1
+	for share in shares:
+		var to_deduct: int = int(share.get("assigned", 0))
+		if to_deduct <= 0:
+			continue
+		var reg: Region = region_manager.map_generator.get_region_container_by_id(int(share.get("region_id", -1)))
+		reg.hire_recruits(to_deduct)
 
 func _deduct_player_resources(player_id: int, gold: int, wood: int, iron: int) -> void:
 	if gold <= 0 and wood <= 0 and iron <= 0:

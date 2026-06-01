@@ -55,9 +55,11 @@ var population: int = 0
 
 # Available recruits in this region
 var available_recruits: int = 0
+var recruit_replenish_carry: float = 0.0
 
 # Promotion growth bonus tracking
 var promotion_growth_bonus_turns_remaining: int = 0
+var promotion_replenish_bonus_turns_remaining: int = 0
 
 # Castle information
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
@@ -200,6 +202,7 @@ func promote_region() -> void:
 	if (region_level < 5):			
 		region_level = region_level + 1
 		promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
+		promotion_replenish_bonus_turns_remaining = GameParameters.PROMOTION_REPLENISH_BONUS_TURNS
 		_update_resources_from_base()
 
 func get_promotion_cooldown() -> int:
@@ -412,11 +415,28 @@ func _reduce_recruits_and_population(count: int) -> void:
 
 func replenish_recruits() -> void:
 	"""Replenish recruits based on current population (called each turn)"""
-	var replenishment = GameParameters.calculate_recruit_replenishment(population)
-	if promotion_growth_bonus_turns_remaining > 0:
-		replenishment = replenishment * 2
-	var max_recruits = GameParameters.calculate_max_recruits(population, region_level)
-	available_recruits = min(available_recruits + replenishment, max_recruits)
+	var total_replenishment: float = get_replenishment_total_with_carry()
+	var replenishment: int = int(total_replenishment)
+	recruit_replenish_carry = max(0.0, total_replenishment - float(replenishment))
+	var max_recruits: int = GameParameters.calculate_max_recruits(population, region_level)
+	var remaining_capacity: int = max(0, max_recruits - available_recruits)
+	var applied_replenishment: int = min(replenishment, remaining_capacity)
+	available_recruits += applied_replenishment
+	if promotion_replenish_bonus_turns_remaining > 0:
+		promotion_replenish_bonus_turns_remaining = max(0, promotion_replenish_bonus_turns_remaining - 1)
+
+func get_replenishment_total_with_carry() -> float:
+	return get_replenishment_base_amount() + recruit_replenish_carry
+
+func get_replenishment_base_amount() -> float:
+	var level_number: int = RegionLevelEnum.level_to_number(region_level)
+	var base_rate: float = GameParameters.RECRUIT_REPLENISH_RATE
+	var level_bonus_rate: float = float(level_number - 1) * 0.002
+	if promotion_replenish_bonus_turns_remaining > 0:
+		base_rate = base_rate * 2.0
+	var replenish_rate: float = base_rate + level_bonus_rate
+	var replenishment: float = float(population) * replenish_rate
+	return replenishment
 
 func fill_recruits_to_maximum() -> void:
 	"""Set available recruits to the current maximum capacity."""
@@ -446,10 +466,8 @@ func get_population_increase() -> int:
 	return int(population * get_growth())
 
 func get_promotion_bonus() -> float:
-	if promotion_growth_bonus_turns_remaining > 0:
-		var bonus_turn = GameParameters.PROMOTION_GROWTH_BONUS_TURNS - promotion_growth_bonus_turns_remaining + 1
-		return GameParameters.PROMOTION_GROWTH_BONUS_BY_TURN.get(bonus_turn, 0.0)
-	return 0.0
+	var level_number: int = RegionLevelEnum.level_to_number(region_level)
+	return float(level_number - 1) * 0.005
 
 func grow_population() -> void:
 	"""Grow population per turn based on recruitment impact and promotion bonuses (called each turn)"""
