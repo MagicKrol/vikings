@@ -1970,6 +1970,7 @@ func _process_player_turn_start(player_id: int):
 		return
 	DebugLogger.log("TurnProcessing", "Processing resource income for Player " + str(player_id) + "...")
 	player_manager.process_resource_income_for_player(player_id)
+	_process_wood_stone_upkeep_for_player(player_id)
 	DebugLogger.log("TurnProcessing", "Deducting army food costs for Player " + str(player_id) + "...")
 	_process_army_food_costs_for_player(player_id)
 	var famine_result: Dictionary = consume_latest_famine_result_for_player(player_id)
@@ -2038,6 +2039,26 @@ func _process_army_food_costs_for_player(player_id: int) -> void:
 	else:
 		DebugLogger.log("TurnProcessing", "No army food costs for Player " + str(player_id))
 		_latest_famine_result_by_player.erase(player_id)
+
+func _process_wood_stone_upkeep_for_player(player_id: int) -> void:
+	var player: Player = player_manager.get_player(player_id)
+	var upkeep: Dictionary = player_manager.get_player_wood_stone_upkeep(player_id)
+	var wood_upkeep: int = int(upkeep.get(ResourcesEnum.Type.WOOD, 0))
+	var stone_upkeep: int = int(upkeep.get(ResourcesEnum.Type.STONE, 0))
+	var wood_before: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
+	var stone_before: int = player.get_resource_amount(ResourcesEnum.Type.STONE)
+	var wood_after: int = maxi(0, wood_before - wood_upkeep)
+	var stone_after: int = maxi(0, stone_before - stone_upkeep)
+	player.set_resource_amount(ResourcesEnum.Type.WOOD, wood_after)
+	player.set_resource_amount(ResourcesEnum.Type.STONE, stone_after)
+	DebugLogger.log_separator("ResourceCalculation")
+	DebugLogger.log("ResourceCalculation", "Wood/Stone upkeep deduction for Player " + str(player_id))
+	DebugLogger.log_calculation("ResourceCalculation", "Wood upkeep", wood_upkeep)
+	DebugLogger.log_calculation("ResourceCalculation", "Stone upkeep", stone_upkeep)
+	DebugLogger.log_calculation("ResourceCalculation", "Wood before", wood_before)
+	DebugLogger.log_calculation("ResourceCalculation", "Wood after", wood_after)
+	DebugLogger.log_calculation("ResourceCalculation", "Stone before", stone_before)
+	DebugLogger.log_calculation("ResourceCalculation", "Stone after", stone_after)
 
 func famine_regions(player_id: int, missing_food: float) -> Dictionary:
 	var clamped_missing_food: float = max(0.0, missing_food)

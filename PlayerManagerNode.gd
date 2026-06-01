@@ -310,6 +310,9 @@ func get_player_economy_snapshot(player_id: int) -> Dictionary:
 				population_growth += region_node.get_population_increase()
 	if player != null and player.is_computer():
 		income = _apply_ai_income_bonus(income)
+	var upkeep: Dictionary = get_player_wood_stone_upkeep(player_id)
+	income[ResourcesEnum.Type.WOOD] -= int(upkeep.get(ResourcesEnum.Type.WOOD, 0))
+	income[ResourcesEnum.Type.STONE] -= int(upkeep.get(ResourcesEnum.Type.STONE, 0))
 	var food_upkeep := calculate_total_army_food_cost(player_id)
 	income[ResourcesEnum.Type.FOOD] -= int(ceil(food_upkeep))
 	return {
@@ -340,6 +343,33 @@ func _apply_ai_income_bonus(income: Dictionary) -> Dictionary:
 		else:
 			result[resource_type] = int(ceil(amount * resource_multiplier))
 	return result
+
+func get_region_wood_upkeep(region: Region) -> int:
+	var region_level: RegionLevelEnum.Level = region.get_region_level()
+	var region_level_number: int = RegionLevelEnum.level_to_number(region_level)
+	return maxi(0, region_level_number - 2)
+
+func get_region_castle_upkeep(region: Region) -> Dictionary:
+	var castle_type: CastleTypeEnum.Type = region.get_castle_type()
+	return GameParameters.get_castle_upkeep_cost(castle_type)
+
+func get_player_wood_stone_upkeep(player_id: int) -> Dictionary:
+	var upkeep: Dictionary = {
+		ResourcesEnum.Type.WOOD: 0,
+		ResourcesEnum.Type.STONE: 0
+	}
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
+	for region_id in owned_regions:
+		var region_node: Region = map_generator.get_region_container_by_id(region_id) as Region
+		var castle_upkeep: Dictionary = get_region_castle_upkeep(region_node)
+		var region_wood_upkeep: int = get_region_wood_upkeep(region_node)
+		var castle_wood_upkeep: int = int(castle_upkeep.get(ResourcesEnum.Type.WOOD, 0))
+		var castle_stone_upkeep: int = int(castle_upkeep.get(ResourcesEnum.Type.STONE, 0))
+		var current_wood_upkeep: int = int(upkeep.get(ResourcesEnum.Type.WOOD, 0))
+		var current_stone_upkeep: int = int(upkeep.get(ResourcesEnum.Type.STONE, 0))
+		upkeep[ResourcesEnum.Type.WOOD] = current_wood_upkeep + region_wood_upkeep + castle_wood_upkeep
+		upkeep[ResourcesEnum.Type.STONE] = current_stone_upkeep + castle_stone_upkeep
+	return upkeep
 
 # Player information
 func get_player_resource_summary() -> String:
@@ -633,4 +663,10 @@ func get_player_resource_growth(player_id: int, resource_type: ResourcesEnum.Typ
 			total += float(region_node.get_resource_amount(resource_type))
 	if resource_type == ResourcesEnum.Type.FOOD:
 		return total - calculate_total_army_food_cost(player_id)
+	if resource_type == ResourcesEnum.Type.WOOD:
+		var upkeep: Dictionary = get_player_wood_stone_upkeep(player_id)
+		return total - float(int(upkeep.get(ResourcesEnum.Type.WOOD, 0)))
+	if resource_type == ResourcesEnum.Type.STONE:
+		var upkeep: Dictionary = get_player_wood_stone_upkeep(player_id)
+		return total - float(int(upkeep.get(ResourcesEnum.Type.STONE, 0)))
 	return total

@@ -204,6 +204,29 @@ const CASTLE_RECRUITMENT_PERCENTAGES = {
 	CastleTypeEnum.Type.STRONGHOLD: 0.7    # Stronghold:
 }
 
+const CASTLE_UPKEEP_COSTS: Dictionary = {
+	CastleTypeEnum.Type.NONE: {
+		ResourcesEnum.Type.WOOD: 0,
+		ResourcesEnum.Type.STONE: 0
+	},
+	CastleTypeEnum.Type.OUTPOST: {
+		ResourcesEnum.Type.WOOD: 2,
+		ResourcesEnum.Type.STONE: 0
+	},
+	CastleTypeEnum.Type.KEEP: {
+		ResourcesEnum.Type.WOOD: 2,
+		ResourcesEnum.Type.STONE: 1
+	},
+	CastleTypeEnum.Type.CASTLE: {
+		ResourcesEnum.Type.WOOD: 2,
+		ResourcesEnum.Type.STONE: 2
+	},
+	CastleTypeEnum.Type.STRONGHOLD: {
+		ResourcesEnum.Type.WOOD: 2,
+		ResourcesEnum.Type.STONE: 4
+	}
+}
+
 const REGION_RECRUITMENT_PERCENTAGES = {
 	RegionLevelEnum.Level.L1: 0.04,         
 	RegionLevelEnum.Level.L2: 0.05,      
@@ -1251,6 +1274,14 @@ static func get_castle_build_time(castle_type: CastleTypeEnum.Type) -> int:
 	"""Get the build time in turns for a castle type"""
 	var castle_data = CASTLE_BUILDING_COSTS.get(castle_type, {})
 	return castle_data.get("build_time", 1)
+
+static func get_castle_upkeep_cost(castle_type: CastleTypeEnum.Type) -> Dictionary:
+	"""Get per-turn upkeep for a castle type."""
+	var upkeep_data: Dictionary = CASTLE_UPKEEP_COSTS.get(castle_type, {})
+	return {
+		ResourcesEnum.Type.WOOD: int(upkeep_data.get(ResourcesEnum.Type.WOOD, 0)),
+		ResourcesEnum.Type.STONE: int(upkeep_data.get(ResourcesEnum.Type.STONE, 0))
+	}
 
 static func can_afford_castle(castle_type: CastleTypeEnum.Type, player_resources: Dictionary) -> bool:
 	"""Check if player can afford to build a castle type"""

@@ -1196,7 +1196,9 @@ func _region_has_army_capacity() -> bool:
 	return not army_manager.is_region_at_army_cap(current_region)
 
 func _request_player_status_refresh() -> void:
-	GlobalSignals.emit_signal("player_status_refresh_requested")
+	game_manager.request_player_status_refresh()
+	var player_status_modal2: PlayerStatusModal2 = ui_manager.get_player_status_modal2()
+	player_status_modal2.refresh_from_game_state()
 
 func _refresh_current_region() -> void:
 	if _active_tab == TabType.ARMIES:
