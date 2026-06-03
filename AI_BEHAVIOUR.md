@@ -37,6 +37,8 @@ Economy planning runs in this fixed order:
 8. Additional garrison trickle recruitment
 9. Trade (sell surplus, buy food for deficit)
 
+Scarce army recruitment is prioritized before pre-move army hires execute. If two or more castle armies are waiting, the AI simulates current recruitment budgets and repeatedly defers the army with the largest projected shortfall until the remaining armies can reach the minimal recruitment threshold, or only one army remains. The final single army always keeps its budget even if it cannot reach minimum. Deferred armies keep their recruitment request and try again next turn. Castle/garrison defense budgets are not changed by this pruning.
+
 ## 2. Economy Logic (Promoting / Building / Upgrading / Raising)
 
 ### 2.1 Raise Army

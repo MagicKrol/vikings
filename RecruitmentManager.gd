@@ -30,6 +30,7 @@ const RANGED_UNITS: Array = [
 ]
 
 var _grassland_global_percent_cache: int = -1
+var _committed_army_recruitment_plans: Dictionary = {}
 
 func _init(region_mgr: RegionManager = null, game_mgr: GameManager = null) -> void:
 	region_manager = region_mgr
@@ -43,7 +44,11 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 	var recruits_available: int = _cap_recruits_with_budget(_sum_sources(recruit_sources), budget)
 	var castle_type := region.get_castle_type()
 	var tier_cap: int = GameParameters.CASTLE_RECRUITMENT_TIERS.get(castle_type, 1)
-	var result := _compute_plan(budget, recruits_available, tier_cap, false, player_id)
+	var result: Dictionary = _take_committed_army_recruitment_plan(army)
+	if result.is_empty():
+		result = _compute_plan(budget, recruits_available, tier_cap, false, player_id)
+	else:
+		_apply_plan_leftovers_to_budget(budget, result)
 	_apply_hires_to_composition(army.get_composition(), result.get("hired", {}))
 	game_manager.record_hired_units(player_id, result.get("hired", {}))
 	_deduct_recruits_proportionally(int(result.get("total_recruited", 0)), recruit_sources)
@@ -61,6 +66,25 @@ func hire_soldiers(army: Army, debug: bool = false) -> Dictionary:
 			region.get_region_name()
 		])
 	return result
+
+func preview_army_recruitment(army: Army, budget: BudgetComposition) -> Dictionary:
+	var region: Region = army.get_parent()
+	var player_id: int = army.get_player_id()
+	var recruit_sources: Array = _gather_recruit_sources(region, player_id)
+	var recruits_available: int = _cap_recruits_with_budget(_sum_sources(recruit_sources), budget)
+	var castle_type := region.get_castle_type()
+	var tier_cap: int = GameParameters.CASTLE_RECRUITMENT_TIERS.get(castle_type, 1)
+	var preview_budget: BudgetComposition = budget.clone()
+	var result: Dictionary = _compute_plan(preview_budget, recruits_available, tier_cap, false, player_id)
+	result["projected_power"] = army.get_army_power() + _get_hired_power(result.get("hired", {}))
+	result["budget_start"] = budget.to_dict()
+	return result
+
+func commit_army_recruitment_plan(army: Army, plan: Dictionary) -> void:
+	_committed_army_recruitment_plans[army.get_instance_id()] = plan.duplicate(true)
+
+func clear_committed_army_recruitment_plans() -> void:
+	_committed_army_recruitment_plans.clear()
 
 func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, debug: bool = false) -> Dictionary:
 	var recruit_sources: Array = _gather_recruit_sources(region, player_id)
@@ -84,6 +108,29 @@ func hire_garrison(region: Region, budget: BudgetComposition, player_id: int, de
 			region.get_region_name()
 		])
 	return result
+
+func _take_committed_army_recruitment_plan(army: Army) -> Dictionary:
+	var army_id: int = army.get_instance_id()
+	if not _committed_army_recruitment_plans.has(army_id):
+		return {}
+	var plan: Dictionary = _committed_army_recruitment_plans.get(army_id, {}).duplicate(true)
+	_committed_army_recruitment_plans.erase(army_id)
+	return plan
+
+func _apply_plan_leftovers_to_budget(budget: BudgetComposition, plan: Dictionary) -> void:
+	var left: Dictionary = plan.get("left", {})
+	budget.gold = int(left.get("gold", budget.gold))
+	budget.wood = int(left.get("wood", budget.wood))
+	budget.iron = int(left.get("iron", budget.iron))
+
+func _get_hired_power(hired: Dictionary) -> int:
+	var total_power: int = 0
+	for unit_type in hired.keys():
+		var count: int = int(hired.get(unit_type, 0))
+		if count <= 0:
+			continue
+		total_power += count * int(GameParameters.get_unit_stat(unit_type, "power"))
+	return total_power
 
 func _compute_plan(budget: BudgetComposition, recruits: int, tier_cap: int, disable_cavalry: bool, player_id: int) -> Dictionary:
 	var gold: int = max(0, budget.gold)

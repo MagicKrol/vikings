@@ -395,7 +395,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 ### Economy & Recruitment
 - BudgetManager.gd: Shared recruitment allocator for both army and castle requests. Splits one combined gold/wood/iron pool across entries (weighted; deterministic largest-remainder), then splits local recruit availability per castle across all entries in that castle; sets `army.assigned_budget` and request `assigned_budget` with `BudgetComposition`.
 - BudgetComposition.gd: Simple value holder for gold/wood/iron/available_recruits; afford/check helpers.
-- RecruitmentManager.gd: Python-inspired recruitment (feasibility-picked T with spend target, ranged/peasants bounds, diversity floor, scarcity bias/boosts, low-gpr quantity bonus) using `GameParameters` exports (`RECRUIT_*`, unit boosts) and per-castle/garrison ideals; simulation and final hire share the same builder so hired counts match the decided `T`, budgets cannot go negative, and spent resources are `start - remaining`.
+- RecruitmentManager.gd: Python-inspired recruitment (feasibility-picked T with spend target, ranged/peasants bounds, diversity floor, scarcity bias/boosts, low-gpr quantity bonus) using `GameParameters` exports (`RECRUIT_*`, unit boosts) and per-castle/garrison ideals; supports non-mutating army previews plus committed army plans so scarce-budget simulation and final hire use the same counts; budgets cannot go negative, and spent resources are `start - remaining`.
 - PlayerManagerNode.gd: `get_player_economy_snapshot()` aggregates balances, projected income (with food upkeep), and population totals; `get_projected_economy_for_player()` wraps it for compatibility and UI (PlayerStatusModal2) consumption.
 
 ### EconomyAIManager.gd
@@ -417,6 +417,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - Reserve model:
   - Only castles with `threat_level >= 2` receive emergency budgets.
   - Pre-move recruitment uses one shared budget pool across army and castle requests (castle request weight = `total_threat_value`, army weight = 1.0).
+  - When multiple castle armies wait for recruitment, the army-only share is re-simulated and pruned so as many armies as possible reach the minimal recruitment threshold; deferred armies keep their request, while the final single candidate always keeps its budget even if still under minimum. Castle/garrison request budgets remain unchanged.
   - Reserved resources are synced from castle shares and hard-locked during pre-move economy spending checks.
   - Separate AI-only upgrade-bank gold lock is applied to all non-upgrade spend checks (recruitment/raise/build/ore/food-buy).
   - Separate AI-only raise-reserve gold lock is applied to all non-raise spend checks (recruitment/build/upgrade/ore/food-buy); raise path can consume this reserve.

@@ -231,13 +231,220 @@ func army_recruitments(player_id, turn_number):
 	}
 	var assigned_budgets = _allocate_recruitment(player_id, turn_number, castle_requests)
 	assigned_budgets = _ensure_recruitment_budgets_assigned(player_id, turn_number, armies_need, assigned_budgets)
+	assigned_budgets = _prioritize_army_recruitment_budgets_for_minimum_power(player_id, turn_number, armies_need, assigned_budgets)
 	_sync_castle_reserved_budget_from_requests(castle_requests)
 	army_recruitment["budgets_assigned"] = assigned_budgets
-	var army_hires = _execute_army_recruitment(player_id, armies_need)
+	var army_hires = _execute_army_recruitment(player_id, armies_need, turn_number)
 	army_recruitment["army_hires"] = army_hires
 	army_recruitment["garrison_defense_entries"] = []
 	army_recruitment["garrison_defense_reason"] = "deferred_to_post_move"
 	return army_recruitment
+
+func _prioritize_army_recruitment_budgets_for_minimum_power(player_id: int, turn_number: int, armies_need: Array[Army], assigned_count: int) -> int:
+	recruitment_manager.clear_committed_army_recruitment_plans()
+	var candidates: Array[Dictionary] = _build_recruitment_budget_candidates(player_id, turn_number, armies_need)
+	if candidates.size() <= 1:
+		return assigned_count
+	var resource_pool: Dictionary = _build_army_recruitment_resource_pool(candidates)
+	var recruit_pool_by_region: Dictionary = _build_army_recruitment_recruit_pool_by_region(candidates)
+	var active_candidates: Array[Dictionary] = candidates.duplicate()
+	var final_simulation: Dictionary = {}
+	while active_candidates.size() > 1:
+		final_simulation = _simulate_recruitment_candidate_subset(active_candidates, resource_pool, recruit_pool_by_region, turn_number)
+		if bool(final_simulation.get("all_pass", false)):
+			break
+		var remove_candidate: Dictionary = final_simulation.get("remove_candidate", {})
+		if remove_candidate.is_empty():
+			break
+		_remove_recruitment_candidate_by_id(active_candidates, int(remove_candidate.get("army_id", 0)))
+	if active_candidates.size() == 1:
+		final_simulation = _simulate_recruitment_candidate_subset(active_candidates, resource_pool, recruit_pool_by_region, turn_number)
+	_commit_prioritized_recruitment_candidates(candidates, active_candidates, final_simulation)
+	return active_candidates.size()
+
+func _build_recruitment_budget_candidates(player_id: int, turn_number: int, armies_need: Array[Army]) -> Array[Dictionary]:
+	var candidates: Array[Dictionary] = []
+	for army in armies_need:
+		if army.get_assigned_budget() == null:
+			continue
+		var region: Region = army.get_parent() as Region
+		if region_manager.get_region_owner(region.get_region_id()) != player_id:
+			continue
+		var current_power: int = army.get_army_power()
+		var threshold: float = army.get_recruitment_threshold(turn_number, false, true, false)
+		candidates.append({
+			"army": army,
+			"army_id": army.get_instance_id(),
+			"region_id": region.get_region_id(),
+			"current_power": current_power,
+			"threshold": threshold,
+			"initial_shortfall": max(0.0, threshold - float(current_power))
+		})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_shortfall: float = float(a.get("initial_shortfall", 0.0))
+		var b_shortfall: float = float(b.get("initial_shortfall", 0.0))
+		if abs(a_shortfall - b_shortfall) > 0.001:
+			return a_shortfall < b_shortfall
+		var a_power: int = int(a.get("current_power", 0))
+		var b_power: int = int(b.get("current_power", 0))
+		if a_power != b_power:
+			return a_power > b_power
+		var a_region_id: int = int(a.get("region_id", -1))
+		var b_region_id: int = int(b.get("region_id", -1))
+		if a_region_id != b_region_id:
+			return a_region_id < b_region_id
+		return int(a.get("army_id", 0)) < int(b.get("army_id", 0))
+	)
+	return candidates
+
+func _build_army_recruitment_resource_pool(candidates: Array[Dictionary]) -> Dictionary:
+	var pool: Dictionary = {
+		ResourcesEnum.Type.GOLD: 0,
+		ResourcesEnum.Type.WOOD: 0,
+		ResourcesEnum.Type.IRON: 0
+	}
+	for candidate in candidates:
+		var army: Army = candidate.get("army")
+		var budget: BudgetComposition = army.get_assigned_budget()
+		pool[ResourcesEnum.Type.GOLD] = int(pool.get(ResourcesEnum.Type.GOLD, 0)) + budget.gold
+		pool[ResourcesEnum.Type.WOOD] = int(pool.get(ResourcesEnum.Type.WOOD, 0)) + budget.wood
+		pool[ResourcesEnum.Type.IRON] = int(pool.get(ResourcesEnum.Type.IRON, 0)) + budget.iron
+	return pool
+
+func _build_army_recruitment_recruit_pool_by_region(candidates: Array[Dictionary]) -> Dictionary:
+	var pool_by_region: Dictionary = {}
+	for candidate in candidates:
+		var army: Army = candidate.get("army")
+		var budget: BudgetComposition = army.get_assigned_budget()
+		var region_id: int = int(candidate.get("region_id", -1))
+		pool_by_region[region_id] = int(pool_by_region.get(region_id, 0)) + budget.available_recruits
+	return pool_by_region
+
+func _simulate_recruitment_candidate_subset(candidates: Array[Dictionary], resource_pool: Dictionary, recruit_pool_by_region: Dictionary, turn_number: int) -> Dictionary:
+	var budgets_by_army_id: Dictionary = _build_recruitment_budgets_for_candidate_subset(candidates, resource_pool, recruit_pool_by_region)
+	var evaluations: Array[Dictionary] = []
+	var all_pass: bool = true
+	var remove_candidate: Dictionary = {}
+	for candidate in candidates:
+		var army: Army = candidate.get("army")
+		var army_id: int = int(candidate.get("army_id", 0))
+		var budget: BudgetComposition = budgets_by_army_id.get(army_id)
+		var plan: Dictionary = recruitment_manager.preview_army_recruitment(army, budget)
+		var projected_power: int = int(plan.get("projected_power", army.get_army_power()))
+		var threshold: float = float(candidate.get("threshold", army.get_recruitment_threshold(turn_number, false, true, false)))
+		var projected_shortfall: float = max(0.0, threshold - float(projected_power))
+		var passed: bool = projected_shortfall <= 0.001
+		var evaluation: Dictionary = {
+			"army": army,
+			"army_id": army_id,
+			"budget": budget,
+			"plan": plan,
+			"projected_power": projected_power,
+			"projected_shortfall": projected_shortfall,
+			"passed": passed
+		}
+		evaluations.append(evaluation)
+		if not passed:
+			all_pass = false
+			if remove_candidate.is_empty() or _is_recruitment_defer_candidate_worse(evaluation, remove_candidate):
+				remove_candidate = evaluation
+	return {
+		"all_pass": all_pass,
+		"evaluations": evaluations,
+		"remove_candidate": remove_candidate
+	}
+
+func _build_recruitment_budgets_for_candidate_subset(candidates: Array[Dictionary], resource_pool: Dictionary, recruit_pool_by_region: Dictionary) -> Dictionary:
+	var budgets_by_army_id: Dictionary = {}
+	var count: int = candidates.size()
+	var gold_split: Array[int] = _split_amount_by_order(int(resource_pool.get(ResourcesEnum.Type.GOLD, 0)), count)
+	var wood_split: Array[int] = _split_amount_by_order(int(resource_pool.get(ResourcesEnum.Type.WOOD, 0)), count)
+	var iron_split: Array[int] = _split_amount_by_order(int(resource_pool.get(ResourcesEnum.Type.IRON, 0)), count)
+	var recruit_split_by_index: Dictionary = _split_recruit_caps_by_candidate_region(candidates, recruit_pool_by_region)
+	for idx in range(candidates.size()):
+		var candidate: Dictionary = candidates[idx]
+		var army_id: int = int(candidate.get("army_id", 0))
+		budgets_by_army_id[army_id] = BudgetComposition.new(
+			int(gold_split[idx]),
+			int(wood_split[idx]),
+			int(iron_split[idx]),
+			int(recruit_split_by_index.get(idx, 0))
+		)
+	return budgets_by_army_id
+
+func _split_recruit_caps_by_candidate_region(candidates: Array[Dictionary], recruit_pool_by_region: Dictionary) -> Dictionary:
+	var indices_by_region: Dictionary = {}
+	for idx in range(candidates.size()):
+		var region_id: int = int(candidates[idx].get("region_id", -1))
+		if not indices_by_region.has(region_id):
+			indices_by_region[region_id] = []
+		var indices: Array = indices_by_region.get(region_id, [])
+		indices.append(idx)
+		indices_by_region[region_id] = indices
+	var split_by_index: Dictionary = {}
+	var ordered_regions: Array = indices_by_region.keys()
+	ordered_regions.sort()
+	for region_id in ordered_regions:
+		var region_indices: Array = indices_by_region.get(region_id, [])
+		var shares: Array[int] = _split_amount_by_order(int(recruit_pool_by_region.get(region_id, 0)), region_indices.size())
+		for local_idx in range(region_indices.size()):
+			split_by_index[int(region_indices[local_idx])] = int(shares[local_idx])
+	return split_by_index
+
+func _split_amount_by_order(total_amount: int, recipient_count: int) -> Array[int]:
+	var result: Array[int] = []
+	if recipient_count <= 0:
+		return result
+	var base_amount: int = 0
+	var remainder: int = 0
+	if total_amount > 0:
+		base_amount = int(total_amount / recipient_count)
+		remainder = total_amount % recipient_count
+	for idx in range(recipient_count):
+		var amount: int = base_amount
+		if idx < remainder:
+			amount += 1
+		result.append(amount)
+	return result
+
+func _is_recruitment_defer_candidate_worse(candidate: Dictionary, current_worst: Dictionary) -> bool:
+	var candidate_shortfall: float = float(candidate.get("projected_shortfall", 0.0))
+	var current_shortfall: float = float(current_worst.get("projected_shortfall", 0.0))
+	if abs(candidate_shortfall - current_shortfall) > 0.001:
+		return candidate_shortfall > current_shortfall
+	var candidate_army: Army = candidate.get("army")
+	var current_army: Army = current_worst.get("army")
+	var candidate_power: int = candidate_army.get_army_power()
+	var current_power: int = current_army.get_army_power()
+	if candidate_power != current_power:
+		return candidate_power < current_power
+	return int(candidate.get("army_id", 0)) > int(current_worst.get("army_id", 0))
+
+func _remove_recruitment_candidate_by_id(candidates: Array[Dictionary], army_id: int) -> void:
+	for idx in range(candidates.size() - 1, -1, -1):
+		if int(candidates[idx].get("army_id", 0)) == army_id:
+			candidates.remove_at(idx)
+			return
+
+func _commit_prioritized_recruitment_candidates(all_candidates: Array[Dictionary], accepted_candidates: Array[Dictionary], simulation: Dictionary) -> void:
+	var accepted_ids: Dictionary = {}
+	for candidate in accepted_candidates:
+		accepted_ids[int(candidate.get("army_id", 0))] = true
+	for candidate in all_candidates:
+		var army: Army = candidate.get("army")
+		var army_id: int = int(candidate.get("army_id", 0))
+		if accepted_ids.has(army_id):
+			continue
+		army.assigned_budget = null
+		army.request_recruitment()
+		DebugLogger.log("AIRecruitment", "Deferred " + army.get_display_name() + " from recruitment budget (reason: deferred_minimum_power_budget)")
+	var evaluations: Array = simulation.get("evaluations", [])
+	for evaluation in evaluations:
+		var army: Army = evaluation.get("army")
+		var budget: BudgetComposition = evaluation.get("budget")
+		var plan: Dictionary = evaluation.get("plan", {})
+		army.assign_recruitment_budget(budget)
+		recruitment_manager.commit_army_recruitment_plan(army, plan)
 
 func ore_checks(player_id: int) -> Dictionary:
 	var player := player_manager.get_player(player_id)
@@ -570,7 +777,7 @@ func _release_raise_army_reserve(player: Player, release_reason: String) -> int:
 	_log_trade("Raise Army Reserve: released:%d bank:%d cap:%d reason:%s" % [released_gold, 0, cap, release_reason])
 	return released_gold
 
-func _execute_army_recruitment(player_id: int, armies: Array[Army]) -> Array[String]:
+func _execute_army_recruitment(player_id: int, armies: Array[Army], turn_number: int) -> Array[String]:
 	var entries: Array[String] = []
 	if recruitment_manager == null:
 		return entries
@@ -590,6 +797,9 @@ func _execute_army_recruitment(player_id: int, armies: Array[Army]) -> Array[Str
 		if total > 0:
 			var entry = _format_army_hire_entry(army, location, result)
 			entries.append(entry)
+		if army.needs_recruitment(turn_number, false, true, false):
+			army.request_recruitment()
+			DebugLogger.log("AIRecruitment", "Army " + army.get_display_name() + " remains below minimal recruitment threshold after recruitment")
 	return entries
 
 # Find armies at castles that need recruitment
