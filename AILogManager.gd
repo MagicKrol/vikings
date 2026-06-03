@@ -6,9 +6,10 @@ var current_file_path: String = ""
 var current_game_label: String = ""
 var ascii = preload("res://ascii_utils.gd")
 var last_logged_turn: int = -1
-var logging_enabled: bool = not GameParameters.DEMO_MODE_ENABLED
+var logging_enabled: bool = false
 
-func start_new_game_log(raw_label: String) -> void:
+func start_new_game_log(raw_label: String, enabled: bool = true) -> void:
+	logging_enabled = enabled
 	if not logging_enabled:
 		current_file_path = ""
 		return

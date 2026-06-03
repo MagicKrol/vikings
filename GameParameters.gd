@@ -306,6 +306,9 @@ const AI_TOTAL_NEIGHBOR_WEIGHT = 1.0           # More neighbors = more strategic
 # Distance and position weights
 const AI_ENEMY_DISTANCE_WEIGHT = 5.0           # Closer to enemies = more strategic value
 const AI_MAX_EXPECTED_DISTANCE = 10            # Expected max distance for normalization
+const AI_NEUTRAL_CORE_DISTANCE_BONUS_MULTIPLIER = 5.0
+const AI_NEUTRAL_CORE_DISTANCE_MAX = 3
+const AI_NEUTRAL_CORE_OWNED_NEIGHBOR_BONUS = 3.0
 
 ## Mining System Constants
 const ORE_SEARCH_COST = 10                      # Gold cost to perform ore search
@@ -357,7 +360,7 @@ const AI_RAISE_W_DIST = 0.20
 const AI_RAISE_W_RECRUITS = 0.20
 const AI_RAISE_W_BANK = 0.10
 const AI_RAISE_THRESHOLD_NORM = 0.50
-const AI_RAISE_FRONTIER = 3.0
+const AI_RAISE_FRONTIER = 2.5
 
 ## Dynamic Resource Need Scoring (ArmyTargetScorer)
 # Need multipliers

@@ -3144,8 +3144,9 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 				ownership_bonus += GameParameters.get_ai_human_target_score_bonus(game_manager.get_game_difficulty())
 		var pursue_bonus := float(components.get("pursue_bonus", 0.0))
 		var castle_bonus := float(components.get("castle_bonus", 0.0))
+		var neutral_core_bonus := _get_neutral_core_bonus(target_id, player_id)
 		var enemy_adjustment := target_scorer.get_enemy_adjustment(army, target_id)
-		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus - float(cost) + float(enemy_adjustment.get("delta", 0.0))
+		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus + neutral_core_bonus - float(cost) + float(enemy_adjustment.get("delta", 0.0))
 		if enemy_adjustment.get("nullify", false):
 			final_score = 0.0
 
@@ -3162,7 +3163,8 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 			"components": components,
 			"ownership_bonus": ownership_bonus,
 			"pursue_bonus": pursue_bonus,
-			"castle_bonus": castle_bonus
+			"castle_bonus": castle_bonus,
+			"neutral_core_bonus": neutral_core_bonus
 		}
 
 		if can_reach_now:
@@ -3181,6 +3183,61 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 		return a["mp_cost"] < b["mp_cost"]
 	)
 	return far_targets
+
+func _get_neutral_core_bonus(target_region_id: int, player_id: int) -> float:
+	if region_manager.get_region_owner(target_region_id) != -1:
+		return 0.0
+	if region_manager.get_castle_level(target_region_id) > 0:
+		return 0.0
+	if _frontier_region_has_enemy_army(target_region_id, player_id):
+		return 0.0
+	var bonus: float = 0.0
+	var castle_distance: int = _get_distance_to_nearest_owned_castle(target_region_id, player_id)
+	if castle_distance > 0 and castle_distance <= GameParameters.AI_NEUTRAL_CORE_DISTANCE_MAX:
+		bonus += GameParameters.AI_NEUTRAL_CORE_DISTANCE_BONUS_MULTIPLIER * float((GameParameters.AI_NEUTRAL_CORE_DISTANCE_MAX + 1) - castle_distance)
+	if _target_has_owned_neighbor(target_region_id, player_id):
+		bonus += GameParameters.AI_NEUTRAL_CORE_OWNED_NEIGHBOR_BONUS
+	return bonus
+
+func _get_distance_to_nearest_owned_castle(target_region_id: int, player_id: int) -> int:
+	var visited: Dictionary = {}
+	var queue: Array[Dictionary] = []
+	queue.append({
+		"region_id": target_region_id,
+		"distance": 0
+	})
+	visited[target_region_id] = true
+	var home_castle_id: int = region_manager.get_castle_starting_position(player_id)
+	while not queue.is_empty():
+		var current: Dictionary = queue.pop_front()
+		var current_region_id: int = int(current.get("region_id", -1))
+		var current_distance: int = int(current.get("distance", 0))
+		if current_region_id != target_region_id and region_manager.get_region_owner(current_region_id) == player_id:
+			if region_manager.get_castle_level(current_region_id) > 0 or current_region_id == home_castle_id:
+				return current_distance
+		if current_distance >= GameParameters.AI_NEUTRAL_CORE_DISTANCE_MAX:
+			continue
+		var neighbor_ids: Array = region_manager.get_neighbor_regions(current_region_id)
+		for neighbor_id_variant in neighbor_ids:
+			var neighbor_id: int = int(neighbor_id_variant)
+			if visited.has(neighbor_id):
+				continue
+			if region_manager.get_region_owner(neighbor_id) != player_id:
+				continue
+			visited[neighbor_id] = true
+			queue.append({
+				"region_id": neighbor_id,
+				"distance": current_distance + 1
+			})
+	return -1
+
+func _target_has_owned_neighbor(target_region_id: int, player_id: int) -> bool:
+	var neighbor_ids: Array = region_manager.get_neighbor_regions(target_region_id)
+	for neighbor_id_variant in neighbor_ids:
+		var neighbor_id: int = int(neighbor_id_variant)
+		if region_manager.get_region_owner(neighbor_id) == player_id:
+			return true
+	return false
 
 func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 	"""Check if moving to this region should trigger a battle - delegates to GameManager"""
@@ -3679,17 +3736,19 @@ func _log_target_candidates(moves: Array) -> void:
 		var region_id: int = int(move.get("target_id", -1))
 		var mp_cost: int = int(move.get("mp_cost", 0))
 		var components: Dictionary = move.get("components", Dictionary())
-		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, strategy: %.1f)" % [
+		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, random_modifier: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, strategy: %.1f)" % [
 			i + 1,
 			_get_region_name_by_id(region_id),
 			region_id,
 			float(move.get("final_score", 0.0)),
 			mp_cost,
+			float(move.get("random_modifier", 0.0)),
 			float(components.get("resources", 0.0)),
 			float(components.get("population", 0.0)),
 			int(components.get("level", 0)),
 			float(components.get("castle_bonus", 0.0)),
 			float(components.get("pursue_bonus", 0.0)),
+			float(move.get("neutral_core_bonus", 0.0)),
 			float(components.get("strategy", 0.0))
 		]
 		_log_army_detail_line(line)

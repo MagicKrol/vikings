@@ -4659,7 +4659,7 @@ func ensure_ai_log_started() -> void:
 	if _ai_log_started:
 		return
 	var label = _derive_ai_log_label()
-	_ai_log_manager.start_new_game_log(label)
+	_ai_log_manager.start_new_game_log(label, debug_mode)
 	_ai_log_started = true
 
 func _derive_ai_log_label() -> String:

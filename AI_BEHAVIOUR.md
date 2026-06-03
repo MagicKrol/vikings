@@ -59,7 +59,7 @@ Hard gates in `RaiseArmyDecision.score`:
 
 - `gold_after_raise >= AI_RESERVE_GOLD_MIN` (30)
 - `recruits >= AI_MIN_RECRUITS_FOR_RAISING` (40)
-- `frontier_regions / armies >= AI_RAISE_FRONTIER` (3.0)
+- `frontier_regions / armies >= AI_RAISE_FRONTIER` (2.5)
 
 Normalized raise score:
 
@@ -264,7 +264,7 @@ For each frontier target:
 
 Score formula (`_get_sorted_frontier_moves`):
 
-- `final_score = base_score + ownership_bonus + random_modifier + pursue_bonus + castle_bonus - mp_cost + enemy_adjustment.delta`
+- `final_score = base_score + ownership_bonus + random_modifier + pursue_bonus + castle_bonus + neutral_core_bonus - mp_cost + enemy_adjustment.delta`
 
 Terms:
 
@@ -272,6 +272,9 @@ Terms:
 - `random_modifier in [0, AI_RANDOM_SCORE_MODIFIER)` where max is 5
 - `pursue_bonus = 5` when known enemy ratio condition passes
 - `castle_bonus = 4 + castle_type_value` for non-owned castle regions
+- `neutral_core_bonus` applies only to neutral, non-castle, no-enemy-army targets:
+	- distance to nearest owned castle in owned-region steps gives `5 * (4 - distance)` for distance 1..3
+	- at least one owned neighbor gives a single `+3` bonus
 - `enemy_adjustment` from tracked enemy intel:
 	- if combined known enemy power / own power >= 1.25 => `nullify=true`, score forced to 0
 	- if ratio > 1.0 => penalty of `-ceil((ratio-1)/0.05)`
