@@ -361,6 +361,7 @@ const AI_RAISE_W_RECRUITS = 0.20
 const AI_RAISE_W_BANK = 0.10
 const AI_RAISE_THRESHOLD_NORM = 0.50
 const AI_RAISE_FRONTIER = 2.5
+const AI_MAIN_EXTENDED_TARGET_RANGE = 5
 
 ## Dynamic Resource Need Scoring (ArmyTargetScorer)
 # Need multipliers
