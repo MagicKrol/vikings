@@ -35514,7 +35514,7 @@
 			"water": true
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"center": [
 				620.735323793812,
 				681.784900546249
@@ -35559,7 +35559,7 @@
 				]
 			],
 			"temperature": 1,
-			"type": 0,
+			"type": 1,
 			"water": true
 		},
 		{

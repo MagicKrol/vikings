@@ -25,28 +25,28 @@
 				{
 					"composition": {
 						"Archers": 20,
-						"Crossbowmen": 0,
+						"Crossbowmen": 10,
 						"Horsemen": 5,
 						"Knights": 5,
 						"Mounted Knights": 0,
 						"Peasants": 60,
 						"Royal Guard": 0,
-						"Spearmen": 25,
-						"Swordsmen": 20
+						"Spearmen": 30,
+						"Swordsmen": 25
 					},
 					"event_index": 0
 				},
 				{
 					"composition": {
-						"Archers": 15,
-						"Crossbowmen": 0,
+						"Archers": 25,
+						"Crossbowmen": 5,
 						"Horsemen": 0,
 						"Knights": 1,
 						"Mounted Knights": 0,
 						"Peasants": 40,
 						"Royal Guard": 0,
 						"Spearmen": 25,
-						"Swordsmen": 10
+						"Swordsmen": 25
 					},
 					"event_index": 1
 				}
@@ -55,7 +55,7 @@
 				{
 					"player_id": 1,
 					"resources": {
-						"Food": 80,
+						"Food": 200,
 						"Gold": 80,
 						"Iron": 0,
 						"Stone": 0,
@@ -142,7 +142,7 @@
 						"Peasants": 45,
 						"Royal Guard": 0,
 						"Spearmen": 20,
-						"Swordsmen": 10
+						"Swordsmen": 15
 					},
 					"event_index": 0
 				},
@@ -156,7 +156,7 @@
 						"Peasants": 20,
 						"Royal Guard": 0,
 						"Spearmen": 10,
-						"Swordsmen": 0
+						"Swordsmen": 10
 					},
 					"event_index": 1
 				}
@@ -195,7 +195,7 @@
 				{
 					"player_id": 1,
 					"resources": {
-						"Food": 35,
+						"Food": 60,
 						"Gold": 35,
 						"Iron": 0,
 						"Stone": 0,
@@ -282,21 +282,21 @@
 						"Peasants": 50,
 						"Royal Guard": 0,
 						"Spearmen": 25,
-						"Swordsmen": 20
+						"Swordsmen": 25
 					},
 					"event_index": 0
 				},
 				{
 					"composition": {
-						"Archers": 8,
+						"Archers": 10,
 						"Crossbowmen": 0,
 						"Horsemen": 0,
 						"Knights": 1,
 						"Mounted Knights": 0,
-						"Peasants": 25,
+						"Peasants": 30,
 						"Royal Guard": 0,
-						"Spearmen": 15,
-						"Swordsmen": 5
+						"Spearmen": 20,
+						"Swordsmen": 10
 					},
 					"event_index": 1
 				}
@@ -335,7 +335,7 @@
 				{
 					"player_id": 1,
 					"resources": {
-						"Food": 50,
+						"Food": 100,
 						"Gold": 50,
 						"Iron": 0,
 						"Stone": 0,
@@ -599,7 +599,7 @@
 				"Food": 0,
 				"Gold": 6,
 				"Iron": 2,
-				"Stone": 2,
+				"Stone": 3,
 				"Wood": 0
 			},
 			"type_display": "Hills"
@@ -690,7 +690,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 2
+				"Wood": 3
 			},
 			"type_display": "Forest"
 		},
@@ -714,7 +714,7 @@
 			"name": "Sandhaug",
 			"ocean": false,
 			"owner": 2,
-			"population": 173,
+			"population": 253,
 			"resources": {
 				"Food": 1,
 				"Gold": 0,
@@ -755,7 +755,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"garrison": {
@@ -774,15 +774,15 @@
 			"name": "Hellaby",
 			"ocean": false,
 			"owner": 2,
-			"population": 293,
+			"population": 148,
 			"resources": {
-				"Food": 2,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 0
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 2
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest Hills"
 		},
 		{
 			"biome": "grassland",
@@ -924,7 +924,7 @@
 			"name": "Hvitthwaite",
 			"ocean": false,
 			"owner": 2,
-			"population": 158,
+			"population": 120,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1136,7 +1136,7 @@
 			"owner": 2,
 			"population": 343,
 			"resources": {
-				"Food": 3,
+				"Food": 1,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -1164,7 +1164,7 @@
 			"name": "Hafnvik",
 			"ocean": false,
 			"owner": 2,
-			"population": 144,
+			"population": 110,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1224,7 +1224,7 @@
 			"name": "Greenhavn",
 			"ocean": false,
 			"owner": 2,
-			"population": 234,
+			"population": 130,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1434,7 +1434,7 @@
 			"name": "Westton",
 			"ocean": false,
 			"owner": 2,
-			"population": 264,
+			"population": 135,
 			"resources": {
 				"Food": 1,
 				"Gold": 0,
@@ -1466,7 +1466,7 @@
 			"ore_guaranteed_discovery_attempt": 3,
 			"ore_guaranteed_discovery_type": "Iron",
 			"owner": 2,
-			"population": 293,
+			"population": 160,
 			"resources": {
 				"Food": 0,
 				"Gold": 6,
@@ -1496,7 +1496,7 @@
 			"name": "Riverworth",
 			"ocean": false,
 			"owner": 2,
-			"population": 196,
+			"population": 85,
 			"resources": {
 				"Food": 0,
 				"Gold": 3,

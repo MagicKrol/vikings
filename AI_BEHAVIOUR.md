@@ -143,6 +143,9 @@ Flow (`_evaluate_upgrade_region`):
 	- cooldown inactive
 	- food safeguard pass:
 		- projected food after upgrade and next-turn growth must be >= `AI_MIN_FOOD_AFTER_UPGRADE` (50)
+	- promotion growth guardrails:
+		- L2 -> L3 requires wood growth >= `AI_REGION_PROMOTION_MIN_RESOURCE_GROWTH` and food growth >= `AI_REGION_PROMOTION_MIN_RESOURCE_GROWTH`
+		- L3 -> L4 requires stone growth >= `AI_REGION_PROMOTION_MIN_RESOURCE_GROWTH`
 	- player can afford and can pay
 5. On success:
 	- set next region level
@@ -216,7 +219,7 @@ If an army is inside its own threatened castle and is below the minimal recruitm
 
 For home-castle threats, TurnController groups threats by enemy region and treats any group with unknown power as unknown-risk. Known attacks require `>= 120%` of known enemy power and pull only the minimum needed garrison, capped at `150%`. Unknown non-castle attacks require attack-and-return to the home castle in the same turn.
 
-When a castle can defend itself, the army is released to normal role target scoring. When it cannot, the army attacks only if the attack is safe, or it holds/recruits. On repeated same-threat holds, it can leave a minimal safe garrison and resume normal target scoring if the castle remains defensible.
+When a castle can defend itself, the army is released to normal role target scoring. When it cannot, the army attacks only if the attack is safe, or it holds/recruits. On repeated same-threat holds, it can leave a minimal safe garrison and resume normal target scoring if the castle remains defensible and the army remains at or above its minimal recruitment threshold.
 
 ## 4. How Targets Are Built and Scored
 

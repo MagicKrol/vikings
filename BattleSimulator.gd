@@ -1276,14 +1276,10 @@ func _process_mobility_attacks(defending_army: Dictionary, attacking_targets: Di
 		if valid_targets.is_empty():
 			continue
 		var target_assigned = _distribute_hits_to_valid_targets(attacking_targets, valid_targets, hits, rng)
-		if GameParameters.unit_has_trait(defender_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):
-			for target_unit_type in target_assigned.keys():
-				if GameParameters.is_cavalry_unit(target_unit_type):
-					target_assigned[target_unit_type] = _apply_multiplier_stochastic(target_assigned[target_unit_type], GameParameters.LONG_SPEARS_CAVALRY_MULTIPLIER, rng)
-			var target_kills = _defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, CastleTypeEnum.Type.NONE, -1)
-			_merge_kill_results(mobility_kills, target_kills)
-			if kill_breakdown != null:
-				_record_attacker_target_kills(kill_breakdown, defender_unit_type, target_kills)
+		var target_kills = _defense_resolution_with_attacker_traits(target_assigned, defender_unit_type, rng, CastleTypeEnum.Type.NONE, -1)
+		_merge_kill_results(mobility_kills, target_kills)
+		if kill_breakdown != null:
+			_record_attacker_target_kills(kill_breakdown, defender_unit_type, target_kills)
 	return mobility_kills
 
 func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictionary, current_garrison: Dictionary, attacker_can_withdraw: bool, defender_can_withdraw: bool, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, current_round: int, attacker_effectiveness_ratio: float = 1.0, siege_state: Dictionary = {}, withdrawal_tracker: Dictionary = {}, ai_withdrawal_rules: Dictionary = {}) -> int:
@@ -1859,12 +1855,6 @@ func _process_ranged_unit_attacks(attacking_army: Dictionary, defending_army: Di
 			
 		# Distribute hits among valid targets
 		var target_assigned = _distribute_hits_to_valid_targets(defending_army, valid_targets, hits, rng)
-		
-		# Apply long-spears bonus: double hits against cavalry if attacker has long-spears
-		if not disable_siege_traits and GameParameters.unit_has_trait(attacker_unit_type, UnitTraitEnum.Type.UNIT_TRAIT_1):  # long_spears
-			for defender_unit_type in target_assigned:
-				if GameParameters.is_cavalry_unit(defender_unit_type):
-					target_assigned[defender_unit_type] = _apply_multiplier_stochastic(target_assigned[defender_unit_type], GameParameters.LONG_SPEARS_CAVALRY_MULTIPLIER, rng)
 		
 		var target_kills = _defense_resolution_with_attacker_traits(target_assigned, attacker_unit_type, rng, castle_type, castle_defense_bonus_override)
 		

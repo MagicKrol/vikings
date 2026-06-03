@@ -1433,26 +1433,30 @@ func _evaluate_upgrade_region(player_id: int, turn_number: int) -> Dictionary:
 		reason = "no_candidate"
 	else:
 		for detail in details:
-			var region_id = int(detail.get("region_id", -1))
-			var score = float(detail.get("score", 0.0))
+			var region_id: int = int(detail.get("region_id", -1))
+			var score: float = float(detail.get("score", 0.0))
 			if region_id == -1 or score <= 0.0:
 				skip_reasons.append("Region %d: low_score" % region_id)
 				continue
-			var next_level = int(detail.get("next_level", RegionLevelEnum.Level.L1))
+			var next_level: int = int(detail.get("next_level", RegionLevelEnum.Level.L1))
 			var cost: Dictionary = detail.get("cost", {})
 			if cost.is_empty():
 				skip_reasons.append("Region %d: no_cost_data" % region_id)
 				continue
-			var region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+			var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
 			if region == null:
 				skip_reasons.append("Region %d: region_missing" % region_id)
 				continue
 			if region.get_promotion_cooldown() > 0:
 				skip_reasons.append("Region %d: cooldown_active" % region_id)
 				continue
-			var food_cost = int(cost.get(ResourcesEnum.Type.FOOD, 0))
+			var food_cost: int = int(cost.get(ResourcesEnum.Type.FOOD, 0))
 			if not player_manager.meets_food_upgrade_safeguard(player_id, food_cost):
 				skip_reasons.append("Region %d: food_safeguard" % region_id)
+				continue
+			var growth_guard_reason: String = _get_region_promotion_growth_guard_reason(player_id, next_level)
+			if growth_guard_reason != "":
+				skip_reasons.append("Region %d: %s" % [region_id, growth_guard_reason])
 				continue
 			if not _can_afford_cost_with_reserve(player, cost):
 				skip_reasons.append("Region %d: insufficient_resources" % region_id)
@@ -1487,6 +1491,21 @@ func _evaluate_upgrade_region(player_id: int, turn_number: int) -> Dictionary:
 		"actions": actions_final,
 		"action_entries": action_entries
 	}
+
+func _get_region_promotion_growth_guard_reason(player_id: int, target_level: int) -> String:
+	var min_growth: float = GameParameters.AI_REGION_PROMOTION_MIN_RESOURCE_GROWTH
+	if target_level == RegionLevelEnum.Level.L3:
+		var wood_growth: float = player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.WOOD)
+		if wood_growth < min_growth:
+			return "wood_growth_below_min %.1f/%.1f" % [wood_growth, min_growth]
+		var food_growth: float = player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.FOOD)
+		if food_growth < min_growth:
+			return "food_growth_below_min %.1f/%.1f" % [food_growth, min_growth]
+	if target_level == RegionLevelEnum.Level.L4:
+		var stone_growth: float = player_manager.get_player_resource_growth(player_id, ResourcesEnum.Type.STONE)
+		if stone_growth < min_growth:
+			return "stone_growth_below_min %.1f/%.1f" % [stone_growth, min_growth]
+	return ""
 
 func execute_garrison_recruitment(player_id: int) -> Dictionary:
 	if recruitment_manager == null:

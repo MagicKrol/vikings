@@ -14,6 +14,7 @@ var player_manager: PlayerManagerNode = null
 var region_manager: RegionManager = null
 var select_tooltip_modal: SelectTooltipModal = null
 var select_tooltip_modal_nores: SelectTooltipModalNoRes = null
+var select_tooltip_modal_upkeep: SelectTooltipModalUpkeep = null
 var tutorial_manager: TutorialManager = null
 
 # Current display mode
@@ -104,6 +105,7 @@ func _ready():
 	player_manager = get_node("../../PlayerManager") as PlayerManagerNode
 	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
 	select_tooltip_modal_nores = get_node("../SelectTooltipModalNoRes") as SelectTooltipModalNoRes
+	select_tooltip_modal_upkeep = get_node("ActionTooltipUpkeep") as SelectTooltipModalUpkeep
 	tutorial_manager = game_manager.get_tutorial_manager()
 	army_manager = game_manager.get_army_manager()
 	region_manager = game_manager.get_region_manager()
@@ -192,6 +194,12 @@ func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
 func _on_promote_tooltip_hovered() -> void:
 	var context_data = {"current_region": current_region}
 	_cache_action_tooltip_base()
+	var region_tooltip_key: String = _get_region_action_tooltip_key("promote_region")
+	if region_tooltip_key == "promote_region" and _should_show_region_upkeep_tooltip():
+		var next_region_level: RegionLevelEnum.Level = current_region.get_region_level() + 1
+		var upkeep_cost: Dictionary = GameParameters.get_region_upkeep_cost(next_region_level)
+		_show_region_upkeep_action_tooltip(region_tooltip_key, upkeep_cost, _promote_button)
+		return
 	_show_message_action_tooltip(_get_region_action_tooltip_key("promote_region"), context_data, _promote_button)
 
 func _on_castle_tooltip_hovered() -> void:
@@ -199,8 +207,12 @@ func _on_castle_tooltip_hovered() -> void:
 	var region_tooltip_key: String = _get_region_action_tooltip_key(tooltip_key)
 	var context_data: Dictionary = {"current_region": current_region}
 	if region_tooltip_key == "build_castle" or region_tooltip_key == "upgrade_castle":
-		context_data["show_turns_only"] = true
-		_show_turns_action_tooltip(region_tooltip_key, context_data, _build_button)
+		var castle_type_to_build: CastleTypeEnum.Type = _get_castle_type_for_build_tooltip(region_tooltip_key)
+		var upkeep_cost: Dictionary = GameParameters.get_castle_upkeep_cost(castle_type_to_build)
+		var wood_upkeep: int = int(upkeep_cost.get(ResourcesEnum.Type.WOOD, 0))
+		var stone_upkeep: int = int(upkeep_cost.get(ResourcesEnum.Type.STONE, 0))
+		var build_time: int = GameParameters.get_castle_build_time(castle_type_to_build)
+		_show_castle_upkeep_action_tooltip(region_tooltip_key, wood_upkeep, stone_upkeep, build_time, _build_button)
 		return
 	_show_message_action_tooltip(region_tooltip_key, context_data, _build_button)
 
@@ -224,13 +236,27 @@ func _on_action_tooltip_unhovered() -> void:
 
 func _show_message_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
+	select_tooltip_modal_upkeep.hide_tooltip()
 	_position_action_tooltip(select_tooltip_modal_nores, button)
 	select_tooltip_modal_nores.show_tooltip(tooltip_key, context_data)
 
 func _show_turns_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
 	select_tooltip_modal_nores.hide_tooltip()
+	select_tooltip_modal_upkeep.hide_tooltip()
 	_position_action_tooltip(select_tooltip_modal, button)
 	select_tooltip_modal.show_tooltip(tooltip_key, context_data)
+
+func _show_region_upkeep_action_tooltip(tooltip_key: String, upkeep_cost: Dictionary, button: Control) -> void:
+	select_tooltip_modal.hide_tooltip()
+	select_tooltip_modal_nores.hide_tooltip()
+	_position_action_tooltip(select_tooltip_modal_upkeep, button)
+	select_tooltip_modal_upkeep.show_region_upkeep(tooltip_key, upkeep_cost)
+
+func _show_castle_upkeep_action_tooltip(tooltip_key: String, wood_upkeep: int, stone_upkeep: int, build_time: int, button: Control) -> void:
+	select_tooltip_modal.hide_tooltip()
+	select_tooltip_modal_nores.hide_tooltip()
+	_position_action_tooltip(select_tooltip_modal_upkeep, button)
+	select_tooltip_modal_upkeep.show_castle_upkeep(tooltip_key, wood_upkeep, stone_upkeep, build_time)
 
 func _on_garrison_unit_icon_hovered(unit_index: int, garrison_info: Control) -> void:
 	var unit_type: SoldierTypeEnum.Type = GARRISON_UNIT_TYPES[unit_index]
@@ -239,12 +265,25 @@ func _on_garrison_unit_icon_hovered(unit_index: int, garrison_info: Control) -> 
 
 func _show_garrison_unit_action_tooltip(unit_name: String, garrison_info: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
+	select_tooltip_modal_upkeep.hide_tooltip()
 	_position_action_tooltip_at_garrison(select_tooltip_modal_nores, garrison_info)
 	select_tooltip_modal_nores.show_text(unit_name)
 
 func _hide_action_tooltips() -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_nores.hide_tooltip()
+	select_tooltip_modal_upkeep.hide_tooltip()
+
+func _should_show_region_upkeep_tooltip() -> bool:
+	if current_region.get_region_level() < RegionLevelEnum.Level.L2:
+		return false
+	return current_region.get_region_level() < RegionLevelEnum.Level.L5
+
+func _get_castle_type_for_build_tooltip(tooltip_key: String) -> CastleTypeEnum.Type:
+	if tooltip_key == "build_castle":
+		return CastleTypeEnum.Type.OUTPOST
+	var current_castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
+	return CastleTypeEnum.get_next_level(current_castle_type)
 
 func _cache_action_tooltip_base() -> void:
 	if not _action_tooltip_base_button_ready:

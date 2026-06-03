@@ -154,8 +154,8 @@ Minimal garrison transfer is army-to-garrison and costs `1` MP.
 
 It is allowed only when:
 - the castle defense after transfer can cover all non-attacked threat contexts,
-- the acting army remains above the minimal recruitment threshold when releasing to normal scoring,
-- or the acting army remains at `>= 120%` of the selected known target when attacking.
+- the acting army remains at or above the minimal recruitment threshold after the transfer,
+- and, when attacking, the acting army also remains at `>= 120%` of the selected known target.
 
 Defense power for this check includes:
 - current garrison,
@@ -202,7 +202,7 @@ The army holds/recruits once. On repeated same-threat hold, it may leave a minim
 The army can leave a minimal garrison and attack a selected known weaker target when:
 - it has enough MP for transfer plus attack,
 - the remaining garrison can defend the other threats,
-- the remaining army still meets the `120%` attack gate.
+- the remaining army still meets the minimal recruitment threshold and the `120%` attack gate.
 
 ### Mixed Known and Unknown Threats
 Known-only groups may be attacked using the `120%` gate. Mixed groups remain unknown-risk and require attack-and-return if attacked as unknown.

@@ -431,9 +431,9 @@ func get_replenishment_total_with_carry() -> float:
 func get_replenishment_base_amount() -> float:
 	var level_number: int = RegionLevelEnum.level_to_number(region_level)
 	var base_rate: float = GameParameters.RECRUIT_REPLENISH_RATE
-	var level_bonus_rate: float = float(level_number - 1) * 0.002
+	var level_bonus_rate: float = float(level_number - 1) * GameParameters.REGION_LEVEL_REPLENISH_BONUS_RATE
 	if promotion_replenish_bonus_turns_remaining > 0:
-		base_rate = base_rate * 2.0
+		base_rate = base_rate * GameParameters.PROMOTION_REPLENISH_BONUS_MULTIPLIER
 	var replenish_rate: float = base_rate + level_bonus_rate
 	var replenishment: float = float(population) * replenish_rate
 	return replenishment

@@ -1970,7 +1970,7 @@ func _process_player_turn_start(player_id: int):
 		return
 	DebugLogger.log("TurnProcessing", "Processing resource income for Player " + str(player_id) + "...")
 	player_manager.process_resource_income_for_player(player_id)
-	_process_wood_stone_upkeep_for_player(player_id)
+	_process_resource_upkeep_for_player(player_id)
 	DebugLogger.log("TurnProcessing", "Deducting army food costs for Player " + str(player_id) + "...")
 	_process_army_food_costs_for_player(player_id)
 	var famine_result: Dictionary = consume_latest_famine_result_for_player(player_id)
@@ -2040,21 +2040,28 @@ func _process_army_food_costs_for_player(player_id: int) -> void:
 		DebugLogger.log("TurnProcessing", "No army food costs for Player " + str(player_id))
 		_latest_famine_result_by_player.erase(player_id)
 
-func _process_wood_stone_upkeep_for_player(player_id: int) -> void:
+func _process_resource_upkeep_for_player(player_id: int) -> void:
 	var player: Player = player_manager.get_player(player_id)
-	var upkeep: Dictionary = player_manager.get_player_wood_stone_upkeep(player_id)
+	var upkeep: Dictionary = player_manager.get_player_resource_upkeep(player_id)
+	var food_upkeep: int = int(upkeep.get(ResourcesEnum.Type.FOOD, 0))
 	var wood_upkeep: int = int(upkeep.get(ResourcesEnum.Type.WOOD, 0))
 	var stone_upkeep: int = int(upkeep.get(ResourcesEnum.Type.STONE, 0))
+	var food_before: int = player.get_resource_amount(ResourcesEnum.Type.FOOD)
 	var wood_before: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
 	var stone_before: int = player.get_resource_amount(ResourcesEnum.Type.STONE)
+	var food_after: int = maxi(0, food_before - food_upkeep)
 	var wood_after: int = maxi(0, wood_before - wood_upkeep)
 	var stone_after: int = maxi(0, stone_before - stone_upkeep)
+	player.set_resource_amount(ResourcesEnum.Type.FOOD, food_after)
 	player.set_resource_amount(ResourcesEnum.Type.WOOD, wood_after)
 	player.set_resource_amount(ResourcesEnum.Type.STONE, stone_after)
 	DebugLogger.log_separator("ResourceCalculation")
-	DebugLogger.log("ResourceCalculation", "Wood/Stone upkeep deduction for Player " + str(player_id))
+	DebugLogger.log("ResourceCalculation", "Resource upkeep deduction for Player " + str(player_id))
+	DebugLogger.log_calculation("ResourceCalculation", "Food upkeep", food_upkeep)
 	DebugLogger.log_calculation("ResourceCalculation", "Wood upkeep", wood_upkeep)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone upkeep", stone_upkeep)
+	DebugLogger.log_calculation("ResourceCalculation", "Food before", food_before)
+	DebugLogger.log_calculation("ResourceCalculation", "Food after", food_after)
 	DebugLogger.log_calculation("ResourceCalculation", "Wood before", wood_before)
 	DebugLogger.log_calculation("ResourceCalculation", "Wood after", wood_after)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone before", stone_before)
@@ -4803,6 +4810,9 @@ func _center_camera_on_player_assets(player_id: int) -> void:
 
 func _take_game_screenshot() -> void:
 	"""Take a screenshot using Utils function"""
+	if not debug_mode:
+		DebugLogger.log("UISystem", "F8 screenshot ignored because debug mode is disabled")
+		return
 	Utils.take_screenshot()
 
 func _on_game_menu_main_menu_pressed() -> void:

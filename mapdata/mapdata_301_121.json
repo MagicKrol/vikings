@@ -34792,7 +34792,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"center": [
 				248.191651036329,
 				442.484736599998
@@ -34842,7 +34842,7 @@
 				]
 			],
 			"temperature": 0.846833565773654,
-			"type": 0,
+			"type": 2,
 			"water": false
 		},
 		{

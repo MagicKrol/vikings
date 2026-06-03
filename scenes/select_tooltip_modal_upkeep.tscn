@@ -1,0 +1,302 @@
+[gd_scene load_steps=10 format=3 uid="uid://dvl7q8v2dnpwh"]
+
+[ext_resource type="Script" path="res://select_tooltip_modal_upkeep.gd" id="1_x3n4f"]
+[ext_resource type="Texture2D" uid="uid://cubi6y6po34ew" path="res://images/SelectTooltipModalNew.png" id="2_ijekm"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_7v42a"]
+[ext_resource type="Texture2D" uid="uid://bd6s1e8mr3cpa" path="res://images/icons/time.png" id="4_bnaqf"]
+[ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="6_iwnlt"]
+[ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="7_5mtkv"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="7_lfg3b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shadow"]
+bg_color = Color(0, 0, 0, 0.3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_frame"]
+bg_color = Color(0.718, 0.592, 0.369, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0, 0, 0, 1)
+
+[node name="SelectTooltipModalUpkeep" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 170.0
+offset_top = -199.0
+offset_right = 570.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x3n4f")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 230.0
+texture = ExtResource("2_ijekm")
+
+[node name="Shadow" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_shadow")
+
+[node name="Background" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_frame")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.0
+offset_top = -7.0
+offset_right = -9.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="CostContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TooltipLabel" type="Label" parent="MarginContainer/CostContainer"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+theme = ExtResource("3_7v42a")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Tooltip text will appear here"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+
+[node name="Castle" type="HBoxContainer" parent="MarginContainer/CostContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ValuesSection2" type="VBoxContainer" parent="MarginContainer/CostContainer/Castle"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Images" type="HBoxContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Images"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Images"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Upkeep-upkeeptext"
+
+[node name="WoodIcon" type="TextureRect" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("6_iwnlt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StoneIcon" type="TextureRect" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("7_lfg3b")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Values" type="HBoxContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Values"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Values"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "per turn-upkeeptext"
+
+[node name="WoodValue" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2"
+horizontal_alignment = 1
+
+[node name="StoneValue" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection2/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "4"
+horizontal_alignment = 1
+
+[node name="ValuesSection" type="VBoxContainer" parent="MarginContainer/CostContainer/Castle"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Images" type="HBoxContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection/Images"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection/Images"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Build-upkeeptext"
+horizontal_alignment = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection/Images"]
+layout_mode = 2
+
+[node name="TimeIcon" type="TextureRect" parent="MarginContainer/CostContainer/Castle/ValuesSection/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("4_bnaqf")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Values" type="HBoxContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection/Values"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection/Values"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "time-upkeeptext"
+horizontal_alignment = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/CostContainer/Castle/ValuesSection/Values"]
+layout_mode = 2
+
+[node name="TimeValue" type="Label" parent="MarginContainer/CostContainer/Castle/ValuesSection/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2"
+horizontal_alignment = 1
+
+[node name="Region" type="HBoxContainer" parent="MarginContainer/CostContainer"]
+layout_mode = 2
+
+[node name="ValuesSection2" type="VBoxContainer" parent="MarginContainer/CostContainer/Region"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Images" type="HBoxContainer" parent="MarginContainer/CostContainer/Region/ValuesSection2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer/Region/ValuesSection2/Images"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="MarginContainer/CostContainer/Region/ValuesSection2/Images"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Upkeep-upkeeptext"
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/CostContainer/Region/ValuesSection2/Images"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="FoodIcon" type="TextureRect" parent="MarginContainer/CostContainer/Region/ValuesSection2/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("7_5mtkv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WoodIcon" type="TextureRect" parent="MarginContainer/CostContainer/Region/ValuesSection2/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("6_iwnlt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StoneIcon" type="TextureRect" parent="MarginContainer/CostContainer/Region/ValuesSection2/Images"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("7_lfg3b")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Values" type="HBoxContainer" parent="MarginContainer/CostContainer/Region/ValuesSection2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CostContainer/Region/ValuesSection2/Values"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="MarginContainer/CostContainer/Region/ValuesSection2/Values"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "per turn-upkeeptext"
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/CostContainer/Region/ValuesSection2/Values"]
+layout_mode = 2
+
+[node name="FoodValue" type="Label" parent="MarginContainer/CostContainer/Region/ValuesSection2/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "99"
+horizontal_alignment = 1
+
+[node name="WoodValue" type="Label" parent="MarginContainer/CostContainer/Region/ValuesSection2/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "2"
+horizontal_alignment = 1
+
+[node name="StoneValue" type="Label" parent="MarginContainer/CostContainer/Region/ValuesSection2/Values"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "99"
+horizontal_alignment = 1

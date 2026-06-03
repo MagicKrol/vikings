@@ -1713,6 +1713,8 @@ func _try_leave_minimal_garrison_then_attack(army: Army, castle_region: Region, 
 	var remaining_army_power: int = army.get_army_power() - transferred_power
 	if remaining_army_power < _get_known_threat_required_attack_power(enemy_power):
 		return false
+	if not _army_power_meets_minimal_recruitment_threshold(army, remaining_army_power):
+		return false
 	_apply_army_to_garrison_plan(castle_region, army, transfer_plan, false)
 	if not _can_attack_known_home_target_after_adjustment(army, target_context):
 		_revert_army_to_garrison_plan(castle_region, army, transfer_plan)
@@ -1776,7 +1778,7 @@ func _try_release_home_castle_army_to_normal(army: Army, castle_region: Region, 
 		return false
 	var transferred_power: int = int(plan_info.get("transferred_power", 0))
 	var remaining_army_power: int = army.get_army_power() - transferred_power
-	if float(remaining_army_power) < army.get_recruitment_threshold(_get_current_turn(), false, true, false):
+	if not _army_power_meets_minimal_recruitment_threshold(army, remaining_army_power):
 		return false
 	_apply_army_to_garrison_plan(castle_region, army, transfer_plan, true)
 	_log_decision_tree_branch(army, branch, "minimal_garrison_power " + str(transferred_power))
@@ -1849,6 +1851,9 @@ func _get_contexts_excluding_region(threat_contexts: Array[Dictionary], excluded
 
 func _get_known_threat_required_attack_power(enemy_power: int) -> int:
 	return int(ceil(float(enemy_power) * AI_THREAT_KNOWN_ATTACK_RATIO))
+
+func _army_power_meets_minimal_recruitment_threshold(army: Army, army_power: int) -> bool:
+	return float(army_power) >= army.get_recruitment_threshold(_get_current_turn(), false, true, false)
 
 func _build_minimal_garrison_pull_plan_for_known_home_attack(castle_region: Region, current_army_power: int, enemy_power: int) -> Dictionary:
 	var min_required_power: int = _get_known_threat_required_attack_power(enemy_power)

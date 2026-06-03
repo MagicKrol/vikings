@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnxuv4jykn5ue"]
+[gd_scene load_steps=9 format=3 uid="uid://cnxuv4jykn5ue"]
 
 [ext_resource type="Texture2D" uid="uid://w57tdi2mrhbw" path="res://images/movemodal3.png" id="2_22mrf"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="3_3qw0k"]
@@ -22,7 +22,6 @@ shadow_size = 5
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_speed"]
-allow_unpress = false
 
 [node name="SpeedModal" type="Control"]
 layout_mode = 3

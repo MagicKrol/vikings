@@ -1946,7 +1946,3 @@ offset_bottom = -110.0
 
 [node name="ActionTooltipUpkeep" parent="." instance=ExtResource("31_pd0lt")]
 layout_mode = 1
-offset_left = 281.0
-offset_top = -342.0
-offset_right = 681.0
-offset_bottom = -112.0

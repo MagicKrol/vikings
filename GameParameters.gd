@@ -36,10 +36,7 @@ const BATTLE_ROUND_TIME_VERY_FAST = 0.4        # Seconds between rounds when ver
 const BATTLE_ROUND_TIME = BATTLE_ROUND_TIME_NORMAL
 const BATTLE_ROUND_TIME_QUICK = 0.01          # Seconds between rounds when quick resolve is triggered
 const BIOME_ICON_SCALE = 0.2                # Map generation icon scale
-const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable size)
-const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
-const RECRUIT_REPLENISH_RATE = 0.01            # % of population replenishes per turn
-const RECRUIT_PEA_CAP_SHARE = 0.40             # Max peasants share during recruitment composition
+const FOREST_ICON_SCALE = 0.2               # Forest icon scale (customizable size)          # Max peasants share during recruitment composition
 const RECRUIT_RANGED_MIN_SHARE = 0.25          # legacy (unused)
 const RECRUIT_RANGED_MAX_SHARE = 0.35          # legacy (unused)
 const RECRUIT_RANGED_SHARE_MIN = 0.20          # Gaussian ranged diversion min
@@ -85,7 +82,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = false
+const DEMO_MODE_ENABLED: bool = true
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",
@@ -93,7 +90,7 @@ const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"Vikings Invasion.json"
 ]
 const DEMO_ALLOWED_CUSTOM_MAP_FILES: Array[String] = [
-	"demo-999-small.json"
+	"mapdata_287_401.json"
 ]
 
 enum Difficulty {
@@ -182,10 +179,15 @@ const REGION_MAP_HOVER_OWNED_HOVER_ALPHA = 0.7
 const REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA = 0.2
 const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
 
+const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
+const RECRUIT_REPLENISH_RATE = 0.008            # % of population replenishes per turn
+const RECRUIT_PEA_CAP_SHARE = 0.40   
 ## Region Level Bonuses
 const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
 const PROMOTION_REPLENISH_BONUS_TURNS = 2       # Number of turns promotion replenish bonus lasts
+const PROMOTION_REPLENISH_BONUS_MULTIPLIER = 2.0 # Multiplier applied to base replenish rate during promotion bonus
+const REGION_LEVEL_REPLENISH_BONUS_RATE = 0.003 # Added replenish rate per region level above 1
 
 ## Promotion Growth Bonus by Turn (added to base growth rate)
 const PROMOTION_GROWTH_BONUS_BY_TURN = {
@@ -225,6 +227,34 @@ const CASTLE_UPKEEP_COSTS: Dictionary = {
 	CastleTypeEnum.Type.STRONGHOLD: {
 		ResourcesEnum.Type.WOOD: 2,
 		ResourcesEnum.Type.STONE: 4
+	}
+}
+
+const REGION_UPKEEP_COSTS: Dictionary = {
+	RegionLevelEnum.Level.L1: {
+		ResourcesEnum.Type.FOOD: 0,
+		ResourcesEnum.Type.WOOD: 0,
+		ResourcesEnum.Type.STONE: 0
+	},
+	RegionLevelEnum.Level.L2: {
+		ResourcesEnum.Type.FOOD: 0,
+		ResourcesEnum.Type.WOOD: 0,
+		ResourcesEnum.Type.STONE: 0
+	},
+	RegionLevelEnum.Level.L3: {
+		ResourcesEnum.Type.FOOD: 0,
+		ResourcesEnum.Type.WOOD: 1,
+		ResourcesEnum.Type.STONE: 0
+	},
+	RegionLevelEnum.Level.L4: {
+		ResourcesEnum.Type.FOOD: 0,
+		ResourcesEnum.Type.WOOD: 1,
+		ResourcesEnum.Type.STONE: 1
+	},
+	RegionLevelEnum.Level.L5: {
+		ResourcesEnum.Type.FOOD: 1,
+		ResourcesEnum.Type.WOOD: 1,
+		ResourcesEnum.Type.STONE: 1
 	}
 }
 
@@ -280,8 +310,8 @@ const AI_MAX_EXPECTED_DISTANCE = 10            # Expected max distance for norma
 ## Mining System Constants
 const ORE_SEARCH_COST = 10                      # Gold cost to perform ore search
 const ORE_SEARCH_CHANCES_PER_REGION = 3        # Number of ore search attempts per region
-const ORE_DISCOVERY_CHANCE = 0.25               # 20% chance to find ore per search
-const ORE_TYPE_IRON_CHANCE = 0.70              # 80% chance for iron, 20% for gold
+const ORE_DISCOVERY_CHANCE = 0.2               # 20% chance to find ore per search
+const ORE_TYPE_IRON_CHANCE = 0.6              # 80% chance for iron, 20% for gold
 
 ## Army Management Constants
 const RAISE_ARMY_COST = 20                     # Gold cost to raise a new army
@@ -367,6 +397,7 @@ const AI_PEA_TARGET_PROP_LOW = 0.40             # Target share for low power arm
 const AI_PEA_TARGET_PROP_MID = 0.30             # Target share for mid power armies (30%)
 const AI_PEA_TARGET_PROP_HIGH = 0.20            # Target share for high power armies (20%)
 const AI_MIN_FOOD_AFTER_UPGRADE = 50            # Minimum net food after region upgrade safeguard
+const AI_REGION_PROMOTION_MIN_RESOURCE_GROWTH = 5.0
 
 ## Army Pathfinder Algorithm Constants
 const ARMY_PATHFINDER_HORIZON_MP = 15          # Maximum MP horizon for pathfinding (3 turns * 5 MP)
@@ -642,13 +673,13 @@ const REGION_RESOURCES = {
 	RegionTypeEnum.Type.HILLS: {
 		ResourcesEnum.Type.STONE: {"min": 1, "max": 3},
 		ResourcesEnum.Type.IRON: {"min": 1, "max": 3},
-		ResourcesEnum.Type.GOLD: {"min": 5, "max": 12}
+		ResourcesEnum.Type.GOLD: {"min": 5, "max": 10}
 	},
 	RegionTypeEnum.Type.FOREST_HILLS: {
 		ResourcesEnum.Type.WOOD: {"min": 1, "max": 2},
 		ResourcesEnum.Type.STONE: {"min": 0, "max": 2},
 		ResourcesEnum.Type.IRON: {"min": 1, "max": 2},
-		ResourcesEnum.Type.GOLD: {"min": 3, "max": 9}
+		ResourcesEnum.Type.GOLD: {"min": 2, "max": 8}
 	},
 	RegionTypeEnum.Type.MOUNTAINS: {
 		# No resources - impassable terrain
@@ -1280,6 +1311,15 @@ static func get_castle_upkeep_cost(castle_type: CastleTypeEnum.Type) -> Dictiona
 	"""Get per-turn upkeep for a castle type."""
 	var upkeep_data: Dictionary = CASTLE_UPKEEP_COSTS.get(castle_type, {})
 	return {
+		ResourcesEnum.Type.WOOD: int(upkeep_data.get(ResourcesEnum.Type.WOOD, 0)),
+		ResourcesEnum.Type.STONE: int(upkeep_data.get(ResourcesEnum.Type.STONE, 0))
+	}
+
+static func get_region_upkeep_cost(region_level: RegionLevelEnum.Level) -> Dictionary:
+	"""Get per-turn upkeep for a region level."""
+	var upkeep_data: Dictionary = REGION_UPKEEP_COSTS.get(region_level, {})
+	return {
+		ResourcesEnum.Type.FOOD: int(upkeep_data.get(ResourcesEnum.Type.FOOD, 0)),
 		ResourcesEnum.Type.WOOD: int(upkeep_data.get(ResourcesEnum.Type.WOOD, 0)),
 		ResourcesEnum.Type.STONE: int(upkeep_data.get(ResourcesEnum.Type.STONE, 0))
 	}

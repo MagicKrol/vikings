@@ -76,6 +76,7 @@ func _unhandled_input(event: InputEvent) -> void:
 @onready var _info_modal: InfoModal = get_node("../UI/InfoModal") as InfoModal
 @onready var _move_modal: MoveModal = get_node("../UI/MoveModal") as MoveModal
 @onready var _icons_modal: Control = get_node("../UI/IconsModal") as Control
+@onready var _speed_modal: Control = get_node("../UI/SpeedModal") as Control
 @onready var _game_manager: GameManager = get_node("../GameManager") as GameManager
 
 # Legacy manager references for backward compatibility during transition
@@ -352,7 +353,7 @@ func _handle_region_click(region_container: Node, button_index: int) -> void:
 			_handle_army_selection_and_movement.call_deferred(region_container, button_index)
 
 func _handle_mouse_motion() -> void:
-	if _is_hovering_icons_modal():
+	if _is_hovering_hover_blocking_modal():
 		_hovered_region_id_for_debug = -1
 		var visual_manager_icons: VisualManager = _game_manager.get_visual_manager()
 		visual_manager_icons.clear_region_highlight_hover()
@@ -438,11 +439,11 @@ func _handle_mouse_motion() -> void:
 			visual_manager.clear_region_highlight_hover()
 			visual_manager.set_map_hover_region(-1)
 
-func _is_hovering_icons_modal() -> bool:
+func _is_hovering_hover_blocking_modal() -> bool:
 	var hovered_control: Control = get_viewport().gui_get_hovered_control()
 	if hovered_control == null:
 		return false
-	return hovered_control == _icons_modal or _icons_modal.is_ancestor_of(hovered_control)
+	return hovered_control == _icons_modal or _icons_modal.is_ancestor_of(hovered_control) or hovered_control == _speed_modal or _speed_modal.is_ancestor_of(hovered_control)
 
 func _is_move_flow_active() -> bool:
 	var move_modal: MoveModal = get_node("../UI/MoveModal") as MoveModal

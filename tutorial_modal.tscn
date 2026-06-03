@@ -37,7 +37,7 @@ texture = ExtResource("2")
 
 [node name="Arrow5" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(820, 1000)
+position = Vector2(770, 1005)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
@@ -84,10 +84,10 @@ texture = ExtResource("2")
 
 [node name="Arrow12" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(1556, 1040)
-rotation = 0.174533
+position = Vector2(1500, 1025)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
+flip_v = true
 
 [node name="Arrow13a" type="Sprite2D" parent="Arrows"]
 visible = false
@@ -99,8 +99,8 @@ flip_h = true
 
 [node name="Arrow14" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(1420, 380)
-rotation = 0.523599
+position = Vector2(1200, 430)
+rotation = 1.5708
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 flip_h = true
@@ -171,35 +171,35 @@ texture = ExtResource("2")
 
 [node name="Arrow24" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(630, 380)
-rotation = -0.523599
+position = Vector2(720, 430)
+rotation = -1.5708
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow25" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(620, 900)
-rotation = -0.879646
+position = Vector2(510, 780)
+rotation = 0.349066
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow26" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(620, 850)
-rotation = -0.879646
+position = Vector2(510, 745)
+rotation = 0.349066
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow13" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(620, 810)
-rotation = -0.879646
+position = Vector2(510, 710)
+rotation = 0.349066
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
 
 [node name="Arrow27" type="Sprite2D" parent="Arrows"]
 visible = false
-position = Vector2(1350, 570)
+position = Vector2(1280, 580)
 rotation = -0.881391
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")
@@ -262,6 +262,7 @@ texture = ExtResource("2")
 flip_h = true
 
 [node name="Arrow36" type="Sprite2D" parent="Arrows"]
+visible = false
 position = Vector2(558, 823)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2")

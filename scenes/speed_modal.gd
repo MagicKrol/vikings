@@ -4,14 +4,19 @@ class_name SpeedModal
 @onready var normal_button: Button = get_node("Panel/List/ButtonSection/HBoxContainer3/ButtonBorder/NormalButton")
 @onready var fast_button: Button = get_node("Panel/List/ButtonSection/HBoxContainer/ButtonBorder/FastButton")
 @onready var very_fast_button: Button = get_node("Panel/List/ButtonSection/HBoxContainer2/ButtonBorder/VeryFastButton")
+@onready var panel: Control = get_node("Panel") as Control
 
 signal speed_changed(context: String, value: float)
 
 var _button_definitions: Dictionary = {}
 var _selected_keys: Dictionary = {"ai": "normal", "battle": "normal"}
 var _context: String = "ai"
+var ui_manager: UIManager
 
 func _ready() -> void:
+	ui_manager = get_parent().get_node("UIManager") as UIManager
+	mouse_entered.connect(_on_mouse_entered)
+	panel.mouse_entered.connect(_on_panel_mouse_entered)
 	_build_button_definitions()
 	_connect_buttons()
 	_sync_selection_from_parameters()
@@ -76,3 +81,9 @@ func _get_current_value_for_context() -> float:
 	if _context == "battle":
 		return GameParameters.get_battle_round_time()
 	return GameParameters.get_ai_move_speed_multiplier()
+
+func _on_mouse_entered() -> void:
+	ui_manager.hide_tooltip_due_to(self)
+
+func _on_panel_mouse_entered() -> void:
+	ui_manager.hide_tooltip_due_to(self)
