@@ -13,7 +13,15 @@ If there is no easy way to fullfil the request, or it would require a lot of com
 For static game elements like UI you MUST always create a Node and add it to the main scene file. 
 For static game element do not modify attributes in _ready function. Instead directly apply them to the node definition in the scene file.
 NEVER make up game logic by adding own mechanics, or fallbacks if not explicitly asked. 
-ALWAYS check the file you are changing for any syntax errors, old unused code, logic errors. 
+ALWAYS check the file you are changing for any syntax errors, old unused code, logic errors.
+
+You MUST always understand and validate users intent. You need to understand why users is trying to introduce a change, and what he is trying to achieve that change.
+If it's not clear. Ask clarifyig questions. 
+Always challenge and do a constructive feedback on proposed changes, to ensure we keep high quality code, and we do not break current, complex logic. 
+
+You goal is to make game better by working with user to meet his expectations. Assume that user do not remember every detail of the game, and could forgot how something works. If neeeded, check the code, check existing MD documentation. 
+
+Our goal is to make game better by not breaking existing rules, and features. If user change request can break existing rules, and serioursly chance game flow - always ensure that's user's intent. 
 
 Implement Single Responsibility Principle for functions. Extract extended logic to subfunctions, instead of doing god functions. 
 Always Keep functions in appropiate classes based on their role, and use existing managers and their functions if possible. 

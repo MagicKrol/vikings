@@ -215,6 +215,8 @@ If no valid action, army spends remaining MP on camping.
 
 The peasants-only cycle remains intentionally commented out.
 
+Role assignment keeps the existing slot thresholds, but `WAR` mode counts valid MAIN hard goals within MAIN routed-goal range instead of only hard frontier regions. A valid MAIN hard goal is a non-owned castle or enemy-army region that passes known-overmatch checks and has a safe routed path.
+
 ### 3.1 Threatened Owned Castles
 
 If an army is inside its own threatened castle and is below the minimal recruitment threshold, it requests recruitment and runs recruitment routing before threatened-castle decisions. This prevents token armies from being trapped in castle-defense logic.
@@ -249,6 +251,7 @@ Resource component details:
 
 - weights:
 	- food 1.25, wood 1.0, stone 1.0, iron 1.25, gold 0.5
+- Gold and Iron contribute only after that ore type is discovered in the region; undiscovered ore is treated as zero in AI scoring.
 - low-income multiplier:
 	- food gets x3 when net food change < 5
 	- non-food gets x3 when income < 5
@@ -293,6 +296,7 @@ Reachability handling:
 	- reject paths through intermediate castles
 	- reject intermediate known enemy armies unless AI power is at least 120% of known enemy power
 	- reject intermediate unknown enemy armies only on Easy; Normal and Hard allow them
+	- score MAIN ranged goals with MAIN-only tuning: +5 same-turn reachability, `path_cost * 2` distance penalty, +10 castle bonus, castle bonus x3 if the AI owns no castle, another x3 if the castle is winnable with full known defenders, and 2x pursuit bonus for known enemy armies that the MAIN can beat at 120%
 	- attack the first non-owned step on the selected path, then continue while MP allows after each successful step
 - on Normal and Hard, `RAIDER` armies standing next to an enemy castle with unknown tracked garrison power attack it before normal scored raiding, so the castle can be scouted through normal battle/intel recording
 - for `MAIN` hard-target selection (`require_reachable_this_turn=true`), if no hard target is reachable now, AI advances toward the best unreachable hard target by score (higher `final_score`, then lower `mp_cost`) instead of camping in place
@@ -331,6 +335,8 @@ Rules (`_evaluate_merge_policy`):
 5. If own army power > known enemy power -> proceed
 6. Else if local armies in same region combined power > enemy power -> merge
 7. Else -> halt
+
+After this policy, soft targets force `merge` back to `proceed`. Soft targets are regions with no castle and no enemy army, so ordinary expansion targets do not pull nearby armies together.
 
 ## 6. Movement Execution (Step-by-Step)
 
@@ -409,7 +415,7 @@ In current implementation, each army effectively follows:
 2. Else resolve threatened-castle actions, including attack-and-return, safe known attacks, minimal-garrison release, or hold/recruit
 3. Else if needs core recruitment -> go to best friendly recruitment castle and recruit
 4. Else pick best role/frontier target by score
-5. If enemy unknown or stronger -> merge nearby armies if possible
+5. If enemy unknown or stronger -> merge nearby armies if possible, except soft targets proceed without merging
 6. If still unfavorable -> halt and camp
 7. If favorable -> move step-by-step, fight when contested
 8. After withdrawal/defeat -> retreat to strongest reachable friendly region

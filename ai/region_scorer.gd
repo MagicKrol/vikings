@@ -72,26 +72,32 @@ func _calculate_resource_score(region: Region) -> float:
 	var total_resource_score = 0.0
 	
 	# Gold resources
-	var gold = region.get_resource_amount(ResourcesEnum.Type.GOLD)
+	var gold: int = _get_ai_visible_resource_amount(region, ResourcesEnum.Type.GOLD)
 	total_resource_score += _score_resource(gold, GameParameters.AI_GOLD_RESOURCE_WEIGHT)
 	
 	# Food resources  
-	var food = region.get_resource_amount(ResourcesEnum.Type.FOOD)
+	var food: int = _get_ai_visible_resource_amount(region, ResourcesEnum.Type.FOOD)
 	total_resource_score += _score_resource(food, GameParameters.AI_FOOD_RESOURCE_WEIGHT)
 	
 	# Wood resources
-	var wood = region.get_resource_amount(ResourcesEnum.Type.WOOD)
+	var wood: int = _get_ai_visible_resource_amount(region, ResourcesEnum.Type.WOOD)
 	total_resource_score += _score_resource(wood, GameParameters.AI_WOOD_RESOURCE_WEIGHT)
 	
 	# Stone resources
-	var stone = region.get_resource_amount(ResourcesEnum.Type.STONE)
+	var stone: int = _get_ai_visible_resource_amount(region, ResourcesEnum.Type.STONE)
 	total_resource_score += _score_resource(stone, GameParameters.AI_STONE_RESOURCE_WEIGHT)
 	
 	# Iron resources
-	var iron = region.get_resource_amount(ResourcesEnum.Type.IRON)
+	var iron: int = _get_ai_visible_resource_amount(region, ResourcesEnum.Type.IRON)
 	total_resource_score += _score_resource(iron, GameParameters.AI_IRON_RESOURCE_WEIGHT)
 	
 	return total_resource_score
+
+func _get_ai_visible_resource_amount(region: Region, resource_type: ResourcesEnum.Type) -> int:
+	if resource_type == ResourcesEnum.Type.GOLD or resource_type == ResourcesEnum.Type.IRON:
+		if not region.can_collect_resource(resource_type):
+			return 0
+	return region.get_resource_amount(resource_type)
 
 func _score_resource(amount: int, weight: float) -> float:
 	"""Score individual resource with weight and normalization"""

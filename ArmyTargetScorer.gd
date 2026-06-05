@@ -191,7 +191,7 @@ func _get_player_income_by_resource(player_id: int) -> Dictionary:
 			var region = region_container as Region
 			if region != null:
 				for rt in income.keys():
-					income[rt] += float(region.get_resource_amount(rt))
+					income[rt] += float(_get_ai_visible_resource_amount(region, rt))
 	
 	return income
 
@@ -229,10 +229,6 @@ func _get_player_net_food_change(player_id: int) -> float:
 
 func _resource_component_out_of_10(region: Region, player_id: int) -> float:
 	"""Calculate resource component using simple weighted sum with modifiers"""
-	var res = region.get_resources()
-	if res == null:
-		return 0.0
-	
 	# Get player data for modifiers
 	var income = _get_player_income_by_resource(player_id)
 	var stockpile = _get_player_stockpile_by_resource(player_id)
@@ -242,7 +238,7 @@ func _resource_component_out_of_10(region: Region, player_id: int) -> float:
 	var total = 0.0
 	
 	for rt in types:
-		var qty = float(res.get_resource_amount(rt))
+		var qty: float = float(_get_ai_visible_resource_amount(region, rt))
 		var weight = _get_resource_weight(rt)
 		var modifier = 1.0
 		
@@ -262,6 +258,12 @@ func _resource_component_out_of_10(region: Region, player_id: int) -> float:
 		total += contrib
 	
 	return total
+
+func _get_ai_visible_resource_amount(region: Region, resource_type: ResourcesEnum.Type) -> int:
+	if resource_type == ResourcesEnum.Type.GOLD or resource_type == ResourcesEnum.Type.IRON:
+		if not region.can_collect_resource(resource_type):
+			return 0
+	return region.get_resource_amount(resource_type)
 
 func _calculate_ownership_score(region: Region, player_id: int) -> float:
 	# Keep ownership used only for debug visualizer frontier mode legacy
@@ -708,10 +710,6 @@ func get_resource_component_breakdown_out_of_10(region: Region, player_id: int) 
 	if region == null:
 		return {}
 	
-	var res = region.get_resources()
-	if res == null:
-		return {"food": 0.0, "wood": 0.0, "stone": 0.0, "iron": 0.0, "gold": 0.0, "total": 0.0}
-	
 	# Get player data for modifiers
 	var income = _get_player_income_by_resource(player_id)
 	var stockpile = _get_player_stockpile_by_resource(player_id)
@@ -722,7 +720,7 @@ func get_resource_component_breakdown_out_of_10(region: Region, player_id: int) 
 	var total = 0.0
 	
 	for rt in types:
-		var qty = float(res.get_resource_amount(rt))
+		var qty: float = float(_get_ai_visible_resource_amount(region, rt))
 		var weight = _get_resource_weight(rt)
 		var modifier = 1.0
 		

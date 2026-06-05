@@ -148,8 +148,9 @@ func _calculate_cluster_metrics(region_id: int, enemy_region_ids: Array[int]) ->
 		total_population += cluster_region.get_population()
 		
 		# Resources
-		for resource_type in resource_totals:
-			resource_totals[resource_type] += cluster_region.get_resource_amount(resource_type)
+		for resource_key in resource_totals:
+			var resource_type: ResourcesEnum.Type = resource_key
+			resource_totals[resource_type] += _get_ai_visible_resource_amount(cluster_region, resource_type)
 		
 		# Level (convert enum to int)
 		level_sum += RegionLevelEnum.level_to_number(cluster_region.get_region_level())
@@ -359,8 +360,9 @@ func calculate_individual_region_score(region: Region) -> float:
 	var primary_score = 0.0
 	var total_weight = 0.0
 	
-	for resource_type in primary_resources:
-		var quantity = region.get_resource_amount(resource_type)
+	for resource_key in primary_resources:
+		var resource_type: ResourcesEnum.Type = resource_key
+		var quantity: int = _get_ai_visible_resource_amount(region, resource_type)
 		var range_data = individual_resource_ranges.get(resource_type, {"min": 0.0, "max": 1.0})
 		var normalized = clampf((quantity - range_data.min) / (range_data.max - range_data.min), 0.0, 1.0)
 		var weight = primary_resources[resource_type]
@@ -372,7 +374,7 @@ func calculate_individual_region_score(region: Region) -> float:
 		primary_avg = primary_score / total_weight
 	
 	# Gold bonus (separate, divided by 3)
-	var gold_quantity = region.get_resource_amount(ResourcesEnum.Type.GOLD)
+	var gold_quantity: int = _get_ai_visible_resource_amount(region, ResourcesEnum.Type.GOLD)
 	var gold_range = individual_resource_ranges.get(ResourcesEnum.Type.GOLD, {"min": 0.0, "max": 15.0})
 	var gold_normalized = clampf((gold_quantity - gold_range.min) / (gold_range.max - gold_range.min), 0.0, 1.0)
 	var gold_bonus = gold_normalized / 3.0
@@ -389,6 +391,12 @@ func calculate_individual_region_score(region: Region) -> float:
 	# No safety or size component for individual regions (those are cluster-specific)
 	
 	return score
+
+func _get_ai_visible_resource_amount(region: Region, resource_type: ResourcesEnum.Type) -> int:
+	if resource_type == ResourcesEnum.Type.GOLD or resource_type == ResourcesEnum.Type.IRON:
+		if not region.can_collect_resource(resource_type):
+			return 0
+	return region.get_resource_amount(resource_type)
 
 # Debug and utility methods
 
