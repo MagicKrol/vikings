@@ -688,63 +688,75 @@ func _apply_battle_losses() -> void:
 	if report == null:
 		DebugLogger.log("BattleSystem", "[BattleManager] No battle report available")
 		return
-	
+	_apply_battle_losses_from_snapshot(report, _pending_attackers, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
+
+func _apply_battle_losses_from_snapshot(report: BattleSimulator.BattleReport, attacking_armies: Array[Army], defending_armies: Array[Army], defending_garrison: ArmyComposition, defending_recruits_region: Region, defending_recruits_count: int) -> void:
+	if report == null:
+		DebugLogger.log("BattleSystem", "[BattleManager] No battle report available")
+		return
+
 	# New rule:
 	# - Losing side takes 100% losses (destroyed) → no need to calculate for losing side
 	# - Apply calculated losses only to winning side, or to both sides when withdrawal
 	if report.winner == "Attackers":
 		# Destroy defenders entirely (armies + garrison + recruits)
-		_destroy_defender_side()
+		_destroy_defender_side_for_context(defending_armies, defending_garrison, defending_recruits_region)
 		# Apply attackers' calculated losses
-		_apply_losses_proportionally(report.attacker_losses, _pending_attackers, null)
+		_apply_losses_proportionally(report.attacker_losses, attacking_armies, null)
 	elif report.winner == "Withdrawal":
 		# Apply both sides' calculated losses
-		_apply_losses_proportionally(report.attacker_losses, _pending_attackers, null)
-		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
+		_apply_losses_proportionally(report.attacker_losses, attacking_armies, null)
+		_apply_losses_proportionally_with_recruits(report.defender_losses, defending_armies, defending_garrison, defending_recruits_region, defending_recruits_count)
 	else:
 		# Defenders win: destroy attackers entirely; apply defender losses
-		_destroy_attacker_side()
-		_apply_losses_proportionally_with_recruits(report.defender_losses, _pending_defenders, _pending_garrison, _pending_recruits_region, _pending_recruits_count)
+		_destroy_attacker_side_for_context(attacking_armies)
+		_apply_losses_proportionally_with_recruits(report.defender_losses, defending_armies, defending_garrison, defending_recruits_region, defending_recruits_count)
 
 	var record_garrison: bool = report != null and report.winner == "Withdrawal"
 	var track_allowed: bool = report != null and report.rounds > 0
 
 	# Cleanup defeated armies ONLY among battle participants
-	for a in _pending_attackers:
+	for a in attacking_armies:
 		if a.get_total_soldiers() <= 0:
 			_handle_battle_defeat(a)
-	for d in _pending_defenders:
+	for d in defending_armies:
 		if d.get_total_soldiers() <= 0:
 			_handle_battle_defeat(d)
 
 	if track_allowed:
-		_update_enemy_power_tracking(record_garrison)
-	
+		_update_enemy_power_tracking_for_context(record_garrison, attacking_armies, defending_armies, defending_garrison, defending_recruits_region)
+
 	_last_battle_report = null
 
 func _destroy_defender_side() -> void:
+	_destroy_defender_side_for_context(_pending_defenders, _pending_garrison, _pending_recruits_region)
+
+func _destroy_defender_side_for_context(defending_armies: Array[Army], defending_garrison: ArmyComposition, defending_recruits_region: Region) -> void:
 	# Zero-out all defender armies
-	for d in _pending_defenders:
+	for d in defending_armies:
 		if is_instance_valid(d):
 			for unit_type in SoldierTypeEnum.get_all_types():
 				var cnt := d.get_soldier_count(unit_type)
 				if cnt > 0:
 					d.remove_soldiers(unit_type, cnt)
 	# Zero-out garrison
-	if _pending_garrison != null:
+	if defending_garrison != null:
 		for unit_type in SoldierTypeEnum.get_all_types():
-			var gc := _pending_garrison.get_soldier_count(unit_type)
+			var gc := defending_garrison.get_soldier_count(unit_type)
 			if gc > 0:
-				_pending_garrison.remove_soldiers(unit_type, gc)
+				defending_garrison.remove_soldiers(unit_type, gc)
 	# Zero-out recruits (using reduce_recruits for battle losses)
-	if _pending_recruits_region != null:
-		var base_avail: int = _pending_recruits_region.get_base_available_recruits()
+	if defending_recruits_region != null:
+		var base_avail: int = defending_recruits_region.get_base_available_recruits()
 		if base_avail > 0:
-			_pending_recruits_region.reduce_recruits(base_avail)
+			defending_recruits_region.reduce_recruits(base_avail)
 
 func _destroy_attacker_side() -> void:
+	_destroy_attacker_side_for_context(_pending_attackers)
+
+func _destroy_attacker_side_for_context(attacking_armies: Array[Army]) -> void:
 	# Zero-out all attacking armies
-	for a in _pending_attackers:
+	for a in attacking_armies:
 		if is_instance_valid(a):
 			for unit_type in SoldierTypeEnum.get_all_types():
 				var cnt := a.get_soldier_count(unit_type)
@@ -904,30 +916,33 @@ func _compositions_from_armies(armies: Array[Army]) -> Array:
 	return comps
 
 func _update_enemy_power_tracking(record_garrison: bool) -> void:
+	_update_enemy_power_tracking_for_context(record_garrison, _pending_attackers, _pending_defenders, _pending_garrison, _pending_recruits_region)
+
+func _update_enemy_power_tracking_for_context(record_garrison: bool, attacking_armies: Array[Army], defending_armies: Array[Army], defending_garrison: ArmyComposition, defending_recruits_region: Region) -> void:
 	if _game_manager == null:
 		return
-	for attacker in _pending_attackers:
+	for attacker in attacking_armies:
 		if attacker != null and is_instance_valid(attacker):
 			if attacker.get_total_soldiers() <= 0:
 				continue
 			var observer_id := attacker.get_player_id()
-			_record_enemy_observations(observer_id, _pending_defenders)
-	for defender in _pending_defenders:
+			_record_enemy_observations(observer_id, defending_armies)
+	for defender in defending_armies:
 		if defender != null and is_instance_valid(defender):
 			if defender.get_total_soldiers() <= 0:
 				continue
 			var observer_id := defender.get_player_id()
-			_record_enemy_observations(observer_id, _pending_attackers)
-	if record_garrison and _pending_garrison != null and _pending_recruits_region != null:
-		var garrison_power := _calculate_composition_power(_pending_garrison)
-		var region_id := _pending_recruits_region.get_region_id()
+			_record_enemy_observations(observer_id, attacking_armies)
+	if record_garrison and defending_garrison != null and defending_recruits_region != null:
+		var garrison_power := _calculate_composition_power(defending_garrison)
+		var region_id := defending_recruits_region.get_region_id()
 		DebugLogger.log("ArmyTracker", "Record garrison power %d for region %d (pending attackers: %d)" % [
 			garrison_power,
 			region_id,
-			_pending_attackers.size()
+			attacking_armies.size()
 		])
 		_garrison_recorded = true
-		for attacker in _pending_attackers:
+		for attacker in attacking_armies:
 			if attacker != null and is_instance_valid(attacker):
 				_game_manager.record_enemy_garrison(attacker.get_player_id(), region_id, garrison_power)
 

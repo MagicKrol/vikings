@@ -91,7 +91,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = true
+@export var debug_mode: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -3365,7 +3365,7 @@ func _log_ai_prebattle_withdraw(attacker: Army, target_region: Region, reason: S
 	lines.append("Battle Result: withdrawal (pre-battle)")
 	lines.append("Reason: " + reason)
 	lines.append("")
-	_enqueue_ai_battle_log(attacker, lines)
+	_enqueue_ai_battle_log(attacker, lines, target_region.get_region_id())
 
 func _record_enemy_presence_for_attacker(observer_id: int, target_region: Region) -> void:
 	if target_region == null:
@@ -4161,13 +4161,13 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 
 	# Apply battle losses using BattleManager rule (removes both dead and wounded from active comps)
 	if battle_report and _battle_manager:
-		_battle_manager._apply_battle_losses()
+		_battle_manager._apply_battle_losses_from_snapshot(battle_report, attacking_armies, defending_armies, defending_garrison, defending_recruits_region, defending_recruits_count)
 		if should_queue_battle_log:
 			var post_lines := _build_battle_post_log_lines(army, defender_entries, normalized_result, withdrawing_side)
 			var combined := battle_log_lines.duplicate()
 			combined.append_array(post_lines)
 			combined.append("")
-			_enqueue_ai_battle_log(army, combined)
+			_enqueue_ai_battle_log(army, combined, target_region_id)
 		var attacker_id_snapshot: int = attacker_player_id
 		if attacker_id_snapshot == -1 and army != null:
 			attacker_id_snapshot = army.get_player_id()
@@ -4501,12 +4501,15 @@ func _recheck_recruitment_need_after_transfer(army: Army) -> void:
 # AI Battle Log Helpers
 # ============================================================================
 
-func _enqueue_ai_battle_log(army: Army, lines: Array[String]) -> void:
+func _enqueue_ai_battle_log(army: Army, lines: Array[String], region_id: int = -1) -> void:
 	if army == null or not is_instance_valid(army) or lines.is_empty():
 		return
 	var key := _get_ai_battle_log_key(army)
 	var queue: Array = _ai_battle_log_queue.get(key, [])
-	queue.append(lines)
+	queue.append({
+		"region_id": region_id,
+		"lines": lines
+	})
 	_ai_battle_log_queue[key] = queue
 
 func _get_ai_battle_log_key(army: Army) -> String:
@@ -4743,35 +4746,61 @@ func consume_ai_battle_log_for_army(army: Army) -> Array[String]:
 	var key := _get_ai_battle_log_key(army)
 	if key == "":
 		return []
+	return _consume_ai_battle_log_for_key(key)
+
+func consume_ai_battle_log_for_army_region(army: Army, region_id: int) -> Array[String]:
+	if army == null or not is_instance_valid(army):
+		return []
+	var key := _get_ai_battle_log_key(army)
+	if key == "":
+		return []
+	return _consume_ai_battle_log_for_key(key, region_id)
+
+func consume_ai_battle_log_for_token(token: String) -> Array[String]:
+	if token == "":
+		return []
+	return _consume_ai_battle_log_for_key(token)
+
+func consume_ai_battle_log_for_token_region(token: String, region_id: int) -> Array[String]:
+	if token == "":
+		return []
+	return _consume_ai_battle_log_for_key(token, region_id)
+
+func _consume_ai_battle_log_for_key(key: String, region_id: int = -1) -> Array[String]:
 	if not _ai_battle_log_queue.has(key):
 		return []
 	var queue: Array = _ai_battle_log_queue.get(key, [])
 	if queue.is_empty():
 		_ai_battle_log_queue.erase(key)
 		return []
-	var lines: Array[String] = queue[0]
-	queue.remove_at(0)
+	var queue_index: int = 0
+	if region_id >= 0:
+		queue_index = -1
+		for i in range(queue.size()):
+			var queued_entry: Variant = queue[i]
+			if queued_entry is Dictionary:
+				var queued_entry_dict: Dictionary = queued_entry
+				if int(queued_entry_dict.get("region_id", -1)) == region_id:
+					queue_index = i
+					break
+		if queue_index == -1:
+			return []
+	var entry: Variant = queue[queue_index]
+	var lines: Array[String] = []
+	if entry is Dictionary:
+		var entry_dict: Dictionary = entry
+		var raw_lines: Array = entry_dict.get("lines", [])
+		for raw_line in raw_lines:
+			lines.append(String(raw_line))
+	elif entry is Array:
+		var legacy_lines: Array = entry
+		for legacy_line in legacy_lines:
+			lines.append(String(legacy_line))
+	queue.remove_at(queue_index)
 	if queue.is_empty():
 		_ai_battle_log_queue.erase(key)
 	else:
 		_ai_battle_log_queue[key] = queue
-	return lines
-
-func consume_ai_battle_log_for_token(token: String) -> Array[String]:
-	if token == "":
-		return []
-	if not _ai_battle_log_queue.has(token):
-		return []
-	var queue: Array = _ai_battle_log_queue.get(token, [])
-	if queue.is_empty():
-		_ai_battle_log_queue.erase(token)
-		return []
-	var lines: Array[String] = queue[0]
-	queue.remove_at(0)
-	if queue.is_empty():
-		_ai_battle_log_queue.erase(token)
-	else:
-		_ai_battle_log_queue[token] = queue
 	return lines
 
 func _start_first_turn() -> void:

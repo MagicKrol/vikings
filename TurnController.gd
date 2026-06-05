@@ -1303,24 +1303,28 @@ func _select_raider_scored_move(army: Army) -> Dictionary:
 			var army_power: int = army.get_army_power()
 			if target_has_castle:
 				if float(army_power) < float(enemy_power) * 2.0:
-					_append_rejected_candidate(
-						rejected_candidates,
-						target_region_id,
-						"raider_castle_threshold",
-						float(move.get("final_score", 0.0)),
-						true
-					)
+					rejected_candidates.append({
+						"target_id": target_region_id,
+						"reason": "raider_castle_threshold",
+						"score": float(move.get("final_score", 0.0)),
+						"has_score": true,
+						"observer_id": player_id,
+						"enemy_power": enemy_power,
+						"army_power": army_power
+					})
 					continue
 				raider_branch = "role_raider_hard_known_castle"
 			else:
 				if float(army_power) < float(enemy_power) * 1.2:
-					_append_rejected_candidate(
-						rejected_candidates,
-						target_region_id,
-						"raider_army_threshold",
-						float(move.get("final_score", 0.0)),
-						true
-					)
+					rejected_candidates.append({
+						"target_id": target_region_id,
+						"reason": "raider_army_threshold",
+						"score": float(move.get("final_score", 0.0)),
+						"has_score": true,
+						"observer_id": player_id,
+						"enemy_power": enemy_power,
+						"army_power": army_power
+					})
 					continue
 				raider_branch = "role_raider_hard_known_army"
 		var merge_decision: String = _evaluate_merge_policy(army, enemy_info)
@@ -4252,17 +4256,27 @@ func _log_rejected_candidates(rejections: Array[Dictionary]) -> void:
 		var region_id: int = int(rejected.get("target_id", -1))
 		var reason_raw: String = String(rejected.get("reason", "unknown"))
 		var reason_label: String = _format_rejected_reason(reason_raw)
-		if reason_raw == "known_overmatched_filter":
+		if reason_raw == "known_overmatched_filter" or reason_raw == "raider_army_threshold" or reason_raw == "raider_castle_threshold":
 			var observer_id: int = int(rejected.get("observer_id", -1))
 			var enemy_army_detail: String = _build_known_enemy_army_power_detail(observer_id, region_id)
-			var overmatched_line := "Reason: %s Candidate %d: %s (#%d), enemies: %s" % [
+			var threshold_score_label: String = "n/a"
+			if bool(rejected.get("has_score", false)):
+				threshold_score_label = "%.1f" % float(rejected.get("score", 0.0))
+			var threshold_army_power: int = int(rejected.get("army_power", 0))
+			var threshold_enemy_power: int = int(rejected.get("enemy_power", 0))
+			var threshold_power_detail: String = ""
+			if threshold_army_power > 0 or threshold_enemy_power > 0:
+				threshold_power_detail = ", army_power: %d, enemy_power: %d" % [threshold_army_power, threshold_enemy_power]
+			var threshold_line: String = "Reason: %s Candidate %d: %s (#%d), score: %s, enemies: %s%s" % [
 				reason_label,
 				i + 1,
 				_get_region_name_by_id(region_id),
 				region_id,
-				enemy_army_detail
+				threshold_score_label,
+				enemy_army_detail,
+				threshold_power_detail
 			]
-			_log_army_detail_line(overmatched_line)
+			_log_army_detail_line(threshold_line)
 			continue
 		var score_label: String = "n/a"
 		if bool(rejected.get("has_score", false)):
@@ -4465,11 +4479,11 @@ func _log_army_move_result(army: Army, target_region_id: int, result: String, ar
 		"battle_victory":
 			_log_battle_header()
 			_log_army_detail_line("Fight at %s" % target_name)
-			_log_recent_battle_details(army, army_log_token)
+			_log_recent_battle_details(army, army_log_token, actual_region_id)
 		"battle_defeat":
 			_log_battle_header()
 			_log_army_detail_line("Fight at %s" % target_name)
-			_log_recent_battle_details(army, army_log_token)
+			_log_recent_battle_details(army, army_log_token, actual_region_id)
 		"battle_withdrawal":
 			_log_battle_header()
 			_log_army_detail_line("Fight at %s" % target_name)
@@ -4483,7 +4497,7 @@ func _log_army_move_result(army: Army, target_region_id: int, result: String, ar
 					_log_army_detail_line("Withdrew")
 			else:
 				_log_army_detail_line("Withdrew")
-			_log_recent_battle_details(army, army_log_token)
+			_log_recent_battle_details(army, army_log_token, actual_region_id)
 		"arrived":
 			_log_army_detail_line("Arrived at %s" % target_name)
 		"blocked":
@@ -4732,14 +4746,20 @@ func _log_battle_header() -> void:
 	if _log_active_turn:
 		_log_army_detail_line("[BATTLE]")
 
-func _log_recent_battle_details(army: Army, army_log_token: String) -> void:
+func _log_recent_battle_details(army: Army, army_log_token: String, battle_region_id: int = -1) -> void:
 	if not _log_active_turn:
 		return
 	var lines: Array[String] = []
 	if army != null and game_manager:
-		lines = game_manager.consume_ai_battle_log_for_army(army)
+		if battle_region_id >= 0:
+			lines = game_manager.consume_ai_battle_log_for_army_region(army, battle_region_id)
+		else:
+			lines = game_manager.consume_ai_battle_log_for_army(army)
 	if lines.is_empty() and army_log_token != "" and game_manager:
-		lines = game_manager.consume_ai_battle_log_for_token(army_log_token)
+		if battle_region_id >= 0:
+			lines = game_manager.consume_ai_battle_log_for_token_region(army_log_token, battle_region_id)
+		else:
+			lines = game_manager.consume_ai_battle_log_for_token(army_log_token)
 	if lines.is_empty():
 		return
 	for line in lines:
