@@ -286,13 +286,15 @@ Reachability handling:
 - if none reachable, far targets are ordered by:
 	- lowest mp_cost first
 	- final_score tie-break
-- before normal hard/soft frontier targeting, `MAIN` armies try an extended goal route:
-	- search non-owned goals within 5 region hops
+- before normal hard/soft frontier targeting, `MAIN` armies try routed goal selection:
+	- first search non-owned goals within a difficulty range: Easy 2 hops, Normal 3 hops, Hard 4 hops
+	- if no ranged goal route is handled, select the normal hard/soft MAIN frontier objective and try the same routed movement
 	- use normal passable pathing, not friendly-only pathing
 	- reject paths through intermediate castles
 	- reject intermediate known enemy armies unless AI power is at least 120% of known enemy power
 	- reject intermediate unknown enemy armies only on Easy; Normal and Hard allow them
 	- attack the first non-owned step on the selected path, then continue while MP allows after each successful step
+- on Normal and Hard, `RAIDER` armies standing next to an enemy castle with unknown tracked garrison power attack it before normal scored raiding, so the castle can be scouted through normal battle/intel recording
 - for `MAIN` hard-target selection (`require_reachable_this_turn=true`), if no hard target is reachable now, AI advances toward the best unreachable hard target by score (higher `final_score`, then lower `mp_cost`) instead of camping in place
 
 ### 4.4 Known Enemy Gate Before Scoring

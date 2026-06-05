@@ -469,6 +469,11 @@ func _handle_main_role_cycle(army: Army) -> bool:
 		return true
 	if army.get_movement_points() <= 0:
 		return true
+	var frontier_goal_handled: bool = await _try_handle_main_frontier_goal_route(army)
+	if frontier_goal_handled:
+		return true
+	if army.get_movement_points() <= 0:
+		return true
 	var hard_action_handled: bool = await _try_execute_frontier_role_bucket(army, _frontier_hard_regions, FrontierBucketType.HARD, "role_main_attack", "hard_targets", true)
 	if hard_action_handled:
 		return true
@@ -485,6 +490,13 @@ func _handle_main_role_cycle(army: Army) -> bool:
 
 func _try_handle_main_extended_goal_route(army: Army) -> bool:
 	var goal_candidate: Dictionary = _select_main_extended_goal_candidate(army)
+	return await _try_handle_main_goal_route(army, goal_candidate, "role_main_extended_goal")
+
+func _try_handle_main_frontier_goal_route(army: Army) -> bool:
+	var goal_candidate: Dictionary = _select_main_frontier_goal_candidate(army)
+	return await _try_handle_main_goal_route(army, goal_candidate, "role_main_frontier_goal")
+
+func _try_handle_main_goal_route(army: Army, goal_candidate: Dictionary, branch: String) -> bool:
 	if goal_candidate.is_empty():
 		return false
 	var goal_region_id: int = int(goal_candidate.get("goal_id", -1))
@@ -500,7 +512,7 @@ func _try_handle_main_extended_goal_route(army: Army) -> bool:
 			break
 		var current_region: Region = army.get_parent() as Region
 		var current_region_id: int = current_region.get_region_id()
-		_log_decision_tree_branch(army, "role_main_extended_goal", "goal " + _get_region_name_by_id(goal_region_id) + " via " + _get_region_name_by_id(target_region_id))
+		_log_decision_tree_branch(army, branch, "goal " + _get_region_name_by_id(goal_region_id) + " via " + _get_region_name_by_id(target_region_id))
 		_log_main_extended_route_choice(move)
 		var move_handled: bool = await _execute_frontier_move_choice(army, move)
 		if not move_handled:
@@ -518,24 +530,62 @@ func _try_handle_main_extended_goal_route(army: Army) -> bool:
 			break
 	return handled_any
 
+func _select_main_frontier_goal_candidate(army: Army) -> Dictionary:
+	var current_region: Region = army.get_parent() as Region
+	var current_region_id: int = current_region.get_region_id()
+	var player_id: int = army.get_player_id()
+	var hard_targets: Array[int] = _get_live_frontier_targets_for_bucket(player_id, _frontier_hard_regions, FrontierBucketType.HARD, current_region_id)
+	if not hard_targets.is_empty():
+		var hard_move: Dictionary = _select_frontier_reachable_move_for_targets(army, hard_targets)
+		if not hard_move.is_empty():
+			var hard_candidate: Dictionary = _build_main_goal_candidate_from_frontier_move(hard_move)
+			if not hard_candidate.is_empty():
+				return hard_candidate
+			return {}
+	var soft_targets: Array[int] = _get_live_frontier_targets_for_bucket(player_id, _frontier_soft_regions, FrontierBucketType.SOFT, current_region_id)
+	if not soft_targets.is_empty():
+		var soft_move: Dictionary = _select_frontier_move_for_targets(army, soft_targets)
+		return _build_main_goal_candidate_from_frontier_move(soft_move)
+	return {}
+
+func _build_main_goal_candidate_from_frontier_move(move: Dictionary) -> Dictionary:
+	if move.is_empty():
+		return {}
+	if String(move.get("goal", "attack")) == "halt":
+		return {}
+	var goal_region_id: int = int(move.get("target_id", -1))
+	if goal_region_id < 0:
+		return {}
+	return {
+		"goal_id": goal_region_id,
+		"goal_score": float(move.get("final_score", 0.0)),
+		"path_cost": int(move.get("mp_cost", AI_PATH_UNREACHABLE_COST)),
+		"path": move.get("path", [])
+	}
+
 func _select_main_extended_goal_candidate(army: Army) -> Dictionary:
 	var current_region: Region = army.get_parent() as Region
 	var current_region_id: int = current_region.get_region_id()
 	var player_id: int = army.get_player_id()
 	var goal_ids: Array[int] = _get_main_extended_goal_ids(current_region_id, player_id)
 	var candidates: Array[Dictionary] = []
+	var rejected_candidates: Array[Dictionary] = []
 	for goal_id in goal_ids:
 		if target_scorer.is_target_overmatched_by_known_enemy(army, goal_id):
+			_append_rejected_candidate(rejected_candidates, goal_id, "main_goal_known_overmatched", 0.0, false)
 			continue
 		var path_info: Dictionary = _find_main_extended_path(army, current_region_id, goal_id)
 		if path_info.is_empty():
+			_append_rejected_candidate(rejected_candidates, goal_id, "main_goal_no_safe_path", 0.0, false)
 			continue
 		var path: Array[int] = path_info.get("path", [])
 		var route_target_id: int = _get_first_non_owned_path_step(path, player_id)
 		if route_target_id < 0:
+			_append_rejected_candidate(rejected_candidates, goal_id, "main_goal_no_non_owned_step", 0.0, false)
 			continue
 		var base_score: float = target_scorer.score_region_base(goal_id, player_id)
 		if base_score <= 0.0:
+			_append_rejected_candidate(rejected_candidates, goal_id, "main_goal_base_score_non_positive", base_score, true)
 			continue
 		var components: Dictionary = target_scorer.get_target_components(army, goal_id)
 		var owner_id: int = region_manager.get_region_owner(goal_id)
@@ -549,17 +599,31 @@ func _select_main_extended_goal_candidate(army: Army) -> Dictionary:
 		var neutral_core_bonus: float = _get_neutral_core_bonus(goal_id, player_id)
 		var enemy_adjustment: Dictionary = target_scorer.get_enemy_adjustment(army, goal_id)
 		if bool(enemy_adjustment.get("nullify", false)):
+			_append_rejected_candidate(rejected_candidates, goal_id, "main_goal_enemy_adjustment_nullify", 0.0, false)
 			continue
 		var path_cost: int = int(path_info.get("cost", AI_PATH_UNREACHABLE_COST))
-		var final_score: float = base_score + ownership_bonus + pursue_bonus + castle_bonus + neutral_core_bonus - float(path_cost) + float(enemy_adjustment.get("delta", 0.0))
+		var enemy_delta: float = float(enemy_adjustment.get("delta", 0.0))
+		var final_score: float = base_score + ownership_bonus + pursue_bonus + castle_bonus + neutral_core_bonus - float(path_cost) + enemy_delta
 		candidates.append({
+			"target_id": goal_id,
 			"goal_id": goal_id,
 			"route_target_id": route_target_id,
+			"base_score": base_score,
+			"final_score": final_score,
 			"goal_score": final_score,
+			"random_modifier": 0.0,
+			"mp_cost": path_cost,
 			"path_cost": path_cost,
-			"path": path
+			"path": path,
+			"components": components,
+			"ownership_bonus": ownership_bonus,
+			"pursue_bonus": pursue_bonus,
+			"castle_bonus": castle_bonus,
+			"neutral_core_bonus": neutral_core_bonus,
+			"enemy_delta": enemy_delta
 		})
 	if candidates.is_empty():
+		_log_rejected_candidates(rejected_candidates)
 		return {}
 	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		var a_score: float = float(a.get("goal_score", 0.0))
@@ -572,6 +636,8 @@ func _select_main_extended_goal_candidate(army: Army) -> Dictionary:
 			return a_cost < b_cost
 		return int(a.get("goal_id", -1)) < int(b.get("goal_id", -1))
 	)
+	_log_main_goal_candidates(candidates)
+	_log_rejected_candidates(rejected_candidates)
 	return candidates[0]
 
 func _get_main_extended_goal_ids(current_region_id: int, player_id: int) -> Array[int]:
@@ -583,11 +649,12 @@ func _get_main_extended_goal_ids(current_region_id: int, player_id: int) -> Arra
 		"distance": 0
 	})
 	visited[current_region_id] = true
+	var max_distance: int = _get_main_extended_target_range()
 	while not queue.is_empty():
 		var current: Dictionary = queue.pop_front()
 		var region_id: int = int(current.get("region_id", -1))
 		var distance: int = int(current.get("distance", 0))
-		if distance >= GameParameters.AI_MAIN_EXTENDED_TARGET_RANGE:
+		if distance >= max_distance:
 			continue
 		var neighbors: Array[int] = region_manager.get_neighbor_regions(region_id)
 		for neighbor_id in neighbors:
@@ -604,6 +671,16 @@ func _get_main_extended_goal_ids(current_region_id: int, player_id: int) -> Arra
 				"distance": distance + 1
 			})
 	return result
+
+func _get_main_extended_target_range() -> int:
+	var difficulty: int = GameParameters.normalize_game_difficulty(game_manager.get_game_difficulty())
+	match difficulty:
+		GameParameters.Difficulty.EASY:
+			return GameParameters.AI_MAIN_EXTENDED_TARGET_RANGE_EASY
+		GameParameters.Difficulty.HARD:
+			return GameParameters.AI_MAIN_EXTENDED_TARGET_RANGE_HARD
+		_:
+			return GameParameters.AI_MAIN_EXTENDED_TARGET_RANGE_NORMAL
 
 func _build_main_extended_route_move(army: Army, goal_region_id: int, goal_candidate: Dictionary) -> Dictionary:
 	var current_region: Region = army.get_parent() as Region
@@ -783,7 +860,7 @@ func _log_main_extended_route_choice(move: Dictionary) -> void:
 	var target_id: int = int(move.get("target_id", -1))
 	var path_cost: int = int(move.get("extended_goal_path_cost", AI_PATH_UNREACHABLE_COST))
 	var path: Array = move.get("extended_goal_path", [])
-	_log_army_detail_line("Extended goal: %s (#%d), route step: %s (#%d), path_cost: %d, path: %s" % [
+	_log_army_detail_line("Main goal: %s (#%d), route step: %s (#%d), path_cost: %d, path: %s" % [
 		_get_region_name_by_id(goal_id),
 		goal_id,
 		_get_region_name_by_id(target_id),
@@ -795,6 +872,16 @@ func _log_main_extended_route_choice(move: Dictionary) -> void:
 func _handle_raider_role_cycle(army: Army, turn_number: int) -> bool:
 	if not _ensure_vigor_before_move(army):
 		return true
+	var scout_move: Dictionary = _select_raider_unknown_castle_scout_move(army)
+	if not scout_move.is_empty():
+		var scout_branch: String = String(scout_move.get("raider_branch", "role_raider_scout_unknown_castle"))
+		var scout_reason: String = String(scout_move.get("raider_reason", "unknown_castle"))
+		_log_decision_tree_branch(army, scout_branch, scout_reason)
+		var scout_action_handled: bool = await _execute_frontier_move_choice(army, scout_move)
+		if scout_action_handled:
+			return true
+		if army.get_movement_points() <= 0:
+			return true
 	var raider_move: Dictionary = _select_raider_scored_move(army)
 	if not raider_move.is_empty():
 		var branch: String = String(raider_move.get("raider_branch", "role_raider_expand"))
@@ -811,6 +898,82 @@ func _handle_raider_role_cycle(army: Army, turn_number: int) -> bool:
 		return true
 	_log_decision_tree_branch(army, "role_raider_to_support", "no_raid_target")
 	return await _handle_support_role_cycle(army, turn_number)
+
+func _select_raider_unknown_castle_scout_move(army: Army) -> Dictionary:
+	var difficulty: int = GameParameters.normalize_game_difficulty(game_manager.get_game_difficulty())
+	if difficulty == GameParameters.Difficulty.EASY:
+		return {}
+	var current_region: Region = army.get_parent() as Region
+	var current_region_id: int = current_region.get_region_id()
+	var player_id: int = army.get_player_id()
+	var candidates: Array[Dictionary] = []
+	var neighbors: Array[int] = region_manager.get_neighbor_regions(current_region_id)
+	for neighbor_id in neighbors:
+		if not _is_raider_unknown_castle_scout_target(neighbor_id, player_id):
+			continue
+		var move: Dictionary = _build_raider_unknown_castle_scout_move(army, current_region_id, neighbor_id)
+		if not move.is_empty():
+			candidates.append(move)
+	if candidates.is_empty():
+		return {}
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_score: float = float(a.get("final_score", 0.0))
+		var b_score: float = float(b.get("final_score", 0.0))
+		if abs(a_score - b_score) > 0.001:
+			return a_score > b_score
+		var a_cost: int = int(a.get("mp_cost", AI_PATH_UNREACHABLE_COST))
+		var b_cost: int = int(b.get("mp_cost", AI_PATH_UNREACHABLE_COST))
+		if a_cost != b_cost:
+			return a_cost < b_cost
+		return int(a.get("target_id", -1)) < int(b.get("target_id", -1))
+	)
+	return candidates[0]
+
+func _is_raider_unknown_castle_scout_target(region_id: int, player_id: int) -> bool:
+	var owner_id: int = region_manager.get_region_owner(region_id)
+	if owner_id <= 0 or owner_id == player_id:
+		return false
+	if region_manager.get_castle_level(region_id) <= 0:
+		return false
+	if player_manager.get_tracked_enemy_garrison_power(player_id, region_id) >= 0:
+		return false
+	var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+	return region.is_passable()
+
+func _build_raider_unknown_castle_scout_move(army: Army, current_region_id: int, target_region_id: int) -> Dictionary:
+	var player_id: int = army.get_player_id()
+	var target_region: Region = region_manager.map_generator.get_region_container_by_id(target_region_id) as Region
+	var cost: int = army_manager.get_terrain_cost(target_region, player_id)
+	if cost < 0 or cost > army.get_movement_points():
+		return {}
+	var base_score: float = target_scorer.score_region_base(target_region_id, player_id)
+	var components: Dictionary = target_scorer.get_target_components(army, target_region_id)
+	var ownership_bonus: float = float(GameParameters.AI_ENEMY_REGION_SCORE_BONUS)
+	var pursue_bonus: float = float(components.get("pursue_bonus", 0.0))
+	var castle_bonus: float = float(components.get("castle_bonus", 0.0))
+	var neutral_core_bonus: float = _get_neutral_core_bonus(target_region_id, player_id)
+	var final_score: float = base_score + ownership_bonus + pursue_bonus + castle_bonus + neutral_core_bonus - float(cost)
+	return {
+		"army": army,
+		"target_id": target_region_id,
+		"base_score": base_score,
+		"random_modifier": 0.0,
+		"mp_cost": cost,
+		"final_score": final_score,
+		"path": [current_region_id, target_region_id],
+		"current_region_id": current_region_id,
+		"can_reach_now": true,
+		"components": components,
+		"ownership_bonus": ownership_bonus,
+		"pursue_bonus": pursue_bonus,
+		"castle_bonus": castle_bonus,
+		"neutral_core_bonus": neutral_core_bonus,
+		"goal": "attack",
+		"enemy_info": _build_enemy_info(target_region_id, player_id, army),
+		"merge_decision": "proceed",
+		"raider_branch": "role_raider_scout_unknown_castle",
+		"raider_reason": "unknown_castle to " + _get_region_name_by_id(target_region_id)
+	}
 
 func _handle_support_role_cycle(army: Army, turn_number: int) -> bool:
 	var current_region: Region = army.get_parent() as Region
@@ -4063,6 +4226,52 @@ func _log_target_candidates(moves: Array) -> void:
 			float(components.get("castle_bonus", 0.0)),
 			float(components.get("pursue_bonus", 0.0)),
 			float(move.get("neutral_core_bonus", 0.0)),
+			float(components.get("strategy", 0.0))
+		]
+		_log_army_detail_line(line)
+
+func _log_main_goal_candidates(candidates: Array[Dictionary]) -> void:
+	if not _log_active_turn:
+		return
+	if candidates.is_empty():
+		return
+	var sorted: Array[Dictionary] = candidates.duplicate()
+	sorted.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_score: float = float(a.get("goal_score", 0.0))
+		var b_score: float = float(b.get("goal_score", 0.0))
+		if abs(a_score - b_score) > 0.001:
+			return a_score > b_score
+		var a_cost: int = int(a.get("path_cost", AI_PATH_UNREACHABLE_COST))
+		var b_cost: int = int(b.get("path_cost", AI_PATH_UNREACHABLE_COST))
+		if a_cost != b_cost:
+			return a_cost < b_cost
+		return int(a.get("goal_id", -1)) < int(b.get("goal_id", -1))
+	)
+	var top_count: int = min(AI_TARGET_CANDIDATE_LOG_LIMIT, sorted.size())
+	_log_army_detail_line("Top %d main goal candidates:" % top_count)
+	for i in range(top_count):
+		var candidate: Dictionary = sorted[i]
+		var goal_id: int = int(candidate.get("goal_id", -1))
+		var route_target_id: int = int(candidate.get("route_target_id", -1))
+		var components: Dictionary = candidate.get("components", Dictionary())
+		var line: String = "Candidate %d: %s (#%d), score: %.1f via %s (#%d), path_cost: %d, path: %s (base: %.1f, ownership_bonus: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, enemy_delta: %.1f, strategy: %.1f)" % [
+			i + 1,
+			_get_region_name_by_id(goal_id),
+			goal_id,
+			float(candidate.get("goal_score", 0.0)),
+			_get_region_name_by_id(route_target_id),
+			route_target_id,
+			int(candidate.get("path_cost", 0)),
+			str(candidate.get("path", [])),
+			float(candidate.get("base_score", 0.0)),
+			float(candidate.get("ownership_bonus", 0.0)),
+			float(components.get("resources", 0.0)),
+			float(components.get("population", 0.0)),
+			int(components.get("level", 0)),
+			float(candidate.get("castle_bonus", 0.0)),
+			float(candidate.get("pursue_bonus", 0.0)),
+			float(candidate.get("neutral_core_bonus", 0.0)),
+			float(candidate.get("enemy_delta", 0.0)),
 			float(components.get("strategy", 0.0))
 		]
 		_log_army_detail_line(line)

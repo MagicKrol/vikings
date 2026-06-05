@@ -673,6 +673,9 @@ func _next_turn_internal() -> void:
 		await _process_player_turn_start(current_player)
 		if check_victory_conditions_for_player(current_player):
 			return
+		if _should_auto_skip_empty_scenario_human_turn(current_player):
+			_auto_skip_empty_scenario_human_turn(current_player)
+			return
 		_process_turn_start_autosave(current_player)
 	
 	# Check if current player is AI and handle AI turn processing
@@ -1223,6 +1226,59 @@ func _player_has_any_army(player_id: int) -> bool:
 			return true
 	return false
 
+func _player_has_any_region(player_id: int) -> bool:
+	var owned_region_ids: Array[int] = _region_manager.get_player_regions(player_id)
+	return not owned_region_ids.is_empty()
+
+func _player_has_pending_scenario_event(player_id: int) -> bool:
+	if game_mode != "scenario":
+		return false
+	for event_data: Dictionary in _scenario_events_runtime:
+		if bool(event_data.get("triggered", false)):
+			continue
+		if int(event_data.get("player_id", 0)) != player_id:
+			continue
+		if int(event_data.get("turn", 1)) < current_turn:
+			continue
+		return true
+	return false
+
+func _player_has_pending_scenario_event_for_turn(player_id: int, turn_number: int) -> bool:
+	if game_mode != "scenario":
+		return false
+	for event_data: Dictionary in _scenario_events_runtime:
+		if bool(event_data.get("triggered", false)):
+			continue
+		if int(event_data.get("player_id", 0)) != player_id:
+			continue
+		if int(event_data.get("turn", 1)) != turn_number:
+			continue
+		return true
+	return false
+
+func _should_auto_skip_empty_scenario_human_turn(player_id: int) -> bool:
+	if game_mode != "scenario":
+		return false
+	if castle_placing_mode:
+		return false
+	if not is_player_human(player_id):
+		return false
+	if _player_has_any_region(player_id):
+		return false
+	if _player_has_any_castle(player_id):
+		return false
+	if _player_has_any_army(player_id):
+		return false
+	if _player_has_pending_scenario_event_for_turn(player_id, current_turn):
+		return false
+	return true
+
+func _auto_skip_empty_scenario_human_turn(player_id: int) -> void:
+	DebugLogger.log("TurnProcessing", "Auto-skipping empty scenario human turn for Player " + str(player_id))
+	if _next_player_modal and _next_player_modal.visible:
+		_next_player_modal.hide_modal()
+	call_deferred("next_turn")
+
 func _count_all_conquerable_regions() -> int:
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
 	var regions_node: Node = map_generator.get_node("Regions")
@@ -1276,6 +1332,8 @@ func _find_newly_eliminated_human_player() -> int:
 		if _player_has_any_castle(player_id):
 			continue
 		if _player_has_any_army(player_id):
+			continue
+		if _player_has_pending_scenario_event(player_id):
 			continue
 		return player_id
 	return -1
@@ -4747,6 +4805,9 @@ func _start_first_turn() -> void:
 		return
 	await _process_player_turn_start(current_player)
 	if check_victory_conditions_for_player(current_player):
+		return
+	if _should_auto_skip_empty_scenario_human_turn(current_player):
+		_auto_skip_empty_scenario_human_turn(current_player)
 		return
 	_process_turn_start_autosave(current_player)
 	

@@ -82,7 +82,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = true
+const DEMO_MODE_ENABLED: bool = false
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",
@@ -90,7 +90,7 @@ const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"Vikings Invasion.json"
 ]
 const DEMO_ALLOWED_CUSTOM_MAP_FILES: Array[String] = [
-	"mapdata_287_401.json"
+	"Demo Map.json"
 ]
 
 enum Difficulty {
@@ -179,8 +179,8 @@ const REGION_MAP_HOVER_OWNED_HOVER_ALPHA = 0.7
 const REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA = 0.2
 const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
 
-const RECRUIT_PERCENTAGE_OF_POPULATION = 0.08  # % of population becomes available recruits
-const RECRUIT_REPLENISH_RATE = 0.008            # % of population replenishes per turn
+const RECRUIT_PERCENTAGE_OF_POPULATION = 0.07  # % of population becomes available recruits
+const RECRUIT_REPLENISH_RATE = 0.006            # % of population replenishes per turn
 const RECRUIT_PEA_CAP_SHARE = 0.40   
 ## Region Level Bonuses
 const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
@@ -361,7 +361,9 @@ const AI_RAISE_W_RECRUITS = 0.20
 const AI_RAISE_W_BANK = 0.10
 const AI_RAISE_THRESHOLD_NORM = 0.50
 const AI_RAISE_FRONTIER = 2.5
-const AI_MAIN_EXTENDED_TARGET_RANGE = 5
+const AI_MAIN_EXTENDED_TARGET_RANGE_EASY = 2
+const AI_MAIN_EXTENDED_TARGET_RANGE_NORMAL = 3
+const AI_MAIN_EXTENDED_TARGET_RANGE_HARD = 4
 
 ## Dynamic Resource Need Scoring (ArmyTargetScorer)
 # Need multipliers
@@ -584,7 +586,7 @@ const UNIT_STATS = {
 		"power": 4
 	},
 	SoldierTypeEnum.Type.CROSSBOWMEN: {
-		"attack": 13,     # 20% hit chance per unit
+		"attack": 16,     # 20% hit chance per unit
 		"defense": 20,    # 15% chance to deflect hits
 		"cost": 3,        # Recruitment cost
 		"gold_cost": 3,
@@ -1213,9 +1215,9 @@ static func generate_resource_amount(region_type: RegionTypeEnum.Type, resource_
 	if region_type == RegionTypeEnum.Type.GRASSLAND and resource_type == ResourcesEnum.Type.FOOD:
 		return _roll_weighted_3(45, 35, 1, 2, 3)
 	if region_type == RegionTypeEnum.Type.FOREST and resource_type == ResourcesEnum.Type.WOOD:
-		return _roll_weighted_3(55, 30, 1, 2, 3)
-	if region_type == RegionTypeEnum.Type.HILLS and resource_type == ResourcesEnum.Type.STONE:
 		return _roll_weighted_3(45, 35, 1, 2, 3)
+	if region_type == RegionTypeEnum.Type.HILLS and resource_type == ResourcesEnum.Type.STONE:
+		return _roll_weighted_3(50, 35, 1, 2, 3)
 	if region_type == RegionTypeEnum.Type.FOREST_HILLS and resource_type == ResourcesEnum.Type.WOOD:
 		return _roll_weighted_2(70, 1, 2)
 	if region_type == RegionTypeEnum.Type.FOREST_HILLS and resource_type == ResourcesEnum.Type.STONE:

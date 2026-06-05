@@ -75,7 +75,7 @@ MAX_ROUNDS = 1000
 UNIT_STATS = {
 	PEASANTS: {
 		"attack": 5,
-		"defense": 10,
+		"defense": 8,
 		"power": 2,
 		"cost": 1,
 		"traits": [SIEGE_LABORER],
@@ -88,28 +88,28 @@ UNIT_STATS = {
 		"traits": [LONG_SPEARS, SIEGE_LABORER, DEFENDER],
 	},
 	SWORDSMEN: {
-		"attack": 15,
-		"defense": 40,
+		"attack": 14,
+		"defense": 35,
 		"power": 4,
 		"cost": 3,
 		"traits": [SIEGE_LABORER],
 	},
 	ARCHERS: {
-		"attack": 12,
+		"attack": 20,
 		"defense": 15,
 		"power": 4,
 		"cost": 3,
 		"traits": [RANGED, BACK_RANK],
 	},
 	CROSSBOWMEN: {
-		"attack": 10,
+		"attack": 16,
 		"defense": 20,
 		"power": 4,
 		"cost": 3,
 		"traits": [RANGED, ARMOR_PIERCING, BACK_RANK],
 	},
 	HORSEMEN: {
-		"attack": 20,
+		"attack": 15,
 		"defense": 25,
 		"power": 5,
 		"cost": 4,
