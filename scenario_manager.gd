@@ -41,19 +41,21 @@ func _resolve_scenario_path(name: String) -> String:
 		return "res://scenarios/" + name.get_file()
 	return "res://scenarios/" + name.get_file()
 
-func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager, visual_manager: VisualManager, scenario: Dictionary, player_manager: PlayerManagerNode, difficulty_token: String = "all") -> void:
+func apply_to_runtime(map_generator: MapGenerator, region_manager: RegionManager, army_manager: ArmyManager, visual_manager: VisualManager, scenario: Dictionary, player_manager: PlayerManagerNode, difficulty_token: String = "all", resolve_random_ore_guarantees: bool = true) -> void:
 	# 1) Ensure map is generated from the scenario's map file (caller should set data_file_path prior to generation)
 	# 2) Apply region deltas, ownership, castles, armies (single pass, order matters)
 	var resolved_difficulty: String = _normalize_runtime_difficulty_token(difficulty_token)
 	var garrison_composition_overrides: Dictionary = _resolve_garrison_override_map(scenario, resolved_difficulty)
 	var army_composition_overrides: Dictionary = _resolve_army_override_map(scenario, resolved_difficulty)
 	var effective_player_resources: Array = _resolve_player_resources_for_difficulty(scenario, resolved_difficulty)
-	var region_visual_refresh_ids: Array[int] = _apply_region_deltas(map_generator, region_manager, scenario, garrison_composition_overrides)
+	var region_visual_refresh_ids: Array[int] = _apply_region_deltas(map_generator, region_manager, scenario, garrison_composition_overrides, resolve_random_ore_guarantees)
 	_apply_ownership(map_generator, region_manager, scenario)
 	_apply_castles(map_generator, visual_manager, scenario)
 	_apply_armies(map_generator, army_manager, scenario, army_composition_overrides)
 	_apply_player_resources(player_manager, effective_player_resources)
 	_refresh_region_runtime_after_deltas(map_generator, region_visual_refresh_ids)
+	if not region_visual_refresh_ids.is_empty():
+		region_manager.rebuild_region_graph()
 
 func _normalize_runtime_difficulty_token(raw_token: String) -> String:
 	var normalized: String = raw_token.to_lower().strip_edges()
@@ -123,9 +125,11 @@ func _sanitize_unit_composition(raw_composition: Dictionary) -> Dictionary:
 
 # Internal helpers -------------------------------------------------------------
 
-func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary, garrison_composition_overrides: Dictionary) -> Array[int]:
+func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionManager, scenario: Dictionary, garrison_composition_overrides: Dictionary, resolve_random_ore_guarantees: bool) -> Array[int]:
 	var region_visual_refresh_ids: Array[int] = []
 	var regions: Array = scenario.get("regions", [])
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.randomize()
 	for r in regions:
 		var region_id: int = int(r.get("id", -1))
 		var region := map_generator.get_region_container_by_id(region_id) as Region
@@ -133,12 +137,15 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 		var previous_biome: String = region.get_biome().to_lower()
 		var previous_ocean: bool = region.is_ocean_region()
 		region.set_scenario_ore_rules_enabled(true)
-		var guaranteed_attempt: int = maxi(0, int(r.get("ore_guaranteed_discovery_attempt", 0)))
-		var guaranteed_type_name: String = String(r.get("ore_guaranteed_discovery_type", "None"))
-		if guaranteed_type_name.to_lower() == "none":
-			guaranteed_attempt = 0
-		var guaranteed_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(guaranteed_type_name)
-		region.set_ore_guaranteed_discovery(guaranteed_attempt, guaranteed_type)
+		var guaranteed_attempt_value: Variant = r.get("ore_guaranteed_discovery_attempt", 0)
+		var guaranteed_attempt: int = 0
+		if guaranteed_attempt_value is String and String(guaranteed_attempt_value).to_lower() == "random":
+			guaranteed_attempt = rng.randi_range(1, GameParameters.ORE_SEARCH_CHANCES_PER_REGION)
+			if not resolve_random_ore_guarantees:
+				guaranteed_attempt = Region.ORE_GUARANTEED_DISCOVERY_RANDOM_ATTEMPT
+		if guaranteed_attempt == 0:
+			guaranteed_attempt = maxi(0, int(guaranteed_attempt_value))
+		region.set_ore_guaranteed_discovery(guaranteed_attempt, region.get_ore_guaranteed_discovery_type())
 		# Name: assign only if non-empty; otherwise generate for non-ocean regions
 		if r.has("name"):
 			var nm := String(r.get("name")).strip_edges()
@@ -179,6 +186,10 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 			for ore_name in ores_arr:
 				new_ores.append(ResourcesEnum.string_to_type(String(ore_name)))
 			region.discovered_ores = new_ores
+		if not GameParameters.can_search_for_ore_in_region(region.get_region_type()):
+			region.ore_search_attempts_remaining = 0
+		elif region.discovered_ores.is_empty() and region.ore_search_attempts_remaining <= 0:
+			region.ore_search_attempts_remaining = GameParameters.ORE_SEARCH_CHANCES_PER_REGION
 		# Garrison (optional)
 		var has_explicit_garrison: bool = r.has("garrison")
 		if has_explicit_garrison:

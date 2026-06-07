@@ -73,6 +73,8 @@ var repair_start_gate_conditions: Array[int] = []
 var repair_start_wall_section_conditions: Array[int] = []
 
 # Mining system information
+const ORE_GUARANTEED_DISCOVERY_RANDOM_ATTEMPT: int = -1
+
 var ore_search_attempts_remaining: int = 0  # Number of ore search attempts left
 var discovered_ores: Array[ResourcesEnum.Type] = []  # Which ores have been discovered
 var ore_search_used_this_turn: bool = false  # Track if ore search was used this turn
@@ -887,11 +889,17 @@ func set_scenario_ore_rules_enabled(enabled: bool) -> void:
 	ore_scenario_rules_enabled = enabled
 
 func set_ore_guaranteed_discovery(attempt: int, ore_type: ResourcesEnum.Type) -> void:
-	ore_guaranteed_discovery_attempt = maxi(0, attempt)
+	if attempt == ORE_GUARANTEED_DISCOVERY_RANDOM_ATTEMPT:
+		ore_guaranteed_discovery_attempt = ORE_GUARANTEED_DISCOVERY_RANDOM_ATTEMPT
+	else:
+		ore_guaranteed_discovery_attempt = maxi(0, attempt)
 	ore_guaranteed_discovery_type = ore_type
 
 func get_ore_guaranteed_discovery_attempt() -> int:
 	return ore_guaranteed_discovery_attempt
+
+func is_ore_guaranteed_discovery_random() -> bool:
+	return ore_guaranteed_discovery_attempt == ORE_GUARANTEED_DISCOVERY_RANDOM_ATTEMPT
 
 func get_ore_guaranteed_discovery_type() -> ResourcesEnum.Type:
 	return ore_guaranteed_discovery_type
@@ -928,11 +936,8 @@ func search_for_ore() -> Dictionary:
 	if ore_scenario_rules_enabled and available_ore_types.is_empty():
 		discovery_successful = false
 	elif is_forced_attempt:
-		if ore_scenario_rules_enabled and not available_ore_types.has(ore_guaranteed_discovery_type):
-			discovery_successful = false
-		else:
-			discovery_successful = true
-			ore_type = ore_guaranteed_discovery_type
+		discovery_successful = true
+		ore_type = _resolve_ore_type_for_discovery(available_ore_types)
 	else:
 		discovery_successful = GameParameters.roll_ore_discovery()
 		if discovery_successful:

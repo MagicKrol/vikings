@@ -131,6 +131,7 @@ var is_campaign_mode: bool = false
 var scenario_difficulty_group: ButtonGroup
 var default_scenario_description_text: String = ""
 var default_scenario_objectives_text: String = ""
+var main_game_debug_mode: bool = true
 
 # Player settings for custom map
 var player_settings: Array = []  # Array of dictionaries with player configuration
@@ -205,6 +206,7 @@ func _ready():
 	_setup_victory_buttons()
 	default_scenario_description_text = scenario_description_label.text
 	default_scenario_objectives_text = scenario_objectives_label.text
+	main_game_debug_mode = _resolve_main_game_debug_mode()
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	_update_primary_main_menu_button()
 
@@ -223,6 +225,38 @@ func _apply_start_target_from_meta() -> bool:
 		_show_campaign_menu()
 		return true
 	return false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _is_map_list_keyboard_active():
+		return
+	if not (event is InputEventKey):
+		return
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return
+	if key_event.keycode == KEY_UP:
+		_move_map_list_selection(-1)
+		get_viewport().set_input_as_handled()
+	elif key_event.keycode == KEY_DOWN:
+		_move_map_list_selection(1)
+		get_viewport().set_input_as_handled()
+
+func _is_map_list_keyboard_active() -> bool:
+	return custom_map_container.visible and (custom_map_panel3.visible or campaign_panel.visible)
+
+func _resolve_main_game_debug_mode() -> bool:
+	var scene: PackedScene = load("res://main.tscn") as PackedScene
+	var scene_state: SceneState = scene.get_state()
+	for node_index in range(scene_state.get_node_count()):
+		if String(scene_state.get_node_name(node_index)) == "GameManager":
+			for property_index in range(scene_state.get_node_property_count(node_index)):
+				if String(scene_state.get_node_property_name(node_index, property_index)) == "debug_mode":
+					return bool(scene_state.get_node_property_value(node_index, property_index))
+			break
+	var default_game_manager: GameManager = GameManager.new()
+	var debug_enabled: bool = default_game_manager.debug_mode
+	default_game_manager.free()
+	return debug_enabled
 
 func _apply_font_outlines():
 	"""Apply black outline to all menu buttons"""
@@ -1074,6 +1108,7 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		size_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		name_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		_set_row_highlight_color(row, ROW_HIGHLIGHT_NONE_COLOR)
+		row.set_meta("map_list_item", item)
 		row.gui_input.connect(_on_map_row_gui_input.bind(row, item, for_scenario))
 		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
 		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
@@ -1083,6 +1118,32 @@ func _populate_map_list(items: Array, for_scenario: bool):
 			first_created_item = item
 	if first_created_row:
 		_on_map_row_pressed(first_created_row, first_created_item, for_scenario)
+
+func _move_map_list_selection(step: int) -> void:
+	var for_scenario: bool = is_scenario_mode
+	var container: VBoxContainer = _get_list_container(for_scenario)
+	var rows: Array[Control] = _get_selectable_map_rows(container)
+	if rows.is_empty():
+		return
+	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
+	var selected_index: int = rows.find(current_selected)
+	var next_index: int = 0
+	if selected_index >= 0:
+		next_index = clampi(selected_index + step, 0, rows.size() - 1)
+	var next_row: Control = rows[next_index]
+	var next_item: Dictionary = next_row.get_meta("map_list_item")
+	_on_map_row_pressed(next_row, next_item, for_scenario)
+	var scroll_container: ScrollContainer = container.get_parent() as ScrollContainer
+	scroll_container.ensure_control_visible(next_row)
+
+func _get_selectable_map_rows(container: VBoxContainer) -> Array[Control]:
+	var rows: Array[Control] = []
+	for child: Node in container.get_children():
+		if child is Control:
+			var row: Control = child as Control
+			if row.visible and row.has_meta("map_list_item"):
+				rows.append(row)
+	return rows
 
 func _on_map_row_gui_input(event: InputEvent, row: Control, item: Dictionary, for_scenario: bool):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -1147,7 +1208,12 @@ func _update_button_gold_state(button: Button, selected: bool):
 	button.button_pressed = selected
 
 func _update_info_labels(item: Dictionary):
-	custom_map_map_name_label.text = _resolve_item_display_name(item)
+	var display_name: String = _resolve_item_display_name(item)
+	if main_game_debug_mode and not is_scenario_mode:
+		var map_file: String = String(item.get("file", "")).strip_edges()
+		if map_file != "":
+			display_name += " (" + map_file + ")"
+	custom_map_map_name_label.text = display_name
 	var size_code: String = item.get("size", "S")
 	custom_map_map_size_label.text = _size_full_name(size_code)
 	if is_scenario_mode:

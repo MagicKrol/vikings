@@ -359,6 +359,33 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "1"
 
+[node name="VictoryResourceTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryResourceTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryResourceTypeRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Resource Type:"
+
+[node name="VictoryResourceTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryResourceTypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VictoryResourceAmountRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+visible = false
+layout_mode = 2
+
+[node name="VictoryResourceAmountLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryResourceAmountRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Resource Amount:"
+
+[node name="VictoryResourceAmountValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryResourceAmountRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
 [node name="Region" type="VBoxContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2
@@ -538,20 +565,7 @@ custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Guaranteed Attempt:"
 
-[node name="OreGuaranteeAttemptEdit" type="LineEdit" parent="Panel/TabContainer/Region/OreGuaranteeAttemptRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "0"
-
-[node name="OreGuaranteeTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
-layout_mode = 2
-
-[node name="OreGuaranteeTypeLabel" type="Label" parent="Panel/TabContainer/Region/OreGuaranteeTypeRow"]
-custom_minimum_size = Vector2(140, 0)
-layout_mode = 2
-text = "Guaranteed Ore:"
-
-[node name="OreGuaranteeTypeOption" type="OptionButton" parent="Panel/TabContainer/Region/OreGuaranteeTypeRow"]
+[node name="OreGuaranteeAttemptOption" type="OptionButton" parent="Panel/TabContainer/Region/OreGuaranteeAttemptRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 

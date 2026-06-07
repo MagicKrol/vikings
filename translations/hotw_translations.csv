@@ -477,3 +477,9 @@ mission-5_objectives,Scenario metadata key used for scenario objectives text in 
 mission-6_intro,Scenario metadata key used for intro popup text at scenario start.,mission-6_intro,mission-6_intro,mission-6_intro,mission-6_intro
 mission-6_description,Scenario metadata key used for scenario description text in the main menu.,mission-6_description,mission-6_description,mission-6_description,mission-6_description
 mission-6_objectives,Scenario metadata key used for scenario objectives text in the main menu.,mission-6_objectives,mission-6_objectives,mission-6_objectives,mission-6_objectives
+horde_intro,Scenario metadata key used for intro popup text at scenario start.,horde_intro,horde_intro,horde_intro,horde_intro
+horde_description,Scenario metadata key used for scenario description text in the main menu.,horde_description,horde_description,horde_description,horde_description
+horde_objectives,Scenario metadata key used for scenario objectives text in the main menu.,horde_objectives,horde_objectives,horde_objectives,horde_objectives
+Last Stand_intro,Scenario metadata key used for intro popup text at scenario start.,Last Stand_intro,Last Stand_intro,Last Stand_intro,Last Stand_intro
+Last Stand_description,Scenario metadata key used for scenario description text in the main menu.,Last Stand_description,Last Stand_description,Last Stand_description,Last Stand_description
+Last Stand_objectives,Scenario metadata key used for scenario objectives text in the main menu.,Last Stand_objectives,Last Stand_objectives,Last Stand_objectives,Last Stand_objectives

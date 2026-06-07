@@ -91,7 +91,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -238,15 +238,22 @@ func _ready():
 	initialize_managers(game_mode == "scenario" and not _loaded_from_save, _loaded_from_save)
 	if _loaded_from_save:
 		SaveGameManager.apply_save_data(self, _pending_loaded_save_data)
+		_restore_or_start_analytics_run_from_save(_pending_loaded_save_data)
 		_pending_loaded_save_data = {}
 	_apply_initial_camera_zoom()
 	_apply_center_marker_setting()
+	if not _loaded_from_save:
+		_start_analytics_run_for_current_source()
 	_show_custom_start_prompt()
 
 	if tutorial_enabled:
 		_sound_manager.set_active_playlist("tutorial")
 	
 	# Start horn is played once for new game starts (not saves/editor).
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_finish_analytics_run("quit", -1, "window_close")
 
 func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = false):
 	"""Initialize all game managers and establish dependencies"""
@@ -663,6 +670,7 @@ func _next_turn_internal() -> void:
 	
 	# Set current player
 	current_player = next_player_id
+	_sync_analytics_turn_count()
 	player_manager.set_current_player(current_player)
 	
 	# Process player-specific turn start actions (only for active players)
@@ -751,7 +759,7 @@ func _initialize_map_editor() -> void:
 		var scen: Dictionary = get_tree().get_meta("__scenario_to_apply__") as Dictionary
 		get_tree().set_meta("__scenario_to_apply__", null)
 		var player_manager_node = get_node("../PlayerManager") as PlayerManagerNode
-		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager_node, "all")
+		ScenarioManager.new().apply_to_runtime(map_generator, _region_manager, _army_manager, _visual_manager, scen, player_manager_node, "all", false)
 
 	# Hide player/turn UI modals that are not needed in editor mode
 	var ui_node = get_node("../UI")
@@ -934,6 +942,70 @@ func get_victory_conditions_for_save() -> Array:
 		serialized.append(condition.duplicate(true))
 	return serialized
 
+func get_analytics_run_for_save() -> Dictionary:
+	return Analytics.get_content_run_for_save()
+
+func _start_analytics_run_for_current_source() -> void:
+	if enable_map_editor:
+		return
+	if game_mode == "scenario" and scenario_path == "":
+		return
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var content_type: String = _get_analytics_content_type()
+	var content_id: String = _get_analytics_content_id(map_generator)
+	if content_id == "":
+		return
+	Analytics.start_content_run(
+		content_type,
+		content_id,
+		GameParameters.game_difficulty_to_string(game_difficulty),
+		game_mode,
+		map_generator.data_file_path,
+		scenario_path,
+		_get_primary_victory_condition_type(),
+		current_turn
+	)
+
+func _restore_or_start_analytics_run_from_save(save_data: Dictionary) -> void:
+	if enable_map_editor:
+		return
+	var game_state: Dictionary = save_data.get("game_state", {})
+	var raw_analytics_run: Variant = game_state.get("analytics_run", {})
+	if raw_analytics_run is Dictionary and not (raw_analytics_run as Dictionary).is_empty():
+		Analytics.set_content_run_from_save(raw_analytics_run as Dictionary)
+		_sync_analytics_turn_count()
+		Analytics.heartbeat_content_run(current_turn)
+		return
+	_start_analytics_run_for_current_source()
+
+func _get_analytics_content_type() -> String:
+	if game_mode == "custom":
+		return "skirmish"
+	var scenario_data: Dictionary = ScenarioManager.new().load_scenario(scenario_path)
+	var scenario_type: String = String(scenario_data.get("scenario_type", "scenario")).to_lower()
+	if scenario_type == "campaign":
+		return "mission"
+	return "scenario"
+
+func _get_analytics_content_id(map_generator: MapGenerator) -> String:
+	if game_mode == "scenario" and scenario_path != "":
+		return scenario_path.get_file().get_basename()
+	if game_mode == "custom":
+		return map_generator.data_file_path.get_file().get_basename()
+	return ""
+
+func _get_primary_victory_condition_type() -> String:
+	if victory_conditions.is_empty():
+		return ""
+	var condition: Dictionary = victory_conditions[0]
+	return String(condition.get("type", ""))
+
+func _sync_analytics_turn_count() -> void:
+	Analytics.set_content_run_turn_count(current_turn)
+
+func _finish_analytics_run(outcome: String, winner_player_id: int = -1, outcome_reason: String = "") -> void:
+	Analytics.finish_content_run(outcome, current_turn, winner_player_id, outcome_reason)
+
 func has_victory_been_declared() -> bool:
 	return victory_declared
 
@@ -944,6 +1016,8 @@ func check_victory_conditions_for_player(player_id: int) -> bool:
 	if victory_declared:
 		return true
 	if _check_and_declare_victory_for_any_player(player_id):
+		return true
+	if _process_failed_survive_turns_objective():
 		return true
 	if _process_new_human_elimination():
 		return true
@@ -1040,30 +1114,42 @@ func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
 			var required_turns: int = int(source_condition.get("turns", source_condition.get("required_turns", 0)))
 			if required_turns <= 0:
 				return {}
-			return {
+			var survive_condition: Dictionary = {
 				"type": "survive_turns",
 				"player_id": target_player_id,
 				"turns": required_turns
 			}
+			if source_condition.has("region_id"):
+				var required_region_id: int = int(source_condition.get("region_id", -1))
+				if required_region_id >= 0:
+					survive_condition["region_id"] = required_region_id
+			return survive_condition
 		"economy":
-			var required_region_id: int = int(source_condition.get("region_id", -1))
-			if required_region_id < 0:
+			var required_region_id: int = int(source_condition.get("region_id", 0))
+			var required_resource_amount: int = int(source_condition.get("resource_amount", source_condition.get("required_resource_amount", 0)))
+			if required_region_id <= 0 and required_resource_amount <= 0:
 				return {}
-			var required_units_hired: int = int(source_condition.get("units_hired", source_condition.get("required_units_hired", source_condition.get("unit_count", 0))))
-			if required_units_hired <= 0:
-				return {}
-			var required_region_level: RegionLevelEnum.Level = RegionLevelEnum.string_to_level(String(source_condition.get("required_region_level", source_condition.get("region_level", "shire"))))
-			var required_castle_level: CastleTypeEnum.Type = CastleTypeEnum.string_to_type(String(source_condition.get("required_castle_level", source_condition.get("castle_level", "none"))))
-			var required_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.string_to_type(String(source_condition.get("unit_type", source_condition.get("required_unit_type", "peasants"))))
-			return {
+			var economy_condition: Dictionary = {
 				"type": "economy",
 				"player_id": target_player_id,
-				"region_id": required_region_id,
-				"required_region_level": RegionLevelEnum.level_to_string(required_region_level),
-				"required_castle_level": CastleTypeEnum.type_to_string(required_castle_level),
-				"unit_type": SoldierTypeEnum.type_to_string(required_unit_type),
-				"units_hired": required_units_hired
+				"region_id": maxi(0, required_region_id)
 			}
+			var required_units_hired: int = int(source_condition.get("units_hired", source_condition.get("required_units_hired", source_condition.get("unit_count", 0))))
+			if required_region_id > 0:
+				if required_units_hired <= 0:
+					return {}
+				var required_region_level: RegionLevelEnum.Level = RegionLevelEnum.string_to_level(String(source_condition.get("required_region_level", source_condition.get("region_level", "shire"))))
+				var required_castle_level: CastleTypeEnum.Type = CastleTypeEnum.string_to_type(String(source_condition.get("required_castle_level", source_condition.get("castle_level", "none"))))
+				var required_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.string_to_type(String(source_condition.get("unit_type", source_condition.get("required_unit_type", "peasants"))))
+				economy_condition["required_region_level"] = RegionLevelEnum.level_to_string(required_region_level)
+				economy_condition["required_castle_level"] = CastleTypeEnum.type_to_string(required_castle_level)
+				economy_condition["unit_type"] = SoldierTypeEnum.type_to_string(required_unit_type)
+				economy_condition["units_hired"] = required_units_hired
+			if required_resource_amount > 0:
+				var required_resource_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(String(source_condition.get("resource_type", source_condition.get("required_resource_type", "Gold"))))
+				economy_condition["resource_type"] = ResourcesEnum.type_to_string(required_resource_type)
+				economy_condition["resource_amount"] = required_resource_amount
+			return economy_condition
 		_:
 			return {}
 
@@ -1132,16 +1218,76 @@ func _is_own_region_victory_met(player_id: int, condition: Dictionary) -> bool:
 	var owner_id: int = _region_manager.get_region_owner(required_region_id)
 	return owner_id == player_id
 
-func _is_survive_turns_victory_met(_player_id: int, condition: Dictionary) -> bool:
+func _is_survive_turns_victory_met(player_id: int, condition: Dictionary) -> bool:
+	if not is_player_human(player_id):
+		return false
 	var required_turns: int = int(condition.get("turns", 0))
 	if required_turns <= 0:
 		return false
+	if current_turn < required_turns:
+		return false
+	if condition.has("region_id"):
+		var required_region_id: int = int(condition.get("region_id", -1))
+		if required_region_id < 0:
+			return false
+		return _region_manager.get_region_owner(required_region_id) == player_id
 	return current_turn >= required_turns
 
-func _is_economy_victory_met(player_id: int, condition: Dictionary) -> bool:
-	var required_region_id: int = int(condition.get("region_id", -1))
-	if required_region_id < 0:
+func _process_failed_survive_turns_objective() -> bool:
+	if game_mode != "scenario":
 		return false
+	for condition: Dictionary in victory_conditions:
+		if String(condition.get("type", "")) != "survive_turns":
+			continue
+		if _is_survive_turns_victory_met(int(condition.get("player_id", 0)), condition):
+			continue
+		var target_player_id: int = int(condition.get("player_id", 0))
+		if target_player_id <= 0:
+			continue
+		if not is_player_human(target_player_id):
+			continue
+		if condition.has("region_id"):
+			var required_region_id: int = int(condition.get("region_id", -1))
+			if required_region_id >= 0 and _region_manager.get_region_owner(required_region_id) != target_player_id:
+				_show_survive_turns_objective_failure(target_player_id)
+				return true
+			continue
+		if _player_has_any_castle(target_player_id):
+			continue
+		if _player_has_any_army(target_player_id):
+			continue
+		if _player_has_pending_scenario_event(target_player_id):
+			continue
+		_show_survive_turns_objective_failure(target_player_id)
+		return true
+	return false
+
+func _show_survive_turns_objective_failure(player_id: int) -> void:
+	DebugLogger.log("Victory", "Survive turns objective failed for Player " + str(player_id))
+	_finish_analytics_run("lost", -1, "survive_turns_failed")
+	_outcome_modal_blocking_active = true
+	_pending_loss_exit_to_main_menu = true
+	_pending_loss_exit_to_campaign_list = _is_campaign_scenario_mode()
+	_pending_next_turn_after_loss_ack = false
+	_disconnect_human_elimination_message_handler()
+	_disconnect_victory_message_handler()
+	_message_modal.continue_clicked.connect(_on_human_elimination_continue)
+	_message_modal.display_message(tr("You failed"))
+
+func _is_economy_victory_met(player_id: int, condition: Dictionary) -> bool:
+	if not is_player_human(player_id):
+		return false
+	var required_region_id: int = int(condition.get("region_id", 0))
+	var required_resource_amount: int = int(condition.get("resource_amount", 0))
+	if required_region_id <= 0 and required_resource_amount <= 0:
+		return false
+	if required_region_id > 0 and not _is_economy_region_target_met(player_id, condition, required_region_id):
+		return false
+	if required_resource_amount > 0 and not _is_economy_resource_target_met(player_id, condition, required_resource_amount):
+		return false
+	return true
+
+func _is_economy_region_target_met(player_id: int, condition: Dictionary, required_region_id: int) -> bool:
 	if _region_manager.get_region_owner(required_region_id) != player_id:
 		return false
 	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
@@ -1158,6 +1304,11 @@ func _is_economy_victory_met(player_id: int, condition: Dictionary) -> bool:
 	var unit_type_name: String = SoldierTypeEnum.type_to_string(SoldierTypeEnum.string_to_type(String(condition.get("unit_type", "peasants"))))
 	var hired_units: int = _get_player_hired_unit_count(player_id, unit_type_name)
 	return hired_units >= required_units_hired
+
+func _is_economy_resource_target_met(player_id: int, condition: Dictionary, required_resource_amount: int) -> bool:
+	var required_resource_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(String(condition.get("resource_type", "Gold")))
+	var player: Player = player_manager.get_player(player_id)
+	return player.get_resource_amount(required_resource_type) >= required_resource_amount
 
 func _create_empty_hired_units_entry() -> Dictionary:
 	var entry: Dictionary = {}
@@ -1346,6 +1497,8 @@ func _show_human_elimination_message(player_id: int) -> void:
 	_capture_initial_human_player_count_if_unset()
 	var humans_remaining: int = _get_human_player_count()
 	var no_humans_left: bool = humans_remaining <= 0
+	if no_humans_left:
+		_finish_analytics_run("lost", -1, "no_humans_left")
 	_outcome_modal_blocking_active = true
 	_pending_loss_exit_to_main_menu = no_humans_left
 	_pending_loss_exit_to_campaign_list = no_humans_left and _is_campaign_scenario_mode()
@@ -1398,6 +1551,7 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	_disconnect_victory_message_handler()
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
+	_finish_analytics_run("won", player_id, condition_type)
 	if _should_show_campaign_outro(player_id):
 		_disconnect_intro_message_modal_handlers()
 		_intro_message_modal.continue_clicked.connect(_on_campaign_outro_end_mission)
@@ -4805,6 +4959,7 @@ func _consume_ai_battle_log_for_key(key: String, region_id: int = -1) -> Array[S
 
 func _start_first_turn() -> void:
 	"""Start the first turn after castle placement completes"""
+	_sync_analytics_turn_count()
 	DebugLogger.log("TurnProcessing", "_start_first_turn called for Player " + str(current_player))
 	DebugLogger.log("TurnProcessing", "Player " + str(current_player) + " is human: " + str(is_player_human(current_player)))
 	DebugLogger.log("TurnProcessing", "Player type: " + PlayerTypeEnum.type_to_string(get_player_type(current_player)))
@@ -4908,6 +5063,7 @@ func _take_game_screenshot() -> void:
 func _on_game_menu_main_menu_pressed() -> void:
 	"""Handle Main Menu button from game menu"""
 	DebugLogger.log("UISystem", "Returning to main menu")
+	_finish_analytics_run("quit", -1, "main_menu")
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
@@ -4941,6 +5097,7 @@ func _on_save_game_modal_action_requested(mode: int, selected_file_name: String,
 			DebugLogger.log("SaveGame", "ERROR: No save file selected")
 			return
 		var save_path: String = SaveGameManager.build_save_path_from_file_name(selected_file_name)
+		_finish_analytics_run("quit", -1, "load_game")
 		get_tree().paused = false
 		get_tree().set_meta("start_payload", {
 			"type": "save",

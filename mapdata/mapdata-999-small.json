@@ -55964,7 +55964,7 @@
 			"water": false
 		},
 		{
-			"biome": "ocean",
+			"biome": "hills",
 			"center": [
 				889.818109734626,
 				195.71769459226
@@ -55981,7 +55981,7 @@
 			"elevation": -0.14285714285714,
 			"id": 139,
 			"moisture": 1,
-			"ocean": true,
+			"ocean": false,
 			"polygon": [
 				[
 					841.610486413668,
@@ -56009,6 +56009,7 @@
 				]
 			],
 			"temperature": 1,
+			"type": 1,
 			"water": true
 		},
 		{
@@ -59107,7 +59108,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "mountains",
 			"center": [
 				732.785062586791,
 				492.642617479861
@@ -59147,11 +59148,11 @@
 				]
 			],
 			"temperature": 0.834277370978217,
-			"type": 0,
+			"type": 4,
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "mountains",
 			"center": [
 				710.875962964671,
 				421.356770433179
@@ -59196,7 +59197,7 @@
 				]
 			],
 			"temperature": 0.807176223189284,
-			"type": 0,
+			"type": 4,
 			"water": false
 		},
 		{
@@ -59400,7 +59401,7 @@
 			"water": false
 		},
 		{
-			"biome": "forest",
+			"biome": "mountains",
 			"center": [
 				507.750869906715,
 				724.032957743645
@@ -59450,7 +59451,7 @@
 				]
 			],
 			"temperature": 0.948587253374664,
-			"type": 3,
+			"type": 4,
 			"water": false
 		},
 		{
@@ -59933,7 +59934,7 @@
 			"water": false
 		},
 		{
-			"biome": "ocean",
+			"biome": "hills",
 			"center": [
 				663.262492153832,
 				738.322194911897
@@ -59950,7 +59951,7 @@
 			"elevation": -0.04761904761905,
 			"id": 221,
 			"moisture": 1,
-			"ocean": true,
+			"ocean": false,
 			"polygon": [
 				[
 					661.132121177222,
@@ -59978,6 +59979,7 @@
 				]
 			],
 			"temperature": 1,
+			"type": 1,
 			"water": true
 		},
 		{
@@ -60128,7 +60130,7 @@
 			"water": false
 		},
 		{
-			"biome": "hill_forest",
+			"biome": "forest_hills",
 			"center": [
 				285.423612065383,
 				444.10421471788
@@ -60177,7 +60179,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"center": [
 				336.443364542015,
 				360.986032668873
@@ -60222,7 +60224,7 @@
 				]
 			],
 			"temperature": 0.867753086195814,
-			"type": 0,
+			"type": 2,
 			"water": false
 		},
 		{
@@ -60280,7 +60282,7 @@
 			"water": false
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"center": [
 				429.133565127985,
 				681.876434206388
@@ -60325,7 +60327,7 @@
 				]
 			],
 			"temperature": 0.908056165672906,
-			"type": 3,
+			"type": 2,
 			"water": false
 		},
 		{
@@ -60643,7 +60645,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"center": [
 				581.720257718507,
 				317.721093029514
@@ -60693,7 +60695,7 @@
 				]
 			],
 			"temperature": 0.80092994571126,
-			"type": 0,
+			"type": 2,
 			"water": false
 		},
 		{
@@ -61515,7 +61517,7 @@
 			"water": false
 		},
 		{
-			"biome": "hill_forest",
+			"biome": "hills",
 			"center": [
 				560.05253867061,
 				455.394802419554
@@ -61560,7 +61562,7 @@
 				]
 			],
 			"temperature": 0.734229035065359,
-			"type": 2,
+			"type": 1,
 			"water": false
 		},
 		{
@@ -61711,7 +61713,7 @@
 			"water": false
 		},
 		{
-			"biome": "mountains",
+			"biome": "forest",
 			"center": [
 				656.586017164015,
 				409.608223795608
@@ -61746,11 +61748,11 @@
 				]
 			],
 			"temperature": 0.698485649710813,
-			"type": 4,
+			"type": 3,
 			"water": false
 		},
 		{
-			"biome": "hill_forest",
+			"biome": "hills",
 			"center": [
 				503.944853437026,
 				425.603212450617
@@ -61790,7 +61792,7 @@
 				]
 			],
 			"temperature": 0.726551533035608,
-			"type": 2,
+			"type": 1,
 			"water": false
 		},
 		{

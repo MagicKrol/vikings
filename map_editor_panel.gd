@@ -27,8 +27,7 @@ var _name_edit: LineEdit
 var _level_option: OptionButton
 var _castle_option: OptionButton
 var _ore_check: CheckBox
-var _ore_guarantee_attempt_edit: LineEdit
-var _ore_guarantee_type_option: OptionButton
+var _ore_guarantee_attempt_option: OptionButton
 var _resource_edits: Dictionary = {}
 var _id_value: Label
 var _population_edit: LineEdit
@@ -88,6 +87,10 @@ var _victory_unit_type_row: HBoxContainer
 var _victory_unit_type_option: OptionButton
 var _victory_units_hired_row: HBoxContainer
 var _victory_units_hired_value: LineEdit
+var _victory_resource_type_row: HBoxContainer
+var _victory_resource_type_option: OptionButton
+var _victory_resource_amount_row: HBoxContainer
+var _victory_resource_amount_value: LineEdit
 var _scenario_trade_disabled_check: CheckBox
 var _scenario_difficulty_option: OptionButton
 var _victory_type_keys: Array[String] = ["conquer", "conquer_after_events", "dominate", "own_region", "survive_turns", "economy"]
@@ -124,8 +127,7 @@ func _ready() -> void:
 	_population_edit = get_node("Panel/TabContainer/Region/PopulationRow/PopulationEdit") as LineEdit
 	_castle_option = get_node("Panel/TabContainer/Region/CastleRow/CastleOption") as OptionButton
 	_ore_check = get_node("Panel/TabContainer/Region/OreRow/OreCheck") as CheckBox
-	_ore_guarantee_attempt_edit = get_node("Panel/TabContainer/Region/OreGuaranteeAttemptRow/OreGuaranteeAttemptEdit") as LineEdit
-	_ore_guarantee_type_option = get_node("Panel/TabContainer/Region/OreGuaranteeTypeRow/OreGuaranteeTypeOption") as OptionButton
+	_ore_guarantee_attempt_option = get_node("Panel/TabContainer/Region/OreGuaranteeAttemptRow/OreGuaranteeAttemptOption") as OptionButton
 	_ownership_option = get_node("Panel/TabContainer/Region/OwnershipRow/OwnershipOption") as OptionButton
 	_army_toggle_button = get_node("Panel/TabContainer/Army/ArmyDefaultContent/ArmyRow/ArmyToggleButton") as Button
 	_region_panel = get_node("Panel")
@@ -180,7 +182,6 @@ func _ready() -> void:
 		get_node("Panel/TabContainer/Region/GoldRow"),
 		get_node("Panel/TabContainer/Region/OreRow"),
 		get_node("Panel/TabContainer/Region/OreGuaranteeAttemptRow"),
-		get_node("Panel/TabContainer/Region/OreGuaranteeTypeRow"),
 		get_node("Panel/TabContainer/Region/GarrisonEditRow")
 	]
 	# Garrison UI nodes
@@ -205,7 +206,6 @@ func _ready() -> void:
 	_level_option.item_selected.connect(_on_level_selected)
 	_populate_castles()
 	_castle_option.item_selected.connect(_on_castle_selected)
-	_populate_ore_guarantee_types()
 	_populate_ownership()
 	_ownership_option.item_selected.connect(_on_ownership_selected)
 	for rt in _resource_edits.keys():
@@ -214,9 +214,8 @@ func _ready() -> void:
 	_population_edit.text_submitted.connect(_on_population_changed)
 	_population_edit.focus_exited.connect(_on_population_focus_exited)
 	_ore_check.toggled.connect(_on_ore_toggled)
-	_ore_guarantee_attempt_edit.text_submitted.connect(_on_ore_guarantee_attempt_changed)
-	_ore_guarantee_attempt_edit.focus_exited.connect(_on_ore_guarantee_attempt_focus_exited)
-	_ore_guarantee_type_option.item_selected.connect(_on_ore_guarantee_type_selected)
+	_populate_ore_guarantee_attempts()
+	_ore_guarantee_attempt_option.item_selected.connect(_on_ore_guarantee_attempt_selected)
 	_name_edit.text_submitted.connect(_on_name_changed)
 	_name_edit.focus_exited.connect(_on_name_focus_exited)
 	_army_toggle_button.pressed.connect(_on_army_toggle_pressed)
@@ -253,6 +252,10 @@ func _ready() -> void:
 	_victory_unit_type_option = get_node("Panel/TabContainer/Scenario/VictoryUnitTypeRow/VictoryUnitTypeOption") as OptionButton
 	_victory_units_hired_row = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow") as HBoxContainer
 	_victory_units_hired_value = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow/VictoryUnitsHiredValue") as LineEdit
+	_victory_resource_type_row = get_node("Panel/TabContainer/Scenario/VictoryResourceTypeRow") as HBoxContainer
+	_victory_resource_type_option = get_node("Panel/TabContainer/Scenario/VictoryResourceTypeRow/VictoryResourceTypeOption") as OptionButton
+	_victory_resource_amount_row = get_node("Panel/TabContainer/Scenario/VictoryResourceAmountRow") as HBoxContainer
+	_victory_resource_amount_value = get_node("Panel/TabContainer/Scenario/VictoryResourceAmountRow/VictoryResourceAmountValue") as LineEdit
 	_scenario_trade_disabled_check = get_node("Panel/TabContainer/Scenario/TradeDisabledRow/TradeDisabledCheck") as CheckBox
 	_scenario_difficulty_option = get_node("Panel/TabContainer/Scenario/DifficultyRow/DifficultyOption") as OptionButton
 	_event_name_add_edit = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/EventNameEdit") as LineEdit
@@ -846,9 +849,14 @@ func _initialize_victory_condition_ui() -> void:
 	for unit_type in SoldierTypeEnum.get_all_types():
 		_victory_unit_type_option.add_item(SoldierTypeEnum.type_to_string(unit_type))
 	_victory_unit_type_option.select(0)
+	_victory_resource_type_option.clear()
+	for resource_type in ResourcesEnum.get_all_types():
+		_victory_resource_type_option.add_item(ResourcesEnum.type_to_string(resource_type))
+	_victory_resource_type_option.select(0)
 	_victory_region_value.text = "0"
 	_victory_turns_value.text = "1"
 	_victory_units_hired_value.text = "1"
+	_victory_resource_amount_value.text = "0"
 	_select_victory_type("conquer")
 
 func _on_victory_type_selected(index: int) -> void:
@@ -866,12 +874,14 @@ func _select_victory_type(victory_key: String) -> void:
 
 func _update_victory_condition_fields(victory_key: String) -> void:
 	_victory_target_player_row.visible = victory_key == "own_region" or victory_key == "survive_turns" or victory_key == "economy"
-	_victory_region_row.visible = victory_key == "own_region" or victory_key == "economy"
+	_victory_region_row.visible = victory_key == "own_region" or victory_key == "survive_turns" or victory_key == "economy"
 	_victory_turns_row.visible = victory_key == "survive_turns"
 	_victory_region_level_row.visible = victory_key == "economy"
 	_victory_castle_level_row.visible = victory_key == "economy"
 	_victory_unit_type_row.visible = victory_key == "economy"
 	_victory_units_hired_row.visible = victory_key == "economy"
+	_victory_resource_type_row.visible = victory_key == "economy"
+	_victory_resource_amount_row.visible = victory_key == "economy"
 
 func _get_selected_victory_type_key() -> String:
 	var index: int = _victory_type_option.selected
@@ -916,6 +926,7 @@ func _load_victory_conditions_from_scenario(data: Dictionary) -> void:
 			_select_victory_type("survive_turns")
 			var player_id: int = maxi(1, mini(6, int(condition.get("player_id", 1))))
 			_victory_target_player_option.select(player_id - 1)
+			_victory_region_value.text = str(maxi(0, int(condition.get("region_id", 0))))
 			var turns: int = int(condition.get("turns", condition.get("required_turns", 1)))
 			_victory_turns_value.text = str(maxi(1, turns))
 		"economy":
@@ -927,10 +938,14 @@ func _load_victory_conditions_from_scenario(data: Dictionary) -> void:
 			var required_castle_level: String = String(condition.get("required_castle_level", condition.get("castle_level", "Outpost")))
 			var unit_type_name: String = String(condition.get("unit_type", "Peasants"))
 			var units_hired: int = int(condition.get("units_hired", condition.get("required_units_hired", condition.get("unit_count", 1))))
+			var resource_type_name: String = String(condition.get("resource_type", "Gold"))
+			var resource_amount: int = int(condition.get("resource_amount", condition.get("required_resource_amount", 0)))
 			_select_option_by_text(_victory_region_level_option, required_region_level)
 			_select_option_by_text(_victory_castle_level_option, required_castle_level)
 			_select_option_by_text(_victory_unit_type_option, unit_type_name)
 			_victory_units_hired_value.text = str(maxi(1, units_hired))
+			_select_option_by_text(_victory_resource_type_option, resource_type_name)
+			_victory_resource_amount_value.text = str(maxi(0, resource_amount))
 		_:
 			_select_victory_type("conquer")
 
@@ -953,11 +968,13 @@ func _build_victory_conditions_for_save() -> Array:
 			}]
 		"survive_turns":
 			var player_id: int = _victory_target_player_option.selected + 1
+			var region_id: int = maxi(0, int(_victory_region_value.text))
 			var turns: int = maxi(1, int(_victory_turns_value.text))
 			return [{
 				"type": "survive_turns",
 				"player_id": player_id,
-				"turns": turns
+				"turns": turns,
+				"region_id": region_id
 			}]
 		"economy":
 			var player_id: int = _victory_target_player_option.selected + 1
@@ -966,15 +983,22 @@ func _build_victory_conditions_for_save() -> Array:
 			var required_castle_level: String = _victory_castle_level_option.get_item_text(_victory_castle_level_option.selected)
 			var unit_type_name: String = _victory_unit_type_option.get_item_text(_victory_unit_type_option.selected)
 			var units_hired: int = maxi(1, int(_victory_units_hired_value.text))
-			return [{
+			var resource_type_name: String = _victory_resource_type_option.get_item_text(_victory_resource_type_option.selected)
+			var resource_amount: int = maxi(0, int(_victory_resource_amount_value.text))
+			var condition: Dictionary = {
 				"type": "economy",
 				"player_id": player_id,
-				"region_id": region_id,
-				"required_region_level": required_region_level,
-				"required_castle_level": required_castle_level,
-				"unit_type": unit_type_name,
-				"units_hired": units_hired
-			}]
+				"region_id": region_id
+			}
+			if region_id > 0:
+				condition["required_region_level"] = required_region_level
+				condition["required_castle_level"] = required_castle_level
+				condition["unit_type"] = unit_type_name
+				condition["units_hired"] = units_hired
+			if resource_amount > 0:
+				condition["resource_type"] = resource_type_name
+				condition["resource_amount"] = resource_amount
+			return [condition]
 		_:
 			return ["conquer"]
 
@@ -1500,16 +1524,8 @@ func update_from_region(region: Region) -> void:
 		e.text = str(region.get_base_resource_amount(rt))
 	# Ore
 	_ore_check.button_pressed = not region.get_discovered_ores().is_empty()
-	_ore_guarantee_attempt_edit.text = str(region.get_ore_guaranteed_discovery_attempt())
-	if region.get_ore_guaranteed_discovery_attempt() <= 0:
-		_ore_guarantee_type_option.select(0)
-	else:
-		var ore_type_name: String = ResourcesEnum.type_to_string(region.get_ore_guaranteed_discovery_type())
-		for i in range(_ore_guarantee_type_option.item_count):
-			var item_text: String = _ore_guarantee_type_option.get_item_text(i)
-			if item_text.to_lower() == ore_type_name.to_lower():
-				_ore_guarantee_type_option.select(i)
-				break
+	var guaranteed_attempt: int = region.get_ore_guaranteed_discovery_attempt()
+	_select_ore_guarantee_attempt("random" if region.is_ore_guaranteed_discovery_random() else str(guaranteed_attempt))
 	# Population
 	_population_edit.text = str(region.get_population())
 	# Ownership
@@ -1546,7 +1562,7 @@ func commit_pending_region_edits() -> void:
 		var edit: LineEdit = _resource_edits[rt] as LineEdit
 		_on_resource_changed(edit.text, rt)
 	_on_population_changed(_population_edit.text)
-	_on_ore_guarantee_attempt_changed(_ore_guarantee_attempt_edit.text)
+	_on_ore_guarantee_attempt_selected(_ore_guarantee_attempt_option.selected)
 
 func _set_region_default_visible(visible: bool) -> void:
 	for n in _region_default_nodes:
@@ -1577,12 +1593,21 @@ func _populate_castles() -> void:
 	_castle_option.add_item("Castle")
 	_castle_option.add_item("Stronghold")
 
-func _populate_ore_guarantee_types() -> void:
-	_ore_guarantee_type_option.clear()
-	_ore_guarantee_type_option.add_item("None")
-	_ore_guarantee_type_option.add_item("Iron")
-	_ore_guarantee_type_option.add_item("Gold")
-	_ore_guarantee_type_option.select(0)
+func _populate_ore_guarantee_attempts() -> void:
+	_ore_guarantee_attempt_option.clear()
+	_ore_guarantee_attempt_option.add_item("0")
+	for attempt in range(1, GameParameters.ORE_SEARCH_CHANCES_PER_REGION + 1):
+		_ore_guarantee_attempt_option.add_item(str(attempt))
+	_ore_guarantee_attempt_option.add_item("random")
+	_ore_guarantee_attempt_option.select(0)
+
+func _select_ore_guarantee_attempt(attempt_text: String) -> void:
+	var normalized_text: String = attempt_text.strip_edges().to_lower()
+	for i in range(_ore_guarantee_attempt_option.item_count):
+		if _ore_guarantee_attempt_option.get_item_text(i).to_lower() == normalized_text:
+			_ore_guarantee_attempt_option.select(i)
+			return
+	_ore_guarantee_attempt_option.select(0)
 
 func _populate_ownership() -> void:
 	_ownership_option.clear()
@@ -1636,22 +1661,10 @@ func _on_resource_focus_exited(rt: ResourcesEnum.Type) -> void:
 func _on_ore_toggled(pressed: bool) -> void:
 	emit_signal("region_data_changed", _current_region_id, "ORE:" + ("1" if pressed else "0"))
 
-func _on_ore_guarantee_attempt_changed(text: String) -> void:
-	var attempt: int = maxi(0, int(text))
-	var selected_type: String = _ore_guarantee_type_option.get_item_text(_ore_guarantee_type_option.selected)
-	if selected_type == "None":
-		attempt = 0
-		_ore_guarantee_attempt_edit.text = "0"
-	emit_signal("region_data_changed", _current_region_id, "ORECFG_ATTEMPT:" + str(attempt))
-
-func _on_ore_guarantee_attempt_focus_exited() -> void:
-	_on_ore_guarantee_attempt_changed(_ore_guarantee_attempt_edit.text)
-
-func _on_ore_guarantee_type_selected(index: int) -> void:
-	var ore_type: String = _ore_guarantee_type_option.get_item_text(index)
-	if ore_type == "None":
-		_ore_guarantee_attempt_edit.text = "0"
-	emit_signal("region_data_changed", _current_region_id, "ORECFG_TYPE:" + ore_type)
+func _on_ore_guarantee_attempt_selected(index: int) -> void:
+	var attempt_text: String = _ore_guarantee_attempt_option.get_item_text(index).to_lower()
+	_select_ore_guarantee_attempt(attempt_text)
+	emit_signal("region_data_changed", _current_region_id, "ORECFG_ATTEMPT:" + attempt_text)
 
 func _on_population_changed(text: String) -> void:
 	emit_signal("region_data_changed", _current_region_id, "POP:" + str(int(text)))
@@ -1824,9 +1837,8 @@ func _serialize_region(region: Region) -> Dictionary:
 		ores.append(ResourcesEnum.type_to_string(ore))
 	data["discovered_ores"] = ores
 	var guaranteed_attempt: int = region.get_ore_guaranteed_discovery_attempt()
-	if guaranteed_attempt > 0:
-		data["ore_guaranteed_discovery_attempt"] = guaranteed_attempt
-		data["ore_guaranteed_discovery_type"] = ResourcesEnum.type_to_string(region.get_ore_guaranteed_discovery_type())
+	if guaranteed_attempt != 0:
+		data["ore_guaranteed_discovery_attempt"] = "random" if region.is_ore_guaranteed_discovery_random() else guaranteed_attempt
 	return data
 
 func _serialize_army(army: Army, region_id: int) -> Dictionary:

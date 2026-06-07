@@ -724,7 +724,20 @@ func _has_raise_intent_opportunity(player_id: int) -> bool:
 	if armies_count == 0:
 		return true
 	var candidate: Dictionary = pick_best_raise_region(player_id)
-	return not candidate.is_empty()
+	if not candidate.is_empty():
+		return true
+	return _has_raise_savings_opportunity(player_id)
+
+func _has_raise_savings_opportunity(player_id: int) -> bool:
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
+	for region_id in owned_regions:
+		if region_manager.get_castle_level(region_id) < 2:
+			continue
+		var region_container: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+		if army_manager.is_region_at_army_cap(region_container):
+			continue
+		return true
+	return false
 
 func _deposit_raise_army_reserve_bank(player_id: int) -> Dictionary:
 	var player: Player = player_manager.get_player(player_id)
@@ -827,6 +840,9 @@ func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	
 	if candidate.is_empty():
+		if _has_raise_savings_opportunity(player_id):
+			DebugLogger.log("AIEconomy", "   Decision: NO - Waiting for raise recruits")
+			return {"raised": false, "reason": "waiting_for_recruits", "score_text": "", "score": 0.0}
 		var released_raise_reserve_gold: int = _release_raise_army_reserve(player, "no_candidate")
 		DebugLogger.log("AIEconomy", "   Decision: NO - No valid castle regions with sufficient recruits")
 		return {"raised": false, "reason": "no_candidate", "score_text": "", "score": 0.0, "released_raise_reserve_gold": released_raise_reserve_gold}

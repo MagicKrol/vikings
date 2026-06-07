@@ -55,6 +55,8 @@ Flow:
 4. Choose highest score (tie: lower region id)
 5. Run `should_raise_army` using `RaiseArmyDecision`
 
+The AI raise reserve can start saving before the recruit threshold is met. If the player already has an army but owns any non-full level 2+ castle, the reserve bank may lock gold for a future raise; the actual raise still requires a full candidate with enough recruits. While this future source exists, `Raise Army` reports `waiting_for_recruits` instead of releasing the saved raise reserve.
+
 Hard gates in `RaiseArmyDecision.score`:
 
 - `gold_after_raise >= AI_RESERVE_GOLD_MIN` (30)

@@ -282,16 +282,9 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		region.set_any_ore_discovered(flag == "1")
 		return
 	if selection.begins_with("ORECFG_ATTEMPT:"):
-		var attempt: int = maxi(0, int(selection.substr(15, selection.length())))
+		var attempt_text: String = selection.substr(15, selection.length()).strip_edges().to_lower()
+		var attempt: int = Region.ORE_GUARANTEED_DISCOVERY_RANDOM_ATTEMPT if attempt_text == "random" else maxi(0, int(attempt_text))
 		region.set_ore_guaranteed_discovery(attempt, region.get_ore_guaranteed_discovery_type())
-		return
-	if selection.begins_with("ORECFG_TYPE:"):
-		var ore_type_name: String = selection.substr(12, selection.length()).strip_edges()
-		if ore_type_name.to_lower() == "none":
-			region.set_ore_guaranteed_discovery(0, region.get_ore_guaranteed_discovery_type())
-			return
-		var ore_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(ore_type_name)
-		region.set_ore_guaranteed_discovery(region.get_ore_guaranteed_discovery_attempt(), ore_type)
 		return
 	# Region type change (land)
 	region.set_ocean(false)

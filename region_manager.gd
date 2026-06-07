@@ -108,6 +108,9 @@ func _build_region_graph() -> void:
 	if Graph != null:
 		region_graph = Graph.build_non_ocean_adjacency(map_generator.regions, map_generator.edges)
 
+func rebuild_region_graph() -> void:
+	_build_region_graph()
+
 func get_neighbor_regions(region_id: int) -> Array[int]:
 	"""Get all neighboring regions for a given region ID"""
 	if region_graph.has(region_id):
