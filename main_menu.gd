@@ -15,10 +15,13 @@ const FEEDBACK_URL: String = "https://steamcommunity.com/app/4380120/discussions
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
 @onready var load_game_button: Button = $MenuContainer/LoadGameButton
 @onready var options_button: Button = $MenuContainer/OptionsButton
+@onready var upgrades_button: Button = $MenuContainer/UpgradesButton
 @onready var exit_button: Button = $MenuContainer/ExitButton
 @onready var feedback_container: Control = $Feedback
 @onready var feedback_button: Button = $Feedback/TextureRect/FeedbackButton
 @onready var save_game_modal: MainMenuSaveGameModal = $SaveGameModal
+@onready var cards_container: Control = $Cards
+@onready var cards_back_button: Button = $Cards/VBoxContainer/HBoxContainer2/Back
 
 # New Game menu buttons
 @onready var campaign_button: Button = $NewGame/CampaignButton
@@ -165,8 +168,10 @@ func _ready():
 	new_game_button.pressed.connect(_on_new_game_pressed)
 	load_game_button.pressed.connect(_on_load_game_pressed)
 	options_button.pressed.connect(_on_options_pressed)
+	upgrades_button.pressed.connect(_on_upgrades_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	feedback_button.pressed.connect(_on_feedback_pressed)
+	cards_back_button.pressed.connect(_on_cards_back_pressed)
 	save_game_modal.back_requested.connect(_on_save_game_modal_back_requested)
 	save_game_modal.action_requested.connect(_on_save_game_modal_action_requested)
 	
@@ -441,6 +446,10 @@ func _on_options_pressed():
 	DebugLogger.log("UISystem", "Options button pressed")
 	_show_options_menu()
 
+func _on_upgrades_pressed() -> void:
+	DebugLogger.log("UISystem", "Upgrades button pressed")
+	_show_cards_menu()
+
 func _on_exit_pressed():
 	DebugLogger.log("UISystem", "Exit button pressed")
 	get_tree().quit()
@@ -485,6 +494,10 @@ func _on_campaign_play_pressed():
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
+	_show_main_menu()
+
+func _on_cards_back_pressed() -> void:
+	DebugLogger.log("UISystem", "Cards Back button pressed")
 	_show_main_menu()
 
 func _on_scenario_back_pressed():
@@ -562,6 +575,7 @@ func _show_main_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	feedback_container.visible = false
+	cards_container.visible = false
 
 func _update_primary_main_menu_button() -> void:
 	var has_save_file: bool = SaveGameManager.has_save_file()
@@ -586,6 +600,7 @@ func _show_new_game_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	feedback_container.visible = false
+	cards_container.visible = false
 
 func _show_options_menu():
 	"""Show the options menu"""
@@ -601,6 +616,24 @@ func _show_options_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	feedback_container.visible = false
+	cards_container.visible = false
+
+func _show_cards_menu() -> void:
+	button_bg1.visible = false
+	button_bg2.visible = false
+	button_bg3.visible = false
+	button_bg4.visible = false
+	button_bg5.visible = false
+	menu_container.visible = false
+	new_game_container.visible = false
+	options_container.visible = false
+	campaign_container.visible = false
+	scenario_container.visible = false
+	custom_map_container.visible = false
+	demo_container.visible = false
+	map_preview.visible = false
+	feedback_container.visible = false
+	cards_container.visible = true
 
 func _show_campaign_menu():
 	"""Show campaign using the Scenario node layout"""
@@ -618,6 +651,7 @@ func _show_campaign_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	feedback_container.visible = false
+	cards_container.visible = false
 	is_scenario_mode = true
 	is_campaign_mode = true
 	custom_map_panel.visible = false
@@ -646,6 +680,7 @@ func _show_scenario_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	feedback_container.visible = false
+	cards_container.visible = false
 	is_scenario_mode = true
 	is_campaign_mode = false
 	custom_map_panel.visible = false
@@ -674,6 +709,7 @@ func _show_custom_map_menu():
 	demo_container.visible = false
 	map_preview.visible = false
 	feedback_container.visible = false
+	cards_container.visible = false
 	is_scenario_mode = false
 	custom_map_panel.visible = true
 	scenario_panel.visible = false

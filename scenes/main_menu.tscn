@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=62 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" path="res://main_menu_save_game_modal.gd" id="22_save_modal_script"]
 [ext_resource type="Script" path="res://map_list_row.gd" id="23_map_list_row_script"]
 [ext_resource type="Texture2D" uid="uid://w57tdi2mrhbw" path="res://images/movemodal3.png" id="24_bfhfd"]
+[ext_resource type="Texture2D" uid="uid://cibgdyh3ta8er" path="res://images/cards_modal.png" id="26_kw5a7"]
 [ext_resource type="Texture2D" uid="uid://be8gp13s2vvoa" path="res://images/card_green.png" id="26_qmtb6"]
 [ext_resource type="Texture2D" uid="uid://bnpxlwa6l7flv" path="res://images/card_blue.png" id="27_7njel"]
 [ext_resource type="FontFile" uid="uid://clrblirxn5ggx" path="res://fonts/Bebas_Neue,Cardo,Cinzel,Linden_Hill,Prociono/Cardo/Cardo-Bold.ttf" id="27_oq48y"]
@@ -35,7 +36,19 @@
 [ext_resource type="Texture2D" uid="uid://dsbntofyj2a6t" path="res://images/level2.png" id="32_co0mx"]
 [ext_resource type="Texture2D" uid="uid://bc1xnk340h0ne" path="res://images/level_locked.png" id="33_2vb86"]
 [ext_resource type="Texture2D" uid="uid://dw8ua3xekuokx" path="res://images/level line.png" id="34_tqo6t"]
-[ext_resource type="Texture2D" uid="uid://cx8o8ee63ea2f" path="res://images/units/archer_new_card.png" id="35_dmdhx"]
+[ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="36_crwf8"]
+[ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="37_stone"]
+[ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="38_iron"]
+[ext_resource type="Texture2D" uid="uid://w8h6rsyp5ujh" path="res://images/icons/new_gold.png" id="39_gold"]
+[ext_resource type="Texture2D" uid="uid://jeobvfp8cxvs" path="res://images/units/peasant_new_card.png" id="40_peasant"]
+[ext_resource type="Texture2D" uid="uid://c5wlokly7g3c4" path="res://images/units/spearman_new_card.png" id="41_spearman"]
+[ext_resource type="Texture2D" uid="uid://uciaqo58a3qa" path="res://images/units/swordman_new_card.png" id="42_swordman"]
+[ext_resource type="Texture2D" uid="uid://v7mnedjnhwbm" path="res://images/units/crossbowman__new_card.png" id="43_crossbow"]
+[ext_resource type="Texture2D" uid="uid://b8daoh0q7nlg4" path="res://images/units/horseman_new_card.png" id="44_horseman"]
+[ext_resource type="Texture2D" uid="uid://cv512px1citrk" path="res://images/card_blue_selected.png" id="45_bnvcu"]
+[ext_resource type="Texture2D" uid="uid://bfhxpqmbmu5qp" path="res://images/units/knight_new_card.png" id="45_knight"]
+[ext_resource type="Texture2D" uid="uid://cx8o8ee63ea2f" path="res://images/units/archer_new_card.png" id="46_archer"]
+[ext_resource type="Texture2D" uid="uid://bui8gbqkbrgj2" path="res://images/card_blue_disabled.png" id="48_d71e6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -122,8 +135,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-metadata/_edit_vertical_guides_ = [680.0, 1294.0, -127.0]
-metadata/_edit_horizontal_guides_ = [197.0, 827.0, 285.0, 941.0, 165.0]
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -187,6 +198,16 @@ mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
 
+[node name="TextureRect6" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 720.0
+offset_top = 816.0
+offset_right = 1200.0
+offset_bottom = 916.0
+mouse_filter = 2
+texture = ExtResource("3_701y0")
+expand_mode = 2
+
 [node name="MenuContainer" type="VBoxContainer" parent="."]
 visible = false
 z_index = 10
@@ -197,9 +218,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -205.0
-offset_top = -245.0
+offset_top = -250.0
 offset_right = 205.0
-offset_bottom = 245.0
+offset_bottom = 351.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 65
@@ -223,6 +244,11 @@ text = "Load Game"
 layout_mode = 2
 theme = ExtResource("12_oyrel")
 text = "Options"
+
+[node name="UpgradesButton" type="Button" parent="MenuContainer"]
+layout_mode = 2
+theme = ExtResource("12_oyrel")
+text = "Upgrades"
 
 [node name="ExitButton" type="Button" parent="MenuContainer"]
 layout_mode = 2
@@ -2392,7 +2418,6 @@ theme_override_font_sizes/font_size = 24
 text = "Load Game"
 
 [node name="Language" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -2526,78 +2551,68 @@ text = "Open"
 [node name="Cards" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
+offset_top = -50.0
 offset_right = 40.0
-offset_bottom = 40.0
+offset_bottom = -10.0
 
 [node name="TextureRect3" type="TextureRect" parent="Cards"]
 layout_mode = 0
 offset_left = 100.0
 offset_top = 197.0
-offset_right = 1636.0
-offset_bottom = 1733.0
-scale = Vector2(1.15, 0.53)
+offset_right = 1850.0
+offset_bottom = 1047.0
 mouse_filter = 2
-texture = ExtResource("9_ygwey")
-expand_mode = 2
+texture = ExtResource("26_kw5a7")
 
-[node name="Keys" type="Panel" parent="Cards"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Cards"]
 layout_mode = 0
-offset_left = 680.0
-offset_top = 200.0
-offset_right = 1290.0
-offset_bottom = 850.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_ijsky")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Cards/Keys"]
-layout_mode = 0
-offset_left = -519.0
-offset_top = 15.0
-offset_right = 1136.0
-offset_bottom = 645.0
+offset_left = 161.0
+offset_top = 216.0
+offset_right = 1816.0
+offset_bottom = 1023.0
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="Cards/Keys/VBoxContainer"]
+[node name="Label" type="Label" parent="Cards/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("11_pot7t")
-text = "Keyboard Mapping"
+text = "Bonus Cards"
 horizontal_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="Cards/Keys/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Cards/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Cards/Keys/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="Cards/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="Back" type="Button" parent="Cards/Keys/VBoxContainer/HBoxContainer2"]
+[node name="Back" type="Button" parent="Cards/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"
 
-[node name="MarginContainer2" type="MarginContainer" parent="Cards/Keys/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="Cards/VBoxContainer"]
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Rows" type="GridContainer" parent="Cards/Keys/VBoxContainer"]
+[node name="Rows" type="GridContainer" parent="Cards/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 50
 theme_override_constants/v_separation = 20
 columns = 6
 
-[node name="Card1" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="Card1" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="CardTexture" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card1"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2608,37 +2623,37 @@ texture = ExtResource("26_qmtb6")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CardTitle" type="Label" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card1"]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 17.0
 offset_right = 190.0
 offset_bottom = 40.0
 theme_override_fonts/font = ExtResource("27_oq48y")
-text = "Food Gathering"
+text = "upgrade_card_food_title"
 horizontal_alignment = 1
 
-[node name="CardIcon" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card1"]
 layout_mode = 0
-offset_left = 70.0
+offset_left = 90.0
 offset_top = 55.0
-offset_right = 270.0
+offset_right = 290.0
 offset_bottom = 255.0
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("28_4ogdv")
 
-[node name="CardText" type="RichTextLabel" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card1"]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 135.0
-offset_right = 210.0
-offset_bottom = 285.0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
 theme_override_fonts/normal_font = ExtResource("29_qfxyt")
 theme_override_fonts/bold_font = ExtResource("30_v3knu")
 bbcode_enabled = true
-text = "[center]Your people learned how to gather more food. You start the game with [b]+10 Food[/b][/center]"
+text = "upgrade_card_food_desc"
 
-[node name="Level1" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card1"]
 layout_mode = 0
 offset_left = 40.0
 offset_top = 235.0
@@ -2647,7 +2662,8 @@ offset_bottom = 466.0
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("31_w86uu")
 
-[node name="Level2" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card1"]
+layout_mode = 0
 offset_left = 95.0
 offset_top = 235.0
 offset_right = 284.0
@@ -2655,7 +2671,8 @@ offset_bottom = 466.0
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("32_co0mx")
 
-[node name="Level3" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card1"]
+layout_mode = 0
 offset_left = 150.0
 offset_top = 235.0
 offset_right = 339.0
@@ -2663,7 +2680,7 @@ offset_bottom = 466.0
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("33_2vb86")
 
-[node name="TextureRect6" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card1"]
 layout_mode = 0
 offset_left = 18.0
 offset_top = 220.0
@@ -2672,7 +2689,7 @@ offset_bottom = 260.0
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("34_tqo6t")
 
-[node name="LevelText" type="Label" parent="Cards/Keys/VBoxContainer/Rows/Card1"]
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card1"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 0
 offset_left = 82.0
@@ -2688,12 +2705,12 @@ theme_override_font_sizes/font_size = 16
 text = "Level"
 horizontal_alignment = 1
 
-[node name="Card2" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="Card2" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card2"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2704,84 +2721,388 @@ texture = ExtResource("26_qmtb6")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card3" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
-custom_minimum_size = Vector2(225, 300)
-layout_mode = 2
-mouse_filter = 2
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_wood_title"
+horizontal_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card3"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("26_qmtb6")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Card4" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
-custom_minimum_size = Vector2(225, 300)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card4"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("26_qmtb6")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Card5" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
-custom_minimum_size = Vector2(225, 300)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card5"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("26_qmtb6")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Card6" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
-custom_minimum_size = Vector2(225, 300)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card6"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("27_7njel")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TextureRect2" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card6"]
-offset_left = 70.0
-offset_top = 70.0
-offset_right = 270.0
-offset_bottom = 270.0
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 55.0
+offset_right = 290.0
+offset_bottom = 255.0
 scale = Vector2(0.3, 0.3)
-texture = ExtResource("35_dmdhx")
+texture = ExtResource("36_crwf8")
 
-[node name="Card7" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_wood_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card2"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card2"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card3" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card7"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("26_qmtb6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_stone_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 55.0
+offset_right = 290.0
+offset_bottom = 255.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("37_stone")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_stone_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card3"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card3"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card4" type="Control" parent="Cards/VBoxContainer/Rows"]
+custom_minimum_size = Vector2(225, 300)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("26_qmtb6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_iron_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 55.0
+offset_right = 290.0
+offset_bottom = 255.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("38_iron")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_iron_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 234.0
+offset_right = 229.0
+offset_bottom = 465.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card4"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card4"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card5" type="Control" parent="Cards/VBoxContainer/Rows"]
+custom_minimum_size = Vector2(225, 300)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("26_qmtb6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_gold_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 55.0
+offset_right = 290.0
+offset_bottom = 255.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("39_gold")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_gold_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card5"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card5"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card6" type="Control" parent="Cards/VBoxContainer/Rows"]
+custom_minimum_size = Vector2(225, 300)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card6"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2792,12 +3113,94 @@ texture = ExtResource("27_7njel")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card8" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_peasants_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("40_peasant")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_peasants_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card6"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card6"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card7" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card8"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card7"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2808,12 +3211,94 @@ texture = ExtResource("27_7njel")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card9" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_spearmen_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("41_spearman")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_spearmen_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card7"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card7"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card8" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card9"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card8"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2824,12 +3309,94 @@ texture = ExtResource("27_7njel")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card10" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_archers_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("46_archer")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_archers_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card8"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card8"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card9" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card10"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card9"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2840,12 +3407,192 @@ texture = ExtResource("27_7njel")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card11" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_swordsmen_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("42_swordman")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_swordsmen_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card9"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card9"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card10" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card11"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("45_bnvcu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_crossbowmen_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("43_crossbow")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_crossbowmen_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card10"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card10"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card11" type="Control" parent="Cards/VBoxContainer/Rows"]
+custom_minimum_size = Vector2(225, 300)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card11"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -2856,18 +3603,202 @@ texture = ExtResource("27_7njel")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card12" type="Control" parent="Cards/Keys/VBoxContainer/Rows"]
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_horsemen_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("44_horseman")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_horsemen_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card11"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card11"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Card12" type="Control" parent="Cards/VBoxContainer/Rows"]
 custom_minimum_size = Vector2(225, 300)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Cards/Keys/VBoxContainer/Rows/Card12"]
+[node name="CardTexture" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card12"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("27_7njel")
+texture = ExtResource("48_d71e6")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="CardTitle" type="Label" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 17.0
+offset_right = 190.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("27_oq48y")
+text = "upgrade_card_knights_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 55.0
+offset_right = 270.0
+offset_bottom = 255.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("45_knight")
+
+[node name="CardText" type="RichTextLabel" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 120.0
+offset_right = 207.0
+offset_bottom = 270.0
+theme_override_fonts/normal_font = ExtResource("29_qfxyt")
+theme_override_fonts/bold_font = ExtResource("30_v3knu")
+bbcode_enabled = true
+text = "upgrade_card_knights_desc"
+
+[node name="Level1" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 235.0
+offset_right = 229.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("31_w86uu")
+
+[node name="Level2" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 235.0
+offset_right = 284.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("32_co0mx")
+
+[node name="Level3" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 235.0
+offset_right = 339.0
+offset_bottom = 466.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("33_2vb86")
+
+[node name="TextureRect6" type="TextureRect" parent="Cards/VBoxContainer/Rows/Card12"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 220.0
+offset_right = 778.0
+offset_bottom = 260.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("34_tqo6t")
+
+[node name="LevelText" type="Label" parent="Cards/VBoxContainer/Rows/Card12"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 0
+offset_left = 82.0
+offset_top = 212.0
+offset_right = 142.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("30_v3knu")
+theme_override_font_sizes/font_size = 16
+text = "Level"
+horizontal_alignment = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="Cards/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Cards/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("11_pot7t")
+text = "You can Select up to 3 cards"
+horizontal_alignment = 1
+
+[node name="Keys" type="Panel" parent="Cards"]
+visible = false
+layout_mode = 0
+offset_left = 680.0
+offset_top = 200.0
+offset_right = 1290.0
+offset_bottom = 850.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ijsky")
