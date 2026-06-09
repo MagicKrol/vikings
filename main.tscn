@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://cs6dvuoqlrn4w"]
+[gd_scene load_steps=45 format=3 uid="uid://cs6dvuoqlrn4w"]
 
 [ext_resource type="Texture2D" uid="uid://bimr046p3bsib" path="res://images/background4grass4.png" id="1_bgtex"]
 [ext_resource type="Script" path="res://map_generator.gd" id="1_m7t5v"]
@@ -43,6 +43,7 @@
 [ext_resource type="PackedScene" uid="uid://h42eo1s0dxyd" path="res://scenes/save_game_modal.tscn" id="41_savegamemodal"]
 [ext_resource type="PackedScene" uid="uid://cgsue7gwnej1a" path="res://scenes/event_message_modal.tscn" id="42_event_message_modal"]
 [ext_resource type="PackedScene" path="res://scenes/game_guide_menu_modal.tscn" id="43_guide_menu_modal"]
+[ext_resource type="PackedScene" uid="uid://c6gpbubht548v" path="res://scenes/card_modal.tscn" id="44_card_modal"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("5_place")
@@ -118,6 +119,9 @@ visible = false
 visible = false
 
 [node name="EventMessageModal" parent="UI" instance=ExtResource("42_event_message_modal")]
+visible = false
+
+[node name="CardModal" parent="UI" instance=ExtResource("44_card_modal")]
 visible = false
 
 [node name="RegionTooltip2" parent="UI" instance=ExtResource("9_cgk76")]

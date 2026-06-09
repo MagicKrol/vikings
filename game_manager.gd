@@ -72,6 +72,7 @@ var _ai_camera_director: AICameraDirector
 var _message_modal: MessageModal
 var _event_message_modal: EventMessageModal
 var _intro_message_modal: IntroMessageModal
+var _card_modal: CardModal
 var ai_step_requires_shift: bool = false
 
 # AI system references
@@ -91,7 +92,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = true
+@export var debug_mode: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -112,9 +113,25 @@ const DEBUG_LANGUAGE_CYCLE: Array[String] = ["en", "de", "pl", "br"]
 const MAIN_MENU_TARGET_META_KEY: String = "main_menu_target"
 const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
 const CAMPAIGN_OUTRO_KEY_TEMPLATE: String = "mission-%d_outro"
+const UPGRADE_CARD_UI_CONFIGS: Dictionary = {
+	"Card1": {"card_texture_path": "res://images/card_green.png", "title_key": "upgrade_card_food_title", "icon_texture_path": "res://images/icons/new_food.png", "icon_offset_left": 90.0, "icon_offset_top": 54.0, "icon_offset_right": 290.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.34, "icon_scale_y": 0.34, "description_key": "upgrade_card_food_desc"},
+	"Card2": {"card_texture_path": "res://images/card_green.png", "title_key": "upgrade_card_wood_title", "icon_texture_path": "res://images/icons/new_forest.png", "icon_offset_left": 90.0, "icon_offset_top": 54.0, "icon_offset_right": 290.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.34, "icon_scale_y": 0.34, "description_key": "upgrade_card_wood_desc"},
+	"Card3": {"card_texture_path": "res://images/card_green.png", "title_key": "upgrade_card_stone_title", "icon_texture_path": "res://images/icons/stone.png", "icon_offset_left": 90.0, "icon_offset_top": 54.0, "icon_offset_right": 290.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.34, "icon_scale_y": 0.34, "description_key": "upgrade_card_stone_desc"},
+	"Card4": {"card_texture_path": "res://images/card_green.png", "title_key": "upgrade_card_iron_title", "icon_texture_path": "res://images/icons/new_iron.png", "icon_offset_left": 90.0, "icon_offset_top": 54.0, "icon_offset_right": 290.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.34, "icon_scale_y": 0.34, "description_key": "upgrade_card_iron_desc"},
+	"Card5": {"card_texture_path": "res://images/card_green.png", "title_key": "upgrade_card_gold_title", "icon_texture_path": "res://images/icons/new_gold.png", "icon_offset_left": 90.0, "icon_offset_top": 54.0, "icon_offset_right": 290.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.34, "icon_scale_y": 0.34, "description_key": "upgrade_card_gold_desc"},
+	"Card6": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_peasants_title", "icon_texture_path": "res://images/units/peasant_new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_peasants_desc"},
+	"Card7": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_spearmen_title", "icon_texture_path": "res://images/units/spearman_new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_spearmen_desc"},
+	"Card8": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_archers_title", "icon_texture_path": "res://images/units/archer_new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_archers_desc"},
+	"Card9": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_swordsmen_title", "icon_texture_path": "res://images/units/swordman_new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_swordsmen_desc"},
+	"Card10": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_crossbowmen_title", "icon_texture_path": "res://images/units/crossbowman__new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_crossbowmen_desc"},
+	"Card11": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_horsemen_title", "icon_texture_path": "res://images/units/horseman_new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_horsemen_desc"},
+	"Card12": {"card_texture_path": "res://images/card_blue.png", "title_key": "upgrade_card_knights_title", "icon_texture_path": "res://images/units/knight_new_card.png", "icon_offset_left": 85.0, "icon_offset_top": 54.0, "icon_offset_right": 280.0, "icon_offset_bottom": 254.0, "icon_scale_x": 0.22, "icon_scale_y": 0.22, "description_key": "upgrade_card_knights_desc"}
+}
 
 var _player_initial_turn_completed: Dictionary = {}
 var _latest_famine_result_by_player: Dictionary = {}
+var _pending_upgrade_unlock_result: Dictionary = {}
+var _pending_card_modal_main_menu_target: String = ""
 
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
@@ -148,6 +165,8 @@ var _spawn_event_source_region_by_target: Dictionary = {}
 var _spawn_event_pending_event_index: int = -1
 var _has_played_start_horn: bool = false
 var _last_battle_withdrawing_side: int = 0
+var _selected_upgrade_card_ids: Array[String] = []
+var _pending_upgrade_unit_bonuses_by_player: Dictionary = {}
 
 func _ready():
 	# If EditorStart provided a payload, force-enable editor mode
@@ -162,6 +181,8 @@ func _ready():
 	_spawn_event_allowed_target_ids.clear()
 	_spawn_event_source_region_by_target.clear()
 	_spawn_event_pending_event_index = -1
+	_selected_upgrade_card_ids.clear()
+	_pending_upgrade_unit_bonuses_by_player.clear()
 
 	# Early init gate: check if map editor is enabled BEFORE normal init
 	if enable_map_editor:
@@ -188,10 +209,12 @@ func _ready():
 				requested_scenario_file = "tutorial.json"
 			scenario_path = "res://scenarios/" + requested_scenario_file
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
+			_selected_upgrade_card_ids = _normalize_selected_upgrade_cards(payload.get("selected_upgrade_cards", []))
 		elif kind == "map":
 			game_mode = "custom"
 			scenario_path = ""
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
+			_selected_upgrade_card_ids = _normalize_selected_upgrade_cards(payload.get("selected_upgrade_cards", []))
 			var map_file_name: String = String(payload.get("map_file", "")).get_file()
 			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
 				map_file_name = "demo-999-small.json"
@@ -205,6 +228,7 @@ func _ready():
 			_initialize_victory_conditions_from_custom_payload(payload)
 			map_generator.generate_map()
 		elif kind == "save":
+			_selected_upgrade_card_ids.clear()
 			var save_path: String = String(payload.get("save_path", SaveGameManager.SAVE_FILE_PATH))
 			var save_data: Dictionary = SaveGameManager.load_game_from_path(save_path)
 			if not save_data.is_empty():
@@ -294,6 +318,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	_message_modal = ui_node.get_node("MessageModal") as MessageModal
 	_event_message_modal = ui_node.get_node("EventMessageModal") as EventMessageModal
 	_intro_message_modal = ui_node.get_node("IntroMessageModal") as IntroMessageModal
+	_card_modal = ui_node.get_node("CardModal") as CardModal
 	if _game_menu_modal:
 		_game_menu_modal.connect("main_menu_pressed", _on_game_menu_main_menu_pressed)
 		_game_menu_modal.connect("exit_pressed", _on_game_menu_exit_pressed)
@@ -350,6 +375,9 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 		player_manager._initialize_players(player_types)
 		_capture_initial_human_player_count_if_unset()
 		_apply_starting_resources_for_difficulty()
+		if not is_scenario and not skip_initial_flow:
+			_apply_selected_upgrade_resource_bonuses()
+			_queue_or_apply_selected_upgrade_unit_bonuses()
 		_trade_manager = TradeManager.new(player_manager)
 		
 		# Connect to player change signal to refresh UI
@@ -455,6 +483,8 @@ func _start_scenario() -> void:
 		player_manager,
 		GameParameters.game_difficulty_to_string(game_difficulty)
 	)
+	_apply_selected_upgrade_resource_bonuses()
+	_queue_or_apply_selected_upgrade_unit_bonuses()
 	var heat_calc := StrategicPointsHeatmap.new()
 	heat_calc.initialize(_region_manager, map_generator)
 	heat_calc.enable_key_toggle = false
@@ -567,8 +597,7 @@ func _disconnect_intro_message_modal_handlers() -> void:
 func _on_campaign_outro_end_mission() -> void:
 	_disconnect_intro_message_modal_handlers()
 	get_tree().paused = false
-	get_tree().set_meta(MAIN_MENU_TARGET_META_KEY, MAIN_MENU_TARGET_CAMPAIGN_LIST)
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	_show_pending_upgrade_card_or_return_to_main_menu(MAIN_MENU_TARGET_CAMPAIGN_LIST)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Handle keyboard shortcuts
@@ -1520,7 +1549,7 @@ func _disconnect_victory_message_handler() -> void:
 
 func _on_victory_message_continue_to_main_menu() -> void:
 	_disconnect_victory_message_handler()
-	_on_game_menu_main_menu_pressed()
+	_show_pending_upgrade_card_or_return_to_main_menu("")
 
 func _on_human_elimination_continue() -> void:
 	_disconnect_human_elimination_message_handler()
@@ -1552,6 +1581,7 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
 	_finish_analytics_run("won", player_id, condition_type)
+	_pending_upgrade_unlock_result = _record_upgrade_completion_for_victory(player_id)
 	if _should_show_campaign_outro(player_id):
 		_disconnect_intro_message_modal_handlers()
 		_intro_message_modal.continue_clicked.connect(_on_campaign_outro_end_mission)
@@ -1791,6 +1821,7 @@ func _spawn_scenario_event_army_in_region(region: Region, player_id: int, compos
 	if set_zero_movement:
 		spawned_army.movement_points = 0
 	spawned_army.just_raised = false
+	_try_apply_pending_upgrade_unit_bonuses_for_player(player_id)
 	return spawned_army
 
 func _execute_scenario_event_auto_spawn(event_data: Dictionary) -> Dictionary:
@@ -2723,6 +2754,12 @@ func get_starting_army_composition_for_player(player_id: int) -> Dictionary:
 func get_game_difficulty() -> int:
 	return game_difficulty
 
+func _normalize_selected_upgrade_cards(raw_cards: Variant) -> Array[String]:
+	var raw_card_ids: Array = []
+	if raw_cards is Array:
+		raw_card_ids = raw_cards as Array
+	return UpgradesManager.get_valid_selected_cards(raw_card_ids, GameParameters.game_difficulty_to_string(game_difficulty))
+
 func _apply_starting_resources_for_difficulty() -> void:
 	for i in range(player_types.size()):
 		var player_type: PlayerTypeEnum.Type = player_types[i]
@@ -2730,11 +2767,139 @@ func _apply_starting_resources_for_difficulty() -> void:
 			continue
 		var player_id: int = i + 1
 		var resources_data: Dictionary = {}
-		for resource_type in ResourcesEnum.get_all_types():
+		for raw_resource_type in ResourcesEnum.get_all_types():
+			var resource_type: ResourcesEnum.Type = raw_resource_type
 			var resource_key: String = ResourcesEnum.type_to_string(resource_type)
 			var amount: int = GameParameters.get_starting_resource_amount_for_difficulty(resource_type, game_difficulty)
 			resources_data[resource_key] = amount
 		player_manager.set_player_resources(player_id, resources_data)
+
+func _apply_selected_upgrade_resource_bonuses() -> void:
+	if _selected_upgrade_card_ids.is_empty():
+		return
+	var resource_bonuses: Dictionary = UpgradesManager.get_resource_bonuses(_selected_upgrade_card_ids)
+	if resource_bonuses.is_empty():
+		return
+	for player_id in range(1, total_players + 1):
+		if not is_player_human(player_id):
+			continue
+		for raw_resource_type in ResourcesEnum.get_all_types():
+			var resource_type: ResourcesEnum.Type = raw_resource_type
+			if not resource_bonuses.has(resource_type):
+				continue
+			var amount: int = int(resource_bonuses.get(resource_type, 0))
+			if amount > 0:
+				player_manager.add_resources_to_player(player_id, resource_type, amount)
+
+func _queue_or_apply_selected_upgrade_unit_bonuses() -> void:
+	if _selected_upgrade_card_ids.is_empty():
+		return
+	var unit_bonuses: Dictionary = UpgradesManager.get_unit_bonuses(_selected_upgrade_card_ids)
+	if unit_bonuses.is_empty():
+		return
+	for player_id in range(1, total_players + 1):
+		if not is_player_human(player_id):
+			continue
+		if _apply_upgrade_unit_bonuses_for_player(player_id, unit_bonuses):
+			continue
+		_pending_upgrade_unit_bonuses_by_player[player_id] = unit_bonuses.duplicate()
+
+func _try_apply_pending_upgrade_unit_bonuses_for_player(player_id: int) -> void:
+	if not _pending_upgrade_unit_bonuses_by_player.has(player_id):
+		return
+	var unit_bonuses: Dictionary = _pending_upgrade_unit_bonuses_by_player.get(player_id, {}) as Dictionary
+	if _apply_upgrade_unit_bonuses_for_player(player_id, unit_bonuses):
+		_pending_upgrade_unit_bonuses_by_player.erase(player_id)
+
+func _apply_upgrade_unit_bonuses_for_player(player_id: int, unit_bonuses: Dictionary) -> bool:
+	var castle_region: Region = _find_first_upgrade_target_castle_region(player_id)
+	if castle_region != null:
+		_add_upgrade_units_to_garrison(castle_region, unit_bonuses)
+		return true
+	var armies: Array[Army] = _army_manager.get_player_armies(player_id)
+	for army: Army in armies:
+		if is_instance_valid(army):
+			_add_upgrade_units_to_army(army, unit_bonuses)
+			return true
+	return false
+
+func _find_first_upgrade_target_castle_region(player_id: int) -> Region:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var regions_node: Node = map_generator.get_node("Regions")
+	for child: Node in regions_node.get_children():
+		if child is Region:
+			var region: Region = child as Region
+			if region.get_region_owner() == player_id and region.get_castle_type() != CastleTypeEnum.Type.NONE:
+				return region
+	return null
+
+func _add_upgrade_units_to_garrison(region: Region, unit_bonuses: Dictionary) -> void:
+	for raw_soldier_type in SoldierTypeEnum.get_all_types():
+		var soldier_type: SoldierTypeEnum.Type = raw_soldier_type
+		if not unit_bonuses.has(soldier_type):
+			continue
+		var amount: int = int(unit_bonuses.get(soldier_type, 0))
+		if amount > 0:
+			region.add_soldiers_to_garrison(soldier_type, amount)
+
+func _add_upgrade_units_to_army(army: Army, unit_bonuses: Dictionary) -> void:
+	for raw_soldier_type in SoldierTypeEnum.get_all_types():
+		var soldier_type: SoldierTypeEnum.Type = raw_soldier_type
+		if not unit_bonuses.has(soldier_type):
+			continue
+		var amount: int = int(unit_bonuses.get(soldier_type, 0))
+		if amount > 0:
+			army.add_soldiers(soldier_type, amount)
+
+func _record_upgrade_completion_for_victory(player_id: int) -> Dictionary:
+	if not is_player_human(player_id):
+		return {"changed": false}
+	var source_type: String = ""
+	var source_id: String = ""
+	if game_mode == "custom":
+		source_type = UpgradesManager.SOURCE_SKIRMISH
+		source_id = "skirmish"
+	elif game_mode == "scenario" and scenario_path != "":
+		source_type = UpgradesManager.SOURCE_SCENARIO
+		source_id = scenario_path.get_file().get_basename()
+	if source_type == "":
+		return {"changed": false}
+	var difficulty_name: String = GameParameters.game_difficulty_to_string(game_difficulty)
+	var result: Dictionary = UpgradesManager.record_completion_result(source_type, source_id, difficulty_name)
+	if bool(result.get("changed", false)):
+		DebugLogger.log("Upgrades", "Recorded upgrade progress for " + source_type + ": " + source_id + " on " + difficulty_name)
+	return result
+
+func _show_pending_upgrade_card_or_return_to_main_menu(main_menu_target: String) -> void:
+	if not bool(_pending_upgrade_unlock_result.get("changed", false)):
+		_return_to_main_menu(main_menu_target)
+		return
+	var card_id: String = String(_pending_upgrade_unlock_result.get("card_id", ""))
+	var new_level: int = int(_pending_upgrade_unlock_result.get("new_level", 1))
+	var previous_level: int = int(_pending_upgrade_unlock_result.get("previous_level", 0))
+	var card_config: Dictionary = _get_upgrade_card_modal_config(card_id, new_level)
+	_pending_upgrade_unlock_result.clear()
+	_pending_card_modal_main_menu_target = main_menu_target
+	if not _card_modal.continued.is_connected(_on_card_modal_continue_to_main_menu):
+		_card_modal.continued.connect(_on_card_modal_continue_to_main_menu)
+	_card_modal.show_card(card_config, new_level, previous_level > 0)
+
+func _get_upgrade_card_modal_config(card_id: String, level: int) -> Dictionary:
+	var card_config: Dictionary = (UPGRADE_CARD_UI_CONFIGS[card_id] as Dictionary).duplicate()
+	card_config["amount"] = UpgradesManager.get_card_bonus_amount(card_id, level)
+	return card_config
+
+func _on_card_modal_continue_to_main_menu() -> void:
+	if _card_modal.continued.is_connected(_on_card_modal_continue_to_main_menu):
+		_card_modal.continued.disconnect(_on_card_modal_continue_to_main_menu)
+	var main_menu_target: String = _pending_card_modal_main_menu_target
+	_pending_card_modal_main_menu_target = ""
+	_return_to_main_menu(main_menu_target)
+
+func _return_to_main_menu(main_menu_target: String) -> void:
+	if main_menu_target != "":
+		get_tree().set_meta(MAIN_MENU_TARGET_META_KEY, main_menu_target)
+	_on_game_menu_main_menu_pressed()
 
 func is_player_active(player_id: int) -> bool:
 	"""Check if a player is active (not OFF)"""
@@ -2993,6 +3158,7 @@ func handle_castle_placement(region: Region) -> void:
 					_visual_manager.place_army_visual(child, current_player)
 				DebugLogger.log("GameInit", "Placed " + str(armies_per_castle) + " armies for Player " + str(current_player) + " in region " + str(region_id))
 				break
+	_try_apply_pending_upgrade_unit_bonuses_for_player(current_player)
 	
 	if is_player_computer(current_player) and _ai_camera_director:
 		await _ai_camera_director.await_delay(GameParameters.CAMERA_CONQUEST_DELAY)

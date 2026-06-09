@@ -425,9 +425,7 @@ func _can_spend_wood(cost: int) -> bool:
 		return true
 	if player_manager == null:
 		return false
-	var budget: int = _get_siege_wood_budget()
-	var current_spent: int = _get_current_siege_wood_spent()
-	return current_spent + cost <= budget
+	return cost <= _get_siege_wood_budget()
 
 func _get_siege_wood_budget() -> int:
 	var player = player_manager.get_player(attacking_army.get_player_id())
@@ -435,13 +433,6 @@ func _get_siege_wood_budget() -> int:
 		return 0
 	var available: int = player.get_resource_amount(ResourcesEnum.Type.WOOD)
 	return max(0, available)
-
-func _get_current_siege_wood_spent() -> int:
-	var total: int = 0
-	total += siege_counts.get("ladders", 0) * int(LADDER_DATA.get("wood", 0))
-	total += siege_counts.get("rams", 0) * int(RAM_DATA.get("wood", 0))
-	total += siege_counts.get("trebuchets", 0) * int(TREB_DATA.get("wood", 0))
-	return total
 
 func _spend_wood(cost: int) -> bool:
 	if cost <= 0:

@@ -10,6 +10,17 @@ const LANGUAGE_PORTUGUESE_BRAZIL_FLAG: Texture2D = preload("res://images/flags/b
 const MAIN_MENU_TARGET_META_KEY: String = "main_menu_target"
 const MAIN_MENU_TARGET_CAMPAIGN_LIST: String = "campaign_list"
 const FEEDBACK_URL: String = "https://steamcommunity.com/app/4380120/discussions/0/"
+const CARD_GREEN_TEXTURE: Texture2D = preload("res://images/card_green.png")
+const CARD_GREEN_DISABLED_TEXTURE: Texture2D = preload("res://images/card_green_disabled.png")
+const CARD_GREEN_SELECTED_TEXTURE: Texture2D = preload("res://images/card_green_selected.png")
+const CARD_BLUE_TEXTURE: Texture2D = preload("res://images/card_blue.png")
+const CARD_BLUE_DISABLED_TEXTURE: Texture2D = preload("res://images/card_blue_disabled.png")
+const CARD_BLUE_SELECTED_TEXTURE: Texture2D = preload("res://images/card_blue_selected.png")
+const LEVEL_LOCKED_TEXTURE: Texture2D = preload("res://images/level_locked.png")
+const LEVEL_1_TEXTURE: Texture2D = preload("res://images/level1.png")
+const LEVEL_2_TEXTURE: Texture2D = preload("res://images/level2.png")
+const LEVEL_3_TEXTURE: Texture2D = preload("res://images/level3.png")
+const CARD_LEVEL_TOOLTIP_OFFSET: Vector2 = Vector2(18.0, 18.0)
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -21,7 +32,12 @@ const FEEDBACK_URL: String = "https://steamcommunity.com/app/4380120/discussions
 @onready var feedback_button: Button = $Feedback/TextureRect/FeedbackButton
 @onready var save_game_modal: MainMenuSaveGameModal = $SaveGameModal
 @onready var cards_container: Control = $Cards
+@onready var cards_title_label: Label = $Cards/VBoxContainer/Label
 @onready var cards_back_button: Button = $Cards/VBoxContainer/HBoxContainer2/Back
+@onready var cards_rows: GridContainer = $Cards/VBoxContainer/Rows
+@onready var cards_limit_label: Label = $Cards/VBoxContainer/Label2
+@onready var cards_spacer_label: Label = $Cards/VBoxContainer/Label3
+@onready var card_level_tooltip: SelectTooltipModalNoRes = $Cards/LevelTooltip
 
 # New Game menu buttons
 @onready var campaign_button: Button = $NewGame/CampaignButton
@@ -88,11 +104,12 @@ const FEEDBACK_URL: String = "https://steamcommunity.com/app/4380120/discussions
 @onready var scenario_container: VBoxContainer = $Scenario
 @onready var demo_container: VBoxContainer = $Demo
 
-@onready var button_bg1 = $TextureRect1
-@onready var button_bg2 = $TextureRect2
-@onready var button_bg3 = $TextureRect3
-@onready var button_bg4 = $TextureRect4
-@onready var button_bg5 = $TextureRect5
+@onready var button_bg1: TextureRect = $TextureRect1
+@onready var button_bg2: TextureRect = $TextureRect2
+@onready var button_bg3: TextureRect = $TextureRect3
+@onready var button_bg4: TextureRect = $TextureRect4
+@onready var button_bg5: TextureRect = $TextureRect5
+@onready var button_bg6: TextureRect = $TextureRect6
 
 # Map preview references
 @onready var map_preview: Control = $MapPreview
@@ -135,6 +152,9 @@ var scenario_difficulty_group: ButtonGroup
 var default_scenario_description_text: String = ""
 var default_scenario_objectives_text: String = ""
 var main_game_debug_mode: bool = true
+var cards_selection_mode: bool = false
+var pending_start_payload: Dictionary = {}
+var selected_upgrade_card_ids: Array[String] = []
 
 # Player settings for custom map
 var player_settings: Array = []  # Array of dictionaries with player configuration
@@ -209,6 +229,7 @@ func _ready():
 	_setup_difficulty_buttons()
 	_setup_scenario_difficulty_buttons()
 	_setup_victory_buttons()
+	_setup_upgrade_cards()
 	default_scenario_description_text = scenario_description_label.text
 	default_scenario_objectives_text = scenario_objectives_label.text
 	main_game_debug_mode = _resolve_main_game_debug_mode()
@@ -219,6 +240,10 @@ func _ready():
 		return
 
 	_show_main_menu()
+
+func _process(_delta: float) -> void:
+	if card_level_tooltip.visible:
+		_update_card_level_tooltip_position(get_viewport().get_mouse_position())
 
 func _apply_start_target_from_meta() -> bool:
 	if not get_tree().has_meta(MAIN_MENU_TARGET_META_KEY):
@@ -314,6 +339,7 @@ func _apply_language_by_index(index: int, persist: bool) -> void:
 	_update_primary_main_menu_button()
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	if persist:
+		_refresh_upgrade_cards()
 		SaveGameManager.save_settings(sound_manager)
 
 func _language_index_from_locale(locale: String) -> int:
@@ -483,14 +509,11 @@ func _on_campaign_play_pressed():
 	DebugLogger.log("UISystem", "Campaign Play button pressed with scenario: " + selected_scenario)
 	if selected_scenario != "":
 		var scen_path := "res://scenarios/" + selected_scenario + ".json"
-		get_tree().set_meta("start_payload", {
+		_begin_upgrade_selection_or_start({
 			"type": "scenario",
 			"scenario_path": scen_path,
 			"difficulty": _get_selected_scenario_difficulty()
 		})
-		if sound_manager:
-			sound_manager.stop_main_menu_music()
-		get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_options_back_pressed():
 	DebugLogger.log("UISystem", "Options Back button pressed")
@@ -498,7 +521,10 @@ func _on_options_back_pressed():
 
 func _on_cards_back_pressed() -> void:
 	DebugLogger.log("UISystem", "Cards Back button pressed")
-	_show_main_menu()
+	if cards_selection_mode:
+		_start_game_from_payload(_build_payload_with_selected_upgrades())
+	else:
+		_show_main_menu()
 
 func _on_scenario_back_pressed():
 	DebugLogger.log("UISystem", "Scenario Back button pressed")  
@@ -508,14 +534,11 @@ func _on_scenario_play_pressed():
 	DebugLogger.log("UISystem", "Scenario Play button pressed with scenario: " + selected_scenario)
 	if selected_scenario != "":
 		var scen_path := "res://scenarios/" + selected_scenario + ".json"
-		get_tree().set_meta("start_payload", {
+		_begin_upgrade_selection_or_start({
 			"type": "scenario",
 			"scenario_path": scen_path,
 			"difficulty": _get_selected_scenario_difficulty()
 		})
-		if sound_manager:
-			sound_manager.stop_main_menu_music()
-		get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_custom_map_back_pressed():
 	DebugLogger.log("UISystem", "Custom Map Back button pressed")  
@@ -532,7 +555,7 @@ func _on_custom_map_select_pressed():
 	var fallback_size_str: String = _size_full_name(size_code).to_lower()
 	var size_str: String = String(selected_map_item.get("map_size_exact", fallback_size_str))
 	var selected_victory: String = _get_selected_custom_map_victory()
-	get_tree().set_meta("start_payload", {
+	_begin_upgrade_selection_or_start({
 		"type": "map",
 		"map_file": map_path,
 		"map_size": size_str,
@@ -540,32 +563,57 @@ func _on_custom_map_select_pressed():
 		"victory_condition": selected_victory,
 		"difficulty": _get_selected_custom_map_difficulty()
 	})
-	if sound_manager:
-		sound_manager.stop_main_menu_music()
-	get_tree().change_scene_to_file("res://main.tscn")
 
 func _on_scenario_select_pressed():
 	if selected_scenario_item.is_empty():
 		return
 	var scenario_name: String = selected_scenario_item.get("name", "")
 	var scen_path := "res://scenarios/" + scenario_name + ".json"
-	get_tree().set_meta("start_payload", {
+	_begin_upgrade_selection_or_start({
 		"type": "scenario",
 		"scenario_path": scen_path,
 		"difficulty": _get_selected_scenario_difficulty()
 	})
+	
+func _begin_upgrade_selection_or_start(payload: Dictionary) -> void:
+	if _is_tutorial_payload(payload):
+		_start_game_from_payload(payload)
+		return
+	pending_start_payload = payload.duplicate(true)
+	selected_upgrade_card_ids.clear()
+	cards_selection_mode = true
+	_show_cards_menu()
+
+func _is_tutorial_payload(payload: Dictionary) -> bool:
+	if String(payload.get("type", "")) != "scenario":
+		return false
+	return String(payload.get("scenario_path", "")).get_file() == TUTORIAL_SCENARIO_PATH.get_file()
+
+func _build_payload_with_selected_upgrades() -> Dictionary:
+	var payload: Dictionary = pending_start_payload.duplicate(true)
+	var difficulty_name: String = String(payload.get("difficulty", "normal"))
+	payload["selected_upgrade_cards"] = UpgradesManager.get_valid_selected_cards(selected_upgrade_card_ids, difficulty_name)
+	return payload
+
+func _start_game_from_payload(payload: Dictionary) -> void:
+	get_tree().set_meta("start_payload", payload)
 	if sound_manager:
 		sound_manager.stop_main_menu_music()
 	get_tree().change_scene_to_file("res://main.tscn")
 
 func _show_main_menu():
 	"""Show the main menu and hide other menus"""
+	card_level_tooltip.hide_tooltip()
+	cards_selection_mode = false
+	pending_start_payload.clear()
+	selected_upgrade_card_ids.clear()
 	_update_primary_main_menu_button()
 	button_bg1.visible = true
 	button_bg2.visible = true
 	button_bg3.visible = true
 	button_bg4.visible = true
 	button_bg5.visible = true
+	button_bg6.visible = true
 	menu_container.visible = true
 	new_game_container.visible = false
 	options_container.visible = false
@@ -591,6 +639,7 @@ func _show_new_game_menu():
 	button_bg3.visible = true
 	button_bg4.visible = true
 	button_bg5.visible = false
+	button_bg6.visible = false
 	menu_container.visible = false
 	new_game_container.visible = true
 	options_container.visible = false
@@ -607,6 +656,7 @@ func _show_options_menu():
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	button_bg4.visible = false
 	button_bg5.visible = false
+	button_bg6.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = true
@@ -619,11 +669,14 @@ func _show_options_menu():
 	cards_container.visible = false
 
 func _show_cards_menu() -> void:
+	card_level_tooltip.hide_tooltip()
+	_refresh_upgrade_cards()
 	button_bg1.visible = false
 	button_bg2.visible = false
 	button_bg3.visible = false
 	button_bg4.visible = false
 	button_bg5.visible = false
+	button_bg6.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
@@ -635,6 +688,149 @@ func _show_cards_menu() -> void:
 	feedback_container.visible = false
 	cards_container.visible = true
 
+func _setup_upgrade_cards() -> void:
+	for card: Dictionary in UpgradesManager.get_all_cards():
+		var card_id: String = String(card.get("id", ""))
+		var card_node: Control = cards_rows.get_node(card_id) as Control
+		card_node.mouse_filter = Control.MOUSE_FILTER_STOP
+		_set_upgrade_card_child_mouse_filters(card_node)
+		_connect_upgrade_level_tooltips(card_node, card_id)
+		var card_text: RichTextLabel = card_node.get_node("CardText") as RichTextLabel
+		card_node.set_meta("upgrade_card_desc_key", card_text.text)
+		card_node.gui_input.connect(_on_upgrade_card_gui_input.bind(card_id))
+	_refresh_upgrade_cards()
+
+func _set_upgrade_card_child_mouse_filters(card_node: Control) -> void:
+	for child: Node in card_node.get_children():
+		if child is Control:
+			var child_control: Control = child as Control
+			child_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+func _connect_upgrade_level_tooltips(card_node: Control, card_id: String) -> void:
+	for level: int in range(1, 4):
+		var level_node: TextureRect = card_node.get_node("Level" + str(level)) as TextureRect
+		level_node.mouse_filter = Control.MOUSE_FILTER_PASS
+		level_node.mouse_entered.connect(_on_upgrade_level_mouse_entered.bind(card_id, level))
+		level_node.mouse_exited.connect(_on_upgrade_level_mouse_exited)
+
+func _refresh_upgrade_cards() -> void:
+	cards_title_label.text = tr("Bonus Cards")
+	cards_back_button.text = tr("Continue") if cards_selection_mode else tr("Back")
+	var difficulty_name: String = String(pending_start_payload.get("difficulty", "normal"))
+	var selection_limit: int = UpgradesManager.get_selection_limit_for_difficulty(difficulty_name)
+	cards_limit_label.visible = cards_selection_mode
+	cards_spacer_label.visible = not cards_selection_mode
+	cards_limit_label.text = tr("You can select up to %d cards") % selection_limit
+	for card: Dictionary in UpgradesManager.get_all_cards():
+		var card_id: String = String(card.get("id", ""))
+		var card_node: Control = cards_rows.get_node(card_id) as Control
+		var level: int = UpgradesManager.get_card_level(card_id)
+		var unlocked: bool = level > 0
+		var selected: bool = selected_upgrade_card_ids.has(card_id)
+		card_node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if cards_selection_mode and unlocked else Control.CURSOR_ARROW
+		var card_texture: TextureRect = card_node.get_node("CardTexture") as TextureRect
+		card_texture.texture = _get_upgrade_card_texture(String(card.get("color", "green")), unlocked, selected)
+		var card_icon: TextureRect = card_node.get_node("CardIcon") as TextureRect
+		card_icon.visible = unlocked
+		var card_text: RichTextLabel = card_node.get_node("CardText") as RichTextLabel
+		var description_key: String = String(card_node.get_meta("upgrade_card_desc_key"))
+		var description_amount: int = UpgradesManager.get_card_bonus_amount(card_id, maxi(level, 1))
+		card_text.text = tr(description_key).format({"amount": description_amount})
+		card_text.visible = unlocked
+		var lock_icon: TextureRect = card_node.get_node("Lock") as TextureRect
+		lock_icon.visible = not unlocked
+		_apply_upgrade_card_level_textures(card_node, level)
+
+func _get_upgrade_card_texture(card_color: String, unlocked: bool, selected: bool) -> Texture2D:
+	if card_color == "blue":
+		if not unlocked:
+			return CARD_BLUE_DISABLED_TEXTURE
+		if selected:
+			return CARD_BLUE_SELECTED_TEXTURE
+		return CARD_BLUE_TEXTURE
+	if not unlocked:
+		return CARD_GREEN_DISABLED_TEXTURE
+	if selected:
+		return CARD_GREEN_SELECTED_TEXTURE
+	return CARD_GREEN_TEXTURE
+
+func _apply_upgrade_card_level_textures(card_node: Control, level: int) -> void:
+	var level_textures: Array[Texture2D] = [LEVEL_1_TEXTURE, LEVEL_2_TEXTURE, LEVEL_3_TEXTURE]
+	for i in range(3):
+		var level_node: TextureRect = card_node.get_node("Level" + str(i + 1)) as TextureRect
+		level_node.texture = level_textures[i] if level >= i + 1 else LEVEL_LOCKED_TEXTURE
+
+func _on_upgrade_level_mouse_entered(card_id: String, level: int) -> void:
+	var tooltip_text: String = _build_upgrade_level_tooltip(card_id, level)
+	if tooltip_text == "":
+		card_level_tooltip.hide_tooltip()
+		return
+	card_level_tooltip.show_text(tooltip_text)
+	_update_card_level_tooltip_position(get_viewport().get_mouse_position())
+
+func _on_upgrade_level_mouse_exited() -> void:
+	card_level_tooltip.hide_tooltip()
+
+func _build_upgrade_level_tooltip(card_id: String, level: int) -> String:
+	var card: Dictionary = UpgradesManager.get_card(card_id)
+	var source_type: String = String(card.get("source_type", UpgradesManager.SOURCE_NONE))
+	var source_id: String = String(card.get("source_id", "")).strip_edges()
+	if source_type == UpgradesManager.SOURCE_NONE or source_id == "":
+		return ""
+	var mission_name: String = _resolve_upgrade_source_display_name(source_id)
+	var difficulty_name: String = tr(_upgrade_level_difficulty_key(level))
+	var tooltip_key: String = "upgrade_level_requirement_mission_tooltip" if source_id.begins_with("mission-") else "upgrade_level_requirement_scenario_tooltip"
+	return tr(tooltip_key).format({"mission": mission_name, "difficulty": difficulty_name})
+
+func _resolve_upgrade_source_display_name(source_id: String) -> String:
+	var translated_name: String = tr(source_id)
+	if translated_name != source_id:
+		return translated_name
+	return source_id.replace("-", " ").capitalize()
+
+func _upgrade_level_difficulty_key(level: int) -> String:
+	match level:
+		1:
+			return "Easy"
+		2:
+			return "Normal"
+		_:
+			return "Hard"
+
+func _update_card_level_tooltip_position(mouse_pos: Vector2) -> void:
+	var pos: Vector2 = mouse_pos + CARD_LEVEL_TOOLTIP_OFFSET
+	var screen_size: Vector2 = get_viewport().get_visible_rect().size
+	if pos.x + card_level_tooltip.size.x > screen_size.x:
+		pos.x = screen_size.x - card_level_tooltip.size.x - 10.0
+	if pos.y + card_level_tooltip.size.y > screen_size.y:
+		pos.y = screen_size.y - card_level_tooltip.size.y - 10.0
+	pos.x = max(10.0, pos.x)
+	pos.y = max(10.0, pos.y)
+	card_level_tooltip.global_position = pos
+
+func _on_upgrade_card_gui_input(event: InputEvent, card_id: String) -> void:
+	if not cards_selection_mode:
+		return
+	if not (event is InputEventMouseButton):
+		return
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
+		return
+	_toggle_upgrade_card_selection(card_id)
+
+func _toggle_upgrade_card_selection(card_id: String) -> void:
+	if not UpgradesManager.is_card_unlocked(card_id):
+		return
+	if selected_upgrade_card_ids.has(card_id):
+		selected_upgrade_card_ids.erase(card_id)
+	else:
+		var difficulty_name: String = String(pending_start_payload.get("difficulty", "normal"))
+		var selection_limit: int = UpgradesManager.get_selection_limit_for_difficulty(difficulty_name)
+		if selected_upgrade_card_ids.size() >= selection_limit:
+			return
+		selected_upgrade_card_ids.append(card_id)
+	_refresh_upgrade_cards()
+
 func _show_campaign_menu():
 	"""Show campaign using the Scenario node layout"""
 	button_bg1.visible = true
@@ -642,6 +838,7 @@ func _show_campaign_menu():
 	button_bg3.visible = false
 	button_bg4.visible = false
 	button_bg5.visible = false
+	button_bg6.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
@@ -671,6 +868,7 @@ func _show_scenario_menu():
 	button_bg3.visible = false
 	button_bg4.visible = false
 	button_bg5.visible = false
+	button_bg6.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false
@@ -700,6 +898,7 @@ func _show_custom_map_menu():
 	button_bg3.visible = false
 	button_bg4.visible = false
 	button_bg5.visible = false
+	button_bg6.visible = false
 	menu_container.visible = false
 	new_game_container.visible = false
 	options_container.visible = false

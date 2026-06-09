@@ -18,7 +18,7 @@
 		}
 	],
 	"description": "mission-2_description",
-	"difficulty": "normal",
+	"difficulty": "all",
 	"difficulty_overrides": {
 		"easy": {
 			"army_compositions": [
@@ -1450,7 +1450,7 @@
 			"name": "Westton",
 			"ocean": false,
 			"owner": 2,
-			"population": 135,
+			"population": 110,
 			"resources": {
 				"Food": 1,
 				"Gold": 0,
@@ -1480,7 +1480,6 @@
 			"name": "Saintthwaite",
 			"ocean": false,
 			"ore_guaranteed_discovery_attempt": 3,
-			"ore_guaranteed_discovery_type": "Iron",
 			"owner": 2,
 			"population": 160,
 			"resources": {
