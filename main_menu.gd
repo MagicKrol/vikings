@@ -579,6 +579,9 @@ func _begin_upgrade_selection_or_start(payload: Dictionary) -> void:
 	if _is_tutorial_payload(payload):
 		_start_game_from_payload(payload)
 		return
+	if not UpgradesManager.has_unlocked_cards():
+		_start_game_from_payload(payload)
+		return
 	pending_start_payload = payload.duplicate(true)
 	selected_upgrade_card_ids.clear()
 	cards_selection_mode = true
