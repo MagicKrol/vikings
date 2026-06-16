@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://b5xf5wd50bfp8"]
+
+[ext_resource type="FontFile" uid="uid://clrblirxn5ggx" path="res://fonts/Bebas_Neue,Cardo,Cinzel,Linden_Hill,Prociono/Cardo/Cardo-Bold.ttf" id="1_title"]
+[ext_resource type="FontFile" uid="uid://bjmlxef4tqo5g" path="res://fonts/Bebas_Neue,Cardo,Cinzel,Linden_Hill,Prociono/Linden_Hill/LindenHill-Regular.ttf" id="2_body"]
+
+[resource]
+default_font = ExtResource("2_body")
+default_font_size = 20
+UpgradeCardBody/base_type = &"RichTextLabel"
+UpgradeCardBody/colors/default_color = Color(1, 1, 1, 1)
+UpgradeCardBody/font_sizes/bold_font_size = 20
+UpgradeCardBody/font_sizes/normal_font_size = 20
+UpgradeCardBody/fonts/bold_font = ExtResource("1_title")
+UpgradeCardBody/fonts/normal_font = ExtResource("2_body")
+UpgradeCardLevel/base_type = &"Label"
+UpgradeCardLevel/colors/font_color = Color(0.945098, 0.847059, 0.568627, 1)
+UpgradeCardLevel/colors/font_shadow_color = Color(0, 0, 0, 1)
+UpgradeCardLevel/constants/outline_size = 0
+UpgradeCardLevel/constants/shadow_offset_x = 1
+UpgradeCardLevel/font_sizes/font_size = 16
+UpgradeCardLevel/fonts/font = ExtResource("1_title")
+UpgradeCardTitle/base_type = &"Label"
+UpgradeCardTitle/colors/font_color = Color(1, 1, 1, 1)
+UpgradeCardTitle/font_sizes/font_size = 20
+UpgradeCardTitle/fonts/font = ExtResource("1_title")

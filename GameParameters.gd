@@ -82,7 +82,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = true
+const DEMO_MODE_ENABLED: bool = false
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",
@@ -838,24 +838,24 @@ const WEALTH_RICH_THRESHOLD_GOLD = 400
 
 ## Initial Player Resources
 const STARTING_RESOURCES_EASY = {
-	ResourcesEnum.Type.GOLD: 150,
-	ResourcesEnum.Type.FOOD: 100,
+	ResourcesEnum.Type.GOLD: 130,
+	ResourcesEnum.Type.FOOD: 150,
 	ResourcesEnum.Type.WOOD: 30,
-	ResourcesEnum.Type.IRON: 20,
+	ResourcesEnum.Type.IRON: 10,
 	ResourcesEnum.Type.STONE: 20
 }
 
 const STARTING_RESOURCES_NORMAL = {
 	ResourcesEnum.Type.GOLD: 100,
-	ResourcesEnum.Type.FOOD: 50,
+	ResourcesEnum.Type.FOOD: 70,
 	ResourcesEnum.Type.WOOD: 20,
-	ResourcesEnum.Type.IRON: 10,
+	ResourcesEnum.Type.IRON: 0,
 	ResourcesEnum.Type.STONE: 10
 }
 
 const STARTING_RESOURCES_HARD = {
 	ResourcesEnum.Type.GOLD: 80,
-	ResourcesEnum.Type.FOOD: 30,
+	ResourcesEnum.Type.FOOD: 50,
 	ResourcesEnum.Type.WOOD: 10,
 	ResourcesEnum.Type.IRON: 0,
 	ResourcesEnum.Type.STONE: 0

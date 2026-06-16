@@ -1,0 +1,116 @@
+[gd_scene load_steps=10 format=3 uid="uid://cfi8osodkmdhq"]
+
+[ext_resource type="Texture2D" uid="uid://be8gp13s2vvoa" path="res://images/card_green.png" id="1_card"]
+[ext_resource type="Script" path="res://upgrade_card.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://b5xf5wd50bfp8" path="res://themes/card_font_theme.tres" id="2_card_theme"]
+[ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="3_icon"]
+[ext_resource type="Texture2D" uid="uid://b2rjm7g3bpa7n" path="res://images/level1.png" id="6_level1"]
+[ext_resource type="Texture2D" uid="uid://dsbntofyj2a6t" path="res://images/level2.png" id="7_level2"]
+[ext_resource type="Texture2D" uid="uid://bc1xnk340h0ne" path="res://images/level_locked.png" id="8_level_locked"]
+[ext_resource type="Texture2D" uid="uid://dw8ua3xekuokx" path="res://images/level line.png" id="9_level_line"]
+[ext_resource type="Texture2D" uid="uid://bv3g4er4m0jh5" path="res://images/icons/lock_icon.png" id="10_lock"]
+
+[node name="UpgradeCard" type="Control"]
+custom_minimum_size = Vector2(248, 330)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 248.0
+offset_bottom = 330.0
+mouse_filter = 2
+theme = ExtResource("2_card_theme")
+script = ExtResource("1_script")
+
+[node name="CardTexture" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 225.0
+offset_bottom = 300.0
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("1_card")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardTitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 17.0
+offset_right = 220.0
+offset_bottom = 40.0
+theme_type_variation = &"UpgradeCardTitle"
+text = "upgrade_card_food_title"
+horizontal_alignment = 1
+
+[node name="CardIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 54.0
+offset_right = 290.0
+offset_bottom = 254.0
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("3_icon")
+
+[node name="CardText" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 127.0
+offset_right = 230.0
+offset_bottom = 277.0
+theme_type_variation = &"UpgradeCardBody"
+bbcode_enabled = true
+text = "upgrade_card_food_desc"
+
+[node name="Level1" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 258.0
+offset_right = 235.0
+offset_bottom = 489.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("6_level1")
+
+[node name="Level2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 101.0
+offset_top = 258.0
+offset_right = 290.0
+offset_bottom = 489.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("7_level2")
+
+[node name="Level3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 156.0
+offset_top = 258.0
+offset_right = 345.0
+offset_bottom = 489.0
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("8_level_locked")
+
+[node name="TextureRect6" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 244.0
+offset_right = 778.0
+offset_bottom = 284.0
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_level_line")
+
+[node name="LevelText" type="Label" parent="."]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 0
+offset_left = 88.0
+offset_top = 236.0
+offset_right = 158.0
+offset_bottom = 258.0
+theme_type_variation = &"UpgradeCardLevel"
+text = "Level"
+horizontal_alignment = 1
+
+[node name="Lock" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 70.0
+offset_top = 88.0
+offset_right = 170.0
+offset_bottom = 188.0
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("10_lock")

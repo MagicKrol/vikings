@@ -1,0 +1,2591 @@
+{
+	"armies": [
+		{
+			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 5,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 15,
+				"Swordsmen": 10
+			},
+			"name": "Army III",
+			"player_id": 4,
+			"region_id": 116
+		},
+		{
+			"composition": {
+				"Archers": 5,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 5,
+				"Swordsmen": 0
+			},
+			"name": "Army I",
+			"player_id": 2,
+			"region_id": 139
+		},
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 15,
+				"Swordsmen": 10
+			},
+			"name": "Army II",
+			"player_id": 6,
+			"region_id": 141
+		},
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 5,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 15
+			},
+			"name": "Army III",
+			"player_id": 6,
+			"region_id": 152
+		},
+		{
+			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 1,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"name": "Army II",
+			"player_id": 5,
+			"region_id": 153
+		},
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 15,
+				"Horsemen": 0,
+				"Knights": 10,
+				"Mounted Knights": 0,
+				"Peasants": 20,
+				"Royal Guard": 0,
+				"Spearmen": 25,
+				"Swordsmen": 25
+			},
+			"name": "Army II",
+			"player_id": 3,
+			"region_id": 155
+		},
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 15,
+				"Horsemen": 0,
+				"Knights": 5,
+				"Mounted Knights": 0,
+				"Peasants": 20,
+				"Royal Guard": 3,
+				"Spearmen": 25,
+				"Swordsmen": 15
+			},
+			"name": "Army I",
+			"player_id": 3,
+			"region_id": 166
+		},
+		{
+			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 5,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 10
+			},
+			"name": "Army II",
+			"player_id": 4,
+			"region_id": 203
+		},
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 5,
+				"Horsemen": 0,
+				"Knights": 5,
+				"Mounted Knights": 0,
+				"Peasants": 20,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 15
+			},
+			"name": "Army I",
+			"player_id": 5,
+			"region_id": 207
+		},
+		{
+			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 1,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"name": "Army I",
+			"player_id": 4,
+			"region_id": 218
+		},
+		{
+			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 3,
+				"Mounted Knights": 0,
+				"Peasants": 10,
+				"Royal Guard": 0,
+				"Spearmen": 15,
+				"Swordsmen": 10
+			},
+			"name": "Army I",
+			"player_id": 6,
+			"region_id": 230
+		},
+		{
+			"composition": {
+				"Archers": 5,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"name": "Army II",
+			"player_id": 2,
+			"region_id": 241
+		},
+		{
+			"composition": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 1,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"name": "Army III",
+			"player_id": 2,
+			"region_id": 260
+		}
+	],
+	"description": "mission7_description",
+	"difficulty": "all",
+	"events": [
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 15,
+				"Horsemen": 0,
+				"Knights": 10,
+				"Mounted Knights": 0,
+				"Peasants": 0,
+				"Royal Guard": 5,
+				"Spearmen": 0,
+				"Swordsmen": 30
+			},
+			"message": "mission7_event7",
+			"name": "event1",
+			"player_id": 1,
+			"regions": [
+				86,
+				142,
+				151,
+				92,
+				150,
+				158,
+				153,
+				198,
+				207,
+				170,
+				168,
+				169,
+				129,
+				182,
+				137,
+				83,
+				139,
+				148,
+				149,
+				102,
+				161,
+				203,
+				165,
+				113,
+				116,
+				124,
+				174,
+				185,
+				218,
+				221,
+				220,
+				210,
+				166,
+				108,
+				154,
+				96,
+				143,
+				87,
+				138,
+				127,
+				178,
+				123,
+				167,
+				179,
+				214,
+				171,
+				155,
+				156,
+				146,
+				89,
+				90,
+				85
+			],
+			"turn_end": 1,
+			"turn_start": 1
+		},
+		{
+			"composition": {
+				"Archers": 15,
+				"Crossbowmen": 10,
+				"Horsemen": 0,
+				"Knights": 5,
+				"Mounted Knights": 0,
+				"Peasants": 0,
+				"Royal Guard": 3,
+				"Spearmen": 30,
+				"Swordsmen": 25
+			},
+			"message": "mission7_event8",
+			"name": "event2",
+			"player_id": 1,
+			"regions": [
+				86,
+				142,
+				151,
+				92,
+				150,
+				158,
+				153,
+				198,
+				207,
+				170,
+				168,
+				169,
+				129,
+				182,
+				137,
+				83,
+				139,
+				148,
+				149,
+				102,
+				161,
+				203,
+				165,
+				113,
+				116,
+				124,
+				174,
+				185,
+				218,
+				221,
+				220,
+				210,
+				166,
+				108,
+				154,
+				96,
+				143,
+				87,
+				138,
+				127,
+				178,
+				123,
+				167,
+				179,
+				214,
+				171,
+				155,
+				156,
+				146,
+				89,
+				90,
+				85
+			],
+			"turn_end": 1,
+			"turn_start": 1
+		}
+	],
+	"intro_message": "mission7_intro",
+	"map_file": "mapdata_8267_small.json",
+	"mission_number": 7,
+	"objectives": "mission7_objectives",
+	"player_resources": [
+		{
+			"player_id": 1,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 2,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 3,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 4,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 5,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		},
+		{
+			"player_id": 6,
+			"resources": {
+				"Food": 50,
+				"Gold": 100,
+				"Iron": 10,
+				"Stone": 10,
+				"Wood": 20
+			}
+		}
+	],
+	"player_settings": [
+		{
+			"control_type": "Player",
+			"player_id": 1
+		},
+		{
+			"control_type": "Computer",
+			"player_id": 2
+		},
+		{
+			"control_type": "Computer",
+			"player_id": 3
+		},
+		{
+			"control_type": "Computer",
+			"player_id": 4
+		},
+		{
+			"control_type": "Computer",
+			"player_id": 5
+		},
+		{
+			"control_type": "Computer",
+			"player_id": 6
+		}
+	],
+	"regions": [
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 83,
+			"level": "Shire",
+			"name": "Oakvik",
+			"ocean": false,
+			"owner": 2,
+			"population": 294,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 85,
+			"level": "Shire",
+			"name": "Kirkoy",
+			"ocean": false,
+			"owner": 2,
+			"population": 143,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 86,
+			"level": "Shire",
+			"name": "Westford",
+			"ocean": false,
+			"owner": 2,
+			"population": 156,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 87,
+			"level": "Shire",
+			"name": "Eymere",
+			"ocean": false,
+			"owner": 2,
+			"population": 204,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 89,
+			"level": "Shire",
+			"name": "Reykley",
+			"ocean": false,
+			"owner": 2,
+			"population": 106,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 90,
+			"level": "Shire",
+			"name": "Southton",
+			"ocean": false,
+			"owner": 6,
+			"population": 254,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 92,
+			"level": "Shire",
+			"name": "Sandhavn",
+			"ocean": false,
+			"owner": 2,
+			"population": 146,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 96,
+			"level": "Shire",
+			"name": "Vatnchester",
+			"ocean": false,
+			"owner": 6,
+			"population": 163,
+			"resources": {
+				"Food": 0,
+				"Gold": 6,
+				"Iron": 3,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 102,
+			"level": "Shire",
+			"name": "Northton",
+			"ocean": false,
+			"owner": 4,
+			"population": 287,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 108,
+			"level": "Shire",
+			"name": "Sandberg",
+			"ocean": false,
+			"owner": 3,
+			"population": 258,
+			"resources": {
+				"Food": 0,
+				"Gold": 10,
+				"Iron": 2,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 113,
+			"level": "Shire",
+			"name": "Hellaham",
+			"ocean": false,
+			"owner": 4,
+			"population": 217,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 3,
+				"Stone": 3,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 116,
+			"level": "Shire",
+			"name": "Eastberg",
+			"ocean": false,
+			"owner": 4,
+			"population": 99,
+			"resources": {
+				"Food": 0,
+				"Gold": 6,
+				"Iron": 1,
+				"Stone": 3,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 123,
+			"level": "Shire",
+			"name": "Stonefjord",
+			"ocean": false,
+			"owner": 2,
+			"population": 129,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 124,
+			"level": "Shire",
+			"name": "Fossfjell",
+			"ocean": false,
+			"owner": 4,
+			"population": 157,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 127,
+			"level": "Shire",
+			"name": "Blackby",
+			"ocean": false,
+			"owner": 2,
+			"population": 214,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 129,
+			"level": "Shire",
+			"name": "Hafnham",
+			"ocean": false,
+			"owner": 2,
+			"population": 177,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 137,
+			"level": "Shire",
+			"name": "Kingmere",
+			"ocean": false,
+			"owner": 2,
+			"population": 255,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 138,
+			"level": "Shire",
+			"name": "Hvitmere",
+			"ocean": false,
+			"owner": 2,
+			"population": 63,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 139,
+			"level": "Shire",
+			"name": "Ashby",
+			"ocean": false,
+			"owner": 2,
+			"population": 208,
+			"resources": {
+				"Food": 0,
+				"Gold": 9,
+				"Iron": 3,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "Keep",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 5,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 0,
+				"Royal Guard": 0,
+				"Spearmen": 5,
+				"Swordsmen": 0
+			},
+			"id": 140,
+			"level": "County",
+			"name": "Hafnstadir",
+			"ocean": false,
+			"owner": 2,
+			"population": 191,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 141,
+			"level": "Shire",
+			"name": "Stonethorpe",
+			"ocean": false,
+			"owner": 6,
+			"population": 259,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 142,
+			"level": "Shire",
+			"name": "Ashby",
+			"ocean": false,
+			"owner": 2,
+			"population": 121,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 143,
+			"level": "Shire",
+			"name": "Torfell",
+			"ocean": false,
+			"owner": 2,
+			"population": 298,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 146,
+			"level": "Shire",
+			"name": "Vatnworth",
+			"ocean": false,
+			"owner": 6,
+			"population": 213,
+			"resources": {
+				"Food": 0,
+				"Gold": 7,
+				"Iron": 2,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "Keep",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 15,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 147,
+			"level": "County",
+			"name": "Eybury",
+			"ocean": false,
+			"owner": 6,
+			"population": 283,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 148,
+			"level": "Shire",
+			"name": "Hafnham",
+			"ocean": false,
+			"owner": 2,
+			"population": 294,
+			"resources": {
+				"Food": 0,
+				"Gold": 5,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 149,
+			"level": "Shire",
+			"name": "Sandstadir",
+			"ocean": false,
+			"owner": 4,
+			"population": 191,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 150,
+			"level": "Shire",
+			"name": "Oakholme",
+			"ocean": false,
+			"owner": 2,
+			"population": 265,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 151,
+			"level": "Shire",
+			"name": "Hellafjell",
+			"ocean": false,
+			"owner": 2,
+			"population": 247,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 9,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"id": 152,
+			"level": "Shire",
+			"name": "Hafnmere",
+			"ocean": false,
+			"owner": 6,
+			"population": 296,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 15,
+				"Crossbowmen": 5,
+				"Horsemen": 0,
+				"Knights": 5,
+				"Mounted Knights": 0,
+				"Peasants": 5,
+				"Royal Guard": 0,
+				"Spearmen": 20,
+				"Swordsmen": 15
+			},
+			"id": 153,
+			"level": "Shire",
+			"name": "Reykwich",
+			"ocean": false,
+			"owner": 5,
+			"population": 290,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 154,
+			"level": "Shire",
+			"name": "Osford",
+			"ocean": false,
+			"owner": 2,
+			"population": 246,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 0,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 6,
+				"Royal Guard": 0,
+				"Spearmen": 0,
+				"Swordsmen": 0
+			},
+			"id": 155,
+			"level": "Shire",
+			"name": "Hafnstadir",
+			"ocean": false,
+			"owner": 3,
+			"population": 63,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 156,
+			"level": "Shire",
+			"name": "Kirkfjord",
+			"ocean": false,
+			"owner": 2,
+			"population": 59,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 158,
+			"level": "Shire",
+			"name": "Hvitley",
+			"ocean": false,
+			"owner": 2,
+			"population": 215,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 160,
+			"level": "Shire",
+			"name": "Riverley",
+			"ocean": false,
+			"owner": 4,
+			"population": 119,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 161,
+			"level": "Shire",
+			"name": "Wooddon",
+			"ocean": false,
+			"owner": 4,
+			"population": 170,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 165,
+			"level": "Shire",
+			"name": "Greenwich",
+			"ocean": false,
+			"owner": 4,
+			"population": 181,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 166,
+			"level": "Shire",
+			"name": "Westfjell",
+			"ocean": false,
+			"owner": 3,
+			"population": 75,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 167,
+			"level": "Shire",
+			"name": "Ashby",
+			"ocean": false,
+			"owner": 2,
+			"population": 271,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 168,
+			"level": "Shire",
+			"name": "Westhaug",
+			"ocean": false,
+			"owner": 2,
+			"population": 128,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 169,
+			"level": "Shire",
+			"name": "Redmere",
+			"ocean": false,
+			"owner": 2,
+			"population": 144,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 170,
+			"level": "Shire",
+			"name": "Woodstadir",
+			"ocean": false,
+			"owner": 2,
+			"population": 172,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 171,
+			"level": "Shire",
+			"name": "Hafnthwaite",
+			"ocean": false,
+			"owner": 3,
+			"population": 265,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 173,
+			"level": "Shire",
+			"name": "Kirkoy",
+			"ocean": false,
+			"owner": 4,
+			"population": 170,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 174,
+			"level": "Shire",
+			"name": "Reykfjord",
+			"ocean": false,
+			"owner": 4,
+			"population": 189,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 178,
+			"level": "Shire",
+			"name": "Reykvik",
+			"ocean": false,
+			"owner": 2,
+			"population": 269,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 179,
+			"level": "Shire",
+			"name": "Redby",
+			"ocean": false,
+			"owner": 6,
+			"population": 230,
+			"resources": {
+				"Food": 0,
+				"Gold": 9,
+				"Iron": 2,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 182,
+			"level": "Shire",
+			"name": "Southdal",
+			"ocean": false,
+			"owner": 2,
+			"population": 172,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 185,
+			"level": "Shire",
+			"name": "Toroy",
+			"ocean": false,
+			"owner": 4,
+			"population": 279,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 186,
+			"level": "Shire",
+			"name": "Northford",
+			"ocean": false,
+			"owner": 2,
+			"population": 167,
+			"resources": {
+				"Food": 0,
+				"Gold": 2,
+				"Iron": 1,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 187,
+			"level": "Shire",
+			"name": "Ashvik",
+			"ocean": false,
+			"owner": 6,
+			"population": 199,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 1,
+				"Stone": 3,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 188,
+			"level": "Shire",
+			"name": "Reyknes",
+			"ocean": false,
+			"owner": 6,
+			"population": 74,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "Keep",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 13,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 190,
+			"level": "County",
+			"name": "Sandthorpe",
+			"ocean": false,
+			"owner": 6,
+			"population": 70,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 191,
+			"level": "Shire",
+			"name": "Reykley",
+			"ocean": false,
+			"owner": 2,
+			"population": 275,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 192,
+			"level": "Shire",
+			"name": "Akrhavn",
+			"ocean": false,
+			"owner": 2,
+			"population": 234,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 193,
+			"level": "Shire",
+			"name": "Woodford",
+			"ocean": false,
+			"owner": 6,
+			"population": 271,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 1,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 194,
+			"level": "Shire",
+			"name": "Eastthwaite",
+			"ocean": false,
+			"owner": 2,
+			"population": 165,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 3,
+				"Stone": 3,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 195,
+			"level": "Shire",
+			"name": "Rivermere",
+			"ocean": false,
+			"owner": 2,
+			"population": 293,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 196,
+			"level": "Shire",
+			"name": "Greenmere",
+			"ocean": false,
+			"owner": 6,
+			"population": 72,
+			"resources": {
+				"Food": 0,
+				"Gold": 5,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 197,
+			"level": "Shire",
+			"name": "Stoneholme",
+			"ocean": false,
+			"owner": 6,
+			"population": 261,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 198,
+			"level": "Shire",
+			"name": "Rivermere",
+			"ocean": false,
+			"owner": 5,
+			"population": 286,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 199,
+			"level": "Shire",
+			"name": "Eywich",
+			"ocean": false,
+			"owner": 2,
+			"population": 233,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 200,
+			"level": "Shire",
+			"name": "Kingfjord",
+			"ocean": false,
+			"owner": 2,
+			"population": 114,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 201,
+			"level": "Shire",
+			"name": "Kingvik",
+			"ocean": false,
+			"owner": 2,
+			"population": 289,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "Keep",
+			"discovered_ores": [],
+			"id": 203,
+			"level": "County",
+			"name": "Sandstadir",
+			"ocean": false,
+			"owner": 4,
+			"population": 276,
+			"resources": {
+				"Food": 0,
+				"Gold": 9,
+				"Iron": 1,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 204,
+			"level": "Shire",
+			"name": "Ashthorpe",
+			"ocean": false,
+			"owner": 4,
+			"population": 97,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 205,
+			"level": "Shire",
+			"name": "Riverbury",
+			"ocean": false,
+			"owner": 6,
+			"population": 267,
+			"resources": {
+				"Food": 0,
+				"Gold": 10,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 206,
+			"level": "Shire",
+			"name": "Blackworth",
+			"ocean": false,
+			"owner": 5,
+			"population": 252,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 1,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "Outpost",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 12,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 207,
+			"level": "Shire",
+			"name": "Hellachester",
+			"ocean": false,
+			"owner": 5,
+			"population": 104,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 209,
+			"level": "Shire",
+			"name": "Kirkfjell",
+			"ocean": false,
+			"owner": 4,
+			"population": 289,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 210,
+			"level": "Shire",
+			"name": "Northvik",
+			"ocean": false,
+			"owner": 2,
+			"population": 97,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 211,
+			"level": "Shire",
+			"name": "Fossberg",
+			"ocean": false,
+			"owner": 2,
+			"population": 298,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 2,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 212,
+			"level": "Shire",
+			"name": "Saintton",
+			"ocean": false,
+			"owner": 2,
+			"population": 126,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 213,
+			"level": "Shire",
+			"name": "Torford",
+			"ocean": false,
+			"owner": 2,
+			"population": 211,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 214,
+			"level": "Shire",
+			"name": "Torberg",
+			"ocean": false,
+			"owner": 2,
+			"population": 169,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "Outpost",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 5,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 12,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 215,
+			"level": "Shire",
+			"name": "Reykoy",
+			"ocean": false,
+			"owner": 2,
+			"population": 254,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 216,
+			"level": "Shire",
+			"name": "Greendal",
+			"ocean": false,
+			"owner": 6,
+			"population": 96,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "Castle",
+			"discovered_ores": [],
+			"id": 217,
+			"level": "March",
+			"name": "Stonefjord",
+			"ocean": false,
+			"owner": 4,
+			"population": 205,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 20,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 5
+			},
+			"id": 218,
+			"level": "Shire",
+			"name": "Eastthorpe",
+			"ocean": false,
+			"owner": 4,
+			"population": 140,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 220,
+			"level": "Shire",
+			"name": "Hvitberg",
+			"ocean": false,
+			"owner": 4,
+			"population": 113,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 221,
+			"level": "Shire",
+			"name": "Greenstadir",
+			"ocean": false,
+			"owner": 4,
+			"population": 131,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 222,
+			"level": "Shire",
+			"name": "Hvitnes",
+			"ocean": false,
+			"owner": 6,
+			"population": 193,
+			"resources": {
+				"Food": 0,
+				"Gold": 3,
+				"Iron": 2,
+				"Stone": 2,
+				"Wood": 1
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 223,
+			"level": "Shire",
+			"name": "Woodby",
+			"ocean": false,
+			"owner": 0,
+			"population": 250,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 229,
+			"level": "Shire",
+			"name": "Riverford",
+			"ocean": false,
+			"owner": 2,
+			"population": 72,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "Keep",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 7,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 230,
+			"level": "County",
+			"name": "Kingnes",
+			"ocean": false,
+			"owner": 6,
+			"population": 59,
+			"resources": {
+				"Food": 0,
+				"Gold": 3,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 2
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 232,
+			"level": "Shire",
+			"name": "Osdal",
+			"ocean": false,
+			"owner": 2,
+			"population": 120,
+			"resources": {
+				"Food": 3,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 233,
+			"level": "Shire",
+			"name": "Akrfjord",
+			"ocean": false,
+			"owner": 2,
+			"population": 150,
+			"resources": {
+				"Food": 0,
+				"Gold": 10,
+				"Iron": 3,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 234,
+			"level": "Shire",
+			"name": "Riverhavn",
+			"ocean": false,
+			"owner": 6,
+			"population": 233,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 237,
+			"level": "Shire",
+			"name": "Woodoy",
+			"ocean": false,
+			"owner": 2,
+			"population": 130,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 3
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 238,
+			"level": "Shire",
+			"name": "Whitchester",
+			"ocean": false,
+			"owner": 4,
+			"population": 224,
+			"resources": {
+				"Food": 0,
+				"Gold": 2,
+				"Iron": 1,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "Keep",
+			"discovered_ores": [],
+			"id": 240,
+			"level": "County",
+			"name": "Osbury",
+			"ocean": false,
+			"owner": 2,
+			"population": 131,
+			"resources": {
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 241,
+			"level": "Shire",
+			"name": "Westdon",
+			"ocean": false,
+			"owner": 2,
+			"population": 245,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 242,
+			"level": "Shire",
+			"name": "Hafnthorpe",
+			"ocean": false,
+			"owner": 6,
+			"population": 233,
+			"resources": {
+				"Food": 0,
+				"Gold": 7,
+				"Iron": 3,
+				"Stone": 2,
+				"Wood": 0
+			},
+			"type_display": "Hills"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 243,
+			"level": "Shire",
+			"name": "Northham",
+			"ocean": false,
+			"owner": 2,
+			"population": 191,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 245,
+			"level": "Shire",
+			"name": "Osoy",
+			"ocean": false,
+			"owner": 2,
+			"population": 241,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 248,
+			"level": "Shire",
+			"name": "Blackbury",
+			"ocean": false,
+			"owner": 2,
+			"population": 269,
+			"resources": {
+				"Food": 0,
+				"Gold": 3,
+				"Iron": 2,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest Hills"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 249,
+			"level": "Shire",
+			"name": "Saintworth",
+			"ocean": false,
+			"owner": 2,
+			"population": 277,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "Outpost",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 9,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 251,
+			"level": "Shire",
+			"name": "Hvitfell",
+			"ocean": false,
+			"owner": 2,
+			"population": 271,
+			"resources": {
+				"Food": 1,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 252,
+			"level": "Shire",
+			"name": "Saintbury",
+			"ocean": false,
+			"owner": 2,
+			"population": 135,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 255,
+			"level": "March",
+			"name": "Hvitberg",
+			"ocean": false,
+			"owner": 2,
+			"population": 270,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 256,
+			"level": "Shire",
+			"name": "Oakberg",
+			"ocean": false,
+			"owner": 2,
+			"population": 212,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "grassland",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 257,
+			"level": "Shire",
+			"name": "Kirkford",
+			"ocean": false,
+			"owner": 6,
+			"population": 186,
+			"resources": {
+				"Food": 2,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 0
+			},
+			"type_display": "Grassland"
+		},
+		{
+			"biome": "forest",
+			"castle_type": "None",
+			"discovered_ores": [],
+			"id": 260,
+			"level": "Shire",
+			"name": "Akrhavn",
+			"ocean": false,
+			"owner": 2,
+			"population": 209,
+			"resources": {
+				"Food": 0,
+				"Gold": 0,
+				"Iron": 0,
+				"Stone": 0,
+				"Wood": 2
+			},
+			"type_display": "Forest"
+		},
+		{
+			"biome": "forest_hills",
+			"castle_type": "Stronghold",
+			"discovered_ores": [],
+			"garrison": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 0,
+				"Mounted Knights": 0,
+				"Peasants": 3,
+				"Royal Guard": 0,
+				"Spearmen": 10,
+				"Swordsmen": 0
+			},
+			"id": 262,
+			"level": "Province",
+			"name": "Kirkhavn",
+			"ocean": false,
+			"owner": 2,
+			"population": 269,
+			"resources": {
+				"Food": 0,
+				"Gold": 7,
+				"Iron": 2,
+				"Stone": 0,
+				"Wood": 1
+			},
+			"type_display": "Forest Hills"
+		}
+	],
+	"scenario_type": "campaign",
+	"skip_intro": false,
+	"trade_disabled": false,
+	"victory_conditions": [
+		{
+			"player_id": 1,
+			"region_id": 262,
+			"type": "own_region"
+		}
+	]
+}

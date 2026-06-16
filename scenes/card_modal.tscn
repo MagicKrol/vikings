@@ -1,0 +1,94 @@
+[gd_scene load_steps=7 format=3 uid="uid://c6gpbubht548v"]
+
+[ext_resource type="Script" path="res://card_modal.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="2_background"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="3_standard_theme"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="4_header_theme"]
+[ext_resource type="PackedScene" uid="uid://cfi8osodkmdhq" path="res://scenes/upgrade_card.tscn" id="5_upgrade_card"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="6_button_theme"]
+
+[node name="CardModal" type="Control"]
+z_index = 1000
+z_as_relative = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_standard_theme")
+script = ExtResource("1_script")
+
+[node name="PanelRoot" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -345.0
+offset_right = 230.0
+offset_bottom = 345.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="PanelRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_background")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Content" type="VBoxContainer" parent="PanelRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 34.0
+offset_top = 10.0
+offset_right = -36.0
+offset_bottom = -53.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="PanelRoot/Content"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme = ExtResource("4_header_theme")
+text = "Card Unlocked"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopSpacer" type="Control" parent="PanelRoot/Content"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="CardCenter" type="CenterContainer" parent="PanelRoot/Content"]
+custom_minimum_size = Vector2(0, 330)
+layout_mode = 2
+
+[node name="UpgradeCard" parent="PanelRoot/Content/CardCenter" instance=ExtResource("5_upgrade_card")]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="BottomSpacer" type="Control" parent="PanelRoot/Content"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ButtonRow" type="HBoxContainer" parent="PanelRoot/Content"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="PanelRoot/Content/ButtonRow"]
+custom_minimum_size = Vector2(160, 42)
+layout_mode = 2
+theme = ExtResource("6_button_theme")
+text = "Continue"
