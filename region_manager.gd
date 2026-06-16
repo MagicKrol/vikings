@@ -169,7 +169,7 @@ func set_region_ownership(region_id: int, player_id: int) -> void:
 	var region_after_change: Region = map_generator.get_region_container_by_id(region_id) as Region
 	army_manager.on_region_owner_changed(region_after_change)
 
-func set_initial_region_ownership(region_id: int, player_id: int) -> void:
+func set_initial_region_ownership(region_id: int, player_id: int, clear_existing_garrison: bool = false) -> void:
 	"""Set initial ownership of a region for castle placement with full recruitment"""
 	region_ownership[region_id] = player_id
 	
@@ -179,6 +179,8 @@ func set_initial_region_ownership(region_id: int, player_id: int) -> void:
 		var region = region_container as Region
 		if region != null:
 			region.set_initial_region_owner(player_id)
+			if clear_existing_garrison:
+				region.clear_garrison()
 	
 	# Create colored overlay for owned region
 	if map_generator and map_generator.has_method("create_ownership_overlay"):
@@ -209,13 +211,13 @@ func set_castle_starting_position(region_id: int, player_id: int) -> bool:
 	castle_starting_positions[player_id] = region_id
 	
 	# Claim the starting region with full recruitment counter
-	set_initial_region_ownership(region_id, player_id)
+	set_initial_region_ownership(region_id, player_id, true)
 	
 	# Claim neighboring regions (expansion) with full recruitment counter
 	var neighbors = get_neighbor_regions(region_id)
 	for neighbor_id in neighbors:
 		if get_region_owner(neighbor_id) == -1:  # Only claim unowned regions
-			set_initial_region_ownership(neighbor_id, player_id)
+			set_initial_region_ownership(neighbor_id, player_id, true)
 	
 	return true
 

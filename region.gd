@@ -250,6 +250,11 @@ func remove_soldiers_from_garrison(soldier_type: SoldierTypeEnum.Type, count: in
 	"""Remove soldiers from the region's garrison"""
 	garrison.remove_soldiers(soldier_type, count)
 
+func clear_garrison() -> void:
+	"""Remove all soldiers from the region's garrison"""
+	for soldier_type in SoldierTypeEnum.get_all_types():
+		garrison.set_soldier_count(soldier_type, 0)
+
 func get_garrison_strength() -> int:
 	"""Get total combat strength of the garrison"""
 	return garrison.get_total_attack()
