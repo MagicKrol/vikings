@@ -70,9 +70,7 @@ func _ready():
 			var army_deselect_cb: Callable = Callable(self, "_on_army_deselect_target_reached")
 			if not army_deselect_target_reached.is_connected(army_deselect_cb):
 				army_deselect_target_reached.connect(army_deselect_cb)
-	mouse_entered.connect(_on_mouse_entered)
-	var panel = get_node("Panel") as Control
-	panel.mouse_entered.connect(_on_panel_mouse_entered)
+	_connect_region_tooltip_hide_on_hover(self)
 	_connect_no_actions_hover()
 	_hide_no_actions()
 	
@@ -241,12 +239,14 @@ func _refresh_info_modal() -> void:
 	if info_modal.visible and selected_army:
 		info_modal.show_army_info(selected_army, false)
 
-func _on_mouse_entered() -> void:
-	ui_manager.hide_tooltip_due_to(self)
-	_hide_no_actions()
+func _connect_region_tooltip_hide_on_hover(control: Control) -> void:
+	control.mouse_entered.connect(_on_move_modal_control_mouse_entered.bind(control))
+	for child in control.get_children():
+		if child is Control:
+			_connect_region_tooltip_hide_on_hover(child as Control)
 
-func _on_panel_mouse_entered() -> void:
-	ui_manager.hide_tooltip_due_to(self)
+func _on_move_modal_control_mouse_entered(control: Control) -> void:
+	ui_manager.hide_tooltip_due_to(control)
 	_hide_no_actions()
 
 func _input(event: InputEvent) -> void:

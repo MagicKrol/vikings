@@ -114,6 +114,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+metadata/_edit_vertical_guides_ = [887.0]
+metadata/_edit_horizontal_guides_ = [285.0]
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -660,7 +662,6 @@ theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
 [node name="CustomMap" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -726,6 +727,7 @@ layout_mode = 2
 alignment = 1
 
 [node name="Back" type="Button" parent="CustomMap/Panel/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -1169,6 +1171,7 @@ theme_override_font_sizes/font_size = 24
 text = " Select Map "
 
 [node name="Panel2" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 80.0
 offset_top = 200.0
@@ -1238,6 +1241,7 @@ custom_minimum_size = Vector2(450, 450)
 layout_mode = 2
 
 [node name="Panel3" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 1360.0
 offset_top = 200.0
@@ -1441,6 +1445,7 @@ layout_mode = 2
 alignment = 1
 
 [node name="Back" type="Button" parent="CustomMap/Scenario/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
@@ -2528,6 +2533,7 @@ theme = ExtResource("16_btn_styles")
 text = "Open"
 
 [node name="Cards" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_top = -50.0

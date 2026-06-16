@@ -775,27 +775,48 @@ func _on_upgrade_level_mouse_exited() -> void:
 	card_level_tooltip.hide_tooltip()
 
 func _build_upgrade_level_tooltip(card_id: String, level: int) -> String:
-	var card: Dictionary = UpgradesManager.get_card(card_id)
-	var source_type: String = String(card.get("source_type", UpgradesManager.SOURCE_NONE))
-	var source_id: String = String(card.get("source_id", "")).strip_edges()
-	if source_type == UpgradesManager.SOURCE_NONE or source_id == "":
+	var requirement: Dictionary = UpgradesManager.get_card_level_requirement(card_id, level)
+	if requirement.is_empty():
 		return ""
+	var requirement_type: String = String(requirement.get("type", ""))
+	if requirement_type == UpgradesManager.REQUIREMENT_TOTAL_GAMES:
+		var count: int = int(requirement.get("count", 0))
+		return tr("upgrade_level_requirement_games_tooltip").format({"count": count})
+	if requirement_type != UpgradesManager.REQUIREMENT_SOURCE:
+		return ""
+	var source_type: String = String(requirement.get("source_type", UpgradesManager.SOURCE_NONE))
+	var source_id: String = String(requirement.get("source_id", "")).strip_edges()
+	var difficulty_key: String = String(requirement.get("difficulty", "")).strip_edges()
+	if source_type == UpgradesManager.SOURCE_SCENARIO and source_id == "tutorial":
+		return tr("upgrade_level_requirement_tutorial_tooltip")
+	if source_type == UpgradesManager.SOURCE_SKIRMISH:
+		var skirmish_difficulty_name: String = tr(_upgrade_difficulty_display_key(difficulty_key))
+		return tr("upgrade_level_requirement_skirmish_tooltip").format({"difficulty": skirmish_difficulty_name})
 	var mission_name: String = _resolve_upgrade_source_display_name(source_id)
-	var difficulty_name: String = tr(_upgrade_level_difficulty_key(level))
-	var tooltip_key: String = "upgrade_level_requirement_mission_tooltip" if source_id.begins_with("mission-") else "upgrade_level_requirement_scenario_tooltip"
+	if difficulty_key == "":
+		var any_tooltip_key: String = "upgrade_level_requirement_mission_any_tooltip" if _is_upgrade_mission_source(source_id) else "upgrade_level_requirement_scenario_any_tooltip"
+		return tr(any_tooltip_key).format({"mission": mission_name})
+	var difficulty_name: String = tr(_upgrade_difficulty_display_key(difficulty_key))
+	var tooltip_key: String = "upgrade_level_requirement_mission_tooltip" if _is_upgrade_mission_source(source_id) else "upgrade_level_requirement_scenario_tooltip"
 	return tr(tooltip_key).format({"mission": mission_name, "difficulty": difficulty_name})
 
 func _resolve_upgrade_source_display_name(source_id: String) -> String:
-	var translated_name: String = tr(source_id)
-	if translated_name != source_id:
+	var translation_key: String = source_id
+	if source_id == "mission7":
+		translation_key = "mission-7"
+	var translated_name: String = tr(translation_key)
+	if translated_name != translation_key:
 		return translated_name
 	return source_id.replace("-", " ").capitalize()
 
-func _upgrade_level_difficulty_key(level: int) -> String:
-	match level:
-		1:
+func _is_upgrade_mission_source(source_id: String) -> bool:
+	return source_id.begins_with("mission-") or source_id == "mission7"
+
+func _upgrade_difficulty_display_key(difficulty_key: String) -> String:
+	match difficulty_key.to_lower():
+		"easy":
 			return "Easy"
-		2:
+		"normal":
 			return "Normal"
 		_:
 			return "Hard"
@@ -1543,10 +1564,14 @@ func _gather_map_items() -> Array:
 				var size_code: String = _normalize_frontend_size_code(String(map_profile.get("frontend_size_code", "S")))
 				var exact_size: String = String(map_profile.get("canonical_size_token", "small"))
 				var region_count: int = int(map_profile.get("region_count", 0))
+				var display_name_key: String = String(map_profile.get("display_name_key", "")).strip_edges()
+				if display_name_key == "":
+					file_name = dir.get_next()
+					continue
 				items.append({
 					"file": base,
-					"display_name_key": _display_key_for_map(base),
-					"display_name": _display_name_for_map(base),
+					"display_name_key": display_name_key,
+					"display_name": display_name_key,
 					"size": size_code,
 					"map_size_exact": exact_size,
 					"region_count": region_count
@@ -1626,6 +1651,7 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 	var file_name: String = file_only if file_only.ends_with(".json") else (file_only + ".json")
 	var file_path: String = "res://mapdata/" + file_name
 	var region_count: int = 0
+	var display_name_key: String = ""
 	var content: String = FileAccess.get_file_as_string(file_path)
 	if content != "":
 		var json := JSON.new()
@@ -1633,6 +1659,7 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 			var data: Variant = json.get_data()
 			if typeof(data) == TYPE_DICTIONARY:
 				var dict_data: Dictionary = data
+				display_name_key = String(dict_data.get("display_name_key", "")).strip_edges()
 				var regions_value: Variant = dict_data.get("regions", [])
 				if typeof(regions_value) == TYPE_ARRAY:
 					region_count = (regions_value as Array).size()
@@ -1646,6 +1673,7 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 			"initial_zoom": Utils.get_initial_zoom_from_region_count(region_count),
 			"frontend_size_code": frontend_size_code,
 			"frontend_size_label": Utils.get_frontend_size_label_from_code(frontend_size_code),
+			"display_name_key": display_name_key,
 			"source": "json_regions"
 		}
 	return Utils.resolve_map_profile(file_name, region_count)

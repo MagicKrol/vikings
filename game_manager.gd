@@ -637,10 +637,29 @@ func _unhandled_input(event: InputEvent) -> void:
 			if debug_mode:
 				_cycle_debug_language()
 				get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_F1:
+			if debug_mode:
+				_trigger_debug_instant_win()
+				get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_F8:
 			# Take screenshot with proper setup
 			_take_game_screenshot()
 		# SPACE key handling is now managed by TurnController's DebugStepGate
+
+func _trigger_debug_instant_win() -> void:
+	if victory_declared:
+		return
+	var winner_id: int = _get_debug_instant_win_player_id()
+	DebugLogger.log("Victory", "Debug instant win triggered for Player " + str(winner_id))
+	_declare_victory(winner_id, {"type": "debug"})
+
+func _get_debug_instant_win_player_id() -> int:
+	if is_player_human(current_player):
+		return current_player
+	for player_id: int in players_per_round:
+		if is_player_human(player_id):
+			return player_id
+	return current_player
 
 func _cycle_debug_language() -> void:
 	var current_locale: String = TranslationServer.get_locale().to_lower()
@@ -1035,6 +1054,9 @@ func _sync_analytics_turn_count() -> void:
 func _finish_analytics_run(outcome: String, winner_player_id: int = -1, outcome_reason: String = "") -> void:
 	Analytics.finish_content_run(outcome, current_turn, winner_player_id, outcome_reason)
 
+func finish_tutorial_analytics_run() -> void:
+	_finish_analytics_run("won", 1, "tutorial_completed")
+
 func has_victory_been_declared() -> bool:
 	return victory_declared
 
@@ -1156,28 +1178,27 @@ func _normalize_victory_condition(raw_condition: Variant) -> Dictionary:
 		"economy":
 			var required_region_id: int = int(source_condition.get("region_id", 0))
 			var required_resource_amount: int = int(source_condition.get("resource_amount", source_condition.get("required_resource_amount", 0)))
-			if required_region_id <= 0 and required_resource_amount <= 0:
+			var required_units_hired: int = int(source_condition.get("units_hired", source_condition.get("required_units_hired", source_condition.get("unit_count", 0))))
+			if required_region_id <= 0 and required_resource_amount <= 0 and required_units_hired <= 0:
 				return {}
 			var economy_condition: Dictionary = {
 				"type": "economy",
 				"player_id": target_player_id,
 				"region_id": maxi(0, required_region_id)
 			}
-			var required_units_hired: int = int(source_condition.get("units_hired", source_condition.get("required_units_hired", source_condition.get("unit_count", 0))))
 			if required_region_id > 0:
-				if required_units_hired <= 0:
-					return {}
 				var required_region_level: RegionLevelEnum.Level = RegionLevelEnum.string_to_level(String(source_condition.get("required_region_level", source_condition.get("region_level", "shire"))))
 				var required_castle_level: CastleTypeEnum.Type = CastleTypeEnum.string_to_type(String(source_condition.get("required_castle_level", source_condition.get("castle_level", "none"))))
-				var required_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.string_to_type(String(source_condition.get("unit_type", source_condition.get("required_unit_type", "peasants"))))
 				economy_condition["required_region_level"] = RegionLevelEnum.level_to_string(required_region_level)
 				economy_condition["required_castle_level"] = CastleTypeEnum.type_to_string(required_castle_level)
-				economy_condition["unit_type"] = SoldierTypeEnum.type_to_string(required_unit_type)
-				economy_condition["units_hired"] = required_units_hired
 			if required_resource_amount > 0:
 				var required_resource_type: ResourcesEnum.Type = ResourcesEnum.string_to_type(String(source_condition.get("resource_type", source_condition.get("required_resource_type", "Gold"))))
 				economy_condition["resource_type"] = ResourcesEnum.type_to_string(required_resource_type)
 				economy_condition["resource_amount"] = required_resource_amount
+			if required_units_hired > 0:
+				var required_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.string_to_type(String(source_condition.get("unit_type", source_condition.get("required_unit_type", "peasants"))))
+				economy_condition["unit_type"] = SoldierTypeEnum.type_to_string(required_unit_type)
+				economy_condition["units_hired"] = required_units_hired
 			return economy_condition
 		_:
 			return {}
@@ -1308,11 +1329,14 @@ func _is_economy_victory_met(player_id: int, condition: Dictionary) -> bool:
 		return false
 	var required_region_id: int = int(condition.get("region_id", 0))
 	var required_resource_amount: int = int(condition.get("resource_amount", 0))
-	if required_region_id <= 0 and required_resource_amount <= 0:
+	var required_units_hired: int = int(condition.get("units_hired", 0))
+	if required_region_id <= 0 and required_resource_amount <= 0 and required_units_hired <= 0:
 		return false
 	if required_region_id > 0 and not _is_economy_region_target_met(player_id, condition, required_region_id):
 		return false
 	if required_resource_amount > 0 and not _is_economy_resource_target_met(player_id, condition, required_resource_amount):
+		return false
+	if required_units_hired > 0 and not _is_economy_unit_target_met(player_id, condition, required_units_hired):
 		return false
 	return true
 
@@ -1327,9 +1351,9 @@ func _is_economy_region_target_met(player_id: int, condition: Dictionary, requir
 		return false
 	if int(region.get_castle_type()) < int(required_castle_level):
 		return false
-	var required_units_hired: int = int(condition.get("units_hired", 0))
-	if required_units_hired <= 0:
-		return false
+	return true
+
+func _is_economy_unit_target_met(player_id: int, condition: Dictionary, required_units_hired: int) -> bool:
 	var unit_type_name: String = SoldierTypeEnum.type_to_string(SoldierTypeEnum.string_to_type(String(condition.get("unit_type", "peasants"))))
 	var hired_units: int = _get_player_hired_unit_count(player_id, unit_type_name)
 	return hired_units >= required_units_hired
@@ -1366,6 +1390,8 @@ func record_hired_units(player_id: int, hired_counts: Dictionary) -> void:
 			unit_type_name = SoldierTypeEnum.type_to_string(SoldierTypeEnum.string_to_type(String(key)))
 		player_data[unit_type_name] = int(player_data.get(unit_type_name, 0)) + amount
 	_player_hired_units[player_id] = player_data
+	if is_player_human(player_id):
+		check_victory_conditions_for_player(player_id)
 
 func _get_player_hired_unit_count(player_id: int, unit_type_name: String) -> int:
 	if not _player_hired_units.has(player_id):
@@ -1580,15 +1606,37 @@ func _declare_victory(player_id: int, condition: Dictionary) -> void:
 	_disconnect_victory_message_handler()
 	var condition_type: String = String(condition.get("type", ""))
 	DebugLogger.log("Victory", "Player " + str(player_id) + " won with condition: " + condition_type)
+	if _should_show_scenario_ai_victory_as_loss(player_id):
+		_show_scenario_ai_victory_failure(condition_type)
+		return
 	_finish_analytics_run("won", player_id, condition_type)
 	_pending_upgrade_unlock_result = _record_upgrade_completion_for_victory(player_id)
 	if _should_show_campaign_outro(player_id):
-		_disconnect_intro_message_modal_handlers()
-		_intro_message_modal.continue_clicked.connect(_on_campaign_outro_end_mission)
-		_intro_message_modal.display_outro_text(_resolve_campaign_outro_text())
+		call_deferred("_show_campaign_outro")
 		return
 	_message_modal.continue_clicked.connect(_on_victory_message_continue_to_main_menu)
 	_message_modal.display_message(tr("Player %d Won") % player_id)
+
+func _show_campaign_outro() -> void:
+	_ui_manager.close_all_active_modals()
+	_disconnect_intro_message_modal_handlers()
+	_intro_message_modal.continue_clicked.connect(_on_campaign_outro_end_mission)
+	_intro_message_modal.display_outro_text(_resolve_campaign_outro_text())
+
+func _should_show_scenario_ai_victory_as_loss(player_id: int) -> bool:
+	if game_mode != "scenario":
+		return false
+	return not is_player_human(player_id)
+
+func _show_scenario_ai_victory_failure(condition_type: String) -> void:
+	_finish_analytics_run("lost", -1, condition_type)
+	_outcome_modal_blocking_active = true
+	_pending_loss_exit_to_main_menu = true
+	_pending_loss_exit_to_campaign_list = _is_campaign_scenario_mode()
+	_pending_next_turn_after_loss_ack = false
+	_disconnect_human_elimination_message_handler()
+	_message_modal.continue_clicked.connect(_on_human_elimination_continue)
+	_message_modal.display_message(tr("You failed"))
 
 func _should_show_campaign_outro(player_id: int) -> bool:
 	if player_id != 1:
@@ -2857,6 +2905,8 @@ func _record_upgrade_completion_for_victory(player_id: int) -> Dictionary:
 	var source_type: String = ""
 	var source_id: String = ""
 	if game_mode == "custom":
+		if not _has_computer_opponent(player_id):
+			return {"changed": false}
 		source_type = UpgradesManager.SOURCE_SKIRMISH
 		source_id = "skirmish"
 	elif game_mode == "scenario" and scenario_path != "":
@@ -2869,6 +2919,14 @@ func _record_upgrade_completion_for_victory(player_id: int) -> Dictionary:
 	if bool(result.get("changed", false)):
 		DebugLogger.log("Upgrades", "Recorded upgrade progress for " + source_type + ": " + source_id + " on " + difficulty_name)
 	return result
+
+func _has_computer_opponent(player_id: int) -> bool:
+	for candidate_player_id: int in players_per_round:
+		if candidate_player_id == player_id:
+			continue
+		if get_player_type(candidate_player_id) == PlayerTypeEnum.Type.COMPUTER:
+			return true
+	return false
 
 func _show_pending_upgrade_card_or_return_to_main_menu(main_menu_target: String) -> void:
 	if not bool(_pending_upgrade_unlock_result.get("changed", false)):
@@ -5282,6 +5340,8 @@ func _on_game_menu_exit_pressed() -> void:
 
 func handle_human_end_turn() -> void:
 	var armies_to_stand_up: Array[Army] = _get_exhausted_armies_for_player(current_player)
+	if _army_manager.selected_army != null:
+		_army_manager.deselect_army()
 	_auto_camp_armies_for_player(current_player)
 	_suppress_turn_start_stand_up_for_auto_camped_armies(current_player, armies_to_stand_up)
 	_stand_up_exhausted_armies(armies_to_stand_up)

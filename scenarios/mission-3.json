@@ -334,7 +334,7 @@
 				"Spearmen": 20,
 				"Swordsmen": 20
 			},
-			"message": "event1",
+			"message": "mission-3_event1",
 			"name": "event1",
 			"player_id": 1,
 			"regions": [
@@ -366,7 +366,7 @@
 				"Spearmen": 30,
 				"Swordsmen": 25
 			},
-			"message": "event2",
+			"message": "mission-3_event2",
 			"name": "even t2",
 			"player_id": 1,
 			"regions": [

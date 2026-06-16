@@ -102,6 +102,19 @@ text = "Save Scenario"
 [node name="HSeparator" type="HSeparator" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
+[node name="MapDisplayNameKeyRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="MapDisplayNameKeyLabel" type="Label" parent="Panel/TabContainer/Main/MapDisplayNameKeyRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Map name key:"
+
+[node name="MapDisplayNameKeyEdit" type="LineEdit" parent="Panel/TabContainer/Main/MapDisplayNameKeyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "custom_map_name_key"
+
 [node name="SaveMapButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
@@ -119,269 +132,273 @@ layout_mode = 2
 layout_mode = 2
 text = "Exit to Editor Start"
 
-[node name="Scenario" type="VBoxContainer" parent="Panel/TabContainer"]
+[node name="Scenario" type="ScrollContainer" parent="Panel/TabContainer"]
 visible = false
 layout_mode = 2
-theme_override_constants/separation = 8
 metadata/_tab_index = 1
 
-[node name="ScenarioLabel" type="Label" parent="Panel/TabContainer/Scenario"]
+[node name="ScenarioContent" type="VBoxContainer" parent="Panel/TabContainer/Scenario"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ScenarioLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 text = "Scenario Settings"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/TabContainer/Scenario"]
+[node name="HSeparator" type="HSeparator" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 
-[node name="PlayerSettingsLabel" type="Label" parent="Panel/TabContainer/Scenario"]
+[node name="PlayerSettingsLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 text = "Player Settings:"
 
-[node name="PlayerSettingsContainer" type="VBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="PlayerSettingsContainer" type="VBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="PlayerResourcesHeader" type="Label" parent="Panel/TabContainer/Scenario"]
+[node name="PlayerResourcesHeader" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 text = "Starting Resources"
 
-[node name="PlayerResourceSelectorRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="PlayerResourceSelectorRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 
-[node name="PlayerResourceSelectorLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourceSelectorRow"]
+[node name="PlayerResourceSelectorLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourceSelectorRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Player:"
 
-[node name="PlayerResourceSelector" type="OptionButton" parent="Panel/TabContainer/Scenario/PlayerResourceSelectorRow"]
+[node name="PlayerResourceSelector" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourceSelectorRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PlayerResourcesContainer" type="VBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="PlayerResourcesContainer" type="VBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="GoldRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+[node name="GoldRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer"]
 layout_mode = 2
 
-[node name="GoldLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/GoldRow"]
+[node name="GoldLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/GoldRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Gold:"
 
-[node name="GoldValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/GoldRow"]
+[node name="GoldValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/GoldRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="WoodRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+[node name="WoodRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer"]
 layout_mode = 2
 
-[node name="WoodLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/WoodRow"]
+[node name="WoodLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/WoodRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Wood:"
 
-[node name="WoodValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/WoodRow"]
+[node name="WoodValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/WoodRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="FoodRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+[node name="FoodRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer"]
 layout_mode = 2
 
-[node name="FoodLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/FoodRow"]
+[node name="FoodLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/FoodRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Food:"
 
-[node name="FoodValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/FoodRow"]
+[node name="FoodValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/FoodRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="StoneRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+[node name="StoneRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer"]
 layout_mode = 2
 
-[node name="StoneLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow"]
+[node name="StoneLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/StoneRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Stone:"
 
-[node name="StoneValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow"]
+[node name="StoneValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/StoneRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="IronRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer"]
+[node name="IronRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer"]
 layout_mode = 2
 
-[node name="IronLabel" type="Label" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow"]
+[node name="IronLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/IronRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Iron:"
 
-[node name="IronValue" type="LineEdit" parent="Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow"]
+[node name="IronValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/IronRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="TradeDisabledRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="TradeDisabledRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 
-[node name="TradeDisabledLabel" type="Label" parent="Panel/TabContainer/Scenario/TradeDisabledRow"]
+[node name="TradeDisabledLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/TradeDisabledRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Disable Trade:"
 
-[node name="TradeDisabledCheck" type="CheckBox" parent="Panel/TabContainer/Scenario/TradeDisabledRow"]
+[node name="TradeDisabledCheck" type="CheckBox" parent="Panel/TabContainer/Scenario/ScenarioContent/TradeDisabledRow"]
 layout_mode = 2
 text = ""
 
-[node name="DifficultyRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="DifficultyRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 
-[node name="DifficultyLabel" type="Label" parent="Panel/TabContainer/Scenario/DifficultyRow"]
+[node name="DifficultyLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/DifficultyRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Difficulty:"
 
-[node name="DifficultyOption" type="OptionButton" parent="Panel/TabContainer/Scenario/DifficultyRow"]
+[node name="DifficultyOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/DifficultyRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryConditionsHeader" type="Label" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryConditionsHeader" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 text = "Victory Condition"
 
-[node name="VictoryTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 
-[node name="VictoryTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryTypeRow"]
+[node name="VictoryTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryTypeRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Type:"
 
-[node name="VictoryTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryTypeRow"]
+[node name="VictoryTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryTypeRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryTargetPlayerRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryTargetPlayerRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryTargetPlayerLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryTargetPlayerRow"]
+[node name="VictoryTargetPlayerLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryTargetPlayerRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Target Player:"
 
-[node name="VictoryTargetPlayerOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryTargetPlayerRow"]
+[node name="VictoryTargetPlayerOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryTargetPlayerRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryRegionRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryRegionRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryRegionLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryRegionRow"]
+[node name="VictoryRegionLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region ID:"
 
-[node name="VictoryRegionValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryRegionRow"]
+[node name="VictoryRegionValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
-[node name="VictoryTurnsRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryTurnsRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryTurnsLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryTurnsRow"]
+[node name="VictoryTurnsLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryTurnsRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Turns:"
 
-[node name="VictoryTurnsValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryTurnsRow"]
+[node name="VictoryTurnsValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryTurnsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "1"
 
-[node name="VictoryRegionLevelRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryRegionLevelRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryRegionLevelLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryRegionLevelRow"]
+[node name="VictoryRegionLevelLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionLevelRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Region Level:"
 
-[node name="VictoryRegionLevelOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryRegionLevelRow"]
+[node name="VictoryRegionLevelOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionLevelRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryCastleLevelRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryCastleLevelRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryCastleLevelLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryCastleLevelRow"]
+[node name="VictoryCastleLevelLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryCastleLevelRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Castle Level:"
 
-[node name="VictoryCastleLevelOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryCastleLevelRow"]
+[node name="VictoryCastleLevelOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryCastleLevelRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryUnitTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryUnitTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryUnitTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryUnitTypeRow"]
+[node name="VictoryUnitTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitTypeRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Unit Type:"
 
-[node name="VictoryUnitTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryUnitTypeRow"]
+[node name="VictoryUnitTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitTypeRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryUnitsHiredRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryUnitsHiredRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryUnitsHiredLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryUnitsHiredRow"]
+[node name="VictoryUnitsHiredLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitsHiredRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Units Hired:"
 
-[node name="VictoryUnitsHiredValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryUnitsHiredRow"]
+[node name="VictoryUnitsHiredValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitsHiredRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "1"
 
-[node name="VictoryResourceTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryResourceTypeRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryResourceTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryResourceTypeRow"]
+[node name="VictoryResourceTypeLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceTypeRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Resource Type:"
 
-[node name="VictoryResourceTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/VictoryResourceTypeRow"]
+[node name="VictoryResourceTypeOption" type="OptionButton" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceTypeRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VictoryResourceAmountRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario"]
+[node name="VictoryResourceAmountRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 visible = false
 layout_mode = 2
 
-[node name="VictoryResourceAmountLabel" type="Label" parent="Panel/TabContainer/Scenario/VictoryResourceAmountRow"]
+[node name="VictoryResourceAmountLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceAmountRow"]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 text = "Resource Amount:"
 
-[node name="VictoryResourceAmountValue" type="LineEdit" parent="Panel/TabContainer/Scenario/VictoryResourceAmountRow"]
+[node name="VictoryResourceAmountValue" type="LineEdit" parent="Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceAmountRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"

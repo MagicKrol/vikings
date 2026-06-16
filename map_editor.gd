@@ -48,6 +48,18 @@ func ensure_scenario_translation_keys(scenario_name: String) -> Dictionary:
 		"objectives": objectives_key
 	}
 
+func ensure_map_display_name_translation_key(display_name_key: String) -> void:
+	var key: String = display_name_key.strip_edges()
+	if key == "":
+		return
+	var translation_rows: Array[Dictionary] = [
+		{
+			"key": key,
+			"explanation": "Custom map display name key used in the custom map selection menu."
+		}
+	]
+	_ensure_translation_rows(translation_rows)
+
 func _ensure_translation_rows(rows: Array[Dictionary]) -> void:
 	var csv_text: String = FileAccess.get_file_as_string(HOTW_TRANSLATIONS_CSV_PATH)
 	if csv_text == "":

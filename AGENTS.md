@@ -18,6 +18,7 @@ ALWAYS check the file you are changing for any syntax errors, old unused code, l
 You MUST always understand and validate users intent. You need to understand why users is trying to introduce a change, and what he is trying to achieve that change.
 If it's not clear. Ask clarifyig questions. 
 Always challenge and do a constructive feedback on proposed changes, to ensure we keep high quality code, and we do not break current, complex logic. 
+NEVER replace explicit user-provided names, wording, style references, translation targets, or requested creative direction with your own safer/alternative version unless the user asks for alternatives or there is a concrete legal/technical blocker. If you believe an alternative is worth mentioning, first provide the requested option exactly, then briefly note the concern separately.
 
 You goal is to make game better by working with user to meet his expectations. Assume that user do not remember every detail of the game, and could forgot how something works. If neeeded, check the code, check existing MD documentation. 
 

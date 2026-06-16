@@ -34,7 +34,7 @@
 		}
 	],
 	"description": "mission-1_description",
-	"difficulty": "all",
+	"difficulty": "easy",
 	"difficulty_overrides": {
 		"hard": {
 			"army_compositions": [
@@ -130,7 +130,7 @@
 				}
 			]
 		},
-		"normal": {
+		"easy": {
 			"army_compositions": [
 				{
 					"composition": {
@@ -329,7 +329,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 0,
+				"Peasants": 5,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -359,7 +359,7 @@
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
-				"Peasants": 0,
+				"Peasants": 5,
 				"Royal Guard": 0,
 				"Spearmen": 0,
 				"Swordsmen": 0
@@ -492,7 +492,7 @@
 			"population": 345,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
+				"Gold": 0,
 				"Iron": 0,
 				"Stone": 2,
 				"Wood": 0
@@ -525,7 +525,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 1
+				"Wood": 3
 			},
 			"type_display": "Forest"
 		},
@@ -608,11 +608,12 @@
 			"level": "Shire",
 			"name": "Kirkholme",
 			"ocean": false,
+			"ore_guaranteed_discovery_attempt": "random",
 			"owner": 0,
 			"population": 281,
 			"resources": {
 				"Food": 1,
-				"Gold": 0,
+				"Gold": 5,
 				"Iron": 0,
 				"Stone": 2,
 				"Wood": 0
@@ -698,11 +699,12 @@
 			"level": "Shire",
 			"name": "Osbury",
 			"ocean": false,
+			"ore_guaranteed_discovery_attempt": 1,
 			"owner": 1,
 			"population": 134,
 			"resources": {
 				"Food": 0,
-				"Gold": 0,
+				"Gold": 4,
 				"Iron": 0,
 				"Stone": 2,
 				"Wood": 0
@@ -789,7 +791,6 @@
 			"name": "Eymere",
 			"ocean": false,
 			"ore_guaranteed_discovery_attempt": 1,
-			"ore_guaranteed_discovery_type": "Iron",
 			"owner": 0,
 			"population": 453,
 			"resources": {
@@ -917,7 +918,7 @@
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 1
+				"Wood": 2
 			},
 			"type_display": "Forest"
 		}

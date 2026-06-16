@@ -234,6 +234,7 @@ func _finish() -> void:
 	if message_modal:
 		message_modal.hide_modal()
 		_restore_modal_state()
+	game_manager.finish_tutorial_analytics_run()
 	var tree: SceneTree = _get_scene_tree()
 	if tree != null:
 		tree.paused = false
@@ -581,6 +582,19 @@ func _build_default_steps() -> Array:
 				"anchor": "screen"
 			},
 			"block": "trade,endturn,cancelmove,armyactions3,regionactionsfull"
+		},
+
+		{
+			"message": "tutorial_step_23a",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(800, 100),
+			"arrow": {
+				"id": "10",
+				"anchor": "screen"
+			},
+			"block": "makecamp,trade,endturn,cancelmove,armyactions3,regionactionsfull"
 		},
 		{
 			"message": "tutorial_step_24",
@@ -1045,6 +1059,14 @@ func _build_default_steps() -> Array:
 		},
 		{
 			"message": "tutorial_step_65",
+			"show_continue": true,
+			"block_input": true,
+			"expected_action": "continue",
+			"panel_position": Vector2(700, 400),
+			"block": "trade,endturn,regionsactions"
+		},
+		{
+			"message": "tutorial_step_65a",
 			"show_continue": true,
 			"block_input": true,
 			"expected_action": "continue",

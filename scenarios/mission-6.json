@@ -48,7 +48,7 @@
 				"Spearmen": 15,
 				"Swordsmen": 20
 			},
-			"message": "event1",
+			"message": "mission-6_event1",
 			"name": "event1",
 			"player_id": 1,
 			"regions": [
@@ -83,7 +83,7 @@
 				"Spearmen": 20,
 				"Swordsmen": 25
 			},
-			"message": "event2",
+			"message": "mission-6_event2",
 			"name": "Event 2",
 			"player_id": 3,
 			"regions": [
@@ -115,7 +115,7 @@
 				"Spearmen": 25,
 				"Swordsmen": 25
 			},
-			"message": "event3",
+			"message": "mission-6_event3",
 			"name": "Event 3",
 			"player_id": 3,
 			"regions": [
@@ -147,7 +147,7 @@
 				"Spearmen": 30,
 				"Swordsmen": 25
 			},
-			"message": "event4",
+			"message": "mission-6_event4",
 			"name": "Event 4",
 			"player_id": 5,
 			"regions": [
@@ -174,7 +174,7 @@
 				"Spearmen": 30,
 				"Swordsmen": 30
 			},
-			"message": "event5",
+			"message": "mission-6_event5",
 			"name": "Event 5",
 			"player_id": 5,
 			"regions": [
@@ -201,7 +201,7 @@
 				"Spearmen": 11,
 				"Swordsmen": 13
 			},
-			"message": "event6",
+			"message": "mission-6_event6",
 			"name": "Event 6",
 			"player_id": 1,
 			"regions": [

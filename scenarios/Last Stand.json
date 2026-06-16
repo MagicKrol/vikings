@@ -1783,6 +1783,12 @@
 	"skip_intro": false,
 	"trade_disabled": true,
 	"victory_conditions": [
-		"conquer"
+		{
+			"player_id": 1,
+			"region_id": 0,
+			"resource_amount": 50,
+			"resource_type": "Iron",
+			"type": "economy"
+		}
 	]
 }

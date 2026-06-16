@@ -47,6 +47,7 @@ var _save_scenario_button: Button
 var _save_map_button: Button
 var _exit_button: Button
 var _scenario_name_edit: LineEdit
+var _map_display_name_key_edit: LineEdit
 var _scenario_type_option: OptionButton
 var _edit_difficulty_option: OptionButton
 var _mission_number_row: HBoxContainer
@@ -142,6 +143,7 @@ func _ready() -> void:
 	_save_scenario_button = get_node("Panel/TabContainer/Main/SaveButtonRow/SaveScenarioButton") as Button
 	_save_map_button = get_node("Panel/TabContainer/Main/SaveMapButtonRow/SaveMapButton") as Button
 	_scenario_name_edit = get_node("Panel/TabContainer/Main/SaveRow/ScenarioNameEdit") as LineEdit
+	_map_display_name_key_edit = get_node("Panel/TabContainer/Main/MapDisplayNameKeyRow/MapDisplayNameKeyEdit") as LineEdit
 	_scenario_type_option = get_node("Panel/TabContainer/Main/ScenarioTypeRow/ScenarioTypeOption") as OptionButton
 	_edit_difficulty_option = get_node("Panel/TabContainer/Main/SetDifficultyRow/SetDifficultyOption") as OptionButton
 	_mission_number_row = get_node("Panel/TabContainer/Main/MissionNumberRow") as HBoxContainer
@@ -228,36 +230,36 @@ func _ready() -> void:
 	_exit_button.pressed.connect(_on_exit_pressed)
 	
 	# Get player settings container
-	_player_settings_container = get_node("Panel/TabContainer/Scenario/PlayerSettingsContainer") as VBoxContainer
-	_player_resource_selector = get_node("Panel/TabContainer/Scenario/PlayerResourceSelectorRow/PlayerResourceSelector") as OptionButton
+	_player_settings_container = get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerSettingsContainer") as VBoxContainer
+	_player_resource_selector = get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerResourceSelectorRow/PlayerResourceSelector") as OptionButton
 	_player_resource_fields = {
-		ResourcesEnum.Type.GOLD: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/GoldRow/GoldValue") as LineEdit,
-		ResourcesEnum.Type.WOOD: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/WoodRow/WoodValue") as LineEdit,
-		ResourcesEnum.Type.FOOD: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/FoodRow/FoodValue") as LineEdit,
-		ResourcesEnum.Type.STONE: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/StoneRow/StoneValue") as LineEdit,
-		ResourcesEnum.Type.IRON: get_node("Panel/TabContainer/Scenario/PlayerResourcesContainer/IronRow/IronValue") as LineEdit
+		ResourcesEnum.Type.GOLD: get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/GoldRow/GoldValue") as LineEdit,
+		ResourcesEnum.Type.WOOD: get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/WoodRow/WoodValue") as LineEdit,
+		ResourcesEnum.Type.FOOD: get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/FoodRow/FoodValue") as LineEdit,
+		ResourcesEnum.Type.STONE: get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/StoneRow/StoneValue") as LineEdit,
+		ResourcesEnum.Type.IRON: get_node("Panel/TabContainer/Scenario/ScenarioContent/PlayerResourcesContainer/IronRow/IronValue") as LineEdit
 	}
-	_victory_type_option = get_node("Panel/TabContainer/Scenario/VictoryTypeRow/VictoryTypeOption") as OptionButton
-	_victory_target_player_row = get_node("Panel/TabContainer/Scenario/VictoryTargetPlayerRow") as HBoxContainer
-	_victory_target_player_option = get_node("Panel/TabContainer/Scenario/VictoryTargetPlayerRow/VictoryTargetPlayerOption") as OptionButton
-	_victory_region_row = get_node("Panel/TabContainer/Scenario/VictoryRegionRow") as HBoxContainer
-	_victory_region_value = get_node("Panel/TabContainer/Scenario/VictoryRegionRow/VictoryRegionValue") as LineEdit
-	_victory_turns_row = get_node("Panel/TabContainer/Scenario/VictoryTurnsRow") as HBoxContainer
-	_victory_turns_value = get_node("Panel/TabContainer/Scenario/VictoryTurnsRow/VictoryTurnsValue") as LineEdit
-	_victory_region_level_row = get_node("Panel/TabContainer/Scenario/VictoryRegionLevelRow") as HBoxContainer
-	_victory_region_level_option = get_node("Panel/TabContainer/Scenario/VictoryRegionLevelRow/VictoryRegionLevelOption") as OptionButton
-	_victory_castle_level_row = get_node("Panel/TabContainer/Scenario/VictoryCastleLevelRow") as HBoxContainer
-	_victory_castle_level_option = get_node("Panel/TabContainer/Scenario/VictoryCastleLevelRow/VictoryCastleLevelOption") as OptionButton
-	_victory_unit_type_row = get_node("Panel/TabContainer/Scenario/VictoryUnitTypeRow") as HBoxContainer
-	_victory_unit_type_option = get_node("Panel/TabContainer/Scenario/VictoryUnitTypeRow/VictoryUnitTypeOption") as OptionButton
-	_victory_units_hired_row = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow") as HBoxContainer
-	_victory_units_hired_value = get_node("Panel/TabContainer/Scenario/VictoryUnitsHiredRow/VictoryUnitsHiredValue") as LineEdit
-	_victory_resource_type_row = get_node("Panel/TabContainer/Scenario/VictoryResourceTypeRow") as HBoxContainer
-	_victory_resource_type_option = get_node("Panel/TabContainer/Scenario/VictoryResourceTypeRow/VictoryResourceTypeOption") as OptionButton
-	_victory_resource_amount_row = get_node("Panel/TabContainer/Scenario/VictoryResourceAmountRow") as HBoxContainer
-	_victory_resource_amount_value = get_node("Panel/TabContainer/Scenario/VictoryResourceAmountRow/VictoryResourceAmountValue") as LineEdit
-	_scenario_trade_disabled_check = get_node("Panel/TabContainer/Scenario/TradeDisabledRow/TradeDisabledCheck") as CheckBox
-	_scenario_difficulty_option = get_node("Panel/TabContainer/Scenario/DifficultyRow/DifficultyOption") as OptionButton
+	_victory_type_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryTypeRow/VictoryTypeOption") as OptionButton
+	_victory_target_player_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryTargetPlayerRow") as HBoxContainer
+	_victory_target_player_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryTargetPlayerRow/VictoryTargetPlayerOption") as OptionButton
+	_victory_region_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionRow") as HBoxContainer
+	_victory_region_value = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionRow/VictoryRegionValue") as LineEdit
+	_victory_turns_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryTurnsRow") as HBoxContainer
+	_victory_turns_value = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryTurnsRow/VictoryTurnsValue") as LineEdit
+	_victory_region_level_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionLevelRow") as HBoxContainer
+	_victory_region_level_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryRegionLevelRow/VictoryRegionLevelOption") as OptionButton
+	_victory_castle_level_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryCastleLevelRow") as HBoxContainer
+	_victory_castle_level_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryCastleLevelRow/VictoryCastleLevelOption") as OptionButton
+	_victory_unit_type_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitTypeRow") as HBoxContainer
+	_victory_unit_type_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitTypeRow/VictoryUnitTypeOption") as OptionButton
+	_victory_units_hired_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitsHiredRow") as HBoxContainer
+	_victory_units_hired_value = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryUnitsHiredRow/VictoryUnitsHiredValue") as LineEdit
+	_victory_resource_type_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceTypeRow") as HBoxContainer
+	_victory_resource_type_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceTypeRow/VictoryResourceTypeOption") as OptionButton
+	_victory_resource_amount_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceAmountRow") as HBoxContainer
+	_victory_resource_amount_value = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceAmountRow/VictoryResourceAmountValue") as LineEdit
+	_scenario_trade_disabled_check = get_node("Panel/TabContainer/Scenario/ScenarioContent/TradeDisabledRow/TradeDisabledCheck") as CheckBox
+	_scenario_difficulty_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/DifficultyRow/DifficultyOption") as OptionButton
 	_event_name_add_edit = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/EventNameEdit") as LineEdit
 	_event_add_button = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/AddEventButton") as Button
 	_event_list_view = get_node("Panel/TabContainer/Event/EventListView") as VBoxContainer
@@ -299,6 +301,7 @@ func _ready() -> void:
 	
 	# Check for loaded scenario name after a short delay to ensure GameManager is ready
 	call_deferred("_check_and_populate_scenario_name")
+	call_deferred("_load_map_display_name_key")
 
 func _check_and_populate_scenario_name() -> void:
 	"""Check if we loaded from a scenario and populate the name field"""
@@ -317,6 +320,24 @@ func _check_and_populate_scenario_name() -> void:
 			_load_player_settings_from_scenario(scenario_name)
 			return
 	# If game manager didn't report a scenario name, leave field as-is
+
+func _load_map_display_name_key() -> void:
+	var mg: MapGenerator = get_node("../../Map") as MapGenerator
+	var map_path: String = mg._resolve_mapdata_path(mg.data_file_path)
+	var json_text: String = FileAccess.get_file_as_string(map_path)
+	if json_text == "":
+		DebugLogger.log("MapEditorPanel", "Could not read map file: " + map_path)
+		return
+	var json: JSON = JSON.new()
+	if json.parse(json_text) != OK:
+		DebugLogger.log("MapEditorPanel", "Failed to parse map JSON")
+		return
+	var parsed_data: Variant = json.data
+	if not (parsed_data is Dictionary):
+		DebugLogger.log("MapEditorPanel", "Map JSON root is not a dictionary")
+		return
+	var map_data: Dictionary = parsed_data as Dictionary
+	_map_display_name_key_edit.text = String(map_data.get("display_name_key", "")).strip_edges()
 
 func _load_player_settings_from_scenario(scenario_name: String) -> void:
 	"""Load player settings from an existing scenario file"""
@@ -1869,6 +1890,7 @@ func _on_exit_pressed() -> void:
 
 func _on_save_map_pressed() -> void:
 	var mg: MapGenerator = get_node("../../Map") as MapGenerator
+	var map_editor: MapEditor = get_node("../../MapEditor") as MapEditor
 	if not mg or not mg.data_file_path:
 		DebugLogger.log("MapEditorPanel", "No map data file to save")
 		return
@@ -1893,7 +1915,15 @@ func _on_save_map_pressed() -> void:
 	if not data.has("regions"):
 		DebugLogger.log("MapEditorPanel", "Map data has no regions")
 		return
-	
+
+	var map_display_name_key: String = _map_display_name_key_edit.text.strip_edges()
+	if map_display_name_key == "":
+		if data.has("display_name_key"):
+			data.erase("display_name_key")
+	else:
+		data["display_name_key"] = map_display_name_key
+		map_editor.ensure_map_display_name_translation_key(map_display_name_key)
+
 	# Update region types in the data
 	var regions_node: Node = mg.get_node("Regions")
 	var updated_count := 0

@@ -338,6 +338,7 @@ func show_recruitment(army: Army, region: Region, reopen_move_modal: bool = fals
 		hide_modal()
 		return
 	ui_manager.remember_army_select(army, region)
+	ui_manager.hide_region_tooltip()
 	
 	_reopen_move_modal = reopen_move_modal
 	_reopen_move_army = army if reopen_move_modal else null
@@ -362,6 +363,7 @@ func show_region_recruitment(region: Region) -> void:
 		hide_modal()
 		return
 	ui_manager.remember_region_select(region)
+	ui_manager.hide_region_tooltip()
 	
 	_reopen_move_modal = false
 	_reopen_move_army = null

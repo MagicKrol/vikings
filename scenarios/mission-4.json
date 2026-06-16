@@ -366,7 +366,7 @@
 				"Spearmen": 20,
 				"Swordsmen": 25
 			},
-			"message": "event1",
+			"message": "mission-4_event1",
 			"name": "event1",
 			"player_id": 1,
 			"regions": [
@@ -397,7 +397,7 @@
 				"Spearmen": 20,
 				"Swordsmen": 20
 			},
-			"message": "event2",
+			"message": "mission-4_event2",
 			"name": "event2",
 			"player_id": 1,
 			"regions": [
