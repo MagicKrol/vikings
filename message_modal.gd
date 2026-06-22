@@ -87,8 +87,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if tutorial_mode_active and mapped_continue_close_pressed:
 			return
 		if key_event.pressed and not key_event.echo and (CLOSE_KEYCODES.has(key_event.keycode) or mapped_continue_close_pressed):
-			_on_continue_pressed()
 			get_viewport().set_input_as_handled()
+			_on_continue_pressed()
 
 func _is_tutorial_mode_active() -> bool:
 	var game_manager: GameManager = get_node("../../GameManager") as GameManager

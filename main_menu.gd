@@ -136,6 +136,8 @@ const ROW_HIGHLIGHT_NONE_COLOR: Color = Color(0, 0, 0, 0)
 const ROW_HIGHLIGHT_HOVER_COLOR: Color = Color(0, 0, 0, 0.2)
 const ROW_HIGHLIGHT_SELECTED_COLOR: Color = Color(0, 0, 0, 0.4)
 const ROW_TEXT_COLOR: Color = Color(1, 1, 1, 1)
+const ROW_DISABLED_TEXT_COLOR: Color = Color(0.45, 0.45, 0.45, 1)
+const CAMPAIGN_ALWAYS_UNLOCKED_MISSION_MAX: int = 2
 const MAP_SIZE_ORDER := {"XS": 0, "T": 0, "S": 1, "M": 2, "L": 3}
 const SCENARIO_DIFFICULTY_ALL: String = "all"
 var map_items: Array = []
@@ -579,13 +581,27 @@ func _begin_upgrade_selection_or_start(payload: Dictionary) -> void:
 	if _is_tutorial_payload(payload):
 		_start_game_from_payload(payload)
 		return
-	if not UpgradesManager.has_unlocked_cards():
+	if _is_multihuman_custom_map_payload(payload):
+		_start_game_from_payload(payload)
+		return
+	if not UpgradesManager.has_unlocked_cards(main_game_debug_mode):
 		_start_game_from_payload(payload)
 		return
 	pending_start_payload = payload.duplicate(true)
 	selected_upgrade_card_ids.clear()
 	cards_selection_mode = true
 	_show_cards_menu()
+
+func _is_multihuman_custom_map_payload(payload: Dictionary) -> bool:
+	if String(payload.get("type", "")) != "map":
+		return false
+	var human_players: int = 0
+	var raw_player_settings: Array = payload.get("player_settings", [])
+	for raw_setting in raw_player_settings:
+		var setting: Dictionary = raw_setting
+		if String(setting.get("control_type", "")) == "Player":
+			human_players += 1
+	return human_players > 1
 
 func _is_tutorial_payload(payload: Dictionary) -> bool:
 	if String(payload.get("type", "")) != "scenario":
@@ -595,7 +611,7 @@ func _is_tutorial_payload(payload: Dictionary) -> bool:
 func _build_payload_with_selected_upgrades() -> Dictionary:
 	var payload: Dictionary = pending_start_payload.duplicate(true)
 	var difficulty_name: String = String(payload.get("difficulty", "normal"))
-	payload["selected_upgrade_cards"] = UpgradesManager.get_valid_selected_cards(selected_upgrade_card_ids, difficulty_name)
+	payload["selected_upgrade_cards"] = UpgradesManager.get_valid_selected_cards(selected_upgrade_card_ids, difficulty_name, main_game_debug_mode)
 	return payload
 
 func _start_game_from_payload(payload: Dictionary) -> void:
@@ -727,7 +743,7 @@ func _refresh_upgrade_cards() -> void:
 	for card: Dictionary in UpgradesManager.get_all_cards():
 		var card_id: String = String(card.get("id", ""))
 		var card_node: Control = cards_rows.get_node(card_id) as Control
-		var level: int = UpgradesManager.get_card_level(card_id)
+		var level: int = UpgradesManager.get_card_level(card_id, main_game_debug_mode)
 		var unlocked: bool = level > 0
 		var selected: bool = selected_upgrade_card_ids.has(card_id)
 		card_node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if cards_selection_mode and unlocked else Control.CURSOR_ARROW
@@ -843,7 +859,7 @@ func _on_upgrade_card_gui_input(event: InputEvent, card_id: String) -> void:
 	_toggle_upgrade_card_selection(card_id)
 
 func _toggle_upgrade_card_selection(card_id: String) -> void:
-	if not UpgradesManager.is_card_unlocked(card_id):
+	if not UpgradesManager.is_card_unlocked(card_id, main_game_debug_mode):
 		return
 	if selected_upgrade_card_ids.has(card_id):
 		selected_upgrade_card_ids.erase(card_id)
@@ -1364,15 +1380,19 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		else:
 			size_label.text = item.get("size", "S")
 		name_label.text = _resolve_item_display_name(item)
-		size_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		name_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var item_enabled: bool = _is_map_list_item_enabled(item, for_scenario)
+		var cursor_shape: Control.CursorShape = Control.CURSOR_POINTING_HAND if item_enabled else Control.CURSOR_ARROW
+		row.mouse_default_cursor_shape = cursor_shape
+		size_label.mouse_default_cursor_shape = cursor_shape
+		name_label.mouse_default_cursor_shape = cursor_shape
 		_set_row_highlight_color(row, ROW_HIGHLIGHT_NONE_COLOR)
+		_apply_map_row_enabled_style(row, item_enabled)
 		row.set_meta("map_list_item", item)
 		row.gui_input.connect(_on_map_row_gui_input.bind(row, item, for_scenario))
 		row.mouse_entered.connect(_on_map_row_hovered.bind(row, item, for_scenario))
 		row.mouse_exited.connect(_on_map_row_unhovered.bind(row, item, for_scenario))
 		container.add_child(row)
-		if i == 0:
+		if first_created_row == null and item_enabled:
 			first_created_row = row
 			first_created_item = item
 	if first_created_row:
@@ -1400,15 +1420,19 @@ func _get_selectable_map_rows(container: VBoxContainer) -> Array[Control]:
 	for child: Node in container.get_children():
 		if child is Control:
 			var row: Control = child as Control
-			if row.visible and row.has_meta("map_list_item"):
+			if row.visible and row.has_meta("map_list_item") and _is_map_list_item_enabled(row.get_meta("map_list_item"), is_scenario_mode):
 				rows.append(row)
 	return rows
 
 func _on_map_row_gui_input(event: InputEvent, row: Control, item: Dictionary, for_scenario: bool):
+	if not _is_map_list_item_enabled(item, for_scenario):
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_on_map_row_pressed(row, item, for_scenario)
 
 func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
+	if not _is_map_list_item_enabled(item, for_scenario):
+		return
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected and not is_instance_valid(current_selected):
 		current_selected = null
@@ -1434,6 +1458,8 @@ func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 		_set_custom_map_select_enabled(true)
 
 func _on_map_row_hovered(row: Control, item: Dictionary, for_scenario: bool):
+	if not _is_map_list_item_enabled(item, for_scenario):
+		return
 	var current_selected: Control = selected_scenario_button_custom if for_scenario else selected_map_button
 	if current_selected and not is_instance_valid(current_selected):
 		current_selected = null
@@ -1458,10 +1484,28 @@ func _on_map_row_unhovered(row: Control, item: Dictionary, for_scenario: bool):
 func _set_row_highlight_color(row: Control, color: Color) -> void:
 	var size_label: Label = row.get_node("Size")
 	var name_label: Label = row.get_node("Name")
-	size_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
-	name_label.add_theme_color_override("font_color", ROW_TEXT_COLOR)
+	var item_enabled: bool = true
+	if row.has_meta("map_list_item"):
+		item_enabled = _is_map_list_item_enabled(row.get_meta("map_list_item"), is_scenario_mode)
+	var text_color: Color = ROW_TEXT_COLOR if item_enabled else ROW_DISABLED_TEXT_COLOR
+	size_label.add_theme_color_override("font_color", text_color)
+	name_label.add_theme_color_override("font_color", text_color)
 	if row.has_method("set_highlight_color"):
 		row.call("set_highlight_color", color)
+
+func _apply_map_row_enabled_style(row: Control, enabled: bool) -> void:
+	var size_label: Label = row.get_node("Size")
+	var name_label: Label = row.get_node("Name")
+	var text_color: Color = ROW_TEXT_COLOR if enabled else ROW_DISABLED_TEXT_COLOR
+	size_label.add_theme_color_override("font_color", text_color)
+	name_label.add_theme_color_override("font_color", text_color)
+
+func _is_map_list_item_enabled(item: Dictionary, for_scenario: bool) -> bool:
+	if not for_scenario or not is_campaign_mode:
+		return true
+	if main_game_debug_mode:
+		return true
+	return bool(item.get("campaign_unlocked", true))
 
 func _update_button_gold_state(button: Button, selected: bool):
 	button.button_pressed = selected
@@ -1642,9 +1686,28 @@ func _gather_scenario_items(requested_type: String) -> Array:
 		dir.list_dir_end()
 	if requested_type == "campaign":
 		items.sort_custom(Callable(self, "_sort_campaign_items"))
+		_apply_campaign_unlocks(items)
 	else:
 		items.sort_custom(Callable(self, "_sort_items"))
 	return items
+
+func _apply_campaign_unlocks(items: Array) -> void:
+	if main_game_debug_mode:
+		for item: Dictionary in items:
+			item["campaign_unlocked"] = true
+		return
+	var mission_source_by_number: Dictionary = {}
+	for item: Dictionary in items:
+		var mission_number: int = int(item.get("mission_number", 0))
+		if mission_number > 0:
+			mission_source_by_number[mission_number] = String(item.get("scenario_file_base", item.get("name", "")))
+	for item: Dictionary in items:
+		var mission_number: int = int(item.get("mission_number", 0))
+		var campaign_unlocked: bool = mission_number > 0 and mission_number <= CAMPAIGN_ALWAYS_UNLOCKED_MISSION_MAX
+		if not campaign_unlocked and mission_number > CAMPAIGN_ALWAYS_UNLOCKED_MISSION_MAX:
+			var previous_source_id: String = String(mission_source_by_number.get(mission_number - 1, ""))
+			campaign_unlocked = previous_source_id != "" and UpgradesManager.has_completed_source(UpgradesManager.SOURCE_SCENARIO, previous_source_id)
+		item["campaign_unlocked"] = campaign_unlocked
 
 func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 	var file_only: String = map_file_name.get_file()

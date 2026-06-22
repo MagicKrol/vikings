@@ -4,6 +4,7 @@ class_name UpgradesManager
 const PROGRESS_FILE_PATH: String = "user://upgrade_progress.cfg"
 const PROGRESS_FILE_PASSWORD: String = "HornOfTheWarlordUpgradeProgressV1"
 const PROGRESS_SECTION: String = "levels"
+const COMPLETIONS_SECTION: String = "completions"
 const STATS_SECTION: String = "stats"
 const TOTAL_GAMES_KEY: String = "total_games"
 const SOURCE_NONE: String = "none"
@@ -14,18 +15,18 @@ const REQUIREMENT_TOTAL_GAMES: String = "total_games"
 const BONUS_RESOURCE: String = "resource"
 const BONUS_UNIT: String = "unit"
 const CARD_BONUS_LEVEL_AMOUNTS: Dictionary = {
-	"Card1": [10, 20, 40],
-	"Card2": [5, 10, 20],
-	"Card3": [5, 10, 20],
-	"Card4": [5, 10, 20],
-	"Card5": [10, 20, 40],
-	"Card6": [10, 20, 40],
-	"Card7": [6, 12, 25],
-	"Card8": [5, 10, 20],
-	"Card9": [5, 10, 20],
-	"Card10": [5, 10, 20],
-	"Card11": [3, 6, 12],
-	"Card12": [1, 2, 4]
+	"Card1": [10, 20, 30],
+	"Card2": [5, 10, 15],
+	"Card3": [5, 10, 15],
+	"Card4": [4, 8, 12],
+	"Card5": [10, 20, 30],
+	"Card6": [10, 20, 30],
+	"Card7": [5, 10, 15],
+	"Card8": [3, 6, 9],
+	"Card9": [3, 6, 9],
+	"Card10": [3, 6, 9],
+	"Card11": [2, 4, 6],
+	"Card12": [1, 2, 3]
 }
 
 static func get_all_cards() -> Array[Dictionary]:
@@ -58,22 +59,34 @@ static func get_card(card_id: String) -> Dictionary:
 			return card
 	return {}
 
-static func get_card_level(card_id: String) -> int:
+static func get_card_level(card_id: String, debug_unlocked: bool = false) -> int:
 	var card: Dictionary = get_card(card_id)
 	if card.is_empty():
 		return 0
+	if debug_unlocked:
+		return 3
 	var config: ConfigFile = _load_progress_config()
 	return clampi(int(config.get_value(PROGRESS_SECTION, card_id, 0)), 0, 3)
 
-static func is_card_unlocked(card_id: String) -> bool:
-	return get_card_level(card_id) > 0
+static func is_card_unlocked(card_id: String, debug_unlocked: bool = false) -> bool:
+	return get_card_level(card_id, debug_unlocked) > 0
 
-static func has_unlocked_cards() -> bool:
+static func has_unlocked_cards(debug_unlocked: bool = false) -> bool:
 	for card: Dictionary in get_all_cards():
 		var card_id: String = String(card.get("id", ""))
-		if is_card_unlocked(card_id):
+		if is_card_unlocked(card_id, debug_unlocked):
 			return true
 	return false
+
+static func has_completed_source(source_type: String, source_id: String) -> bool:
+	var normalized_source_type: String = source_type.strip_edges().to_lower()
+	var normalized_source_id: String = _normalize_source_id(source_id)
+	if normalized_source_type == "" or normalized_source_id == "":
+		return false
+	var config: ConfigFile = _load_progress_config()
+	if bool(config.get_value(COMPLETIONS_SECTION, _completion_key(normalized_source_type, normalized_source_id), false)):
+		return true
+	return _has_completion_from_unlocked_card(config, normalized_source_type, normalized_source_id)
 
 static func get_selection_limit_for_difficulty(difficulty_name: String) -> int:
 	var normalized: String = difficulty_name.to_lower()
@@ -83,14 +96,14 @@ static func get_selection_limit_for_difficulty(difficulty_name: String) -> int:
 		return 3
 	return 2
 
-static func get_valid_selected_cards(raw_card_ids: Array, difficulty_name: String) -> Array[String]:
+static func get_valid_selected_cards(raw_card_ids: Array, difficulty_name: String, debug_unlocked: bool = false) -> Array[String]:
 	var valid_ids: Array[String] = []
 	var limit: int = get_selection_limit_for_difficulty(difficulty_name)
 	for raw_card_id in raw_card_ids:
 		var card_id: String = String(raw_card_id)
 		if valid_ids.has(card_id):
 			continue
-		if not is_card_unlocked(card_id):
+		if not is_card_unlocked(card_id, debug_unlocked):
 			continue
 		if get_card(card_id).is_empty():
 			continue
@@ -134,6 +147,7 @@ static func record_completion_result(source_type: String, source_id: String, dif
 	var changed_previous_level: int = 0
 	var changed_new_level: int = 0
 	var config: ConfigFile = _load_progress_config()
+	config.set_value(COMPLETIONS_SECTION, _completion_key(normalized_source_type, source_id), true)
 	var total_games: int = _record_total_game_completion(config)
 	for card: Dictionary in get_all_cards():
 		var card_id: String = String(card.get("id", ""))
@@ -196,6 +210,28 @@ static func _requirement_matches_completion(requirement: Dictionary, source_type
 		return true
 	return _level_for_difficulty(difficulty_name) >= _level_for_difficulty(required_difficulty)
 
+static func _has_completion_from_unlocked_card(config: ConfigFile, source_type: String, source_id: String) -> bool:
+	for card: Dictionary in get_all_cards():
+		var card_id: String = String(card.get("id", ""))
+		var current_level: int = clampi(int(config.get_value(PROGRESS_SECTION, card_id, 0)), 0, 3)
+		if current_level <= 0:
+			continue
+		var requirements: Array = card.get("level_requirements", [])
+		for raw_requirement in requirements:
+			var requirement: Dictionary = raw_requirement
+			if int(requirement.get("level", 0)) > current_level:
+				continue
+			if _requirement_matches_source(requirement, source_type, source_id):
+				return true
+	return false
+
+static func _requirement_matches_source(requirement: Dictionary, source_type: String, source_id: String) -> bool:
+	if String(requirement.get("type", "")).to_lower() != REQUIREMENT_SOURCE:
+		return false
+	var required_source_type: String = String(requirement.get("source_type", SOURCE_NONE)).to_lower()
+	var required_source_id: String = _normalize_source_id(String(requirement.get("source_id", "")))
+	return source_type.to_lower() == required_source_type and _normalize_source_id(source_id) == required_source_id
+
 static func _requirements(level_requirements: Array[Dictionary]) -> Array[Dictionary]:
 	return level_requirements
 
@@ -222,10 +258,10 @@ static func _total_games_requirement(level: int, count: int) -> Dictionary:
 		"count": count
 	}
 
-static func get_resource_bonuses(card_ids: Array[String]) -> Dictionary:
+static func get_resource_bonuses(card_ids: Array[String], debug_unlocked: bool = false) -> Dictionary:
 	var bonuses: Dictionary = {}
 	for card_id: String in card_ids:
-		var level: int = get_card_level(card_id)
+		var level: int = get_card_level(card_id, debug_unlocked)
 		if level <= 0:
 			continue
 		var card: Dictionary = get_card(card_id)
@@ -236,10 +272,10 @@ static func get_resource_bonuses(card_ids: Array[String]) -> Dictionary:
 		bonuses[resource_type] = int(bonuses.get(resource_type, 0)) + amount
 	return bonuses
 
-static func get_unit_bonuses(card_ids: Array[String]) -> Dictionary:
+static func get_unit_bonuses(card_ids: Array[String], debug_unlocked: bool = false) -> Dictionary:
 	var bonuses: Dictionary = {}
 	for card_id: String in card_ids:
-		var level: int = get_card_level(card_id)
+		var level: int = get_card_level(card_id, debug_unlocked)
 		if level <= 0:
 			continue
 		var card: Dictionary = get_card(card_id)
@@ -315,3 +351,6 @@ static func _level_for_difficulty(difficulty_name: String) -> int:
 
 static func _normalize_source_id(source_id: String) -> String:
 	return source_id.get_file().get_basename().strip_edges().to_lower()
+
+static func _completion_key(source_type: String, source_id: String) -> String:
+	return source_type.strip_edges().to_lower() + ":" + _normalize_source_id(source_id)

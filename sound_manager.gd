@@ -1,6 +1,9 @@
 extends Node
 class_name SoundManager
 
+const SOUND_BUS_NAME: StringName = &"Sound"
+const MUSIC_BUS_NAME: StringName = &"Music"
+
 class Playlist:
 	var tracks: Array[String] = []
 	var shuffle_enabled: bool = false
@@ -108,6 +111,7 @@ func _ready():
 	add_child(promote_player)
 	add_child(recruit_player)
 	add_child(trade_player)
+	_configure_audio_buses()
 	click_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	horn_player.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -121,10 +125,8 @@ func _ready():
 	trade_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	music_player.finished.connect(_on_music_finished)
 	battle_player.finished.connect(_on_battle_player_finished)
-	battle_player.volume_db = linear_to_db(0.5)
-	defeat_player.volume_db = linear_to_db(0.5)
-	mining_player.volume_db = linear_to_db(0.5)
-	music_player.volume_db = linear_to_db(0.5)
+	set_sound_volume_db(linear_to_db(0.5))
+	set_music_volume_db(linear_to_db(0.5))
 	_rng.randomize()
 	
 	# Load the click sound
@@ -204,6 +206,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_M:
 			toggle_music()
+
+func set_sound_volume_db(value: float) -> void:
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(SOUND_BUS_NAME), value)
+
+func get_sound_volume_db() -> float:
+	return AudioServer.get_bus_volume_db(AudioServer.get_bus_index(SOUND_BUS_NAME))
+
+func set_music_volume_db(value: float) -> void:
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(MUSIC_BUS_NAME), value)
+
+func get_music_volume_db() -> float:
+	return AudioServer.get_bus_volume_db(AudioServer.get_bus_index(MUSIC_BUS_NAME))
 
 func click_sound() -> void:
 	"""Play click sound effect"""
@@ -299,7 +313,7 @@ func play_battle_sound() -> void:
 		if max_start_seconds > 0.0:
 			start_position_seconds = _rng.randf_range(0.0, max_start_seconds)
 		battle_player.stream = battle_sound
-		battle_player.volume_db = linear_to_db(0.5)
+		battle_player.volume_db = 0.0
 		_battle_loop_enabled = true
 		battle_player.play(start_position_seconds)
 
@@ -313,7 +327,7 @@ func fade_out_battle_sound(duration: float = 2.0) -> void:
 	tween.tween_property(battle_player, "volume_db", -80.0, duration)
 	tween.finished.connect(func():
 		battle_player.stop()
-		battle_player.volume_db = linear_to_db(0.5))
+		battle_player.volume_db = 0.0)
 
 func _on_battle_player_finished() -> void:
 	if not _battle_loop_enabled:
@@ -342,7 +356,7 @@ func play_game_start_sequence() -> void:
 	DebugLogger.log("GameInit", "horn_player: " + str(horn_player))
 	DebugLogger.log("GameInit", "starting_horn: " + str(starting_horn))
 	
-	if music_enabled and horn_player and starting_horn:
+	if sound_enabled and horn_player and starting_horn:
 		DebugLogger.log("GameInit", "Playing starting horn...")
 		horn_player.stream = starting_horn
 		horn_player.play()
@@ -350,10 +364,11 @@ func play_game_start_sequence() -> void:
 		# Wait 3 seconds then start game music
 		DebugLogger.log("GameInit", "Waiting 3 seconds...")
 		await get_tree().create_timer(3.0).timeout
+	if music_enabled:
 		DebugLogger.log("GameInit", "Starting game music...")
 		play_game_music()
 	else:
-		DebugLogger.log("GameInit", "Error: Missing horn_player or starting_horn audio")
+		DebugLogger.log("GameInit", "Music disabled; skipping game music")
 
 func play_game_music() -> void:
 	"""Play main game music"""
@@ -370,11 +385,9 @@ func play_game_music() -> void:
 		music_player.play()
 
 func stop_all_music() -> void:
-	"""Stop all music and horn sounds"""
+	"""Stop all music"""
 	if music_player:
 		music_player.stop()
-	if horn_player:
-		horn_player.stop()
 
 func toggle_music() -> void:
 	"""Toggle music on/off"""
@@ -447,3 +460,27 @@ func _build_track_list(raw: Array) -> Array[String]:
 	for item in raw:
 		list.append(String(item))
 	return list
+
+func _configure_audio_buses() -> void:
+	click_player.bus = SOUND_BUS_NAME
+	horn_player.bus = SOUND_BUS_NAME
+	battle_player.bus = SOUND_BUS_NAME
+	hammer_player.bus = SOUND_BUS_NAME
+	defeat_player.bus = SOUND_BUS_NAME
+	mining_player.bus = SOUND_BUS_NAME
+	catapult_player.bus = SOUND_BUS_NAME
+	promote_player.bus = SOUND_BUS_NAME
+	recruit_player.bus = SOUND_BUS_NAME
+	trade_player.bus = SOUND_BUS_NAME
+	music_player.bus = MUSIC_BUS_NAME
+	click_player.volume_db = 0.0
+	horn_player.volume_db = 0.0
+	battle_player.volume_db = 0.0
+	hammer_player.volume_db = 0.0
+	defeat_player.volume_db = 0.0
+	mining_player.volume_db = 0.0
+	catapult_player.volume_db = 0.0
+	promote_player.volume_db = 0.0
+	recruit_player.volume_db = 0.0
+	trade_player.volume_db = 0.0
+	music_player.volume_db = 0.0

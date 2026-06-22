@@ -4,6 +4,7 @@ class_name SaveGameManager
 const SAVE_FILE_PATH: String = "user://savegame.json"
 const AUTOSAVE_FILE_PATH: String = "user://autosave.json"
 const SETTINGS_FILE_PATH: String = "user://settings.cfg"
+const SAVE_FILE_PASSWORD: String = "HornOfTheWarlordSaveGameV1"
 const SAVE_VERSION: int = 1
 const SAVE_FILE_EXTENSION: String = ".json"
 const DEFAULT_SAVE_BASENAME: String = "savegame"
@@ -43,7 +44,7 @@ static func save_game_named(game_manager: GameManager, raw_file_name: String) ->
 
 static func save_game_to_path(game_manager: GameManager, save_path: String) -> bool:
 	var save_data: Dictionary = _build_save_data(game_manager)
-	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(save_path, FileAccess.WRITE, SAVE_FILE_PASSWORD)
 	if file == null:
 		DebugLogger.log("SaveGame", "ERROR: Could not open save file for writing: " + save_path)
 		return false
@@ -58,7 +59,11 @@ static func load_game() -> Dictionary:
 	return load_game_from_path(SAVE_FILE_PATH)
 
 static func load_game_from_path(save_path: String) -> Dictionary:
-	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
+	var should_migrate_plaintext: bool = false
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(save_path, FileAccess.READ, SAVE_FILE_PASSWORD)
+	if file == null:
+		file = FileAccess.open(save_path, FileAccess.READ)
+		should_migrate_plaintext = file != null
 	if file == null:
 		DebugLogger.log("SaveGame", "ERROR: Could not open save file: " + save_path)
 		return {}
@@ -69,7 +74,10 @@ static func load_game_from_path(save_path: String) -> Dictionary:
 	if parse_result != OK:
 		DebugLogger.log("SaveGame", "ERROR: Failed to parse save file: " + json.error_string)
 		return {}
-	return json.data as Dictionary
+	var save_data: Dictionary = json.data as Dictionary
+	if should_migrate_plaintext:
+		_save_data_to_encrypted_path(save_data, save_path)
+	return save_data
 
 static func get_save_entries() -> Array[Dictionary]:
 	var infos: Array[Dictionary] = _collect_save_file_infos()
@@ -99,8 +107,8 @@ static func save_settings(sound_manager: SoundManager) -> bool:
 	var config: ConfigFile = ConfigFile.new()
 	config.set_value("audio", "sound_enabled", sound_manager.sound_enabled)
 	config.set_value("audio", "music_enabled", sound_manager.music_enabled)
-	config.set_value("audio", "sound_db", sound_manager.click_player.volume_db)
-	config.set_value("audio", "music_db", sound_manager.music_player.volume_db)
+	config.set_value("audio", "sound_db", sound_manager.get_sound_volume_db())
+	config.set_value("audio", "music_db", sound_manager.get_music_volume_db())
 	config.set_value("visual", "clouds_enabled", Clouds.is_global_clouds_enabled())
 	config.set_value("gameplay", "ai_speed", GameParameters.get_ai_move_speed_multiplier())
 	config.set_value("gameplay", "battle_speed", GameParameters.get_battle_round_time())
@@ -164,10 +172,8 @@ static func load_settings(sound_manager: SoundManager) -> void:
 static func _apply_sound_settings(sound_manager: SoundManager, sound_enabled: bool, music_enabled: bool, sound_db: float, music_db: float) -> void:
 	sound_manager.sound_enabled = sound_enabled
 	sound_manager.music_enabled = music_enabled
-	sound_manager.click_player.volume_db = sound_db
-	sound_manager.horn_player.volume_db = sound_db
-	sound_manager.battle_player.volume_db = sound_db
-	sound_manager.music_player.volume_db = music_db
+	sound_manager.set_sound_volume_db(sound_db)
+	sound_manager.set_music_volume_db(music_db)
 	if not music_enabled:
 		sound_manager.stop_all_music()
 
@@ -567,17 +573,26 @@ static func _collect_save_file_infos() -> Array[Dictionary]:
 	while entry != "":
 		if not user_dir.current_is_dir() and entry.to_lower().ends_with(SAVE_FILE_EXTENSION):
 			var save_path: String = "user://" + entry
+			var modified: int = int(FileAccess.get_modified_time(save_path))
 			var save_data: Dictionary = load_game_from_path(save_path)
 			var valid_save: bool = not save_data.is_empty() and int(save_data.get("version", 0)) > 0 and save_data.has("game_state")
 			if valid_save:
 				infos.append({
 					"file_name": entry,
 					"path": save_path,
-					"modified": int(FileAccess.get_modified_time(save_path))
+					"modified": modified
 				})
 		entry = user_dir.get_next()
 	user_dir.list_dir_end()
 	return infos
+
+static func _save_data_to_encrypted_path(save_data: Dictionary, save_path: String) -> void:
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(save_path, FileAccess.WRITE, SAVE_FILE_PASSWORD)
+	if file == null:
+		DebugLogger.log("SaveGame", "ERROR: Could not migrate save file to encrypted format: " + save_path)
+		return
+	file.store_string(JSON.stringify(save_data, "\t"))
+	file.close()
 
 static func _sort_save_infos_desc(a: Dictionary, b: Dictionary) -> bool:
 	return int(a.get("modified", 0)) > int(b.get("modified", 0))

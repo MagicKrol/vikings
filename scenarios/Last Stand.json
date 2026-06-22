@@ -18,6 +18,54 @@
 		},
 		{
 			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 10,
+				"Royal Guard": 0,
+				"Spearmen": 15,
+				"Swordsmen": 5
+			},
+			"name": "Army II",
+			"player_id": 4,
+			"region_id": 147
+		},
+		{
+			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 10,
+				"Royal Guard": 0,
+				"Spearmen": 15,
+				"Swordsmen": 5
+			},
+			"name": "Army II",
+			"player_id": 3,
+			"region_id": 177
+		},
+		{
+			"composition": {
+				"Archers": 10,
+				"Crossbowmen": 0,
+				"Horsemen": 0,
+				"Knights": 1,
+				"Mounted Knights": 0,
+				"Peasants": 10,
+				"Royal Guard": 0,
+				"Spearmen": 15,
+				"Swordsmen": 5
+			},
+			"name": "Army II",
+			"player_id": 2,
+			"region_id": 184
+		},
+		{
+			"composition": {
 				"Archers": 5,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
@@ -336,7 +384,7 @@
 			"castle_type": "Keep",
 			"discovered_ores": [],
 			"id": 146,
-			"level": "Shire",
+			"level": "County",
 			"name": "Vatnoy",
 			"ocean": false,
 			"owner": 4,
@@ -754,7 +802,7 @@
 			"castle_type": "Keep",
 			"discovered_ores": [],
 			"id": 186,
-			"level": "Shire",
+			"level": "County",
 			"name": "Hafnley",
 			"ocean": false,
 			"owner": 2,
@@ -792,7 +840,7 @@
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 188,
-			"level": "Shire",
+			"level": "County",
 			"name": "Sanddal",
 			"ocean": false,
 			"owner": 4,
@@ -868,7 +916,7 @@
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 194,
-			"level": "Shire",
+			"level": "County",
 			"name": "Eyberg",
 			"ocean": false,
 			"owner": 2,
@@ -1173,7 +1221,7 @@
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 218,
-			"level": "Shire",
+			"level": "County",
 			"name": "Ashdal",
 			"ocean": false,
 			"owner": 3,
@@ -1211,7 +1259,7 @@
 			"castle_type": "Keep",
 			"discovered_ores": [],
 			"id": 221,
-			"level": "Shire",
+			"level": "County",
 			"name": "Eyfjord",
 			"ocean": false,
 			"owner": 3,
@@ -1357,14 +1405,14 @@
 			"castle_type": "Outpost",
 			"discovered_ores": [],
 			"garrison": {
-				"Archers": 5,
+				"Archers": 10,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
 				"Peasants": 10,
 				"Royal Guard": 0,
-				"Spearmen": 5,
+				"Spearmen": 10,
 				"Swordsmen": 0
 			},
 			"id": 228,
@@ -1426,14 +1474,14 @@
 			"castle_type": "Outpost",
 			"discovered_ores": [],
 			"garrison": {
-				"Archers": 5,
+				"Archers": 10,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
 				"Peasants": 10,
 				"Royal Guard": 0,
-				"Spearmen": 5,
+				"Spearmen": 10,
 				"Swordsmen": 0
 			},
 			"id": 235,
@@ -1614,7 +1662,7 @@
 			"name": "Oakmere",
 			"ocean": false,
 			"owner": 1,
-			"population": 281,
+			"population": 205,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1633,7 +1681,7 @@
 			"name": "Redbury",
 			"ocean": false,
 			"owner": 1,
-			"population": 254,
+			"population": 154,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1691,7 +1739,7 @@
 			"ocean": false,
 			"ore_guaranteed_discovery_attempt": "random",
 			"owner": 1,
-			"population": 269,
+			"population": 169,
 			"resources": {
 				"Food": 0,
 				"Gold": 6,
@@ -1768,7 +1816,7 @@
 			"ocean": false,
 			"ore_guaranteed_discovery_attempt": "random",
 			"owner": 1,
-			"population": 268,
+			"population": 198,
 			"resources": {
 				"Food": 0,
 				"Gold": 5,

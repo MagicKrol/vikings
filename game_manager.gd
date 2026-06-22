@@ -641,10 +641,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			if debug_mode:
 				_trigger_debug_instant_win()
 				get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_F2:
+			_debug_convert_player_3_to_human()
+			get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_F8:
 			# Take screenshot with proper setup
 			_take_game_screenshot()
 		# SPACE key handling is now managed by TurnController's DebugStepGate
+
+func _debug_convert_player_3_to_human() -> void:
+	var player_id: int = 3
+	player_types[player_id - 1] = PlayerTypeEnum.Type.HUMAN
+	player_manager.get_player(player_id).set_is_computer(false)
+	_initial_human_player_count = maxi(_initial_human_player_count, _get_human_player_count())
+	if current_player == player_id:
+		_apply_debug_ui_visibility_for_player(player_id)
+		_emit_player_status_refresh()
+	DebugLogger.log("GameInit", "Temporary F2 debug: Player 3 changed to Human")
 
 func _trigger_debug_instant_win() -> void:
 	if victory_declared:
@@ -2806,7 +2819,7 @@ func _normalize_selected_upgrade_cards(raw_cards: Variant) -> Array[String]:
 	var raw_card_ids: Array = []
 	if raw_cards is Array:
 		raw_card_ids = raw_cards as Array
-	return UpgradesManager.get_valid_selected_cards(raw_card_ids, GameParameters.game_difficulty_to_string(game_difficulty))
+	return UpgradesManager.get_valid_selected_cards(raw_card_ids, GameParameters.game_difficulty_to_string(game_difficulty), debug_mode)
 
 func _apply_starting_resources_for_difficulty() -> void:
 	for i in range(player_types.size()):
@@ -2825,7 +2838,7 @@ func _apply_starting_resources_for_difficulty() -> void:
 func _apply_selected_upgrade_resource_bonuses() -> void:
 	if _selected_upgrade_card_ids.is_empty():
 		return
-	var resource_bonuses: Dictionary = UpgradesManager.get_resource_bonuses(_selected_upgrade_card_ids)
+	var resource_bonuses: Dictionary = UpgradesManager.get_resource_bonuses(_selected_upgrade_card_ids, debug_mode)
 	if resource_bonuses.is_empty():
 		return
 	for player_id in range(1, total_players + 1):
@@ -2842,7 +2855,7 @@ func _apply_selected_upgrade_resource_bonuses() -> void:
 func _queue_or_apply_selected_upgrade_unit_bonuses() -> void:
 	if _selected_upgrade_card_ids.is_empty():
 		return
-	var unit_bonuses: Dictionary = UpgradesManager.get_unit_bonuses(_selected_upgrade_card_ids)
+	var unit_bonuses: Dictionary = UpgradesManager.get_unit_bonuses(_selected_upgrade_card_ids, debug_mode)
 	if unit_bonuses.is_empty():
 		return
 	for player_id in range(1, total_players + 1):

@@ -113,8 +113,8 @@ func configure(sound_manager_ref: SoundManager, apply_runtime_clouds: bool, back
 	_show_scenario_panel()
 
 func refresh_state() -> void:
-	var sound_percent: float = _db_to_percent(sound_manager.click_player.volume_db) if sound_manager.sound_enabled else 0.0
-	var music_percent: float = _db_to_percent(sound_manager.music_player.volume_db) if sound_manager.music_enabled else 0.0
+	var sound_percent: float = _db_to_percent(sound_manager.get_sound_volume_db()) if sound_manager.sound_enabled else 0.0
+	var music_percent: float = _db_to_percent(sound_manager.get_music_volume_db()) if sound_manager.music_enabled else 0.0
 	sound_slider.set_value_no_signal(sound_percent)
 	music_slider.set_value_no_signal(music_percent)
 	_update_sound_label(sound_percent)
@@ -240,9 +240,7 @@ func _on_sound_slider_changed(value: float) -> void:
 	var clamped_value: float = clampf(value, 0.0, 100.0)
 	sound_manager.sound_enabled = clamped_value > 0.0
 	var volume_db: float = _percent_to_db(clamped_value)
-	sound_manager.click_player.volume_db = volume_db
-	sound_manager.horn_player.volume_db = volume_db
-	sound_manager.battle_player.volume_db = volume_db
+	sound_manager.set_sound_volume_db(volume_db)
 	_update_sound_label(clamped_value)
 	SaveGameManager.save_settings(sound_manager)
 
@@ -250,7 +248,7 @@ func _on_music_slider_changed(value: float) -> void:
 	var clamped_value: float = clampf(value, 0.0, 100.0)
 	var was_enabled: bool = sound_manager.music_enabled
 	sound_manager.music_enabled = clamped_value > 0.0
-	sound_manager.music_player.volume_db = _percent_to_db(clamped_value)
+	sound_manager.set_music_volume_db(_percent_to_db(clamped_value))
 	if not sound_manager.music_enabled:
 		sound_manager.stop_all_music()
 	elif not was_enabled:
