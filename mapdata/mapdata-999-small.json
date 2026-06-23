@@ -56062,7 +56062,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest",
 			"center": [
 				163.328808803313,
 				239.43480054373
@@ -56112,7 +56112,7 @@
 				]
 			],
 			"temperature": 0.99075675356763,
-			"type": 0,
+			"type": 3,
 			"water": false
 		},
 		{
@@ -56924,7 +56924,7 @@
 			"water": true
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"center": [
 				810.157926393009,
 				458.944540035533
@@ -56974,7 +56974,7 @@
 				]
 			],
 			"temperature": 0.9444302556548,
-			"type": 0,
+			"type": 1,
 			"water": false
 		},
 		{
@@ -57027,7 +57027,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"center": [
 				850.926513938182,
 				500.480029652172
@@ -57062,11 +57062,11 @@
 				]
 			],
 			"temperature": 0.990596449298798,
-			"type": 0,
+			"type": 2,
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"center": [
 				890.345965365187,
 				539.550663038747
@@ -57111,7 +57111,7 @@
 				]
 			],
 			"temperature": 0.990699116984625,
-			"type": 0,
+			"type": 1,
 			"water": false
 		},
 		{
@@ -57212,7 +57212,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"center": [
 				871.21793759867,
 				597.938825085738
@@ -57262,7 +57262,7 @@
 				]
 			],
 			"temperature": 0.974523649604576,
-			"type": 0,
+			"type": 2,
 			"water": false
 		},
 		{
@@ -59054,7 +59054,7 @@
 			"water": false
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"center": [
 				804.744580020455,
 				540.082251568671
@@ -59104,7 +59104,7 @@
 				]
 			],
 			"temperature": 0.91782922998604,
-			"type": 3,
+			"type": 2,
 			"water": false
 		},
 		{
@@ -59347,7 +59347,7 @@
 			"water": false
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"center": [
 				771.008500680703,
 				620.022750185483
@@ -59397,7 +59397,7 @@
 				]
 			],
 			"temperature": 0.906771119663928,
-			"type": 0,
+			"type": 1,
 			"water": false
 		},
 		{
@@ -59602,7 +59602,7 @@
 			"water": false
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"center": [
 				257.355816391326,
 				625.851396441607
@@ -59647,7 +59647,7 @@
 				]
 			],
 			"temperature": 0.955603390436557,
-			"type": 3,
+			"type": 2,
 			"water": false
 		},
 		{
@@ -61125,7 +61125,7 @@
 			"water": false
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"center": [
 				333.142727897687,
 				635.181933152853
@@ -61175,7 +61175,7 @@
 				]
 			],
 			"temperature": 0.858792760397851,
-			"type": 3,
+			"type": 2,
 			"water": false
 		},
 		{

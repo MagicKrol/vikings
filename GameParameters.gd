@@ -854,7 +854,7 @@ const STARTING_RESOURCES_NORMAL = {
 }
 
 const STARTING_RESOURCES_HARD = {
-	ResourcesEnum.Type.GOLD: 80,
+	ResourcesEnum.Type.GOLD: 50,
 	ResourcesEnum.Type.FOOD: 50,
 	ResourcesEnum.Type.WOOD: 10,
 	ResourcesEnum.Type.IRON: 0,

@@ -443,7 +443,7 @@
 			"name": "Rednes",
 			"ocean": false,
 			"owner": 4,
-			"population": 205,
+			"population": 254,
 			"resources": {
 				"Food": 3,
 				"Gold": 0,
@@ -500,9 +500,9 @@
 			"name": "Torford",
 			"ocean": false,
 			"owner": 0,
-			"population": 64,
+			"population": 164,
 			"resources": {
-				"Food": 1,
+				"Food": 2,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
@@ -538,7 +538,7 @@
 			"name": "Kirkhaug",
 			"ocean": false,
 			"owner": 2,
-			"population": 89,
+			"population": 289,
 			"resources": {
 				"Food": 0,
 				"Gold": 7,
@@ -568,7 +568,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 141,
@@ -576,15 +576,15 @@
 			"name": "Kirkfjell",
 			"ocean": false,
 			"owner": 0,
-			"population": 118,
+			"population": 284,
 			"resources": {
-				"Food": 2,
+				"Food": 0,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 0,
-				"Wood": 0
+				"Wood": 2
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest"
 		},
 		{
 			"biome": "grassland",
@@ -614,7 +614,7 @@
 			"name": "Vatnoy",
 			"ocean": false,
 			"owner": 4,
-			"population": 137,
+			"population": 303,
 			"resources": {
 				"Food": 1,
 				"Gold": 0,
@@ -633,7 +633,7 @@
 			"name": "Northwich",
 			"ocean": false,
 			"owner": 4,
-			"population": 125,
+			"population": 225,
 			"resources": {
 				"Food": 0,
 				"Gold": 5,
@@ -709,7 +709,7 @@
 			"name": "Bergvik",
 			"ocean": false,
 			"owner": 4,
-			"population": 90,
+			"population": 204,
 			"resources": {
 				"Food": 1,
 				"Gold": 0,
@@ -720,7 +720,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 159,
@@ -728,15 +728,15 @@
 			"name": "Stoneworth",
 			"ocean": false,
 			"owner": 0,
-			"population": 165,
+			"population": 154,
 			"resources": {
-				"Food": 1,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
+				"Food": 0,
+				"Gold": 9,
+				"Iron": 1,
+				"Stone": 3,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Hills"
 		},
 		{
 			"biome": "grassland",
@@ -758,7 +758,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 161,
@@ -766,18 +766,18 @@
 			"name": "Kirkchester",
 			"ocean": false,
 			"owner": 0,
-			"population": 140,
+			"population": 237,
 			"resources": {
-				"Food": 2,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 0
+				"Food": 0,
+				"Gold": 6,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 2
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest Hills"
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 162,
@@ -785,15 +785,15 @@
 			"name": "Ashholme",
 			"ocean": false,
 			"owner": 0,
-			"population": 251,
+			"population": 117,
 			"resources": {
-				"Food": 1,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 3,
+				"Stone": 1,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Hills"
 		},
 		{
 			"biome": "grassland",
@@ -815,7 +815,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "forest_hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 165,
@@ -823,15 +823,15 @@
 			"name": "Akrdal",
 			"ocean": false,
 			"owner": 0,
-			"population": 254,
+			"population": 154,
 			"resources": {
-				"Food": 3,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 0
+				"Food": 0,
+				"Gold": 8,
+				"Iron": 2,
+				"Stone": 2,
+				"Wood": 1
 			},
-			"type_display": "Grassland"
+			"type_display": "Forest Hills"
 		},
 		{
 			"biome": "grassland",
@@ -1013,7 +1013,7 @@
 			"name": "Torstadir",
 			"ocean": false,
 			"owner": 2,
-			"population": 77,
+			"population": 263,
 			"resources": {
 				"Food": 1,
 				"Gold": 0,
@@ -1032,7 +1032,7 @@
 			"name": "Hafnley",
 			"ocean": false,
 			"owner": 2,
-			"population": 174,
+			"population": 374,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1070,7 +1070,7 @@
 			"name": "Sanddal",
 			"ocean": false,
 			"owner": 4,
-			"population": 231,
+			"population": 293,
 			"resources": {
 				"Food": 2,
 				"Gold": 0,
@@ -1108,7 +1108,7 @@
 			"name": "Hvitham",
 			"ocean": false,
 			"owner": 4,
-			"population": 134,
+			"population": 234,
 			"resources": {
 				"Food": 3,
 				"Gold": 0,
@@ -1146,7 +1146,7 @@
 			"name": "Eyberg",
 			"ocean": false,
 			"owner": 2,
-			"population": 195,
+			"population": 295,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1253,7 +1253,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 203,
@@ -1261,15 +1261,15 @@
 			"name": "Eymere",
 			"ocean": false,
 			"owner": 0,
-			"population": 151,
+			"population": 111,
 			"resources": {
 				"Food": 0,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 2
+				"Gold": 4,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 1
 			},
-			"type_display": "Forest"
+			"type_display": "Forest Hills"
 		},
 		{
 			"biome": "grassland",
@@ -1310,7 +1310,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "grassland",
+			"biome": "hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 209,
@@ -1318,15 +1318,15 @@
 			"name": "Kirkdon",
 			"ocean": false,
 			"owner": 0,
-			"population": 112,
+			"population": 185,
 			"resources": {
-				"Food": 3,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
+				"Food": 0,
+				"Gold": 6,
+				"Iron": 2,
+				"Stone": 2,
 				"Wood": 0
 			},
-			"type_display": "Grassland"
+			"type_display": "Hills"
 		},
 		{
 			"biome": "grassland",
@@ -1367,7 +1367,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 214,
@@ -1375,15 +1375,15 @@
 			"name": "Whitford",
 			"ocean": false,
 			"owner": 0,
-			"population": 208,
+			"population": 258,
 			"resources": {
 				"Food": 0,
-				"Gold": 0,
-				"Iron": 0,
+				"Gold": 8,
+				"Iron": 1,
 				"Stone": 0,
 				"Wood": 1
 			},
-			"type_display": "Forest"
+			"type_display": "Forest Hills"
 		},
 		{
 			"biome": "forest",
@@ -1432,7 +1432,7 @@
 			"name": "Riverfell",
 			"ocean": false,
 			"owner": 0,
-			"population": 163,
+			"population": 263,
 			"resources": {
 				"Food": 3,
 				"Gold": 0,
@@ -1470,7 +1470,7 @@
 			"name": "Sandstadir",
 			"ocean": false,
 			"owner": 3,
-			"population": 114,
+			"population": 254,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1489,7 +1489,7 @@
 			"name": "Eyfjord",
 			"ocean": false,
 			"owner": 3,
-			"population": 195,
+			"population": 373,
 			"resources": {
 				"Food": 0,
 				"Gold": 10,
@@ -1508,7 +1508,7 @@
 			"name": "Akrnes",
 			"ocean": false,
 			"owner": 2,
-			"population": 77,
+			"population": 277,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
@@ -1803,7 +1803,7 @@
 			"type_display": "Forest"
 		},
 		{
-			"biome": "forest",
+			"biome": "forest_hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"id": 245,
@@ -1811,15 +1811,15 @@
 			"name": "Whitdal",
 			"ocean": false,
 			"owner": 0,
-			"population": 254,
+			"population": 179,
 			"resources": {
 				"Food": 0,
-				"Gold": 0,
-				"Iron": 0,
-				"Stone": 0,
-				"Wood": 3
+				"Gold": 8,
+				"Iron": 1,
+				"Stone": 1,
+				"Wood": 1
 			},
-			"type_display": "Forest"
+			"type_display": "Forest Hills"
 		},
 		{
 			"biome": "forest",
@@ -1830,7 +1830,7 @@
 			"name": "Sainthavn",
 			"ocean": false,
 			"owner": 3,
-			"population": 178,
+			"population": 278,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,

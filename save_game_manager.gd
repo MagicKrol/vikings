@@ -8,6 +8,7 @@ const SAVE_FILE_PASSWORD: String = "HornOfTheWarlordSaveGameV1"
 const SAVE_VERSION: int = 1
 const SAVE_FILE_EXTENSION: String = ".json"
 const DEFAULT_SAVE_BASENAME: String = "savegame"
+const ENCRYPTED_FILE_MAGIC: int = 0x43454447
 
 static func has_save_file() -> bool:
 	var infos: Array[Dictionary] = _collect_save_file_infos()
@@ -44,12 +45,9 @@ static func save_game_named(game_manager: GameManager, raw_file_name: String) ->
 
 static func save_game_to_path(game_manager: GameManager, save_path: String) -> bool:
 	var save_data: Dictionary = _build_save_data(game_manager)
-	var file: FileAccess = FileAccess.open_encrypted_with_pass(save_path, FileAccess.WRITE, SAVE_FILE_PASSWORD)
-	if file == null:
-		DebugLogger.log("SaveGame", "ERROR: Could not open save file for writing: " + save_path)
+	var use_encryption: bool = not game_manager.debug_mode
+	if not _write_save_data_to_path(save_data, save_path, use_encryption):
 		return false
-	file.store_string(JSON.stringify(save_data, "\t"))
-	file.close()
 	DebugLogger.log("SaveGame", "Saved game file: " + ProjectSettings.globalize_path(save_path))
 	var sound_manager: SoundManager = game_manager.get_node("../SoundManager") as SoundManager
 	save_settings(sound_manager)
@@ -59,11 +57,11 @@ static func load_game() -> Dictionary:
 	return load_game_from_path(SAVE_FILE_PATH)
 
 static func load_game_from_path(save_path: String) -> Dictionary:
-	var should_migrate_plaintext: bool = false
-	var file: FileAccess = FileAccess.open_encrypted_with_pass(save_path, FileAccess.READ, SAVE_FILE_PASSWORD)
-	if file == null:
+	var file: FileAccess
+	if _is_encrypted_save_file(save_path):
+		file = FileAccess.open_encrypted_with_pass(save_path, FileAccess.READ, SAVE_FILE_PASSWORD)
+	else:
 		file = FileAccess.open(save_path, FileAccess.READ)
-		should_migrate_plaintext = file != null
 	if file == null:
 		DebugLogger.log("SaveGame", "ERROR: Could not open save file: " + save_path)
 		return {}
@@ -75,8 +73,6 @@ static func load_game_from_path(save_path: String) -> Dictionary:
 		DebugLogger.log("SaveGame", "ERROR: Failed to parse save file: " + json.error_string)
 		return {}
 	var save_data: Dictionary = json.data as Dictionary
-	if should_migrate_plaintext:
-		_save_data_to_encrypted_path(save_data, save_path)
 	return save_data
 
 static func get_save_entries() -> Array[Dictionary]:
@@ -586,13 +582,29 @@ static func _collect_save_file_infos() -> Array[Dictionary]:
 	user_dir.list_dir_end()
 	return infos
 
-static func _save_data_to_encrypted_path(save_data: Dictionary, save_path: String) -> void:
-	var file: FileAccess = FileAccess.open_encrypted_with_pass(save_path, FileAccess.WRITE, SAVE_FILE_PASSWORD)
+static func _write_save_data_to_path(save_data: Dictionary, save_path: String, use_encryption: bool) -> bool:
+	var file: FileAccess
+	if use_encryption:
+		file = FileAccess.open_encrypted_with_pass(save_path, FileAccess.WRITE, SAVE_FILE_PASSWORD)
+	else:
+		file = FileAccess.open(save_path, FileAccess.WRITE)
 	if file == null:
-		DebugLogger.log("SaveGame", "ERROR: Could not migrate save file to encrypted format: " + save_path)
-		return
+		DebugLogger.log("SaveGame", "ERROR: Could not open save file for writing: " + save_path)
+		return false
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
+	return true
+
+static func _is_encrypted_save_file(save_path: String) -> bool:
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
+	if file == null:
+		return false
+	if file.get_length() < 4:
+		file.close()
+		return false
+	var magic: int = file.get_32()
+	file.close()
+	return magic == ENCRYPTED_FILE_MAGIC
 
 static func _sort_save_infos_desc(a: Dictionary, b: Dictionary) -> bool:
 	return int(a.get("modified", 0)) > int(b.get("modified", 0))

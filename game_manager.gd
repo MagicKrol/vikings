@@ -1095,6 +1095,8 @@ func has_blocking_outcome_modal() -> bool:
 func check_victory_conditions_for_player(player_id: int) -> bool:
 	if victory_declared:
 		return true
+	if _outcome_modal_blocking_active:
+		return true
 	if _check_and_declare_victory_for_any_player(player_id):
 		return true
 	if _process_failed_survive_turns_objective():
@@ -1341,9 +1343,40 @@ func _process_failed_survive_turns_objective() -> bool:
 		return true
 	return false
 
+func _process_failed_own_region_conquest_objective(conquering_player_id: int, conquered_region_id: int) -> bool:
+	if game_mode != "scenario":
+		return false
+	for condition: Dictionary in victory_conditions:
+		if String(condition.get("type", "")) != "own_region":
+			continue
+		var target_player_id: int = int(condition.get("player_id", 0))
+		if target_player_id <= 0:
+			continue
+		if not is_player_human(target_player_id):
+			continue
+		if int(condition.get("region_id", -1)) != conquered_region_id:
+			continue
+		if conquering_player_id == target_player_id:
+			continue
+		_show_own_region_objective_failure(target_player_id, conquered_region_id, conquering_player_id)
+		return true
+	return false
+
 func _show_survive_turns_objective_failure(player_id: int) -> void:
 	DebugLogger.log("Victory", "Survive turns objective failed for Player " + str(player_id))
 	_finish_analytics_run("lost", -1, "survive_turns_failed")
+	_outcome_modal_blocking_active = true
+	_pending_loss_exit_to_main_menu = true
+	_pending_loss_exit_to_campaign_list = _is_campaign_scenario_mode()
+	_pending_next_turn_after_loss_ack = false
+	_disconnect_human_elimination_message_handler()
+	_disconnect_victory_message_handler()
+	_message_modal.continue_clicked.connect(_on_human_elimination_continue)
+	_message_modal.display_message(tr("You failed"))
+
+func _show_own_region_objective_failure(player_id: int, region_id: int, conquering_player_id: int) -> void:
+	DebugLogger.log("Victory", "Own region objective failed for Player " + str(player_id) + ": region " + str(region_id) + " conquered by Player " + str(conquering_player_id))
+	_finish_analytics_run("lost", -1, "own_region_failed")
 	_outcome_modal_blocking_active = true
 	_pending_loss_exit_to_main_menu = true
 	_pending_loss_exit_to_campaign_list = _is_campaign_scenario_mode()
@@ -4608,6 +4641,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 			if garrison_recorded:
 				DebugLogger.log("ArmyTracker", "Cleared tracked garrison for region " + str(target_region_id) + " after conquest by player " + str(player_id))
 			DebugLogger.log("TurnProcessing", "Player " + str(player_id) + " conquered region " + str(target_region_id) + " via unified finalization")
+			_process_failed_own_region_conquest_objective(player_id, target_region_id)
 			
 			if is_player_computer(player_id) and _ai_camera_director:
 				var conquest_delay = max(GameParameters.CAMERA_CONQUEST_DELAY, GameParameters.CAMERA_BATTLE_RESULT_DELAY)
@@ -4656,6 +4690,7 @@ func finalize_battle_result(result_data: Dictionary) -> void:
 				if garrison_recorded:
 					DebugLogger.log("ArmyTracker", "Cleared tracked garrison for region " + str(target_region_id) + " after withdrawal conquest by player " + str(army.get_player_id()))
 				refresh_ai_debug_scores()
+				_process_failed_own_region_conquest_objective(army.get_player_id(), target_region_id)
 				if _army_manager:
 					await _army_manager.reposition_army_in_region_with_animation(army)
 		# No post-battle healing here; healing only occurs during make_camp()

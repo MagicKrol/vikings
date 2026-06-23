@@ -2825,7 +2825,7 @@
 			"resources": {
 				"Food": 0,
 				"Gold": 7,
-				"Iron": 2,
+				"Iron": 0,
 				"Stone": 0,
 				"Wood": 1
 			},
