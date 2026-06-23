@@ -122,6 +122,13 @@ layout_mode = 2
 layout_mode = 2
 text = "Save Map Data"
 
+[node name="DeleteMapButtonRow" type="HBoxContainer" parent="Panel/TabContainer/Main"]
+layout_mode = 2
+
+[node name="DeleteMapButton" type="Button" parent="Panel/TabContainer/Main/DeleteMapButtonRow"]
+layout_mode = 2
+text = "Delete Map"
+
 [node name="HSeparator2" type="HSeparator" parent="Panel/TabContainer/Main"]
 layout_mode = 2
 
@@ -131,6 +138,11 @@ layout_mode = 2
 [node name="ExitButton" type="Button" parent="Panel/TabContainer/Main/ExitButtonRow"]
 layout_mode = 2
 text = "Exit to Editor Start"
+
+[node name="ConfirmDeleteMapDialog" type="ConfirmationDialog" parent="."]
+title = "Delete Map"
+ok_button_text = "Delete"
+dialog_text = "Delete map file?"
 
 [node name="Scenario" type="ScrollContainer" parent="Panel/TabContainer"]
 visible = false

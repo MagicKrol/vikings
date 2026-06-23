@@ -35136,6 +35136,7 @@
 		}
 	],
 	"display_name_key": "Ravenfjord Coast",
+	"non_ocean_region_count": 132,
 	"edges": [
 		{
 			"end": [

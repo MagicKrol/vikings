@@ -73,11 +73,20 @@ func _on_continue_pressed() -> void:
 
 func _build_skirmish_intro_text() -> String:
 	var game_manager: GameManager = get_node("/root/Main/GameManager") as GameManager
+	if not GameParameters.DEMO_MODE_ENABLED:
+		return _build_custom_map_objective_text(game_manager)
 	var intro_text: String = tr(SKIRMISH_INTRO_TEXT_KEY)
 	var victory_text: String = game_manager.get_custom_victory_condition_description()
 	if victory_text == "":
 		return intro_text
 	return intro_text + "\n\n" + victory_text + "\n"
+
+func _build_custom_map_objective_text(game_manager: GameManager) -> String:
+	var map_name: String = game_manager.get_custom_map_display_name()
+	var victory_text: String = game_manager.get_custom_victory_condition_description()
+	if victory_text == "":
+		return map_name + "\n\n" + tr("Objective")
+	return map_name + "\n\n" + tr("Objective") + "\n\n" + victory_text
 
 func _set_modal_text(text: String) -> void:
 	message_label.text = text

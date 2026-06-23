@@ -115,6 +115,232 @@
 	],
 	"description": "Last Stand_description",
 	"difficulty": "all",
+	"difficulty_overrides": {
+		"easy": {
+			"army_compositions": [
+				{
+					"composition": {
+						"Archers": 10,
+						"Crossbowmen": 0,
+						"Horsemen": 0,
+						"Knights": 5,
+						"Mounted Knights": 0,
+						"Peasants": 20,
+						"Royal Guard": 0,
+						"Spearmen": 15,
+						"Swordsmen": 10
+					},
+					"region_id": 262
+				}
+			],
+			"player_resources": [
+				{
+					"player_id": 1,
+					"resources": {
+						"Food": 100,
+						"Gold": 100,
+						"Iron": 0,
+						"Stone": 15,
+						"Wood": 30
+					}
+				},
+				{
+					"player_id": 2,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 3,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 4,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 5,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 6,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				}
+			]
+		},
+		"hard": {
+			"army_compositions": [
+				{
+					"composition": {
+						"Archers": 0,
+						"Crossbowmen": 0,
+						"Horsemen": 0,
+						"Knights": 1,
+						"Mounted Knights": 0,
+						"Peasants": 20,
+						"Royal Guard": 0,
+						"Spearmen": 5,
+						"Swordsmen": 0
+					},
+					"region_id": 262
+				}
+			],
+			"player_resources": [
+				{
+					"player_id": 1,
+					"resources": {
+						"Food": 30,
+						"Gold": 50,
+						"Iron": 0,
+						"Stone": 0,
+						"Wood": 0
+					}
+				},
+				{
+					"player_id": 2,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 3,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 4,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 5,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 6,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				}
+			]
+		},
+		"normal": {
+			"player_resources": [
+				{
+					"player_id": 1,
+					"resources": {
+						"Food": 50,
+						"Gold": 70,
+						"Iron": 0,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 2,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 3,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 4,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 5,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 6,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				}
+			]
+		}
+	},
 	"events": [],
 	"intro_message": "Last Stand_intro",
 	"map_file": "mapdata-999-small.json",
@@ -734,7 +960,7 @@
 			"resources": {
 				"Food": 0,
 				"Gold": 5,
-				"Iron": 3,
+				"Iron": 2,
 				"Stone": 2,
 				"Wood": 0
 			},
@@ -963,7 +1189,7 @@
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
-				"Iron": 2,
+				"Iron": 1,
 				"Stone": 3,
 				"Wood": 0
 			},

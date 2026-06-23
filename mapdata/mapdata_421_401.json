@@ -41599,6 +41599,7 @@
 		}
 	],
 	"display_name_key": "Duskfang Ridge",
+	"non_ocean_region_count": 175,
 	"edges": [
 		{
 			"end": [

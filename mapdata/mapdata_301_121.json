@@ -24883,6 +24883,7 @@
 		}
 	],
 	"display_name_key": "Reach of Vargheim",
+	"non_ocean_region_count": 33,
 	"edges": [
 		{
 			"end": [

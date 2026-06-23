@@ -37224,6 +37224,7 @@
 		}
 	],
 	"display_name_key": "Blackpine Moor",
+	"non_ocean_region_count": 249,
 	"edges": [
 		{
 			"end": [

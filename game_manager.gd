@@ -92,7 +92,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = false
+@export var debug_mode: bool = true
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -976,6 +976,22 @@ func get_custom_victory_condition_description() -> String:
 			return tr("dominate_condition_description")
 		_:
 			return ""
+
+func get_custom_map_display_name() -> String:
+	var map_generator: MapGenerator = get_node("../Map") as MapGenerator
+	var display_name_key: String = String(map_generator.map_data.get("display_name_key", "")).strip_edges()
+	if display_name_key != "":
+		return tr(display_name_key)
+	return _display_name_for_custom_map_file(map_generator.data_file_path.get_file().get_basename())
+
+func _display_name_for_custom_map_file(base: String) -> String:
+	var normalized: String = base.replace("_", "-")
+	var parts: PackedStringArray = normalized.split("-")
+	if parts.size() >= 2:
+		parts = parts.slice(0, parts.size() - 1)
+		var name_part: String = " ".join(parts)
+		return name_part.capitalize()
+	return base.capitalize().replace("_", " ")
 
 func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary) -> void:
 	if scenario_data.has("victory_conditions"):

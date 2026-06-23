@@ -56352,6 +56352,7 @@
 		}
 	],
 	"display_name_key": "Ravenwatch Pass",
+	"non_ocean_region_count": 305,
 	"edges": [
 		{
 			"end": [

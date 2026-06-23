@@ -36532,6 +36532,7 @@
         }
     ],
     "display_name_key": "Demo Map",
+	"non_ocean_region_count": 161,
     "edges":
     [
         {

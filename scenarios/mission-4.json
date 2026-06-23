@@ -3332,7 +3332,7 @@
 	],
 	"scenario_type": "campaign",
 	"skip_intro": false,
-	"trade_disabled": false,
+	"trade_disabled": true,
 	"victory_conditions": [
 		"conquer"
 	]

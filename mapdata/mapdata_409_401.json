@@ -36844,6 +36844,7 @@
 		}
 	],
 	"display_name_key": "Frostveil Tundra",
+	"non_ocean_region_count": 148,
 	"edges": [
 		{
 			"end": [

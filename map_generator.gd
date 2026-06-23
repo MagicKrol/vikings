@@ -140,7 +140,10 @@ func _load_json_data() -> void:
 			region["water"] = true
 			region["biome"] = "ocean"
 	DebugLogger.log("MapGeneration", "Loaded map: regions=" + str(regions.size()) + ", edges=" + str(edges.size()) + ", file=" + path)
-	map_profile = Utils.resolve_map_profile(data_file_path, regions.size())
+	var frontend_region_count: int = int(map_data.get("non_ocean_region_count", 0))
+	if frontend_region_count <= 0:
+		frontend_region_count = _count_non_ocean_regions_for_frontend_size()
+	map_profile = Utils.resolve_map_profile(data_file_path, regions.size(), frontend_region_count)
 	map_region_count = int(map_profile.get("region_count", regions.size()))
 	_set_compatibility_map_size_from_profile()
 	region_by_id.clear()
@@ -156,6 +159,18 @@ func _load_json_data() -> void:
 	# Scale all coordinates if polygon_scale != 1.0
 	if polygon_scale != 1.0:
 		_scale_map_data()
+
+func _count_non_ocean_regions_for_frontend_size() -> int:
+	var count: int = 0
+	for raw_region in regions:
+		if not (raw_region is Dictionary):
+			continue
+		var region_data: Dictionary = raw_region as Dictionary
+		var biome_name: String = String(region_data.get("biome", "")).to_lower()
+		if bool(region_data.get("ocean", false)) or biome_name == "ocean":
+			continue
+		count += 1
+	return count
 
 func _set_compatibility_map_size_from_profile() -> void:
 	var token: String = String(map_profile.get("canonical_size_token", "small"))

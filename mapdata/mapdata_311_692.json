@@ -48083,6 +48083,7 @@
 		}
 	],
 	"display_name_key": "Frostfang Expanse",
+	"non_ocean_region_count": 295,
 	"edges": [
 		{
 			"end": [

@@ -36052,6 +36052,7 @@
 		}
 	],
 	"display_name_key": "Bleakwater Marsh",
+	"non_ocean_region_count": 191,
 	"edges": [
 		{
 			"end": [

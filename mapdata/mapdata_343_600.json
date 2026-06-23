@@ -51001,6 +51001,7 @@
 		}
 	],
 	"display_name_key": "Bloodstone Lowlands",
+	"non_ocean_region_count": 249,
 	"edges": [
 		{
 			"end": [

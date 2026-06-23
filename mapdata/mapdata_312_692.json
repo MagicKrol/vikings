@@ -35836,6 +35836,7 @@
 		}
 	],
 	"display_name_key": "Wyrmtooth Ridge",
+	"non_ocean_region_count": 301,
 	"edges": [
 		{
 			"end": [

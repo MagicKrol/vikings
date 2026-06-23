@@ -42610,6 +42610,7 @@
 		}
 	],
 	"display_name_key": "Dreadmarsh Frontier",
+	"non_ocean_region_count": 293,
 	"edges": [
 		{
 			"end": [

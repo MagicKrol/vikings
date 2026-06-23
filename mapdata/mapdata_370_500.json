@@ -46740,6 +46740,7 @@
 		}
 	],
 	"display_name_key": "Fjords of Draugr",
+	"non_ocean_region_count": 162,
 	"edges": [
 		{
 			"end": [

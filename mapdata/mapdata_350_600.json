@@ -42243,6 +42243,7 @@
 		}
 	],
 	"display_name_key": "Cinderfall Plains",
+	"non_ocean_region_count": 215,
 	"edges": [
 		{
 			"end": [

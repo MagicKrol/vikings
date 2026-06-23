@@ -33033,6 +33033,7 @@
 		}
 	],
 	"display_name_key": "Stormfang Highlands",
+	"non_ocean_region_count": 135,
 	"edges": [
 		{
 			"end": [

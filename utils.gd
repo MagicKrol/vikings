@@ -27,9 +27,9 @@ const MAP_INITIAL_ZOOM_BY_LABEL: Dictionary = {
 }
 
 const MAP_ANCHOR_ORDER: Array[String] = ["tiny", "small", "medium", "large", "huge"]
-const FRONTEND_TINY_MAX: int = 200
-const FRONTEND_SMALL_MAX: int = 384
-const FRONTEND_MEDIUM_MAX: int = 772
+const FRONTEND_TINY_MAX: int = 100
+const FRONTEND_SMALL_MAX: int = 200
+const FRONTEND_MEDIUM_MAX: int = 350
 
 static func hex_to_color(hex: String) -> Color:
 	# Convert hex string like "#44447a" to Color
@@ -240,7 +240,7 @@ static func extract_map_size_token(name: String) -> String:
 			return token
 	return ""
 
-static func resolve_map_profile(filename_or_token: String, json_region_count: int) -> Dictionary:
+static func resolve_map_profile(filename_or_token: String, json_region_count: int, frontend_region_count: int = 0) -> Dictionary:
 	var token: String = extract_map_size_token(filename_or_token)
 	var canonical_token: String = ""
 	var resolved_region_count: int = 0
@@ -271,11 +271,13 @@ static func resolve_map_profile(filename_or_token: String, json_region_count: in
 	
 	var visual_scale: float = get_map_visual_scale_from_region_count(resolved_region_count)
 	var initial_zoom: float = get_initial_zoom_from_region_count(resolved_region_count)
-	var frontend_code: String = get_frontend_size_code_from_region_count(resolved_region_count)
+	var resolved_frontend_region_count: int = frontend_region_count if frontend_region_count > 0 else resolved_region_count
+	var frontend_code: String = get_frontend_size_code_from_region_count(resolved_frontend_region_count)
 	var frontend_label: String = get_frontend_size_label_from_code(frontend_code)
 	return {
 		"token": token,
 		"region_count": resolved_region_count,
+		"frontend_region_count": resolved_frontend_region_count,
 		"canonical_size_token": canonical_token,
 		"visual_scale": visual_scale,
 		"initial_zoom": initial_zoom,

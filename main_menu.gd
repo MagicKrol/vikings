@@ -1714,6 +1714,7 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 	var file_name: String = file_only if file_only.ends_with(".json") else (file_only + ".json")
 	var file_path: String = "res://mapdata/" + file_name
 	var region_count: int = 0
+	var frontend_region_count: int = 0
 	var display_name_key: String = ""
 	var content: String = FileAccess.get_file_as_string(file_path)
 	if content != "":
@@ -1725,12 +1726,15 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 				display_name_key = String(dict_data.get("display_name_key", "")).strip_edges()
 				var regions_value: Variant = dict_data.get("regions", [])
 				if typeof(regions_value) == TYPE_ARRAY:
-					region_count = (regions_value as Array).size()
+					var regions_array: Array = regions_value as Array
+					region_count = regions_array.size()
+					frontend_region_count = _resolve_non_ocean_region_count_for_map_profile(dict_data, regions_array)
 	if region_count > 0:
-		var frontend_size_code: String = Utils.get_frontend_size_code_from_region_count(region_count)
+		var frontend_size_code: String = Utils.get_frontend_size_code_from_region_count(frontend_region_count)
 		return {
 			"token": Utils.extract_map_size_token(file_name),
 			"region_count": region_count,
+			"frontend_region_count": frontend_region_count,
 			"canonical_size_token": Utils.get_nearest_anchor_label_from_region_count(region_count),
 			"visual_scale": Utils.get_map_visual_scale_from_region_count(region_count),
 			"initial_zoom": Utils.get_initial_zoom_from_region_count(region_count),
@@ -1739,7 +1743,22 @@ func _resolve_map_profile_for_file(map_file_name: String) -> Dictionary:
 			"display_name_key": display_name_key,
 			"source": "json_regions"
 		}
-	return Utils.resolve_map_profile(file_name, region_count)
+	return Utils.resolve_map_profile(file_name, region_count, frontend_region_count)
+
+func _resolve_non_ocean_region_count_for_map_profile(map_data: Dictionary, regions_array: Array) -> int:
+	var stored_count: int = int(map_data.get("non_ocean_region_count", 0))
+	if stored_count > 0:
+		return stored_count
+	var count: int = 0
+	for raw_region in regions_array:
+		if not (raw_region is Dictionary):
+			continue
+		var region_data: Dictionary = raw_region as Dictionary
+		var biome_name: String = String(region_data.get("biome", "")).to_lower()
+		if bool(region_data.get("ocean", false)) or biome_name == "ocean":
+			continue
+		count += 1
+	return count
 
 func _sort_items(a: Dictionary, b: Dictionary) -> bool:
 	var sa: int = MAP_SIZE_ORDER.get(_normalize_frontend_size_code(String(a.get("size", "S"))), 4)

@@ -45,7 +45,9 @@ var _region_name_value_army: Label
 var _current_region_node: Region
 var _save_scenario_button: Button
 var _save_map_button: Button
+var _delete_map_button: Button
 var _exit_button: Button
+var _confirm_delete_map_dialog: ConfirmationDialog
 var _scenario_name_edit: LineEdit
 var _map_display_name_key_edit: LineEdit
 var _scenario_type_option: OptionButton
@@ -142,6 +144,7 @@ func _ready() -> void:
 	_region_name_value_army = get_node("Panel/TabContainer/Army/ArmyEditPanel/RegionNameRow/RegionNameValue") as Label
 	_save_scenario_button = get_node("Panel/TabContainer/Main/SaveButtonRow/SaveScenarioButton") as Button
 	_save_map_button = get_node("Panel/TabContainer/Main/SaveMapButtonRow/SaveMapButton") as Button
+	_delete_map_button = get_node("Panel/TabContainer/Main/DeleteMapButtonRow/DeleteMapButton") as Button
 	_scenario_name_edit = get_node("Panel/TabContainer/Main/SaveRow/ScenarioNameEdit") as LineEdit
 	_map_display_name_key_edit = get_node("Panel/TabContainer/Main/MapDisplayNameKeyRow/MapDisplayNameKeyEdit") as LineEdit
 	_scenario_type_option = get_node("Panel/TabContainer/Main/ScenarioTypeRow/ScenarioTypeOption") as OptionButton
@@ -149,6 +152,7 @@ func _ready() -> void:
 	_mission_number_row = get_node("Panel/TabContainer/Main/MissionNumberRow") as HBoxContainer
 	_mission_number_option = get_node("Panel/TabContainer/Main/MissionNumberRow/MissionNumberOption") as OptionButton
 	_exit_button = get_node("Panel/TabContainer/Main/ExitButtonRow/ExitButton") as Button
+	_confirm_delete_map_dialog = get_node("ConfirmDeleteMapDialog") as ConfirmationDialog
 	_unit_edits = {
 		SoldierTypeEnum.Type.PEASANTS: get_node("Panel/TabContainer/Army/ArmyEditPanel/PeasantsRow/PeasantsEdit") as LineEdit,
 		SoldierTypeEnum.Type.SPEARMEN: get_node("Panel/TabContainer/Army/ArmyEditPanel/SpearmenRow/SpearmenEdit") as LineEdit,
@@ -227,6 +231,8 @@ func _ready() -> void:
 	_close_garrison_button.pressed.connect(_on_close_garrison_pressed)
 	_save_scenario_button.pressed.connect(_on_save_scenario_pressed)
 	_save_map_button.pressed.connect(_on_save_map_pressed)
+	_delete_map_button.pressed.connect(_on_delete_map_pressed)
+	_confirm_delete_map_dialog.confirmed.connect(_on_delete_map_confirmed)
 	_exit_button.pressed.connect(_on_exit_pressed)
 	
 	# Get player settings container
@@ -1888,10 +1894,25 @@ func _write_scenario(scenario: Dictionary, scenario_name: String) -> void:
 func _on_exit_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/editor_start.tscn")
 
+func _on_delete_map_pressed() -> void:
+	var mg: MapGenerator = get_node("../../Map") as MapGenerator
+	_confirm_delete_map_dialog.dialog_text = "Delete map file?\n\n" + mg.data_file_path
+	_confirm_delete_map_dialog.popup_centered()
+
+func _on_delete_map_confirmed() -> void:
+	var mg: MapGenerator = get_node("../../Map") as MapGenerator
+	var map_path: String = mg._resolve_mapdata_path(mg.data_file_path)
+	var error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(map_path))
+	if error != OK:
+		DebugLogger.log("MapEditorPanel", "Failed to delete map file: " + map_path + " error=" + str(error))
+		return
+	DebugLogger.log("MapEditorPanel", "Deleted map file: " + map_path)
+	get_tree().change_scene_to_file("res://scenes/editor_start.tscn")
+
 func _on_save_map_pressed() -> void:
 	var mg: MapGenerator = get_node("../../Map") as MapGenerator
 	var map_editor: MapEditor = get_node("../../MapEditor") as MapEditor
-	if not mg or not mg.data_file_path:
+	if mg.data_file_path == "":
 		DebugLogger.log("MapEditorPanel", "No map data file to save")
 		return
 	var map_path := mg._resolve_mapdata_path(mg.data_file_path)
