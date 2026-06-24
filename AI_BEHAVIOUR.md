@@ -49,26 +49,33 @@ Flow:
 2. Candidate must have:
 	- castle level >= 2
 	- region not at army cap
-	- recruits from castle + owned neighbors >= `AI_MIN_RECRUITS_FOR_RAISING` (40)
-3. Candidate score:
+	- recruits from castle + owned neighbors >= difficulty threshold
+		- Easy: 40
+		- Normal: 30 when no severe castle threat, otherwise 40
+		- Hard: 25 when no severe castle threat, otherwise 40
+3. If a friendly army in the selected raise castle already has a recruitment request, skip raising there so the castle can recruit that army instead.
+4. Candidate score:
 	- `score = 40 * recruits_norm + 30 * frontier_near + 20 * travel_hint`
-4. Choose highest score (tie: lower region id)
-5. Run `should_raise_army` using `RaiseArmyDecision`
+5. Choose highest score (tie: lower region id)
+6. Run `should_raise_army` using `RaiseArmyDecision`
 
 The AI raise reserve can start saving before the recruit threshold is met. If the player already has an army but owns any non-full level 2+ castle, the reserve bank may lock gold for a future raise; the actual raise still requires a full candidate with enough recruits. While this future source exists, `Raise Army` reports `waiting_for_recruits` instead of releasing the saved raise reserve.
 
 Hard gates in `RaiseArmyDecision.score`:
 
-- `gold_after_raise >= AI_RESERVE_GOLD_MIN` (30)
-- `recruits >= AI_MIN_RECRUITS_FOR_RAISING` (40)
+- `gold_after_raise >= reserve threshold`
+	- Easy: 30
+	- Normal: 20 when no severe castle threat, otherwise 30
+	- Hard: 0 when no severe castle threat, otherwise 30
+- `recruits >= recruit threshold`
 - `frontier_regions / armies >= AI_RAISE_FRONTIER` (2.5)
 
 Normalized raise score:
 
 - `r2a_norm = norm(regions/armies, 3.0..5.0)`
 - `dist_norm = norm(avg_dist_mp, 2.0..10.0)`
-- `recruits_norm = norm(recruits, 40..200)`
-- `bank_norm = norm(gold_after_raise, 30..200)`
+- `recruits_norm = norm(recruits, effective_recruit_threshold..200)`
+- `bank_norm = norm(gold_after_raise, effective_reserve_threshold..200)`
 
 Final raise score:
 
@@ -76,8 +83,12 @@ Final raise score:
 
 Decision:
 
-- raise if score >= `AI_RAISE_THRESHOLD_NORM` (0.50)
+- raise if score >= difficulty threshold
+	- Easy: 0.50
+	- Normal: 0.45 when no severe castle threat, otherwise 0.50
+	- Hard: 0.40 when no severe castle threat, otherwise 0.50
 - on execute: spend `RAISE_ARMY_COST` (20 gold), create army with `just_raised=true`
+- on Normal/Hard, immediately assigns a small local recruitment budget to the raised army and hires toward the minimal recruitment power threshold; if the budget is insufficient, the army keeps a recruitment request for the next turn.
 
 ### 2.2 Build Castle
 
@@ -243,11 +254,12 @@ Per-region raw components:
 - population component: `min(10, population/50)`
 - level component: `region_level * 2` (L1..L5 -> 2..10)
 - resource component: weighted resource sum
+- score bonus: optional editor/scenario `score_bonus`, added directly to attack base score after normalization
 
 Normalized score:
 
 - `overall_0_1 = clamp((strategic + population + level + resource)/40, 0..1)`
-- `base_score_0_100 = overall_0_1 * 100`
+- `base_score_0_100 = (overall_0_1 * 100) + score_bonus`
 
 Resource component details:
 
@@ -266,10 +278,11 @@ For each frontier target:
 
 - path is found with friendly traversal (`find_path_to_target(..., friendly_only=true, allow_enemy_target=true)`)
 - movement cost = path cost
+- hard targets are non-owned regions with a castle or enemy army, including neutral castles/outposts
 
 Score formula (`_get_sorted_frontier_moves`):
 
-- `final_score = base_score + ownership_bonus + random_modifier + pursue_bonus + castle_bonus + neutral_core_bonus - mp_cost + enemy_adjustment.delta`
+- `final_score = base_score + ownership_bonus + random_modifier + pursue_bonus + castle_bonus + neutral_core_bonus - distance_penalty + enemy_adjustment.delta`
 
 Terms:
 
@@ -277,6 +290,7 @@ Terms:
 - `random_modifier in [0, AI_RANDOM_SCORE_MODIFIER)` where max is 5
 - `pursue_bonus = 5` when known enemy ratio condition passes
 - `castle_bonus = 4 + castle_type_value` for non-owned castle regions
+- `distance_penalty = mp_cost` for normal frontier scoring; raider scored targets use `mp_cost * AI_MAIN_GOAL_DISTANCE_COST_MULTIPLIER` (2.0)
 - `neutral_core_bonus` applies only to neutral, non-castle, no-enemy-army targets:
 	- distance to nearest owned castle in owned-region steps gives `5 * (4 - distance)` for distance 1..3
 	- at least one owned neighbor gives a single `+3` bonus

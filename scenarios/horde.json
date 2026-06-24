@@ -811,6 +811,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
+			"score_bonus": 15,
 			"type_display": "Grassland"
 		},
 		{

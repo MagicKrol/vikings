@@ -11,7 +11,7 @@ static func _norm(val: float, lo: float, hi: float) -> float:
 		return 0.0
 	return _clamp01((val - lo) / (hi - lo))
 
-static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, gold: int, frontier_regions: int) -> float:
+static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, gold: int, frontier_regions: int = 0, min_recruits: int = GameParameters.AI_MIN_RECRUITS_FOR_RAISING, reserve_gold_min: int = GameParameters.AI_RESERVE_GOLD_MIN) -> float:
 	# Hard gates mirrored by should_raise_army_simple()
 	if armies == 0:
 		if gold < GameParameters.RAISE_ARMY_COST:
@@ -19,10 +19,10 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 			return 0.0
 		return 1.0
 	var gold_after := float(gold - GameParameters.RAISE_ARMY_COST)
-	if gold_after < float(GameParameters.AI_RESERVE_GOLD_MIN):
+	if gold_after < float(reserve_gold_min):
 		DebugLogger.log("AIEconomy", "Recruitment: Reserve gold min - not satisfied")
 		return 0.0
-	if recruits < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
+	if recruits < min_recruits:
 		DebugLogger.log("AIEconomy", "Recruitment: Min recruits for raising - not satisfied")
 		return 0.0
 	if armies > 0:
@@ -36,8 +36,8 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 	var r2a := float(regions) / float(max(armies, 1))
 	var r2a_norm := _norm(r2a, GameParameters.AI_RAISE_R2A_BAND_MIN, GameParameters.AI_RAISE_R2A_BAND_MAX)
 	var dist_norm := _norm(avg_dist_mp, GameParameters.AI_RAISE_DIST_MIN, GameParameters.AI_RAISE_DIST_MAX)
-	var recruits_norm := _norm(float(recruits), float(GameParameters.AI_RAISE_RECRUITS_MIN), float(GameParameters.AI_RAISE_RECRUITS_MAX))
-	var bank_norm := _norm(gold_after, float(GameParameters.AI_RAISE_BANK_RESERVE), float(GameParameters.AI_RAISE_BANK_MAX))
+	var recruits_norm := _norm(float(recruits), float(min_recruits), float(GameParameters.AI_RAISE_RECRUITS_MAX))
+	var bank_norm := _norm(gold_after, float(reserve_gold_min), float(GameParameters.AI_RAISE_BANK_MAX))
 
 	# Soft support guard: avoid barely-above-min raises
 	# var support := 0.5 * recruits_norm + 0.5 * bank_norm
@@ -53,6 +53,6 @@ static func score(regions: int, armies: int, avg_dist_mp: float, recruits: int, 
 	s += GameParameters.AI_RAISE_W_BANK * bank_norm
 	return s
 
-static func should_raise_army_simple(regions: int, armies: int, avg_dist_mp: float, recruits: int, gold: int, frontier_regions: int) -> bool:
-	var s := score(regions, armies, avg_dist_mp, recruits, gold, frontier_regions)
-	return s >= GameParameters.AI_RAISE_THRESHOLD_NORM
+static func should_raise_army_simple(regions: int, armies: int, avg_dist_mp: float, recruits: int, gold: int, frontier_regions: int = 0, min_recruits: int = GameParameters.AI_MIN_RECRUITS_FOR_RAISING, reserve_gold_min: int = GameParameters.AI_RESERVE_GOLD_MIN, threshold: float = GameParameters.AI_RAISE_THRESHOLD_NORM) -> bool:
+	var s := score(regions, armies, avg_dist_mp, recruits, gold, frontier_regions, min_recruits, reserve_gold_min)
+	return s >= threshold

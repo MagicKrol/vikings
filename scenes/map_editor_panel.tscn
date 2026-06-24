@@ -482,6 +482,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "0"
 
+[node name="ScoreBonusRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
+layout_mode = 2
+
+[node name="ScoreBonusLabel" type="Label" parent="Panel/TabContainer/Region/ScoreBonusRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Score bonus:"
+
+[node name="ScoreBonusEdit" type="LineEdit" parent="Panel/TabContainer/Region/ScoreBonusRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "0"
+
 [node name="CastleRow" type="HBoxContainer" parent="Panel/TabContainer/Region"]
 layout_mode = 2
 

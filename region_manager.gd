@@ -289,11 +289,10 @@ func generate_region_resources(region: Region) -> void:
 func upgrade_castle_regions(castle_region: Region) -> void:
 	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
 	# Upgrade castle region to L3
-	castle_region.set_region_level(RegionLevelEnum.Level.L3)
-	var castle_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L3)
+	var castle_population: int = GameParameters.generate_population_size(RegionLevelEnum.Level.L3)
 	castle_region.set_population(castle_population)
-	# Initialize recruits for castle region (will have outpost castle type)
-	castle_region.available_recruits = GameParameters.calculate_max_recruits(castle_population, CastleTypeEnum.Type.KEEP)
+	castle_region.available_recruits = castle_region.get_max_recruits()
+	castle_region.set_region_level_with_recruit_bonus(RegionLevelEnum.Level.L3)
 	
 	# Get neighboring regions and upgrade them to L2
 
@@ -302,12 +301,11 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 	for neighbor_id in neighbor_ids:
 		for child in regions_node.get_children():
 			if child is Region and child.get_region_id() == neighbor_id:
-				var neighbor_region = child as Region
-				neighbor_region.set_region_level(RegionLevelEnum.Level.L2)
-				var neighbor_population = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
+				var neighbor_region: Region = child as Region
+				var neighbor_population: int = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
 				neighbor_region.set_population(neighbor_population)
-				# Initialize recruits for neighbor region (no castle)
-				neighbor_region.available_recruits = GameParameters.calculate_max_recruits(neighbor_population, CastleTypeEnum.Type.NONE)
+				neighbor_region.available_recruits = neighbor_region.get_max_recruits()
+				neighbor_region.set_region_level_with_recruit_bonus(RegionLevelEnum.Level.L2)
 				break
 
 func _generate_all_region_resources() -> void:

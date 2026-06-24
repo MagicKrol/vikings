@@ -259,12 +259,15 @@ func _apply_start_target_from_meta() -> bool:
 	return false
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _is_map_list_keyboard_active():
-		return
 	if not (event is InputEventKey):
 		return
 	var key_event: InputEventKey = event as InputEventKey
 	if not key_event.pressed or key_event.echo:
+		return
+	if key_event.keycode == KEY_ESCAPE and _handle_back_input():
+		get_viewport().set_input_as_handled()
+		return
+	if not _is_map_list_keyboard_active():
 		return
 	if key_event.keycode == KEY_UP:
 		_move_map_list_selection(-1)
@@ -272,6 +275,24 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif key_event.keycode == KEY_DOWN:
 		_move_map_list_selection(1)
 		get_viewport().set_input_as_handled()
+
+func _handle_back_input() -> bool:
+	if save_game_modal.visible:
+		_on_save_game_modal_back_requested()
+		return true
+	if options_container.visible:
+		options_container.request_back()
+		return true
+	if cards_container.visible and not cards_selection_mode:
+		_on_cards_back_pressed()
+		return true
+	if custom_map_container.visible:
+		_on_custom_map_back_pressed()
+		return true
+	if new_game_container.visible:
+		_on_new_game_back_pressed()
+		return true
+	return false
 
 func _is_map_list_keyboard_active() -> bool:
 	return custom_map_container.visible and (custom_map_panel3.visible or campaign_panel.visible)

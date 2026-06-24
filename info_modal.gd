@@ -38,6 +38,8 @@ const ARMY_CARD_TEX_DEFAULT: Texture2D = preload("res://images/army_item3.png")
 const ARMY_CARD_TEX_HOVER: Texture2D = preload("res://images/army_item_selected2.png")
 const ACTION_TOOLTIP_X: float = 550.0
 const ACTION_TOOLTIP_BASE_Y: float = 175.0
+const PROMOTION_BONUS_POSITIVE_COLOR: Color = Color(0.254902, 0.705882, 0.243137, 1.0)
+const PROMOTION_BONUS_NEGATIVE_COLOR: Color = Color(0.819608, 0.192157, 0.192157, 1.0)
 const GARRISON_UNIT_NODE_NAMES: Array[String] = [
 	"Peasants", "Spearmen", "Archers", "Swordsmen",
 	"Horsemen", "Crossbowmen", "Knights", "MountedKnights", "RoyalGuard"
@@ -194,6 +196,7 @@ func _set_cursor_shape_recursive(node: Node, shape: int) -> void:
 func _on_promote_tooltip_hovered() -> void:
 	var context_data = {"current_region": current_region}
 	_cache_action_tooltip_base()
+	_show_promotion_resource_preview()
 	var region_tooltip_key: String = _get_region_action_tooltip_key("promote_region")
 	if region_tooltip_key == "promote_region" and _should_show_region_upkeep_tooltip():
 		var next_region_level: RegionLevelEnum.Level = current_region.get_region_level() + 1
@@ -232,6 +235,7 @@ func _on_recruit_garrison_tooltip_hovered() -> void:
 	_show_message_action_tooltip(_get_region_action_tooltip_key("recruit_soldiers_garrison"), {}, _recruit_button)
 
 func _on_action_tooltip_unhovered() -> void:
+	_clear_promotion_resource_preview()
 	_hide_action_tooltips()
 
 func _show_message_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
@@ -964,6 +968,8 @@ func _update_region_resource_values() -> void:
 	if current_region == null:
 		return
 
+	_clear_promotion_resource_preview()
+
 	var population_value = get_node("RegionPanel/Body/Region/RegionResources/Population/PopulationValue") as Label
 	population_value.text = str(current_region.get_population())
 
@@ -1005,6 +1011,121 @@ func _format_income_value(value: int) -> String:
 	if value == 0:
 		return "0"
 	return "+" + str(value)
+
+func _show_promotion_resource_preview() -> void:
+	if current_region.get_region_level() >= RegionLevelEnum.Level.L5:
+		_clear_promotion_resource_preview()
+		return
+
+	var next_region_level: RegionLevelEnum.Level = current_region.get_region_level() + 1
+	var current_growth: float = current_region.get_growth()
+	var promoted_growth: float = _get_promoted_growth(next_region_level)
+	_set_promotion_bonus_percent("RegionPanel/Body/Region/RegionResources/Population/PromotionBonus", current_growth, promoted_growth)
+
+	var current_income: int = current_region.get_income()
+	var promoted_income: int = _get_promoted_income(next_region_level)
+	_set_promotion_bonus_value("RegionPanel/Body/Region/RegionResources/Income/PromotionBonus", promoted_income - current_income)
+
+	_set_promotion_resource_bonus("RegionPanel/Body/Region/RegionResources/Food/PromotionBonus", ResourcesEnum.Type.FOOD, next_region_level)
+	_set_promotion_resource_bonus("RegionPanel/Body/Region/RegionResources/Wood/PromotionBonus", ResourcesEnum.Type.WOOD, next_region_level)
+	_set_promotion_resource_bonus("RegionPanel/Body/Region/RegionResources/Stone/PromotionBonus", ResourcesEnum.Type.STONE, next_region_level)
+	_set_promotion_resource_bonus("RegionPanel/Body/Region/RegionResources/Iron/PromotionBonus", ResourcesEnum.Type.IRON, next_region_level)
+	_set_promotion_resource_bonus("RegionPanel/Body/Region/RegionResources/Gold/PromotionBonus", ResourcesEnum.Type.GOLD, next_region_level)
+
+func _clear_promotion_resource_preview() -> void:
+	var promotion_bonus_paths: Array[String] = [
+		"RegionPanel/Body/Region/RegionResources/Population/PromotionBonus",
+		"RegionPanel/Body/Region/RegionResources/Income/PromotionBonus",
+		"RegionPanel/Body/Region/RegionResources/Food/PromotionBonus",
+		"RegionPanel/Body/Region/RegionResources/Wood/PromotionBonus",
+		"RegionPanel/Body/Region/RegionResources/Stone/PromotionBonus",
+		"RegionPanel/Body/Region/RegionResources/Iron/PromotionBonus",
+		"RegionPanel/Body/Region/RegionResources/Gold/PromotionBonus"
+	]
+	for promotion_bonus_path: String in promotion_bonus_paths:
+		var promotion_bonus_label: Label = get_node(promotion_bonus_path) as Label
+		promotion_bonus_label.text = ""
+		promotion_bonus_label.visible = false
+
+func _set_promotion_resource_bonus(node_path: String, resource_type: ResourcesEnum.Type, next_region_level: RegionLevelEnum.Level) -> void:
+	var current_amount: int = current_region.get_resource_amount(resource_type)
+	var promoted_amount: int = _get_promoted_resource_amount(resource_type, next_region_level)
+	_set_promotion_bonus_value(node_path, promoted_amount - current_amount)
+
+func _set_promotion_bonus_value(node_path: String, delta: int) -> void:
+	var promotion_bonus_label: Label = get_node(node_path) as Label
+	if delta == 0:
+		promotion_bonus_label.text = ""
+		promotion_bonus_label.visible = false
+		return
+	promotion_bonus_label.text = _format_signed_bonus(delta)
+	promotion_bonus_label.modulate = PROMOTION_BONUS_POSITIVE_COLOR if delta > 0 else PROMOTION_BONUS_NEGATIVE_COLOR
+	promotion_bonus_label.visible = true
+
+func _set_promotion_bonus_percent(node_path: String, current_value: float, promoted_value: float) -> void:
+	var promotion_bonus_label: Label = get_node(node_path) as Label
+	var current_percent: float = snappedf(current_value * 100.0, 0.1)
+	var promoted_percent: float = snappedf(promoted_value * 100.0, 0.1)
+	var percent_delta: float = snappedf(promoted_percent - current_percent, 0.1)
+	if percent_delta == 0.0:
+		promotion_bonus_label.text = ""
+		promotion_bonus_label.visible = false
+		return
+	promotion_bonus_label.text = _format_signed_bonus_float(percent_delta) + "%"
+	promotion_bonus_label.modulate = PROMOTION_BONUS_POSITIVE_COLOR if percent_delta > 0.0 else PROMOTION_BONUS_NEGATIVE_COLOR
+	promotion_bonus_label.visible = true
+
+func _format_signed_bonus(delta: int) -> String:
+	if delta > 0:
+		return "+" + str(delta)
+	return str(delta)
+
+func _format_signed_bonus_float(delta: float) -> String:
+	if delta > 0.0:
+		return "+" + str(delta)
+	return str(delta)
+
+func _get_promoted_resource_amount(resource_type: ResourcesEnum.Type, next_region_level: RegionLevelEnum.Level) -> int:
+	var base_amount: int = current_region.get_base_resource_amount(resource_type)
+	if base_amount <= 0:
+		return 0
+	var level_bonus: float = float(RegionLevelEnum.level_to_number(next_region_level) - 1) * GameParameters.REGION_RESOURCE_LEVEL_MULTIPLIER
+	var multiplier: float = 1.0 + level_bonus
+	return int(round(float(base_amount) * multiplier))
+
+func _get_promoted_income(next_region_level: RegionLevelEnum.Level) -> int:
+	var level_int: int = RegionLevelEnum.level_to_number(next_region_level)
+	var divisor: int = GameParameters.POPULATION_INCOME_BASE_DIVISOR - (GameParameters.POPULATION_INCOME_LEVEL_MULTIPLIER * level_int)
+	if divisor <= 0:
+		return 0
+	var gold_income: int = 1 + int(current_region.get_population() / divisor)
+	return max(0, gold_income)
+
+func _get_promoted_growth(next_region_level: RegionLevelEnum.Level) -> float:
+	var base_growth_rate: float = GameParameters.POPULATION_GROWTH_RATE
+	var const_growth_rate: float = GameParameters.POPULATION_CONST_GROWTH_RATE
+	var level_number: int = RegionLevelEnum.level_to_number(next_region_level)
+	var promotion_bonus: float = float(level_number - 1) * 0.005
+
+	var max_recruits: int = GameParameters.calculate_max_recruits(current_region.get_population(), next_region_level)
+	var recruit_ratio: float = 0.0
+	if max_recruits > 0:
+		recruit_ratio = min(1.0, float(_get_promoted_base_available_recruits(next_region_level)) / float(max_recruits))
+	var standard_growth_rate: float = base_growth_rate * recruit_ratio
+
+	var promoted_food_amount: int = _get_promoted_resource_amount(ResourcesEnum.Type.FOOD, next_region_level)
+	var food_bonus: float = float(promoted_food_amount) * 0.001
+	var neutral_growth_penalty: float = 0.0
+	if current_region.get_region_owner() == 0:
+		neutral_growth_penalty = 0.01
+
+	return standard_growth_rate + promotion_bonus + food_bonus + const_growth_rate - neutral_growth_penalty
+
+func _get_promoted_base_available_recruits(next_region_level: RegionLevelEnum.Level) -> int:
+	var current_max_recruits: int = current_region.get_max_recruits()
+	var promoted_max_recruits: int = GameParameters.calculate_max_recruits(current_region.get_population(), next_region_level)
+	var recruit_bonus: int = max(0, promoted_max_recruits - current_max_recruits)
+	return min(promoted_max_recruits, current_region.get_base_available_recruits() + recruit_bonus)
 
 func _update_construction_status() -> void:
 	"""Update construction status label"""

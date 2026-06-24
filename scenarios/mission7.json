@@ -2829,6 +2829,7 @@
 				"Stone": 0,
 				"Wood": 1
 			},
+			"score_bonus": 10,
 			"type_display": "Forest Hills"
 		}
 	],

@@ -846,6 +846,9 @@ func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
 		var released_raise_reserve_gold: int = _release_raise_army_reserve(player, "no_candidate")
 		DebugLogger.log("AIEconomy", "   Decision: NO - No valid castle regions with sufficient recruits")
 		return {"raised": false, "reason": "no_candidate", "score_text": "", "score": 0.0, "released_raise_reserve_gold": released_raise_reserve_gold}
+	if _has_recruitment_requested_army_in_raise_region(int(candidate["region_id"]), player_id):
+		DebugLogger.log("AIEconomy", "   Decision: NO - Army in raise castle needs recruitment")
+		return {"raised": false, "reason": "raise_castle_army_needs_recruitment", "score_text": "", "score": 0.0}
 	
 	DebugLogger.log("AIEconomy", "   Best candidate: Region %d (recruits: %d, score: %.1f)" % [candidate["region_id"], candidate["recruits_total"], candidate["score"]])
 	
@@ -855,15 +858,26 @@ func decide_and_raise_army(player_id: int, turn_number: int) -> Dictionary:
 	var raise_reason: String = String(raise_eval.get("reason", "guards_failed"))
 	if should_raise:
 		DebugLogger.log("AIEconomy", "   Decision: YES - All constraints satisfied")
-		var success = execute_raise_army(player_id, candidate["region_id"])
-		if success:
+		var execution_result: Dictionary = execute_raise_army(player_id, candidate["region_id"], turn_number)
+		if bool(execution_result.get("success", false)):
 			DebugLogger.log("AIEconomy", "   Execution: SUCCESS - Army raised at region %d" % candidate["region_id"])
-			return {"raised": true, "region_id": candidate["region_id"], "score_text": score_text, "score": float(raise_eval.get("score", 0.0)), "reason": "raised"}
+			return {
+				"raised": true,
+				"region_id": candidate["region_id"],
+				"score_text": score_text,
+				"score": float(raise_eval.get("score", 0.0)),
+				"reason": "raised",
+				"initial_recruitment": execution_result.get("initial_recruitment", {})
+			}
 		else:
 			DebugLogger.log("AIEconomy", "   Execution: FAILED - Could not deduct gold cost")
-			return {"raised": false, "reason": "execution_failed", "score_text": score_text, "score": float(raise_eval.get("score", 0.0))}
+			return {"raised": false, "reason": String(execution_result.get("reason", "execution_failed")), "score_text": score_text, "score": float(raise_eval.get("score", 0.0))}
 	else:
 		return {"raised": false, "reason": raise_reason, "score_text": score_text, "score": float(raise_eval.get("score", 0.0))}
+
+func _has_recruitment_requested_army_in_raise_region(region_id: int, player_id: int) -> bool:
+	var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+	return _count_recruitment_requested_armies_in_region(region, player_id) > 0
 
 # Pick the best castle region to raise an army at
 func pick_best_raise_region(player_id: int) -> Dictionary:
@@ -871,6 +885,9 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 	var owned_regions = region_manager.get_player_regions(player_id)
 	var armies_count: int = army_manager.get_player_armies(player_id).size()
 	var is_first_army_bootstrap: bool = armies_count == 0
+	var severe_castle_threat: bool = _has_severe_castle_threats(player_id)
+	var difficulty: int = GameParameters.normalize_game_difficulty(game_manager.get_game_difficulty())
+	var min_recruits_for_raise: int = GameParameters.get_ai_min_recruits_for_raising(difficulty, severe_castle_threat)
 	var candidates = []
 	var max_recruits_seen = 1
 	var castles_checked = 0
@@ -887,9 +904,9 @@ func pick_best_raise_region(player_id: int) -> Dictionary:
 		# Calculate total recruits from region and neighbors
 		var recruits_total = _sum_castle_recruits(region_id, player_id)
 		
-		DebugLogger.log("AIEconomy", "   Castle %d: %d recruits (min: %d)" % [region_id, recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
+		DebugLogger.log("AIEconomy", "   Castle %d: %d recruits (min: %d)" % [region_id, recruits_total, min_recruits_for_raise])
 		
-		if not is_first_army_bootstrap and recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
+		if not is_first_army_bootstrap and recruits_total < min_recruits_for_raise:
 			continue
 		
 		max_recruits_seen = max(max_recruits_seen, recruits_total)
@@ -994,31 +1011,36 @@ func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
 	var frontier_ratio: float = 0.0
 	if armies_count > 0:
 		frontier_ratio = float(frontier_regions_count) / float(armies_count)
+	var severe_castle_threat: bool = _has_severe_castle_threats(player.get_player_id())
+	var difficulty: int = GameParameters.normalize_game_difficulty(game_manager.get_game_difficulty())
+	var min_recruits_for_raise: int = GameParameters.get_ai_min_recruits_for_raising(difficulty, severe_castle_threat)
+	var reserve_gold_min: int = GameParameters.get_ai_raise_reserve_gold_min(difficulty, severe_castle_threat)
+	var raise_threshold: float = GameParameters.get_ai_raise_threshold_norm(difficulty, severe_castle_threat)
 	
 	# Hard gates
 	var gold_after := gold - GameParameters.RAISE_ARMY_COST
 	var gate_failed: bool = false
 	var decline_reasons: Array[String] = []
-	if armies_count > 0 and gold_after < GameParameters.AI_RESERVE_GOLD_MIN:
-		DebugLogger.log("AIEconomy", "   Gate FAIL: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [gold, gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
+	if armies_count > 0 and gold_after < reserve_gold_min:
+		DebugLogger.log("AIEconomy", "   Gate FAIL: GOLD_RESERVE (current: %d, after: %d, min: %d)" % [gold, gold_after, reserve_gold_min])
 		gate_failed = true
-		decline_reasons.append("not enough gold reserve after raise (%d vs %d)" % [gold_after, GameParameters.AI_RESERVE_GOLD_MIN])
-	if armies_count > 0 and recruits_total < GameParameters.AI_MIN_RECRUITS_FOR_RAISING:
-		DebugLogger.log("AIEconomy", "   Gate FAIL: RECRUITS_MIN (%d < %d)" % [recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
+		decline_reasons.append("not enough gold reserve after raise (%d vs %d)" % [gold_after, reserve_gold_min])
+	if armies_count > 0 and recruits_total < min_recruits_for_raise:
+		DebugLogger.log("AIEconomy", "   Gate FAIL: RECRUITS_MIN (%d < %d)" % [recruits_total, min_recruits_for_raise])
 		gate_failed = true
-		decline_reasons.append("not enough recruits (%d vs %d)" % [recruits_total, GameParameters.AI_MIN_RECRUITS_FOR_RAISING])
+		decline_reasons.append("not enough recruits (%d vs %d)" % [recruits_total, min_recruits_for_raise])
 	if armies_count > 0 and frontier_ratio < GameParameters.AI_RAISE_FRONTIER:
 		decline_reasons.append("frontier pressure too low (%.2f vs %.2f)" % [frontier_ratio, GameParameters.AI_RAISE_FRONTIER])
 	
-	var score_value: float = RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
-	var score_text: String = _format_raise_score(score_value, regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
+	var score_value: float = RaiseArmyDecision.score(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count, min_recruits_for_raise, reserve_gold_min)
+	var score_text: String = _format_raise_score(score_value, regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count, min_recruits_for_raise, reserve_gold_min, raise_threshold)
 	DebugLogger.log("AIEconomy", score_text)
 	_log_recruitment(score_text)
 	var decision: bool = false
 	if not gate_failed:
-		decision = RaiseArmyDecision.should_raise_army_simple(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count)
+		decision = RaiseArmyDecision.should_raise_army_simple(regions, armies_count, avg_dist, recruits_total, gold, frontier_regions_count, min_recruits_for_raise, reserve_gold_min, raise_threshold)
 		if not decision:
-			decline_reasons.append("score below threshold (%.2f vs %.2f)" % [score_value, GameParameters.AI_RAISE_THRESHOLD_NORM])
+			decline_reasons.append("score below threshold (%.2f vs %.2f)" % [score_value, raise_threshold])
 	DebugLogger.log("AIEconomy", "   Decision: %s" % ("RAISE" if decision else "DECLINE"))
 	var reason: String = "raised" if decision else "guards_failed"
 	if not decision and not decline_reasons.is_empty():
@@ -1030,12 +1052,12 @@ func should_raise_army(candidate: Dictionary, player: Player) -> Dictionary:
 		"score": score_value
 	}
 
-func _format_raise_score(score_value: float, regions: int, armies_count: int, avg_dist: float, recruits_total: int, gold: int, frontier_size: int) -> String:
+func _format_raise_score(score_value: float, regions: int, armies_count: int, avg_dist: float, recruits_total: int, gold: int, frontier_size: int, min_recruits_for_raise: int, reserve_gold_min: int, raise_threshold: float) -> String:
 	var frontier_ratio_for_log: float = 0.0
 	if armies_count > 0:
 		frontier_ratio_for_log = float(frontier_size) / float(armies_count)
-	return "Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f; Frontier2Army=%.2f" % [
-		score_value, regions, armies_count, avg_dist, recruits_total, gold, GameParameters.AI_RAISE_THRESHOLD_NORM, frontier_ratio_for_log
+	return "Score: %.2f (r=%d, a=%d, dist=%.1f, rec=%d, gold=%d) vs thr=%.2f; Frontier2Army=%.2f; MinRec=%d Reserve=%d" % [
+		score_value, regions, armies_count, avg_dist, recruits_total, gold, raise_threshold, frontier_ratio_for_log, min_recruits_for_raise, reserve_gold_min
 	]
 
 func _compute_avg_distance_to_castle(armies_arr: Array[Army], castle_region_id: int, player_id: int) -> float:
@@ -1060,30 +1082,79 @@ func _compute_avg_distance_to_castle(armies_arr: Array[Army], castle_region_id: 
 	return total / float(count)
 
 # Execute the army raising at the specified region
-func execute_raise_army(player_id: int, region_id: int) -> bool:
-	var player = player_manager.get_player(player_id)
-	var region_container = region_manager.map_generator.get_region_container_by_id(region_id)
+func execute_raise_army(player_id: int, region_id: int, turn_number: int) -> Dictionary:
+	var player: Player = player_manager.get_player(player_id)
+	var region_container: Node = region_manager.map_generator.get_region_container_by_id(region_id)
 	if army_manager.is_region_at_army_cap(region_container):
 		DebugLogger.log("AIEconomy", "Recruitment: is_region_at_army_cap")
-		return false
+		return {"success": false, "reason": "region_at_army_cap"}
 	
 	# Check and deduct cost
 	if _get_spendable_resource(player, ResourcesEnum.Type.GOLD, false, true) < GameParameters.RAISE_ARMY_COST:
 		DebugLogger.log("AIEconomy", "Recruitment: reserve lock blocks raise army")
-		return false
+		return {"success": false, "reason": "reserve_lock"}
 	if not player.remove_resources(ResourcesEnum.Type.GOLD, GameParameters.RAISE_ARMY_COST):
 		DebugLogger.log("AIEconomy", "Recruitment: cannot remove resources")
-		return false
+		return {"success": false, "reason": "deduction_failed"}
 	
 	# Create the army
-	var new_army := army_manager.create_army(region_container, player_id, true)
+	var new_army: Army = army_manager.create_army(region_container, player_id, true)
 	if new_army == null:
 		player.add_resources(ResourcesEnum.Type.GOLD, GameParameters.RAISE_ARMY_COST)
 		DebugLogger.log("AIEconomy", "Recruitment: army creation failed")
-		return false
+		return {"success": false, "reason": "army_creation_failed"}
 	_spend_raise_army_reserve_for_gold_cost(player, GameParameters.RAISE_ARMY_COST)
+	var initial_recruitment: Dictionary = _recruit_raised_army_to_minimum(player, new_army, region_id, turn_number)
 	DebugLogger.log("AIEconomy", "Recruitment: army creation successfully")
-	return true
+	return {
+		"success": true,
+		"army": new_army,
+		"initial_recruitment": initial_recruitment
+	}
+
+func _recruit_raised_army_to_minimum(player: Player, army: Army, region_id: int, turn_number: int) -> Dictionary:
+	var difficulty: int = GameParameters.normalize_game_difficulty(game_manager.get_game_difficulty())
+	if difficulty == GameParameters.Difficulty.EASY:
+		return {"total_recruited": 0, "reason": "easy_unchanged"}
+	var target_power: int = int(ceil(army.get_recruitment_threshold(turn_number, false, true, false)))
+	var budget: BudgetComposition = _build_raised_army_initial_budget(player, army, region_id, target_power)
+	if budget.gold <= 0 or budget.available_recruits <= 0:
+		army.request_recruitment()
+		return {
+			"total_recruited": 0,
+			"reason": "no_initial_budget",
+			"target_power": target_power
+		}
+	army.assign_recruitment_budget(budget)
+	army.request_recruitment()
+	var result: Dictionary = recruitment_manager.hire_soldiers(army, false)
+	army.just_raised = false
+	if army.needs_recruitment(turn_number, false, true, false):
+		army.request_recruitment()
+	result["target_power"] = target_power
+	result["reason"] = "initial_recruitment"
+	DebugLogger.log("AIEconomy", "Recruitment: raised army initial hire recruited %d toward power %d" % [
+		int(result.get("total_recruited", 0)),
+		target_power
+	])
+	return result
+
+func _build_raised_army_initial_budget(player: Player, army: Army, region_id: int, target_power: int) -> BudgetComposition:
+	var current_power: int = army.get_army_power()
+	var power_gap: int = maxi(0, target_power - current_power)
+	if power_gap <= 0:
+		return BudgetComposition.new(0, 0, 0, 0)
+	var peasant_power: int = maxi(1, int(GameParameters.get_unit_stat(SoldierTypeEnum.Type.PEASANTS, "power")))
+	var power_per_gold_floor: float = max(1.0, float(peasant_power) * 0.75)
+	var target_gold: int = int(ceil(float(power_gap) / power_per_gold_floor))
+	var spendable_gold: int = _get_spendable_resource(player, ResourcesEnum.Type.GOLD)
+	target_gold = mini(target_gold, spendable_gold)
+	var recruits_available: int = _get_castle_recruit_source_total(region_id, player.get_player_id())
+	var target_recruits: int = int(ceil(float(power_gap) / float(peasant_power)))
+	target_recruits = mini(target_recruits, recruits_available)
+	if target_gold <= 0 or target_recruits <= 0:
+		return BudgetComposition.new(0, 0, 0, 0)
+	return BudgetComposition.new(target_gold, 0, 0, target_recruits)
 
 # Post-movement economy pass: spend leftovers on region economy only
 func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:

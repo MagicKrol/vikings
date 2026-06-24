@@ -891,14 +891,21 @@ theme_override_font_sizes/font_size = 22
 text = "342 "
 
 [node name="GrowthValue" type="Label" parent="RegionPanel/Body/Region/RegionResources/Population"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(102, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "(+3%)"
 
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Population"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Population"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
@@ -922,7 +929,7 @@ theme_override_font_sizes/font_size = 22
 text = "Income"
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/RegionResources/Income"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
@@ -935,9 +942,16 @@ texture = ExtResource("4_gp0p2")
 expand_mode = 1
 
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Income"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Income"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 
 [node name="Food" type="HBoxContainer" parent="RegionPanel/Body/Region/RegionResources"]
 layout_mode = 2
@@ -959,16 +973,23 @@ theme_override_font_sizes/font_size = 22
 text = "Food"
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/RegionResources/Food"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5"
 
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Food"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Food"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 
 [node name="Wood" type="HBoxContainer" parent="RegionPanel/Body/Region/RegionResources"]
 layout_mode = 2
@@ -990,16 +1011,23 @@ theme_override_font_sizes/font_size = 22
 text = "Wood"
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/RegionResources/Wood"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5"
 
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Wood"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Wood"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 
 [node name="Stone" type="HBoxContainer" parent="RegionPanel/Body/Region/RegionResources"]
 layout_mode = 2
@@ -1021,16 +1049,23 @@ theme_override_font_sizes/font_size = 22
 text = "Stone"
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/RegionResources/Stone"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 text = "5"
 
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Stone"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Stone"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 
 [node name="Iron" type="HBoxContainer" parent="RegionPanel/Body/Region/RegionResources"]
 layout_mode = 2
@@ -1052,16 +1087,23 @@ theme_override_font_sizes/font_size = 24
 text = "Iron"
 
 [node name="Value" type="Label" parent="RegionPanel/Body/Region/RegionResources/Iron"]
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "5"
 
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Iron"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Iron"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 
 [node name="Gold" type="HBoxContainer" parent="RegionPanel/Body/Region/RegionResources"]
 visible = false
@@ -1091,9 +1133,16 @@ theme_override_font_sizes/font_size = 24
 text = "5"
 
 [node name="fixer" type="Label" parent="RegionPanel/Body/Region/RegionResources/Gold"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="PromotionBonus" type="Label" parent="RegionPanel/Body/Region/RegionResources/Gold"]
+visible = false
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 
 [node name="Army" type="VBoxContainer" parent="RegionPanel/Body"]
 visible = false

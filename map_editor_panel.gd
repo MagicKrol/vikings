@@ -31,6 +31,7 @@ var _ore_guarantee_attempt_option: OptionButton
 var _resource_edits: Dictionary = {}
 var _id_value: Label
 var _population_edit: LineEdit
+var _score_bonus_edit: LineEdit
 var _ownership_option: OptionButton
 var _army_toggle_button: Button
 var _has_army_cached: bool = false
@@ -128,6 +129,7 @@ func _ready() -> void:
 	_option = get_node("Panel/TabContainer/Region/TypeRow/TypeOption") as OptionButton
 	_level_option = get_node("Panel/TabContainer/Region/LevelRow/LevelOption") as OptionButton
 	_population_edit = get_node("Panel/TabContainer/Region/PopulationRow/PopulationEdit") as LineEdit
+	_score_bonus_edit = get_node("Panel/TabContainer/Region/ScoreBonusRow/ScoreBonusEdit") as LineEdit
 	_castle_option = get_node("Panel/TabContainer/Region/CastleRow/CastleOption") as OptionButton
 	_ore_check = get_node("Panel/TabContainer/Region/OreRow/OreCheck") as CheckBox
 	_ore_guarantee_attempt_option = get_node("Panel/TabContainer/Region/OreGuaranteeAttemptRow/OreGuaranteeAttemptOption") as OptionButton
@@ -178,6 +180,7 @@ func _ready() -> void:
 		get_node("Panel/TabContainer/Region/TypeRow"),
 		get_node("Panel/TabContainer/Region/LevelRow"),
 		get_node("Panel/TabContainer/Region/PopulationRow"),
+		get_node("Panel/TabContainer/Region/ScoreBonusRow"),
 		get_node("Panel/TabContainer/Region/CastleRow"),
 		get_node("Panel/TabContainer/Region/OwnershipRow"),
 		get_node("Panel/TabContainer/Region/ResourcesLabel"),
@@ -219,6 +222,8 @@ func _ready() -> void:
 		(_resource_edits[rt] as LineEdit).focus_exited.connect(Callable(self, "_on_resource_focus_exited").bind(rt))
 	_population_edit.text_submitted.connect(_on_population_changed)
 	_population_edit.focus_exited.connect(_on_population_focus_exited)
+	_score_bonus_edit.text_submitted.connect(_on_score_bonus_changed)
+	_score_bonus_edit.focus_exited.connect(_on_score_bonus_focus_exited)
 	_ore_check.toggled.connect(_on_ore_toggled)
 	_populate_ore_guarantee_attempts()
 	_ore_guarantee_attempt_option.item_selected.connect(_on_ore_guarantee_attempt_selected)
@@ -1533,6 +1538,7 @@ func update_from_region(region: Region) -> void:
 	_current_region_id = region.get_region_id()
 	_id_value.text = str(_current_region_id)
 	_name_edit.text = region.get_region_name()
+	_score_bonus_edit.text = str(region.get_ai_attack_score_bonus())
 	_current_region_node = region
 	if region.is_ocean_region():
 		_select_text("Ocean")
@@ -1589,6 +1595,7 @@ func commit_pending_region_edits() -> void:
 		var edit: LineEdit = _resource_edits[rt] as LineEdit
 		_on_resource_changed(edit.text, rt)
 	_on_population_changed(_population_edit.text)
+	_on_score_bonus_changed(_score_bonus_edit.text)
 	_on_ore_guarantee_attempt_selected(_ore_guarantee_attempt_option.selected)
 
 func _set_region_default_visible(visible: bool) -> void:
@@ -1698,6 +1705,15 @@ func _on_population_changed(text: String) -> void:
 
 func _on_population_focus_exited() -> void:
 	_on_population_changed(_population_edit.text)
+
+func _on_score_bonus_changed(text: String) -> void:
+	var value: float = max(0.0, float(text))
+	if is_equal_approx(_current_region_node.get_ai_attack_score_bonus(), value):
+		return
+	emit_signal("region_data_changed", _current_region_id, "SCORE_BONUS:" + str(value))
+
+func _on_score_bonus_focus_exited() -> void:
+	_on_score_bonus_changed(_score_bonus_edit.text)
 
 func _on_ownership_selected(index: int) -> void:
 	if _current_region_id < 0:
@@ -1846,6 +1862,9 @@ func _serialize_region(region: Region) -> Dictionary:
 	data["castle_type"] = CastleTypeEnum.type_to_string(region.get_castle_type())
 	data["population"] = region.get_population()
 	data["owner"] = region.get_region_owner()
+	var score_bonus: float = region.get_ai_attack_score_bonus()
+	if score_bonus > 0.0:
+		data["score_bonus"] = score_bonus
 	# Optional garrison: include only if explicitly customized in editor/scenario data
 	var include_garrison := _garrison_customized.has(region.get_region_id())
 	if include_garrison:

@@ -136,6 +136,7 @@ func _apply_region_deltas(map_generator: MapGenerator, region_manager: RegionMan
 		var owner_id: int = int(r.get("owner", -1))
 		var previous_biome: String = region.get_biome().to_lower()
 		var previous_ocean: bool = region.is_ocean_region()
+		region.set_ai_attack_score_bonus(float(r.get("score_bonus", 0.0)))
 		region.set_scenario_ore_rules_enabled(true)
 		var guaranteed_attempt_value: Variant = r.get("ore_guaranteed_discovery_attempt", 0)
 		var guaranteed_attempt: int = 0

@@ -183,7 +183,7 @@ const RECRUIT_PERCENTAGE_OF_POPULATION = 0.07  # % of population becomes availab
 const RECRUIT_REPLENISH_RATE = 0.006            # % of population replenishes per turn
 const RECRUIT_PEA_CAP_SHARE = 0.40   
 ## Region Level Bonuses
-const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.25   # Resource bonus per level: +25% per level above 1
+const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.375  # Resource bonus per level: +37.5% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
 const PROMOTION_REPLENISH_BONUS_TURNS = 2       # Number of turns promotion replenish bonus lasts
 const PROMOTION_REPLENISH_BONUS_MULTIPLIER = 2.0 # Multiplier applied to base replenish rate during promotion bonus
@@ -328,6 +328,21 @@ const POPULATION_INCOME_LEVEL_MULTIPLIER = 15   # Level multiplier for populatio
 const AI_RESERVE_GOLD_MIN = 30                 # Minimum gold to keep after raising army
 # Eligibility
 const AI_MIN_RECRUITS_FOR_RAISING = 40         # Minimum recruits at castle+neighbors to consider raising
+const AI_MIN_RECRUITS_FOR_RAISING_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 40,
+	Difficulty.NORMAL: 30,
+	Difficulty.HARD: 25
+}
+const AI_RAISE_RESERVE_GOLD_MIN_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 30,
+	Difficulty.NORMAL: 20,
+	Difficulty.HARD: 0
+}
+const AI_RAISE_THRESHOLD_NORM_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 0.50,
+	Difficulty.NORMAL: 0.45,
+	Difficulty.HARD: 0.40
+}
 # Global Guards
 const AI_MAX_UNDERPOWERED_RATIO = 0.5          # Max fraction of armies below target power
 const AI_MIN_RECRUITS_PER_ARMY_AFTER_RAISE = 25  # Support load target after raising
@@ -1397,6 +1412,24 @@ static func game_difficulty_to_string(difficulty: int) -> String:
 static func get_ai_human_target_score_bonus(difficulty: int) -> float:
 	var normalized: int = normalize_game_difficulty(difficulty)
 	return float(AI_HUMAN_TARGET_SCORE_BONUS_BY_DIFFICULTY.get(normalized, 0.0))
+
+static func get_ai_min_recruits_for_raising(difficulty: int, severe_castle_threat: bool = false) -> int:
+	if severe_castle_threat:
+		return AI_MIN_RECRUITS_FOR_RAISING
+	var normalized: int = normalize_game_difficulty(difficulty)
+	return int(AI_MIN_RECRUITS_FOR_RAISING_BY_DIFFICULTY.get(normalized, AI_MIN_RECRUITS_FOR_RAISING))
+
+static func get_ai_raise_reserve_gold_min(difficulty: int, severe_castle_threat: bool = false) -> int:
+	if severe_castle_threat:
+		return AI_RESERVE_GOLD_MIN
+	var normalized: int = normalize_game_difficulty(difficulty)
+	return int(AI_RAISE_RESERVE_GOLD_MIN_BY_DIFFICULTY.get(normalized, AI_RESERVE_GOLD_MIN))
+
+static func get_ai_raise_threshold_norm(difficulty: int, severe_castle_threat: bool = false) -> float:
+	if severe_castle_threat:
+		return AI_RAISE_THRESHOLD_NORM
+	var normalized: int = normalize_game_difficulty(difficulty)
+	return float(AI_RAISE_THRESHOLD_NORM_BY_DIFFICULTY.get(normalized, AI_RAISE_THRESHOLD_NORM))
 
 static func _resolve_ai_combat_difficulty(difficulty: int, ai_vs_human: bool) -> int:
 	if not ai_vs_human:

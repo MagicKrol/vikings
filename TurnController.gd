@@ -1213,7 +1213,7 @@ func _get_live_frontier_targets_for_bucket(player_id: int, frontier_targets: Arr
 		var has_enemy_army: bool = _frontier_region_has_enemy_army(target_region_id, player_id)
 		match bucket_type:
 			FrontierBucketType.HARD:
-				if owner_id == -1 or owner_id == player_id:
+				if owner_id == player_id:
 					continue
 				if not has_castle and not has_enemy_army:
 					continue
@@ -1266,7 +1266,7 @@ func _select_raider_scored_move(army: Army) -> Dictionary:
 			merged_targets.append(target_id)
 	if merged_targets.is_empty():
 		return {}
-	var moves: Array = _get_sorted_frontier_moves(army, merged_targets)
+	var moves: Array = _get_sorted_frontier_moves(army, merged_targets, AI_MAIN_GOAL_DISTANCE_COST_MULTIPLIER)
 	if moves.is_empty():
 		_log_rejected_candidates(_copy_latest_candidate_rejections())
 		return {}
@@ -3689,7 +3689,7 @@ func _find_best_move_for_army(army: Army, frontier: Array[int]) -> Dictionary:
 	reachable.sort_custom(func(a, b): return a["final_score"] > b["final_score"])
 	return reachable[0]
 
-func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
+func _get_sorted_frontier_moves(army: Army, frontier: Array[int], distance_cost_multiplier: float = 1.0) -> Array:
 	var reachable: Array = []
 	var far_targets: Array = []
 	_latest_candidate_rejections.clear()
@@ -3749,7 +3749,8 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 		var castle_bonus := float(components.get("castle_bonus", 0.0))
 		var neutral_core_bonus := _get_neutral_core_bonus(target_id, player_id)
 		var enemy_adjustment := target_scorer.get_enemy_adjustment(army, target_id)
-		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus + neutral_core_bonus - float(cost) + float(enemy_adjustment.get("delta", 0.0))
+		var distance_penalty: float = float(cost) * distance_cost_multiplier
+		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus + neutral_core_bonus - distance_penalty + float(enemy_adjustment.get("delta", 0.0))
 		if enemy_adjustment.get("nullify", false):
 			final_score = 0.0
 
@@ -3759,6 +3760,7 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int]) -> Array:
 			"base_score": base_score,
 			"random_modifier": random_mod,
 			"mp_cost": cost,
+			"distance_penalty": distance_penalty,
 			"final_score": final_score,
 			"path": path_result["path"],
 			"current_region_id": current_region_id,
@@ -4349,12 +4351,13 @@ func _log_target_candidates(moves: Array) -> void:
 		var region_id: int = int(move.get("target_id", -1))
 		var mp_cost: int = int(move.get("mp_cost", 0))
 		var components: Dictionary = move.get("components", Dictionary())
-		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, random_modifier: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, strategy: %.1f)" % [
+		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, distance_penalty: %.1f, random_modifier: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, strategy: %.1f)" % [
 			i + 1,
 			_get_region_name_by_id(region_id),
 			region_id,
 			float(move.get("final_score", 0.0)),
 			mp_cost,
+			float(move.get("distance_penalty", float(mp_cost))),
 			float(move.get("random_modifier", 0.0)),
 			float(components.get("resources", 0.0)),
 			float(components.get("population", 0.0)),

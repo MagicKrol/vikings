@@ -98,6 +98,7 @@ var ai_scoring_valid: bool = false             # Whether stored scores are still
 
 # Strategic points heatmap score (computed pre-castle placement)
 var strategic_point_score: float = 0.0
+var ai_attack_score_bonus: float = 0.0
 var promotion_cooldown_turns: int = 0
 
 func setup_region(region_data: Dictionary) -> void:
@@ -199,13 +200,21 @@ func set_region_level(level: RegionLevelEnum.Level) -> void:
 	region_level = level
 	_update_resources_from_base()
 
+func set_region_level_with_recruit_bonus(level: RegionLevelEnum.Level) -> void:
+	"""Set a higher region level and add the recruit-cap increase to available recruits."""
+	var previous_max_recruits: int = get_max_recruits()
+	region_level = level
+	var promoted_max_recruits: int = get_max_recruits()
+	var recruit_bonus: int = max(0, promoted_max_recruits - previous_max_recruits)
+	available_recruits = min(promoted_max_recruits, available_recruits + recruit_bonus)
+	_update_resources_from_base()
+
 func promote_region() -> void:
 	"""Promote the region to the next level"""
-	if (region_level < 5):			
-		region_level = region_level + 1
+	if (region_level < 5):
+		set_region_level_with_recruit_bonus(region_level + 1)
 		promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
 		promotion_replenish_bonus_turns_remaining = GameParameters.PROMOTION_REPLENISH_BONUS_TURNS
-		_update_resources_from_base()
 
 func get_promotion_cooldown() -> int:
 	return promotion_cooldown_turns
@@ -1112,6 +1121,12 @@ func set_strategic_point_score(value: float) -> void:
 
 func get_strategic_point_score() -> float:
 	return strategic_point_score
+
+func set_ai_attack_score_bonus(value: float) -> void:
+	ai_attack_score_bonus = max(0.0, value)
+
+func get_ai_attack_score_bonus() -> float:
+	return ai_attack_score_bonus
 
 func get_wounded_garrison() -> ArmyComposition:
 	"""Get the wounded garrison composition"""

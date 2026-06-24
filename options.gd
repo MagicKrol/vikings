@@ -125,9 +125,15 @@ func refresh_state() -> void:
 	_sync_move_army_buttons()
 	_sync_keyboard_mapping_buttons()
 
-func _on_back_pressed() -> void:
+func request_back() -> void:
 	_cancel_keyboard_capture()
+	if keys_panel.visible:
+		_show_scenario_panel()
+		return
 	back_requested.emit()
+
+func _on_back_pressed() -> void:
+	request_back()
 
 func _on_keys_back_pressed() -> void:
 	_cancel_keyboard_capture()

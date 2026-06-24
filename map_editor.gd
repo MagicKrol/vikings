@@ -289,6 +289,10 @@ func _on_region_type_changed(region_id: int, selection: String) -> void:
 		var value = int(selection.substr(4, selection.length()))
 		region.set_population(max(0, value))
 		return
+	if selection.begins_with("SCORE_BONUS:"):
+		var value: float = max(0.0, float(selection.substr(12, selection.length())))
+		region.set_ai_attack_score_bonus(value)
+		return
 	if selection.begins_with("ORE:"):
 		var flag = selection.substr(4, selection.length())
 		region.set_any_ore_discovered(flag == "1")

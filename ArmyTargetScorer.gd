@@ -285,7 +285,7 @@ func score_region_base(region_id: int, player_id: int = 1) -> float:
 
 	# Use new normalized model (0..1) scaled to 0..100
 	var score_data = _calculate_region_score(region, player_id)
-	return float(score_data.overall_score) * 100.0
+	return (float(score_data.overall_score) * 100.0) + region.get_ai_attack_score_bonus()
 
 func get_target_components(army: Army, region_id: int) -> Dictionary:
 	_ensure_runtime_references()
@@ -299,6 +299,7 @@ func get_target_components(army: Army, region_id: int) -> Dictionary:
 		"population": float(score_data.get("population_component", 0.0)),
 		"resources": float(score_data.get("resource_component", 0.0)),
 		"level": int(score_data.get("level_component", 0)),
+		"score_bonus": region.get_ai_attack_score_bonus(),
 		"pursue_bonus": pursue_bonus,
 		"castle_bonus": castle_bonus
 	}
@@ -357,6 +358,7 @@ func score_army_target(army: Army, region_id: int) -> Dictionary:
 		"army": army,
 		"target_id": region_id,
 		"base_score": base_score,
+		"score_bonus": region.get_ai_attack_score_bonus(),
 		"ownership_bonus": ownership_bonus,
 		"random_modifier": random_modifier,
 		"mp_cost": path_result.cost,
@@ -640,12 +642,15 @@ func get_base_region_score(region: Region, player_id: int) -> Dictionary:
 	
 	# Use existing internal calculation
 	var score_data = _calculate_region_score(region, player_id)
+	var score_bonus: float = region.get_ai_attack_score_bonus()
 	
 	# Repackage for public API with 0..100 scale
 	return {
 		"region_id": region.get_region_id(),
 		"region_name": region.get_region_name(),
-		"base_score_0_100": score_data.overall_score * 100.0,  # 0..100 scale
+		"base_score_0_100": (score_data.overall_score * 100.0) + score_bonus,
+		"base_score_without_bonus_0_100": score_data.overall_score * 100.0,
+		"score_bonus": score_bonus,
 		"overall_score_0_1": score_data.overall_score,  # Keep original 0..1
 		"strategic_component_0_10": score_data.strategic_score,
 		"population_component_0_10": score_data.population_component,
@@ -677,6 +682,8 @@ func get_final_army_score(army: Army, region_id: int) -> Dictionary:
 	# Add the base region data for completeness
 	var base_data = get_base_region_score(region, army.get_player_id())
 	result["base_score_0_100"] = base_data.get("base_score_0_100", 0.0)
+	result["base_score_without_bonus_0_100"] = base_data.get("base_score_without_bonus_0_100", 0.0)
+	result["score_bonus"] = base_data.get("score_bonus", 0.0)
 	result["strategic_component_0_10"] = base_data.get("strategic_component_0_10", 0.0)
 	result["population_component_0_10"] = base_data.get("population_component_0_10", 0.0)
 	result["level_component_0_10"] = base_data.get("level_component_0_10", 0.0)

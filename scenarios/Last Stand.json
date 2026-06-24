@@ -584,6 +584,7 @@
 				"Stone": 0,
 				"Wood": 2
 			},
+			"score_bonus": 5,
 			"type_display": "Forest"
 		},
 		{
@@ -945,6 +946,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
+			"score_bonus": 5,
 			"type_display": "Grassland"
 		},
 		{
@@ -1440,6 +1442,7 @@
 				"Stone": 0,
 				"Wood": 0
 			},
+			"score_bonus": 5,
 			"type_display": "Grassland"
 		},
 		{
@@ -1605,6 +1608,7 @@
 				"Stone": 0,
 				"Wood": 1
 			},
+			"score_bonus": 20,
 			"type_display": "Forest Hills"
 		},
 		{
@@ -1655,6 +1659,7 @@
 				"Stone": 2,
 				"Wood": 1
 			},
+			"score_bonus": 20,
 			"type_display": "Forest Hills"
 		},
 		{
@@ -1724,6 +1729,7 @@
 				"Stone": 0,
 				"Wood": 2
 			},
+			"score_bonus": 20,
 			"type_display": "Forest Hills"
 		},
 		{
