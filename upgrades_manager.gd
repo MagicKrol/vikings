@@ -91,9 +91,9 @@ static func has_completed_source(source_type: String, source_id: String) -> bool
 static func get_selection_limit_for_difficulty(difficulty_name: String) -> int:
 	var normalized: String = difficulty_name.to_lower()
 	if normalized == "easy":
-		return 1
-	if normalized == "hard":
 		return 3
+	if normalized == "hard":
+		return 1
 	return 2
 
 static func get_valid_selected_cards(raw_card_ids: Array, difficulty_name: String, debug_unlocked: bool = false) -> Array[String]:

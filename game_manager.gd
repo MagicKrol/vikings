@@ -3456,6 +3456,10 @@ func handle_army_battle(army: Army, target_region_id: int) -> String:
 		_log_ai_battle_simulation(army, target_region, sim_attempts)
 		if sim_outcome != "victory":
 			_log_ai_prebattle_withdraw(army, target_region, "siege_simulation_failure")
+			_record_enemy_presence_for_attacker(attacker_owner_id, target_region)
+			var scouted_defender_owner_id: int = _region_manager.get_region_owner(target_region_id)
+			if scouted_defender_owner_id > 0:
+				_record_attacker_for_defender(scouted_defender_owner_id, [army])
 			DebugLogger.log("Withdrawal", "[Pre-Battle] AI attacker withdrawing after failed siege simulation.")
 			await _battle_manager.withdraw_attacking_army(army)
 			_last_battle_withdrawing_side = 1

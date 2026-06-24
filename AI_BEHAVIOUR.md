@@ -383,7 +383,7 @@ Before starting AI castle battles:
 
 1. Run simulated siege battle (`simulate_siege_battle`)
 2. Try budgeted wood first, then uncapped-wood fallback
-3. If final simulation is not victory, AI withdraws before battle
+3. If final simulation is not victory, AI records the scouted defenders and withdraws before battle
 
 Other withdrawal checks:
 

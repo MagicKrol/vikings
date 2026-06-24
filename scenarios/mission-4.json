@@ -3184,14 +3184,14 @@
 			"castle_type": "Keep",
 			"discovered_ores": [],
 			"garrison": {
-				"Archers": 0,
+				"Archers": 5,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
 				"Peasants": 17,
 				"Royal Guard": 0,
-				"Spearmen": 0,
+				"Spearmen": 5,
 				"Swordsmen": 0
 			},
 			"id": 259,
