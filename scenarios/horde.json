@@ -681,7 +681,7 @@
 			"population": 160,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
+				"Gold": 4,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -1112,7 +1112,7 @@
 			"population": 91,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 6,
 				"Iron": 3,
 				"Stone": 2,
 				"Wood": 0
@@ -1189,7 +1189,7 @@
 			"population": 283,
 			"resources": {
 				"Food": 0,
-				"Gold": 10,
+				"Gold": 7,
 				"Iron": 0,
 				"Stone": 1,
 				"Wood": 0
@@ -1228,7 +1228,7 @@
 			"population": 285,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 0,
 				"Stone": 2,
 				"Wood": 0
@@ -1305,7 +1305,7 @@
 			"population": 188,
 			"resources": {
 				"Food": 0,
-				"Gold": 12,
+				"Gold": 8,
 				"Iron": 0,
 				"Stone": 3,
 				"Wood": 0
@@ -1515,7 +1515,7 @@
 			"population": 143,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 2,
 				"Stone": 0,
 				"Wood": 2
@@ -1591,7 +1591,7 @@
 			"population": 81,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 5,
 				"Iron": 3,
 				"Stone": 2,
 				"Wood": 0
@@ -1687,7 +1687,7 @@
 			"population": 176,
 			"resources": {
 				"Food": 0,
-				"Gold": 10,
+				"Gold": 7,
 				"Iron": 0,
 				"Stone": 1,
 				"Wood": 0
@@ -1782,7 +1782,7 @@
 			"population": 51,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 0,
 				"Wood": 2
@@ -1820,7 +1820,7 @@
 			"population": 250,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
+				"Gold": 4,
 				"Iron": 3,
 				"Stone": 2,
 				"Wood": 0
@@ -1839,7 +1839,7 @@
 			"population": 212,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 3,
 				"Stone": 1,
 				"Wood": 0
@@ -1915,7 +1915,7 @@
 			"population": 118,
 			"resources": {
 				"Food": 0,
-				"Gold": 10,
+				"Gold": 7,
 				"Iron": 1,
 				"Stone": 3,
 				"Wood": 0
@@ -2105,7 +2105,7 @@
 			"population": 173,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 2,
 				"Wood": 0

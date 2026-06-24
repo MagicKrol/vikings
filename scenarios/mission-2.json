@@ -613,7 +613,7 @@
 			"population": 243,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 8,
 				"Iron": 2,
 				"Stone": 3,
 				"Wood": 0
@@ -793,7 +793,7 @@
 			"population": 148,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 2
@@ -1123,7 +1123,7 @@
 			"population": 168,
 			"resources": {
 				"Food": 0,
-				"Gold": 3,
+				"Gold": 2,
 				"Iron": 1,
 				"Stone": 0,
 				"Wood": 1
@@ -1273,7 +1273,7 @@
 			"population": 234,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 8,
 				"Iron": 0,
 				"Stone": 0,
 				"Wood": 0
@@ -1484,7 +1484,7 @@
 			"population": 160,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 8,
 				"Iron": 3,
 				"Stone": 1,
 				"Wood": 0
@@ -1514,7 +1514,7 @@
 			"population": 85,
 			"resources": {
 				"Food": 0,
-				"Gold": 3,
+				"Gold": 2,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 1

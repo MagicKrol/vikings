@@ -749,7 +749,7 @@
 			"population": 299,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 3,
 				"Wood": 0
@@ -825,7 +825,7 @@
 			"population": 98,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 3,
 				"Stone": 3,
 				"Wood": 0
@@ -1072,7 +1072,7 @@
 			"population": 146,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -1110,7 +1110,7 @@
 			"population": 87,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 3,
 				"Stone": 3,
 				"Wood": 0
@@ -1129,7 +1129,7 @@
 			"population": 164,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -1148,7 +1148,7 @@
 			"population": 54,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 3,
 				"Stone": 2,
 				"Wood": 0
@@ -1167,7 +1167,7 @@
 			"population": 142,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 2,
 				"Wood": 0
@@ -1376,7 +1376,7 @@
 			"population": 259,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -1395,7 +1395,7 @@
 			"population": 64,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 2,
 				"Wood": 0
@@ -1452,7 +1452,7 @@
 			"population": 260,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
+				"Gold": 4,
 				"Iron": 3,
 				"Stone": 2,
 				"Wood": 0
@@ -1539,7 +1539,7 @@
 			"population": 73,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -1626,7 +1626,7 @@
 			"population": 204,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -1675,7 +1675,7 @@
 			"population": 207,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -1789,7 +1789,7 @@
 			"population": 216,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -1827,7 +1827,7 @@
 			"population": 120,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
+				"Gold": 4,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -1998,7 +1998,7 @@
 			"population": 224,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 2,
 				"Wood": 0
@@ -2055,7 +2055,7 @@
 			"population": 91,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 2
@@ -2131,7 +2131,7 @@
 			"population": 292,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -2150,7 +2150,7 @@
 			"population": 66,
 			"resources": {
 				"Food": 0,
-				"Gold": 8,
+				"Gold": 6,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -2286,7 +2286,7 @@
 			"population": 167,
 			"resources": {
 				"Food": 0,
-				"Gold": 10,
+				"Gold": 8,
 				"Iron": 1,
 				"Stone": 3,
 				"Wood": 0
@@ -2343,7 +2343,7 @@
 			"population": 86,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 0,
 				"Wood": 1
@@ -2381,7 +2381,7 @@
 			"population": 164,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 2,
 				"Stone": 2,
 				"Wood": 2
@@ -2400,7 +2400,7 @@
 			"population": 50,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -2438,7 +2438,7 @@
 			"population": 239,
 			"resources": {
 				"Food": 0,
-				"Gold": 10,
+				"Gold": 8,
 				"Iron": 1,
 				"Stone": 1,
 				"Wood": 0
@@ -2514,7 +2514,7 @@
 			"population": 178,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 7,
 				"Iron": 2,
 				"Stone": 2,
 				"Wood": 0
@@ -2552,7 +2552,7 @@
 			"population": 178,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 7,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -2677,7 +2677,7 @@
 			"population": 150,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 2,
 				"Stone": 1,
 				"Wood": 0
@@ -2715,7 +2715,7 @@
 			"population": 182,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 7,
 				"Iron": 2,
 				"Stone": 2,
 				"Wood": 0
@@ -2753,7 +2753,7 @@
 			"population": 186,
 			"resources": {
 				"Food": 0,
-				"Gold": 5,
+				"Gold": 4,
 				"Iron": 2,
 				"Stone": 0,
 				"Wood": 1
@@ -2791,7 +2791,7 @@
 			"population": 63,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 7,
 				"Iron": 2,
 				"Stone": 2,
 				"Wood": 0
@@ -2840,7 +2840,7 @@
 			"population": 99,
 			"resources": {
 				"Food": 0,
-				"Gold": 6,
+				"Gold": 5,
 				"Iron": 2,
 				"Stone": 0,
 				"Wood": 2
@@ -2984,7 +2984,7 @@
 			"population": 255,
 			"resources": {
 				"Food": 0,
-				"Gold": 9,
+				"Gold": 7,
 				"Iron": 3,
 				"Stone": 2,
 				"Wood": 0
@@ -3003,7 +3003,7 @@
 			"population": 229,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 3,
 				"Wood": 0
@@ -3174,7 +3174,7 @@
 			"population": 230,
 			"resources": {
 				"Food": 0,
-				"Gold": 7,
+				"Gold": 6,
 				"Iron": 2,
 				"Stone": 2,
 				"Wood": 0
