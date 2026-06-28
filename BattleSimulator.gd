@@ -1299,6 +1299,10 @@ func _decide_withdrawal(current_attackers: Dictionary, current_defenders: Dictio
 			DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal siege bailout side=1 ratio=" + str(snappedf(ratio, 0.003)))
 			return 1
 		var active_rams: int = _get_active_ram_count(siege_state)
+		var reserve_rams: int = _get_reserve_ram_count(siege_state)
+		if attacker_effectiveness_ratio <= 0.0 and active_rams <= 0 and reserve_rams <= 0:
+			DebugLogger.log("Withdrawal", "BattleSimulator.decide_withdrawal siege no assault side=1")
+			return 1
 		if active_rams > 0:
 			withdrawal_tracker["previous_power_ratio"] = ratio
 			withdrawal_tracker["losing_ratio_streak"] = 0

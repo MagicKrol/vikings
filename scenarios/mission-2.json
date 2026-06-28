@@ -142,7 +142,7 @@
 						"Peasants": 50,
 						"Royal Guard": 0,
 						"Spearmen": 30,
-						"Swordsmen": 10
+						"Swordsmen": 15
 					},
 					"region_id": 116
 				}
@@ -194,7 +194,7 @@
 				},
 				{
 					"composition": {
-						"Archers": 10,
+						"Archers": 15,
 						"Crossbowmen": 0,
 						"Horsemen": 0,
 						"Knights": 0,
@@ -202,7 +202,7 @@
 						"Peasants": 30,
 						"Royal Guard": 0,
 						"Spearmen": 10,
-						"Swordsmen": 10
+						"Swordsmen": 15
 					},
 					"region_id": 118
 				}

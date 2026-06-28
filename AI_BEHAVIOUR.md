@@ -32,6 +32,8 @@ Economy planning runs in this fixed order:
 3. Build castle
 4. Upgrade castle
 5. Repair damaged castles
+
+AI gold income uses a difficulty bonus when income is applied: Easy +0%, Normal +5%, Hard +15%.
 6. Promote regions
 7. Ore search
 8. Additional garrison trickle recruitment
@@ -94,29 +96,34 @@ Decision:
 
 Flow (`_evaluate_build_castle`):
 
-1. Pick best candidate (`_pick_castle_build_candidate`)
-2. Candidate must:
+1. Check Outpost affordability before scanning candidates:
+	- must have enough spendable gold for the build cost
+	- missing non-gold resources may be top-up candidates only when each shortfall is <= `SMALL_CASTLE_TOPUP_LIMIT`
+	- estimated top-up spend must still leave enough gold for the build cost
+2. Pick best candidate (`_pick_castle_build_candidate`)
+3. Candidate must:
 	- be owned
 	- be allowed by `region.can_build_castle()`
 	- not be in exclusion set:
 		- any region already with castle
-		- all neighbors of castle regions
-3. Candidate score:
+4. Candidate score:
 	- `strategic_score = region.strategic_point_score * 10`
 	- `neighbor_score`:
 		- +15 for each owned neighbor
 		- +5 for each neutral neighbor
 		- -10 for each enemy neighbor
+		- -45 if any neighboring region already has a castle
 	- `total_score = strategic_score + neighbor_score`
-4. Must pass:
+5. Must pass:
 	- `total_score >= CASTLE_SCORE_THRESHOLD` (100)
 	- forward requirement:
 		- candidate must be closer to at least one enemy castle than current friendly baseline
-5. Cost = outpost build cost from `GameParameters`
-6. If resources missing:
+		- skipped for candidates below the score threshold
+6. Cost = outpost build cost from `GameParameters`
+7. If resources missing:
 	- optional small top-up trade (`_attempt_small_castle_topup`)
 	- only for missing non-gold resources <= `SMALL_CASTLE_TOPUP_LIMIT` (5 each)
-7. If affordable, pay cost and start construction (`region.start_castle_construction(OUTPOST)`)
+8. If affordable, pay cost and start construction (`region.start_castle_construction(OUTPOST)`)
 
 ### 2.3 Upgrade Castle
 
@@ -282,7 +289,7 @@ For each frontier target:
 
 Score formula (`_get_sorted_frontier_moves`):
 
-- `final_score = base_score + ownership_bonus + random_modifier + pursue_bonus + castle_bonus + neutral_core_bonus - distance_penalty + enemy_adjustment.delta`
+- `final_score = base_score + ownership_bonus + random_modifier + pursue_bonus + castle_bonus + neutral_core_bonus + neutral_cluster_bonus + neutral_border_bonus - distance_penalty + enemy_adjustment.delta`
 
 Terms:
 
@@ -294,6 +301,15 @@ Terms:
 - `neutral_core_bonus` applies only to neutral, non-castle, no-enemy-army targets:
 	- distance to nearest owned castle in owned-region steps gives `5 * (4 - distance)` for distance 1..3
 	- at least one owned neighbor gives a single `+3` bonus
+- `neutral_cluster_bonus` applies only to neutral, non-castle, no-enemy-army targets:
+	- capped BFS counts connected neutral soft regions, including the target, up to `AI_NEUTRAL_CLUSTER_SCAN_MAX`
+	- bonus is `AI_NEUTRAL_CLUSTER_BONUS_PER_EXTRA_REGION` per connected extra region beyond the target, capped by `AI_NEUTRAL_CLUSTER_BONUS_MAX`
+	- scenario JSON `disable_neutral_cluster_bonus=true` disables this bonus only; `neutral_core_bonus` and `neutral_border_bonus` still apply
+	- cached during each frontier refresh and logged in candidate lines
+- `neutral_border_bonus` applies only to neutral, non-castle, no-enemy-army targets:
+	- counts owned neighboring regions
+	- bonus is `AI_NEUTRAL_BORDER_BONUS_PER_OWNED_NEIGHBOR` per owned neighbor, capped by `AI_NEUTRAL_BORDER_BONUS_MAX`
+	- favors compact expansion over thin one-region lines into deep neutral clusters
 - `enemy_adjustment` from tracked enemy intel:
 	- if combined known enemy power / own power >= 1.25 => `nullify=true`, score forced to 0
 	- if ratio > 1.0 => penalty of `-ceil((ratio-1)/0.05)`
@@ -389,6 +405,7 @@ Other withdrawal checks:
 
 - pre-siege castle power check (`_should_ai_withdraw_pre_siege`)
 - post-preparation power check (`_should_ai_withdraw_post_siege`) for non-castle path in current code
+- in-battle siege no-assault check: if assault effectiveness is 0% and all active/reserve rams are gone, the AI attacker withdraws
 
 If AI loses or withdraws and still has MP, TurnController retreats to strongest reachable friendly region within remaining MP.
 

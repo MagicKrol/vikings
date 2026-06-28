@@ -323,6 +323,6 @@ animation = &"kneel"
 
 [node name="Victory" type="AnimatedSprite2D" parent="."]
 modulate = Color(1, 0, 1, 0)
-position = Vector2(6, 0)
+position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_nx4lj")
 animation = &"walking"

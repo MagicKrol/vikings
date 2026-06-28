@@ -42,6 +42,7 @@ var total_players: int = 6
 var region_manager: RegionManager = null
 var map_generator: MapGenerator = null
 var army_manager: ArmyManager = null
+var game_difficulty: int = GameParameters.GAME_DIFFICULTY_DEFAULT
 
 func _ready():
 	# Initialize players immediately when not already prepared (editor mode)
@@ -56,6 +57,9 @@ func initialize_with_managers(region_mgr: RegionManager, map_gen: MapGenerator):
 func set_army_manager(army_mgr: ArmyManager) -> void:
 	"""Set the army manager reference"""
 	army_manager = army_mgr
+
+func set_game_difficulty(difficulty: int) -> void:
+	game_difficulty = GameParameters.normalize_game_difficulty(difficulty)
 
 func _initialize_players(player_types: Array[PlayerTypeEnum.Type]) -> void:
 	"""Initialize all players with default settings"""
@@ -336,7 +340,7 @@ func get_projected_economy_for_player(player_id: int) -> Dictionary:
 func _apply_ai_income_bonus(income: Dictionary) -> Dictionary:
 	var result := income.duplicate()
 	var resource_multiplier := 1.0 + GameParameters.AI_RESOURCE_GROWTH_BONUS
-	var gold_multiplier := 1.0 + GameParameters.AI_INCOME_GROWTH_BONUS
+	var gold_multiplier := 1.0 + GameParameters.get_ai_income_growth_bonus(game_difficulty)
 	for resource_type in result.keys():
 		var amount := float(result[resource_type])
 		if resource_type == ResourcesEnum.Type.GOLD:

@@ -83,6 +83,184 @@
 	],
 	"description": "mission-5_description",
 	"difficulty": "all",
+	"difficulty_overrides": {
+		"hard": {
+			"army_compositions": [
+				{
+					"composition": {
+						"Archers": 20,
+						"Crossbowmen": 5,
+						"Horsemen": 0,
+						"Knights": 5,
+						"Mounted Knights": 0,
+						"Peasants": 35,
+						"Royal Guard": 0,
+						"Spearmen": 25,
+						"Swordsmen": 20
+					},
+					"region_id": 256
+				}
+			],
+			"garrison_compositions": [
+				{
+					"composition": {
+						"Archers": 10,
+						"Crossbowmen": 0,
+						"Horsemen": 0,
+						"Knights": 0,
+						"Mounted Knights": 0,
+						"Peasants": 12,
+						"Royal Guard": 0,
+						"Spearmen": 10,
+						"Swordsmen": 0
+					},
+					"region_id": 256
+				}
+			],
+			"player_resources": [
+				{
+					"player_id": 1,
+					"resources": {
+						"Food": 10,
+						"Gold": 50,
+						"Iron": 0,
+						"Stone": 0,
+						"Wood": 0
+					}
+				},
+				{
+					"player_id": 2,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 3,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 4,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 5,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 6,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				}
+			]
+		},
+		"normal": {
+			"army_compositions": [
+				{
+					"composition": {
+						"Archers": 15,
+						"Crossbowmen": 5,
+						"Horsemen": 0,
+						"Knights": 3,
+						"Mounted Knights": 0,
+						"Peasants": 30,
+						"Royal Guard": 0,
+						"Spearmen": 20,
+						"Swordsmen": 15
+					},
+					"region_id": 256
+				}
+			],
+			"player_resources": [
+				{
+					"player_id": 1,
+					"resources": {
+						"Food": 20,
+						"Gold": 80,
+						"Iron": 0,
+						"Stone": 5,
+						"Wood": 10
+					}
+				},
+				{
+					"player_id": 2,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 3,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 4,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 5,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 6,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				}
+			]
+		}
+	},
 	"events": [
 		{
 			"composition": {
@@ -792,14 +970,14 @@
 			"castle_type": "Keep",
 			"discovered_ores": [],
 			"garrison": {
-				"Archers": 5,
+				"Archers": 10,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
 				"Peasants": 6,
 				"Royal Guard": 0,
-				"Spearmen": 0,
+				"Spearmen": 10,
 				"Swordsmen": 0
 			},
 			"id": 144,
@@ -1392,14 +1570,14 @@
 			"castle_type": "Keep",
 			"discovered_ores": [],
 			"garrison": {
-				"Archers": 0,
+				"Archers": 10,
 				"Crossbowmen": 0,
 				"Horsemen": 0,
 				"Knights": 0,
 				"Mounted Knights": 0,
 				"Peasants": 11,
 				"Royal Guard": 0,
-				"Spearmen": 0,
+				"Spearmen": 10,
 				"Swordsmen": 0
 			},
 			"id": 185,

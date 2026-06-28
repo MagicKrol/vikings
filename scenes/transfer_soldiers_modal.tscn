@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://b3ovrt5dclfvx"]
+[gd_scene load_steps=34 format=3 uid="uid://b3ovrt5dclfvx"]
 
 [ext_resource type="Script" path="res://transfer_soldiers_modal.gd" id="1_42aob"]
 [ext_resource type="Texture2D" uid="uid://fgx6oamjmj1w" path="res://images/transfer_modal.png" id="3_1rsji"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://bfhxpqmbmu5qp" path="res://images/units/knight_new_card.png" id="21_m0728"]
 [ext_resource type="Texture2D" uid="uid://b1aj5qqc2er37" path="res://images/units/mounted_knight_new_card.png" id="22_kn2ds"]
 [ext_resource type="Texture2D" uid="uid://bg386bpyeab36" path="res://images/units/royal_guard_new_card.png" id="23_apyqg"]
+[ext_resource type="Texture2D" uid="uid://dlo764bowoxd8" path="res://images/MessageModal.png" id="24_2ku7f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l353s"]
 draw_center = false
@@ -813,6 +814,18 @@ layout_mode = 2
 layout_mode = 2
 theme = ExtResource("4_1d8nt")
 text = "Continue"
+
+[node name="MouseBlocker" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -100.0
+offset_right = 600.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Transfer" type="Panel" parent="."]
 custom_minimum_size = Vector2(900, 0)
@@ -1715,3 +1728,70 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("4_1d8nt")
 text = "Cancel"
+
+[node name="Disband" type="Control" parent="."]
+visible = false
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Disband"]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 250.0
+texture = ExtResource("24_2ku7f")
+
+[node name="ContentContainer" type="VBoxContainer" parent="Disband"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = -47.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer2" type="Control" parent="Disband/ContentContainer"]
+layout_mode = 2
+
+[node name="MessageLabel" type="Label" parent="Disband/ContentContainer"]
+custom_minimum_size = Vector2(100, 175)
+layout_mode = 2
+theme = ExtResource("6_standard")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "disband-warning"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Disband/ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="Disband/ContentContainer/HBoxContainer"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("4_1d8nt")
+text = "Continue"
+
+[node name="CancelButton" type="Button" parent="Disband/ContentContainer/HBoxContainer"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("4_1d8nt")
+text = "Back"

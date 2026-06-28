@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=42 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -28,6 +28,7 @@
 [ext_resource type="Texture2D" uid="uid://cibgdyh3ta8er" path="res://images/cards_modal.png" id="26_kw5a7"]
 [ext_resource type="PackedScene" uid="uid://cfi8osodkmdhq" path="res://scenes/upgrade_card.tscn" id="49_upgrade_card"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="50_level_tooltip"]
+[ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="51_green_btn_styles"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -729,7 +730,7 @@ alignment = 1
 [node name="Back" type="Button" parent="CustomMap/Panel/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"
@@ -1165,7 +1166,7 @@ alignment = 1
 [node name="SelectMap" type="Button" parent="CustomMap/Panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = " Select Map "
@@ -1447,7 +1448,7 @@ alignment = 1
 [node name="Back" type="Button" parent="CustomMap/Scenario/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"
@@ -1564,7 +1565,7 @@ alignment = 1
 [node name="SelectMap" type="Button" parent="CustomMap/Scenario/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(195, 0)
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = " Select Map "
@@ -1719,7 +1720,7 @@ alignment = 1
 
 [node name="Back" type="Button" parent="Options/Scenario/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"
@@ -2087,7 +2088,7 @@ alignment = 1
 
 [node name="Back" type="Button" parent="Options/Keys/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"
@@ -2287,7 +2288,7 @@ alignment = 1
 
 [node name="BackButton" type="Button" parent="SaveGameModal/Panel/VBoxContainer/BackRow"]
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"
@@ -2396,7 +2397,7 @@ alignment = 1
 
 [node name="ActionButton" type="Button" parent="SaveGameModal/Panel/VBoxContainer/ActionRow"]
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Load Game"
@@ -2701,7 +2702,7 @@ alignment = 1
 
 [node name="Back" type="Button" parent="Cards/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-theme = ExtResource("16_btn_styles")
+theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 24
 text = "Back"

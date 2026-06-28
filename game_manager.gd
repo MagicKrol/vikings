@@ -92,7 +92,7 @@ var _prebattle_modal: PrebattleModal
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
 var debug_heatmap: bool = false
-@export var debug_mode: bool = true
+@export var debug_mode: bool = false
 @export var show_region_center_markers: bool = false
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
@@ -156,6 +156,7 @@ var _pending_loss_exit_to_campaign_list: bool = false
 var _pending_next_turn_after_loss_ack: bool = false
 var _scenario_events_runtime: Array[Dictionary] = []
 var scenario_trade_disabled: bool = false
+var scenario_disable_neutral_cluster_bonus: bool = false
 var _player_hired_units: Dictionary = {}
 var game_difficulty: int = GameParameters.GAME_DIFFICULTY_DEFAULT
 var _spawn_event_placement_active: bool = false
@@ -175,6 +176,7 @@ func _ready():
 	_set_victory_conditions_from_raw([])
 	_scenario_events_runtime.clear()
 	scenario_trade_disabled = false
+	scenario_disable_neutral_cluster_bonus = false
 	_reset_player_hired_units_tracking()
 	_spawn_event_placement_active = false
 	_spawn_event_placement_army = null
@@ -263,6 +265,7 @@ func _ready():
 	if _loaded_from_save:
 		SaveGameManager.apply_save_data(self, _pending_loaded_save_data)
 		_restore_or_start_analytics_run_from_save(_pending_loaded_save_data)
+		_sound_manager.call_deferred("play_game_music")
 		_pending_loaded_save_data = {}
 	_apply_initial_camera_zoom()
 	_apply_center_marker_setting()
@@ -371,6 +374,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 		DebugLogger.log("GameInit", "Successfully cast to PlayerManagerNode: " + str(player_manager))
 		player_manager.initialize_with_managers(_region_manager, map_generator)
 		player_manager.set_army_manager(_army_manager)
+		player_manager.set_game_difficulty(game_difficulty)
 		# Ensure players are initialized before any UI or scenario logic uses them
 		player_manager._initialize_players(player_types)
 		_capture_initial_human_player_count_if_unset()
@@ -641,23 +645,22 @@ func _unhandled_input(event: InputEvent) -> void:
 			if debug_mode:
 				_trigger_debug_instant_win()
 				get_viewport().set_input_as_handled()
-		elif event.keycode == KEY_F2:
-			_debug_convert_player_3_to_human()
+		elif event.keycode == KEY_F3:
+			_debug_convert_player_1_to_computer()
 			get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_F8:
 			# Take screenshot with proper setup
 			_take_game_screenshot()
 		# SPACE key handling is now managed by TurnController's DebugStepGate
 
-func _debug_convert_player_3_to_human() -> void:
-	var player_id: int = 3
-	player_types[player_id - 1] = PlayerTypeEnum.Type.HUMAN
-	player_manager.get_player(player_id).set_is_computer(false)
-	_initial_human_player_count = maxi(_initial_human_player_count, _get_human_player_count())
+func _debug_convert_player_1_to_computer() -> void:
+	var player_id: int = 1
+	player_types[player_id - 1] = PlayerTypeEnum.Type.COMPUTER
+	player_manager.get_player(player_id).set_is_computer(true)
 	if current_player == player_id:
 		_apply_debug_ui_visibility_for_player(player_id)
 		_emit_player_status_refresh()
-	DebugLogger.log("GameInit", "Temporary F2 debug: Player 3 changed to Human")
+	DebugLogger.log("GameInit", "Temporary F3 debug: Player 1 changed to Computer")
 
 func _trigger_debug_instant_win() -> void:
 	if victory_declared:
@@ -926,6 +929,8 @@ func _show_custom_start_prompt() -> void:
 		return
 	if enable_map_editor:
 		return
+	if _get_human_player_count() == 0:
+		return
 	var modal_to_use: MessageModal = _message_modal
 	if not tutorial_enabled and _intro_message_modal != null:
 		modal_to_use = _intro_message_modal
@@ -949,6 +954,7 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 	scenario_path = ""
 	loaded_scenario_name = ""
 	scenario_trade_disabled = false
+	scenario_disable_neutral_cluster_bonus = false
 	var map_file: String = String(source.get("map_file", map_generator.data_file_path))
 	var map_size: String = String(source.get("map_size", "small"))
 	map_generator.data_file_path = map_file.get_file()
@@ -1003,8 +1009,10 @@ func _initialize_victory_conditions_from_scenario_data(scenario_data: Dictionary
 func _initialize_trade_rules_from_scenario_data(scenario_data: Dictionary) -> void:
 	if game_mode != "scenario":
 		scenario_trade_disabled = false
+		scenario_disable_neutral_cluster_bonus = false
 		return
 	scenario_trade_disabled = bool(scenario_data.get("trade_disabled", false))
+	scenario_disable_neutral_cluster_bonus = bool(scenario_data.get("disable_neutral_cluster_bonus", false))
 
 func load_victory_conditions_from_source(source: Dictionary) -> void:
 	if source.has("victory_conditions"):
@@ -4735,6 +4743,9 @@ func get_trade_manager() -> TradeManager:
 
 func is_trade_disabled_for_current_game() -> bool:
 	return game_mode == "scenario" and scenario_trade_disabled
+
+func is_neutral_cluster_bonus_disabled_for_current_game() -> bool:
+	return game_mode == "scenario" and scenario_disable_neutral_cluster_bonus
 
 func get_region_manager() -> RegionManager:
 	"""Get the RegionManager instance"""

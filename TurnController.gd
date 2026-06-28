@@ -63,11 +63,13 @@ var _frontier_soft_regions: Array[int] = []
 var _army_role_by_id: Dictionary = {}
 var _main_army_ids: Dictionary = {}
 var _latest_candidate_rejections: Array[Dictionary] = []
+var _neutral_cluster_bonus_cache: Dictionary = {}
 const AI_RESOURCE_TARGETS := {
 	ResourcesEnum.Type.WOOD: 30,
 	ResourcesEnum.Type.STONE: 30,
 	ResourcesEnum.Type.IRON: 10
 }
+const AI_ECONOMY_CANDIDATE_LOG_LIMIT: int = 10
 const AI_TARGET_CANDIDATE_LOG_LIMIT: int = 10
 const AI_PATH_UNREACHABLE_COST: int = 999999
 const AI_THREAT_RESPONSE_MIN_LEVEL: int = 2
@@ -386,6 +388,7 @@ func _assign_ai_mode_and_roles(player_id: int) -> void:
 func _refresh_frontier_buckets_for_player(player_id: int) -> void:
 	_frontier_hard_regions.clear()
 	_frontier_soft_regions.clear()
+	_neutral_cluster_bonus_cache.clear()
 	var has_enemy_frontier: bool = false
 	var frontier_regions: Array[int] = region_manager.get_frontier_regions(player_id)
 	for region_id in frontier_regions:
@@ -629,6 +632,8 @@ func _select_main_extended_goal_candidate(army: Army) -> Dictionary:
 		var pursue_bonus: float = _get_main_goal_pursue_bonus(army, goal_id, float(components.get("pursue_bonus", 0.0)))
 		var castle_bonus: float = _get_main_goal_castle_bonus(army, goal_id)
 		var neutral_core_bonus: float = _get_neutral_core_bonus(goal_id, player_id)
+		var neutral_cluster_bonus: float = _get_neutral_cluster_bonus(goal_id, player_id)
+		var neutral_border_bonus: float = _get_neutral_border_bonus(goal_id, player_id)
 		var enemy_adjustment: Dictionary = target_scorer.get_enemy_adjustment(army, goal_id)
 		if bool(enemy_adjustment.get("nullify", false)):
 			_append_rejected_candidate(rejected_candidates, goal_id, "main_goal_enemy_adjustment_nullify", 0.0, false)
@@ -637,7 +642,7 @@ func _select_main_extended_goal_candidate(army: Army) -> Dictionary:
 		var same_turn_bonus: float = AI_MAIN_GOAL_SAME_TURN_BONUS if path_cost <= army.get_movement_points() else 0.0
 		var distance_penalty: float = float(path_cost) * AI_MAIN_GOAL_DISTANCE_COST_MULTIPLIER
 		var enemy_delta: float = float(enemy_adjustment.get("delta", 0.0))
-		var final_score: float = base_score + ownership_bonus + same_turn_bonus + pursue_bonus + castle_bonus + neutral_core_bonus - distance_penalty + enemy_delta
+		var final_score: float = base_score + ownership_bonus + same_turn_bonus + pursue_bonus + castle_bonus + neutral_core_bonus + neutral_cluster_bonus + neutral_border_bonus - distance_penalty + enemy_delta
 		candidates.append({
 			"target_id": goal_id,
 			"goal_id": goal_id,
@@ -656,6 +661,8 @@ func _select_main_extended_goal_candidate(army: Army) -> Dictionary:
 			"pursue_bonus": pursue_bonus,
 			"castle_bonus": castle_bonus,
 			"neutral_core_bonus": neutral_core_bonus,
+			"neutral_cluster_bonus": neutral_cluster_bonus,
+			"neutral_border_bonus": neutral_border_bonus,
 			"enemy_delta": enemy_delta
 		})
 	if candidates.is_empty():
@@ -820,12 +827,14 @@ func _build_main_extended_route_move(army: Army, goal_region_id: int, goal_candi
 	var pursue_bonus: float = _get_main_goal_pursue_bonus(army, route_target_id, float(components.get("pursue_bonus", 0.0)))
 	var castle_bonus: float = _get_main_goal_castle_bonus(army, route_target_id)
 	var neutral_core_bonus: float = _get_neutral_core_bonus(route_target_id, player_id)
+	var neutral_cluster_bonus: float = _get_neutral_cluster_bonus(route_target_id, player_id)
+	var neutral_border_bonus: float = _get_neutral_border_bonus(route_target_id, player_id)
 	var enemy_adjustment: Dictionary = target_scorer.get_enemy_adjustment(army, route_target_id)
 	if bool(enemy_adjustment.get("nullify", false)):
 		return {}
 	var same_turn_bonus: float = AI_MAIN_GOAL_SAME_TURN_BONUS if route_cost <= army.get_movement_points() else 0.0
 	var distance_penalty: float = float(route_cost) * AI_MAIN_GOAL_DISTANCE_COST_MULTIPLIER
-	var final_score: float = base_score + ownership_bonus + same_turn_bonus + pursue_bonus + castle_bonus + neutral_core_bonus - distance_penalty + float(enemy_adjustment.get("delta", 0.0))
+	var final_score: float = base_score + ownership_bonus + same_turn_bonus + pursue_bonus + castle_bonus + neutral_core_bonus + neutral_cluster_bonus + neutral_border_bonus - distance_penalty + float(enemy_adjustment.get("delta", 0.0))
 	return {
 		"army": army,
 		"target_id": route_target_id,
@@ -843,6 +852,8 @@ func _build_main_extended_route_move(army: Army, goal_region_id: int, goal_candi
 		"pursue_bonus": pursue_bonus,
 		"castle_bonus": castle_bonus,
 		"neutral_core_bonus": neutral_core_bonus,
+		"neutral_cluster_bonus": neutral_cluster_bonus,
+		"neutral_border_bonus": neutral_border_bonus,
 		"goal": "attack",
 		"enemy_info": enemy_info,
 		"merge_decision": decision,
@@ -3748,9 +3759,11 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int], distance_cost_
 		var pursue_bonus := float(components.get("pursue_bonus", 0.0))
 		var castle_bonus := float(components.get("castle_bonus", 0.0))
 		var neutral_core_bonus := _get_neutral_core_bonus(target_id, player_id)
+		var neutral_cluster_bonus := _get_neutral_cluster_bonus(target_id, player_id)
+		var neutral_border_bonus := _get_neutral_border_bonus(target_id, player_id)
 		var enemy_adjustment := target_scorer.get_enemy_adjustment(army, target_id)
 		var distance_penalty: float = float(cost) * distance_cost_multiplier
-		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus + neutral_core_bonus - distance_penalty + float(enemy_adjustment.get("delta", 0.0))
+		var final_score := base_score + ownership_bonus + random_mod + pursue_bonus + castle_bonus + neutral_core_bonus + neutral_cluster_bonus + neutral_border_bonus - distance_penalty + float(enemy_adjustment.get("delta", 0.0))
 		if enemy_adjustment.get("nullify", false):
 			final_score = 0.0
 
@@ -3769,7 +3782,9 @@ func _get_sorted_frontier_moves(army: Army, frontier: Array[int], distance_cost_
 			"ownership_bonus": ownership_bonus,
 			"pursue_bonus": pursue_bonus,
 			"castle_bonus": castle_bonus,
-			"neutral_core_bonus": neutral_core_bonus
+			"neutral_core_bonus": neutral_core_bonus,
+			"neutral_cluster_bonus": neutral_cluster_bonus,
+			"neutral_border_bonus": neutral_border_bonus
 		}
 
 		if can_reach_now:
@@ -3803,6 +3818,72 @@ func _get_neutral_core_bonus(target_region_id: int, player_id: int) -> float:
 	if _target_has_owned_neighbor(target_region_id, player_id):
 		bonus += GameParameters.AI_NEUTRAL_CORE_OWNED_NEIGHBOR_BONUS
 	return bonus
+
+func _get_neutral_cluster_bonus(target_region_id: int, player_id: int) -> float:
+	if game_manager.is_neutral_cluster_bonus_disabled_for_current_game():
+		return 0.0
+	if not _is_neutral_soft_region(target_region_id, player_id):
+		return 0.0
+	var cache_key: String = "%d:%d" % [player_id, target_region_id]
+	if _neutral_cluster_bonus_cache.has(cache_key):
+		return float(_neutral_cluster_bonus_cache.get(cache_key, 0.0))
+	var cluster_count: int = _count_connected_neutral_soft_regions(target_region_id, player_id)
+	var extra_regions: int = maxi(0, cluster_count - 1)
+	var bonus: float = minf(
+		GameParameters.AI_NEUTRAL_CLUSTER_BONUS_MAX,
+		float(extra_regions) * GameParameters.AI_NEUTRAL_CLUSTER_BONUS_PER_EXTRA_REGION
+	)
+	_neutral_cluster_bonus_cache[cache_key] = bonus
+	return bonus
+
+func _get_neutral_border_bonus(target_region_id: int, player_id: int) -> float:
+	if not _is_neutral_soft_region(target_region_id, player_id):
+		return 0.0
+	var owned_neighbor_count: int = _count_owned_neighbors(target_region_id, player_id)
+	if owned_neighbor_count <= 0:
+		return 0.0
+	return minf(
+		GameParameters.AI_NEUTRAL_BORDER_BONUS_MAX,
+		float(owned_neighbor_count) * GameParameters.AI_NEUTRAL_BORDER_BONUS_PER_OWNED_NEIGHBOR
+	)
+
+func _count_connected_neutral_soft_regions(start_region_id: int, player_id: int) -> int:
+	var visited: Dictionary = {}
+	var queue: Array[int] = [start_region_id]
+	visited[start_region_id] = true
+	var count: int = 0
+	while not queue.is_empty() and count < GameParameters.AI_NEUTRAL_CLUSTER_SCAN_MAX:
+		var current_region_id: int = int(queue.pop_front())
+		if not _is_neutral_soft_region(current_region_id, player_id):
+			continue
+		count += 1
+		var neighbor_ids: Array[int] = region_manager.get_neighbor_regions(current_region_id)
+		for neighbor_id in neighbor_ids:
+			if visited.has(neighbor_id):
+				continue
+			if not _is_neutral_soft_region(neighbor_id, player_id):
+				continue
+			visited[neighbor_id] = true
+			queue.append(neighbor_id)
+	return count
+
+func _is_neutral_soft_region(region_id: int, player_id: int) -> bool:
+	if region_manager.get_region_owner(region_id) != -1:
+		return false
+	if region_manager.get_castle_level(region_id) > 0:
+		return false
+	var region: Region = region_manager.map_generator.get_region_container_by_id(region_id) as Region
+	if not region.is_passable():
+		return false
+	return not _frontier_region_has_enemy_army(region_id, player_id)
+
+func _count_owned_neighbors(target_region_id: int, player_id: int) -> int:
+	var count: int = 0
+	var neighbor_ids: Array[int] = region_manager.get_neighbor_regions(target_region_id)
+	for neighbor_id in neighbor_ids:
+		if region_manager.get_region_owner(neighbor_id) == player_id:
+			count += 1
+	return count
 
 func _get_distance_to_nearest_owned_castle(target_region_id: int, player_id: int) -> int:
 	var visited: Dictionary = {}
@@ -4351,7 +4432,7 @@ func _log_target_candidates(moves: Array) -> void:
 		var region_id: int = int(move.get("target_id", -1))
 		var mp_cost: int = int(move.get("mp_cost", 0))
 		var components: Dictionary = move.get("components", Dictionary())
-		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, distance_penalty: %.1f, random_modifier: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, strategy: %.1f)" % [
+		var line := "Candidate %d: %s (#%d), score: %.1f (mp_cost: %d, distance_penalty: %.1f, random_modifier: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, neutral_cluster_bonus: %.1f, neutral_border_bonus: %.1f, strategy: %.1f)" % [
 			i + 1,
 			_get_region_name_by_id(region_id),
 			region_id,
@@ -4365,6 +4446,8 @@ func _log_target_candidates(moves: Array) -> void:
 			float(components.get("castle_bonus", 0.0)),
 			float(components.get("pursue_bonus", 0.0)),
 			float(move.get("neutral_core_bonus", 0.0)),
+			float(move.get("neutral_cluster_bonus", 0.0)),
+			float(move.get("neutral_border_bonus", 0.0)),
 			float(components.get("strategy", 0.0))
 		]
 		_log_army_detail_line(line)
@@ -4393,7 +4476,7 @@ func _log_main_goal_candidates(candidates: Array[Dictionary]) -> void:
 		var goal_id: int = int(candidate.get("goal_id", -1))
 		var route_target_id: int = int(candidate.get("route_target_id", -1))
 		var components: Dictionary = candidate.get("components", Dictionary())
-		var line: String = "Candidate %d: %s (#%d), score: %.1f via %s (#%d), path_cost: %d, path: %s (base: %.1f, ownership_bonus: %.1f, same_turn_bonus: %.1f, distance_penalty: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, enemy_delta: %.1f, strategy: %.1f)" % [
+		var line: String = "Candidate %d: %s (#%d), score: %.1f via %s (#%d), path_cost: %d, path: %s (base: %.1f, ownership_bonus: %.1f, same_turn_bonus: %.1f, distance_penalty: %.1f, resources: %.1f, population: %.1f, level: %d, castle_bonus: %.1f, pursue_bonus: %.1f, neutral_core_bonus: %.1f, neutral_cluster_bonus: %.1f, neutral_border_bonus: %.1f, enemy_delta: %.1f, strategy: %.1f)" % [
 			i + 1,
 			_get_region_name_by_id(goal_id),
 			goal_id,
@@ -4412,6 +4495,8 @@ func _log_main_goal_candidates(candidates: Array[Dictionary]) -> void:
 			float(candidate.get("castle_bonus", 0.0)),
 			float(candidate.get("pursue_bonus", 0.0)),
 			float(candidate.get("neutral_core_bonus", 0.0)),
+			float(candidate.get("neutral_cluster_bonus", 0.0)),
+			float(candidate.get("neutral_border_bonus", 0.0)),
 			float(candidate.get("enemy_delta", 0.0)),
 			float(components.get("strategy", 0.0))
 		]
@@ -4566,6 +4651,13 @@ func _log_peasant_recruitment(army: Army, region: Region, amount: int) -> void:
 	var message = "Army %s raised %d peasants at %s" % [army.get_display_name(), amount, region.get_region_name()]
 	game_manager.get_ai_log_manager().log_recruitment(message)
 
+func _limit_economy_candidate_log(candidates: Array) -> Array:
+	var limited: Array = []
+	var max_entries: int = mini(AI_ECONOMY_CANDIDATE_LOG_LIMIT, candidates.size())
+	for i in range(max_entries):
+		limited.append(candidates[i])
+	return limited
+
 func _log_economy_plan(econ_result: Dictionary) -> void:
 	if not _log_active_turn:
 		return
@@ -4603,7 +4695,7 @@ func _log_economy_plan(econ_result: Dictionary) -> void:
 	log.log_economy(raise_message)
 	
 	var build_castle = econ_result.get("build_castle", {})
-	var build_candidates: Array = build_castle.get("candidate_details", build_castle.get("details", []))
+	var build_candidates: Array = _limit_economy_candidate_log(build_castle.get("candidate_details", build_castle.get("details", [])))
 	var build_topup: Array = build_castle.get("topup_summary", [])
 	var build_reason: String = String(build_castle.get("reason", "skipped"))
 	var build_detail: String = String(build_castle.get("reason_detail", ""))
@@ -4623,7 +4715,7 @@ func _log_economy_plan(econ_result: Dictionary) -> void:
 		log.log_economy_block("Build Castle top-up", build_topup)
 	
 	var upgrade_castle = econ_result.get("upgrade_castle", {})
-	var upgrade_candidates: Array = upgrade_castle.get("candidate_details", upgrade_castle.get("details", []))
+	var upgrade_candidates: Array = _limit_economy_candidate_log(upgrade_castle.get("candidate_details", upgrade_castle.get("details", [])))
 	var upgrade_topup: Array = upgrade_castle.get("topup_summary", [])
 	var upgrade_reason: String = String(upgrade_castle.get("reason", "skipped"))
 	var upgrade_detail: String = String(upgrade_castle.get("reason_detail", ""))

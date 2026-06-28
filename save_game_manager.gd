@@ -203,6 +203,7 @@ static func apply_save_data(game_manager: GameManager, save_data: Dictionary) ->
 	game_manager.game_mode = String(source.get("mode", "custom"))
 	game_manager.scenario_path = String(source.get("scenario_path", ""))
 	game_manager.scenario_trade_disabled = bool(source.get("trade_disabled", false))
+	game_manager.scenario_disable_neutral_cluster_bonus = bool(source.get("disable_neutral_cluster_bonus", false))
 	game_manager.load_victory_conditions_from_source(source)
 	game_manager.set_initial_human_player_count_from_save(int(game_state.get("initial_human_player_count", 0)))
 	game_manager.set_eliminated_human_players_from_save(_to_int_array(game_state.get("eliminated_human_players", [])))
@@ -259,6 +260,7 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"map_size": map_generator.get_canonical_size_token(),
 		"player_settings": _player_types_to_settings(game_manager.player_types),
 		"trade_disabled": game_manager.scenario_trade_disabled,
+		"disable_neutral_cluster_bonus": game_manager.scenario_disable_neutral_cluster_bonus,
 		"victory_conditions": game_manager.get_victory_conditions_for_save()
 	}
 	var game_state: Dictionary = {

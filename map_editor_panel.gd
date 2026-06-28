@@ -96,6 +96,7 @@ var _victory_resource_type_option: OptionButton
 var _victory_resource_amount_row: HBoxContainer
 var _victory_resource_amount_value: LineEdit
 var _scenario_trade_disabled_check: CheckBox
+var _scenario_neutral_cluster_bonus_disabled_check: CheckBox
 var _scenario_difficulty_option: OptionButton
 var _victory_type_keys: Array[String] = ["conquer", "conquer_after_events", "dominate", "own_region", "survive_turns", "economy"]
 var _event_name_add_edit: LineEdit
@@ -270,6 +271,7 @@ func _ready() -> void:
 	_victory_resource_amount_row = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceAmountRow") as HBoxContainer
 	_victory_resource_amount_value = get_node("Panel/TabContainer/Scenario/ScenarioContent/VictoryResourceAmountRow/VictoryResourceAmountValue") as LineEdit
 	_scenario_trade_disabled_check = get_node("Panel/TabContainer/Scenario/ScenarioContent/TradeDisabledRow/TradeDisabledCheck") as CheckBox
+	_scenario_neutral_cluster_bonus_disabled_check = get_node("Panel/TabContainer/Scenario/ScenarioContent/NeutralClusterBonusDisabledRow/NeutralClusterBonusDisabledCheck") as CheckBox
 	_scenario_difficulty_option = get_node("Panel/TabContainer/Scenario/ScenarioContent/DifficultyRow/DifficultyOption") as OptionButton
 	_event_name_add_edit = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/EventNameEdit") as LineEdit
 	_event_add_button = get_node("Panel/TabContainer/Event/EventListView/EventAddRow/AddEventButton") as Button
@@ -388,6 +390,7 @@ func _load_player_settings_from_scenario(scenario_name: String) -> void:
 	var mission_index: int = mini(_mission_number_option.item_count - 1, mission_number - 1)
 	_mission_number_option.select(maxi(0, mission_index))
 	_scenario_trade_disabled_check.button_pressed = bool(data.get("trade_disabled", false))
+	_scenario_neutral_cluster_bonus_disabled_check.button_pressed = bool(data.get("disable_neutral_cluster_bonus", false))
 	_set_scenario_difficulty_from_data(String(data.get("difficulty", "all")))
 	_set_edit_difficulty_target_from_data("all")
 	_refresh_difficulty_scoped_editor_views()
@@ -1813,6 +1816,7 @@ func _on_save_scenario_pressed() -> void:
 		"player_settings": player_settings,
 		"player_resources": player_resources,
 		"trade_disabled": _scenario_trade_disabled_check.button_pressed,
+		"disable_neutral_cluster_bonus": _scenario_neutral_cluster_bonus_disabled_check.button_pressed,
 		"difficulty": _get_selected_scenario_difficulty(),
 		"victory_conditions": _build_victory_conditions_for_save(),
 		"events": _build_events_for_save()

@@ -602,7 +602,7 @@ func _begin_upgrade_selection_or_start(payload: Dictionary) -> void:
 	if _is_tutorial_payload(payload):
 		_start_game_from_payload(payload)
 		return
-	if _is_multihuman_custom_map_payload(payload):
+	if _is_non_single_human_custom_map_payload(payload):
 		_start_game_from_payload(payload)
 		return
 	if not UpgradesManager.has_unlocked_cards(main_game_debug_mode):
@@ -613,7 +613,7 @@ func _begin_upgrade_selection_or_start(payload: Dictionary) -> void:
 	cards_selection_mode = true
 	_show_cards_menu()
 
-func _is_multihuman_custom_map_payload(payload: Dictionary) -> bool:
+func _is_non_single_human_custom_map_payload(payload: Dictionary) -> bool:
 	if String(payload.get("type", "")) != "map":
 		return false
 	var human_players: int = 0
@@ -622,7 +622,7 @@ func _is_multihuman_custom_map_payload(payload: Dictionary) -> bool:
 		var setting: Dictionary = raw_setting
 		if String(setting.get("control_type", "")) == "Player":
 			human_players += 1
-	return human_players > 1
+	return human_players != 1
 
 func _is_tutorial_payload(payload: Dictionary) -> bool:
 	if String(payload.get("type", "")) != "scenario":

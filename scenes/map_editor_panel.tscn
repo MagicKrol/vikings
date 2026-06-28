@@ -266,6 +266,18 @@ text = "Disable Trade:"
 layout_mode = 2
 text = ""
 
+[node name="NeutralClusterBonusDisabledRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
+layout_mode = 2
+
+[node name="NeutralClusterBonusDisabledLabel" type="Label" parent="Panel/TabContainer/Scenario/ScenarioContent/NeutralClusterBonusDisabledRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Disable Neutral Cluster Bonus:"
+
+[node name="NeutralClusterBonusDisabledCheck" type="CheckBox" parent="Panel/TabContainer/Scenario/ScenarioContent/NeutralClusterBonusDisabledRow"]
+layout_mode = 2
+text = ""
+
 [node name="DifficultyRow" type="HBoxContainer" parent="Panel/TabContainer/Scenario/ScenarioContent"]
 layout_mode = 2
 

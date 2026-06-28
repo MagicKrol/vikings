@@ -24,6 +24,10 @@ var unit_original_target_counts: Array[int] = []
 var unit_desired_target_counts: Array[int] = []
 var transfer_button: Button
 var cancel_button: Button
+var disband_panel: Control
+var disband_message_label: Label
+var disband_continue_button: Button
+var disband_back_button: Button
 
 # Transfer data
 var source_army: Army = null
@@ -48,6 +52,8 @@ var sound_manager: SoundManager = null
 var ui_manager: UIManager = null
 var info_modal: InfoModal = null
 var move_modal: MoveModal = null
+var game_manager: GameManager = null
+var army_manager: ArmyManager = null
 var _ui_lock: bool = false
 
 func _ready():
@@ -56,6 +62,10 @@ func _ready():
 	source_name_label = get_node("Transfer/VBoxContainer/SubHeader/HBoxContainer/Source")
 	transfer_button = get_node("Transfer/VBoxContainer/Buttons/Transfer")
 	cancel_button = get_node("Transfer/VBoxContainer/Buttons/Cancel")
+	disband_panel = get_node("Disband")
+	disband_message_label = get_node("Disband/ContentContainer/MessageLabel")
+	disband_continue_button = get_node("Disband/ContentContainer/HBoxContainer/ContinueButton")
+	disband_back_button = get_node("Disband/ContentContainer/HBoxContainer/CancelButton")
 	
 	# Get references to unit UI elements
 	_get_unit_ui_references()
@@ -64,12 +74,16 @@ func _ready():
 	# Connect button signals
 	transfer_button.pressed.connect(_on_transfer_pressed)
 	cancel_button.pressed.connect(_on_cancel_pressed)
+	disband_continue_button.pressed.connect(_on_disband_continue_pressed)
+	disband_back_button.pressed.connect(_on_disband_back_pressed)
 	
 	# Get manager references
 	sound_manager = get_node("../../SoundManager") as SoundManager
 	ui_manager = get_node("../UIManager") as UIManager
 	info_modal = get_node("../InfoModal") as InfoModal
 	move_modal = get_node("../MoveModal") as MoveModal
+	game_manager = get_node("../../GameManager") as GameManager
+	army_manager = game_manager.get_army_manager()
 	
 	# Initially hidden
 	visible = false
@@ -151,6 +165,7 @@ func show_transfer(army: Army, region: Region) -> void:
 func hide_modal() -> void:
 	"""Hide the transfer soldiers modal"""
 	var reopen_army: Army = target_army
+	disband_panel.visible = false
 	# Reset state
 	source_army = null
 	target_army = null
@@ -179,6 +194,7 @@ func _update_display() -> void:
 	if target_region == null or target_army == null:
 		hide_modal()
 		return
+	disband_panel.visible = false
 	
 	# Update target name
 	target_name_label.text = tr("Army %s") % target_army.number
@@ -249,16 +265,18 @@ func _on_unit_slider_changed(value: float, unit_index: int) -> void:
 func _clamp_target_count_for_army_constraints(unit_index: int, proposed_target_count: int) -> int:
 	var total_units_for_type: int = unit_total_counts[unit_index]
 	var clamped_target_count: int = clampi(proposed_target_count, 0, total_units_for_type)
-	var other_target_total: int = _sum_desired_target_counts_excluding(unit_index)
-	var min_target_for_row: int = maxi(0, 1 - other_target_total)
-	if clamped_target_count < min_target_for_row:
-		clamped_target_count = min_target_for_row
-	if source_army != null:
-		var max_total_target_units: int = _sum_all_unit_totals() - 1
-		var max_target_for_row: int = max_total_target_units - other_target_total
-		max_target_for_row = clampi(max_target_for_row, 0, total_units_for_type)
-		if clamped_target_count > max_target_for_row:
-			clamped_target_count = max_target_for_row
+	# Disabled intentionally: players may now transfer all soldiers out of an army.
+	# The Transfer button shows the Disband confirmation before applying such a transfer.
+	#var other_target_total: int = _sum_desired_target_counts_excluding(unit_index)
+	#var min_target_for_row: int = maxi(0, 1 - other_target_total)
+	#if clamped_target_count < min_target_for_row:
+		#clamped_target_count = min_target_for_row
+	#if source_army != null:
+		#var max_total_target_units: int = _sum_all_unit_totals() - 1
+		#var max_target_for_row: int = max_total_target_units - other_target_total
+		#max_target_for_row = clampi(max_target_for_row, 0, total_units_for_type)
+		#if clamped_target_count > max_target_for_row:
+			#clamped_target_count = max_target_for_row
 	return clamped_target_count
 
 func _sum_desired_target_counts_excluding(skip_index: int) -> int:
@@ -283,6 +301,11 @@ func _on_transfer_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
 	
+	var army_to_disband: Army = _get_army_that_would_be_empty_after_transfer()
+	if army_to_disband != null:
+		_show_disband_confirmation(army_to_disband)
+		return
+
 	# Apply transfers based on pending button selections
 	_apply_transfer_changes()
 	
@@ -294,6 +317,49 @@ func _on_cancel_pressed() -> void:
 	if sound_manager:
 		sound_manager.click_sound()
 	hide_modal()
+
+func _on_disband_continue_pressed() -> void:
+	if sound_manager:
+		sound_manager.click_sound()
+	var disbanding_target_army: bool = _get_projected_target_total() <= 0
+	disband_panel.visible = false
+	_apply_transfer_changes()
+	if disbanding_target_army and army_manager.selected_army == target_army:
+		army_manager.deselect_army()
+	army_manager.remove_destroyed_armies()
+	if disbanding_target_army:
+		target_army = null
+	hide_modal()
+
+func _on_disband_back_pressed() -> void:
+	if sound_manager:
+		sound_manager.click_sound()
+	disband_panel.visible = false
+
+func _show_disband_confirmation(army: Army) -> void:
+	var message_text: String = tr("disband-warning") % army.number
+	disband_message_label.text = message_text.replace("\\n", "\n")
+	disband_panel.visible = true
+	disband_panel.move_to_front()
+
+func _get_army_that_would_be_empty_after_transfer() -> Army:
+	if _get_projected_target_total() <= 0:
+		return target_army
+	if source_army != null and _get_projected_source_total() <= 0:
+		return source_army
+	return null
+
+func _get_projected_target_total() -> int:
+	var total: int = 0
+	for count in unit_desired_target_counts:
+		total += int(count)
+	return total
+
+func _get_projected_source_total() -> int:
+	var total: int = 0
+	for i in range(unit_total_counts.size()):
+		total += int(unit_total_counts[i]) - int(unit_desired_target_counts[i])
+	return total
 
 func _apply_transfer_changes() -> void:
 	"""Apply transfers based on current button selections"""

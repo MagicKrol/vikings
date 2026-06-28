@@ -1162,6 +1162,26 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 	if player == null:
 		return {"executed": false, "reason": "no_player"}
 	var topup_result: Dictionary = {}
+	var cost = GameParameters.get_castle_building_cost(BUILD_CASTLE_TYPE)
+	if cost.is_empty():
+		return {"executed": false, "reason": "no_cost_data", "details": [], "candidate_details": []}
+	var affordability_preflight: Dictionary = _check_castle_build_affordability_preflight(player_id, player, cost)
+	if not bool(affordability_preflight.get("can_attempt", false)):
+		var preflight_topup_summary: Array[String] = _format_topup_summary({
+			"success": false,
+			"reason": String(affordability_preflight.get("reason_detail", "insufficient resources"))
+		})
+		return {
+			"executed": false,
+			"reason": "insufficient_resources",
+			"details": [],
+			"candidate_details": [],
+			"resource_gap": _describe_resource_gap(cost, player),
+			"resources": _snapshot_player_resources(player),
+			"cost": cost,
+			"topup_summary": preflight_topup_summary,
+			"reason_detail": _extract_topup_reason(preflight_topup_summary)
+		}
 	var candidate_info = _pick_castle_build_candidate(player_id)
 	var candidate_id = int(candidate_info.get("best_region_id", -1))
 	var detail_entries: Array = candidate_info.get("details", [])
@@ -1173,9 +1193,6 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 			"details": detail_summary,
 			"candidate_details": detail_entries
 		}
-	var cost = GameParameters.get_castle_building_cost(BUILD_CASTLE_TYPE)
-	if cost.is_empty():
-		return {"executed": false, "reason": "no_cost_data", "details": detail_summary, "candidate_details": detail_entries}
 	if not _can_afford_cost_with_reserve(player, cost):
 		topup_result = _attempt_small_castle_topup(player_id, cost, "build")
 		if not bool(topup_result.get("success", false)) or not _can_afford_cost_with_reserve(player, cost):
@@ -1215,6 +1232,36 @@ func _evaluate_build_castle(player_id: int, turn_number: int) -> Dictionary:
 		"topup_summary": _format_topup_summary(topup_result)
 	}
 
+func _check_castle_build_affordability_preflight(player_id: int, player: Player, cost: Dictionary) -> Dictionary:
+	var gold_required: int = int(cost.get(ResourcesEnum.Type.GOLD, 0))
+	var gold_available: int = _get_spendable_resource(player, ResourcesEnum.Type.GOLD)
+	var staged_net: Dictionary = {}
+	var needs_topup: bool = false
+	for resource_key in cost.keys():
+		var resource_type: ResourcesEnum.Type = resource_key
+		if resource_type == ResourcesEnum.Type.GOLD:
+			continue
+		var required: int = int(cost.get(resource_type, 0)) - _get_spendable_resource(player, resource_type)
+		if required <= 0:
+			continue
+		needs_topup = true
+		if required > SMALL_CASTLE_TOPUP_LIMIT:
+			return {
+				"can_attempt": false,
+				"reason_detail": "needed resources beyond acceptable threshold"
+			}
+		var staged: int = int(staged_net.get(resource_type, 0))
+		var estimated_cost: int = trade_manager.calculate_buy_cost(player_id, resource_type, staged, required)
+		gold_available -= estimated_cost
+		staged_net[resource_type] = staged + required
+	if gold_available < gold_required:
+		var reason_detail: String = "insufficient gold for top-up" if needs_topup else "insufficient gold"
+		return {
+			"can_attempt": false,
+			"reason_detail": reason_detail
+		}
+	return {"can_attempt": true, "reason_detail": ""}
+
 func _attempt_small_castle_topup(player_id: int, cost: Dictionary, label: String, allow_upgrade_bank_spend: bool = false) -> Dictionary:
 	var player = player_manager.get_player(player_id)
 	var gold_available := _get_spendable_resource(player, ResourcesEnum.Type.GOLD, allow_upgrade_bank_spend)
@@ -1226,7 +1273,7 @@ func _attempt_small_castle_topup(player_id: int, cost: Dictionary, label: String
 		var resource_type: ResourcesEnum.Type = resource_key
 		if resource_type == ResourcesEnum.Type.GOLD:
 			continue
-		var required: int = int(cost.get(resource_type, 0)) - player.get_resource_amount(resource_type)
+		var required: int = int(cost.get(resource_type, 0)) - _get_spendable_resource(player, resource_type)
 		if required <= 0:
 			continue
 		if required > SMALL_CASTLE_TOPUP_LIMIT:
@@ -1299,7 +1346,10 @@ func _pick_castle_build_candidate(player_id: int) -> Dictionary:
 		var strategic_score = region.get_strategic_point_score() * STRATEGIC_SCORE_SCALE
 		var neighbor_score = _compute_neighbor_support_score(region_id, player_id)
 		var total_score = strategic_score + neighbor_score
-		var distance_info = _evaluate_forward_requirement(region_id, enemy_castles, enemy_baseline)
+		var score_pass: bool = total_score >= CASTLE_SCORE_THRESHOLD
+		var distance_info: Dictionary = {"passed": false, "label": "Not Checked"}
+		if score_pass:
+			distance_info = _evaluate_forward_requirement(region_id, enemy_castles, enemy_baseline)
 		var entry = {
 			"region_id": region_id,
 			"name": region.get_region_name(),
@@ -1307,12 +1357,12 @@ func _pick_castle_build_candidate(player_id: int) -> Dictionary:
 			"neighbor_score": neighbor_score,
 			"total_score": total_score,
 			"distance_status": String(distance_info.get("label", "Not Checked")),
-			"score_pass": total_score >= CASTLE_SCORE_THRESHOLD,
+			"score_pass": score_pass,
 			"score_threshold": CASTLE_SCORE_THRESHOLD
 		}
 
 		detail_entries.append(entry)
-		if total_score >= CASTLE_SCORE_THRESHOLD and bool(distance_info.get("passed", false)):
+		if score_pass and bool(distance_info.get("passed", false)):
 			if total_score > best_score:
 				best_score = total_score
 				best_region_id = region_id

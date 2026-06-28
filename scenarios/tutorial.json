@@ -1064,7 +1064,7 @@
 			"owner": 1,
 			"population": 260,
 			"resources": {
-				"Food": 5,
+				"Food": 0,
 				"Gold": 0,
 				"Iron": 0,
 				"Stone": 1,
@@ -2669,6 +2669,7 @@
 	"victory_conditions": [
 		{
 			"player_id": 1,
+			"region_id": 190,
 			"turns": 99,
 			"type": "survive_turns"
 		}

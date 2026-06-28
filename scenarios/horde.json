@@ -291,6 +291,7 @@
 			]
 		}
 	},
+	"disable_neutral_cluster_bonus": true,
 	"events": [],
 	"intro_message": "horde_intro",
 	"map_file": "mapdata_69_small.json",

@@ -45,7 +45,7 @@ const RECRUIT_GAUSS_SIGMA = 1.6
 const RECRUIT_GAUSS_AMPLITUDE = 10.0
 const RECRUIT_GAUSS_CUTOFF_X = 5.0
 const RECRUIT_GAUSS_RATIO_MIN = 0.5
-const RECRUIT_GAUSS_RATIO_MAX = 5.0
+const RECRUIT_GAUSS_RATIO_MAX = 4.0
 const RECRUIT_GAUSS_MAX_SHIFT = 4.0
 const RECRUIT_SCARCITY_LOW = 0.5               # Gold/recruit lower bound for scarcity bias (legacy)
 const RECRUIT_SCARCITY_HIGH = 1.5              # Gold/recruit upper bound for full scarcity bias (legacy)
@@ -130,6 +130,11 @@ const AI_SIEGE_WITHDRAW_BAILOUT_RATIO_BY_DIFFICULTY: Dictionary = {
 	Difficulty.NORMAL: 1.5,
 	Difficulty.HARD: 1.75
 }
+const AI_INCOME_GROWTH_BONUS_BY_DIFFICULTY: Dictionary = {
+	Difficulty.EASY: 0.0,
+	Difficulty.NORMAL: 0.10,
+	Difficulty.HARD: 0.20
+}
 
 enum ArmyMoveTrigger {
 	LEFT_CLICK = 0,
@@ -179,15 +184,15 @@ const REGION_MAP_HOVER_OWNED_HOVER_ALPHA = 0.7
 const REGION_MAP_HOVER_NEUTRAL_BASE_ALPHA = 0.2
 const REGION_MAP_HOVER_NEUTRAL_HOVER_ALPHA = 0.3
 
-const RECRUIT_PERCENTAGE_OF_POPULATION = 0.07  # % of population becomes available recruits
-const RECRUIT_REPLENISH_RATE = 0.006            # % of population replenishes per turn
+const RECRUIT_PERCENTAGE_OF_POPULATION = 0.06  # % of population becomes available recruits
+const RECRUIT_REPLENISH_RATE = 0.004            # % of population replenishes per turn
 const RECRUIT_PEA_CAP_SHARE = 0.40   
 ## Region Level Bonuses
 const REGION_RESOURCE_LEVEL_MULTIPLIER = 0.375  # Resource bonus per level: +37.5% per level above 1
 const PROMOTION_GROWTH_BONUS_TURNS = 5          # Number of turns promotion growth bonus lasts
 const PROMOTION_REPLENISH_BONUS_TURNS = 2       # Number of turns promotion replenish bonus lasts
 const PROMOTION_REPLENISH_BONUS_MULTIPLIER = 2.0 # Multiplier applied to base replenish rate during promotion bonus
-const REGION_LEVEL_REPLENISH_BONUS_RATE = 0.003 # Added replenish rate per region level above 1
+const REGION_LEVEL_REPLENISH_BONUS_RATE = 0.0025 # Added replenish rate per region level above 1
 
 ## Promotion Growth Bonus by Turn (added to base growth rate)
 const PROMOTION_GROWTH_BONUS_BY_TURN = {
@@ -200,11 +205,11 @@ const PROMOTION_GROWTH_BONUS_BY_TURN = {
 
 ## Castle Recruitment Bonuses (percentage of population becomes recruits)
 const CASTLE_RECRUITMENT_PERCENTAGES = {
-	CastleTypeEnum.Type.NONE: 0.05,         # No castle:
-	CastleTypeEnum.Type.OUTPOST: 0.05,      # Outpost: 
-	CastleTypeEnum.Type.KEEP: 0.06,         # Keep:
-	CastleTypeEnum.Type.CASTLE: 0.06,       # Castle:
-	CastleTypeEnum.Type.STRONGHOLD: 0.7    # Stronghold:
+	CastleTypeEnum.Type.NONE: 0.04,         # No castle:
+	CastleTypeEnum.Type.OUTPOST: 0.045,      # Outpost: 
+	CastleTypeEnum.Type.KEEP: 0.055,         # Keep:
+	CastleTypeEnum.Type.CASTLE: 0.055,       # Castle:
+	CastleTypeEnum.Type.STRONGHOLD: 0.65    # Stronghold:
 }
 
 const CASTLE_UPKEEP_COSTS: Dictionary = {
@@ -218,15 +223,15 @@ const CASTLE_UPKEEP_COSTS: Dictionary = {
 	},
 	CastleTypeEnum.Type.KEEP: {
 		ResourcesEnum.Type.WOOD: 2,
-		ResourcesEnum.Type.STONE: 1
+		ResourcesEnum.Type.STONE: 2
 	},
 	CastleTypeEnum.Type.CASTLE: {
 		ResourcesEnum.Type.WOOD: 2,
-		ResourcesEnum.Type.STONE: 2
+		ResourcesEnum.Type.STONE: 4
 	},
 	CastleTypeEnum.Type.STRONGHOLD: {
 		ResourcesEnum.Type.WOOD: 2,
-		ResourcesEnum.Type.STONE: 4
+		ResourcesEnum.Type.STONE: 6
 	}
 }
 
@@ -309,6 +314,11 @@ const AI_MAX_EXPECTED_DISTANCE = 10            # Expected max distance for norma
 const AI_NEUTRAL_CORE_DISTANCE_BONUS_MULTIPLIER = 5.0
 const AI_NEUTRAL_CORE_DISTANCE_MAX = 3
 const AI_NEUTRAL_CORE_OWNED_NEIGHBOR_BONUS = 3.0
+const AI_NEUTRAL_CLUSTER_BONUS_PER_EXTRA_REGION = 2.0
+const AI_NEUTRAL_CLUSTER_BONUS_MAX = 16.0
+const AI_NEUTRAL_CLUSTER_SCAN_MAX = 9
+const AI_NEUTRAL_BORDER_BONUS_PER_OWNED_NEIGHBOR = 4.0
+const AI_NEUTRAL_BORDER_BONUS_MAX = 12.0
 
 ## Mining System Constants
 const ORE_SEARCH_COST = 10                      # Gold cost to perform ore search
@@ -398,7 +408,6 @@ const AI_NEED_SCORE_MAX = 10.0                # Resource need score cap per reso
 
 ## AI Handicap Bonuses
 const AI_RESOURCE_GROWTH_BONUS = 0.0          # Multiplier bonus for non-gold resource income (e.g., +25%)
-const AI_INCOME_GROWTH_BONUS = 0.0           # Multiplier bonus for gold income (e.g., +20%)
 
 
 ## AI Peasants-Only Recruitment Parameters
@@ -1412,6 +1421,10 @@ static func game_difficulty_to_string(difficulty: int) -> String:
 static func get_ai_human_target_score_bonus(difficulty: int) -> float:
 	var normalized: int = normalize_game_difficulty(difficulty)
 	return float(AI_HUMAN_TARGET_SCORE_BONUS_BY_DIFFICULTY.get(normalized, 0.0))
+
+static func get_ai_income_growth_bonus(difficulty: int) -> float:
+	var normalized: int = normalize_game_difficulty(difficulty)
+	return float(AI_INCOME_GROWTH_BONUS_BY_DIFFICULTY.get(normalized, 0.0))
 
 static func get_ai_min_recruits_for_raising(difficulty: int, severe_castle_threat: bool = false) -> int:
 	if severe_castle_threat:
