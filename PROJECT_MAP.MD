@@ -9,6 +9,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 - Analytics: `Analytics` autoload (`analytics.gd`) sends queued app heartbeat events plus content-run analytics (`run_start`, `run_heartbeat`, `run_finish`, `run_event`) to `heartbeat.php`; payloads include `run_source`, `is_internal`, and `internal_reason` so Godot/editor or marked internal-device runs can be excluded later; `analytics_schema.sql` defines additive MySQL tables for raw events and run summaries.
 - Analytics dashboard: `analytics-dashboard/` is a standalone React + Node/MySQL dashboard for `analytics_runs` and `analytics_events`; it summarizes run volume, unique players, completion/quit/win rates, average duration/turns, content performance, difficulty/status/platform breakdowns, event volume, and recent runs with time-period and metadata filters. Dashboard data excludes internal rows and `.env` configured owner/test `user_id`s by default.
 - Rendering/runtime defaults: project settings enforce VSync (`window/vsync/vsync_mode=enabled`) for frame pacing; 2D pixel snap is disabled to avoid zoom-time jitter and stepped camera/cloud motion, while clouds use per-sprite `Linear with Mipmaps` filtering.
+- Window mode: `WindowModeManager` autoload toggles fullscreen/windowed globally with `Alt+Enter` or `F11`; windowed mode opens at 1600x900, remains resizable, and remembers the last windowed size during the current run.
 
 ## Scenes
 

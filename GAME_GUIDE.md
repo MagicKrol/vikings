@@ -93,25 +93,18 @@ Local food adds +0.1% growth per food point in the region. This is why food regi
 
 ### Promotion effects on growth and replenish
 
-Promotion three separate effects.
+Promotion has two ongoing effects and one short replenish boost.
 
 1. **Growth bonus (permanent, level-based)**: each level above L1 adds +0.5% to growth.
 
-2.  **Growth boost (temporary, 5 turns)**
+2. **Resource output bonus (permanent, level-based)**: each level above L1 increases local resource output by 37.5%.
 
-Turn 1 after promotion: +4.0% growth
-Turn 2 after promotion: +3.5% growth
-Turn 3 after promotion: +3.0% growth
-Turn 4 after promotion: +2.5% growth
-Turn 5 after promotion: +2.0% growth
-
-
-3. **Recruits Replenish pool bonus (temporary, 2 turns)**: after promotion, recruitment replenish pool gets a 2-turn boost.
+3. **Recruits replenish pool bonus (temporary, 2 turns)**: after promotion, the base recruit replenish rate is doubled for 2 turns.
 
 
 ### Region levels and what they represent
 
-Region level defines how much of the population can be available as recruits and how productive the region becomes. Each level above the first increases local resource output by 25%, so promotion improves both economy and manpower.
+Region level defines how much of the population can be available as recruits and how productive the region becomes. Each level above the first increases local resource output by 37.5%, so promotion improves both economy and manpower.
 
 **Shire (L1)** - A Shire is a small frontier region. It can support only a modest recruit pool, with a cap equal to 4% of population. Shires are useful for early expansion and border presence, but they should not be expected to carry a long war alone.
 
@@ -123,7 +116,7 @@ Region level defines how much of the population can be available as recruits and
 
 **Province (L5)** - A Province is a mature power base. Its 8% recruit cap gives it the strongest manpower ceiling, and its resource output is the best a region can reach. Provinces are late-game assets: they help replace losses, support elite armies, and keep pressure alive after expensive battles.
 
-Base recruit replenishment starts at 1% of population per turn, with +0.2% per level above L1.
+Base recruit replenishment starts at 0.4% of population per turn, with +0.25% per level above L1.
 
 ### Upkeep costs from promoted regions and castles
 
@@ -135,8 +128,8 @@ Region upkeep by level:
 
 1. L1-L2: 0 Wood
 2. L3: 1 Wood
-3. L4: 2 Wood
-4. L5: 3 Wood
+3. L4: 1 Wood, 1 Stone
+4. L5: 1 Food, 1 Wood, 1 Stone
 
 Castles follow the same principle. A fortress is not only a battle asset, it is a permanent burden on your economy. Walls, gates, towers, garrisons, and supply lines all consume materials every turn. Higher-tier castles are harder to break, but they are also heavier to maintain.
 
@@ -146,9 +139,9 @@ Castle upkeep by tier:
 
 1. No castle: 0 Wood, 0 Stone
 2. Outpost: 2 Wood, 0 Stone
-3. Keep: 2 Wood, 1 Stone
-4. Castle: 2 Wood, 2 Stone
-5. Stronghold: 2 Wood, 4 Stone
+3. Keep: 2 Wood, 2 Stone
+4. Castle: 2 Wood, 4 Stone
+5. Stronghold: 2 Wood, 6 Stone
 
 ### Difficulty and opening pressure
 
