@@ -32,6 +32,8 @@ Thumbs.db
 *.sln.docstates
 
 # Build results
+*.pck
+*.zip
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -46,6 +48,9 @@ export/
 pcexport/
 logs/
 
+# Large source art files should stay outside Git history
+*.psd
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -55,4 +60,3 @@ logs/
 ehthumbs.db
 Thumbs.dbPSDs/background_cean.psd
 PSDs/background_cean.psd
-
