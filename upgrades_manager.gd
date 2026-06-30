@@ -42,8 +42,8 @@ static func get_all_cards() -> Array[Dictionary]:
 		_make_resource_card("Card5", ResourcesEnum.Type.GOLD, _difficulty_requirements(SOURCE_SCENARIO, "horde")),
 		_make_unit_card("Card6", SoldierTypeEnum.Type.PEASANTS, 10, _requirements([
 			_source_requirement(1, SOURCE_SCENARIO, "mission-1", ""),
-			_source_requirement(2, SOURCE_SCENARIO, "scenario4", "normal"),
-			_source_requirement(3, SOURCE_SCENARIO, "scenario4", "hard")
+			_source_requirement(2, SOURCE_SCENARIO, "scenario4", "easy"),
+			_source_requirement(3, SOURCE_SCENARIO, "scenario4", "normal")
 		])),
 		_make_unit_card("Card7", SoldierTypeEnum.Type.SPEARMEN, 5, _difficulty_requirements(SOURCE_SCENARIO, "mission-3")),
 		_make_unit_card("Card8", SoldierTypeEnum.Type.ARCHERS, 5, _difficulty_requirements(SOURCE_SCENARIO, "mission-4")),

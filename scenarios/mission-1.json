@@ -36,100 +36,6 @@
 	"description": "mission-1_description",
 	"difficulty": "easy",
 	"difficulty_overrides": {
-		"hard": {
-			"army_compositions": [
-				{
-					"composition": {
-						"Archers": 5,
-						"Crossbowmen": 0,
-						"Horsemen": 0,
-						"Knights": 1,
-						"Mounted Knights": 0,
-						"Peasants": 15,
-						"Royal Guard": 0,
-						"Spearmen": 0,
-						"Swordsmen": 0
-					},
-					"region_id": 123
-				},
-				{
-					"composition": {
-						"Archers": 5,
-						"Crossbowmen": 0,
-						"Horsemen": 0,
-						"Knights": 1,
-						"Mounted Knights": 0,
-						"Peasants": 15,
-						"Royal Guard": 0,
-						"Spearmen": 0,
-						"Swordsmen": 0
-					},
-					"region_id": 135
-				}
-			],
-			"player_resources": [
-				{
-					"player_id": 1,
-					"resources": {
-						"Food": 0,
-						"Gold": 0,
-						"Iron": 0,
-						"Stone": 0,
-						"Wood": 0
-					}
-				},
-				{
-					"player_id": 2,
-					"resources": {
-						"Food": 50,
-						"Gold": 100,
-						"Iron": 10,
-						"Stone": 10,
-						"Wood": 20
-					}
-				},
-				{
-					"player_id": 3,
-					"resources": {
-						"Food": 50,
-						"Gold": 100,
-						"Iron": 10,
-						"Stone": 10,
-						"Wood": 20
-					}
-				},
-				{
-					"player_id": 4,
-					"resources": {
-						"Food": 50,
-						"Gold": 100,
-						"Iron": 10,
-						"Stone": 10,
-						"Wood": 20
-					}
-				},
-				{
-					"player_id": 5,
-					"resources": {
-						"Food": 50,
-						"Gold": 100,
-						"Iron": 10,
-						"Stone": 10,
-						"Wood": 20
-					}
-				},
-				{
-					"player_id": 6,
-					"resources": {
-						"Food": 50,
-						"Gold": 100,
-						"Iron": 10,
-						"Stone": 10,
-						"Wood": 20
-					}
-				}
-			]
-		},
 		"easy": {
 			"army_compositions": [
 				{
@@ -223,8 +129,103 @@
 					}
 				}
 			]
+		},
+		"hard": {
+			"army_compositions": [
+				{
+					"composition": {
+						"Archers": 5,
+						"Crossbowmen": 0,
+						"Horsemen": 0,
+						"Knights": 1,
+						"Mounted Knights": 0,
+						"Peasants": 15,
+						"Royal Guard": 0,
+						"Spearmen": 0,
+						"Swordsmen": 0
+					},
+					"region_id": 123
+				},
+				{
+					"composition": {
+						"Archers": 5,
+						"Crossbowmen": 0,
+						"Horsemen": 0,
+						"Knights": 1,
+						"Mounted Knights": 0,
+						"Peasants": 15,
+						"Royal Guard": 0,
+						"Spearmen": 0,
+						"Swordsmen": 0
+					},
+					"region_id": 135
+				}
+			],
+			"player_resources": [
+				{
+					"player_id": 1,
+					"resources": {
+						"Food": 0,
+						"Gold": 0,
+						"Iron": 0,
+						"Stone": 0,
+						"Wood": 0
+					}
+				},
+				{
+					"player_id": 2,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 3,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 4,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 5,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				},
+				{
+					"player_id": 6,
+					"resources": {
+						"Food": 50,
+						"Gold": 100,
+						"Iron": 10,
+						"Stone": 10,
+						"Wood": 20
+					}
+				}
+			]
 		}
 	},
+	"disable_neutral_cluster_bonus": false,
 	"events": [],
 	"intro_message": "mission-1_intro",
 	"map_file": "mapdata-327-tiny.json",
@@ -772,7 +773,7 @@
 			"type_display": "Grassland"
 		},
 		{
-			"biome": "forest_hills",
+			"biome": "hills",
 			"castle_type": "None",
 			"discovered_ores": [],
 			"garrison": {
@@ -792,15 +793,15 @@
 			"ocean": false,
 			"ore_guaranteed_discovery_attempt": 1,
 			"owner": 0,
-			"population": 453,
+			"population": 303,
 			"resources": {
 				"Food": 0,
 				"Gold": 0,
 				"Iron": 5,
-				"Stone": 1,
-				"Wood": 1
+				"Stone": 2,
+				"Wood": 0
 			},
-			"type_display": "Forest Hills"
+			"type_display": "Hills"
 		},
 		{
 			"biome": "forest",

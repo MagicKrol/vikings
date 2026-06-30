@@ -234,18 +234,7 @@ func _finish() -> void:
 	if message_modal:
 		message_modal.hide_modal()
 		_restore_modal_state()
-	game_manager.finish_tutorial_analytics_run()
-	var tree: SceneTree = _get_scene_tree()
-	if tree != null:
-		tree.paused = false
-		tree.change_scene_to_file("res://scenes/main_menu.tscn")
-
-func _get_scene_tree() -> SceneTree:
-	if message_modal:
-		return message_modal.get_tree()
-	if tutorial_modal:
-		return tutorial_modal.get_tree()
-	return null
+	game_manager.complete_tutorial_and_return_to_main_menu()
 
 func is_waiting_for_region() -> bool:
 	return active and expected_action == "region"

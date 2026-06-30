@@ -1094,6 +1094,12 @@ func _finish_analytics_run(outcome: String, winner_player_id: int = -1, outcome_
 func finish_tutorial_analytics_run() -> void:
 	_finish_analytics_run("won", 1, "tutorial_completed")
 
+func complete_tutorial_and_return_to_main_menu() -> void:
+	get_tree().paused = false
+	finish_tutorial_analytics_run()
+	_pending_upgrade_unlock_result = _record_upgrade_completion_for_victory(1)
+	_show_pending_upgrade_card_or_return_to_main_menu("")
+
 func has_victory_been_declared() -> bool:
 	return victory_declared
 
