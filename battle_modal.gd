@@ -179,11 +179,12 @@ func _is_continue_hotkey(event: InputEvent) -> bool:
 	var mapped_continue_close_pressed: bool = GameParameters.is_continue_close_key_pressed(event)
 	if mapped_continue_close_pressed and not _is_tutorial_mode_active():
 		return true
-	if event is InputEventKey:
-		var key_event: InputEventKey = event as InputEventKey
-		if key_event.pressed and not key_event.echo:
-			return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
-	return false
+	if not (event is InputEventKey):
+		return false
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo or key_event.alt_pressed:
+		return false
+	return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
 
 func _is_tutorial_mode_active() -> bool:
 	var game_manager: GameManager = get_node("../../GameManager") as GameManager

@@ -21,7 +21,9 @@ const LEVEL_1_TEXTURE: Texture2D = preload("res://images/level1.png")
 const LEVEL_2_TEXTURE: Texture2D = preload("res://images/level2.png")
 const LEVEL_3_TEXTURE: Texture2D = preload("res://images/level3.png")
 const CARD_LEVEL_TOOLTIP_OFFSET: Vector2 = Vector2(18.0, 18.0)
+const MAIN_MENU_DESIGN_WIDTH: float = 1920.0
 
+@onready var background: TextureRect = $Background
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
 @onready var load_game_button: Button = $MenuContainer/LoadGameButton
@@ -57,15 +59,17 @@ const CARD_LEVEL_TOOLTIP_OFFSET: Vector2 = Vector2(18.0, 18.0)
 
 # CustomMap menu nodes
 @onready var custom_map_container: Control = $CustomMap
+@onready var custom_map_texture_left: TextureRect = $CustomMap/TextureRect4
+@onready var custom_map_texture_right: TextureRect = $CustomMap/TextureRect5
+@onready var custom_map_texture_middle: TextureRect = $CustomMap/TextureRect3
 @onready var custom_map_panel: Panel = $CustomMap/Panel
 @onready var custom_map_panel2: Panel = $CustomMap/Panel2
 @onready var custom_map_panel3: Panel = $CustomMap/Panel3
 @onready var campaign_panel: Panel = $CustomMap/Panel4
 @onready var custom_map_panel3_label: Label = $CustomMap/Panel3/VBoxContainer/Label
-@onready var custom_map_back_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer2/Back
+@onready var custom_map_back_button: Button = $CustomMap/BackButton
 @onready var custom_map_select_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer/SelectMap
 @onready var scenario_panel: Panel = $CustomMap/Scenario
-@onready var scenario_back_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer2/Back
 @onready var scenario_select_button_custom: Button = $CustomMap/Scenario/VBoxContainer/HBoxContainer/SelectMap
 @onready var scenario_difficulty_buttons: Array[Button] = [
 	get_node("CustomMap/Scenario/VBoxContainer/Difficulty/Easy"),
@@ -164,6 +168,8 @@ var player_settings: Array = []  # Array of dictionaries with player configurati
 func _ready():
 
 	TranslationServer.set_locale(_resolve_startup_locale())
+	resized.connect(_update_background_layout)
+	_update_background_layout()
 	# Create and add sound manager
 	sound_manager = SoundManager.new()
 	add_child(sound_manager)
@@ -215,7 +221,6 @@ func _ready():
 	# Connect custom map menu button signals
 	custom_map_back_button.pressed.connect(_on_custom_map_back_pressed)
 	custom_map_select_button.pressed.connect(_on_custom_map_select_pressed)
-	scenario_back_button_custom.pressed.connect(_on_custom_map_back_pressed)
 	scenario_select_button_custom.pressed.connect(_on_scenario_select_pressed)
 	map_size_button_all.pressed.connect(_on_size_filter_pressed.bind("All", map_size_button_all))
 	map_size_button_xs.pressed.connect(_on_size_filter_pressed.bind("XS", map_size_button_xs))
@@ -235,7 +240,7 @@ func _ready():
 	default_scenario_description_text = scenario_description_label.text
 	default_scenario_objectives_text = scenario_objectives_label.text
 	main_game_debug_mode = _resolve_main_game_debug_mode()
-	options_container.configure(sound_manager, false, tr("Back to Menu"))
+	options_container.configure(sound_manager, false, tr("Back"))
 	_update_primary_main_menu_button()
 
 	if _apply_start_target_from_meta():
@@ -246,6 +251,36 @@ func _ready():
 func _process(_delta: float) -> void:
 	if card_level_tooltip.visible:
 		_update_card_level_tooltip_position(get_viewport().get_mouse_position())
+
+func _update_background_layout() -> void:
+	var viewport_size: Vector2 = get_viewport_rect().size
+	var texture_size: Vector2 = background.texture.get_size()
+	var texture_aspect: float = texture_size.x / texture_size.y
+	var viewport_aspect: float = viewport_size.x / viewport_size.y
+	var target_size: Vector2
+	if viewport_aspect > texture_aspect:
+		target_size = Vector2(viewport_size.x, viewport_size.x / texture_aspect)
+	else:
+		target_size = Vector2(viewport_size.y * texture_aspect, viewport_size.y)
+	background.position = Vector2((viewport_size.x - target_size.x) * 0.5, 0.0)
+	background.size = target_size
+	_update_custom_map_layout(viewport_size.x)
+
+func _update_custom_map_layout(viewport_width: float) -> void:
+	var shift: float = maxf(0.0, (viewport_width - MAIN_MENU_DESIGN_WIDTH) * 0.5)
+	_apply_x_bounds(custom_map_texture_left, 80.0, 1616.0, shift)
+	_apply_x_bounds(custom_map_texture_middle, 680.0, 2216.0, shift)
+	_apply_x_bounds(custom_map_texture_right, 1360.0, 2896.0, shift)
+	_apply_x_bounds(custom_map_panel2, 80.0, 620.0, shift)
+	_apply_x_bounds(custom_map_panel, 680.0, 1290.0, shift)
+	_apply_x_bounds(scenario_panel, 680.0, 1290.0, shift)
+	_apply_x_bounds(custom_map_panel3, 1360.0, 1895.0, shift)
+	_apply_x_bounds(campaign_panel, 1360.0, 1895.0, shift)
+	_apply_x_bounds(custom_map_back_button, 745.0, 1225.0, shift)
+
+func _apply_x_bounds(control: Control, left: float, right: float, shift: float) -> void:
+	control.position.x = left + shift
+	control.size.x = right - left
 
 func _apply_start_target_from_meta() -> bool:
 	if not get_tree().has_meta(MAIN_MENU_TARGET_META_KEY):
@@ -360,7 +395,7 @@ func _apply_language_by_index(index: int, persist: bool) -> void:
 	language_label.text = _label_for_language_index(_language_index)
 	language_flag_icon.texture = _flag_for_language_index(_language_index)
 	_update_primary_main_menu_button()
-	options_container.configure(sound_manager, false, tr("Back to Menu"))
+	options_container.configure(sound_manager, false, tr("Back"))
 	if persist:
 		_refresh_upgrade_cards()
 		SaveGameManager.save_settings(sound_manager)
@@ -674,10 +709,10 @@ func _update_primary_main_menu_button() -> void:
 
 func _show_new_game_menu():
 	"""Show the new game menu"""
-	button_bg1.visible = true
-	button_bg2.visible = true
-	button_bg3.visible = true
-	button_bg4.visible = true
+	button_bg1.visible = false
+	button_bg2.visible = false
+	button_bg3.visible = false
+	button_bg4.visible = false
 	button_bg5.visible = false
 	button_bg6.visible = false
 	menu_container.visible = false
@@ -693,7 +728,10 @@ func _show_new_game_menu():
 
 func _show_options_menu():
 	"""Show the options menu"""
-	options_container.configure(sound_manager, false, tr("Back to Menu"))
+	options_container.configure(sound_manager, false, tr("Back"))
+	button_bg1.visible = false
+	button_bg2.visible = false
+	button_bg3.visible = false
 	button_bg4.visible = false
 	button_bg5.visible = false
 	button_bg6.visible = false
@@ -894,7 +932,7 @@ func _toggle_upgrade_card_selection(card_id: String) -> void:
 
 func _show_campaign_menu():
 	"""Show campaign using the Scenario node layout"""
-	button_bg1.visible = true
+	button_bg1.visible = false
 	button_bg2.visible = false
 	button_bg3.visible = false
 	button_bg4.visible = false
@@ -924,7 +962,7 @@ func _show_campaign_menu():
 
 func _show_scenario_menu():
 	"""Show scenario selection using the CustomMap layout"""
-	button_bg1.visible = true
+	button_bg1.visible = false
 	button_bg2.visible = false
 	button_bg3.visible = false
 	button_bg4.visible = false
@@ -954,7 +992,7 @@ func _show_scenario_menu():
 
 func _show_custom_map_menu():
 	"""Show the custom map menu and load map list"""
-	button_bg1.visible = true
+	button_bg1.visible = false
 	button_bg2.visible = false
 	button_bg3.visible = false
 	button_bg4.visible = false

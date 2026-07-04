@@ -28,29 +28,38 @@ bg_color = Color(0, 0, 0, 1)
 
 [node name="MoveModal" type="Control"]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -115.0
-offset_top = 330.0
-offset_right = 135.0
-offset_bottom = 530.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_emb2f")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 300.0
-offset_bottom = 200.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -115.0
+offset_top = -210.0
+offset_right = 185.0
+offset_bottom = -10.0
 texture = ExtResource("2_n7ogd")
 
 [node name="Panel" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 300.0
-offset_bottom = 200.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -115.0
+offset_top = -210.0
+offset_right = 185.0
+offset_bottom = -10.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
@@ -170,19 +179,25 @@ icon = ExtResource("6_vdrwq")
 expand_icon = true
 
 [node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 800.0
-offset_top = -800.0
-offset_right = 1070.0
-offset_bottom = -700.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -290.0
+offset_top = 70.0
+offset_right = -20.0
+offset_bottom = 170.0
 texture = ExtResource("5_qply4")
 
 [node name="Panel2" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 800.0
-offset_top = -800.0
-offset_right = 1070.0
-offset_bottom = -700.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -290.0
+offset_top = 70.0
+offset_right = -20.0
+offset_bottom = 170.0
 theme = SubResource("Theme_tx0fs")
 theme_override_styles/panel = SubResource("StyleBoxFlat_4478i")
 
@@ -235,12 +250,17 @@ text = "Next army"
 
 [node name="Label" type="Label" parent="Panel2/List/ButtonSection"]
 layout_mode = 2
-text = "(Press Space)"
+text = "(Press Shift)"
 horizontal_alignment = 1
 
 [node name="NoActions" parent="." instance=ExtResource("9_mdmgs")]
 layout_mode = 1
-offset_left = 190.0
-offset_top = -100.0
-offset_right = 590.0
-offset_bottom = 50.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 75.0
+offset_top = -310.0
+offset_right = 475.0
+offset_bottom = -160.0

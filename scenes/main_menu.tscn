@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=43 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -29,6 +29,9 @@
 [ext_resource type="PackedScene" uid="uid://cfi8osodkmdhq" path="res://scenes/upgrade_card.tscn" id="49_upgrade_card"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="50_level_tooltip"]
 [ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="51_green_btn_styles"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_menu_button_bg"]
+texture = ExtResource("3_701y0")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -119,73 +122,112 @@ metadata/_edit_vertical_guides_ = [887.0]
 metadata/_edit_horizontal_guides_ = [285.0]
 
 [node name="Background" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 25.0
-offset_right = 25.0
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("2_background")
 
 [node name="TextureRect1" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 720.0
-offset_top = 260.0
-offset_right = 1200.0
-offset_bottom = 360.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -345.6
+offset_right = 288.0
+offset_bottom = -225.6
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect2" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 720.0
-offset_top = 371.0
-offset_right = 1200.0
-offset_bottom = 471.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -212.4
+offset_right = 288.0
+offset_bottom = -92.4
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect3" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 720.0
-offset_top = 482.0
-offset_right = 1200.0
-offset_bottom = 582.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -79.2
+offset_right = 288.0
+offset_bottom = 40.8
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect4" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 720.0
-offset_top = 593.0
-offset_right = 1200.0
-offset_bottom = 693.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = 54.0
+offset_right = 288.0
+offset_bottom = 174.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect5" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 720.0
-offset_top = 704.0
-offset_right = 1200.0
-offset_bottom = 804.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = 187.2
+offset_right = 288.0
+offset_bottom = 307.2
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
 
 [node name="TextureRect6" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 720.0
-offset_top = 816.0
-offset_right = 1200.0
-offset_bottom = 916.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = 321.6
+offset_right = 288.0
+offset_bottom = 441.6
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("3_701y0")
 expand_mode = 2
@@ -205,6 +247,8 @@ offset_right = 205.0
 offset_bottom = 351.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(205, 300.5)
 theme_override_constants/separation = 65
 
 [node name="ContinueButton" type="Button" parent="MenuContainer"]
@@ -252,6 +296,8 @@ offset_right = 205.0
 offset_bottom = 245.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(205, 245)
 theme_override_constants/separation = 65
 
 [node name="TutorialButton" type="Button" parent="Demo"]
@@ -283,32 +329,58 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -205.0
-offset_top = -245.0
-offset_right = 205.0
-offset_bottom = 245.0
+offset_left = -240.0
+offset_top = -216.5
+offset_right = 240.0
+offset_bottom = 216.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 65
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(240, 216.5)
+theme_override_constants/separation = 11
 
 [node name="CampaignButton" type="Button" parent="NewGame"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Campaign"
 
 [node name="ScenarioButton" type="Button" parent="NewGame"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Scenario"
 
 [node name="ScenarioButton2" type="Button" parent="NewGame"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Custom"
 
 [node name="BackButton" type="Button" parent="NewGame"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Back"
 
 [node name="Button" type="Button" parent="NewGame"]
@@ -324,27 +396,47 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -205.0
-offset_top = -245.0
-offset_right = 205.0
-offset_bottom = 245.0
+offset_left = -240.0
+offset_top = -161.0
+offset_right = 240.0
+offset_bottom = 161.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 65
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(240, 161)
+theme_override_constants/separation = 11
 
 [node name="AudoButton" type="Button" parent="Options3"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Audio"
 
 [node name="MusicButton" type="Button" parent="Options3"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Music"
 
 [node name="BackButton" type="Button" parent="Options3"]
+custom_minimum_size = Vector2(480, 100)
 layout_mode = 2
 theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
 text = "Back"
 
 [node name="Button" type="Button" parent="Options3"]
@@ -663,6 +755,7 @@ theme = SubResource("Theme_icaip")
 theme_override_styles/panel = SubResource("StyleBoxFlat_oqi7r")
 
 [node name="CustomMap" type="Control" parent="."]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -673,7 +766,7 @@ offset_left = 80.0
 offset_top = 197.0
 offset_right = 1616.0
 offset_bottom = 1733.0
-scale = Vector2(0.35, 0.43)
+scale = Vector2(0.35, 0.46)
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
@@ -683,7 +776,7 @@ offset_left = 1360.0
 offset_top = 197.0
 offset_right = 2896.0
 offset_bottom = 1733.0
-scale = Vector2(0.35, 0.43)
+scale = Vector2(0.35, 0.46)
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
@@ -693,12 +786,25 @@ offset_left = 680.0
 offset_top = 197.0
 offset_right = 2216.0
 offset_bottom = 1733.0
-scale = Vector2(0.4, 0.43)
+scale = Vector2(0.4, 0.46)
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
+[node name="BackButton" type="Button" parent="CustomMap"]
+layout_mode = 0
+offset_left = 745.0
+offset_top = 916.0
+offset_right = 1225.0
+offset_bottom = 1016.0
+theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
+text = "Back"
+
 [node name="Panel" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -722,18 +828,6 @@ horizontal_alignment = 1
 [node name="MarginContainer" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CustomMap/Panel/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="CustomMap/Panel/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(195, 0)
-layout_mode = 2
-theme = ExtResource("51_green_btn_styles")
-theme_override_fonts/font = ExtResource("13_cinzel_font")
-theme_override_font_sizes/font_size = 24
-text = "Back"
 
 [node name="MarginContainer2" type="MarginContainer" parent="CustomMap/Panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 5)
@@ -1172,7 +1266,6 @@ theme_override_font_sizes/font_size = 24
 text = " Select Map "
 
 [node name="Panel2" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 80.0
 offset_top = 200.0
@@ -1194,7 +1287,7 @@ text = "Map Preview"
 horizontal_alignment = 1
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel2/VBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CustomMap/Panel2/VBoxContainer"]
@@ -1302,7 +1395,7 @@ theme_override_font_sizes/font_size = 18
 text = "All"
 
 [node name="MarginContainer3" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
-custom_minimum_size = Vector2(5, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="XS" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
@@ -1314,7 +1407,7 @@ theme_override_font_sizes/font_size = 18
 text = "XS"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
-custom_minimum_size = Vector2(5, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Small" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
@@ -1326,7 +1419,7 @@ theme_override_font_sizes/font_size = 18
 text = "S"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
-custom_minimum_size = Vector2(5, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Medium" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
@@ -1338,7 +1431,7 @@ theme_override_font_sizes/font_size = 18
 text = "M"
 
 [node name="MarginContainer6" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
-custom_minimum_size = Vector2(5, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
 [node name="Hard" type="Button" parent="CustomMap/Panel3/VBoxContainer/Sizes"]
@@ -1391,7 +1484,7 @@ size_flags_vertical = 3
 theme_override_constants/separation = 4
 
 [node name="Row" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("16_btn_styles")
@@ -1417,6 +1510,7 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1441,18 +1535,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CustomMap/Scenario/VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="CustomMap/Scenario/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(195, 0)
-layout_mode = 2
-theme = ExtResource("51_green_btn_styles")
-theme_override_fonts/font = ExtResource("13_cinzel_font")
-theme_override_font_sizes/font_size = 24
-text = "Back"
-
 [node name="MarginContainer2" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer"]
 layout_mode = 2
 
@@ -1466,7 +1548,7 @@ text = "Scenario Description"
 layout_mode = 2
 
 [node name="Description" type="RichTextLabel" parent="CustomMap/Scenario/VBoxContainer"]
-custom_minimum_size = Vector2(20, 200)
+custom_minimum_size = Vector2(20, 250)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("15_std_modal")
@@ -1506,7 +1588,7 @@ toggle_mode = true
 text = "Easy"
 
 [node name="MarginContainer4" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
-custom_minimum_size = Vector2(20, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
 [node name="Normal" type="Button" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
@@ -1520,7 +1602,7 @@ button_pressed = true
 text = "Normal"
 
 [node name="MarginContainer5" type="MarginContainer" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
-custom_minimum_size = Vector2(20, 0)
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
 [node name="Hard" type="Button" parent="CustomMap/Scenario/VBoxContainer/Difficulty"]
@@ -1641,7 +1723,7 @@ size_flags_vertical = 3
 theme_override_constants/separation = 4
 
 [node name="Row" type="HBoxContainer" parent="CustomMap/Panel4/VBoxContainer/ScrollContainer/MapList"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("16_btn_styles")
@@ -1667,7 +1749,6 @@ theme = ExtResource("15_std_modal")
 text = "Map 1"
 
 [node name="Options" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -1679,13 +1760,26 @@ offset_left = 680.0
 offset_top = 197.0
 offset_right = 2216.0
 offset_bottom = 1733.0
-scale = Vector2(0.4, 0.44)
+scale = Vector2(0.4, 0.45)
 mouse_filter = 2
 texture = ExtResource("9_ygwey")
 expand_mode = 2
 
+[node name="BackButton" type="Button" parent="Options"]
+layout_mode = 0
+offset_left = 745.0
+offset_top = 902.0
+offset_right = 1225.0
+offset_bottom = 1002.0
+theme = ExtResource("12_oyrel")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
+text = "Back"
+
 [node name="Scenario" type="Panel" parent="Options"]
-visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -1712,18 +1806,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 mouse_filter = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Options/Scenario/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="Options/Scenario/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme = ExtResource("51_green_btn_styles")
-theme_override_fonts/font = ExtResource("13_cinzel_font")
-theme_override_font_sizes/font_size = 24
-text = "Back"
 
 [node name="Sound" type="VBoxContainer" parent="Options/Scenario/VBoxContainer"]
 layout_mode = 2
@@ -1987,12 +2069,14 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="LabelMoveArmy" type="Label" parent="Options/Scenario/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 text = "Move army"
 
 [node name="MoveArmy" type="HBoxContainer" parent="Options/Scenario/VBoxContainer"]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -2031,12 +2115,14 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="LabelKeys" type="Label" parent="Options/Scenario/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 text = "Keyboard Mapping"
 
 [node name="KeysConfigure" type="HBoxContainer" parent="Options/Scenario/VBoxContainer"]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 
@@ -2046,6 +2132,7 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="Configure" type="Button" parent="Options/Scenario/VBoxContainer/KeysConfigure"]
+visible = false
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme = ExtResource("16_btn_styles")
@@ -2054,6 +2141,7 @@ theme_override_font_sizes/font_size = 18
 text = "Configure Keys"
 
 [node name="Keys" type="Panel" parent="Options"]
+visible = false
 layout_mode = 0
 offset_left = 680.0
 offset_top = 200.0
@@ -2080,18 +2168,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 mouse_filter = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Options/Keys/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="Options/Keys/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme = ExtResource("51_green_btn_styles")
-theme_override_fonts/font = ExtResource("13_cinzel_font")
-theme_override_font_sizes/font_size = 24
-text = "Back"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Options/Keys/VBoxContainer"]
 custom_minimum_size = Vector2(0, 15)
@@ -2403,47 +2479,51 @@ theme_override_font_sizes/font_size = 24
 text = "Load Game"
 
 [node name="Language" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -420.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 188.0
+grow_horizontal = 0
 
 [node name="Flag" type="TextureRect" parent="Language"]
 layout_mode = 0
-offset_left = 1783.0
-offset_top = 31.0
-offset_right = 1911.0
-offset_bottom = 98.0
-scale = Vector2(0.5, 0.5)
+offset_left = 190.0
+offset_right = 318.0
+offset_bottom = 67.0
 texture = ExtResource("19_17y38")
 
 [node name="RightButton" type="TextureRect" parent="Language"]
 layout_mode = 0
-offset_left = 1860.0
-offset_top = 38.0
-offset_right = 2309.0
-offset_bottom = 498.0
-scale = Vector2(0.06, 0.06)
+offset_left = 344.0
+offset_top = 14.0
+offset_right = 793.0
+offset_bottom = 474.0
+scale = Vector2(0.12, 0.12)
 texture = ExtResource("20_tyfg7")
 
 [node name="LeftButton" type="TextureRect" parent="Language"]
 layout_mode = 0
-offset_left = 1741.0
-offset_top = 38.0
-offset_right = 2190.0
-offset_bottom = 498.0
-scale = Vector2(0.06, 0.06)
+offset_left = 106.0
+offset_top = 14.0
+offset_right = 555.0
+offset_bottom = 474.0
+scale = Vector2(0.12, 0.12)
 texture = ExtResource("20_tyfg7")
 flip_h = true
 
 [node name="Text" type="Label" parent="Language"]
+visible = false
 layout_mode = 0
-offset_left = 1688.0
-offset_top = 73.0
-offset_right = 1942.0
-offset_bottom = 115.0
+offset_top = 84.0
+offset_right = 508.0
+offset_bottom = 168.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("21_dujlr")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 40
 text = "English"
 horizontal_alignment = 1
 
@@ -2701,6 +2781,7 @@ mouse_filter = 2
 alignment = 1
 
 [node name="Back" type="Button" parent="Cards/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme = ExtResource("51_green_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")

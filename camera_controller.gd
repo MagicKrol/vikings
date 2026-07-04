@@ -34,6 +34,7 @@ var touch_points: Dictionary = {}
 var is_panning: bool = false
 var is_zooming: bool = false
 var last_pan_center: Vector2
+var last_single_touch_position: Vector2
 var last_zoom_distance: float
 var target_position: Vector2
 var target_zoom: Vector2
@@ -204,22 +205,37 @@ func _handle_touch_event(event: InputEventScreenTouch) -> void:
 	if event.pressed:
 		# Touch started
 		touch_points[event.index] = event.position
+		if touch_points.size() == 1:
+			last_single_touch_position = event.position
 	else:
 		# Touch ended
 		if event.index in touch_points:
 			touch_points.erase(event.index)
+		if touch_points.size() == 1:
+			last_single_touch_position = touch_points.values()[0] as Vector2
+		else:
+			last_single_touch_position = Vector2.ZERO
 		
 	# Update gesture states based on number of active touches
 	_update_gesture_state()
 
 func _handle_drag_event(event: InputEventScreenDrag) -> void:
-	if event.index in touch_points:
-		touch_points[event.index] = event.position
+	if not (event.index in touch_points):
+		return
+	var previous_position: Vector2 = touch_points[event.index] as Vector2
+	touch_points[event.index] = event.position
 		
 	_update_gesture_state()
 	if _is_pan_blocked_by_modal():
 		return
 	
+	if touch_points.size() == 1:
+		var single_touch_delta: Vector2 = (previous_position - event.position) * pan_speed / zoom.x
+		target_position += single_touch_delta
+		last_single_touch_position = event.position
+		_emit_camera_moved()
+		return
+
 	# Handle two-finger pan
 	if is_panning and touch_points.size() == 2:
 		var current_center = _get_touch_center()

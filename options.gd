@@ -5,15 +5,16 @@ signal back_requested
 
 const CLOUDS_SCRIPT: Script = preload("res://clouds.gd")
 const NO_CAPTURE_ACTION: int = -1
+const OPTIONS_DESIGN_WIDTH: float = 1920.0
 
 var sound_manager: SoundManager
 var _apply_runtime_clouds: bool = false
 var _captured_keyboard_action: int = NO_CAPTURE_ACTION
 
+@onready var options_background: TextureRect = get_node("TextureRect3") as TextureRect
 @onready var scenario_panel: Panel = get_node("Scenario") as Panel
 @onready var keys_panel: Panel = get_node("Keys") as Panel
-@onready var back_button: Button = get_node("Scenario/VBoxContainer/HBoxContainer2/Back") as Button
-@onready var keys_back_button: Button = get_node("Keys/VBoxContainer/HBoxContainer2/Back") as Button
+@onready var back_button: Button = get_node("BackButton") as Button
 @onready var sound_value_label: Label = get_node("Scenario/VBoxContainer/Sound/Labels/Header2") as Label
 @onready var sound_slider: HSlider = get_node("Scenario/VBoxContainer/Sound/HSlider") as HSlider
 @onready var music_value_label: Label = get_node("Scenario/VBoxContainer/Music/Labels/Header2") as Label
@@ -42,6 +43,8 @@ var _battle_speed_buttons_group: ButtonGroup
 var _move_army_buttons_group: ButtonGroup
 
 func _ready() -> void:
+	get_viewport().size_changed.connect(_update_layout)
+	_update_layout()
 	_cloud_buttons_group = ButtonGroup.new()
 	_cloud_buttons_group.allow_unpress = false
 	clouds_show_button.button_group = _cloud_buttons_group
@@ -61,7 +64,6 @@ func _ready() -> void:
 	move_army_left_click_button.button_group = _move_army_buttons_group
 	move_army_right_click_button.button_group = _move_army_buttons_group
 	back_button.pressed.connect(_on_back_pressed)
-	keys_back_button.pressed.connect(_on_keys_back_pressed)
 	sound_slider.value_changed.connect(_on_sound_slider_changed)
 	music_slider.value_changed.connect(_on_music_slider_changed)
 	clouds_show_button.pressed.connect(_on_clouds_show_pressed)
@@ -83,6 +85,18 @@ func _ready() -> void:
 	transfer_key_button.pressed.connect(_on_transfer_key_pressed)
 	_show_scenario_panel()
 	_sync_keyboard_mapping_buttons()
+
+func _update_layout() -> void:
+	var viewport_width: float = get_viewport_rect().size.x
+	var shift: float = maxf(0.0, (viewport_width - OPTIONS_DESIGN_WIDTH) * 0.5)
+	_apply_x_bounds(options_background, 680.0, 2216.0, shift)
+	_apply_x_bounds(scenario_panel, 680.0, 1290.0, shift)
+	_apply_x_bounds(keys_panel, 680.0, 1290.0, shift)
+	_apply_x_bounds(back_button, 745.0, 1225.0, shift)
+
+func _apply_x_bounds(control: Control, left: float, right: float, shift: float) -> void:
+	control.position.x = left + shift
+	control.size.x = right - left
 
 func _input(event: InputEvent) -> void:
 	if not visible:
@@ -108,7 +122,6 @@ func configure(sound_manager_ref: SoundManager, apply_runtime_clouds: bool, back
 	if not is_node_ready():
 		await ready
 	back_button.text = back_text
-	keys_back_button.text = back_text
 	refresh_state()
 	_show_scenario_panel()
 
@@ -134,10 +147,6 @@ func request_back() -> void:
 
 func _on_back_pressed() -> void:
 	request_back()
-
-func _on_keys_back_pressed() -> void:
-	_cancel_keyboard_capture()
-	_show_scenario_panel()
 
 func _on_configure_keys_pressed() -> void:
 	_cancel_keyboard_capture()

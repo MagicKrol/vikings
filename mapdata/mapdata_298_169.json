@@ -28392,7 +28392,6 @@
 		}
 	],
 	"display_name_key": "Blacktide Fjords",
-	"non_ocean_region_count": 48,
 	"edges": [
 		{
 			"end": [
@@ -36977,6 +36976,7 @@
 		"size": "custom",
 		"variant": 0
 	},
+	"non_ocean_region_count": 48,
 	"regions": [
 		{
 			"biome": "ocean",

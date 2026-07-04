@@ -23,6 +23,7 @@ var make_camp_button: Button = null
 var cancel_button: Button = null
 var army_actions_button: Button = null
 var next_army_button: Button = null
+var next_army_key_hint_label: Label = null
 var recruit_button_border: Control = null
 var make_camp_button_border: Control = null
 var transfer_button_border: Control = null
@@ -40,6 +41,7 @@ func _ready():
 	make_camp_button.pressed.connect(_on_make_camp_pressed)
 	next_army_button = get_node("Panel2/List/ButtonSection/HBoxContainer3/ButtonBorder/NextArmy") as Button
 	next_army_button.pressed.connect(_on_next_army_pressed)
+	next_army_key_hint_label = get_node("Panel2/List/ButtonSection/Label") as Label
 	recruit_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer3/ButtonBorder") as Control
 	make_camp_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer/ButtonBorder") as Control
 	transfer_button_border = get_node("Panel/Army/ButtonSection/HBoxContainer2/ButtonBorder") as Control
@@ -73,6 +75,7 @@ func _ready():
 	_connect_region_tooltip_hide_on_hover(self)
 	_connect_no_actions_hover()
 	_hide_no_actions()
+	_update_next_army_key_hint()
 	
 	# Initially hidden
 	visible = false
@@ -80,6 +83,7 @@ func _ready():
 func show_move_modal(army: Army) -> void:
 	"""Show the move modal for the given army"""
 	var modal_ui_manager: UIManager = get_node("../UIManager") as UIManager
+	_update_next_army_key_hint()
 	var previous_army: Army = selected_army
 	if previous_army and previous_army.movement_points_changed.is_connected(_on_army_movement_points_changed):
 		previous_army.movement_points_changed.disconnect(_on_army_movement_points_changed)
@@ -205,6 +209,21 @@ func _set_action_button_disabled_state(button: Button, disabled: bool) -> void:
 		button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		return
 	button.mouse_filter = Control.MOUSE_FILTER_STOP
+
+func _update_next_army_key_hint() -> void:
+	var keycode: int = GameParameters.get_keyboard_keycode(GameParameters.KeyboardAction.NEXT_ARMY)
+	var key_name: String = _format_keyboard_key_name(keycode)
+	next_army_key_hint_label.text = tr("(Press %s)") % key_name
+
+func _format_keyboard_key_name(keycode: int) -> String:
+	if keycode == KEY_NONE:
+		return "..."
+	if keycode == KEY_SPACE:
+		return tr("Spacebar")
+	var key_name: String = OS.get_keycode_string(keycode)
+	if key_name.strip_edges() == "":
+		return "..."
+	return key_name
 
 func _connect_no_actions_hover() -> void:
 	_connect_hover_pair(army_actions_button, recruit_button_border)

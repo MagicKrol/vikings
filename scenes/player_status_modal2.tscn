@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsqu1omiwntnm"]
+[gd_scene load_steps=13 format=3 uid="uid://bsqu1omiwntnm"]
 
 [ext_resource type="Script" path="res://player_status_modal2.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="1_t5oev"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cxtxtfup5qlmi" path="res://images/icons/stone.png" id="7_kkqkh"]
 [ext_resource type="Texture2D" uid="uid://bb611gp0730bj" path="res://images/icons/new_iron.png" id="8_om14m"]
 [ext_resource type="Texture2D" uid="uid://b7fb76uiny7is" path="res://images/icons/new_coin.png" id="9_pkmu7"]
+[ext_resource type="Texture2D" uid="uid://c1ewcf8d0vue3" path="res://images/status_tooltip.png" id="10_5pej1"]
 
 [sub_resource type="Theme" id="Theme_fcepg"]
 default_font = ExtResource("1_t5oev")
@@ -16,10 +17,6 @@ default_font_size = 26
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_11gwm"]
 draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 shadow_size = 5
 
@@ -29,8 +26,6 @@ clip_children = 1
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = -25.0
-offset_right = -45.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -38,36 +33,53 @@ theme = SubResource("Theme_fcepg")
 script = ExtResource("1_script")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 2000.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
 offset_bottom = 50.0
+grow_horizontal = 2
+scale = Vector2(1, 1.1)
 texture = ExtResource("3_uew83")
 stretch_mode = 1
 
 [node name="Panel" type="Panel" parent="."]
-layout_mode = 0
-offset_right = 2000.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
 offset_bottom = 51.0
+grow_horizontal = 2
 scale = Vector2(0.998918, 1.00196)
 theme_override_styles/panel = SubResource("StyleBoxFlat_11gwm")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 60.0
 offset_top = 7.0
-offset_right = 1609.0
+offset_right = -60.0
 offset_bottom = 47.0
-theme_override_constants/separation = 75
-
-[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer"]
-layout_mode = 2
+grow_horizontal = 2
+theme_override_constants/separation = 0
 
 [node name="Population" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/Population"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("4_bb53o")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
 text = "Population"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Population"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
@@ -77,13 +89,28 @@ text = "0"
 layout_mode = 2
 text = "(+0)"
 
-[node name="Food" type="HBoxContainer" parent="Panel/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+[node name="Spacer1" type="Control" parent="Panel/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Food" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/Food"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("5_mewgd")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
 text = "Food"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Food"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
@@ -93,13 +120,28 @@ text = "0"
 layout_mode = 2
 text = "(+0)"
 
-[node name="Wood" type="HBoxContainer" parent="Panel/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+[node name="Spacer2" type="Control" parent="Panel/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Wood" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/Wood"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("6_qvey3")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
 text = "Wood"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Wood"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
@@ -109,13 +151,28 @@ text = "0"
 layout_mode = 2
 text = "(+0)"
 
-[node name="Stone" type="HBoxContainer" parent="Panel/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+[node name="Spacer3" type="Control" parent="Panel/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Stone" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/Stone"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("7_kkqkh")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
 text = "Stone"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Stone"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
@@ -125,13 +182,28 @@ text = "0"
 layout_mode = 2
 text = "(+0)"
 
-[node name="Iron" type="HBoxContainer" parent="Panel/HBoxContainer"]
-custom_minimum_size = Vector2(230, 0)
+[node name="Spacer4" type="Control" parent="Panel/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Iron" type="HBoxContainer" parent="Panel/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/Iron"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("8_om14m")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
 text = "Iron"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Iron"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
@@ -141,13 +213,28 @@ text = "0"
 layout_mode = 2
 text = "(+0)"
 
+[node name="Spacer5" type="Control" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="Gold" type="HBoxContainer" parent="Panel/HBoxContainer"]
 custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/Gold"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+texture = ExtResource("9_pkmu7")
+expand_mode = 2
 
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
 text = "Gold"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Gold"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
@@ -157,63 +244,262 @@ text = "0"
 layout_mode = 2
 text = "(+0)"
 
-[node name="Control" type="Control" parent="Panel"]
+[node name="Tooltips" type="Control" parent="."]
+visible = false
 anchors_preset = 0
-offset_left = 20.0
-offset_top = 8.0
-offset_right = 1935.0
-offset_bottom = 46.0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="TextureRect6" type="TextureRect" parent="Panel/Control"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 0
-offset_left = 10.0
-offset_right = 45.0
-offset_bottom = 35.0
-texture = ExtResource("4_bb53o")
-expand_mode = 2
+[node name="Food" type="Control" parent="Tooltips"]
+visible = false
+anchors_preset = 0
+offset_left = 403.0
+offset_top = 50.0
+offset_right = 443.0
+offset_bottom = 90.0
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Control"]
-custom_minimum_size = Vector2(35, 35)
+[node name="TooltipTexture" type="TextureRect" parent="Tooltips/Food"]
 layout_mode = 0
-offset_left = 400.0
-offset_right = 435.0
-offset_bottom = 35.0
-texture = ExtResource("5_mewgd")
-expand_mode = 2
+offset_right = 259.0
+offset_bottom = 110.0
+scale = Vector2(1, 1.2)
+texture = ExtResource("10_5pej1")
 
-[node name="TextureRect2" type="TextureRect" parent="Panel/Control"]
-custom_minimum_size = Vector2(35, 35)
+[node name="Tooltip" type="VBoxContainer" parent="Tooltips/Food"]
 layout_mode = 0
-offset_left = 705.0
-offset_right = 740.0
-offset_bottom = 35.0
-texture = ExtResource("6_qvey3")
-expand_mode = 2
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 241.0
+offset_bottom = 130.0
 
-[node name="TextureRect3" type="TextureRect" parent="Panel/Control"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 0
-offset_left = 1010.0
-offset_right = 1045.0
-offset_bottom = 35.0
-texture = ExtResource("7_kkqkh")
-expand_mode = 2
+[node name="Production" type="HBoxContainer" parent="Tooltips/Food/Tooltip"]
+layout_mode = 2
 
-[node name="TextureRect4" type="TextureRect" parent="Panel/Control"]
-custom_minimum_size = Vector2(35, 35)
-layout_mode = 0
-offset_left = 1315.0
-offset_right = 1350.0
-offset_bottom = 35.0
-texture = ExtResource("8_om14m")
-expand_mode = 2
+[node name="Text" type="Label" parent="Tooltips/Food/Tooltip/Production"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Production"
 
-[node name="TextureRect5" type="TextureRect" parent="Panel/Control"]
-custom_minimum_size = Vector2(35, 35)
+[node name="Value" type="Label" parent="Tooltips/Food/Tooltip/Production"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+304"
+
+[node name="Armies" type="HBoxContainer" parent="Tooltips/Food/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Food/Tooltip/Armies"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Armies"
+
+[node name="Value" type="Label" parent="Tooltips/Food/Tooltip/Armies"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "-304"
+
+[node name="Garrisons" type="HBoxContainer" parent="Tooltips/Food/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Food/Tooltip/Garrisons"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Garrisons"
+
+[node name="Value" type="Label" parent="Tooltips/Food/Tooltip/Garrisons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "-304"
+
+[node name="Wood" type="Control" parent="Tooltips"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 696.0
+offset_top = 50.0
+offset_right = 736.0
+offset_bottom = 90.0
+
+[node name="TooltipTexture" type="TextureRect" parent="Tooltips/Wood"]
 layout_mode = 0
-offset_left = 1620.0
-offset_right = 1655.0
-offset_bottom = 35.0
-texture = ExtResource("9_pkmu7")
-expand_mode = 2
+offset_right = 259.0
+offset_bottom = 110.0
+scale = Vector2(1, 1.2)
+texture = ExtResource("10_5pej1")
+
+[node name="Tooltip" type="VBoxContainer" parent="Tooltips/Wood"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 241.0
+offset_bottom = 130.0
+
+[node name="Production" type="HBoxContainer" parent="Tooltips/Wood/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Wood/Tooltip/Production"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Production"
+
+[node name="Value" type="Label" parent="Tooltips/Wood/Tooltip/Production"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+304"
+
+[node name="Upkeep" type="HBoxContainer" parent="Tooltips/Wood/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Wood/Tooltip/Upkeep"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Upkeep"
+
+[node name="Value" type="Label" parent="Tooltips/Wood/Tooltip/Upkeep"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "-304"
+
+[node name="Stone" type="Control" parent="Tooltips"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 990.0
+offset_top = 50.0
+offset_right = 1030.0
+offset_bottom = 90.0
+
+[node name="TooltipTexture" type="TextureRect" parent="Tooltips/Stone"]
+layout_mode = 0
+offset_right = 259.0
+offset_bottom = 110.0
+scale = Vector2(1, 1.2)
+texture = ExtResource("10_5pej1")
+
+[node name="Tooltip" type="VBoxContainer" parent="Tooltips/Stone"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 241.0
+offset_bottom = 130.0
+
+[node name="Production" type="HBoxContainer" parent="Tooltips/Stone/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Stone/Tooltip/Production"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Production"
+
+[node name="Value" type="Label" parent="Tooltips/Stone/Tooltip/Production"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+304"
+
+[node name="Upkeep" type="HBoxContainer" parent="Tooltips/Stone/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Stone/Tooltip/Upkeep"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Upkeep"
+
+[node name="Value" type="Label" parent="Tooltips/Stone/Tooltip/Upkeep"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "-304"
+
+[node name="Iron" type="Control" parent="Tooltips"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1284.0
+offset_top = 50.0
+offset_right = 1324.0
+offset_bottom = 90.0
+
+[node name="TooltipTexture" type="TextureRect" parent="Tooltips/Iron"]
+layout_mode = 0
+offset_right = 259.0
+offset_bottom = 110.0
+scale = Vector2(1, 1.2)
+texture = ExtResource("10_5pej1")
+
+[node name="Tooltip" type="VBoxContainer" parent="Tooltips/Iron"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 241.0
+offset_bottom = 130.0
+
+[node name="Production" type="HBoxContainer" parent="Tooltips/Iron/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Iron/Tooltip/Production"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Production"
+
+[node name="Value" type="Label" parent="Tooltips/Iron/Tooltip/Production"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+304"
+
+[node name="Gold" type="Control" parent="Tooltips"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1580.0
+offset_top = 50.0
+offset_right = 1620.0
+offset_bottom = 90.0
+
+[node name="TooltipTexture" type="TextureRect" parent="Tooltips/Gold"]
+layout_mode = 0
+offset_right = 259.0
+offset_bottom = 110.0
+scale = Vector2(1, 1.2)
+texture = ExtResource("10_5pej1")
+
+[node name="Tooltip" type="VBoxContainer" parent="Tooltips/Gold"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 241.0
+offset_bottom = 130.0
+
+[node name="Taxes" type="HBoxContainer" parent="Tooltips/Gold/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Gold/Tooltip/Taxes"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Taxes"
+
+[node name="Value" type="Label" parent="Tooltips/Gold/Tooltip/Taxes"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "+304"
+
+[node name="Production" type="HBoxContainer" parent="Tooltips/Gold/Tooltip"]
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Tooltips/Gold/Tooltip/Production"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Production"
+
+[node name="Value" type="Label" parent="Tooltips/Gold/Tooltip/Production"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "-304"

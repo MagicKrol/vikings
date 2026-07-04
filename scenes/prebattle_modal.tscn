@@ -718,7 +718,7 @@ layout_mode = 2
 [node name="AttackerVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
-text = "Vigor:"
+text = "Vigor"
 
 [node name="AttackerVigorValue" type="Label" parent="Battle/VBoxContainer/Status"]
 custom_minimum_size = Vector2(60, 0)
@@ -733,7 +733,7 @@ layout_mode = 2
 [node name="DefenderVigorText" type="Label" parent="Battle/VBoxContainer/Status"]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-text = "Vigor:"
+text = "Vigor"
 
 [node name="DefenderVigorValue" type="Label" parent="Battle/VBoxContainer/Status"]
 custom_minimum_size = Vector2(50, 0)

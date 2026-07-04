@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d0hu4g0lacpku"]
+[gd_scene load_steps=18 format=3 uid="uid://d0hu4g0lacpku"]
 
 [ext_resource type="Texture2D" uid="uid://c66xngn7pryl7" path="res://images/InfoModal.png" id="1_safmw"]
 [ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="2_hkvyl"]
@@ -10,8 +10,13 @@
 [ext_resource type="Texture2D" uid="uid://d1meyxtfmg24q" path="res://images/slider2.png" id="8_iiwo2"]
 [ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="9_2ix74"]
 [ext_resource type="Script" path="res://options.gd" id="10_1v6i0"]
+[ext_resource type="Theme" uid="uid://cdrs8n52og4kp" path="res://themes/main_menu_theme.tres" id="11_menu_theme"]
+[ext_resource type="Texture2D" uid="uid://dgj6254a3foyr" path="res://images/tooltipmoda.png" id="12_menu_button_bg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6xvye"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_menu_button_bg"]
+texture = ExtResource("12_menu_button_bg")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ubsr0"]
 content_margin_left = 5.0
@@ -48,6 +53,20 @@ mouse_filter = 2
 texture = ExtResource("1_safmw")
 expand_mode = 2
 
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 745.0
+offset_top = 870.0
+offset_right = 1225.0
+offset_bottom = 970.0
+theme = ExtResource("11_menu_theme")
+theme_override_styles/focus = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_menu_button_bg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_menu_button_bg")
+text = "Back"
+
 [node name="Scenario" type="Panel" parent="."]
 visible = false
 layout_mode = 0
@@ -76,18 +95,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 mouse_filter = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Scenario/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="Scenario/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme = ExtResource("3_fvux6")
-theme_override_fonts/font = ExtResource("4_w5b6b")
-theme_override_font_sizes/font_size = 24
-text = "Back"
 
 [node name="Sound" type="VBoxContainer" parent="Scenario/VBoxContainer"]
 layout_mode = 2
@@ -444,18 +451,6 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 mouse_filter = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="Keys/VBoxContainer"]
-layout_mode = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="Keys/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme = ExtResource("3_fvux6")
-theme_override_fonts/font = ExtResource("4_w5b6b")
-theme_override_font_sizes/font_size = 24
-text = "Back"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Keys/VBoxContainer"]
 custom_minimum_size = Vector2(0, 15)

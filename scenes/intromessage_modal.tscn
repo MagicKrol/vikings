@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmhogdvkmm3mr"]
+[gd_scene load_steps=6 format=3 uid="uid://cmhogdvkmm3mr"]
 
 [ext_resource type="Theme" path="res://themes/message_modals_theme.tres" id="1_message_modals_theme"]
 [ext_resource type="Script" path="res://intro_message_modal.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://d35ft56cc1sw" path="res://images/intromessage.png" id="3_tm4to"]
 [ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="4_dy870"]
+[ext_resource type="Script" path="res://touch_scroll_container.gd" id="5_touch_scroll"]
 
 [node name="IntroMessageModal" type="Control"]
 z_as_relative = false
@@ -73,6 +74,7 @@ autowrap_mode = 3
 custom_minimum_size = Vector2(0, 510)
 layout_mode = 2
 size_flags_horizontal = 3
+script = ExtResource("5_touch_scroll")
 
 [node name="ScrollMessageLabel" type="RichTextLabel" parent="PanelRoot/ContentContainer/MessageScroll"]
 layout_mode = 2

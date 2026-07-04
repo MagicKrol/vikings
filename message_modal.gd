@@ -10,7 +10,6 @@ const BORDER_COLOR = Color.BLACK
 const SHADOW_OFFSET = Vector2(4, 4)
 const SHADOW_COLOR = Color(0, 0, 0, 0.3)
 const BORDER_WIDTH = 4.0
-const CLOSE_KEYCODES: Array[int] = [KEY_ESCAPE, KEY_ENTER, KEY_KP_ENTER]
 const LONG_TEXT_THRESHOLD_1: int = 150
 const LONG_TEXT_THRESHOLD_2: int = 160
 const LONG_TEXT_FONT_REDUCTION_1: int = 1
@@ -86,7 +85,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		var mapped_continue_close_pressed: bool = GameParameters.is_continue_close_key_pressed(event)
 		if tutorial_mode_active and mapped_continue_close_pressed:
 			return
-		if key_event.pressed and not key_event.echo and (CLOSE_KEYCODES.has(key_event.keycode) or mapped_continue_close_pressed):
+		var escape_pressed: bool = key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE
+		var enter_pressed: bool = key_event.pressed and not key_event.echo and not key_event.alt_pressed and (key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER)
+		if escape_pressed or enter_pressed or mapped_continue_close_pressed:
 			get_viewport().set_input_as_handled()
 			_on_continue_pressed()
 

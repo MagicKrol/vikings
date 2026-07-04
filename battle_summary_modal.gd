@@ -63,11 +63,12 @@ func _is_continue_hotkey(event: InputEvent) -> bool:
 	var mapped_continue_close_pressed: bool = GameParameters.is_continue_close_key_pressed(event)
 	if mapped_continue_close_pressed and not _is_tutorial_mode_active():
 		return true
-	if event is InputEventKey:
-		var key_event: InputEventKey = event as InputEventKey
-		if key_event.pressed and not key_event.echo:
-			return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
-	return false
+	if not (event is InputEventKey):
+		return false
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo or key_event.alt_pressed:
+		return false
+	return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
 
 func _is_tutorial_mode_active() -> bool:
 	var game_manager: GameManager = get_node("../../GameManager") as GameManager
@@ -167,16 +168,28 @@ func _update_display() -> void:
 	battle_status_label.text = tr("Battle Won!") if player_won else tr("Battle Lost!")
 	
 	# Update army and region names
-	if attacking_army:
-		attacker_name_label.text = tr("Army %s") % attacking_army.number
-	if defending_region:
-		defender_name_label.text = defending_region.get_region_name()
+	_update_attacker_header()
+	_update_defender_header()
 	
 	# Update unit sections
 	_update_unit_sections()
 	
 	# Update totals
 	_update_totals()
+
+func _update_attacker_header() -> void:
+	var player_id: int = attacking_army.get_player_id()
+	attacker_name_label.text = tr("Army %s") % attacking_army.number
+	attacker_name_label.add_theme_color_override("font_color", GameParameters.get_player_color(player_id))
+
+func _update_defender_header() -> void:
+	var gm: GameManager = get_node("../../GameManager") as GameManager
+	var owner_id: int = gm.get_region_manager().get_region_owner(defending_region.get_region_id())
+	defender_name_label.text = defending_region.get_region_name()
+	if owner_id == -1:
+		defender_name_label.remove_theme_color_override("font_color")
+	else:
+		defender_name_label.add_theme_color_override("font_color", GameParameters.get_player_color(owner_id))
 
 func _update_unit_sections() -> void:
 	"""Update all unit type rows with battle data"""

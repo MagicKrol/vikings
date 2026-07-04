@@ -82,7 +82,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = true
+const DEMO_MODE_ENABLED: bool = false
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",
@@ -289,7 +289,7 @@ const AI_MAX_EXPECTED_RESOURCE = 50             # Expected max resource amount f
 
 static var _ai_move_speed_multiplier: float = AI_MOVE_SPEED_NORMAL
 static var _battle_round_time: float = BATTLE_ROUND_TIME_NORMAL
-static var _army_move_trigger: int = ArmyMoveTrigger.RIGHT_CLICK
+static var _army_move_trigger: int = ArmyMoveTrigger.LEFT_CLICK
 static var _battle_logs_visible: bool = false
 static var _continue_close_keycode: int = KEY_SPACE
 static var _next_army_keycode: int = KEY_SHIFT
@@ -1199,7 +1199,7 @@ static func is_keyboard_action_pressed(event: InputEvent, action: int) -> bool:
 	if not (event is InputEventKey):
 		return false
 	var key_event: InputEventKey = event as InputEventKey
-	if not key_event.pressed or key_event.echo:
+	if not key_event.pressed or key_event.echo or key_event.alt_pressed:
 		return false
 	var configured_keycode: int = get_keyboard_keycode(action)
 	if configured_keycode == KEY_NONE:

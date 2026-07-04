@@ -29,16 +29,17 @@ class_name ClickManager
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			DebugLogger.log("click", "ClickManager: left click at " + str(event.position))
-			if _is_ui_click(event.position, event.global_position):
-				DebugLogger.log("click", "ClickManager: UI click detected, ignoring map click")
-				return
-			_on_left_click(event.global_position)
+	if event is InputEventScreenTouch:
+		_handle_touch_event(event)
+	elif event is InputEventScreenDrag:
+		_handle_touch_drag(event)
+	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			_handle_left_click_button_event(event)
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_handle_right_click_button_event(event)
 	elif event is InputEventMouseMotion:
+		_handle_left_click_motion(event)
 		_handle_right_click_motion(event)
 		_handle_mouse_motion()
 	elif event is InputEventKey and event.pressed:
@@ -88,15 +89,30 @@ var _tutorial_manager: TutorialManager
 # Editor quick-ownership mode state
 var _editor_ownership_mode: bool = false
 var _editor_owner_id: int = 0
+var _left_click_down: bool = false
+var _left_click_dragging: bool = false
+var _left_click_start_position: Vector2 = Vector2.ZERO
 var _right_click_down: bool = false
 var _right_click_dragging: bool = false
 var _right_click_start_position: Vector2 = Vector2.ZERO
 var _hovered_region_id_for_debug: int = -1
+var _active_touch_count: int = 0
+var _touch_tap_active: bool = false
+var _touch_tap_index: int = -1
+var _touch_tap_start_position: Vector2 = Vector2.ZERO
+var _touch_started_on_ui: bool = false
+var _ignore_emulated_mouse_frames: int = 0
+const LEFT_CLICK_DRAG_THRESHOLD: float = 14.0
 const RIGHT_CLICK_DRAG_THRESHOLD: float = 8.0
+const TOUCH_TAP_DRAG_THRESHOLD: float = 18.0
 
-func _ready():
+func _ready() -> void:
 	# Managers will be provided by GameManager via set_managers()
-	pass
+	set_process(true)
+
+func _process(_delta: float) -> void:
+	if _ignore_emulated_mouse_frames > 0:
+		_ignore_emulated_mouse_frames -= 1
 
 func set_managers(region_manager: RegionManager, army_manager: ArmyManager) -> void:
 	"""Set manager references from GameManager"""
@@ -116,6 +132,66 @@ func get_army_manager() -> ArmyManager:
 
 # Minimal state for input handling (game state now managed by GameManager)
 
+func _handle_touch_event(event: InputEventScreenTouch) -> void:
+	_ignore_emulated_mouse_frames = 3
+	if event.pressed:
+		_active_touch_count += 1
+		if _active_touch_count == 1:
+			_touch_tap_active = true
+			_touch_tap_index = event.index
+			_touch_tap_start_position = event.position
+			_touch_started_on_ui = _is_ui_click(event.position, event.position)
+			return
+		_touch_tap_active = false
+		return
+	_active_touch_count = maxi(0, _active_touch_count - 1)
+	if not _touch_tap_active:
+		return
+	if event.index != _touch_tap_index:
+		return
+	_touch_tap_active = false
+	if _touch_started_on_ui:
+		return
+	if event.position.distance_to(_touch_tap_start_position) >= TOUCH_TAP_DRAG_THRESHOLD:
+		return
+	DebugLogger.log("click", "ClickManager: touch tap at " + str(event.position))
+	_on_left_click(event.position)
+
+func _handle_touch_drag(event: InputEventScreenDrag) -> void:
+	_ignore_emulated_mouse_frames = 3
+	if not _touch_tap_active:
+		return
+	if event.index != _touch_tap_index:
+		return
+	if event.position.distance_to(_touch_tap_start_position) >= TOUCH_TAP_DRAG_THRESHOLD:
+		_touch_tap_active = false
+
+func _handle_left_click_button_event(event: InputEventMouseButton) -> void:
+	if _active_touch_count > 0 or _ignore_emulated_mouse_frames > 0:
+		return
+	if event.pressed:
+		_left_click_down = true
+		_left_click_dragging = false
+		_left_click_start_position = event.position
+		return
+	if not _left_click_down:
+		return
+	_left_click_down = false
+	if _left_click_dragging:
+		return
+	DebugLogger.log("click", "ClickManager: left click at " + str(event.position))
+	if _is_ui_click(event.position, event.global_position):
+		DebugLogger.log("click", "ClickManager: UI click detected, ignoring map click")
+		return
+	_on_left_click(event.global_position)
+
+func _handle_left_click_motion(event: InputEventMouseMotion) -> void:
+	if not _left_click_down:
+		return
+	if _left_click_dragging:
+		return
+	if event.position.distance_to(_left_click_start_position) >= LEFT_CLICK_DRAG_THRESHOLD:
+		_left_click_dragging = true
 
 func _handle_right_click_button_event(event: InputEventMouseButton) -> void:
 	if GameParameters.get_army_move_trigger() != GameParameters.ArmyMoveTrigger.RIGHT_CLICK:
@@ -188,10 +264,7 @@ func _on_map_click(screen_pos: Vector2, button_index: int) -> void:
 			_ui_manager.set_modal_active(false)
 			_ui_manager.set_overlay_suppressed(true)
 	
-	# Get the camera and convert screen to world coordinates properly
-	var camera := get_node("../Camera2D") as Camera2D
-	# Use camera's get_global_mouse_position for proper coordinate conversion
-	var world_pos = camera.get_global_mouse_position()
+	var world_pos: Vector2 = get_viewport().get_canvas_transform().affine_inverse() * screen_pos
 		
 	# Search within Map/regions for Region containers
 	var map_root := get_node("../Map") as Node

@@ -5,29 +5,33 @@
 [ext_resource type="Texture2D" uid="uid://b6ppe1stl6vrp" path="res://images/green_button_light.png" id="2_hihek"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_05vp0"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
 texture = ExtResource("1_u7180")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ur0t3"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_hover"]
 content_margin_left = 10.0
-content_margin_top = 3.0
+content_margin_top = 8.0
 content_margin_right = 10.0
-content_margin_bottom = 3.0
+content_margin_bottom = 8.0
 texture = ExtResource("2_hihek")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_normal"]
 content_margin_left = 10.0
-content_margin_top = 3.0
+content_margin_top = 8.0
 content_margin_right = 10.0
-content_margin_bottom = 3.0
+content_margin_bottom = 8.0
 texture = ExtResource("1_8pn67")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_button_pressed"]
 content_margin_left = 10.0
-content_margin_top = 3.0
+content_margin_top = 8.0
 content_margin_right = 10.0
-content_margin_bottom = 3.0
+content_margin_bottom = 8.0
 texture = ExtResource("2_hihek")
 
 [resource]

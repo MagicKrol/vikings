@@ -7,11 +7,14 @@
 
 [node name="IconsModal" type="Control"]
 layout_mode = 3
-anchors_preset = 0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 68.0
+offset_right = -20.0
+offset_bottom = 388.0
+grow_horizontal = 0
 script = ExtResource("3_jgatv")
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -22,6 +25,7 @@ mouse_filter = 0
 texture = ExtResource("1_uhujf")
 
 [node name="Settings" type="TextureRect" parent="."]
+layout_mode = 0
 offset_top = 110.0
 offset_right = 100.0
 offset_bottom = 210.0
@@ -29,6 +33,7 @@ mouse_filter = 0
 texture = ExtResource("3_wbg6d")
 
 [node name="Objectives" type="TextureRect" parent="."]
+layout_mode = 0
 offset_top = 220.0
 offset_right = 100.0
 offset_bottom = 320.0
