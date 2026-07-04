@@ -285,6 +285,11 @@ Recruit,Recruit units button,Recruit,Rekrutieren,Rekrutuj,Recrutar
 Defenders,Defenders,Defenders,Verteidiger,Obrońcy,Defensores
 Resources,Resources,Resources,Ressourcen,Zasoby,Recursos
 Armies,,Armies,Armeen,Armie,Exércitos
+Garrisons,Player status tooltip row for food consumed by local defenders.,Garrisons,Garnisonen,Garnizony,Guarnições
+Production,Player status tooltip row for resource production from regions.,Production,Produktion,Produkcja,Produção
+Upkeep,Player status tooltip row for recurring resource upkeep.,Upkeep,Unterhalt,Utrzymanie,Manutenção
+Taxes,Player status tooltip row for gold income from population taxes.,Taxes,Steuern,Podatki,Impostos
+Mines,Player status tooltip row for gold or iron gained from mines.,Mines,Minen,Kopalnie,Minas
 Transfer,Action to move units between armies,Transfer,Verlegen,Przenieś,Transferir
 disband-warning,Warning shown before confirming a transfer that leaves an army empty.,Army %s has no remaining soldiers.\nDo you want to disband this army?,Armee %s hat keine Soldaten mehr.\nMöchtest du diese Armee auflösen?,Armia %s nie ma już żołnierzy.\nCzy chcesz rozwiązać tę armię?,O Exército %s não tem mais soldados.\nDeseja dissolver este exército?
 Abilities:,Abilities:,Abilities:,Fähigkeiten,Zdolności,Habilidades
@@ -297,6 +302,7 @@ Ore,Ore ,Ore ,Erz,Ruda,Minério
 None,None <defenses>,None,Keiner,Brak,Nenhum
 Level,Region's upgrade level,Level,Ebene,Poziom,Nível
 (Press Space),(Press Space),(Press Space),(Leertaste drücken),(Wciśnij spację),(Pressione Espaço)
+(Press %s),Move modal shortcut hint with the mapped key name inserted.,(Press %s),(%s drücken),(Naciśnij %s),(Pressione %s)
 Trade,Modal Title Screen,Trade,Handel,Handel,Troca
 Buy Price,Buy Price,Buy Price,Kaufpreis,Cena kupna,Preço de compra
 Sell Price,Sell Price,Sell Price,Verkaufspreis,Cena sprzedaży,Preço de venda

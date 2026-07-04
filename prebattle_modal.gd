@@ -289,9 +289,9 @@ func is_showing_for(army: Army, region: Region) -> bool:
 
 func _update_labels() -> void:
 	region_label.text = tr("Battle for %s") % defending_region.get_region_name()
-	attacker_label.text = tr("Army %s (Player %d)") % [attacking_army.number, attacking_army.get_player_id()]
+	_update_attacker_header()
 	attacker_vigor_label.text = str(GameParameters.get_battle_attacker_effective_vigor(attacking_army.get_efficiency(), defending_region.get_region_type())) + "%"
-	defender_label.text = tr("%s defenders") % defending_region.get_region_name()
+	_update_defender_header()
 	defender_vigor_label.text = tr("100%")
 	var defense_bonus = GameParameters.get_castle_defense_bonus(defending_region.get_castle_type())
 	defense_value_label.text = str(defense_bonus) + "%"
@@ -299,6 +299,20 @@ func _update_labels() -> void:
 	_update_siege_visibility(defense_bonus)
 	_reset_siege_state()
 	_update_estimate()
+
+func _update_attacker_header() -> void:
+	var player_id: int = attacking_army.get_player_id()
+	var player_name: String = tr("Player %d") % player_id
+	attacker_label.text = tr("Army %s (%s)") % [attacking_army.number, player_name]
+	attacker_label.add_theme_color_override("font_color", GameParameters.get_player_color(player_id))
+
+func _update_defender_header() -> void:
+	var owner_id: int = game_manager.get_region_manager().get_region_owner(defending_region.get_region_id())
+	defender_label.text = tr("%s defenders") % defending_region.get_region_name()
+	if owner_id == -1:
+		defender_label.remove_theme_color_override("font_color")
+	else:
+		defender_label.add_theme_color_override("font_color", GameParameters.get_player_color(owner_id))
 
 func _update_siege_visibility(defense_bonus: int) -> void:
 	var show_siege := defense_bonus > 0

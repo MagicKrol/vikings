@@ -51,3 +51,4 @@ text = "Edit Scenario"
 
 [node name="MarginContainer8" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(15, 0)
+layout_mode = 0

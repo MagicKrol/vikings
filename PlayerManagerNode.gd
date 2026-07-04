@@ -281,52 +281,77 @@ func _find_region_by_id(regions_node: Node, region_id: int) -> Region:
 
 func get_player_economy_snapshot(player_id: int) -> Dictionary:
 	"""Aggregate current balances, projected income, and population snapshot for a player."""
-	var player = get_player(player_id)
-	var income := {
+	var player: Player = get_player(player_id)
+	var breakdown: Dictionary = get_player_economy_breakdown(player_id)
+	return {
+		"income": breakdown.get("income", {}),
+		"population": breakdown.get("population", {}),
+		"balances": player.get_all_resources()
+	}
+
+func get_player_economy_breakdown(player_id: int) -> Dictionary:
+	"""Aggregate projected economy details for HUD and tooltip display."""
+	var player: Player = get_player(player_id)
+	var production: Dictionary = {
 		ResourcesEnum.Type.GOLD: 0,
 		ResourcesEnum.Type.FOOD: 0,
 		ResourcesEnum.Type.WOOD: 0,
 		ResourcesEnum.Type.IRON: 0,
 		ResourcesEnum.Type.STONE: 0
 	}
-	var population_amount := 0
-	var population_growth := 0
-	var owned_regions = region_manager.get_player_regions(player_id)
+	var taxes: int = 0
+	var population_amount: int = 0
+	var population_growth: int = 0
+	var owned_regions: Array[int] = region_manager.get_player_regions(player_id)
 	var regions_node = map_generator.get_node_or_null("Regions")
 	if regions_node == null:
 		return {
-			"income": income,
+			"income": production.duplicate(),
 			"population": {
 				"amount": population_amount,
 				"growth": population_growth
 			},
-			"balances": player.get_all_resources()
+			"production": production,
+			"taxes": taxes,
+			"region_upkeep": get_player_resource_upkeep(player_id),
+			"army_food_upkeep": 0,
+			"garrison_food_upkeep": 0
 		}
 	for region_id in owned_regions:
-		var region_node = _find_region_by_id(regions_node, region_id)
+		var region_node: Region = _find_region_by_id(regions_node, region_id)
 		if region_node != null:
-			for resource_type in income.keys():
+			for resource_type in production.keys():
 				if region_node.can_collect_resource(resource_type):
-					income[resource_type] += region_node.get_resource_amount(resource_type)
-			income[ResourcesEnum.Type.GOLD] += region_node.get_income()
+					production[resource_type] = int(production[resource_type]) + region_node.get_resource_amount(resource_type)
+			taxes += region_node.get_income()
 			population_amount += region_node.get_population()
 			if not region_node.is_ocean_region():
 				population_growth += region_node.get_population_increase()
+	var income: Dictionary = production.duplicate()
+	income[ResourcesEnum.Type.GOLD] = int(income[ResourcesEnum.Type.GOLD]) + taxes
 	if player != null and player.is_computer():
 		income = _apply_ai_income_bonus(income)
 	var upkeep: Dictionary = get_player_resource_upkeep(player_id)
 	income[ResourcesEnum.Type.FOOD] -= int(upkeep.get(ResourcesEnum.Type.FOOD, 0))
 	income[ResourcesEnum.Type.WOOD] -= int(upkeep.get(ResourcesEnum.Type.WOOD, 0))
 	income[ResourcesEnum.Type.STONE] -= int(upkeep.get(ResourcesEnum.Type.STONE, 0))
-	var food_upkeep := calculate_total_army_food_cost(player_id)
-	income[ResourcesEnum.Type.FOOD] -= int(ceil(food_upkeep))
+	var food_upkeep: float = calculate_total_army_food_cost(player_id)
+	var army_food_upkeep: float = calculate_army_field_food_cost(player_id)
+	var total_food_upkeep: int = int(ceil(food_upkeep))
+	var army_food_upkeep_value: int = int(ceil(army_food_upkeep))
+	var garrison_food_upkeep_value: int = total_food_upkeep - army_food_upkeep_value
+	income[ResourcesEnum.Type.FOOD] -= total_food_upkeep
 	return {
 		"income": income,
 		"population": {
 			"amount": population_amount,
 			"growth": population_growth
 		},
-		"balances": player.get_all_resources()
+		"production": production,
+		"taxes": taxes,
+		"region_upkeep": upkeep,
+		"army_food_upkeep": army_food_upkeep_value,
+		"garrison_food_upkeep": garrison_food_upkeep_value
 	}
 
 func get_projected_economy_for_player(player_id: int) -> Dictionary:
@@ -665,6 +690,14 @@ func calculate_total_army_food_cost(player_id: int) -> float:
 			)
 	
 	DebugLogger.log_calculation("ResourceCalculation", "Total upkeep for Player " + str(player_id), total_food_cost)
+	return total_food_cost
+
+func calculate_army_field_food_cost(player_id: int) -> float:
+	var total_food_cost: float = 0.0
+	var all_armies: Array[Army] = army_manager.get_all_armies()
+	for army in all_armies:
+		if army.get_player_id() == player_id:
+			total_food_cost += army.get_composition().get_total_food_cost()
 	return total_food_cost
 
 func get_player_resource_growth(player_id: int, resource_type: ResourcesEnum.Type) -> float:
