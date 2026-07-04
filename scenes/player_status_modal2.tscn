@@ -286,6 +286,8 @@ offset_right = 1840.0
 offset_bottom = 51.0
 
 [node name="Tooltips" type="Control" parent="."]
+z_index = 1200
+z_as_relative = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
