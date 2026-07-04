@@ -26,7 +26,6 @@ shadow_size = 5
 
 [node name="PlayerStatusModal" type="Control"]
 modulate = Color(1, 0.99961, 0.928772, 1)
-clip_children = 1
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
@@ -164,6 +163,7 @@ offset_left = 20.0
 offset_top = 8.0
 offset_right = 1935.0
 offset_bottom = 46.0
+mouse_filter = 2
 
 [node name="TextureRect6" type="TextureRect" parent="Panel/Control"]
 custom_minimum_size = Vector2(35, 35)
@@ -171,6 +171,7 @@ layout_mode = 0
 offset_left = 10.0
 offset_right = 45.0
 offset_bottom = 35.0
+mouse_filter = 2
 texture = ExtResource("4_bb53o")
 expand_mode = 2
 
@@ -180,6 +181,7 @@ layout_mode = 0
 offset_left = 400.0
 offset_right = 435.0
 offset_bottom = 35.0
+mouse_filter = 2
 texture = ExtResource("5_mewgd")
 expand_mode = 2
 
@@ -189,6 +191,7 @@ layout_mode = 0
 offset_left = 705.0
 offset_right = 740.0
 offset_bottom = 35.0
+mouse_filter = 2
 texture = ExtResource("6_qvey3")
 expand_mode = 2
 
@@ -198,6 +201,7 @@ layout_mode = 0
 offset_left = 1010.0
 offset_right = 1045.0
 offset_bottom = 35.0
+mouse_filter = 2
 texture = ExtResource("7_kkqkh")
 expand_mode = 2
 
@@ -207,6 +211,7 @@ layout_mode = 0
 offset_left = 1315.0
 offset_right = 1350.0
 offset_bottom = 35.0
+mouse_filter = 2
 texture = ExtResource("8_om14m")
 expand_mode = 2
 
@@ -216,6 +221,7 @@ layout_mode = 0
 offset_left = 1620.0
 offset_right = 1655.0
 offset_bottom = 35.0
+mouse_filter = 2
 texture = ExtResource("9_pkmu7")
 expand_mode = 2
 
