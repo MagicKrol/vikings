@@ -225,11 +225,47 @@ mouse_filter = 2
 texture = ExtResource("9_pkmu7")
 expand_mode = 2
 
+[node name="ResourceHoverAreas" type="Control" parent="Panel"]
+anchors_preset = 0
+offset_right = 2000.0
+offset_bottom = 51.0
+mouse_filter = 2
+
+[node name="Food" type="Control" parent="Panel/ResourceHoverAreas"]
+anchors_preset = 0
+offset_left = 390.0
+offset_right = 620.0
+offset_bottom = 51.0
+
+[node name="Wood" type="Control" parent="Panel/ResourceHoverAreas"]
+anchors_preset = 0
+offset_left = 695.0
+offset_right = 925.0
+offset_bottom = 51.0
+
+[node name="Stone" type="Control" parent="Panel/ResourceHoverAreas"]
+anchors_preset = 0
+offset_left = 1000.0
+offset_right = 1230.0
+offset_bottom = 51.0
+
+[node name="Iron" type="Control" parent="Panel/ResourceHoverAreas"]
+anchors_preset = 0
+offset_left = 1305.0
+offset_right = 1535.0
+offset_bottom = 51.0
+
+[node name="Gold" type="Control" parent="Panel/ResourceHoverAreas"]
+anchors_preset = 0
+offset_left = 1610.0
+offset_right = 1840.0
+offset_bottom = 51.0
+
 [node name="Tooltips" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="Food" type="Control" parent="Tooltips"]
 visible = false

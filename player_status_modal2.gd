@@ -70,7 +70,7 @@ func _initialize_resource_tooltips() -> void:
 	_set_static_tooltip_labels()
 
 func _connect_resource_tooltip(container_name: String, resource_type: ResourcesEnum.Type) -> void:
-	var hover_area := get_node("Panel/HBoxContainer/" + container_name) as Control
+	var hover_area := get_node("Panel/ResourceHoverAreas/" + container_name) as Control
 	hover_area.mouse_entered.connect(_on_resource_mouse_entered.bind(resource_type, hover_area))
 	hover_area.mouse_exited.connect(_on_resource_mouse_exited)
 
