@@ -32,6 +32,8 @@ Thumbs.db
 *.sln.docstates
 
 # Build results
+deploy_android.sh
+hornofthewarlord.apk
 *.pck
 *.zip
 [Dd]ebug/

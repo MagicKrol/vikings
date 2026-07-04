@@ -69,6 +69,10 @@ layout_mode = 2
 layout_mode = 2
 text = "Population"
 
+[node name="MarginContainer8" type="MarginContainer" parent="Panel/HBoxContainer/Population"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Population"]
 layout_mode = 2
 text = "0"
@@ -84,6 +88,10 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
 text = "Food"
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/HBoxContainer/Food"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Food"]
 layout_mode = 2
@@ -101,6 +109,10 @@ layout_mode = 2
 layout_mode = 2
 text = "Wood"
 
+[node name="MarginContainer8" type="MarginContainer" parent="Panel/HBoxContainer/Wood"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
 text = "0"
@@ -116,6 +128,10 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
 text = "Stone"
+
+[node name="MarginContainer8" type="MarginContainer" parent="Panel/HBoxContainer/Stone"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Stone"]
 layout_mode = 2
@@ -133,6 +149,10 @@ layout_mode = 2
 layout_mode = 2
 text = "Iron"
 
+[node name="MarginContainer8" type="MarginContainer" parent="Panel/HBoxContainer/Iron"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Iron"]
 layout_mode = 2
 text = "0"
@@ -148,6 +168,10 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2
 text = "Gold"
+
+[node name="MarginContainer8" type="MarginContainer" parent="Panel/HBoxContainer/Gold"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
 layout_mode = 2

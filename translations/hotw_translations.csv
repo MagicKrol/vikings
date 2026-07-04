@@ -3,7 +3,7 @@ demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
 Options,,Options,Optionen,Opcje,Opções
 Objective,Heading shown above the current custom map victory objective.,Objective,Ziel,Cel,Objetivo
 Exit,,Exit,Ausfrahrt,Koniec,Sair
-Population,Number of people in the region,Population:,Bevölkerung,Ludność,População
+Population,Number of people in the region,Population,Bevölkerung,Ludność,População
 Food,Resource type,Food,Nahrung,Żywność,Alimentos
 Wood,Resource type,Wood,Holz,Drewno,Madeira
 Stone,Resource type,Stone,Stein,Kamień,Pedra
@@ -207,7 +207,7 @@ Player %d withdraws,Battle log line shown when a side starts withdrawing.,Player
 Player %d lost,Elimination popup message naming the human player who has been eliminated.,Player %d lost,Spieler %d hat verloren,Gracz %d przegrał,Jogador %d perdeu
 Player %d Won,Victory popup message format naming the winning player.,Player %d Won,Spieler %d hat gewonnen,Gracz %d wygrał,Jogador %d venceu
 Prebattle volleys:,Battle log section title for the opening ranged exchange.,Prebattle volleys:,Vorgefechts-Salven:,Salwy przed bitwą:,Salvas de pré-batalha:
-Population: %d,Player status label format showing current population value.,Population: %d,Bevölkerung: %d,Populacja: %d,População: %d
+Population: %d,Player status label format showing current population value.,Population %d,Bevölkerung %d,Populacja %d,População %d
 Promote Region,Region action label for administrative region level upgrade.,Promote Region,Region aufwerten,Awansuj region,Promover Região
 Promote the region to the next administrative level to increase growth and production.,Tooltip text explaining region promotion benefits.,Promote the region to the next administrative level to increase growth and production.,"Erhöhe die Verwaltungsstufe der Region, um Wachstum und Produktion zu steigern.","Podnieś poziom administracyjny regionu, aby zwiększyć wzrost i produkcję.",Promova a região ao próximo nível administrativo para aumentar crescimento e produção.
 Raise Army,Region action label for creating a new army in the region.,Raise Army,Armee heben,Wystaw armię,Novo Exército
