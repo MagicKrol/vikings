@@ -196,6 +196,7 @@ static func apply_save_data(game_manager: GameManager, save_data: Dictionary) ->
 	game_manager.castle_placement_order = _to_int_array(game_state.get("castle_placement_order", []))
 	game_manager.players_per_round = _to_int_array(game_state.get("players_per_round", [1, 2, 3, 4, 5, 6]))
 	game_manager.player_types = _deserialize_player_types(game_state.get("player_types", []))
+	game_manager.game_difficulty = GameParameters.normalize_game_difficulty(int(game_state.get("game_difficulty", game_manager.game_difficulty)))
 	game_manager._player_initial_turn_completed = _deserialize_initial_turn_flags(game_state.get("player_initial_turn_completed", {}))
 	game_manager.set_scenario_events_runtime_from_save(game_state.get("scenario_events_runtime", []))
 	var hired_units_data: Dictionary = game_state.get("player_hired_units", {})
@@ -273,6 +274,7 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"armies_per_castle": game_manager.armies_per_castle,
 		"players_per_round": game_manager.players_per_round.duplicate(),
 		"player_types": _serialize_player_types(game_manager.player_types),
+		"game_difficulty": game_manager.get_game_difficulty(),
 		"player_initial_turn_completed": _serialize_initial_turn_flags(game_manager._player_initial_turn_completed),
 		"initial_human_player_count": game_manager.get_initial_human_player_count_for_save(),
 		"eliminated_human_players": game_manager.get_eliminated_human_players_for_save(),

@@ -102,6 +102,8 @@ func _is_end_turn_hotkey(event: InputEvent) -> bool:
 	var key_event: InputEventKey = event as InputEventKey
 	if not key_event.pressed or key_event.echo:
 		return false
+	if key_event.alt_pressed:
+		return false
 	return key_event.keycode == KEY_ENTER or key_event.keycode == KEY_KP_ENTER
 
 func _on_end_turn_button_pressed():

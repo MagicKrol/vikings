@@ -1403,7 +1403,7 @@ static func normalize_game_difficulty(difficulty: int) -> int:
 	return difficulty
 
 static func game_difficulty_from_string(difficulty_name: String) -> int:
-	var lowered: String = difficulty_name.to_lower()
+	var lowered: String = difficulty_name.strip_edges().to_lower()
 	if lowered == "easy":
 		return Difficulty.EASY
 	if lowered == "hard":

@@ -22,6 +22,7 @@ mouse_filter = 0
 texture = ExtResource("1_uhujf")
 
 [node name="Settings" type="TextureRect" parent="."]
+layout_mode = 0
 offset_top = 110.0
 offset_right = 100.0
 offset_bottom = 210.0
@@ -29,6 +30,7 @@ mouse_filter = 0
 texture = ExtResource("3_wbg6d")
 
 [node name="Objectives" type="TextureRect" parent="."]
+layout_mode = 0
 offset_top = 220.0
 offset_right = 100.0
 offset_bottom = 320.0

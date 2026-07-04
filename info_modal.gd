@@ -385,7 +385,8 @@ func _apply_region_intel_overrides() -> void:
 		return
 	var is_intel_mode: bool = _is_current_region_intel_mode()
 	if not is_intel_mode:
-		_raise_army_action_section.visible = true
+		var castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
+		_raise_army_action_section.visible = castle_type >= CastleTypeEnum.Type.KEEP
 		_garrison_action_section.visible = true
 		return
 	_set_region_action_sections_visible(false)
@@ -845,19 +846,24 @@ func _update_castle_construction_time_resource() -> void:
 
 func _update_raise_army_section() -> void:
 	"""Update raise army label and cost"""
+	var next_army_label: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName")
+	var castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
+	var has_keep_or_higher: bool = castle_type >= CastleTypeEnum.Type.KEEP
+	_raise_army_action_section.visible = has_keep_or_higher
+	if not has_keep_or_higher:
+		next_army_label.text = tr("Needs Keep")
+		_raise_army_button.disabled = true
+		return
+
 	var owner_id: int = current_region.get_region_owner()
 	var roman_number: String = game_manager.get_army_manager().get_next_army_roman_numeral_for_player(owner_id)
-	var next_army_label: Label = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/Info/Army/NextArmyName")
 	next_army_label.text = tr("Army %s") % roman_number
-
 	var gold_cost: int = GameParameters.get_raise_army_cost()
 	_set_cost_value("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/Resources/Gold", gold_cost)
-	var castle_type := current_region.get_castle_type()
-	var has_keep_or_higher: bool = castle_type >= CastleTypeEnum.Type.KEEP
 	var can_afford_army: bool = _can_player_afford_raise_army()
 	var has_used_raise_army: bool = current_region.has_raised_army_this_turn()
 	var army_capacity_available: bool = _region_has_army_capacity()
-	_raise_army_button.disabled = not has_keep_or_higher or not can_afford_army or has_used_raise_army or not army_capacity_available
+	_raise_army_button.disabled = not can_afford_army or has_used_raise_army or not army_capacity_available
 
 func _update_garrison_section() -> void:
 	"""Update garrison totals and recruits"""
