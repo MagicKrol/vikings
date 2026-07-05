@@ -615,9 +615,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 900.0
-offset_top = 600.0
+offset_top = 745.0
 offset_right = 1100.0
-offset_bottom = 675.0
+offset_bottom = 820.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
@@ -640,7 +640,7 @@ offset_bottom = 850.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-color = Color(0.537255, 1, 1, 0)
+color = Color(0.905882, 0.917647, 0.866667, 0)
 
 [node name="regionactionsfull" type="Control" parent="Blocks"]
 visible = false
