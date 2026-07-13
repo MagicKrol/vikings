@@ -93,6 +93,13 @@ const DEMO_ALLOWED_CUSTOM_MAP_FILES: Array[String] = [
 	"Demo Map.json"
 ]
 
+static func is_demo_mode_enabled() -> bool:
+	if OS.has_feature("full_game"):
+		return false
+	if OS.has_feature("demo_build"):
+		return true
+	return DEMO_MODE_ENABLED
+
 enum Difficulty {
 	EASY = 0,
 	NORMAL = 1,

@@ -15,7 +15,7 @@ Turn-based strategy game in Godot 4.3 with procedural map, resources, recruitmen
 
 ### splash_screen.tscn
 - Startup scene (project `run/main_scene`) shown before main menu.
-- Demo-only splash flow: when `GameParameters.DEMO_MODE_ENABLED` is `true`, displays `images/splash.png`, fades it in from alpha `0` to `1` over `1.0s`, holds for another `1.0s`, then transitions to `scenes/main_menu.tscn`; when demo mode is `false`, immediately transitions to main menu (no splash display).
+- Demo-only splash flow: when `GameParameters.is_demo_mode_enabled()` is `true`, displays `images/splash.png`, fades it in from alpha `0` to `1` over `1.0s`, holds for another `1.0s`, then transitions to `scenes/main_menu.tscn`; when demo mode is `false`, immediately transitions to main menu (no splash display).
 - Godot built-in boot splash image is disabled (`application/boot_splash/show_image=false`) so only this custom splash is visible.
 
 ### main_menu.tscn
@@ -250,7 +250,7 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
  - Modes:
    - Custom: current behavior (castle placement → gameplay).
 - Scenario: set `game_mode="scenario"` and `scenario_path` before start; map is regenerated from scenario `map_file`, managers init, then `ScenarioManager.apply_to_runtime(..., game_difficulty)` is called. Skips castle placement and starts the first turn immediately.
-- Demo-mode start guard: when `GameParameters.DEMO_MODE_ENABLED` is true, `GameManager` sanitizes `start_payload` targets so only whitelisted scenario files and custom-map files can be launched (`DEMO_ALLOWED_SCENARIO_FILES`, `DEMO_ALLOWED_CUSTOM_MAP_FILES`).
+- Demo-mode start guard: when `GameParameters.is_demo_mode_enabled()` is true, `GameManager` sanitizes `start_payload` targets so only whitelisted scenario files and custom-map files can be launched (`DEMO_ALLOWED_SCENARIO_FILES`, `DEMO_ALLOWED_CUSTOM_MAP_FILES`).
 - Scenario player settings: when scenario JSON includes `player_settings`, `GameManager` applies them before runtime scenario data, reinitializes `PlayerManagerNode` with those types, and then resolves first turn from active players only.
 - Scenario resources: `ScenarioManager.apply_to_runtime()` pushes `player_resources` into `PlayerManagerNode.set_player_resources()` before the first turn.
 - Scenario events: `_initialize_scenario_events_from_data(...)` now resolves optional `difficulty_overrides.<difficulty>.event_compositions` before event turn/region randomization and spawn.
@@ -634,5 +634,5 @@ scenes/voronoi_map_generator.tscn (VoronoiMapGenerator)
 - New/now-central: `TurnController.gd`, `BattleManager.gd`, `VisualManager.gd`, `BudgetManager.gd`, `BudgetComposition.gd`, `RecruitmentManager.gd`, `PlayerManagerNode.gd`.
 - Translation sync utility: `translations.py` downloads a hardcoded Google Sheet tab (fixed URL + GID in script) and overwrites `translations/hotw_translations.csv` when run from command line.
 - Steam upload utility: `steam_upload_build.sh` first exports release builds from Godot presets `windows` and `macos` into `pcexport/`, normalizes app bundle naming (`hornofthewarlord.app` -> `HornOfTheWarlord.app` when needed), ensures final artifact names are `HornOfTheWarlord.app` / `HornOfTheWarlord.exe` / `HornOfTheWarlord.pck`, copies them into Steam ContentBuilder content folders (`content/macos`, `content/windows`), then runs Steam build upload via `builder_osx/steamcmd.sh` and `../scripts/app_build_4694060.vdf`.
-- Demo Steam upload utility: `steam_upload_demo.sh` mirrors the export/copy/upload flow for Demo and runs Steam build upload via `builder_osx/steamcmd.sh` and `../scripts/app_build_4787020.vdf` (depots `4787022` windows, `4787023` macOS).
-- Final Steam upload utility: `steam_upload_final.sh` mirrors the export/copy/upload flow for the full game, clears stale generated export artifacts from `pcexport/` before exporting to avoid partial `.pck` write failures, and runs Steam build upload via `builder_osx/steamcmd.sh` and `../scripts/app_build_4380120.vdf` (depots `4380122` windows, `4380123` macOS; build output `output_release/`).
+- Demo Steam upload utility: `steam_upload_demo.sh` mirrors the export/copy/upload flow for Demo, exports with `windows`/`macos` presets carrying `demo_build`, and runs Steam build upload via `builder_osx/steamcmd.sh` and `../scripts/app_build_4787020.vdf` (depots `4787022` windows, `4787023` macOS).
+- Final Steam upload utility: `steam_upload_final.sh` mirrors the export/copy/upload flow for the full game, clears stale generated export artifacts from `pcexport/` before exporting to avoid partial `.pck` write failures, exports with `windows_final`/`macos_final` presets carrying `full_game`, and runs Steam build upload via `builder_osx/steamcmd.sh` and `../scripts/app_build_4380120.vdf` (depots `4380122` windows, `4380123` macOS; build output `output_release/`).

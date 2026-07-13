@@ -293,7 +293,7 @@ text = "5"
 layout_mode = 2
 
 [node name="PromoteButton" type="Button" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection"]
-custom_minimum_size = Vector2(205, 40)
+custom_minimum_size = Vector2(165, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -444,12 +444,12 @@ text = "40%"
 layout_mode = 2
 
 [node name="BuildButton" type="Button" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
-custom_minimum_size = Vector2(205, 40)
+custom_minimum_size = Vector2(165, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 button_group = SubResource("ButtonGroup_l3w7x")
-text = "Upgrade"
+text = "Aufwerten"
 
 [node name="Resources" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
 layout_mode = 2
@@ -1995,3 +1995,25 @@ offset_bottom = -110.0
 
 [node name="ActionTooltipUpkeep" parent="." instance=ExtResource("31_pd0lt")]
 layout_mode = 1
+
+[node name="DowngradeCastle" type="Button" parent="."]
+custom_minimum_size = Vector2(40, 40)
+offset_left = 457.0
+offset_top = 179.0
+offset_right = 497.0
+offset_bottom = 219.0
+size_flags_horizontal = 0
+theme = ExtResource("9_o2cfa")
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "s"
+
+[node name="DowngradeRegion" type="Button" parent="."]
+custom_minimum_size = Vector2(40, 40)
+offset_left = 457.0
+offset_top = 264.0
+offset_right = 497.0
+offset_bottom = 304.0
+size_flags_horizontal = 0
+theme = ExtResource("9_o2cfa")
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "s"

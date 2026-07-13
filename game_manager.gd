@@ -207,7 +207,7 @@ func _ready():
 		if kind == "scenario":
 			game_mode = "scenario"
 			var requested_scenario_file: String = String(payload.get("scenario_path", "")).get_file()
-			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_SCENARIO_FILES.has(requested_scenario_file):
+			if GameParameters.is_demo_mode_enabled() and not GameParameters.DEMO_ALLOWED_SCENARIO_FILES.has(requested_scenario_file):
 				requested_scenario_file = "tutorial.json"
 			scenario_path = "res://scenarios/" + requested_scenario_file
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
@@ -218,7 +218,7 @@ func _ready():
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
 			_selected_upgrade_card_ids = _normalize_selected_upgrade_cards(payload.get("selected_upgrade_cards", []))
 			var map_file_name: String = String(payload.get("map_file", "")).get_file()
-			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
+			if GameParameters.is_demo_mode_enabled() and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
 				map_file_name = "demo-999-small.json"
 			var map_path: String = "res://mapdata/" + map_file_name
 			var size_str: String = String(payload.get("map_size", "small"))

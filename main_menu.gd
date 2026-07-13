@@ -1,7 +1,6 @@
 extends Control
 class_name MainMenu
 
-const DEMO_MODE_ENABLED: bool = GameParameters.DEMO_MODE_ENABLED
 const TUTORIAL_SCENARIO_PATH: String = "res://scenarios/tutorial.json"
 const LANGUAGE_ENGLISH_FLAG: Texture2D = preload("res://images/flags/english.png")
 const LANGUAGE_GERMAN_FLAG: Texture2D = preload("res://images/flags/germany.png")
@@ -28,6 +27,7 @@ const CARD_LEVEL_TOOLTIP_OFFSET: Vector2 = Vector2(18.0, 18.0)
 @onready var options_button: Button = $MenuContainer/OptionsButton
 @onready var upgrades_button: Button = $MenuContainer/UpgradesButton
 @onready var exit_button: Button = $MenuContainer/ExitButton
+@onready var demo_mode_enabled: bool = GameParameters.is_demo_mode_enabled()
 @onready var feedback_container: Control = $Feedback
 @onready var feedback_button: Button = $Feedback/TextureRect/FeedbackButton
 @onready var save_game_modal: MainMenuSaveGameModal = $SaveGameModal
@@ -1033,7 +1033,7 @@ func _setup_player_buttons():
 		human_btn.button_pressed = default_control == "Player"
 		computer_btn.button_pressed = default_control == "Computer"
 		off_btn.button_pressed = default_control == "Off"
-		if DEMO_MODE_ENABLED and player_num >= 5:
+		if demo_mode_enabled and player_num >= 5:
 			human_btn.disabled = true
 			computer_btn.disabled = true
 			off_btn.button_pressed = true
@@ -1618,7 +1618,7 @@ func _gather_map_items() -> Array:
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".json"):
-				if DEMO_MODE_ENABLED and not allowed_custom_maps.has(file_name):
+				if demo_mode_enabled and not allowed_custom_maps.has(file_name):
 					file_name = dir.get_next()
 					continue
 				var base := file_name.trim_suffix(".json")
@@ -1655,7 +1655,7 @@ func _gather_scenario_items(requested_type: String) -> Array:
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".json"):
-				if DEMO_MODE_ENABLED and not allowed_scenarios.has(file_name):
+				if demo_mode_enabled and not allowed_scenarios.has(file_name):
 					file_name = dir.get_next()
 					continue
 				var scenario_name := file_name.trim_suffix(".json")
