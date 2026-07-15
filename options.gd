@@ -35,6 +35,8 @@ var _captured_keyboard_action: int = NO_CAPTURE_ACTION
 @onready var recruit_key_button: Button = get_node("Keys/VBoxContainer/Rows/Recruit/KeyButton") as Button
 @onready var camp_rest_key_button: Button = get_node("Keys/VBoxContainer/Rows/CampRest/KeyButton") as Button
 @onready var transfer_key_button: Button = get_node("Keys/VBoxContainer/Rows/Transfer/KeyButton") as Button
+@onready var trade_key_button: Button = get_node("Keys/VBoxContainer/Rows/Trade/KeyButton") as Button
+@onready var map_overview_key_button: Button = get_node("Keys/VBoxContainer/Rows/MapOverview/KeyButton") as Button
 
 var _cloud_buttons_group: ButtonGroup
 var _ai_speed_buttons_group: ButtonGroup
@@ -81,6 +83,8 @@ func _ready() -> void:
 	recruit_key_button.pressed.connect(_on_recruit_key_pressed)
 	camp_rest_key_button.pressed.connect(_on_camp_rest_key_pressed)
 	transfer_key_button.pressed.connect(_on_transfer_key_pressed)
+	trade_key_button.pressed.connect(_on_trade_key_pressed)
+	map_overview_key_button.pressed.connect(_on_map_overview_key_pressed)
 	_show_scenario_panel()
 	_sync_keyboard_mapping_buttons()
 
@@ -162,6 +166,12 @@ func _on_camp_rest_key_pressed() -> void:
 func _on_transfer_key_pressed() -> void:
 	_begin_keyboard_capture(GameParameters.KeyboardAction.TRANSFER)
 
+func _on_trade_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.TRADE)
+
+func _on_map_overview_key_pressed() -> void:
+	_begin_keyboard_capture(GameParameters.KeyboardAction.MAP_OVERVIEW)
+
 func _begin_keyboard_capture(action: int) -> void:
 	_captured_keyboard_action = action
 	_sync_keyboard_mapping_buttons()
@@ -191,7 +201,9 @@ func _get_keyboard_actions() -> Array[int]:
 		GameParameters.KeyboardAction.SWITCH_ARMY_REGION,
 		GameParameters.KeyboardAction.RECRUIT,
 		GameParameters.KeyboardAction.CAMP_REST,
-		GameParameters.KeyboardAction.TRANSFER
+		GameParameters.KeyboardAction.TRANSFER,
+		GameParameters.KeyboardAction.TRADE,
+		GameParameters.KeyboardAction.MAP_OVERVIEW
 	]
 
 func _get_button_for_keyboard_action(action: int) -> Button:
@@ -208,6 +220,10 @@ func _get_button_for_keyboard_action(action: int) -> Button:
 			return camp_rest_key_button
 		GameParameters.KeyboardAction.TRANSFER:
 			return transfer_key_button
+		GameParameters.KeyboardAction.TRADE:
+			return trade_key_button
+		GameParameters.KeyboardAction.MAP_OVERVIEW:
+			return map_overview_key_button
 	return continue_close_key_button
 
 func _sync_keyboard_mapping_buttons() -> void:
@@ -217,6 +233,8 @@ func _sync_keyboard_mapping_buttons() -> void:
 	_update_keyboard_button(GameParameters.KeyboardAction.RECRUIT, recruit_key_button)
 	_update_keyboard_button(GameParameters.KeyboardAction.CAMP_REST, camp_rest_key_button)
 	_update_keyboard_button(GameParameters.KeyboardAction.TRANSFER, transfer_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.TRADE, trade_key_button)
+	_update_keyboard_button(GameParameters.KeyboardAction.MAP_OVERVIEW, map_overview_key_button)
 
 func _update_keyboard_button(action: int, button: Button) -> void:
 	if _captured_keyboard_action == action:

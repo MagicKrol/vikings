@@ -154,7 +154,9 @@ enum KeyboardAction {
 	SWITCH_ARMY_REGION = 2,
 	RECRUIT = 3,
 	CAMP_REST = 4,
-	TRANSFER = 5
+	TRANSFER = 5,
+	TRADE = 6,
+	MAP_OVERVIEW = 7
 }
 
 ## Border Enhancement Constants
@@ -306,6 +308,8 @@ static var _switch_army_region_keycode: int = KEY_TAB
 static var _recruit_keycode: int = KEY_R
 static var _camp_rest_keycode: int = KEY_C
 static var _transfer_keycode: int = KEY_T
+static var _trade_keycode: int = KEY_B
+static var _map_overview_keycode: int = KEY_O
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -1170,6 +1174,10 @@ static func get_default_keyboard_keycode(action: int) -> int:
 			return KEY_C
 		KeyboardAction.TRANSFER:
 			return KEY_T
+		KeyboardAction.TRADE:
+			return KEY_B
+		KeyboardAction.MAP_OVERVIEW:
+			return KEY_O
 	return KEY_NONE
 
 static func get_keyboard_keycode(action: int) -> int:
@@ -1186,6 +1194,10 @@ static func get_keyboard_keycode(action: int) -> int:
 			return _camp_rest_keycode
 		KeyboardAction.TRANSFER:
 			return _transfer_keycode
+		KeyboardAction.TRADE:
+			return _trade_keycode
+		KeyboardAction.MAP_OVERVIEW:
+			return _map_overview_keycode
 	return KEY_NONE
 
 static func set_keyboard_keycode(action: int, keycode: int) -> void:
@@ -1203,6 +1215,10 @@ static func set_keyboard_keycode(action: int, keycode: int) -> void:
 			_camp_rest_keycode = normalized_keycode
 		KeyboardAction.TRANSFER:
 			_transfer_keycode = normalized_keycode
+		KeyboardAction.TRADE:
+			_trade_keycode = normalized_keycode
+		KeyboardAction.MAP_OVERVIEW:
+			_map_overview_keycode = normalized_keycode
 
 static func is_keyboard_action_pressed(event: InputEvent, action: int) -> bool:
 	if not (event is InputEventKey):

@@ -125,8 +125,8 @@ func setup_region(region_data: Dictionary) -> void:
 	_clear_repair_snapshot()
 	_reset_defense_state_to_full()
 	
-	# Set basic garrison composition and population for non-ocean regions
-	if not is_ocean:
+	# Set basic garrison composition and population for inhabitable regions
+	if not is_ocean and region_type != RegionTypeEnum.Type.MOUNTAINS:
 		var peasant_count = GameParameters.generate_garrison_size(region_level)
 		garrison.set_soldier_count(SoldierTypeEnum.Type.PEASANTS, peasant_count)
 		# Generate population based on region level

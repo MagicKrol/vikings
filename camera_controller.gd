@@ -60,6 +60,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Handle continuous keyboard input for smooth movement
 	_handle_continuous_keyboard_input(delta)
+	_clamp_target_position_to_limits()
 	
 	if not touch_enabled:
 		return
@@ -76,6 +77,19 @@ func _process(delta: float) -> void:
 		zoom = zoom.lerp(target_zoom, zoom_weight)
 	else:
 		zoom = target_zoom
+
+func _clamp_target_position_to_limits() -> void:
+	var half_viewport_size: Vector2 = get_viewport_rect().size / target_zoom * 0.5
+	var minimum_position: Vector2 = Vector2(float(limit_left), float(limit_top)) + half_viewport_size
+	var maximum_position: Vector2 = Vector2(float(limit_right), float(limit_bottom)) - half_viewport_size
+	if minimum_position.x > maximum_position.x:
+		target_position.x = (float(limit_left) + float(limit_right)) * 0.5
+	else:
+		target_position.x = clampf(target_position.x, minimum_position.x, maximum_position.x)
+	if minimum_position.y > maximum_position.y:
+		target_position.y = (float(limit_top) + float(limit_bottom)) * 0.5
+	else:
+		target_position.y = clampf(target_position.y, minimum_position.y, maximum_position.y)
 
 func _input(event: InputEvent) -> void:
 	# Handle keyboard controls for discrete actions (zoom, reset)
@@ -244,6 +258,8 @@ func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 func _is_zoom_blocked_by_modal() -> bool:
 	if ui_manager == null:
 		return false
+	if ui_manager.is_map_filter_visible():
+		return false
 	if not ui_manager.is_any_modal_visible():
 		return false
 	if _is_tutorial_action_active("camera_zoom") and ui_manager.is_only_info_or_message_modal_visible():
@@ -252,6 +268,8 @@ func _is_zoom_blocked_by_modal() -> bool:
 
 func _is_pan_blocked_by_modal() -> bool:
 	if ui_manager == null:
+		return false
+	if ui_manager.is_map_filter_visible():
 		return false
 	if not ui_manager.is_any_modal_visible():
 		return false

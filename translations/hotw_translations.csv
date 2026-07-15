@@ -2,6 +2,16 @@ key,explanation or purpose,en,de,pl,br
 demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
 Options,,Options,Optionen,Opcje,Opções
 Objective,Heading shown above the current custom map victory objective.,Objective,Ziel,Cel,Objetivo
+Map Overlay,Map overlay modal title.,Map Overlay,Kartenüberlagerung,Nakładka mapy,Sobreposição do mapa
+Map Overview,Keyboard mapping action for opening the map overlay.,Map Overview,Kartenübersicht,Przegląd mapy,Visão geral do mapa
+Ownership,Map filter option for showing player ownership colors.,Ownership,Besitz,Własność,Propriedade
+Player Only,Map filter option for limiting filters to the current player's regions.,Player Only,Nur Spieler,Tylko gracz,Apenas jogador
+Level Bonus,Map filter option for including region level resource bonuses.,Level Bonus,Stufenbonus,Bonus poziomu,Bônus de nível
+Yes,Map filter enabled option.,Yes,Ja,Tak,Sim
+No,Map filter disabled option.,No,Nein,Nie,Não
+Change regions' ownership visibility.,Map filter ownership option tooltip.,Change regions' ownership visibility.,Ändert die Sichtbarkeit der Regionsbesitzfarben.,Zmienia widoczność własności regionów.,Altera a visibilidade da propriedade das regiões.
+Show filters only for regions owned by the current player.,Map filter player-only option tooltip.,Show filters only for regions owned by the current player.,Filter nur für Regionen des aktuellen Spielers anzeigen.,Pokaż filtry tylko dla regionów należących do bieżącego gracza.,Mostra filtros apenas para regiões do jogador atual.
+Include region level bonuses in resource filters.,Map filter level-bonus option tooltip.,Include region level bonuses in resource filters.,Regionstufenboni in Ressourcenfiltern berücksichtigen.,Uwzględnia premie poziomu regionu w filtrach zasobów.,Inclui bônus de nível da região nos filtros de recursos.
 Exit,,Exit,Ausfrahrt,Koniec,Sair
 Population,Number of people in the region,Population,Bevölkerung,Ludność,População
 Food,Resource type,Food,Nahrung,Żywność,Alimentos
@@ -120,7 +130,7 @@ Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Gło
 "%d wall sections destroyed, %d damaged by trebuchets.",Prebattle bombardment summary format showing destroyed and damaged wall section counts.,"%d wall sections destroyed, %d damaged by trebuchets.","%d Mauerabschnitte zerstört, %d durch Triboke beschädigt.","%d odcinków murów zniszczonych, %d uszkodzonych przez trebusze.","%d seções da muralha destruídas, %d danificadas por trabucos."
 %s Found,Ore search status format listing discovered ore names.,%s,%s,%s,%s
 %s Found!,Ore discovery popup header format showing the discovered ore type.,%s Found!,%s gefunden!,Znaleziono %s!,%s encontrado!
-%s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,%s obrońców,%s defensores
+%s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,Obrońcy %s,%s defensores
 %s is being raised.,Notification format shown when a new army begins raising.,%s is being raised.,%s wird aufgestellt.,%s jest formowana.,%s está sendo levantado.
 %s of %s,Region title format combining region level display name and region name.,%s of %s,%s von %s,%s %s,%s de %s
 %s was discovered,Tooltip format indicating that a specific ore type has been discovered.,%s was discovered,%s wurde entdeckt,%s został odkryty,%s foi descoberto
@@ -640,3 +650,4 @@ Barren Desert,Custom map display name key used in the custom map selection menu.
 Forgotten Island,Custom map display name key used in the custom map selection menu.,Forgotten Island,Forgotten Island,Forgotten Island,Forgotten Island
 Lakeland,Custom map display name key used in the custom map selection menu.,Lakeland,Lakeland,Lakeland,Lakeland
 Dominion,Custom map display name key used in the custom map selection menu.,Dominion,Dominion,Dominion,Dominion
+Dismantling,Downgrading a castle,Razing,Abriss,Burzenie,Demolindo

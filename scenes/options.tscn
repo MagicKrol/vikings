@@ -574,3 +574,39 @@ theme = ExtResource("3_fvux6")
 theme_override_fonts/font = ExtResource("4_w5b6b")
 theme_override_font_sizes/font_size = 18
 text = "[T]"
+
+[node name="Trade" type="HBoxContainer" parent="Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Keys/VBoxContainer/Rows/Trade"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+theme = ExtResource("9_2ix74")
+text = "Trade"
+
+[node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/Trade"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("3_fvux6")
+theme_override_fonts/font = ExtResource("4_w5b6b")
+theme_override_font_sizes/font_size = 18
+text = "[B]"
+
+[node name="MapOverview" type="HBoxContainer" parent="Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Keys/VBoxContainer/Rows/MapOverview"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+theme = ExtResource("9_2ix74")
+text = "Map Overview"
+
+[node name="KeyButton" type="Button" parent="Keys/VBoxContainer/Rows/MapOverview"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("3_fvux6")
+theme_override_fonts/font = ExtResource("4_w5b6b")
+theme_override_font_sizes/font_size = 18
+text = "[O]"

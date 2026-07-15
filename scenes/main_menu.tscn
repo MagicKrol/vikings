@@ -2211,6 +2211,42 @@ theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
 text = "[T]"
 
+[node name="Trade" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/Trade"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Trade"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/Trade"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[B]"
+
+[node name="MapOverview" type="HBoxContainer" parent="Options/Keys/VBoxContainer/Rows"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Action" type="Label" parent="Options/Keys/VBoxContainer/Rows/MapOverview"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+text = "Map Overview"
+
+[node name="KeyButton" type="Button" parent="Options/Keys/VBoxContainer/Rows/MapOverview"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "[O]"
+
 [node name="SaveGameModal" type="Control" parent="."]
 visible = false
 z_index = 120

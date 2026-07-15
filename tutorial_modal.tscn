@@ -311,6 +311,19 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
+[node name="ColorRect3" type="ColorRect" parent="Blocks/trade"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1774.0
+offset_top = 385.0
+offset_right = 1915.0
+offset_bottom = 493.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
 [node name="endturn" type="Control" parent="Blocks"]
 layout_mode = 3
 anchors_preset = 0

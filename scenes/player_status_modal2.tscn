@@ -94,6 +94,7 @@ custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Food"]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 text = "0"
 
@@ -114,8 +115,9 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Wood"]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
-text = "0"
+text = "2"
 
 [node name="Change" type="Label" parent="Panel/HBoxContainer/Wood"]
 layout_mode = 2
@@ -134,6 +136,7 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Stone"]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 text = "0"
 
@@ -154,6 +157,7 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Iron"]
+custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 text = "0"
 
@@ -174,6 +178,7 @@ custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
 
 [node name="Value" type="Label" parent="Panel/HBoxContainer/Gold"]
+custom_minimum_size = Vector2(42, 0)
 layout_mode = 2
 text = "0"
 

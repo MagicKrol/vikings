@@ -463,7 +463,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	player_manager.print_all_resources()
 
 	var icons_modal = ui_node.get_node("IconsModal") as Control
-	icons_modal.visible = false
+	icons_modal.visible = true
 
 func _should_enable_tutorial() -> bool:
 	return game_mode == "scenario" and scenario_path != "" and scenario_path.to_lower().find("tutorial") != -1
@@ -2420,10 +2420,8 @@ func _process_resource_upkeep_for_player(player_id: int) -> void:
 	var food_after: int = maxi(0, food_before - food_upkeep)
 	var wood_after: int = maxi(0, wood_before - wood_upkeep)
 	var stone_after: int = maxi(0, stone_before - stone_upkeep)
-	var projected_economy: Dictionary = player_manager.get_player_economy_breakdown(player_id)
-	var projected_income: Dictionary = projected_economy.get("income", {}) as Dictionary
-	var missing_wood: int = maxi(0, -int(projected_income.get(ResourcesEnum.Type.WOOD, 0)))
-	var missing_stone: int = maxi(0, -int(projected_income.get(ResourcesEnum.Type.STONE, 0)))
+	var missing_wood: int = maxi(0, wood_upkeep - wood_before)
+	var missing_stone: int = maxi(0, stone_upkeep - stone_before)
 	player.set_resource_amount(ResourcesEnum.Type.FOOD, food_after)
 	player.set_resource_amount(ResourcesEnum.Type.WOOD, wood_after)
 	player.set_resource_amount(ResourcesEnum.Type.STONE, stone_after)
@@ -2440,8 +2438,8 @@ func _process_resource_upkeep_for_player(player_id: int) -> void:
 	DebugLogger.log_calculation("ResourceCalculation", "Wood after", wood_after)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone before", stone_before)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone after", stone_after)
-	DebugLogger.log_calculation("ResourceCalculation", "Projected wood shortage", missing_wood)
-	DebugLogger.log_calculation("ResourceCalculation", "Projected stone shortage", missing_stone)
+	DebugLogger.log_calculation("ResourceCalculation", "Wood missing after upkeep", missing_wood)
+	DebugLogger.log_calculation("ResourceCalculation", "Stone missing after upkeep", missing_stone)
 
 func famine_regions(player_id: int, missing_food: float) -> Dictionary:
 	var clamped_missing_food: float = max(0.0, missing_food)

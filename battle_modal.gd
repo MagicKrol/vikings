@@ -1070,51 +1070,32 @@ func _append_casualty_summary() -> void:
 		return
 	_append_log_line("")
 	_append_log_center(tr("Casualties inflicted"))
+	_append_log_line("")
 	_append_casualty_summary_side(_attacker_casualty_breakdown, true)
+	if not _attacker_casualty_breakdown.is_empty() and not _defender_casualty_breakdown.is_empty():
+		_append_log_line("")
 	_append_casualty_summary_side(_defender_casualty_breakdown, false)
 
 func _append_casualty_summary_side(side_breakdown: Dictionary, is_attacker_side: bool) -> void:
 	if side_breakdown.is_empty():
 		return
-	var player_id: int = _get_side_player_id(is_attacker_side)
-	var side_label: String = tr("Attacker (Player %d)") % player_id if is_attacker_side else tr("Defender (Player %d)") % player_id
+	var side_label: String = attacker_header.text if is_attacker_side else defender_header.text
 	_append_log_line(side_label)
 	for attacker_unit_type in SoldierTypeEnum.get_all_types():
 		if not side_breakdown.has(attacker_unit_type):
 			continue
 		var target_losses: Dictionary = side_breakdown.get(attacker_unit_type, {}) as Dictionary
-		var target_entries: Array[String] = []
+		var attacker_name: String = SoldierTypeEnum.type_to_display_string(attacker_unit_type)
+		var has_target_casualties: bool = false
 		for target_unit_type in SoldierTypeEnum.get_all_types():
 			var casualties: int = int(target_losses.get(target_unit_type, 0))
 			if casualties <= 0:
 				continue
-			target_entries.append(_get_casualty_target_label(target_unit_type) + ": " + str(casualties))
-		if target_entries.is_empty():
-			continue
-		var attacker_name: String = SoldierTypeEnum.type_to_display_string(attacker_unit_type)
-		_append_log_line(attacker_name + " - " + ", ".join(target_entries))
-
-func _get_casualty_target_label(unit_type: SoldierTypeEnum.Type) -> String:
-	match unit_type:
-		SoldierTypeEnum.Type.PEASANTS:
-			return "P"
-		SoldierTypeEnum.Type.SPEARMEN:
-			return "S"
-		SoldierTypeEnum.Type.SWORDSMEN:
-			return "Sw"
-		SoldierTypeEnum.Type.ARCHERS:
-			return "A"
-		SoldierTypeEnum.Type.CROSSBOWMEN:
-			return "C"
-		SoldierTypeEnum.Type.HORSEMEN:
-			return "H"
-		SoldierTypeEnum.Type.KNIGHTS:
-			return "K"
-		SoldierTypeEnum.Type.MOUNTED_KNIGHTS:
-			return "M"
-		SoldierTypeEnum.Type.ROYAL_GUARD:
-			return "R"
-	return "?"
+			if not has_target_casualties:
+				_append_log_line(attacker_name + ":")
+				has_target_casualties = true
+			var target_name: String = SoldierTypeEnum.type_to_display_string(target_unit_type)
+			_append_log_line("    " + target_name + ": " + str(casualties))
 
 func _append_side_breakdown(side_breakdown: Dictionary, is_attacker_side: bool) -> bool:
 	var wrote_any: bool = false

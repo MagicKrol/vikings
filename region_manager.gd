@@ -31,6 +31,9 @@ class_name RegionManager
 # Region ownership: region_id -> player_id
 var region_ownership: Dictionary = {}
 
+const CASTLE_PLACEMENT_CASTLE_POPULATION_BONUS: int = 200
+const CASTLE_PLACEMENT_NEIGHBOR_POPULATION_BONUS: int = 100
+
 # Castle starting positions: player_id -> region_id
 var castle_starting_positions: Dictionary = {}
 
@@ -287,10 +290,9 @@ func generate_region_resources(region: Region) -> void:
 	region.set_base_resources(base_comp)
 
 func upgrade_castle_regions(castle_region: Region) -> void:
-	"""Upgrade castle region to L3 and neighboring regions to L2, recalculate population"""
+	"""Upgrade castle region to L3 and neighboring regions to L2 with population bonuses."""
 	# Upgrade castle region to L3
-	var castle_population: int = GameParameters.generate_population_size(RegionLevelEnum.Level.L3)
-	castle_region.set_population(castle_population)
+	castle_region.set_population(castle_region.get_population() + CASTLE_PLACEMENT_CASTLE_POPULATION_BONUS)
 	castle_region.available_recruits = castle_region.get_max_recruits()
 	castle_region.set_region_level_with_recruit_bonus(RegionLevelEnum.Level.L3)
 	
@@ -302,8 +304,7 @@ func upgrade_castle_regions(castle_region: Region) -> void:
 		for child in regions_node.get_children():
 			if child is Region and child.get_region_id() == neighbor_id:
 				var neighbor_region: Region = child as Region
-				var neighbor_population: int = GameParameters.generate_population_size(RegionLevelEnum.Level.L2)
-				neighbor_region.set_population(neighbor_population)
+				neighbor_region.set_population(neighbor_region.get_population() + CASTLE_PLACEMENT_NEIGHBOR_POPULATION_BONUS)
 				neighbor_region.available_recruits = neighbor_region.get_max_recruits()
 				neighbor_region.set_region_level_with_recruit_bonus(RegionLevelEnum.Level.L2)
 				break
