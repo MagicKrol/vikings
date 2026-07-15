@@ -242,6 +242,8 @@ const CASTLE_UPKEEP_COSTS: Dictionary = {
 	}
 }
 
+const CASTLE_DEFENSE_PENALTY_PER_MISSING_RESOURCE: float = 3.0
+
 const REGION_UPKEEP_COSTS: Dictionary = {
 	RegionLevelEnum.Level.L1: {
 		ResourcesEnum.Type.FOOD: 0,

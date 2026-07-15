@@ -20,7 +20,7 @@ Normal non-castle frontier logic is outside this document and is not changed by 
 - `ArmyManager.gd`
 	- Maintains `castle_nearby_entities` cache used as threat-scanning input.
 - `GameManager.gd`
-	- Runs battle and siege simulations used for known-threat decisions.
+	- Runs battle and siege simulations used for known-threat decisions; each negative projected wood/stone upkeep balance adds a tier-weighted maintenance penalty to effective castle defense.
 - `RecruitmentManager.gd`
 	- Executes garrison hiring with reserved castle-defense budgets.
 - `PlayerManagerNode.gd`

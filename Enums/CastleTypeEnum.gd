@@ -83,6 +83,19 @@ static func get_next_level(castle_type: Type) -> Type:
 		_:
 			return Type.NONE
 
+static func get_previous_level(castle_type: Type) -> Type:
+	match castle_type:
+		Type.OUTPOST:
+			return Type.NONE
+		Type.KEEP:
+			return Type.OUTPOST
+		Type.CASTLE:
+			return Type.KEEP
+		Type.STRONGHOLD:
+			return Type.CASTLE
+		_:
+			return Type.NONE
+
 static func can_upgrade(castle_type: Type) -> bool:
 	"""Check if castle can be upgraded to next level"""
 	return get_next_level(castle_type) != Type.NONE

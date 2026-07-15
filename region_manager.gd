@@ -410,7 +410,7 @@ func process_all_castle_repairs() -> void:
 	if completed > 0:
 		DebugLogger.log("RegionManagement", "Completed " + str(completed) + " castle repairs this turn")
 
-func process_castle_progress_for_player(player_id: int) -> void:
+func process_castle_progress_for_player(player_id: int, player: Player) -> void:
 	if map_generator == null:
 		return
 	var regions_node = map_generator.get_node_or_null("Regions")
@@ -418,6 +418,8 @@ func process_castle_progress_for_player(player_id: int) -> void:
 		return
 	var completed_builds := 0
 	var completed_repairs := 0
+	var completed_region_downgrades := 0
+	var completed_castle_downgrades := 0
 	for child in regions_node.get_children():
 		if child is Region:
 			var region := child as Region
@@ -427,10 +429,48 @@ func process_castle_progress_for_player(player_id: int) -> void:
 				completed_builds += 1
 			if region.process_castle_repair():
 				completed_repairs += 1
+			if region.process_region_downgrade():
+				player.add_resources(ResourcesEnum.Type.FOOD, 5)
+				completed_region_downgrades += 1
+			var dismantled_castle_type: CastleTypeEnum.Type = region.process_castle_downgrade()
+			if dismantled_castle_type != CastleTypeEnum.Type.NONE:
+				var construction_cost: Dictionary = GameParameters.get_castle_building_cost(dismantled_castle_type)
+				for resource_type in [ResourcesEnum.Type.WOOD, ResourcesEnum.Type.STONE, ResourcesEnum.Type.IRON]:
+					var returned_amount: int = int(float(construction_cost.get(resource_type, 0)) / 4.0)
+					player.add_resources(resource_type, returned_amount)
+				completed_castle_downgrades += 1
 	if completed_builds > 0:
 		DebugLogger.log("RegionManagement", "Completed " + str(completed_builds) + " castle constructions for player " + str(player_id))
 	if completed_repairs > 0:
 		DebugLogger.log("RegionManagement", "Completed " + str(completed_repairs) + " castle repairs for player " + str(player_id))
+	if completed_region_downgrades > 0 or completed_castle_downgrades > 0:
+		DebugLogger.log("RegionManagement", "Completed " + str(completed_region_downgrades) + " region downgrades and " + str(completed_castle_downgrades) + " castle downgrades for player " + str(player_id))
+
+func apply_castle_maintenance_penalty(player_id: int, resource_type: ResourcesEnum.Type, missing_amount: int) -> void:
+	if missing_amount <= 0:
+		return
+	var castle_regions: Array[Region] = []
+	var total_weight: int = 0
+	for region_id: int in get_player_regions(player_id):
+		var region: Region = map_generator.get_region_container_by_id(region_id) as Region
+		var castle_type: CastleTypeEnum.Type = region.get_castle_type()
+		if castle_type == CastleTypeEnum.Type.NONE:
+			continue
+		var upkeep: Dictionary = GameParameters.get_castle_upkeep_cost(castle_type)
+		var weight: int = int(upkeep.get(resource_type, 0))
+		if weight <= 0:
+			continue
+		castle_regions.append(region)
+		total_weight += weight
+	if total_weight <= 0:
+		return
+	var penalty_pool: float = float(missing_amount) * GameParameters.CASTLE_DEFENSE_PENALTY_PER_MISSING_RESOURCE
+	for region: Region in castle_regions:
+		var castle_upkeep: Dictionary = GameParameters.get_castle_upkeep_cost(region.get_castle_type())
+		var castle_weight: int = int(castle_upkeep.get(resource_type, 0))
+		var penalty_share: float = penalty_pool * float(castle_weight) / float(total_weight)
+		region.add_maintenance_defense_penalty(penalty_share)
+	DebugLogger.log("RegionManagement", "Applied " + str(penalty_pool) + " castle maintenance defense penalty from missing " + ResourcesEnum.type_to_string(resource_type) + " for player " + str(player_id))
 
 func try_repair_castle(region: Region, player: Player) -> bool:
 	if region == null or player == null:

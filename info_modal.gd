@@ -83,6 +83,8 @@ var _inactive_tab_color: Color = Color(0.595154, 0.595154, 0.595154, 1)
 @onready var _search_ore_button: Button = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection/SearchOreButton")
 @onready var _raise_army_button: Button = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/RaiseArmyButton")
 @onready var _recruit_button: Button = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/RecruitButton")
+@onready var _downgrade_castle_button: Button = get_node("DowngradeCastle") as Button
+@onready var _downgrade_region_button: Button = get_node("DowngradeRegion") as Button
 @onready var _region_level_action_section: Control = get_node("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection")
 @onready var _castle_level_action_section: Control = get_node("RegionPanel/Body/Region/Actions/CastleLevel/ActionSection")
 @onready var _mine_action_section: Control = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection")
@@ -161,6 +163,8 @@ func _initialize_region_actions() -> void:
 	_search_ore_button.pressed.connect(_on_ore_search_pressed)
 	_raise_army_button.pressed.connect(_on_raise_army_pressed)
 	_recruit_button.pressed.connect(_on_recruit_soldiers_pressed)
+	_downgrade_castle_button.pressed.connect(_on_downgrade_castle_pressed)
+	_downgrade_region_button.pressed.connect(_on_downgrade_region_pressed)
 
 func _initialize_action_tooltips() -> void:
 	_promote_button.mouse_entered.connect(_on_promote_tooltip_hovered)
@@ -173,6 +177,10 @@ func _initialize_action_tooltips() -> void:
 	_raise_army_button.mouse_exited.connect(_on_action_tooltip_unhovered)
 	_recruit_button.mouse_entered.connect(_on_recruit_garrison_tooltip_hovered)
 	_recruit_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_downgrade_castle_button.mouse_entered.connect(_on_downgrade_castle_tooltip_hovered)
+	_downgrade_castle_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_downgrade_region_button.mouse_entered.connect(_on_downgrade_region_tooltip_hovered)
+	_downgrade_region_button.mouse_exited.connect(_on_action_tooltip_unhovered)
 
 func _initialize_garrison_unit_tooltips() -> void:
 	_connect_garrison_info_unit_tooltips(_region_garrison_info)
@@ -234,6 +242,22 @@ func _on_raise_army_tooltip_hovered() -> void:
 func _on_recruit_garrison_tooltip_hovered() -> void:
 	_show_message_action_tooltip(_get_region_action_tooltip_key("recruit_soldiers_garrison"), {}, _recruit_button)
 
+func _on_downgrade_region_tooltip_hovered() -> void:
+	var tooltip_key: String = _get_region_action_tooltip_key("downgrade_region")
+	if tooltip_key != "downgrade_region":
+		_show_message_action_tooltip(tooltip_key, {}, _downgrade_region_button)
+		return
+	_show_downgrade_action_tooltip(tooltip_key, {ResourcesEnum.Type.FOOD: 5}, 0, _downgrade_region_button)
+
+func _on_downgrade_castle_tooltip_hovered() -> void:
+	var tooltip_key: String = _get_region_action_tooltip_key("downgrade_castle")
+	if tooltip_key != "downgrade_castle":
+		_show_message_action_tooltip(tooltip_key, {}, _downgrade_castle_button)
+		return
+	var dismantling_cost: Dictionary = _get_castle_dismantling_cost(current_region.get_castle_type())
+	var returned_resources: Dictionary = _get_castle_dismantling_returns(current_region.get_castle_type())
+	_show_downgrade_action_tooltip(tooltip_key, returned_resources, int(dismantling_cost.get(ResourcesEnum.Type.GOLD, 0)), _downgrade_castle_button)
+
 func _on_action_tooltip_unhovered() -> void:
 	_clear_promotion_resource_preview()
 	_hide_action_tooltips()
@@ -249,6 +273,12 @@ func _show_turns_action_tooltip(tooltip_key: String, context_data: Dictionary, b
 	select_tooltip_modal_upkeep.hide_tooltip()
 	_position_action_tooltip(select_tooltip_modal, button)
 	select_tooltip_modal.show_tooltip(tooltip_key, context_data)
+
+func _show_downgrade_action_tooltip(tooltip_key: String, returned_resources: Dictionary, gold_cost: int, button: Control) -> void:
+	select_tooltip_modal_nores.hide_tooltip()
+	select_tooltip_modal_upkeep.hide_tooltip()
+	_position_action_tooltip(select_tooltip_modal, button)
+	select_tooltip_modal.show_downgrade_tooltip(tooltip_key, returned_resources, gold_cost)
 
 func _show_region_upkeep_action_tooltip(tooltip_key: String, upkeep_cost: Dictionary, button: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
@@ -331,7 +361,9 @@ func _apply_conquered_region_action_lock() -> void:
 	if not _is_region_management_blocked():
 		return
 	_promote_button.disabled = true
+	_downgrade_region_button.disabled = true
 	_build_button.disabled = true
+	_downgrade_castle_button.disabled = true
 	_search_ore_button.disabled = true
 	_raise_army_button.disabled = true
 	_recruit_button.disabled = true
@@ -372,7 +404,11 @@ func _apply_region_intel_overrides() -> void:
 	if not is_owned_by_current_player:
 		_set_region_action_sections_visible(false)
 		_promote_button.disabled = true
+		_downgrade_region_button.visible = false
+		_downgrade_region_button.disabled = true
 		_build_button.disabled = true
+		_downgrade_castle_button.visible = false
+		_downgrade_castle_button.disabled = true
 		_search_ore_button.disabled = true
 		_raise_army_button.disabled = true
 		_recruit_button.disabled = true
@@ -391,7 +427,9 @@ func _apply_region_intel_overrides() -> void:
 		return
 	_set_region_action_sections_visible(false)
 	_promote_button.disabled = true
+	_downgrade_region_button.disabled = true
 	_build_button.disabled = true
+	_downgrade_castle_button.disabled = true
 	_search_ore_button.disabled = true
 	_raise_army_button.disabled = true
 	_recruit_button.disabled = true
@@ -759,6 +797,9 @@ func _update_region_level_section() -> void:
 	var current_level: RegionLevelEnum.Level = current_region.get_region_level()
 	var is_region_max_level: bool = current_level >= RegionLevelEnum.Level.L5
 	_region_level_action_section.visible = not is_region_max_level
+	var can_downgrade_region: bool = current_level > RegionLevelEnum.Level.L1
+	_downgrade_region_button.visible = can_downgrade_region
+	_promote_button.custom_minimum_size.x = 165.0 if can_downgrade_region else 205.0
 	var target_level: RegionLevelEnum.Level = current_level
 	if current_level < RegionLevelEnum.Level.L5:
 		target_level = current_level + 1
@@ -772,7 +813,8 @@ func _update_region_level_section() -> void:
 	_set_cost_value("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection/Resources/Wood", wood_cost)
 	var promotion_available: bool = not current_region.has_promoted_this_turn()
 	var can_afford_promotion: bool = _can_player_afford_promotion(target_level)
-	_promote_button.disabled = current_level >= RegionLevelEnum.Level.L5 or not promotion_available or not can_afford_promotion
+	_promote_button.disabled = current_level >= RegionLevelEnum.Level.L5 or not promotion_available or not can_afford_promotion or current_region.is_region_downgrade_pending()
+	_downgrade_region_button.disabled = not can_downgrade_region or not promotion_available or current_region.is_region_downgrade_pending()
 
 func _update_castle_section() -> void:
 	"""Update castle name, defense, build/repair status, and cost display"""
@@ -793,9 +835,13 @@ func _update_castle_section() -> void:
 
 	var current_castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
 	var next_castle_type: CastleTypeEnum.Type = CastleTypeEnum.get_next_level(current_castle_type)
-	var is_castle_max_level: bool = current_castle_type != CastleTypeEnum.Type.NONE and next_castle_type == CastleTypeEnum.Type.NONE
-	var should_hide_castle_actions: bool = is_castle_max_level and not current_region.is_castle_under_construction() and not current_region.is_castle_under_repair() and not current_region.has_castle_damage()
+	var should_hide_castle_actions: bool = false
 	_castle_level_action_section.visible = not should_hide_castle_actions
+	var can_downgrade_castle: bool = current_castle_type != CastleTypeEnum.Type.NONE
+	_downgrade_castle_button.visible = can_downgrade_castle
+	_build_button.custom_minimum_size.x = 165.0 if can_downgrade_castle else 205.0
+	var castle_downgrade_locked: bool = current_region.is_castle_under_construction() or current_region.is_castle_under_repair() or current_region.is_castle_downgrade_pending()
+	_downgrade_castle_button.disabled = not can_downgrade_castle or castle_downgrade_locked or not _can_player_afford_castle_dismantling(current_castle_type)
 
 	_update_construction_status()
 
@@ -1141,6 +1187,9 @@ func _update_construction_status() -> void:
 	if current_region.is_castle_under_construction():
 		build_button.text = tr("Building")
 		build_button.disabled = true
+	elif current_region.is_castle_downgrade_pending():
+		build_button.text = tr("Dismantling")
+		build_button.disabled = true
 	elif current_region.is_castle_under_repair():
 		build_button.text = tr("Repairing")
 		build_button.disabled = true
@@ -1177,6 +1226,8 @@ func _on_promote_region_pressed() -> void:
 		return
 	if current_region.get_region_level() >= RegionLevelEnum.Level.L5:
 		return
+	if current_region.is_region_downgrade_pending():
+		return
 	var next_level: RegionLevelEnum.Level = current_region.get_region_level() + 1
 	if not _can_player_afford_promotion(next_level):
 		return
@@ -1197,6 +1248,19 @@ func _on_promote_region_pressed() -> void:
 	_refresh_current_region()
 	_request_player_status_refresh()
 
+func _on_downgrade_region_pressed() -> void:
+	sound_manager.click_sound()
+	if not _can_execute_current_region_actions():
+		return
+	if current_region.get_region_level() <= RegionLevelEnum.Level.L1:
+		return
+	if current_region.has_promoted_this_turn() or current_region.is_region_downgrade_pending():
+		return
+	current_region.start_region_downgrade()
+	current_region.mark_promoted_this_turn()
+	message_modal.display_message(tr("Region demotion started"), tr("Demotion will be completed in 1 turn."))
+	_refresh_current_region()
+
 func _on_recruit_soldiers_pressed() -> void:
 	sound_manager.click_sound()
 	if not _can_execute_current_region_actions():
@@ -1208,6 +1272,8 @@ func _on_build_button_pressed() -> void:
 	if not _can_execute_current_region_actions():
 		return
 	if current_region.is_castle_under_construction():
+		return
+	if current_region.is_castle_downgrade_pending():
 		return
 	if current_region.is_castle_under_repair():
 		return
@@ -1221,6 +1287,8 @@ func _on_build_button_pressed() -> void:
 
 func _on_build_castle_pressed() -> void:
 	sound_manager.click_sound()
+	if current_region.is_castle_downgrade_pending():
+		return
 	if not current_region.can_build_castle():
 		return
 	if not _can_player_afford_any_castle():
@@ -1229,6 +1297,8 @@ func _on_build_castle_pressed() -> void:
 
 func _on_upgrade_castle_pressed() -> void:
 	sound_manager.click_sound()
+	if current_region.is_castle_downgrade_pending():
+		return
 	if not current_region.can_upgrade_castle():
 		return
 	var current_castle_type = current_region.get_castle_type()
@@ -1253,6 +1323,8 @@ func _on_repair_castle_pressed() -> void:
 	_request_player_status_refresh()
 
 func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
+	if current_region.is_castle_downgrade_pending():
+		return
 	var construction_cost = GameParameters.get_castle_building_cost(castle_type)
 	var current_player: Player = _get_current_turn_player()
 	if not current_player.pay_cost(construction_cost):
@@ -1262,6 +1334,24 @@ func _start_castle_construction(castle_type: CastleTypeEnum.Type) -> void:
 	var turns_left = current_region.get_castle_build_turns_remaining()
 	var turn_word: String = tr("turn") if turns_left == 1 else tr("turns")
 	message_modal.display_message(tr("Construction will be completed in %d %s.") % [turns_left, turn_word])
+	_refresh_current_region()
+	_request_player_status_refresh()
+
+func _on_downgrade_castle_pressed() -> void:
+	sound_manager.click_sound()
+	if not _can_execute_current_region_actions():
+		return
+	var castle_type: CastleTypeEnum.Type = current_region.get_castle_type()
+	if castle_type == CastleTypeEnum.Type.NONE:
+		return
+	if current_region.is_castle_under_construction() or current_region.is_castle_under_repair() or current_region.is_castle_downgrade_pending():
+		return
+	var dismantling_cost: Dictionary = _get_castle_dismantling_cost(castle_type)
+	var current_player: Player = _get_current_turn_player()
+	if not current_player.pay_cost(dismantling_cost):
+		return
+	current_region.start_castle_downgrade()
+	message_modal.display_message(tr("Castle dismantling started"), tr("Dismantling will be completed in 1 turn."))
 	_refresh_current_region()
 	_request_player_status_refresh()
 
@@ -1372,6 +1462,23 @@ func _can_player_afford_castle(castle_type: CastleTypeEnum.Type) -> bool:
 func _can_player_afford_any_castle() -> bool:
 	return _can_player_afford_castle(CastleTypeEnum.Type.OUTPOST)
 
+func _get_castle_dismantling_cost(castle_type: CastleTypeEnum.Type) -> Dictionary:
+	var construction_cost: Dictionary = GameParameters.get_castle_building_cost(castle_type)
+	var gold_cost: int = int(float(construction_cost.get(ResourcesEnum.Type.GOLD, 0)) / 4.0)
+	return {ResourcesEnum.Type.GOLD: gold_cost}
+
+func _get_castle_dismantling_returns(castle_type: CastleTypeEnum.Type) -> Dictionary:
+	var construction_cost: Dictionary = GameParameters.get_castle_building_cost(castle_type)
+	return {
+		ResourcesEnum.Type.WOOD: int(float(construction_cost.get(ResourcesEnum.Type.WOOD, 0)) / 4.0),
+		ResourcesEnum.Type.STONE: int(float(construction_cost.get(ResourcesEnum.Type.STONE, 0)) / 4.0),
+		ResourcesEnum.Type.IRON: int(float(construction_cost.get(ResourcesEnum.Type.IRON, 0)) / 4.0)
+	}
+
+func _can_player_afford_castle_dismantling(castle_type: CastleTypeEnum.Type) -> bool:
+	var current_player: Player = _get_current_turn_player()
+	return current_player.can_afford_cost(_get_castle_dismantling_cost(castle_type))
+
 func _can_player_afford_ore_search() -> bool:
 	var current_player: Player = _get_current_turn_player()
 	var search_cost: int = GameParameters.get_ore_search_cost()
@@ -1416,6 +1523,9 @@ func _apply_tab_visibility() -> void:
 	_army_panel.visible = not is_region_tab
 	_region_textures.visible = is_region_tab
 	_army_textures.visible = not is_region_tab
+	if not is_region_tab:
+		_downgrade_region_button.visible = false
+		_downgrade_castle_button.visible = false
 
 func _apply_tab_colors() -> void:
 	if _active_tab == TabType.REGION:

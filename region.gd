@@ -65,6 +65,9 @@ var promotion_replenish_bonus_turns_remaining: int = 0
 var castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_under_construction: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
 var castle_build_turns_remaining: int = 0
+var castle_downgrade_turns_remaining: int = 0
+var castle_downgrade_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE
+var maintenance_defense_penalty: float = 0.0
 var gate_conditions: Array[int] = []
 var wall_section_conditions: Array[int] = []
 var castle_repair_turns_remaining: int = 0
@@ -83,6 +86,7 @@ var ore_guaranteed_discovery_attempt: int = 0
 var ore_guaranteed_discovery_type: ResourcesEnum.Type = ResourcesEnum.Type.IRON
 var raise_army_used_this_turn: bool = false  # Track if raise army was used this turn
 var promotion_used_this_turn: bool = false  # Track if promotion was used this turn
+var region_downgrade_turns_remaining: int = 0
 
 # Ownership tracking information
 var current_owner_id: int = 0  # Current owner player ID (0 = neutral)
@@ -215,6 +219,24 @@ func promote_region() -> void:
 		set_region_level_with_recruit_bonus(region_level + 1)
 		promotion_growth_bonus_turns_remaining = GameParameters.PROMOTION_GROWTH_BONUS_TURNS
 		promotion_replenish_bonus_turns_remaining = GameParameters.PROMOTION_REPLENISH_BONUS_TURNS
+
+func start_region_downgrade() -> void:
+	region_downgrade_turns_remaining = 1
+
+func is_region_downgrade_pending() -> bool:
+	return region_downgrade_turns_remaining > 0
+
+func process_region_downgrade() -> bool:
+	if not is_region_downgrade_pending():
+		return false
+	region_downgrade_turns_remaining -= 1
+	if region_downgrade_turns_remaining > 0:
+		return false
+	if region_level <= RegionLevelEnum.Level.L1:
+		return false
+	set_region_level(region_level - 1)
+	available_recruits = min(available_recruits, get_max_recruits())
+	return true
 
 func get_promotion_cooldown() -> int:
 	return promotion_cooldown_turns
@@ -524,6 +546,7 @@ func set_castle_type(new_castle_type: CastleTypeEnum.Type) -> void:
 	if old_castle_type != new_castle_type:
 		_clear_repair_snapshot()
 		_reset_defense_state_to_full()
+		maintenance_defense_penalty = 0.0
 	if had_castle != has_castle_now:
 		var game_manager: GameManager = get_node("/root/Main/GameManager") as GameManager
 		var army_manager: ArmyManager = game_manager.get_army_manager()
@@ -534,7 +557,14 @@ func has_castle() -> bool:
 	return castle_type != CastleTypeEnum.Type.NONE
 
 func has_castle_damage() -> bool:
-	return _get_total_defense_damage() > 0
+	return _get_total_defense_damage() > 0 or maintenance_defense_penalty > 0.0
+
+func get_maintenance_defense_penalty() -> float:
+	return maintenance_defense_penalty
+
+func add_maintenance_defense_penalty(amount: float) -> void:
+	if amount > 0.0:
+		maintenance_defense_penalty += amount
 
 func get_gate_state() -> Dictionary:
 	return _build_gate_state()
@@ -722,6 +752,31 @@ func start_castle_construction(castle_type_to_build: CastleTypeEnum.Type) -> voi
 	castle_build_turns_remaining = GameParameters.get_castle_build_time(castle_type_to_build)
 	DebugLogger.log("RegionManagement", "Started construction of " + CastleTypeEnum.type_to_string(castle_type_to_build) + " in " + region_name + " (" + str(castle_build_turns_remaining) + " turns remaining)")
 
+func start_castle_downgrade() -> void:
+	castle_downgrade_type = castle_type
+	castle_downgrade_turns_remaining = 1
+
+func is_castle_downgrade_pending() -> bool:
+	return castle_downgrade_turns_remaining > 0
+
+func process_castle_downgrade() -> CastleTypeEnum.Type:
+	if not is_castle_downgrade_pending():
+		return CastleTypeEnum.Type.NONE
+	castle_downgrade_turns_remaining -= 1
+	if castle_downgrade_turns_remaining > 0:
+		return CastleTypeEnum.Type.NONE
+	var dismantled_type: CastleTypeEnum.Type = castle_downgrade_type
+	castle_downgrade_type = CastleTypeEnum.Type.NONE
+	if dismantled_type == CastleTypeEnum.Type.NONE:
+		return CastleTypeEnum.Type.NONE
+	set_castle_type(CastleTypeEnum.get_previous_level(dismantled_type))
+	if castle_type == CastleTypeEnum.Type.NONE:
+		var game_manager: GameManager = get_node("/root/Main/GameManager") as GameManager
+		game_manager.get_visual_manager().remove_castle_visual(self)
+	else:
+		_update_castle_visual()
+	return dismantled_type
+
 func start_castle_repair() -> void:
 	castle_repair_in_progress = true
 	castle_repair_turns_remaining = 1
@@ -737,6 +792,7 @@ func process_castle_repair() -> bool:
 		var wall_damage_during_repair: Array[int] = _compute_new_damage_during_repair(wall_section_conditions, repair_start_wall_section_conditions)
 		_reset_defense_state_to_full()
 		_apply_damage_after_repair(gate_damage_during_repair, wall_damage_during_repair)
+		maintenance_defense_penalty = 0.0
 		_clear_repair_snapshot()
 		castle_repair_turns_remaining = 0
 		castle_repair_in_progress = false
@@ -782,9 +838,14 @@ func get_castle_repair_cost() -> Dictionary:
 	if capacity <= 0:
 		return {}
 	var total_damage = _get_total_defense_damage()
-	if total_damage <= 0:
+	var base_defense: int = GameParameters.get_castle_defense_bonus(castle_type)
+	var minimum_defense: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(castle_type, 0)
+	var maintenance_capacity: int = maxi(1, base_defense - minimum_defense)
+	var physical_damage_fraction: float = float(total_damage) / float(capacity)
+	var maintenance_damage_fraction: float = maintenance_defense_penalty / float(maintenance_capacity)
+	var fraction: float = clampf(physical_damage_fraction + maintenance_damage_fraction, 0.0, 1.0)
+	if fraction <= 0.0:
 		return {}
-	var fraction = float(total_damage) / float(capacity)
 	var base_cost = GameParameters.get_castle_building_cost(castle_type)
 	var repair_cost: Dictionary = {}
 	for res_type in base_cost:

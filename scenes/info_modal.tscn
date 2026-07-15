@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=39 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="3_ewtj7"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bffane37woyxx" path="res://images/progressbar_green.png" id="8_qmsyv"]
 [ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="9_o2cfa"]
 [ext_resource type="Texture2D" uid="uid://c3kjm73refqbr" path="res://images/icons/village2.png" id="9_tnvml"]
+[ext_resource type="Theme" uid="uid://bauu428ch6bu7" path="res://themes/button_downgrade_styles.tres" id="10_downgrade_theme"]
 [ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="11_21spt"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="12_8s2uy"]
 [ext_resource type="Texture2D" uid="uid://4f1lhlu6nlp2" path="res://images/icons/castle_icon (4).png" id="13_4jjrl"]
@@ -293,7 +294,7 @@ text = "5"
 layout_mode = 2
 
 [node name="PromoteButton" type="Button" parent="RegionPanel/Body/Region/Actions/RegionLevel/ActionSection"]
-custom_minimum_size = Vector2(165, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -444,7 +445,7 @@ text = "40%"
 layout_mode = 2
 
 [node name="BuildButton" type="Button" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
-custom_minimum_size = Vector2(165, 40)
+custom_minimum_size = Vector2(205, 40)
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
@@ -1998,22 +1999,24 @@ layout_mode = 1
 
 [node name="DowngradeCastle" type="Button" parent="."]
 custom_minimum_size = Vector2(40, 40)
-offset_left = 457.0
-offset_top = 179.0
-offset_right = 497.0
-offset_bottom = 219.0
+layout_mode = 0
+offset_left = 456.0
+offset_top = 264.0
+offset_right = 496.0
+offset_bottom = 304.0
 size_flags_horizontal = 0
-theme = ExtResource("9_o2cfa")
+theme = ExtResource("10_downgrade_theme")
 button_group = SubResource("ButtonGroup_l3w7x")
-text = "s"
+text = "↓"
 
 [node name="DowngradeRegion" type="Button" parent="."]
 custom_minimum_size = Vector2(40, 40)
-offset_left = 457.0
-offset_top = 264.0
-offset_right = 497.0
-offset_bottom = 304.0
+layout_mode = 0
+offset_left = 456.0
+offset_top = 179.0
+offset_right = 496.0
+offset_bottom = 219.0
 size_flags_horizontal = 0
-theme = ExtResource("9_o2cfa")
+theme = ExtResource("10_downgrade_theme")
 button_group = SubResource("ButtonGroup_l3w7x")
-text = "s"
+text = "↓"

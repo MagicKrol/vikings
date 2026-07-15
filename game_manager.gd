@@ -2324,7 +2324,8 @@ func _process_player_turn_start(player_id: int):
 		player_manager.decay_enemy_memory_for_player(player_id)
 		player_manager.decay_traded_resources_for_player(player_id, GameParameters.TRADE_RESET_RATE)
 	if _region_manager:
-		_region_manager.process_castle_progress_for_player(player_id)
+		var current_player: Player = player_manager.get_player(player_id)
+		_region_manager.process_castle_progress_for_player(player_id, current_player)
 		_region_manager.heal_wounded_for_player(player_id)
 		_region_manager.decrement_promotion_cooldowns_for_player(player_id)
 	if _army_manager:
@@ -2419,9 +2420,15 @@ func _process_resource_upkeep_for_player(player_id: int) -> void:
 	var food_after: int = maxi(0, food_before - food_upkeep)
 	var wood_after: int = maxi(0, wood_before - wood_upkeep)
 	var stone_after: int = maxi(0, stone_before - stone_upkeep)
+	var projected_economy: Dictionary = player_manager.get_player_economy_breakdown(player_id)
+	var projected_income: Dictionary = projected_economy.get("income", {}) as Dictionary
+	var missing_wood: int = maxi(0, -int(projected_income.get(ResourcesEnum.Type.WOOD, 0)))
+	var missing_stone: int = maxi(0, -int(projected_income.get(ResourcesEnum.Type.STONE, 0)))
 	player.set_resource_amount(ResourcesEnum.Type.FOOD, food_after)
 	player.set_resource_amount(ResourcesEnum.Type.WOOD, wood_after)
 	player.set_resource_amount(ResourcesEnum.Type.STONE, stone_after)
+	_region_manager.apply_castle_maintenance_penalty(player_id, ResourcesEnum.Type.WOOD, missing_wood)
+	_region_manager.apply_castle_maintenance_penalty(player_id, ResourcesEnum.Type.STONE, missing_stone)
 	DebugLogger.log_separator("ResourceCalculation")
 	DebugLogger.log("ResourceCalculation", "Resource upkeep deduction for Player " + str(player_id))
 	DebugLogger.log_calculation("ResourceCalculation", "Food upkeep", food_upkeep)
@@ -2433,6 +2440,8 @@ func _process_resource_upkeep_for_player(player_id: int) -> void:
 	DebugLogger.log_calculation("ResourceCalculation", "Wood after", wood_after)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone before", stone_before)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone after", stone_after)
+	DebugLogger.log_calculation("ResourceCalculation", "Projected wood shortage", missing_wood)
+	DebugLogger.log_calculation("ResourceCalculation", "Projected stone shortage", missing_stone)
 
 func famine_regions(player_id: int, missing_food: float) -> Dictionary:
 	var clamped_missing_food: float = max(0.0, missing_food)

@@ -41,6 +41,8 @@ const TOOLTIP_TEXTS = {
 	"castle_max_level": "This castle is already at the maximum level and cannot be upgraded further.",
 	"repair_castle": "Repair the damaged walls and gates of your defenses.",
 	"promote_region": "Promote the region to the next administrative level to increase growth and production.",
+	"downgrade_region": "Demote the region by one level.",
+	"downgrade_castle": "Dismantle the castle by one level.",
 	"call_to_arms": "Gather recruits from neighboring regions.",
 	"ore_search": "Search for gold or iron ores.",
 	"conquered_region_blocked": "This region cannot be managed on the turn it was conquered.",
@@ -108,6 +110,38 @@ func _display_cost(cost: Dictionary, build_time: int = 0) -> void:
 func _hide_cost_display() -> void:
 	"""Hide the cost display section"""
 	values_section.visible = false
+
+func show_downgrade_tooltip(tooltip_key: String, returned_resources: Dictionary, gold_cost: int) -> void:
+	var key: String = String(tooltip_key).to_lower()
+	tooltip_label.text = tr(TOOLTIP_TEXTS.get(key, "No information available."))
+	_display_cost({}, 1)
+	for resource_type in returned_resources:
+		var returned_amount: int = int(returned_resources[resource_type])
+		if returned_amount <= 0:
+			continue
+		match resource_type:
+			ResourcesEnum.Type.FOOD:
+				food_icon.visible = true
+				food_value.visible = true
+				food_value.text = "+" + str(returned_amount)
+			ResourcesEnum.Type.WOOD:
+				wood_icon.visible = true
+				wood_value.visible = true
+				wood_value.text = "+" + str(returned_amount)
+			ResourcesEnum.Type.STONE:
+				stone_icon.visible = true
+				stone_value.visible = true
+				stone_value.text = "+" + str(returned_amount)
+			ResourcesEnum.Type.IRON:
+				iron_icon.visible = true
+				iron_value.visible = true
+				iron_value.text = "+" + str(returned_amount)
+	if gold_cost > 0:
+		gold_icon.visible = true
+		gold_value.visible = true
+		gold_value.text = "-" + str(gold_cost)
+	values_section.visible = true
+	visible = true
 
 func show_tooltip(tooltip_key: String, context_data: Dictionary = {}) -> void:
 	"""Show the tooltip with the specified text"""

@@ -370,6 +370,7 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	region.ore_search_used_this_turn = bool(payload.get("ore_search_used_this_turn", false))
 	region.raise_army_used_this_turn = bool(payload.get("raise_army_used_this_turn", false))
 	region.promotion_used_this_turn = bool(payload.get("promotion_used_this_turn", false))
+	region.region_downgrade_turns_remaining = int(payload.get("region_downgrade_turns_remaining", 0))
 	region.promotion_growth_bonus_turns_remaining = int(payload.get("promotion_growth_bonus_turns_remaining", 0))
 	region.promotion_replenish_bonus_turns_remaining = int(payload.get("promotion_replenish_bonus_turns_remaining", 0))
 	region.promotion_cooldown_turns = int(payload.get("promotion_cooldown_turns", 0))
@@ -379,6 +380,9 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	var castle_under_construction_text: String = String(payload.get("castle_under_construction", "None"))
 	region.castle_under_construction = CastleTypeEnum.string_to_type(castle_under_construction_text)
 	region.castle_build_turns_remaining = int(payload.get("castle_build_turns_remaining", 0))
+	region.castle_downgrade_turns_remaining = int(payload.get("castle_downgrade_turns_remaining", 0))
+	region.castle_downgrade_type = CastleTypeEnum.string_to_type(String(payload.get("castle_downgrade_type", "None")))
+	region.maintenance_defense_penalty = float(payload.get("maintenance_defense_penalty", 0.0))
 	region.castle_repair_turns_remaining = int(payload.get("castle_repair_turns_remaining", 0))
 	region.castle_repair_in_progress = bool(payload.get("castle_repair_in_progress", false))
 	region.gate_conditions = _to_int_array(payload.get("gate_conditions", []))
@@ -463,12 +467,16 @@ static func _serialize_region(region: Region, region_manager: RegionManager) -> 
 		"ore_search_used_this_turn": region.ore_search_used_this_turn,
 		"raise_army_used_this_turn": region.raise_army_used_this_turn,
 		"promotion_used_this_turn": region.promotion_used_this_turn,
+		"region_downgrade_turns_remaining": region.region_downgrade_turns_remaining,
 		"promotion_growth_bonus_turns_remaining": region.promotion_growth_bonus_turns_remaining,
 		"promotion_replenish_bonus_turns_remaining": region.promotion_replenish_bonus_turns_remaining,
 		"promotion_cooldown_turns": region.promotion_cooldown_turns,
 		"castle_type": CastleTypeEnum.type_to_string(region.get_castle_type()),
 		"castle_under_construction": CastleTypeEnum.type_to_string(region.castle_under_construction),
 		"castle_build_turns_remaining": region.castle_build_turns_remaining,
+		"castle_downgrade_turns_remaining": region.castle_downgrade_turns_remaining,
+		"castle_downgrade_type": CastleTypeEnum.type_to_string(region.castle_downgrade_type),
+		"maintenance_defense_penalty": region.maintenance_defense_penalty,
 		"castle_repair_turns_remaining": region.castle_repair_turns_remaining,
 		"castle_repair_in_progress": region.castle_repair_in_progress,
 		"gate_conditions": region.gate_conditions.duplicate(),

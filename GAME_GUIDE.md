@@ -101,6 +101,16 @@ Promotion has two ongoing effects and one short replenish boost.
 
 3. **Recruits replenish pool bonus (temporary, 2 turns)**: after promotion, the base recruit replenish rate is doubled for 2 turns.
 
+### Demotion and recovery
+
+Promotion is not permanent. A region above L1 can be demoted by one level when you need to reduce its upkeep burden or recover from overexpansion.
+
+1. Demotion takes 1 turn and completes at the start of your next turn.
+2. Demoting a region returns 5 Food.
+3. A region cannot be promoted and demoted in the same turn.
+4. L1 regions cannot be demoted.
+
+Demotion lowers the region's recruit capacity, growth bonus, and resource output, so it is best used to stabilize an economy rather than as a routine source of Food.
 
 ### Region levels and what they represent
 
@@ -142,6 +152,16 @@ Castle upkeep by tier:
 3. Keep: 2 Wood, 2 Stone
 4. Castle: 2 Wood, 4 Stone
 5. Stronghold: 2 Wood, 6 Stone
+
+### When upkeep falls short
+
+Wood and Stone shortages weaken the castles that depend on those materials. If your projected Wood or Stone balance is negative, each missing resource creates 3% of castle-defense degradation for that turn.
+
+The penalty is distributed by upkeep. Missing Wood affects every castle that requires Wood. Missing Stone affects only castles that require Stone, so Outposts are not weakened by a Stone shortage.
+
+For example, a 2-Stone shortage creates a 6% Stone penalty pool. With three Keeps, each Keep receives 2% degradation because they have equal Stone upkeep.
+
+This degradation accumulates while the shortage continues. Castle defense is displayed and used in battle as a whole percentage, rounded down. Completing a repair clears the accumulated maintenance degradation.
 
 ### Difficulty and opening pressure
 
@@ -221,6 +241,18 @@ Castles are the heart of advanced recruitment. Region levels increase recruit ca
 5. Unlocked units: Peasants, Spearmen, Archers, Swordsmen, Crossbowmen, Horsemen, Knights, Mounted Knights, Royal Guard
 
 Damaged castles can be repaired. Repair cost scales with damage as a proportion of that castle's build cost, so light damage is cheaper to fix than a heavily battered fortress. Repair is part of siege warfare: after surviving a storm, you often need resources to restore the castle before the next attack.
+
+### Dismantling castles
+
+A castle can be dismantled by one tier when its upkeep or position no longer justifies the investment.
+
+1. Dismantling takes 1 turn and completes at the start of your next turn.
+2. You immediately pay 25% of the current castle tier's Gold build cost.
+3. When dismantling completes, you recover 25% of its Wood, Stone, and Iron build costs, rounded down.
+4. An Outpost can be dismantled completely; higher tiers become the next lower tier.
+5. A castle cannot be built, upgraded, or dismantled again in the same turn.
+
+Dismantling is a way to recover part of a fortress investment and reduce future upkeep, but it also reduces defense and available unit tiers.
 
 ### Unit traits and battlefield roles
 
@@ -317,6 +349,8 @@ Resources decide what is realistic. Wood supports archers and siege equipment. I
 Promotions are strongest when they feed a plan: grow a food base, deepen a recruitment pool, or turn a border region into a long-term supply center. Promoting everywhere without purpose can waste resources that should have become troops, castles, or siege equipment.
 
 Castle placement and construction timing are even more dangerous. A castle under construction is an investment that has not started paying back yet, and the region can be captured before the work finishes. Build castles where you can defend the construction period, especially on borders, chokepoints, and valuable resource clusters.
+
+When the economy turns against you, consolidation can be as important as expansion. Demote regions that no longer support your plan, or dismantle castles that you cannot maintain. A negative Wood or Stone balance does not only drain resources: it steadily weakens the defenses that depend on it.
 
 ### Think in replacement cycles
 
