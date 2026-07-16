@@ -1,0 +1,239 @@
+[gd_scene load_steps=7 format=3 uid="uid://bgy1liiy2uya6"]
+
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="1_8ton6"]
+[ext_resource type="Texture2D" uid="uid://dkfgjc4qh3hyf" path="res://images/map_filter.png" id="3_deqci"]
+[ext_resource type="FontFile" uid="uid://b4tchgklvshij" path="res://fonts/Cinzel.ttf" id="5_qvdty"]
+[ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="6_0gij6"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="6_kvbw3"]
+[ext_resource type="Script" path="res://map_filter_modal.gd" id="7_map_filter"]
+
+[node name="Map" type="Control"]
+z_index = 150
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -360.0
+offset_right = 550.0
+offset_bottom = -60.0
+grow_vertical = 0
+theme = ExtResource("1_8ton6")
+script = ExtResource("7_map_filter")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 300.0
+scale = Vector2(1.08, 1.08)
+texture = ExtResource("3_deqci")
+
+[node name="ContentContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 18.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="ContentContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Map Overview"
+horizontal_alignment = 1
+
+[node name="Ownership" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Label" type="Label" parent="ContentContainer/Ownership"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Ownership"
+
+[node name="OwnershipOn" type="Button" parent="ContentContainer/Ownership"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_pressed = true
+text = "Yes"
+
+[node name="OwnershipOff" type="Button" parent="ContentContainer/Ownership"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "No"
+
+[node name="Ownership2" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Label" type="Label" parent="ContentContainer/Ownership2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Player Only"
+
+[node name="PlayerOnlyOn" type="Button" parent="ContentContainer/Ownership2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Yes"
+
+[node name="PlayerOnlyOff" type="Button" parent="ContentContainer/Ownership2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_pressed = true
+text = "No"
+
+[node name="LevelBonus" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Label" type="Label" parent="ContentContainer/LevelBonus"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Level Bonus"
+
+[node name="BonusOn" type="Button" parent="ContentContainer/LevelBonus"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_pressed = true
+text = "Yes"
+
+[node name="BonusOff" type="Button" parent="ContentContainer/LevelBonus"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "No"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Food" type="Button" parent="ContentContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+button_pressed = true
+text = "Food"
+
+[node name="Gold" type="Button" parent="ContentContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Gold"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Wood" type="Button" parent="ContentContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Wood"
+
+[node name="Population" type="Button" parent="ContentContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Population"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Stone" type="Button" parent="ContentContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Stone"
+
+[node name="Level" type="Button" parent="ContentContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Level"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="Iron" type="Button" parent="ContentContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Iron"
+
+[node name="SearchOre" type="Button" parent="ContentContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("6_kvbw3")
+theme_override_fonts/font = ExtResource("5_qvdty")
+theme_override_font_sizes/font_size = 18
+toggle_mode = true
+text = "Search Ore"
+
+[node name="FilterModal" parent="." instance=ExtResource("6_0gij6")]
+visible = false
+layout_mode = 1
+offset_left = 290.0
+offset_top = -150.0
+offset_right = 690.0
+offset_bottom = 0.0
