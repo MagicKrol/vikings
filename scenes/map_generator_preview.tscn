@@ -1,0 +1,236 @@
+[gd_scene load_steps=6 format=3 uid="uid://bprkj107vu53h"]
+
+[ext_resource type="Script" path="res://scenes/map_generator_preview.gd" id="1_preview"]
+[ext_resource type="Script" path="res://map_generator.gd" id="2_map_generator"]
+[ext_resource type="Script" path="res://border_manager.gd" id="3_border_manager"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_controls"]
+bg_color = Color(0.055, 0.055, 0.055, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.65, 0.65, 0.65, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_size"]
+
+[node name="MapGeneratorPreview" type="Node2D"]
+position = Vector2(80, 90)
+script = ExtResource("1_preview")
+
+[node name="MapRenderer" type="Node2D" parent="."]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("2_map_generator")
+auto_generate_on_ready = false
+
+[node name="Regions" type="Node2D" parent="MapRenderer"]
+
+[node name="Ocean" type="Node2D" parent="MapRenderer"]
+
+[node name="Frame" type="Node2D" parent="MapRenderer"]
+
+[node name="BorderManager" type="Node" parent="MapRenderer"]
+script = ExtResource("3_border_manager")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Controls" type="PanelContainer" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -344.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 550.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_controls")
+
+[node name="Margin" type="MarginContainer" parent="UI/Controls"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="Parameters" type="VBoxContainer" parent="UI/Controls/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.89, 0.67, 1)
+theme_override_font_sizes/font_size = 20
+text = "Map Generator"
+
+[node name="SeedLabel" type="Label" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Map seed"
+
+[node name="SeedRow" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SeedInput" type="LineEdit" parent="UI/Controls/Margin/Parameters/SeedRow"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "187"
+placeholder_text = "0 - 2147483647"
+max_length = 10
+
+[node name="RandomSeedButton" type="Button" parent="UI/Controls/Margin/Parameters/SeedRow"]
+custom_minimum_size = Vector2(92, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Random"
+
+[node name="BiomeSeedLabel" type="Label" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Biome seed"
+
+[node name="BiomeSeedRow" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BiomeSeedInput" type="LineEdit" parent="UI/Controls/Margin/Parameters/BiomeSeedRow"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "9137"
+placeholder_text = "0 - 2147483647"
+max_length = 10
+
+[node name="RandomBiomeSeedButton" type="Button" parent="UI/Controls/Margin/Parameters/BiomeSeedRow"]
+custom_minimum_size = Vector2(92, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Random"
+
+[node name="SizeLabel" type="Label" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Size"
+
+[node name="SizeRow" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="XS" type="Button" parent="UI/Controls/Margin/Parameters/SizeRow"]
+custom_minimum_size = Vector2(68, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_size")
+text = "XS"
+
+[node name="S" type="Button" parent="UI/Controls/Margin/Parameters/SizeRow"]
+custom_minimum_size = Vector2(68, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_size")
+text = "S"
+
+[node name="M" type="Button" parent="UI/Controls/Margin/Parameters/SizeRow"]
+custom_minimum_size = Vector2(68, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_size")
+text = "M"
+
+[node name="L" type="Button" parent="UI/Controls/Margin/Parameters/SizeRow"]
+custom_minimum_size = Vector2(68, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_size")
+text = "L"
+
+[node name="ForestsHeader" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/Controls/Margin/Parameters/ForestsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Forests"
+
+[node name="Value" type="Label" parent="UI/Controls/Margin/Parameters/ForestsHeader"]
+layout_mode = 2
+text = "0.50"
+
+[node name="ForestsSlider" type="HSlider" parent="UI/Controls/Margin/Parameters"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+min_value = 0.25
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="HillsHeader" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/Controls/Margin/Parameters/HillsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Hills"
+
+[node name="Value" type="Label" parent="UI/Controls/Margin/Parameters/HillsHeader"]
+layout_mode = 2
+text = "0.00"
+
+[node name="HillsSlider" type="HSlider" parent="UI/Controls/Margin/Parameters"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="MountainsHeader" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/Controls/Margin/Parameters/MountainsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Mountains"
+
+[node name="Value" type="Label" parent="UI/Controls/Margin/Parameters/MountainsHeader"]
+layout_mode = 2
+text = "0.00"
+
+[node name="MountainsSlider" type="HSlider" parent="UI/Controls/Margin/Parameters"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="SeaLevelHeader" type="HBoxContainer" parent="UI/Controls/Margin/Parameters"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/Controls/Margin/Parameters/SeaLevelHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Sea level"
+
+[node name="Value" type="Label" parent="UI/Controls/Margin/Parameters/SeaLevelHeader"]
+layout_mode = 2
+text = "0.50"
+
+[node name="SeaLevelSlider" type="HSlider" parent="UI/Controls/Margin/Parameters"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.5
