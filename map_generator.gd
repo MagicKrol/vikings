@@ -14,6 +14,7 @@ signal map_generated
 @export var region_point_inner_color: Color = Color.RED
 @export var polygon_scale: float = 2.0
 @export var ocean_frame_width: float = 500.0
+@export var auto_generate_on_ready: bool = true
 
 # Map size configuration
 enum MapSize {
@@ -66,7 +67,8 @@ var center_marker_container: Node2D = null
 @onready var border_manager: BorderManager = get_node("BorderManager") as BorderManager
 
 func _ready() -> void:
-	generate_map()
+	if auto_generate_on_ready:
+		generate_map()
 
 func generate_map() -> void:
 	_load_json_data()
@@ -90,6 +92,12 @@ func generate_map() -> void:
 		cam.limit_top = int(-frame_width)
 		cam.limit_right = int(map_size + frame_width)
 		cam.limit_bottom = int(map_size + frame_width)
+
+func render_map_data(generated_map_data: Dictionary) -> void:
+	map_data = generated_map_data.duplicate(true)
+	_prepare_map_data("generated-small.json")
+	_tag_mountain_neighbor_info()
+	_render_from_json()
 
 # -------------------- Map container helpers --------------------
 func _ensure_map_nodes() -> void:
@@ -131,6 +139,9 @@ func _load_json_data() -> void:
 		return
 
 	map_data = json.data
+	_prepare_map_data(data_file_path)
+
+func _prepare_map_data(source_path: String) -> void:
 	regions = map_data.get("regions", [])
 	edges = map_data.get("edges", [])
 	for region in regions:
@@ -139,11 +150,11 @@ func _load_json_data() -> void:
 			region["ocean"] = true
 			region["water"] = true
 			region["biome"] = "ocean"
-	DebugLogger.log("MapGeneration", "Loaded map: regions=" + str(regions.size()) + ", edges=" + str(edges.size()) + ", file=" + path)
+	DebugLogger.log("MapGeneration", "Loaded map: regions=" + str(regions.size()) + ", edges=" + str(edges.size()) + ", file=" + source_path)
 	var frontend_region_count: int = int(map_data.get("non_ocean_region_count", 0))
 	if frontend_region_count <= 0:
 		frontend_region_count = _count_non_ocean_regions_for_frontend_size()
-	map_profile = Utils.resolve_map_profile(data_file_path, regions.size(), frontend_region_count)
+	map_profile = Utils.resolve_map_profile(source_path, regions.size(), frontend_region_count)
 	map_region_count = int(map_profile.get("region_count", regions.size()))
 	_set_compatibility_map_size_from_profile()
 	region_by_id.clear()
@@ -153,9 +164,6 @@ func _load_json_data() -> void:
 			region_by_id[rid] = r
 	
 
-	var meta = map_data.get("meta", {})
-
-	
 	# Scale all coordinates if polygon_scale != 1.0
 	if polygon_scale != 1.0:
 		_scale_map_data()
