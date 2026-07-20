@@ -270,6 +270,9 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"disable_neutral_cluster_bonus": game_manager.scenario_disable_neutral_cluster_bonus,
 		"victory_conditions": game_manager.get_victory_conditions_for_save()
 	}
+	var generated_map_data: Dictionary = game_manager.get_generated_map_source_data_for_save()
+	if not generated_map_data.is_empty():
+		source["map_data"] = generated_map_data
 	var game_state: Dictionary = {
 		"current_turn": game_manager.current_turn,
 		"current_player": game_manager.current_player,

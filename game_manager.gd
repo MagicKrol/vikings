@@ -136,6 +136,7 @@ var _pending_card_modal_main_menu_target: String = ""
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
 var scenario_path: String = ""
+var generated_map_source_data: Dictionary = {}
 # var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 var _loaded_from_save: bool = false
@@ -217,18 +218,11 @@ func _ready():
 			scenario_path = ""
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
 			_selected_upgrade_card_ids = _normalize_selected_upgrade_cards(payload.get("selected_upgrade_cards", []))
-			var map_file_name: String = String(payload.get("map_file", "")).get_file()
-			if GameParameters.is_demo_mode_enabled() and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
-				map_file_name = "demo-999-small.json"
-			var map_path: String = "res://mapdata/" + map_file_name
-			var size_str: String = String(payload.get("map_size", "small"))
-			map_generator.data_file_path = map_path.get_file()
-			_map_set_size_from_string(map_generator, size_str)
 			# Apply player settings from CustomMap
 			if payload.has("player_settings"):
 				_apply_custom_map_player_settings(payload.get("player_settings"))
 			_initialize_victory_conditions_from_custom_payload(payload)
-			map_generator.generate_map()
+			_prepare_custom_map_source(payload, map_generator)
 		elif kind == "save":
 			_selected_upgrade_card_ids.clear()
 			var save_path: String = String(payload.get("save_path", SaveGameManager.SAVE_FILE_PATH))
@@ -962,7 +956,28 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 	if source.has("player_settings"):
 		_apply_custom_map_player_settings(source.get("player_settings"))
 	load_victory_conditions_from_source(source)
+	if source.has("map_data"):
+		generated_map_source_data = source.get("map_data", {}).duplicate(true)
+		map_generator.render_map_data(generated_map_source_data)
+	else:
+		map_generator.generate_map()
+
+func _prepare_custom_map_source(payload: Dictionary, map_generator: MapGenerator) -> void:
+	var size_str: String = String(payload.get("map_size", "small"))
+	_map_set_size_from_string(map_generator, size_str)
+	if payload.has("map_data"):
+		generated_map_source_data = payload.get("map_data", {}).duplicate(true)
+		map_generator.data_file_path = "random-map.json"
+		map_generator.render_map_data(generated_map_source_data)
+		return
+	var map_file_name: String = String(payload.get("map_file", "")).get_file()
+	if GameParameters.is_demo_mode_enabled() and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
+		map_file_name = "demo-999-small.json"
+	map_generator.data_file_path = map_file_name
 	map_generator.generate_map()
+
+func get_generated_map_source_data_for_save() -> Dictionary:
+	return generated_map_source_data.duplicate(true)
 
 func _initialize_victory_conditions_from_custom_payload(payload: Dictionary) -> void:
 	var selected_condition: String = String(payload.get("victory_condition", "")).to_lower()
