@@ -3,9 +3,26 @@
 
 [b][font_size=24]Como a batalha é resolvida turno a turno[/font_size][/b]
 
-As batalhas começam com 2 salvas iniciais de unidades de alcance. Isso permite que arqueiros e besteiros causem baixas antes do confronto principal. Depois, o combate segue em rodadas normais até um lado ser destruído ou a retirada ser concluída.
+As batalhas começam com 1 salva inicial de todas as unidades de alcance dos dois lados. Ambos calculam seus acertos a partir do mesmo estado inicial e, depois, as baixas são aplicadas. Em seguida, o combate continua em rodadas normais até um lado ser destruído ou a retirada ser concluída.
 
-Ataques são baseados em chance. O ataque da unidade influencia a frequência de acertos, e a defesa reduz quantos acertos viram mortes. Vigor altera muito a eficiência real de combate.
+Cada soldado faz uma rolagem usando sua chance de ataque. Vigor multiplica essa chance: um Arqueiro com 20% de ataque e 80% de vigor ataca com 16%, enquanto um Camponês com 5% de ataque e 80% de vigor ataca com 4%. Terreno e traços podem modificar ainda mais o resultado.
+
+Cada rolagem bem-sucedida gera um acerto. Para cada tipo de unidade atacante, os acertos são distribuídos aleatoriamente entre alvos válidos, com peso proporcional à quantidade de soldados de cada tipo de alvo. A defesa de uma unidade é sua chance de evitar um acerto atribuído. Um acerto que atravessa todas as camadas de defesa mata um soldado.
+
+Rodadas normais são simultâneas. Os dois lados calculam ataques e baixas com base nos exércitos presentes no início da rodada e, então, os dois conjuntos de mortes são aplicados. Soldados mortos em uma rodada ainda atacam nessa mesma rodada.
+
+
+[b][font_size=24]Exemplo de cálculo de batalha[/font_size][/b]
+
+Imagine 10 Camponeses e 5 Arqueiros atacando 10 Lanceiros e 5 Camponeses em terreno aberto. Os atacantes têm 80% de vigor e os defensores têm 100%.
+
+Durante a salva inicial, apenas os 5 Arqueiros atacam. Eles fazem 5 rolagens de 16% cada: o ataque normal de 20% multiplicado por 80% de vigor. Suponha que consigam 1 acerto.
+
+Os defensores têm 10 Lanceiros e 5 Camponeses. Assim, um Lanceiro é escolhido como alvo com cerca de 66,7% de probabilidade, e um Camponês com cerca de 33,3%. Suponha que o acerto seja atribuído a um Lanceiro. Sua defesa de 25% concede 25% de chance de evitar o acerto; caso contrário, ele morre.
+
+Na primeira rodada normal, suponha que os 10 Camponeses atacantes rolem com 4% e consigam 2 acertos, enquanto os 5 Arqueiros rolem com 16% e consigam 1 acerto. Se 1 acerto for atribuído a um Camponês e 2 a Lanceiros, o Camponês terá 8% de chance de defesa e cada Lanceiro terá 25%.
+
+Os defensores atacam ao mesmo tempo. Com 100% de vigor, Camponeses rolam com seus 5% normais. Lanceiros possuem o traço Defensor, então sua chance normal de ataque de 8% é dobrada para 16%. Todas as baixas são aplicadas depois que os dois exércitos terminam seus cálculos.
 
 Os resultados são severos: se atacantes vencem, exércitos defensores, guarnição e recrutas são eliminados. Se defensores vencem, os atacantes são eliminados. Em retirada, ambos mantêm sobreviventes, mas sofrem baixas de retirada.
 
@@ -21,7 +38,11 @@ Lição prática: não avalie batalha só por quantidade de tropas. O terreno po
 
 [b][font_size=24]Defesa de castelo e pressão de cerco[/font_size][/b]
 
-Batalhas em castelo adicionam uma camada extra de defesa. O ataque precisa superar a evasão defensiva do castelo antes de considerar a defesa normal das unidades.
+Batalhas em castelo adicionam duas restrições: acesso de assalto e defesa do castelo. O acesso de assalto reduz os acertos que não sejam de alcance conforme o acesso fornecido por escadas, muros destruídos e portões derrubados. Ataques de alcance não são reduzidos pelo acesso de assalto.
+
+Depois, a defesa do castelo oferece a primeira chance de evitar um acerto. Todo acerto restante enfrenta a defesa da própria unidade-alvo. Isso torna a mesma guarnição muito mais difícil de eliminar atrás dos muros.
+
+Reduzir a defesa do castelo de 50% para 40% aumenta a chance de um acerto atravessar essa camada de 50% para 60%, um aumento relativo de 20%. Reduzi-la de 85% para 75% aumenta essa chance de 15% para 25%, cerca de 66,7%. Por isso, dano de trabuco é especialmente valioso contra castelos com defesa alta.
 
 Dano estrutural muda essa conta: trabucos danificam e rompem seções de muro, reduzindo defesa efetiva e aumentando acesso de assalto. Aríetes pressionam portões por rodadas; portões danificados ou derrubados facilitam a invasão. Escadas melhoram o acesso sobre os muros.
 
@@ -32,13 +53,13 @@ Níveis altos de castelo importam porque trazem mais muros, portões mais fortes
 
 Pontos de cerco vêm de unidades com traço Trabalhador de cerco. O total é dividido por 10, arredondado para baixo.
 
-[b]Escadas[/b] custam 1 ponto de cerco e não usam madeira. Melhoram o acesso sobre muros.
+[b]Escadas[/b] custam 1 ponto de cerco e não usam madeira. Cada escada fornece 5 pontos de acesso de assalto para unidades que não sejam de alcance, com limite de 4 escadas por seção de muro. O acesso é igual a esses pontos divididos pela quantidade de atacantes que não sejam de alcance. Por exemplo, 2 escadas dão 10 pontos, então 20 soldados atacam com 50% de acesso antes dos bônus de muro ou portão. Escadas não reduzem a defesa do castelo.
 
-[b]Aríetes[/b] custam 2 pontos de cerco e 2 Madeira. Se sobreviverem, podem abrir portões e permitir entrada de mais tropas.
+[b]Aríetes[/b] custam 2 pontos de cerco e 2 Madeira. Um aríete pode atacar cada portão intacto ao mesmo tempo; os extras aguardam na reserva. Aríete e portão se desgastam ao longo de várias rodadas. Um portão derrubado adiciona acesso de assalto imediatamente e continua adicionando mais acesso nas rodadas seguintes.
 
-Defensores à distância podem atirar em aríetes ativos. Com vários portões sob ataque, o foco defensivo se divide.
+As unidades de alcance defensoras são divididas entre os portões. Um aríete enfrentando menos de 10 defensores de alcance tem mais de 50% de chance de abrir uma brecha completa, chegando a 100% sem nenhum defensor de alcance. A chance cai de forma não linear: 50% com 10, 35% com 25, 20% com 50 e 15% com 60 ou mais. Um aríete que falha ainda pode causar progresso parcial. Atacar vários portões divide a força de alcance defensora, mas exige vários aríetes.
 
-[b]Trabucos[/b] custam 4 pontos de cerco e 5 Madeira. Cada um dispara 4 tiros de bombardeio com 50% de chance de acerto. Acertos danificam muros, criam brechas e aumentam acesso de assalto.
+[b]Trabucos[/b] custam 4 pontos de cerco e 5 Madeira. Cada um dispara 4 tiros de bombardeio com 50% de chance de acerto antes da batalha. Uma seção de muro danificada remove cerca de metade do valor de defesa por seção daquele nível de castelo. Uma seção destruída remove o valor total e adiciona 20 pontos de acesso de assalto para unidades que não sejam de alcance. A defesa do castelo não pode cair abaixo do mínimo do nível.
 
 Um bom plano de cerco combina ferramentas com obstáculos: trabucos para muros, aríetes para portões, escadas para acesso adicional.
 

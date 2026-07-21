@@ -3,9 +3,26 @@
 
 [b][font_size=24]Wie Schlachten rundenweise aufgelöst werden[/font_size][/b]
 
-Schlachten starten mit 2 Eröffnungs-Salven des Fernkampfs. Dadurch können Bogenschützen und Armbrustschützen Verluste verursachen, bevor der Hauptkampf beginnt. Danach folgen normale Runden, bis eine Seite vernichtet ist oder ein Rückzug endet.
+Schlachten starten mit 1 Eröffnungssalve aller Fernkampfeinheiten beider Seiten. Beide Seiten berechnen ihre Treffer aus demselben Ausgangszustand, danach werden die Verluste angewendet. Anschließend folgen normale Runden, bis eine Seite vernichtet ist oder ein Rückzug endet.
 
-Angriffe sind chancenbasiert. Angriffswerte bestimmen, wie häufig Treffer entstehen, Verteidigungswerte reduzieren, wie viele Treffer zu Tötungen werden. Vigor beeinflusst die tatsächliche Kampfkraft stark.
+Jeder Soldat führt einen Angriffswurf mit seiner Angriffschance aus. Vigor multipliziert diese Chance: Ein Bogenschütze mit 20% Angriff und 80% Vigor greift mit 16% an, ein Bauer mit 5% Angriff und 80% Vigor mit 4%. Gelände und Merkmale können das Ergebnis weiter verändern.
+
+Jeder erfolgreiche Wurf erzeugt einen Treffer. Die Treffer jedes angreifenden Einheitentyps werden zufällig auf gültige Ziele verteilt, gewichtet nach der Anzahl der Soldaten jedes Zieltyps. Die Verteidigung einer Einheit ist ihre Chance, einen zugewiesenen Treffer abzuwehren. Ein Treffer, der alle Verteidigungsschichten durchdringt, tötet einen Soldaten.
+
+Normale Kampfrunden laufen gleichzeitig ab. Beide Seiten berechnen Angriffe und Verluste anhand der Armeen zu Rundenbeginn, danach werden beide Verlustmengen angewendet. In einer Runde getötete Soldaten greifen daher in derselben Runde noch an.
+
+
+[b][font_size=24]Beispiel einer Kampfberechnung[/font_size][/b]
+
+Stell dir 10 Bauern und 5 Bogenschützen als Angreifer gegen 10 Speerträger und 5 Bauern auf offenem Gelände vor. Die Angreifer haben 80% Vigor, die Verteidiger 100%.
+
+In der Eröffnungssalve greifen nur die 5 Bogenschützen an. Sie führen 5 Würfe mit jeweils 16% aus: 20% normaler Angriff multipliziert mit 80% Vigor. Nehmen wir an, sie erzielen 1 Treffer.
+
+Die Verteidiger bestehen aus 10 Speerträgern und 5 Bauern. Ein Speerträger wird daher mit etwa 66,7% Wahrscheinlichkeit als Ziel gewählt, ein Bauer mit etwa 33,3%. Trifft der Angriff einen Speerträger, besitzt dieser durch seine 25% Verteidigung eine Chance von 25%, den Treffer abzuwehren; andernfalls stirbt er.
+
+Nehmen wir an, in der ersten normalen Runde erzielen die 10 angreifenden Bauern bei 4% 2 Treffer und die 5 Bogenschützen bei 16% 1 Treffer. Werden 1 Treffer einem Bauern und 2 Treffer Speerträgern zugeteilt, hat der Bauer 8% und jeder Speerträger 25% Verteidigungschance.
+
+Die Verteidiger greifen gleichzeitig an. Bei 100% Vigor würfeln Bauern mit ihren normalen 5%. Speerträger besitzen das Merkmal Verteidiger, wodurch ihre normale Angriffschance von 8% auf 16% verdoppelt wird. Alle Verluste werden erst angewendet, nachdem beide Armeen ihre Berechnungen beendet haben.
 
 Die Folgen sind hart: Gewinnt der Angreifer, werden verteidigende Armeen, Garnison und Rekruten ausgelöscht. Gewinnt der Verteidiger, werden die Angreifer vernichtet. Bei Rückzug behalten beide Seiten Überlebende, erleiden aber Rückzugsverluste.
 
@@ -21,7 +38,11 @@ Praktische Regel: Truppenanzahl allein reicht nicht zur Bewertung. Gelände kann
 
 [b][font_size=24]Burgverteidigung und Belagerungsdruck[/font_size][/b]
 
-Burgkämpfe fügen eine zusätzliche Verteidigungsschicht hinzu. Eingehende Angriffe müssen zuerst die defensive Vermeidung der Burg überwinden, bevor normale Einheitenverteidigung greift.
+Burgkämpfe fügen zwei Einschränkungen hinzu: Sturmzugang und Burgverteidigung. Der Sturmzugang skaliert die Nicht-Fernkampftreffer des Angreifers nach dem Zugang durch Leitern, zerstörte Mauern und gefallene Tore. Fernkampfangriffe werden nicht durch den Sturmzugang reduziert.
+
+Danach bietet die Burgverteidigung die erste Chance, einen Treffer abzuwehren. Jeder verbleibende Treffer trifft anschließend auf die eigene Verteidigung der Zieleinheit. Dadurch ist dieselbe Garnison hinter Mauern erheblich schwerer zu töten.
+
+Wird die Burgverteidigung von 50% auf 40% gesenkt, steigt die Chance, dass ein Treffer die Burgschicht durchdringt, von 50% auf 60% – ein relativer Anstieg von 20%. Eine Senkung von 85% auf 75% erhöht diese Chance von 15% auf 25%, also um etwa 66,7%. Trebuchets sind deshalb gegen Burgen mit hoher Verteidigung besonders wertvoll.
 
 Strukturschaden verändert das Verhältnis: Trebuchets beschädigen Mauern und erzeugen Breschen, senken effektive Burgverteidigung und erhöhen den Sturmzugang. Rammen setzen Tore unter Druck; beschädigte oder gefallene Tore erleichtern den Angriff. Leitern erhöhen den Zugang über Mauern.
 
@@ -32,13 +53,13 @@ Höhere Burgstufen bedeuten mehr Mauersegmente, stärkere Tore, höhere Verteidi
 
 Belagerungspunkte kommen von Einheiten mit dem Merkmal Belagerungsarbeiter. Gesamtzahl dieser Einheiten wird durch 10 geteilt und abgerundet.
 
-[b]Leitern[/b] kosten 1 Belagerungspunkt und kein Holz. Sie erhöhen den Zugang über Mauern.
+[b]Leitern[/b] kosten 1 Belagerungspunkt und kein Holz. Jede Leiter bietet 5 Punkte Nicht-Fernkampf-Sturmzugang, mit höchstens 4 Leitern pro Mauersegment. Der Zugang entspricht diesen Punkten geteilt durch die Anzahl der Nicht-Fernkämpfer. 2 Leitern geben beispielsweise 10 Zugangspunkte, sodass 20 Nicht-Fernkämpfer vor Mauer- oder Torboni mit 50% Zugang angreifen. Leitern senken die Burgverteidigung nicht.
 
-[b]Rammen[/b] kosten 2 Belagerungspunkte und 2 Holz. Überleben sie lange genug, können sie Tore öffnen und mehr Truppen in die Burg bringen.
+[b]Rammen[/b] kosten 2 Belagerungspunkte und 2 Holz. Je eine Ramme kann gleichzeitig jedes intakte Tor angreifen; weitere warten in Reserve. Ramme und Tor werden über mehrere Runden abgenutzt. Ein gefallenes Tor erhöht den Sturmzugang sofort und in den folgenden Runden weiter.
 
-Verteidigende Fernkämpfer können aktive Rammen beschießen. Bei Druck auf mehrere Tore verteilt sich das Verteidigungsfeuer.
+Die Fernkampfeinheiten der Verteidiger werden auf die Tore verteilt. Bei weniger als 10 Fernkämpfern hat eine Ramme eine vollständige Durchbruchschance von über 50%; ohne Fernkämpfer erreicht sie 100%. Die Chance fällt nichtlinear: 50% bei 10, 35% bei 25, 20% bei 50 und 15% bei 60 oder mehr. Eine gescheiterte Ramme kann dennoch Teilfortschritt erzielen. Mehrere angegriffene Tore teilen die Fernkampfstärke der Verteidiger auf, benötigen aber mehrere Rammen.
 
-[b]Trebuchets[/b] kosten 4 Belagerungspunkte und 5 Holz. Jedes feuert 4 Bombardement-Schüsse mit 50% Trefferchance. Treffer beschädigen Mauern, erzeugen Breschen und verbessern Sturmzugang.
+[b]Trebuchets[/b] kosten 4 Belagerungspunkte und 5 Holz. Jedes feuert vor der Schlacht 4 Bombardementschüsse mit 50% Trefferchance. Ein beschädigtes Mauersegment entfernt ungefähr die Hälfte des Verteidigungswerts pro Segment dieser Burgstufe. Ein zerstörtes Segment entfernt den vollen Wert und gibt 20 Punkte Nicht-Fernkampf-Sturmzugang. Die Burgverteidigung kann nicht unter das Minimum ihrer Stufe fallen.
 
 Gute Belagerungsplanung passt Werkzeug an das Hindernis an: Trebuchets gegen Mauern, Rammen gegen Tore, Leitern für zusätzlichen Zugang.
 

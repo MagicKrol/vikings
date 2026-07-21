@@ -28,6 +28,7 @@ signal camera_zoomed_by_player(new_zoom: Vector2)
 @export var smooth_zoom: bool = true
 @export var pan_smoothing: float = 15.0
 @export var zoom_smoothing: float = 12.0
+@export var use_modal_input_blocking: bool = true
 
 # Touch tracking variables
 var touch_points: Dictionary = {}
@@ -46,7 +47,7 @@ var last_mouse_position: Vector2
 var touch_enabled: bool = true
 var drag_button: int = 0
 var tutorial_signal_enabled: bool = false
-@onready var ui_manager: UIManager = get_node("../UI/UIManager") as UIManager
+@onready var ui_manager: UIManager = get_node("../UI/UIManager") as UIManager if use_modal_input_blocking else null
 
 func _ready() -> void:
 	# Initialize target values to current values
@@ -163,6 +164,8 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 
 func _handle_continuous_keyboard_input(delta: float) -> void:
 	"""Handle continuous keyboard input for smooth camera movement"""
+	if _is_text_input_focused():
+		return
 	if _is_pan_blocked_by_modal():
 		return
 	var pan_speed_per_second = 400.0 / zoom.x  # Pixels per second, scaled by zoom
@@ -187,6 +190,8 @@ func _handle_continuous_keyboard_input(delta: float) -> void:
 
 func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 	"""Handle discrete keyboard input for zoom and reset actions"""
+	if _is_text_input_focused():
+		return
 	var zoom_amount = 0.2  # Increased zoom speed
 
 	match event.keycode:
@@ -213,6 +218,9 @@ func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 				return
 			# Reset camera
 			reset_camera()
+
+func _is_text_input_focused() -> bool:
+	return get_viewport().gui_get_focus_owner() is LineEdit
 
 func _handle_touch_event(event: InputEventScreenTouch) -> void:
 	if event.pressed:
@@ -256,7 +264,7 @@ func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 	_emit_camera_zoomed()
 
 func _is_zoom_blocked_by_modal() -> bool:
-	if ui_manager == null:
+	if not use_modal_input_blocking:
 		return false
 	if ui_manager.is_map_filter_visible():
 		return false
@@ -267,7 +275,7 @@ func _is_zoom_blocked_by_modal() -> bool:
 	return not ui_manager.is_only_info_or_message_modal_visible()
 
 func _is_pan_blocked_by_modal() -> bool:
-	if ui_manager == null:
+	if not use_modal_input_blocking:
 		return false
 	if ui_manager.is_map_filter_visible():
 		return false

@@ -15,6 +15,7 @@ var region_manager: RegionManager = null
 var select_tooltip_modal: SelectTooltipModal = null
 var select_tooltip_modal_nores: SelectTooltipModalNoRes = null
 var select_tooltip_modal_upkeep: SelectTooltipModalUpkeep = null
+var select_tooltip_modal_recruits: Control = null
 var tutorial_manager: TutorialManager = null
 
 # Current display mode
@@ -83,6 +84,7 @@ var _inactive_tab_color: Color = Color(0.595154, 0.595154, 0.595154, 1)
 @onready var _search_ore_button: Button = get_node("RegionPanel/Body/Region/Actions/Mine/ActionSection/SearchOreButton")
 @onready var _raise_army_button: Button = get_node("RegionPanel/Body/Region/Actions/RaiseArmy/ActionSection/RaiseArmyButton")
 @onready var _recruit_button: Button = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/RecruitButton")
+@onready var _recruits_resource: HBoxContainer = get_node("RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population") as HBoxContainer
 @onready var _downgrade_castle_button: Button = get_node("DowngradeCastle") as Button
 @onready var _downgrade_region_button: Button = get_node("DowngradeRegion") as Button
 @onready var _region_level_action_section: Control = get_node("RegionPanel/Body/Region/Actions/RegionLevel/ActionSection")
@@ -110,6 +112,7 @@ func _ready():
 	select_tooltip_modal = get_node("../SelectTooltipModal") as SelectTooltipModal
 	select_tooltip_modal_nores = get_node("../SelectTooltipModalNoRes") as SelectTooltipModalNoRes
 	select_tooltip_modal_upkeep = get_node("ActionTooltipUpkeep") as SelectTooltipModalUpkeep
+	select_tooltip_modal_recruits = get_node("SelectTooltipModalRecruits") as Control
 	tutorial_manager = game_manager.get_tutorial_manager()
 	army_manager = game_manager.get_army_manager()
 	region_manager = game_manager.get_region_manager()
@@ -177,6 +180,8 @@ func _initialize_action_tooltips() -> void:
 	_raise_army_button.mouse_exited.connect(_on_action_tooltip_unhovered)
 	_recruit_button.mouse_entered.connect(_on_recruit_garrison_tooltip_hovered)
 	_recruit_button.mouse_exited.connect(_on_action_tooltip_unhovered)
+	_recruits_resource.mouse_entered.connect(_on_recruits_tooltip_hovered)
+	_recruits_resource.mouse_exited.connect(_on_action_tooltip_unhovered)
 	_downgrade_castle_button.mouse_entered.connect(_on_downgrade_castle_tooltip_hovered)
 	_downgrade_castle_button.mouse_exited.connect(_on_action_tooltip_unhovered)
 	_downgrade_region_button.mouse_entered.connect(_on_downgrade_region_tooltip_hovered)
@@ -242,6 +247,30 @@ func _on_raise_army_tooltip_hovered() -> void:
 func _on_recruit_garrison_tooltip_hovered() -> void:
 	_show_message_action_tooltip(_get_region_action_tooltip_key("recruit_soldiers_garrison"), {}, _recruit_button)
 
+func _on_recruits_tooltip_hovered() -> void:
+	_hide_action_tooltips()
+	select_tooltip_modal_recruits.call("show_recruits", _get_recruit_tooltip_rows())
+
+func _get_recruit_tooltip_rows() -> Array[Dictionary]:
+	var source_regions: Array[Region] = [current_region]
+	if current_region.get_castle_type() != CastleTypeEnum.Type.NONE:
+		var owner_id: int = current_region.get_region_owner()
+		var neighbor_ids: Array[int] = region_manager.get_neighbor_regions(current_region.get_region_id())
+		for neighbor_id: int in neighbor_ids:
+			if region_manager.get_region_owner(neighbor_id) != owner_id:
+				continue
+			var neighbor_region: Region = region_manager.map_generator.get_region_container_by_id(neighbor_id) as Region
+			source_regions.append(neighbor_region)
+	var rows: Array[Dictionary] = []
+	for source_region: Region in source_regions:
+		rows.append({
+			"region_name": source_region.get_region_name(),
+			"available": source_region.get_available_recruits(),
+			"maximum": source_region.get_max_recruits(),
+			"replenish": _format_replenish_value(_get_replenish_preview_for_region(source_region))
+		})
+	return rows
+
 func _on_downgrade_region_tooltip_hovered() -> void:
 	var tooltip_key: String = _get_region_action_tooltip_key("downgrade_region")
 	if tooltip_key != "downgrade_region":
@@ -265,30 +294,35 @@ func _on_action_tooltip_unhovered() -> void:
 func _show_message_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_upkeep.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 	_position_action_tooltip(select_tooltip_modal_nores, button)
 	select_tooltip_modal_nores.show_tooltip(tooltip_key, context_data)
 
 func _show_turns_action_tooltip(tooltip_key: String, context_data: Dictionary, button: Control) -> void:
 	select_tooltip_modal_nores.hide_tooltip()
 	select_tooltip_modal_upkeep.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 	_position_action_tooltip(select_tooltip_modal, button)
 	select_tooltip_modal.show_tooltip(tooltip_key, context_data)
 
 func _show_downgrade_action_tooltip(tooltip_key: String, returned_resources: Dictionary, gold_cost: int, button: Control) -> void:
 	select_tooltip_modal_nores.hide_tooltip()
 	select_tooltip_modal_upkeep.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 	_position_action_tooltip(select_tooltip_modal, button)
 	select_tooltip_modal.show_downgrade_tooltip(tooltip_key, returned_resources, gold_cost)
 
 func _show_region_upkeep_action_tooltip(tooltip_key: String, upkeep_cost: Dictionary, button: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_nores.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 	_position_action_tooltip(select_tooltip_modal_upkeep, button)
 	select_tooltip_modal_upkeep.show_region_upkeep(tooltip_key, upkeep_cost)
 
 func _show_castle_upkeep_action_tooltip(tooltip_key: String, wood_upkeep: int, stone_upkeep: int, build_time: int, button: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_nores.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 	_position_action_tooltip(select_tooltip_modal_upkeep, button)
 	select_tooltip_modal_upkeep.show_castle_upkeep(tooltip_key, wood_upkeep, stone_upkeep, build_time)
 
@@ -300,6 +334,7 @@ func _on_garrison_unit_icon_hovered(unit_index: int, garrison_info: Control) -> 
 func _show_garrison_unit_action_tooltip(unit_name: String, garrison_info: Control) -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_upkeep.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 	_position_action_tooltip_at_garrison(select_tooltip_modal_nores, garrison_info)
 	select_tooltip_modal_nores.show_text(unit_name)
 
@@ -307,6 +342,7 @@ func _hide_action_tooltips() -> void:
 	select_tooltip_modal.hide_tooltip()
 	select_tooltip_modal_nores.hide_tooltip()
 	select_tooltip_modal_upkeep.hide_tooltip()
+	select_tooltip_modal_recruits.call("hide_tooltip")
 
 func _should_show_region_upkeep_tooltip() -> bool:
 	if current_region.get_region_level() < RegionLevelEnum.Level.L2:

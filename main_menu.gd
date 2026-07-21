@@ -26,11 +26,18 @@ const RANDOM_SEED_MAX: int = 2147483647
 const RANDOM_FORESTS_GENERATION_MIN: float = 0.25
 const MAP_TYPE_ORIGINAL: String = "original"
 const MAP_TYPE_RANDOM: String = "random"
+const MAP_TYPE_SAVED: String = "saved"
+const USER_MAPS_DIRECTORY: String = "user://user_maps"
+const USER_MAP_EDITOR_PAYLOAD_META_KEY: String = "user_map_editor_payload"
+const USER_MAP_EDITOR_RESULT_META_KEY: String = "user_map_editor_result"
+const INVALID_MAP_MESSAGE: String = "Invalid Map: Some of the regions are inaccessible - surrounded by ocean, or mountains."
 const MAP_PREVIEW_NORMAL_SIZE: Vector2 = Vector2(450.0, 450.0)
 const MAP_PREVIEW_EXPANDED_SIZE: Vector2 = Vector2(1050.0, 1050.0)
 const MAP_PREVIEW_EXPANDED_POSITION: Vector2 = Vector2(50.0, 50.0)
 const GENERATED_PREVIEW_NORMAL_POSITION: Vector2 = Vector2(15.0, 15.0)
 const GENERATED_PREVIEW_NORMAL_SCALE: Vector2 = Vector2(0.21, 0.21)
+const DEFAULT_MAP_NAME_WIDTH: float = 370.0
+const SAVED_MAP_NAME_WIDTH: float = 325.0
 
 @onready var continue_button: Button = $MenuContainer/ContinueButton
 @onready var new_game_button: Button = $MenuContainer/NewGameButton
@@ -72,6 +79,8 @@ const GENERATED_PREVIEW_NORMAL_SCALE: Vector2 = Vector2(0.21, 0.21)
 @onready var custom_map_panel2: Panel = $CustomMap/Panel2
 @onready var custom_map_panel3: Panel = $CustomMap/Panel3
 @onready var campaign_panel: Panel = $CustomMap/Panel4
+@onready var scenario_list_background: TextureRect = $CustomMap/Panel3/ScenarioArmyTexture
+@onready var skirmish_list_background: TextureRect = $CustomMap/Panel3/SkirmishArmyTexture
 @onready var custom_map_panel3_label: Label = $CustomMap/Panel3/VBoxContainer/Label
 @onready var custom_map_back_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer2/Back
 @onready var custom_map_select_button: Button = $CustomMap/Panel/VBoxContainer/HBoxContainer/SelectMap
@@ -131,6 +140,7 @@ const GENERATED_PREVIEW_NORMAL_SCALE: Vector2 = Vector2(0.21, 0.21)
 @onready var random_hills_value: Label = $CustomMap/Panel3/VBoxContainer/RandomParameters/HillsHeader/Value
 @onready var random_mountains_value: Label = $CustomMap/Panel3/VBoxContainer/RandomParameters/MountainsHeader/Value
 @onready var random_sea_level_value: Label = $CustomMap/Panel3/VBoxContainer/RandomParameters/SeaLevelHeader/Value
+@onready var edit_random_map_button: Button = $CustomMap/Panel3/VBoxContainer/RandomParameters/EditMapRow/EditMap
 
 # Container references
 @onready var menu_container: VBoxContainer = $MenuContainer
@@ -156,6 +166,10 @@ const GENERATED_PREVIEW_NORMAL_SCALE: Vector2 = Vector2(0.21, 0.21)
 @onready var language_label: Label = $Language/Text
 @onready var custom_tooltip: TextureRect = $CustomTooltip
 @onready var custom_tooltip_label: Label = $CustomTooltip/Label
+@onready var saved_map_delete_confirm: Control = $SavedMapDeleteConfirm
+@onready var saved_map_delete_message: Label = $SavedMapDeleteConfirm/Dialog/Content/Message
+@onready var saved_map_delete_confirm_button: Button = $SavedMapDeleteConfirm/Dialog/Content/Buttons/Confirm
+@onready var saved_map_delete_cancel_button: Button = $SavedMapDeleteConfirm/Dialog/Content/Buttons/Cancel
 
 var hover_timer: Timer
 var current_hovered_item: String = ""
@@ -205,6 +219,7 @@ var main_game_debug_mode: bool = true
 var cards_selection_mode: bool = false
 var pending_start_payload: Dictionary = {}
 var selected_upgrade_card_ids: Array[String] = []
+var pending_saved_map_delete_path: String = ""
 
 # Player settings for custom map
 var player_settings: Array = []  # Array of dictionaries with player configuration
@@ -272,6 +287,9 @@ func _ready():
 	map_size_button_large.pressed.connect(_on_size_filter_pressed.bind("L", map_size_button_large))
 	map_type_original_button.pressed.connect(_on_map_type_pressed.bind(MAP_TYPE_ORIGINAL))
 	map_type_random_button.pressed.connect(_on_map_type_pressed.bind(MAP_TYPE_RANDOM))
+	map_type_saved_button.pressed.connect(_on_map_type_pressed.bind(MAP_TYPE_SAVED))
+	saved_map_delete_confirm_button.pressed.connect(_on_saved_map_delete_confirmed)
+	saved_map_delete_cancel_button.pressed.connect(_on_saved_map_delete_cancelled)
 
 	# Hover sounds removed - no sound on mouse enter
 
@@ -279,6 +297,7 @@ func _ready():
 	_setup_size_filter_group()
 	_setup_map_type_group()
 	_setup_random_map_controls()
+	edit_random_map_button.pressed.connect(_on_edit_random_map_pressed)
 	_setup_player_buttons()
 	_setup_difficulty_buttons()
 	_setup_scenario_difficulty_buttons()
@@ -290,6 +309,8 @@ func _ready():
 	options_container.configure(sound_manager, false, tr("Back to Menu"))
 	_update_primary_main_menu_button()
 
+	if _apply_user_map_editor_result():
+		return
 	if _apply_start_target_from_meta():
 		return
 
@@ -627,6 +648,9 @@ func _on_custom_map_select_pressed() -> void:
 		return
 	if selected_map_item.is_empty():
 		return
+	if current_map_type == MAP_TYPE_SAVED:
+		_start_saved_map()
+		return
 	var map_file: String = selected_map_item.get("file", "")
 	if map_file == "":
 		return
@@ -644,8 +668,34 @@ func _on_custom_map_select_pressed() -> void:
 		"difficulty": _get_selected_custom_map_difficulty()
 	})
 
+func _start_saved_map() -> void:
+	var saved_map_data: Dictionary = selected_map_item.get("map_data", {})
+	var regions: Array = saved_map_data.get("regions", [])
+	var edges: Array = saved_map_data.get("edges", [])
+	if not RegionGraph.is_passable_map_connected(regions, edges):
+		_show_custom_tooltip(INVALID_MAP_MESSAGE)
+		_set_custom_map_select_enabled(false)
+		return
+	var size_code: String = String(selected_map_item.get("size", "S"))
+	var fallback_size: String = _size_full_name(size_code).to_lower()
+	var map_size: String = String(selected_map_item.get("map_size_exact", fallback_size))
+	_begin_upgrade_selection_or_start({
+		"type": "map",
+		"map_data": saved_map_data,
+		"map_size": map_size,
+		"player_settings": player_settings,
+		"victory_condition": _get_selected_custom_map_victory(),
+		"difficulty": _get_selected_custom_map_difficulty()
+	})
+
 func _start_generated_random_map() -> void:
 	if generated_random_map_data.is_empty():
+		return
+	var regions: Array = generated_random_map_data.get("regions", [])
+	var edges: Array = generated_random_map_data.get("edges", [])
+	if not RegionGraph.is_passable_map_connected(regions, edges):
+		_show_custom_tooltip(INVALID_MAP_MESSAGE)
+		_set_custom_map_select_enabled(false)
 		return
 	var size_profile: Dictionary = MapgenConfig.get_size_profile(random_map_size)
 	var selected_victory: String = _get_selected_custom_map_victory()
@@ -657,6 +707,83 @@ func _start_generated_random_map() -> void:
 		"victory_condition": selected_victory,
 		"difficulty": _get_selected_custom_map_difficulty()
 	})
+
+func _on_edit_random_map_pressed() -> void:
+	if generated_random_map_data.is_empty():
+		return
+	get_tree().set_meta(USER_MAP_EDITOR_PAYLOAD_META_KEY, {
+		"map_data": generated_random_map_data.duplicate(true),
+		"random_state": _get_random_map_editor_state(),
+		"player_settings": player_settings.duplicate(true),
+		"difficulty": _get_selected_custom_map_difficulty(),
+		"victory_condition": _get_selected_custom_map_victory()
+	})
+	sound_manager.stop_main_menu_music()
+	get_tree().change_scene_to_file("res://scenes/user_map_editor.tscn")
+
+func _get_random_map_editor_state() -> Dictionary:
+	return {
+		"map_size": random_map_size,
+		"map_seed": random_map_seed,
+		"biome_seed": random_biome_seed,
+		"forests": random_forests_slider.value,
+		"hills": random_hills_slider.value,
+		"mountains": random_mountains_slider.value,
+		"sea_level": random_sea_level_slider.value
+	}
+
+func _apply_user_map_editor_result() -> bool:
+	if not get_tree().has_meta(USER_MAP_EDITOR_RESULT_META_KEY):
+		return false
+	var result: Dictionary = get_tree().get_meta(USER_MAP_EDITOR_RESULT_META_KEY) as Dictionary
+	get_tree().set_meta(USER_MAP_EDITOR_RESULT_META_KEY, null)
+	var edited_map_data: Dictionary = result.get("map_data", {}).duplicate(true)
+	var random_state: Dictionary = result.get("random_state", {})
+	_show_custom_map_menu()
+	_restore_random_map_editor_state(random_state)
+	random_map_initialized = true
+	_set_map_type(MAP_TYPE_RANDOM)
+	generated_random_map_data = edited_map_data
+	generated_map_renderer.render_map_data(generated_random_map_data)
+	_restore_custom_map_settings(result)
+	return true
+
+func _restore_random_map_editor_state(state: Dictionary) -> void:
+	random_map_size = String(state.get("map_size", "S"))
+	random_map_seed = int(state.get("map_seed", 187))
+	random_biome_seed = int(state.get("biome_seed", MapgenConfig.NOISE_SEED))
+	random_map_seed_input.text = str(random_map_seed)
+	random_biome_seed_input.text = str(random_biome_seed)
+	random_forests_slider.value = float(state.get("forests", 0.33))
+	random_hills_slider.value = float(state.get("hills", 0.33))
+	random_mountains_slider.value = float(state.get("mountains", 0.5))
+	random_sea_level_slider.value = float(state.get("sea_level", 0.5))
+
+func _restore_custom_map_settings(result: Dictionary) -> void:
+	var restored_player_settings: Array = result.get("player_settings", [])
+	if not restored_player_settings.is_empty():
+		player_settings = restored_player_settings.duplicate(true)
+		for setting_variant: Variant in player_settings:
+			var setting: Dictionary = setting_variant as Dictionary
+			var player_id: int = int(setting.get("player_id", 0))
+			var control_type: String = String(setting.get("control_type", "Off"))
+			var button_name: String = "Human" if control_type == "Player" else control_type
+			var control_button: Button = get_node("CustomMap/Panel/VBoxContainer/Player%d/%s" % [player_id, button_name]) as Button
+			control_button.button_pressed = true
+	var difficulty: String = String(result.get("difficulty", "normal"))
+	for difficulty_button: Button in custom_map_difficulty_buttons:
+		var selected_difficulty: bool = difficulty_button.name.to_lower() == difficulty
+		difficulty_button.button_pressed = selected_difficulty
+		_update_button_gold_state(difficulty_button, selected_difficulty)
+	var victory_condition: String = String(result.get("victory_condition", "conquer"))
+	var victory_buttons: Array[Button] = [
+		get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Conquer") as Button,
+		get_node("CustomMap/Panel/VBoxContainer/VictoryConditions/Dominate") as Button
+	]
+	for victory_button: Button in victory_buttons:
+		var selected_victory: bool = victory_button.name.to_lower() == victory_condition
+		victory_button.button_pressed = selected_victory
+		_update_button_gold_state(victory_button, selected_victory)
 
 func _on_scenario_select_pressed():
 	if selected_scenario_item.is_empty():
@@ -1018,6 +1145,8 @@ func _show_scenario_menu():
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = true
 	campaign_panel.visible = false
+	scenario_list_background.visible = true
+	skirmish_list_background.visible = false
 	custom_map_panel3_label.text = tr("Scenario List")
 	_set_campaign_ui(false)
 	_set_map_type_controls_visible(false)
@@ -1049,6 +1178,8 @@ func _show_custom_map_menu():
 	custom_map_panel2.visible = true
 	custom_map_panel3.visible = true
 	campaign_panel.visible = false
+	scenario_list_background.visible = false
+	skirmish_list_background.visible = true
 	custom_map_panel3_label.text = tr("Select Map")
 	_set_campaign_ui(false)
 	_set_map_type_controls_visible(true)
@@ -1149,6 +1280,8 @@ func _setup_map_type_group() -> void:
 		button.button_group = map_type_button_group
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	map_type_original_button.button_pressed = true
+	map_type_random_button.disabled = demo_mode_enabled
+	map_type_saved_button.disabled = demo_mode_enabled
 	_update_button_gold_state(map_type_original_button, true)
 	_update_button_gold_state(map_type_random_button, false)
 	_update_button_gold_state(map_type_saved_button, false)
@@ -1188,12 +1321,17 @@ func _select_map_size_button(selected_button: Button) -> void:
 
 func _on_map_type_pressed(map_type: String) -> void:
 	_set_map_type(map_type)
+	if map_type == MAP_TYPE_ORIGINAL:
+		_load_custom_map_items()
+	elif map_type == MAP_TYPE_SAVED:
+		_load_saved_map_items()
 
 func _set_map_type(map_type: String) -> void:
 	_restore_expanded_map_preview()
 	current_map_type = map_type
 	_update_button_gold_state(map_type_original_button, map_type == MAP_TYPE_ORIGINAL)
 	_update_button_gold_state(map_type_random_button, map_type == MAP_TYPE_RANDOM)
+	_update_button_gold_state(map_type_saved_button, map_type == MAP_TYPE_SAVED)
 	if map_type == MAP_TYPE_RANDOM:
 		_show_random_map_content()
 	else:
@@ -1324,6 +1462,7 @@ func _generate_random_map_preview() -> void:
 	generated_random_map_data = MAPGEN_GENERATOR.build_export(generated)
 	generated_map_renderer.render_map_data(generated_random_map_data)
 	generated_map_preview.visible = true
+	custom_tooltip.visible = false
 	_set_custom_map_select_enabled(true)
 
 func _setup_player_buttons():
@@ -1651,6 +1790,10 @@ func _load_custom_map_items():
 	map_items = _gather_map_items()
 	_apply_map_filter()
 
+func _load_saved_map_items() -> void:
+	map_items = _gather_saved_map_items()
+	_apply_map_filter()
+
 func _load_scenario_items():
 	var requested_type: String = "campaign" if is_campaign_mode else "scenario"
 	scenario_items = _gather_scenario_items(requested_type)
@@ -1706,6 +1849,13 @@ func _populate_map_list(items: Array, for_scenario: bool):
 		row.visible = true
 		var size_label: Label = row.get_node("Size")
 		var name_label: Label = row.get_node("Name")
+		if not for_scenario:
+			var delete_button: Button = row.get_node("Delete") as Button
+			var show_delete_button: bool = current_map_type == MAP_TYPE_SAVED
+			delete_button.visible = show_delete_button
+			name_label.custom_minimum_size.x = SAVED_MAP_NAME_WIDTH if show_delete_button else DEFAULT_MAP_NAME_WIDTH
+			if show_delete_button:
+				delete_button.pressed.connect(_on_saved_map_delete_pressed.bind(item))
 		if for_scenario and is_campaign_mode:
 			size_label.text = str(int(item.get("mission_number", 0)))
 		else:
@@ -1786,6 +1936,7 @@ func _on_map_row_pressed(row: Control, item: Dictionary, for_scenario: bool):
 		selected_map_item = item
 		_update_info_labels(item)
 		_update_preview_with_item(item, false)
+		custom_tooltip.visible = false
 		_set_custom_map_select_enabled(true)
 
 func _on_map_row_hovered(row: Control, item: Dictionary, for_scenario: bool):
@@ -1862,6 +2013,14 @@ func _update_scenario_details_labels(item: Dictionary) -> void:
 	scenario_objectives_label.text = tr(resolved_objectives)
 
 func _update_preview_with_item(item: Dictionary, for_scenario: bool):
+	if not for_scenario and item.has("map_data"):
+		var saved_map_data: Dictionary = item.get("map_data", {})
+		custom_map_preview.texture = null
+		custom_map_preview.visible = false
+		generated_map_renderer.render_map_data(saved_map_data)
+		generated_map_preview.visible = true
+		return
+	generated_map_preview.visible = false
 	var candidates: Array = []
 	if for_scenario:
 		var scenario_file_base: String = String(item.get("scenario_file_base", item.get("name", "")))
@@ -1910,6 +2069,29 @@ func _clear_map_selection():
 	scenario_objectives_label.text = tr(default_scenario_objectives_text)
 	custom_map_preview.texture = null
 	custom_map_preview.visible = false
+	generated_map_preview.visible = false
+
+func _on_saved_map_delete_pressed(item: Dictionary) -> void:
+	pending_saved_map_delete_path = String(item.get("file_path", ""))
+	var display_name: String = _resolve_item_display_name(item)
+	saved_map_delete_message.text = tr('Delete saved map "%s"?') % display_name
+	saved_map_delete_confirm.visible = true
+	saved_map_delete_confirm.move_to_front()
+
+func _on_saved_map_delete_cancelled() -> void:
+	saved_map_delete_confirm.visible = false
+	pending_saved_map_delete_path = ""
+
+func _on_saved_map_delete_confirmed() -> void:
+	var delete_path: String = pending_saved_map_delete_path
+	_on_saved_map_delete_cancelled()
+	if not delete_path.begins_with(USER_MAPS_DIRECTORY + "/"):
+		return
+	var delete_error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(delete_path))
+	if delete_error != OK:
+		push_error("Unable to delete saved map: " + delete_path)
+		return
+	_load_saved_map_items()
 
 func _set_custom_map_select_enabled(enabled: bool):
 	custom_map_select_button.disabled = not enabled
@@ -1955,6 +2137,53 @@ func _gather_map_items() -> Array:
 		dir.list_dir_end()
 	items.sort_custom(Callable(self, "_sort_items"))
 	return items
+
+func _gather_saved_map_items() -> Array:
+	var items: Array = []
+	var directory: DirAccess = DirAccess.open(USER_MAPS_DIRECTORY)
+	if directory == null:
+		return items
+	directory.list_dir_begin()
+	var file_name: String = directory.get_next()
+	while file_name != "":
+		if not directory.current_is_dir() and file_name.to_lower().ends_with(".json"):
+			var item: Dictionary = _load_saved_map_item(file_name)
+			if not item.is_empty():
+				items.append(item)
+		file_name = directory.get_next()
+	directory.list_dir_end()
+	items.sort_custom(Callable(self, "_sort_items"))
+	return items
+
+func _load_saved_map_item(file_name: String) -> Dictionary:
+	var file_path: String = USER_MAPS_DIRECTORY.path_join(file_name)
+	var content: String = FileAccess.get_file_as_string(file_path)
+	var json: JSON = JSON.new()
+	if json.parse(content) != OK:
+		return {}
+	var parsed_data: Variant = json.get_data()
+	if not (parsed_data is Dictionary):
+		return {}
+	var map_data: Dictionary = parsed_data as Dictionary
+	var regions_value: Variant = map_data.get("regions", [])
+	if not (regions_value is Array):
+		return {}
+	var regions: Array = regions_value as Array
+	if regions.is_empty():
+		return {}
+	var region_count: int = regions.size()
+	var passable_region_count: int = _resolve_non_ocean_region_count_for_map_profile(map_data, regions)
+	var size_code: String = Utils.get_frontend_size_code_from_region_count(passable_region_count)
+	var base_name: String = file_name.get_basename()
+	return {
+		"file": base_name,
+		"file_path": file_path,
+		"display_name": base_name.replace("_", " ").capitalize(),
+		"size": size_code,
+		"map_size_exact": Utils.get_nearest_anchor_label_from_region_count(region_count),
+		"region_count": region_count,
+		"map_data": map_data
+	}
 
 func _gather_scenario_items(requested_type: String) -> Array:
 	var items: Array = []

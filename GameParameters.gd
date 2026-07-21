@@ -456,7 +456,8 @@ const ARMY_DANGER_GARRISON_POWER = 50          # Power value assigned to garriso
 const CHARGE_BONUS_GRASSLAND = 1.0              # 100% attack bonus for charge units on grassland
 
 ## Armor Piercing Bonuses
-const ARMOR_PIERCING_DEFENSE_REDUCTION = 0.5    # Halves enemy defense (50% reduction)
+const ARMOR_PIERCING_FLAT_DEFENSE_REDUCTION = 0.10  # Subtract 10 percentage points first
+const ARMOR_PIERCING_DEFENSE_MULTIPLIER = 0.5       # Halve the remaining defense
 
 ## Long-Spears Bonuses
 const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry units

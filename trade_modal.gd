@@ -10,6 +10,7 @@ const RESOURCE_TYPES := [
 const HOLD_DELAY_SECONDS: float = 0.5
 const HOLD_INTERVAL_SECONDS: float = 1.0
 const HOLD_STEP: int = 10
+const CONTROL_STEP: int = 100
 const BUTTON_MINUS_DARK: Texture2D = preload("res://images/button_minus_dark.png")
 const BUTTON_MINUS_LIGHT: Texture2D = preload("res://images/button_minus_light.png")
 const BUTTON_PLUS_DARK: Texture2D = preload("res://images/button_plus_dark.png")
@@ -47,6 +48,8 @@ var color_white := Color.WHITE
 var _hold_active: bool = false
 var _hold_resource_type: ResourcesEnum.Type = ResourcesEnum.Type.FOOD
 var _hold_delta: int = 0
+var _hold_step: int = HOLD_STEP
+var _hold_mouse_button: MouseButton = MOUSE_BUTTON_LEFT
 var _hold_is_buy: bool = true
 var _hold_elapsed: float = 0.0
 var _hold_interval_elapsed: float = 0.0
@@ -211,22 +214,44 @@ func _on_sell_pressed(resource_type: ResourcesEnum.Type, amount: int) -> void:
 	pass
 
 func _on_buy_adjust_input(event: InputEvent, resource_type: ResourcesEnum.Type, delta: int) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			var step: int = HOLD_STEP if event.shift_pressed else 1
-			_adjust_buy_amount(resource_type, delta * step)
-			_start_hold(resource_type, delta, true)
-		else:
+	if not event is InputEventMouseButton:
+		return
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	if not mouse_event.pressed:
+		if _hold_active and mouse_event.button_index == _hold_mouse_button:
 			_stop_hold()
+		return
+	if not _is_adjustment_mouse_press(mouse_event):
+		return
+	var step: int = _get_adjustment_step(mouse_event)
+	_adjust_buy_amount(resource_type, delta * step)
+	_start_hold(resource_type, delta, true, step, mouse_event.button_index)
 
 func _on_sell_adjust_input(event: InputEvent, resource_type: ResourcesEnum.Type, delta: int) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			var step: int = HOLD_STEP if event.shift_pressed else 1
-			_adjust_sell_amount(resource_type, delta * step)
-			_start_hold(resource_type, delta, false)
-		else:
+	if not event is InputEventMouseButton:
+		return
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	if not mouse_event.pressed:
+		if _hold_active and mouse_event.button_index == _hold_mouse_button:
 			_stop_hold()
+		return
+	if not _is_adjustment_mouse_press(mouse_event):
+		return
+	var step: int = _get_adjustment_step(mouse_event)
+	_adjust_sell_amount(resource_type, delta * step)
+	_start_hold(resource_type, delta, false, step, mouse_event.button_index)
+
+func _is_adjustment_mouse_press(event: InputEventMouseButton) -> bool:
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		return true
+	return OS.get_name() == "macOS" and event.button_index == MOUSE_BUTTON_RIGHT and event.ctrl_pressed
+
+func _get_adjustment_step(event: InputEventMouseButton) -> int:
+	if event.ctrl_pressed:
+		return CONTROL_STEP
+	if event.shift_pressed:
+		return HOLD_STEP
+	return 1
 
 func _adjust_buy_amount(resource_type: ResourcesEnum.Type, delta: int) -> void:
 	if delta == 0:
@@ -262,10 +287,12 @@ func _adjust_sell_amount(resource_type: ResourcesEnum.Type, delta: int) -> void:
 		sell_amounts[resource_type] = new_sell
 	_update_after_change(resource_type)
 
-func _start_hold(resource_type: ResourcesEnum.Type, delta: int, is_buy: bool) -> void:
+func _start_hold(resource_type: ResourcesEnum.Type, delta: int, is_buy: bool, adjustment_step: int, mouse_button: MouseButton) -> void:
 	_hold_active = true
 	_hold_resource_type = resource_type
 	_hold_delta = delta
+	_hold_step = maxi(HOLD_STEP, adjustment_step)
+	_hold_mouse_button = mouse_button
 	_hold_is_buy = is_buy
 	_hold_elapsed = 0.0
 	_hold_interval_elapsed = 0.0
@@ -280,7 +307,7 @@ func _stop_hold() -> void:
 func _process_hold(delta: float) -> void:
 	if not _hold_active:
 		return
-	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+	if not Input.is_mouse_button_pressed(_hold_mouse_button):
 		_stop_hold()
 		return
 	_hold_elapsed += delta
@@ -298,9 +325,9 @@ func _process_hold(delta: float) -> void:
 
 func _apply_hold_step() -> void:
 	if _hold_is_buy:
-		_adjust_buy_amount(_hold_resource_type, _hold_delta * HOLD_STEP)
+		_adjust_buy_amount(_hold_resource_type, _hold_delta * _hold_step)
 	else:
-		_adjust_sell_amount(_hold_resource_type, _hold_delta * HOLD_STEP)
+		_adjust_sell_amount(_hold_resource_type, _hold_delta * _hold_step)
 
 func _update_after_change(resource_type: ResourcesEnum.Type) -> void:
 	_update_price_display(resource_type)

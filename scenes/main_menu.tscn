@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://bk0iw4gbrbc0h"]
+[gd_scene load_steps=45 format=3 uid="uid://bk0iw4gbrbc0h"]
 
 [ext_resource type="Script" path="res://main_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dy2uiukoyowln" path="res://images/main_menu.png" id="2_background"]
@@ -31,6 +31,7 @@
 [ext_resource type="PackedScene" uid="uid://cfi8osodkmdhq" path="res://scenes/upgrade_card.tscn" id="49_upgrade_card"]
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="50_level_tooltip"]
 [ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="51_green_btn_styles"]
+[ext_resource type="Texture2D" uid="uid://dlo764bowoxd8" path="res://images/MessageModal.png" id="52_delete_message"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scenario"]
 draw_center = false
@@ -1274,10 +1275,9 @@ custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Click map to enlarge"
+text = "Click map to enlarge it"
 
 [node name="Panel3" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 1360.0
 offset_top = 200.0
@@ -1285,12 +1285,21 @@ offset_right = 1895.0
 offset_bottom = 800.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6xvye")
 
-[node name="ArmyTexture" type="TextureRect" parent="CustomMap/Panel3"]
+[node name="ScenarioArmyTexture" type="TextureRect" parent="CustomMap/Panel3"]
 layout_mode = 0
 offset_left = 30.0
-offset_top = 239.0
+offset_top = 209.0
 offset_right = 510.0
 offset_bottom = 619.0
+texture = ExtResource("14_f8n4j")
+expand_mode = 2
+
+[node name="SkirmishArmyTexture" type="TextureRect" parent="CustomMap/Panel3"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 281.0
+offset_right = 510.0
+offset_bottom = 626.0
 texture = ExtResource("14_f8n4j")
 expand_mode = 2
 
@@ -1358,7 +1367,6 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 18
-disabled = true
 text = "Saved"
 
 [node name="MapSize" type="Label" parent="CustomMap/Panel3/VBoxContainer"]
@@ -1439,7 +1447,6 @@ custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="RandomParameters" type="VBoxContainer" parent="CustomMap/Panel3/VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 4
 
@@ -1448,7 +1455,7 @@ layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="Label" type="Label" parent="CustomMap/Panel3/VBoxContainer/RandomParameters/MapSeedRow"]
-custom_minimum_size = Vector2(105, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 theme_override_font_sizes/font_size = 17
@@ -1469,14 +1476,14 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 15
-text = "Random"
+text = "Random2"
 
 [node name="BiomeSeedRow" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer/RandomParameters"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
 [node name="Label" type="Label" parent="CustomMap/Panel3/VBoxContainer/RandomParameters/BiomeSeedRow"]
-custom_minimum_size = Vector2(105, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme = ExtResource("15_std_modal")
 theme_override_font_sizes/font_size = 17
@@ -1497,7 +1504,7 @@ layout_mode = 2
 theme = ExtResource("16_btn_styles")
 theme_override_fonts/font = ExtResource("13_cinzel_font")
 theme_override_font_sizes/font_size = 15
-text = "Random"
+text = "Random2"
 
 [node name="ForestsHeader" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer/RandomParameters"]
 layout_mode = 2
@@ -1619,6 +1626,22 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
+[node name="EditMapMargin" type="MarginContainer" parent="CustomMap/Panel3/VBoxContainer/RandomParameters"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="EditMapRow" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer/RandomParameters"]
+layout_mode = 2
+alignment = 1
+
+[node name="EditMap" type="Button" parent="CustomMap/Panel3/VBoxContainer/RandomParameters/EditMapRow"]
+custom_minimum_size = Vector2(195, 42)
+layout_mode = 2
+theme = ExtResource("51_green_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 22
+text = "Edit Map"
+
 [node name="Headers" type="HBoxContainer" parent="CustomMap/Panel3/VBoxContainer"]
 layout_mode = 2
 
@@ -1647,7 +1670,7 @@ custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CustomMap/Panel3/VBoxContainer"]
-custom_minimum_size = Vector2(0, 380)
+custom_minimum_size = Vector2(0, 350)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
@@ -1681,6 +1704,16 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme = ExtResource("15_std_modal")
 text = "Map 1"
+
+[node name="Delete" type="Button" parent="CustomMap/Panel3/VBoxContainer/ScrollContainer/MapList/Row"]
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+theme_override_font_sizes/font_size = 18
+text = "X"
 
 [node name="Scenario" type="Panel" parent="CustomMap"]
 visible = false
@@ -1838,7 +1871,6 @@ theme_override_font_sizes/font_size = 24
 text = " Select Map "
 
 [node name="Panel4" type="Panel" parent="CustomMap"]
-visible = false
 layout_mode = 0
 offset_left = 1360.0
 offset_top = 200.0
@@ -2773,6 +2805,84 @@ theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="SavedMapDeleteConfirm" type="Control" parent="."]
+visible = false
+z_index = 130
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dialog" type="Control" parent="SavedMapDeleteConfirm"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -125.0
+offset_right = 250.0
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="SavedMapDeleteConfirm/Dialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("52_delete_message")
+expand_mode = 1
+
+[node name="Content" type="VBoxContainer" parent="SavedMapDeleteConfirm/Dialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="SavedMapDeleteConfirm/Dialog/Content"]
+custom_minimum_size = Vector2(100, 175)
+layout_mode = 2
+theme = ExtResource("15_std_modal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Delete saved map?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="SavedMapDeleteConfirm/Dialog/Content"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="Confirm" type="Button" parent="SavedMapDeleteConfirm/Dialog/Content/Buttons"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+text = "Confirm"
+
+[node name="Cancel" type="Button" parent="SavedMapDeleteConfirm/Dialog/Content/Buttons"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("16_btn_styles")
+theme_override_fonts/font = ExtResource("13_cinzel_font")
+text = "Cancel"
 
 [node name="Feedback" type="Control" parent="."]
 visible = false

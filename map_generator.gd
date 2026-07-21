@@ -222,6 +222,7 @@ func get_canonical_size_token() -> String:
 
 func _tag_mountain_neighbor_info() -> void:
 	for region in regions:
+		region.erase("internal_mountain")
 		var biome := String(region.get("biome", "")).to_lower()
 		if biome != "mountains":
 			continue
@@ -1200,10 +1201,7 @@ func refresh_region_visual(region_id: int) -> void:
 			child.queue_free()
 	# Apply ocean or land visuals
 	if region.is_ocean_region():
-		# Ocean-like look
-		polygon.texture = load("res://images/sea_transparent_large.png")
-		polygon.texture_scale = Vector2(1.0 / polygon_scale, 1.0 / polygon_scale)
-		polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
+		polygon.visible = false
 	else:
 		# Restore land grass texture
 		polygon.texture = load("res://images/background4grass7.png")
@@ -1220,4 +1218,33 @@ func refresh_region_visual(region_id: int) -> void:
 		RegionIconManager.place_region_icon(polygon, rdata, polygon_scale, get_map_visual_scale())
 	# Regenerate borders for region and neighbors
 	regenerate_borders_for_region(region_id)
+	_sort_mountain_icon_z_indices()
+
+func set_editor_region_terrain(region_id: int, biome_name: String, ocean: bool) -> void:
+	var region: Region = get_region_container_by_id(region_id) as Region
+	var normalized_biome: String = "ocean" if ocean else biome_name.to_lower()
+	if ocean:
+		region.set_ocean(true)
+	else:
+		region.set_region_type(RegionTypeEnum.string_to_type(normalized_biome))
+	var region_data: Dictionary = region_by_id[region_id]
+	region_data["biome"] = normalized_biome
+	region_data["ocean"] = ocean
+	region_data["water"] = ocean
+	region_data["coast"] = false
+	region_by_id[region_id] = region_data
+	for index: int in range(regions.size()):
+		var entry: Dictionary = regions[index]
+		if int(entry.get("id", -1)) == region_id:
+			regions[index] = region_data
+			break
+	refresh_region_visual(region_id)
+
+func rebuild_after_editor_terrain_changes() -> void:
+	_tag_mountain_neighbor_info()
+	border_manager.setup(self)
+	_rebuild_region_polygons_from_borders()
+	_ensure_neutral_overlays_for_all_regions()
+	_build_non_ocean_graph_data()
+	_compute_nearby_regions_for_all_land(2)
 	_sort_mountain_icon_z_indices()

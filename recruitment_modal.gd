@@ -42,6 +42,7 @@ const ABILITIES_TOOLTIP_MAX_X: float = 1520.0
 const HOLD_DELAY_SECONDS: float = 0.5
 const HOLD_INTERVAL_SECONDS: float = 0.7
 const HOLD_STEP: int = 10
+const CONTROL_STEP: int = 100
 const TUTORIAL_TARGET_TEN_ARCHERS: String = "RecruitmentModal/10archers"
 const TUTORIAL_TARGET_ONE_ARCHER: String = "RecruitmentModal/1archers"
 const TUTORIAL_TARGET_RECRUIT_ALL: String = "RecruitmentModal/recruit_all"
@@ -102,6 +103,8 @@ var _trait_descriptions: Dictionary = {}
 var _hold_active: bool = false
 var _hold_unit_type: SoldierTypeEnum.Type = SoldierTypeEnum.Type.PEASANTS
 var _hold_delta: int = 0
+var _hold_step: int = HOLD_STEP
+var _hold_mouse_button: MouseButton = MOUSE_BUTTON_LEFT
 var _hold_elapsed: float = 0.0
 var _hold_interval_elapsed: float = 0.0
 var _hold_after_delay_started: bool = false
@@ -260,13 +263,30 @@ func _update_abilities_tooltip_position(mouse_pos: Vector2) -> void:
 	abilities_tooltip.global_position = pos
 
 func _on_adjust_button_input(event: InputEvent, unit_type: SoldierTypeEnum.Type, delta: int) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			var step: int = HOLD_STEP if event.shift_pressed else 1
-			_adjust_recruitment(unit_type, delta * step)
-			_start_hold(unit_type, delta)
-		else:
+	if not event is InputEventMouseButton:
+		return
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	if not mouse_event.pressed:
+		if _hold_active and mouse_event.button_index == _hold_mouse_button:
 			_stop_hold()
+		return
+	if not _is_adjustment_mouse_press(mouse_event):
+		return
+	var step: int = _get_adjustment_step(mouse_event)
+	_adjust_recruitment(unit_type, delta * step)
+	_start_hold(unit_type, delta, step, mouse_event.button_index)
+
+func _is_adjustment_mouse_press(event: InputEventMouseButton) -> bool:
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		return true
+	return OS.get_name() == "macOS" and event.button_index == MOUSE_BUTTON_RIGHT and event.ctrl_pressed
+
+func _get_adjustment_step(event: InputEventMouseButton) -> int:
+	if event.ctrl_pressed:
+		return CONTROL_STEP
+	if event.shift_pressed:
+		return HOLD_STEP
+	return 1
 
 func _on_adjust_button_hover(button: TextureRect, is_plus: bool) -> void:
 	if button.mouse_filter == Control.MOUSE_FILTER_IGNORE:
@@ -299,10 +319,12 @@ func _load_texture_from_png(path: String) -> Texture2D:
 	var image: Image = Image.load_from_file(path)
 	return ImageTexture.create_from_image(image)
 
-func _start_hold(unit_type: SoldierTypeEnum.Type, delta: int) -> void:
+func _start_hold(unit_type: SoldierTypeEnum.Type, delta: int, adjustment_step: int, mouse_button: MouseButton) -> void:
 	_hold_active = true
 	_hold_unit_type = unit_type
 	_hold_delta = delta
+	_hold_step = maxi(HOLD_STEP, adjustment_step)
+	_hold_mouse_button = mouse_button
 	_hold_elapsed = 0.0
 	_hold_interval_elapsed = 0.0
 	_hold_after_delay_started = false
@@ -316,7 +338,7 @@ func _stop_hold() -> void:
 func _process_hold(delta: float) -> void:
 	if not _hold_active:
 		return
-	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+	if not Input.is_mouse_button_pressed(_hold_mouse_button):
 		_stop_hold()
 		return
 	_hold_elapsed += delta
@@ -325,12 +347,12 @@ func _process_hold(delta: float) -> void:
 	if not _hold_after_delay_started:
 		_hold_after_delay_started = true
 		_hold_interval_elapsed = 0.0
-		_adjust_recruitment(_hold_unit_type, _hold_delta * HOLD_STEP)
+		_adjust_recruitment(_hold_unit_type, _hold_delta * _hold_step)
 		return
 	_hold_interval_elapsed += delta
 	while _hold_interval_elapsed >= HOLD_INTERVAL_SECONDS:
 		_hold_interval_elapsed -= HOLD_INTERVAL_SECONDS
-		_adjust_recruitment(_hold_unit_type, _hold_delta * HOLD_STEP)
+		_adjust_recruitment(_hold_unit_type, _hold_delta * _hold_step)
 
 func show_recruitment(army: Army, region: Region, reopen_move_modal: bool = false) -> void:
 	"""Show the recruitment modal with army and region information"""

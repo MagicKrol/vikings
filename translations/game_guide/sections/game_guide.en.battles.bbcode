@@ -3,9 +3,26 @@
 
 [b][font_size=24]How battle resolution works turn by turn[/font_size][/b]
 
-Battles begin with 2 opening ranged volleys. These volleys let archers and crossbowmen inflict casualties before the main fight develops. After that, combat proceeds through normal rounds until one side is destroyed or withdrawal resolves.
+Battles begin with 1 opening ranged volley from every ranged unit on both sides. Both sides calculate their volley hits from the same starting state, then apply casualties. After that, combat proceeds through normal rounds until one side is destroyed or withdrawal resolves.
 
-Attacks are chance-based. Unit attack values determine how often soldiers generate hits, and unit defense values reduce how many of those hits become kills. Vigor changes how effectively an army fights; a tired or terrain-penalized attacker may look strong on paper but perform worse in the actual battle.
+Each soldier makes an attack roll using its unit attack chance. Vigor multiplies that chance: an Archer with 20% attack and 80% vigor attacks at 16%, while a Peasant with 5% attack and 80% vigor attacks at 4%. Terrain and traits can modify it further.
+
+Each successful roll creates a hit. For each attacking unit type, hits are randomly distributed among valid enemy targets, weighted by how many soldiers of each target type are present. A unit's defense is its chance to avoid an assigned hit. A hit that passes every defense layer kills one soldier.
+
+Normal rounds are simultaneous. Both sides calculate attacks and casualties from the armies present at the start of the round, then both sets of kills are applied. Soldiers killed during a round therefore still attack in that round.
+
+
+[b][font_size=24]Example battle calculation[/font_size][/b]
+
+Imagine 10 Peasants and 5 Archers attacking 10 Spearmen and 5 Peasants in open terrain. The attackers have 80% vigor and the defenders have 100%.
+
+During the opening volley, only the 5 Archers attack. They make 5 rolls at 16% each: their normal 20% attack multiplied by 80% vigor. Suppose they score 1 hit.
+
+The defenders contain 10 Spearmen and 5 Peasants. A Spearman is therefore selected as the target with about 66.7% probability and a Peasant with about 33.3%. Suppose the hit targets a Spearman. Its 25% defense gives it a 25% chance to avoid the hit; otherwise, it is killed.
+
+In the first normal round, suppose the 10 attacking Peasants roll at 4% and score 2 hits, while the 5 Archers roll at 16% and score 1 hit. If 1 hit is assigned to a Peasant and 2 to Spearmen, the Peasant has an 8% defense chance and each Spearman has a 25% defense chance.
+
+The defenders attack at the same time. At 100% vigor, Peasants roll at their normal 5%. Spearmen have the Defender trait, so their normal 8% attack chance is doubled to 16%. All casualties are applied after both armies finish their calculations.
 
 Battle results are harsh. If attackers win, defending armies, garrison, and recruits are wiped out. If defenders win, attacking armies are wiped out. If withdrawal happens, both sides keep survivors but suffer withdrawal casualties. This makes choosing the battlefield and entering with enough strength more important than simply testing an enemy position.
 
@@ -21,7 +38,11 @@ The practical lesson is simple: do not judge a battle only by troop count. Terra
 
 [b][font_size=24]Castle defense and siege pressure[/font_size][/b]
 
-Castle battles add another defensive layer. Incoming attacks must overcome castle defensive avoidance before unit defense is even considered. This is why the same garrison can be much harder to kill behind walls than in open ground.
+Castle battles add two restrictions: assault access and castle defense. Assault access scales the attacker's non-ranged hits according to access from ladders, destroyed walls, and broken gates. Ranged attacks are not reduced by assault access.
+
+Castle defense then gives the first chance to avoid a hit. Any surviving hit faces the target unit's own defense. This makes the same garrison much harder to kill behind walls.
+
+Reducing castle defense from 50% to 40% raises the chance for a hit to pass the castle layer from 50% to 60%, a 20% relative increase. Reducing it from 85% to 75% raises that chance from 15% to 25%, about a 66.7% relative increase. Trebuchet damage is therefore especially valuable against high-defense castles.
 
 Structural damage changes that equation. Trebuchets can damage and breach wall sections, lowering effective castle defense and increasing assault access. Gates can be pressured by rams over battle turns; as gates take damage or fall, the assault becomes easier to sustain. Ladders improve wall access for troops trying to attack over the defenses.
 
@@ -32,13 +53,13 @@ Castle tiers matter because higher tiers bring more walls, stronger gates, highe
 
 Siege points come from units with the Siege Laborer trait. Total siege-laborer units are divided by 10, rounded down, to determine how many siege points are available.
 
-[b]Ladders[/b] cost 1 siege point and no wood. They improve assault access over walls and are useful when you need more soldiers to reach defenders despite intact castle defenses.
+[b]Ladders[/b] cost 1 siege point and no wood. Each ladder provides 5 points of non-ranged assault access, with a cap of 4 ladders per wall section. Access equals those points divided by the number of non-ranged attackers. For example, 2 ladders give 10 access points, so 20 non-ranged soldiers attack at 50% access before wall or gate bonuses. Ladders do not reduce castle defense.
 
-[b]Rams[/b] cost 2 siege points and 2 Wood. They are a gamble: if they survive, they can open a gate and let a large force enter the castle more effectively; if defenders have enough archers, the rams may be destroyed before they do their work. One ram can attack one gate at a time, so extra rams wait in reserve until an active ram is destroyed or a gate falls.
+[b]Rams[/b] cost 2 siege points and 2 Wood. One ram can attack each intact gate at a time; extras wait in reserve. A ram and its gate wear down across several rounds. A fallen gate immediately adds assault access and continues adding more access in later rounds.
 
-Defending archers can shoot at active rams. When several gates are attacked at once, defenders must split their ranged focus across those threats, which can reduce the chance that any one ram is destroyed quickly. This makes multi-gate pressure expensive, but dangerous for the defender if the attacker has enough wood, siege points, and bodies to sustain it.
+Defending ranged units are divided across the gates. A ram facing fewer than 10 ranged defenders has better than a 50% full-breach chance, reaching certainty with none. The chance falls nonlinearly: 50% at 10, 35% at 25, 20% at 50, and 15% at 60 or more. A failed ram can still make partial progress. Attacking several gates forces defenders to split their ranged strength, but requires several rams.
 
-[b]Trebuchets[/b] cost 4 siege points and 5 Wood. Each trebuchet fires 4 bombardment shots with a 50% hit chance per shot. Successful hits damage wall sections, can breach walls, reduce effective castle defense, and increase assault access before the main attack begins.
+[b]Trebuchets[/b] cost 4 siege points and 5 Wood. Each fires 4 bombardment shots with a 50% hit chance before battle. A damaged wall section removes roughly half of that tier's per-section defense value. A destroyed section removes the full value and adds 20 points of non-ranged assault access. Castle defense cannot fall below the tier's minimum.
 
 A good siege plan matches equipment to the obstacle. Use trebuchets when walls and defense are the biggest obstacle. Use rams when you are willing to risk equipment for a chance to open gates and pour more soldiers into the castle. Use ladders when your army needs more direct assault access over the walls. Against serious castles, mixed preparation is often stronger than relying on one tool.
 
@@ -48,5 +69,4 @@ A good siege plan matches equipment to the obstacle. Use trebuchets when walls a
 Not every casualty becomes a permanent death. Battle losses can become wounded instead, with a base wounded chance of 30% modified by defense context. Wounded soldiers do not fight and do not consume food while wounded.
 
 Armies heal wounded through camp actions, with a 50% heal chance for each wounded unit. Regional wounded pools mean wounded garrison soldiers and wounded recruit defenders in owned regions; these recover at the start of owned turns. Over several turns, this recovery pacing can decide whether you can continue an offensive or must pause to rebuild.
-
 
