@@ -1,0 +1,358 @@
+[gd_scene load_steps=13 format=3 uid="uid://cepsn1104vyjy"]
+
+[ext_resource type="Script" path="res://user_map_editor.gd" id="1_editor"]
+[ext_resource type="Script" path="res://map_generator.gd" id="2_map"]
+[ext_resource type="Script" path="res://border_manager.gd" id="3_border"]
+[ext_resource type="Script" path="res://camera_controller.gd" id="4_camera"]
+[ext_resource type="Texture2D" uid="uid://lwf3rchip112" path="res://images/infobox_tab_region.png" id="5_map_texture"]
+[ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="6_scenario_texture"]
+[ext_resource type="Theme" uid="uid://v8ap6mta61ue" path="res://themes/standard_text_modal_theme.tres" id="7_text_theme"]
+[ext_resource type="Theme" uid="uid://bikuv0kjk836y" path="res://themes/header_modal_theme.tres" id="8_header_theme"]
+[ext_resource type="Theme" uid="uid://opp2bi6sjwb5" path="res://themes/button_styles.tres" id="9_button_theme"]
+[ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="10_green_theme"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_mode"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_terrain"]
+
+[node name="UserMapEditor" type="Node2D"]
+script = ExtResource("1_editor")
+
+[node name="Map" type="Node2D" parent="."]
+script = ExtResource("2_map")
+auto_generate_on_ready = false
+
+[node name="Regions" type="Node2D" parent="Map"]
+
+[node name="Ocean" type="Node2D" parent="Map"]
+
+[node name="Frame" type="Node2D" parent="Map"]
+
+[node name="BorderManager" type="Node" parent="Map"]
+script = ExtResource("3_border")
+
+[node name="EditorOceanBorders" type="Node2D" parent="Map"]
+
+[node name="EditorHighlights" type="Node2D" parent="Map"]
+z_index = 500
+
+[node name="HoverHighlight" type="Polygon2D" parent="Map/EditorHighlights"]
+visible = false
+color = Color(1, 0.8, 0.2, 0.2)
+
+[node name="SelectionHighlight" type="Polygon2D" parent="Map/EditorHighlights"]
+visible = false
+color = Color(1, 0.72, 0.1, 0.32)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(1000, 1000)
+limit_left = 0
+limit_top = 0
+limit_right = 2000
+limit_bottom = 2000
+script = ExtResource("4_camera")
+use_modal_input_blocking = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="EditorPanel" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 520.0
+offset_bottom = 1080.0
+theme = ExtResource("7_text_theme")
+
+[node name="MapTexture" type="TextureRect" parent="UI/EditorPanel"]
+layout_mode = 0
+offset_right = 520.0
+offset_bottom = 1080.0
+mouse_filter = 2
+texture = ExtResource("5_map_texture")
+expand_mode = 1
+
+[node name="ScenarioTexture" type="TextureRect" parent="UI/EditorPanel"]
+visible = false
+layout_mode = 0
+offset_right = 520.0
+offset_bottom = 1030.0
+mouse_filter = 2
+texture = ExtResource("6_scenario_texture")
+expand_mode = 1
+
+[node name="Header" type="VBoxContainer" parent="UI/EditorPanel"]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 10.0
+offset_right = 515.0
+offset_bottom = 130.0
+
+[node name="TitleMargin2" type="MarginContainer" parent="UI/EditorPanel/Header"]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="UI/EditorPanel/Header"]
+layout_mode = 2
+theme = ExtResource("8_header_theme")
+text = "Map Editor"
+horizontal_alignment = 1
+
+[node name="TitleMargin" type="MarginContainer" parent="UI/EditorPanel/Header"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Tabs" type="HBoxContainer" parent="UI/EditorPanel/Header"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MapTab" type="Label" parent="UI/EditorPanel/Header/Tabs"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("8_header_theme")
+text = "Map"
+horizontal_alignment = 1
+
+[node name="TabMargin" type="MarginContainer" parent="UI/EditorPanel/Header/Tabs"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ScenarioTab" type="Label" parent="UI/EditorPanel/Header/Tabs"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("8_header_theme")
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+horizontal_alignment = 1
+
+[node name="MapContent" type="Control" parent="UI/EditorPanel"]
+anchors_preset = 0
+offset_top = 133.0
+offset_right = 520.0
+offset_bottom = 1069.0
+
+[node name="Content" type="VBoxContainer" parent="UI/EditorPanel/MapContent"]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 24.0
+offset_right = 495.0
+offset_bottom = 550.0
+theme_override_constants/separation = 12
+
+[node name="ModeLabel" type="Label" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme = ExtResource("8_header_theme")
+theme_override_font_sizes/font_size = 24
+text = "Mode"
+
+[node name="ModeButtons" type="HBoxContainer" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Paint" type="Button" parent="UI/EditorPanel/MapContent/Content/ModeButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_mode")
+text = "Paint"
+
+[node name="Select" type="Button" parent="UI/EditorPanel/MapContent/Content/ModeButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_mode")
+text = "Select"
+
+[node name="RegionMargin" type="MarginContainer" parent="UI/EditorPanel/MapContent/Content"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="RegionLabel" type="Label" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme = ExtResource("8_header_theme")
+theme_override_font_sizes/font_size = 24
+text = "Region type"
+
+[node name="RegionButtons" type="GridContainer" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="Ocean" type="Button" parent="UI/EditorPanel/MapContent/Content/RegionButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_terrain")
+text = "Ocean"
+
+[node name="Grassland" type="Button" parent="UI/EditorPanel/MapContent/Content/RegionButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_terrain")
+text = "Grassland"
+
+[node name="Forest" type="Button" parent="UI/EditorPanel/MapContent/Content/RegionButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_terrain")
+text = "Forest"
+
+[node name="Hill" type="Button" parent="UI/EditorPanel/MapContent/Content/RegionButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_terrain")
+text = "Hill"
+
+[node name="ForestHill" type="Button" parent="UI/EditorPanel/MapContent/Content/RegionButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_terrain")
+text = "Forest Hill"
+
+[node name="Mountain" type="Button" parent="UI/EditorPanel/MapContent/Content/RegionButtons"]
+custom_minimum_size = Vector2(205, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_terrain")
+text = "Mountain"
+
+[node name="SaveMapMargin" type="MarginContainer" parent="UI/EditorPanel/MapContent/Content"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="SaveMapLabel" type="Label" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme = ExtResource("8_header_theme")
+theme_override_font_sizes/font_size = 24
+text = "Save map"
+
+[node name="SaveMapRow" type="HBoxContainer" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MapName" type="LineEdit" parent="UI/EditorPanel/MapContent/Content/SaveMapRow"]
+custom_minimum_size = Vector2(299, 52)
+layout_mode = 2
+theme = ExtResource("7_text_theme")
+theme_override_font_sizes/font_size = 20
+placeholder_text = "Map name"
+max_length = 20
+
+[node name="SaveMap" type="Button" parent="UI/EditorPanel/MapContent/Content/SaveMapRow"]
+custom_minimum_size = Vector2(120, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("10_green_theme")
+disabled = true
+text = "Save"
+
+[node name="SaveStatus" type="Label" parent="UI/EditorPanel/MapContent/Content"]
+visible = false
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+theme = ExtResource("7_text_theme")
+theme_override_colors/font_color = Color(0.45, 1, 0.45, 1)
+theme_override_font_sizes/font_size = 18
+text = "Map saved"
+horizontal_alignment = 1
+
+[node name="LoadMapMargin" type="MarginContainer" parent="UI/EditorPanel/MapContent/Content"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="LoadMapLabel" type="Label" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme = ExtResource("8_header_theme")
+theme_override_font_sizes/font_size = 24
+text = "Load map"
+
+[node name="LoadMapRow" type="HBoxContainer" parent="UI/EditorPanel/MapContent/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SavedMaps" type="OptionButton" parent="UI/EditorPanel/MapContent/Content/LoadMapRow"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(269, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("9_button_theme")
+theme_override_font_sizes/font_size = 20
+
+[node name="LoadMap" type="Button" parent="UI/EditorPanel/MapContent/Content/LoadMapRow"]
+custom_minimum_size = Vector2(150, 52)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("10_green_theme")
+theme_override_font_sizes/font_size = 20
+disabled = true
+text = "Load Map"
+
+[node name="ValidationError" type="Label" parent="UI/EditorPanel"]
+visible = false
+layout_mode = 0
+offset_left = 30.0
+offset_top = 919.0
+offset_right = 490.0
+offset_bottom = 1000.0
+theme_override_colors/font_color = Color(1, 0.45, 0.35, 1)
+theme_override_font_sizes/font_size = 18
+text = "Invalid Map: Some of the regions are inaccessible - surrounded by ocean, or mountains."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Back" type="Button" parent="UI/EditorPanel"]
+custom_minimum_size = Vector2(195, 52)
+layout_mode = 0
+offset_left = 42.0
+offset_top = 1007.0
+offset_right = 237.0
+offset_bottom = 1059.0
+mouse_default_cursor_shape = 2
+theme = ExtResource("10_green_theme")
+text = "Cancel"
+
+[node name="Done" type="Button" parent="UI/EditorPanel"]
+custom_minimum_size = Vector2(195, 52)
+layout_mode = 0
+offset_left = 283.0
+offset_top = 1007.0
+offset_right = 478.0
+offset_bottom = 1059.0
+mouse_default_cursor_shape = 2
+theme = ExtResource("10_green_theme")
+text = "Done"
+
+[node name="ScenarioContent" type="Control" parent="UI/EditorPanel"]
+visible = false
+anchors_preset = 0
+offset_top = 133.0
+offset_right = 520.0
+offset_bottom = 1030.0

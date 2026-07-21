@@ -62,7 +62,8 @@ NAMES = {
 # GameParameters.gd constants (combat-relevant)
 # =========================================
 CHARGE_BONUS_GRASSLAND = 1.0             # adds to multiplier (=> 2.0x total)
-ARMOR_PIERCING_DEFENSE_REDUCTION = 0.5   # subtract from defense chance
+ARMOR_PIERCING_FLAT_DEFENSE_REDUCTION = 0.10
+ARMOR_PIERCING_DEFENSE_MULTIPLIER = 0.5
 LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0
 MAX_ROUNDS = 1000
 
@@ -283,7 +284,8 @@ def defense_resolution_with_attacker_traits(assigned_hits: Dict[int, int],
         effective_defense_chance = base_defense_chance
 
         if has_armor_piercing:
-            effective_defense_chance = max(0.0, base_defense_chance - ARMOR_PIERCING_DEFENSE_REDUCTION)
+            effective_defense_chance = max(0.0, base_defense_chance - ARMOR_PIERCING_FLAT_DEFENSE_REDUCTION)
+            effective_defense_chance *= ARMOR_PIERCING_DEFENSE_MULTIPLIER
 
         penetration_chance = max(0.0, 1.0 - effective_defense_chance)
         penetrating_hits = binomial_sample(rng, hits_after_castle_defense, penetration_chance)

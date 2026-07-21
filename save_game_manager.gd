@@ -115,6 +115,8 @@ static func save_settings(sound_manager: SoundManager) -> bool:
 	config.set_value("gameplay", "recruit_keycode", GameParameters.get_keyboard_keycode(GameParameters.KeyboardAction.RECRUIT))
 	config.set_value("gameplay", "camp_rest_keycode", GameParameters.get_keyboard_keycode(GameParameters.KeyboardAction.CAMP_REST))
 	config.set_value("gameplay", "transfer_keycode", GameParameters.get_keyboard_keycode(GameParameters.KeyboardAction.TRANSFER))
+	config.set_value("gameplay", "trade_keycode", GameParameters.get_keyboard_keycode(GameParameters.KeyboardAction.TRADE))
+	config.set_value("gameplay", "map_overview_keycode", GameParameters.get_keyboard_keycode(GameParameters.KeyboardAction.MAP_OVERVIEW))
 	config.set_value("gameplay", "battle_logs_visible", GameParameters.get_battle_logs_visible())
 	config.set_value("language", "locale", TranslationServer.get_locale())
 	var error: int = config.save(SETTINGS_FILE_PATH)
@@ -145,6 +147,8 @@ static func load_settings(sound_manager: SoundManager) -> void:
 	var recruit_keycode: int = int(config.get_value("gameplay", "recruit_keycode", GameParameters.get_default_keyboard_keycode(GameParameters.KeyboardAction.RECRUIT)))
 	var camp_rest_keycode: int = int(config.get_value("gameplay", "camp_rest_keycode", GameParameters.get_default_keyboard_keycode(GameParameters.KeyboardAction.CAMP_REST)))
 	var transfer_keycode: int = int(config.get_value("gameplay", "transfer_keycode", GameParameters.get_default_keyboard_keycode(GameParameters.KeyboardAction.TRANSFER)))
+	var trade_keycode: int = int(config.get_value("gameplay", "trade_keycode", GameParameters.get_default_keyboard_keycode(GameParameters.KeyboardAction.TRADE)))
+	var map_overview_keycode: int = int(config.get_value("gameplay", "map_overview_keycode", GameParameters.get_default_keyboard_keycode(GameParameters.KeyboardAction.MAP_OVERVIEW)))
 	var battle_logs_visible: bool = bool(config.get_value("gameplay", "battle_logs_visible", GameParameters.get_battle_logs_visible()))
 	var locale: String = String(config.get_value("language", "locale", TranslationServer.get_locale()))
 	TranslationServer.set_locale(locale)
@@ -157,6 +161,8 @@ static func load_settings(sound_manager: SoundManager) -> void:
 	GameParameters.set_keyboard_keycode(GameParameters.KeyboardAction.RECRUIT, recruit_keycode)
 	GameParameters.set_keyboard_keycode(GameParameters.KeyboardAction.CAMP_REST, camp_rest_keycode)
 	GameParameters.set_keyboard_keycode(GameParameters.KeyboardAction.TRANSFER, transfer_keycode)
+	GameParameters.set_keyboard_keycode(GameParameters.KeyboardAction.TRADE, trade_keycode)
+	GameParameters.set_keyboard_keycode(GameParameters.KeyboardAction.MAP_OVERVIEW, map_overview_keycode)
 	GameParameters.set_battle_logs_visible(battle_logs_visible)
 	if sound_manager.is_node_ready():
 		_apply_sound_settings(sound_manager, sound_enabled, music_enabled, sound_db, music_db)
@@ -264,6 +270,9 @@ static func _build_save_data(game_manager: GameManager) -> Dictionary:
 		"disable_neutral_cluster_bonus": game_manager.scenario_disable_neutral_cluster_bonus,
 		"victory_conditions": game_manager.get_victory_conditions_for_save()
 	}
+	var generated_map_data: Dictionary = game_manager.get_generated_map_source_data_for_save()
+	if not generated_map_data.is_empty():
+		source["map_data"] = generated_map_data
 	var game_state: Dictionary = {
 		"current_turn": game_manager.current_turn,
 		"current_player": game_manager.current_player,
@@ -370,6 +379,7 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	region.ore_search_used_this_turn = bool(payload.get("ore_search_used_this_turn", false))
 	region.raise_army_used_this_turn = bool(payload.get("raise_army_used_this_turn", false))
 	region.promotion_used_this_turn = bool(payload.get("promotion_used_this_turn", false))
+	region.region_downgrade_turns_remaining = int(payload.get("region_downgrade_turns_remaining", 0))
 	region.promotion_growth_bonus_turns_remaining = int(payload.get("promotion_growth_bonus_turns_remaining", 0))
 	region.promotion_replenish_bonus_turns_remaining = int(payload.get("promotion_replenish_bonus_turns_remaining", 0))
 	region.promotion_cooldown_turns = int(payload.get("promotion_cooldown_turns", 0))
@@ -379,6 +389,9 @@ static func _apply_region_payload(region: Region, payload: Dictionary) -> void:
 	var castle_under_construction_text: String = String(payload.get("castle_under_construction", "None"))
 	region.castle_under_construction = CastleTypeEnum.string_to_type(castle_under_construction_text)
 	region.castle_build_turns_remaining = int(payload.get("castle_build_turns_remaining", 0))
+	region.castle_downgrade_turns_remaining = int(payload.get("castle_downgrade_turns_remaining", 0))
+	region.castle_downgrade_type = CastleTypeEnum.string_to_type(String(payload.get("castle_downgrade_type", "None")))
+	region.maintenance_defense_penalty = float(payload.get("maintenance_defense_penalty", 0.0))
 	region.castle_repair_turns_remaining = int(payload.get("castle_repair_turns_remaining", 0))
 	region.castle_repair_in_progress = bool(payload.get("castle_repair_in_progress", false))
 	region.gate_conditions = _to_int_array(payload.get("gate_conditions", []))
@@ -463,12 +476,16 @@ static func _serialize_region(region: Region, region_manager: RegionManager) -> 
 		"ore_search_used_this_turn": region.ore_search_used_this_turn,
 		"raise_army_used_this_turn": region.raise_army_used_this_turn,
 		"promotion_used_this_turn": region.promotion_used_this_turn,
+		"region_downgrade_turns_remaining": region.region_downgrade_turns_remaining,
 		"promotion_growth_bonus_turns_remaining": region.promotion_growth_bonus_turns_remaining,
 		"promotion_replenish_bonus_turns_remaining": region.promotion_replenish_bonus_turns_remaining,
 		"promotion_cooldown_turns": region.promotion_cooldown_turns,
 		"castle_type": CastleTypeEnum.type_to_string(region.get_castle_type()),
 		"castle_under_construction": CastleTypeEnum.type_to_string(region.castle_under_construction),
 		"castle_build_turns_remaining": region.castle_build_turns_remaining,
+		"castle_downgrade_turns_remaining": region.castle_downgrade_turns_remaining,
+		"castle_downgrade_type": CastleTypeEnum.type_to_string(region.castle_downgrade_type),
+		"maintenance_defense_penalty": region.maintenance_defense_penalty,
 		"castle_repair_turns_remaining": region.castle_repair_turns_remaining,
 		"castle_repair_in_progress": region.castle_repair_in_progress,
 		"gate_conditions": region.gate_conditions.duplicate(),

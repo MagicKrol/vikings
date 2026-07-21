@@ -82,7 +82,7 @@ const AI_FIELD_ATTACK_MIN_RATIO = 1.0		# Minimum ratio required to consider atta
 const AI_MOVE_SPEED_NORMAL = 1.0
 const AI_MOVE_SPEED_FAST = 2.0
 const AI_MOVE_SPEED_VERY_FAST = 6.0
-const DEMO_MODE_ENABLED: bool = true
+const DEMO_MODE_ENABLED: bool = false
 const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 	"mission-1.json",
 	"mission-2.json",
@@ -92,6 +92,13 @@ const DEMO_ALLOWED_SCENARIO_FILES: Array[String] = [
 const DEMO_ALLOWED_CUSTOM_MAP_FILES: Array[String] = [
 	"Demo Map.json"
 ]
+
+static func is_demo_mode_enabled() -> bool:
+	if OS.has_feature("full_game"):
+		return false
+	if OS.has_feature("demo_build"):
+		return true
+	return DEMO_MODE_ENABLED
 
 enum Difficulty {
 	EASY = 0,
@@ -147,7 +154,9 @@ enum KeyboardAction {
 	SWITCH_ARMY_REGION = 2,
 	RECRUIT = 3,
 	CAMP_REST = 4,
-	TRANSFER = 5
+	TRANSFER = 5,
+	TRADE = 6,
+	MAP_OVERVIEW = 7
 }
 
 ## Border Enhancement Constants
@@ -235,6 +244,8 @@ const CASTLE_UPKEEP_COSTS: Dictionary = {
 	}
 }
 
+const CASTLE_DEFENSE_PENALTY_PER_MISSING_RESOURCE: float = 3.0
+
 const REGION_UPKEEP_COSTS: Dictionary = {
 	RegionLevelEnum.Level.L1: {
 		ResourcesEnum.Type.FOOD: 0,
@@ -297,6 +308,8 @@ static var _switch_army_region_keycode: int = KEY_TAB
 static var _recruit_keycode: int = KEY_R
 static var _camp_rest_keycode: int = KEY_C
 static var _transfer_keycode: int = KEY_T
+static var _trade_keycode: int = KEY_B
+static var _map_overview_keycode: int = KEY_O
 
 # Strategic value weights
 const AI_REGION_LEVEL_WEIGHT = 8.0             # Region level very important (8 points per level)
@@ -443,7 +456,8 @@ const ARMY_DANGER_GARRISON_POWER = 50          # Power value assigned to garriso
 const CHARGE_BONUS_GRASSLAND = 1.0              # 100% attack bonus for charge units on grassland
 
 ## Armor Piercing Bonuses
-const ARMOR_PIERCING_DEFENSE_REDUCTION = 0.5    # Halves enemy defense (50% reduction)
+const ARMOR_PIERCING_FLAT_DEFENSE_REDUCTION = 0.10  # Subtract 10 percentage points first
+const ARMOR_PIERCING_DEFENSE_MULTIPLIER = 0.5       # Halve the remaining defense
 
 ## Long-Spears Bonuses
 const LONG_SPEARS_CAVALRY_MULTIPLIER = 2.0      # Doubles hits against cavalry units
@@ -1161,6 +1175,10 @@ static func get_default_keyboard_keycode(action: int) -> int:
 			return KEY_C
 		KeyboardAction.TRANSFER:
 			return KEY_T
+		KeyboardAction.TRADE:
+			return KEY_B
+		KeyboardAction.MAP_OVERVIEW:
+			return KEY_O
 	return KEY_NONE
 
 static func get_keyboard_keycode(action: int) -> int:
@@ -1177,6 +1195,10 @@ static func get_keyboard_keycode(action: int) -> int:
 			return _camp_rest_keycode
 		KeyboardAction.TRANSFER:
 			return _transfer_keycode
+		KeyboardAction.TRADE:
+			return _trade_keycode
+		KeyboardAction.MAP_OVERVIEW:
+			return _map_overview_keycode
 	return KEY_NONE
 
 static func set_keyboard_keycode(action: int, keycode: int) -> void:
@@ -1194,6 +1216,10 @@ static func set_keyboard_keycode(action: int, keycode: int) -> void:
 			_camp_rest_keycode = normalized_keycode
 		KeyboardAction.TRANSFER:
 			_transfer_keycode = normalized_keycode
+		KeyboardAction.TRADE:
+			_trade_keycode = normalized_keycode
+		KeyboardAction.MAP_OVERVIEW:
+			_map_overview_keycode = normalized_keycode
 
 static func is_keyboard_action_pressed(event: InputEvent, action: int) -> bool:
 	if not (event is InputEventKey):

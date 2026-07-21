@@ -11,7 +11,7 @@ var centers: Dictionary = {}
 static func _is_mountain_region(region_data: Dictionary) -> bool:
 	"""Check if a region is a mountain region (non-interactive terrain like ocean)"""
 	var biome_name := String(region_data.get("biome", "")).to_lower()
-	return biome_name == "mountains"
+	return biome_name == "mountain" or biome_name == "mountains"
 
 static func build_non_ocean_adjacency(regions: Array, edges: Array) -> Dictionary:
 	var region_by_id: Dictionary = {}
@@ -57,6 +57,24 @@ static func build_non_ocean_adjacency(regions: Array, edges: Array) -> Dictionar
 			graph[r1].append(r0)
 
 	return graph
+
+static func is_passable_map_connected(regions: Array, edges: Array) -> bool:
+	var graph: Dictionary = build_non_ocean_adjacency(regions, edges)
+	if graph.is_empty():
+		return false
+	var start_region_id: int = int(graph.keys()[0])
+	var visited: Dictionary = {start_region_id: true}
+	var pending: Array[int] = [start_region_id]
+	while not pending.is_empty():
+		var region_id: int = pending.pop_back()
+		var neighbors: Array = graph[region_id]
+		for neighbor_variant: Variant in neighbors:
+			var neighbor_id: int = int(neighbor_variant)
+			if visited.has(neighbor_id):
+				continue
+			visited[neighbor_id] = true
+			pending.append(neighbor_id)
+	return visited.size() == graph.size()
 
 static func compute_region_centers(regions: Array) -> Dictionary:
 	var centers: Dictionary = {}

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dxbh6skra8djp"]
+[gd_scene load_steps=6 format=3 uid="uid://dxbh6skra8djp"]
 
 [ext_resource type="Texture2D" uid="uid://vdcvlbekhygk" path="res://images/icons/scale.png" id="1_uhujf"]
 [ext_resource type="Script" path="res://icons_modal.gd" id="3_jgatv"]
 [ext_resource type="Texture2D" uid="uid://bhgn0vinpjbqf" path="res://images/icons/settings.png" id="3_wbg6d"]
 [ext_resource type="Texture2D" uid="uid://dtpl05npia0rh" path="res://images/icons/objectives.png" id="4_t7udb"]
+[ext_resource type="Texture2D" uid="uid://dg5no34mjow4h" path="res://images/icons/map.png" id="5_xvc2u"]
 
 [node name="IconsModal" type="Control"]
 layout_mode = 3
@@ -36,3 +37,10 @@ offset_right = 100.0
 offset_bottom = 320.0
 mouse_filter = 0
 texture = ExtResource("4_t7udb")
+
+[node name="Map" type="TextureRect" parent="."]
+offset_top = 330.0
+offset_right = 100.0
+offset_bottom = 430.0
+mouse_filter = 0
+texture = ExtResource("5_xvc2u")

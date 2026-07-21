@@ -8,6 +8,23 @@ Your economy is not only what your regions produce. At the start of your turn, o
 Food is therefore both an economic resource and a military resource. A realm with strong gold income but weak food can still lose campaigns because it cannot keep soldiers alive between battles.
 
 
+[b][font_size=24]Taxes and Gold income[/font_size][/b]
+
+Every owned non-ocean region generates taxes from its population. A region always provides 1 base Gold, then adds another 1 Gold for every full population band it contains. Higher region levels make those bands smaller, so the same population pays more tax after promotion.
+
+1. [b]Shire (L1)[/b]: +1 Gold per 150 population
+2. [b]County (L2)[/b]: +1 Gold per 135 population
+3. [b]March (L3)[/b]: +1 Gold per 120 population
+4. [b]Duchy (L4)[/b]: +1 Gold per 105 population
+5. [b]Province (L5)[/b]: +1 Gold per 90 population
+
+For example, a region with 450 population generates 4 Gold as a Shire: 1 base Gold plus 3 population increments. The same population generates 6 Gold as a Province: 1 base Gold plus 5 population increments.
+
+Moving from a 150-person band at L1 to a 90-person band at L5 produces population-based tax increments about 66.7% faster. Because only full bands count and every region also has the same base 1 Gold, the exact increase in total taxes depends on population.
+
+Taxes are separate from Gold deposits. A discovered Gold resource adds its normal regional production on top of population taxes. Region-level resource bonuses apply to deposit output, not to taxes.
+
+
 [b][font_size=24]How region growth actually works[/font_size][/b]
 
 Population growth depends on several pressures at once: base growth, recruit availability, local food, and level-based promotion bonus. The most important idea is that recruitment and growth are linked. Heavy recruitment pulls people out of the region pool, and a drained recruit pool slows the region's future population growth.
@@ -26,6 +43,17 @@ Promotion has two ongoing effects and one short replenish boost.
 2. [b]Resource output bonus (permanent, level-based)[/b]: each level above L1 increases local resource output by 37.5%.
 
 3. [b]Recruits replenish pool bonus (temporary, 2 turns)[/b]: after promotion, the base recruit replenish rate is doubled for 2 turns.
+
+[b][font_size=24]Demotion and recovery[/font_size][/b]
+
+Promotion is not permanent. A region above L1 can be demoted by one level when you need to reduce its upkeep burden or recover from overexpansion.
+
+1. Demotion takes 1 turn and completes at the start of your next turn.
+2. Demoting a region returns 5 Food.
+3. A region cannot be promoted and demoted in the same turn.
+4. L1 regions cannot be demoted.
+
+Demotion lowers the region's recruit capacity, growth bonus, and resource output, so it is best used to stabilize an economy rather than as a routine source of Food.
 
 
 [b][font_size=24]Region levels and what they represent[/font_size][/b]
@@ -69,6 +97,16 @@ Castle upkeep by tier:
 3. Keep: 2 Wood, 2 Stone
 4. Castle: 2 Wood, 4 Stone
 5. Stronghold: 2 Wood, 6 Stone
+
+[b][font_size=24]When upkeep falls short[/font_size][/b]
+
+Wood and Stone shortages weaken the castles that depend on those materials. If your projected Wood or Stone balance is negative, each missing resource creates 3% of castle-defense degradation for that turn.
+
+The penalty is distributed by upkeep. Missing Wood affects every castle that requires Wood. Missing Stone affects only castles that require Stone, so Outposts are not weakened by a Stone shortage.
+
+For example, a 2-Stone shortage creates a 6% Stone penalty pool. With three Keeps, each Keep receives 2% degradation because they have equal Stone upkeep.
+
+This degradation accumulates while the shortage continues. Castle defense is displayed and used in battle as a whole percentage, rounded down. Completing a repair clears the accumulated maintenance degradation.
 
 
 [b][font_size=24]Difficulty and opening pressure[/font_size][/b]

@@ -58,6 +58,7 @@ var _battle_summary_modal: BattleSummaryModal
 var _next_player_modal: NextPlayerModal
 var _game_menu_modal: Control
 var _save_game_modal: SaveGameModal
+var _map_filter_modal: MapFilterModal
 var _modal_nodes: Array[Control] = []
 var _blocking_modal_nodes: Array[Control] = []
 var _move_selection_active: bool = false
@@ -111,6 +112,7 @@ func _ready():
 	_next_player_modal = get_parent().get_node("NextPlayerModal") as NextPlayerModal
 	_game_menu_modal = get_parent().get_node("GameMenuModal") as Control
 	_save_game_modal = get_parent().get_node("SaveGameModal") as SaveGameModal
+	_map_filter_modal = get_parent().get_node("Map") as MapFilterModal
 	_build_modal_list()
 	_build_blocking_modal_list()
 	
@@ -158,7 +160,7 @@ func _should_hide_icons_modal() -> bool:
 		return true
 	if _overlay_suppressed:
 		return true
-	if is_modal_active and not is_only_info_modal_visible():
+	if is_modal_active and not is_only_info_modal_visible() and not is_map_filter_visible():
 		return true
 	return false
 
@@ -180,7 +182,8 @@ func _build_modal_list() -> void:
 		_next_player_modal,
 		_battle_summary_modal,
 		_game_menu_modal,
-		_save_game_modal
+		_save_game_modal,
+		_map_filter_modal
 	]
 
 func _build_blocking_modal_list() -> void:
@@ -232,8 +235,9 @@ func suppress_turn_modal_for_movement(enabled: bool) -> void:
 func _update_turn_modal_visibility() -> void:
 	if _turn_modal:
 		var allow_info_modal: bool = is_only_info_modal_visible()
+		var allow_map_filter: bool = is_map_filter_visible()
 		var allow_turn_modal_with_overlay: bool = (not _overlay_suppressed) or _move_selection_active
-		_turn_modal.visible = (not is_modal_active or allow_info_modal) and not _turn_modal_suppressed and allow_turn_modal_with_overlay
+		_turn_modal.visible = (not is_modal_active or allow_info_modal or allow_map_filter) and not _turn_modal_suppressed and allow_turn_modal_with_overlay
 
 func hide_region_tooltip() -> void:
 	DebugLogger.log("UIManager", "hide_region_tooltip called. visible=" + str(region_tooltip.visible))
@@ -294,6 +298,10 @@ func handle_escape_action() -> bool:
 		_save_game_modal.visible = false
 		get_viewport().set_input_as_handled()
 		return true
+	if _map_filter_modal.visible:
+		_map_filter_modal.hide_modal()
+		get_viewport().set_input_as_handled()
+		return true
 	var game_manager_tutorial: GameManager = get_parent().get_parent().get_node("GameManager") as GameManager
 	if game_manager_tutorial.tutorial_enabled:
 		var tutorial_manager: TutorialManager = game_manager_tutorial.get_tutorial_manager()
@@ -346,8 +354,8 @@ func _handle_mouse_motion(event: InputEventMouseMotion):
 	if _move_selection_active:
 		return
 
-	# Don't show tooltips when any modal is active
-	if is_modal_active and not is_only_info_modal_visible():
+	# Don't show tooltips when any modal is active, except the map filter.
+	if is_modal_active and not is_only_info_modal_visible() and not is_map_filter_visible():
 		if region_tooltip.visible:
 			hide_region_tooltip()
 		return
@@ -449,6 +457,8 @@ func _is_blocking_control(control: Control) -> bool:
 	if control == region_tooltip or region_tooltip.is_ancestor_of(control):
 		DebugLogger.log("UIManager", "_is_blocking_control: control " + control.name + " is tooltip or child")
 		return false
+	if control == _map_filter_modal or _map_filter_modal.is_ancestor_of(control):
+		return true
 	var blockers = [
 		_turn_modal,
 		_player_status_modal2,
@@ -490,12 +500,17 @@ func close_all_active_modals(include_blocking: bool = false) -> void:
 		_transfer_select_modal.hide_modal()
 	if _transfer_soldiers_modal and _transfer_soldiers_modal.visible:
 		_transfer_soldiers_modal.hide_modal()
+	if _map_filter_modal and _map_filter_modal.visible:
+		_map_filter_modal.hide_modal()
 	if include_blocking and _battle_summary_modal and _battle_summary_modal.visible:
 		_battle_summary_modal.hide_summary()
 
 func is_any_modal_visible() -> bool:
 	"""Check if any modal is currently visible"""
 	return _is_any_tracked_modal_visible()
+
+func is_map_filter_visible() -> bool:
+	return _map_filter_modal.visible
 
 func is_recruitment_or_transfer_modal_visible() -> bool:
 	return _recruitment_modal.visible or _transfer_select_modal.visible or _transfer_soldiers_modal.visible

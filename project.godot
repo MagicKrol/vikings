@@ -15,7 +15,7 @@ run/main_scene="res://scenes/splash_screen.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 boot_splash/show_image=false
 boot_splash/image="res://images/splash.png"
-config/icon="res://icon.svg"
+config/icon="res://images/app_icon.jpg"
 
 [autoload]
 

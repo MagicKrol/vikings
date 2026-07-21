@@ -73,7 +73,7 @@ func _on_continue_pressed() -> void:
 
 func _build_skirmish_intro_text() -> String:
 	var game_manager: GameManager = get_node("/root/Main/GameManager") as GameManager
-	if not GameParameters.DEMO_MODE_ENABLED:
+	if not GameParameters.is_demo_mode_enabled():
 		return _build_custom_map_objective_text(game_manager)
 	var intro_text: String = tr(SKIRMISH_INTRO_TEXT_KEY)
 	var victory_text: String = game_manager.get_custom_victory_condition_description()

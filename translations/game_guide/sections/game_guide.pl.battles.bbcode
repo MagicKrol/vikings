@@ -3,9 +3,26 @@
 
 [b][font_size=24]Jak działa rozstrzygnięcie bitwy tura po turze[/font_size][/b]
 
-Bitwy zaczynają się od 2 salw dystansowych. Dzięki temu łucznicy i kusznicy mogą zadać straty, zanim zacznie się główne starcie. Potem walka przechodzi w normalne rundy, aż jedna strona zostanie zniszczona albo zakończy się odwrót.
+Bitwy zaczynają się od 1 salwy otwierającej wszystkich jednostek dystansowych po obu stronach. Obie strony obliczają trafienia z tego samego stanu początkowego, a następnie stosowane są straty. Potem walka przechodzi w normalne rundy, aż jedna strona zostanie zniszczona albo zakończy się odwrót.
 
-Ataki są oparte na szansie. Atak jednostki wpływa na częstotliwość trafień, a obrona redukuje liczbę trafień zamienianych w zabitych. Wigor zmienia realną skuteczność armii: zmęczony lub ukarany terenem atakujący może wypaść gorzej, niż sugeruje sama liczebność.
+Każdy żołnierz wykonuje rzut ataku zgodnie ze swoją szansą ataku. Wigor mnoży tę szansę: Łucznik z atakiem 20% i wigorem 80% atakuje z szansą 16%, a Chłop z atakiem 5% i wigorem 80% z szansą 4%. Teren i cechy mogą dalej modyfikować wynik.
+
+Każdy udany rzut tworzy trafienie. Trafienia każdego typu jednostki atakującej są losowo rozdzielane między dozwolone cele, proporcjonalnie do liczby żołnierzy każdego typu celu. Obrona jednostki to jej szansa na uniknięcie przypisanego trafienia. Trafienie, które przejdzie przez wszystkie warstwy obrony, zabija jednego żołnierza.
+
+Normalne rundy są rozstrzygane jednocześnie. Obie strony obliczają ataki i straty na podstawie armii obecnych na początku rundy, a następnie stosowane są oba zestawy strat. Żołnierze zabici w danej rundzie nadal wykonują w niej swoje ataki.
+
+
+[b][font_size=24]Przykład obliczenia bitwy[/font_size][/b]
+
+Wyobraź sobie 10 Chłopów i 5 Łuczników atakujących 10 Włóczników i 5 Chłopów w otwartym terenie. Atakujący mają 80% wigoru, a obrońcy 100%.
+
+Podczas salwy otwierającej atakuje tylko 5 Łuczników. Wykonują 5 rzutów po 16%: ich normalne 20% ataku pomnożone przez 80% wigoru. Załóżmy, że uzyskują 1 trafienie.
+
+Obrońcy mają 10 Włóczników i 5 Chłopów. Włócznik zostaje więc wybrany jako cel z prawdopodobieństwem około 66,7%, a Chłop z około 33,3%. Załóżmy, że trafienie otrzymuje Włócznik. Jego obrona 25% daje mu 25% szansy na uniknięcie trafienia; w przeciwnym razie ginie.
+
+W pierwszej zwykłej rundzie załóżmy, że 10 atakujących Chłopów wykonuje rzuty po 4% i uzyskuje 2 trafienia, a 5 Łuczników wykonuje rzuty po 16% i uzyskuje 1 trafienie. Jeśli 1 trafienie trafi Chłopa, a 2 Włóczników, Chłop ma 8% szansy obrony, a każdy Włócznik 25%.
+
+Obrońcy atakują w tym samym czasie. Przy 100% wigoru Chłopi wykonują rzuty ze zwykłą szansą 5%. Włócznicy mają cechę Obrońca, więc ich normalna szansa ataku 8% zostaje podwojona do 16%. Wszystkie straty są stosowane po zakończeniu obliczeń obu armii.
 
 Wyniki są surowe. Gdy wygrywa atakujący, obrońcy, garnizon i rekruci znikają. Gdy wygrywa obrońca, armie atakujące zostają zniszczone. Przy odwrocie obie strony zachowują ocalałych, ale ponoszą dodatkowe straty odwrotowe.
 
@@ -21,7 +38,11 @@ Wniosek praktyczny: nie oceniaj bitwy wyłącznie po liczbie żołnierzy. Teren 
 
 [b][font_size=24]Obrona zamku i presja oblężenia[/font_size][/b]
 
-Bitwy o zamek dodają kolejną warstwę obrony. Atak musi najpierw przejść przez unik obronny zamku, zanim zacznie działać zwykła obrona jednostek. Ten sam garnizon za murami jest więc dużo trudniejszy do wybicia niż w otwartym polu.
+Bitwy o zamek dodają dwa ograniczenia: dostęp szturmu i obronę zamku. Dostęp szturmu skaluje niedystansowe trafienia atakującego zależnie od dostępu zapewnianego przez drabiny, zniszczone mury i wyważone bramy. Ataki dystansowe nie są ograniczane przez dostęp szturmu.
+
+Następnie obrona zamku daje pierwszą szansę uniknięcia trafienia. Każde trafienie, które przejdzie tę warstwę, mierzy się z obroną jednostki będącej celem. Dlatego ten sam garnizon jest znacznie trudniejszy do zabicia za murami.
+
+Obniżenie obrony zamku z 50% do 40% zwiększa szansę przejścia trafienia przez warstwę zamku z 50% do 60%, czyli względnie o 20%. Obniżenie jej z 85% do 75% zwiększa tę szansę z 15% do 25%, czyli o około 66,7%. Trebusze są więc szczególnie cenne przeciw zamkom z wysoką obroną.
 
 Uszkodzenia strukturalne to zmieniają. Trebusze niszczą sekcje murów i robią wyłomy, obniżając efektywną obronę zamku i zwiększając dostęp do szturmu. Tarany naciskają bramy w kolejnych rundach; uszkodzona lub zniszczona brama ułatwia wejście. Drabiny poprawiają dostęp przez mury.
 
@@ -32,13 +53,13 @@ Poziom zamku ma znaczenie: wyższy poziom to więcej murów, mocniejsze bramy, w
 
 Punkty oblężenia pochodzą od jednostek z cechą Robotnik oblężniczy. Łączna liczba takich jednostek jest dzielona przez 10 i zaokrąglana w dół.
 
-[b]Drabiny[/b] kosztują 1 punkt oblężenia i nie wymagają drewna. Zwiększają dostęp szturmu przez mury.
+[b]Drabiny[/b] kosztują 1 punkt oblężenia i nie wymagają drewna. Każda drabina zapewnia 5 punktów niedystansowego dostępu szturmu, maksymalnie 4 drabiny na sekcję muru. Dostęp to te punkty podzielone przez liczbę niedystansowych atakujących. Przykładowo 2 drabiny dają 10 punktów dostępu, więc 20 niedystansowych żołnierzy atakuje z dostępem 50% przed premiami za mury i bramy. Drabiny nie obniżają obrony zamku.
 
-[b]Tarany[/b] kosztują 2 punkty oblężenia i 2 drewna. Jeśli przetrwają, mogą otworzyć bramę i wpuścić większą część armii. Jeden taran atakuje jedną bramę, nadmiar czeka w rezerwie.
+[b]Tarany[/b] kosztują 2 punkty oblężenia i 2 drewna. Każdą nienaruszoną bramę może jednocześnie atakować jeden taran; pozostałe czekają w rezerwie. Taran i brama zużywają się przez kilka rund. Zniszczona brama natychmiast zwiększa dostęp szturmu i dodaje dalszy dostęp w kolejnych rundach.
 
-Obrońcy z dystansu mogą ostrzeliwać aktywne tarany. Przy nacisku na kilka bram naraz ogień obrońców się dzieli.
+Jednostki dystansowe obrońców są rozdzielane między bramy. Taran naprzeciw mniej niż 10 strzelców ma ponad 50% szansy pełnego wyłomu, a bez strzelców szansa wynosi 100%. Szansa spada nieliniowo: 50% przy 10, 35% przy 25, 20% przy 50 oraz 15% przy 60 lub więcej. Nieudany taran nadal może częściowo uszkodzić bramę. Atakowanie kilku bram rozdziela siłę dystansową obrońców, ale wymaga kilku taranów.
 
-[b]Trebusze[/b] kosztują 4 punkty oblężenia i 5 drewna. Każdy oddaje 4 strzały bombardujące z 50% szansą trafienia. Trafienia niszczą mury, robią wyłomy i zwiększają dostęp szturmu.
+[b]Trebusze[/b] kosztują 4 punkty oblężenia i 5 drewna. Każdy przed bitwą oddaje 4 strzały bombardujące z 50% szansą trafienia. Uszkodzona sekcja muru usuwa mniej więcej połowę wartości obrony sekcji dla danego poziomu zamku. Zniszczona sekcja usuwa pełną wartość i dodaje 20 punktów niedystansowego dostępu szturmu. Obrona zamku nie może spaść poniżej minimum danego poziomu.
 
 Najlepszy plan to dopasowanie narzędzia do problemu: trebusze na mury, tarany na bramy, drabiny na dodatkowy dostęp. Przeciw mocnym zamkom mieszane przygotowanie zwykle działa lepiej niż jeden typ sprzętu.
 

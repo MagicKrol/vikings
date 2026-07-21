@@ -718,13 +718,13 @@ func simulate_battle(attacking_armies: Array, defending_armies: Array, region_ga
 		
 		# Process garrison attacks at 100% efficiency if garrison exists
 		if not current_garrison.is_empty():
-			var garrison_kills = _process_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true)
+			var garrison_kills = _process_unit_attacks(current_garrison, merged_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true, null, true)
 			_merge_kill_results(defender_kills, garrison_kills)
 		
 		# Process defending army attacks at their efficiency if any defending armies exist
 		var defender_armies_only := _compute_army_composition(merged_defenders, current_garrison)
 		if not defender_armies_only.is_empty():
-			var army_kills = _process_unit_attacks(defender_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true)
+			var army_kills = _process_unit_attacks(defender_armies_only, merged_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, defender_stats, -1, defender_effectiveness_value, is_siege_battle, defender_hit_totals, siege_state, true, null, true)
 			_merge_kill_results(defender_kills, army_kills)
 		
 		_log_battle_round_debug(rounds, attacker_label, defender_label, attacker_snapshot, defender_snapshot, attacker_hit_log, defender_hit_log, attacker_kills, defender_kills)
@@ -909,13 +909,13 @@ func process_next_round_session(session: BattleSession, rng: RandomNumberGenerat
 	var defender_hit_log: Dictionary = {}
 	if not session.current_garrison.is_empty():
 		var garrison_breakdown: Dictionary = {}
-		var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true, garrison_breakdown)
+		var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true, garrison_breakdown, true)
 		_merge_kill_results(defender_kills, garrison_kills)
 		_merge_attacker_kill_breakdowns(defender_raw_breakdown, garrison_breakdown)
 	var defender_armies_only := _compute_army_composition(session.current_defenders, session.current_garrison)
 	if not defender_armies_only.is_empty():
 		var army_breakdown: Dictionary = {}
-		var army_kills = _process_unit_attacks(defender_armies_only, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true, army_breakdown)
+		var army_kills = _process_unit_attacks(defender_armies_only, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, defender_hit_log, null, -1, defender_effectiveness_value, session.is_siege_battle, defender_hit_totals if track_hit_totals else null, session.siege_state, true, army_breakdown, true)
 		_merge_kill_results(defender_kills, army_kills)
 		_merge_attacker_kill_breakdowns(defender_raw_breakdown, army_breakdown)
 	_apply_kills(session.current_defenders, attacker_kills)
@@ -990,13 +990,13 @@ func _process_withdrawal_round_session(session: BattleSession, rng: RandomNumber
 		else:
 			if not session.current_garrison.is_empty():
 				var garrison_breakdown: Dictionary = {}
-				var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true, garrison_breakdown)
+				var garrison_kills = _process_unit_attacks(session.current_garrison, session.current_attackers, rng, 100, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true, garrison_breakdown, true)
 				_merge_kill_results(defender_kills, garrison_kills)
 				_merge_attacker_kill_breakdowns(defender_raw_breakdown, garrison_breakdown)
 			var armies_standard = _get_armies_without_garrison(session.current_defenders, session.current_garrison)
 			if not armies_standard.is_empty():
 				var army_breakdown: Dictionary = {}
-				var army_kills = _process_unit_attacks(armies_standard, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true, army_breakdown)
+				var army_kills = _process_unit_attacks(armies_standard, session.current_attackers, rng, session.defender_efficiency, session.terrain_type, CastleTypeEnum.Type.NONE, null, null, -1, defender_effectiveness_value, session.is_siege_battle, null, session.siege_state, true, army_breakdown, true)
 				_merge_kill_results(defender_kills, army_kills)
 				_merge_attacker_kill_breakdowns(defender_raw_breakdown, army_breakdown)
 	else:
@@ -1182,7 +1182,7 @@ func _army_size(army: Dictionary) -> int:
 		total += army[unit_type]
 	return total
 
-func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, hit_log = null, stats_accumulator = null, castle_defense_bonus_override: int = -1, attack_effectiveness_ratio: float = -1.0, disable_siege_traits: bool = false, hit_totals = null, siege_state: Dictionary = {}, target_has_rams: bool = false, kill_breakdown = null) -> Dictionary:
+func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionary, rng: RandomNumberGenerator, efficiency: int = 100, terrain_type: RegionTypeEnum.Type = RegionTypeEnum.Type.GRASSLAND, castle_type: CastleTypeEnum.Type = CastleTypeEnum.Type.NONE, hit_log = null, stats_accumulator = null, castle_defense_bonus_override: int = -1, attack_effectiveness_ratio: float = -1.0, disable_siege_traits: bool = false, hit_totals = null, siege_state: Dictionary = {}, target_has_rams: bool = false, kill_breakdown = null, is_defending_side: bool = false) -> Dictionary:
 	"""Process attacks unit-by-unit with trait-based targeting rules"""
 	var total_kills = {}
 	var apply_effectiveness := disable_siege_traits and attack_effectiveness_ratio >= 0.0
@@ -1196,7 +1196,7 @@ func _process_unit_attacks(attacking_army: Dictionary, defending_army: Dictionar
 		if attacker_count <= 0:
 			continue
 			
-		var attack_sample := _compute_attack_hits(attacker_unit_type, attacker_count, efficiency, terrain_type, castle_type, rng, disable_siege_traits)
+		var attack_sample := _compute_attack_hits(attacker_unit_type, attacker_count, efficiency, terrain_type, castle_type, rng, disable_siege_traits, is_defending_side)
 		var hits: int = int(attack_sample["hits"])
 		var original_hits: int = hits
 		var effective_unit_count: int = int(attack_sample["effective_unit_count"])
@@ -1376,11 +1376,11 @@ func _resolve_withdrawal_phase(current_attackers: Dictionary, current_defenders:
 			if standard_rounds > 0:
 				if not garrison_dict.is_empty():
 					var effective_block := disable_siege_traits and attacker_effectiveness_ratio <= 0.0
-					var garrison_hits = _process_unit_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1, 0.0 if effective_block else -1.0, disable_siege_traits, null, siege_state, true)
+					var garrison_hits = _process_unit_attacks(garrison_dict, current_attackers, rng, 100, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1, 0.0 if effective_block else -1.0, disable_siege_traits, null, siege_state, true, null, true)
 					_merge_kill_results(kills, garrison_hits)
 				if not armies_only.is_empty():
 					var effective_block_army := disable_siege_traits and attacker_effectiveness_ratio <= 0.0
-					var army_hits = _process_unit_attacks(armies_only, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1, 0.0 if effective_block_army else -1.0, disable_siege_traits, null, siege_state, true)
+					var army_hits = _process_unit_attacks(armies_only, current_attackers, rng, defender_efficiency, terrain_type, CastleTypeEnum.Type.NONE, null, defender_stats, -1, 0.0 if effective_block_army else -1.0, disable_siege_traits, null, siege_state, true, null, true)
 					_merge_kill_results(kills, army_hits)
 				standard_rounds -= 1
 			else:
@@ -1564,7 +1564,8 @@ func _defense_resolution_with_attacker_traits(assigned_hits: Dictionary, attacke
 		
 		# Apply armor piercing reduction to unit armor only
 		if has_armor_piercing:
-			effective_defense_chance = max(0.0, base_defense_chance - GameParameters.ARMOR_PIERCING_DEFENSE_REDUCTION)
+			effective_defense_chance = max(0.0, base_defense_chance - GameParameters.ARMOR_PIERCING_FLAT_DEFENSE_REDUCTION)
+			effective_defense_chance *= GameParameters.ARMOR_PIERCING_DEFENSE_MULTIPLIER
 		
 		var penetration_chance = max(0.0, 1.0 - effective_defense_chance)
 		var penetrating_hits = _binomial_sample(rng, hits_after_castle_defense, penetration_chance)
@@ -2017,11 +2018,13 @@ func _merge_kill_results(total_kills: Dictionary, new_kills: Dictionary) -> void
 		else:
 			total_kills[unit_type] = new_kills[unit_type]
 
-func _compute_attack_hits(unit_type: SoldierTypeEnum.Type, unit_count: int, efficiency: int, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, disable_siege_traits: bool = false) -> Dictionary:
+func _compute_attack_hits(unit_type: SoldierTypeEnum.Type, unit_count: int, efficiency: int, terrain_type: RegionTypeEnum.Type, castle_type: CastleTypeEnum.Type, rng: RandomNumberGenerator, disable_siege_traits: bool = false, is_defending_side: bool = false) -> Dictionary:
 	var efficiency_modifier: float = float(efficiency) / 100.0
 	var base_attack_chance: float = float(GameParameters.get_unit_stat(unit_type, "attack")) / 100.0
 	var modified_attack_chance: float = base_attack_chance * efficiency_modifier
 	modified_attack_chance *= _get_terrain_attack_multiplier(unit_type, terrain_type, castle_type, disable_siege_traits)
+	if is_defending_side and GameParameters.unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_10):
+		modified_attack_chance *= GameParameters.DEFENDER_ATTACK_MULTIPLIER
 	var effective_unit_count: int = unit_count
 	if GameParameters.unit_has_trait(unit_type, UnitTraitEnum.Type.UNIT_TRAIT_6):
 		effective_unit_count *= 2

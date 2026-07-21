@@ -322,9 +322,11 @@ func _calculate_wall_defense_penalty(region: Region) -> int:
 
 func _get_effective_defense_bonus(region: Region) -> int:
 	var base_def: int = GameParameters.get_castle_defense_bonus(region.get_castle_type())
-	var penalty: int = _calculate_wall_defense_penalty(region)
+	var wall_penalty: int = _calculate_wall_defense_penalty(region)
+	var maintenance_penalty: float = region.get_maintenance_defense_penalty()
 	var min_def: int = GameParameters.CASTLE_DEFENSE_BONUSES_MIN.get(region.get_castle_type(), 0)
-	return max(min_def, base_def - penalty)
+	var effective_defense: int = floori(float(base_def) - float(wall_penalty) - maintenance_penalty)
+	return maxi(min_def, effective_defense)
 
 func get_effective_defense_for_region(region: Region) -> int:
 	return _get_effective_defense_bonus(region)

@@ -311,6 +311,19 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 
+[node name="ColorRect3" type="ColorRect" parent="Blocks/trade"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1774.0
+offset_top = 385.0
+offset_right = 1915.0
+offset_bottom = 493.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+
 [node name="endturn" type="Control" parent="Blocks"]
 layout_mode = 3
 anchors_preset = 0
@@ -595,9 +608,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 990.0
+offset_left = 970.0
 offset_top = 950.0
-offset_right = 1190.0
+offset_right = 1220.0
 offset_bottom = 1025.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -615,9 +628,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 900.0
-offset_top = 600.0
+offset_top = 745.0
 offset_right = 1100.0
-offset_bottom = 675.0
+offset_bottom = 820.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
@@ -640,7 +653,7 @@ offset_bottom = 850.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-color = Color(0.537255, 1, 1, 0)
+color = Color(0.905882, 0.917647, 0.866667, 0)
 
 [node name="regionactionsfull" type="Control" parent="Blocks"]
 visible = false

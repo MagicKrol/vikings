@@ -51,6 +51,9 @@ func get_region_border_points(region_id: int) -> Array[PackedVector2Array]:
 		segments.append(record.base_points)
 	return segments
 
+func get_edge_render_points(edge: Dictionary) -> PackedVector2Array:
+	return _create_noisy_segment(edge)
+
 func _clear_existing_borders() -> void:
 	for record in _border_records.values():
 		if record.line != null:

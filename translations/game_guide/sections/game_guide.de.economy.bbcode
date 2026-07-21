@@ -8,6 +8,23 @@ Deine Wirtschaft ist mehr als nur die Produktion deiner Regionen. Zu Beginn dein
 Nahrung ist deshalb gleichzeitig eine Wirtschafts- und Militärressource. Ein Reich mit starkem Goldeinkommen, aber schwacher Nahrungsbasis kann Feldzüge trotzdem verlieren, weil es seine Soldaten zwischen den Schlachten nicht am Leben halten kann.
 
 
+[b][font_size=24]Steuern und Goldeinkommen[/font_size][/b]
+
+Jede eigene Region außer Ozeanregionen erzeugt Steuern aus ihrer Bevölkerung. Eine Region liefert immer 1 Gold als Grundeinnahme und zusätzlich 1 Gold für jede vollständige Bevölkerungsstufe. Mit höheren Regionsstufen werden diese Abstände kleiner, sodass dieselbe Bevölkerung nach einer Beförderung mehr Steuern zahlt.
+
+1. [b]Shire (L1)[/b]: +1 Gold je 150 Bevölkerung
+2. [b]County (L2)[/b]: +1 Gold je 135 Bevölkerung
+3. [b]Mark (L3)[/b]: +1 Gold je 120 Bevölkerung
+4. [b]Herzogtum (L4)[/b]: +1 Gold je 105 Bevölkerung
+5. [b]Provinz (L5)[/b]: +1 Gold je 90 Bevölkerung
+
+Eine Region mit 450 Bevölkerung erzeugt als Shire beispielsweise 4 Gold: 1 Gold Grundeinnahme plus 3 Bevölkerungsstufen. Als Provinz erzeugt dieselbe Bevölkerung 6 Gold: 1 Gold Grundeinnahme plus 5 Bevölkerungsstufen.
+
+Der Wechsel von 150 Personen pro Stufe auf L1 zu 90 auf L5 erzeugt bevölkerungsbasierte Steuerzuwächse etwa 66,7% schneller. Da nur vollständige Stufen zählen und jede Region 1 Gold Grundeinnahme besitzt, hängt der genaue Anstieg der Gesamtsteuer von der Bevölkerung ab.
+
+Steuern sind von Goldvorkommen getrennt. Ein entdecktes Goldvorkommen addiert seine normale Regionsproduktion zu den Bevölkerungssteuern. Regionsstufen-Boni gelten für den Ertrag des Vorkommens, nicht für Steuern.
+
+
 [b][font_size=24]Wie Regionswachstum wirklich funktioniert[/font_size][/b]
 
 Bevölkerungswachstum hängt von mehreren Faktoren zugleich ab: Basiswachstum, Rekrutenverfügbarkeit, lokaler Nahrung und stufenbasiertem Beförderungsbonus. Der wichtigste Punkt ist, dass Rekrutierung und Wachstum miteinander verknüpft sind. Starke Rekrutierung zieht Menschen aus dem Regionspool und ein leerer Rekrutenpool verlangsamt das zukünftige Bevölkerungswachstum.
@@ -26,6 +43,17 @@ Beförderung hat zwei dauerhafte Effekte und einen kurzen Auffüllungsbonus.
 2. [b]Ressourcenertragsbonus (dauerhaft, stufenbasiert)[/b]: Jede Stufe über L1 erhöht den lokalen Ressourcenertrag um 37,5%.
 
 3. [b]Bonus auf Rekruten-Auffüllungspool (temporär, 2 Runden)[/b]: Nach einer Beförderung wird die Basis-Auffüllungsrate für Rekruten 2 Runden lang verdoppelt.
+
+[b][font_size=24]Herabstufung und Erholung[/font_size][/b]
+
+Eine Beförderung ist nicht dauerhaft. Eine Region über L1 kann um eine Stufe herabgestuft werden, wenn du ihre Unterhaltslast senken oder dich von zu schneller Expansion erholen musst.
+
+1. Die Herabstufung dauert 1 Runde und wird zu Beginn deines nächsten Zuges abgeschlossen.
+2. Die Herabstufung einer Region gibt 5 Nahrung zurück.
+3. Eine Region kann nicht im selben Zug befördert und herabgestuft werden.
+4. Regionen der Stufe L1 können nicht herabgestuft werden.
+
+Eine Herabstufung senkt Rekrutenkapazität, Wachstumsbonus und Ressourcenertrag der Region. Sie eignet sich daher zur Stabilisierung der Wirtschaft und nicht als regelmäßige Nahrungsquelle.
 
 
 [b][font_size=24]Regionsstufen und was sie bedeuten[/font_size][/b]
@@ -69,6 +97,16 @@ Burgenunterhalt nach Stufe:
 3. Bergfried: 2 Holz, 2 Stein
 4. Burg: 2 Holz, 4 Stein
 5. Festung: 2 Holz, 6 Stein
+
+[b][font_size=24]Wenn Unterhalt fehlt[/font_size][/b]
+
+Holz- und Steinmangel schwächt die Burgen, die von diesen Materialien abhängen. Ist deine prognostizierte Holz- oder Steinbilanz negativ, erzeugt jede fehlende Ressource für diese Runde 3% Verteidigungsabnutzung der Burg.
+
+Die Strafe wird nach Unterhalt verteilt. Fehlendes Holz betrifft jede Burg, die Holz benötigt. Fehlender Stein betrifft nur Burgen, die Stein benötigen; Außenposten werden daher nicht durch Steinmangel geschwächt.
+
+Beispiel: Ein Mangel von 2 Stein erzeugt einen Stein-Strafpool von 6%. Bei drei Bergfrieden erhält jeder 2% Abnutzung, weil ihr Steinunterhalt gleich ist.
+
+Diese Abnutzung sammelt sich an, solange der Mangel anhält. Die Burgverteidigung wird als ganze, abgerundete Prozentzahl angezeigt und im Kampf verwendet. Eine abgeschlossene Reparatur entfernt die angesammelte Unterhaltsabnutzung.
 
 
 [b][font_size=24]Schwierigkeit und Anfangsdruck[/font_size][/b]

@@ -136,6 +136,7 @@ var _pending_card_modal_main_menu_target: String = ""
 # Scenario mode
 var game_mode: String = "scenario"  # "custom" | "scenario"
 var scenario_path: String = ""
+var generated_map_source_data: Dictionary = {}
 # var scenario_path: String = "battle_test.json"
 var loaded_scenario_name: String = ""  # Track the loaded scenario name for the editor
 var _loaded_from_save: bool = false
@@ -207,7 +208,7 @@ func _ready():
 		if kind == "scenario":
 			game_mode = "scenario"
 			var requested_scenario_file: String = String(payload.get("scenario_path", "")).get_file()
-			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_SCENARIO_FILES.has(requested_scenario_file):
+			if GameParameters.is_demo_mode_enabled() and not GameParameters.DEMO_ALLOWED_SCENARIO_FILES.has(requested_scenario_file):
 				requested_scenario_file = "tutorial.json"
 			scenario_path = "res://scenarios/" + requested_scenario_file
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
@@ -217,18 +218,11 @@ func _ready():
 			scenario_path = ""
 			game_difficulty = GameParameters.game_difficulty_from_string(String(payload.get("difficulty", "normal")))
 			_selected_upgrade_card_ids = _normalize_selected_upgrade_cards(payload.get("selected_upgrade_cards", []))
-			var map_file_name: String = String(payload.get("map_file", "")).get_file()
-			if GameParameters.DEMO_MODE_ENABLED and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
-				map_file_name = "demo-999-small.json"
-			var map_path: String = "res://mapdata/" + map_file_name
-			var size_str: String = String(payload.get("map_size", "small"))
-			map_generator.data_file_path = map_path.get_file()
-			_map_set_size_from_string(map_generator, size_str)
 			# Apply player settings from CustomMap
 			if payload.has("player_settings"):
 				_apply_custom_map_player_settings(payload.get("player_settings"))
 			_initialize_victory_conditions_from_custom_payload(payload)
-			map_generator.generate_map()
+			_prepare_custom_map_source(payload, map_generator)
 		elif kind == "save":
 			_selected_upgrade_card_ids.clear()
 			var save_path: String = String(payload.get("save_path", SaveGameManager.SAVE_FILE_PATH))
@@ -463,7 +457,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	player_manager.print_all_resources()
 
 	var icons_modal = ui_node.get_node("IconsModal") as Control
-	icons_modal.visible = false
+	icons_modal.visible = true
 
 func _should_enable_tutorial() -> bool:
 	return game_mode == "scenario" and scenario_path != "" and scenario_path.to_lower().find("tutorial") != -1
@@ -962,7 +956,28 @@ func _prepare_loaded_game_source(save_data: Dictionary, map_generator: MapGenera
 	if source.has("player_settings"):
 		_apply_custom_map_player_settings(source.get("player_settings"))
 	load_victory_conditions_from_source(source)
+	if source.has("map_data"):
+		generated_map_source_data = source.get("map_data", {}).duplicate(true)
+		map_generator.render_map_data(generated_map_source_data)
+	else:
+		map_generator.generate_map()
+
+func _prepare_custom_map_source(payload: Dictionary, map_generator: MapGenerator) -> void:
+	var size_str: String = String(payload.get("map_size", "small"))
+	_map_set_size_from_string(map_generator, size_str)
+	if payload.has("map_data"):
+		generated_map_source_data = payload.get("map_data", {}).duplicate(true)
+		map_generator.data_file_path = "random-map.json"
+		map_generator.render_map_data(generated_map_source_data)
+		return
+	var map_file_name: String = String(payload.get("map_file", "")).get_file()
+	if GameParameters.is_demo_mode_enabled() and not GameParameters.DEMO_ALLOWED_CUSTOM_MAP_FILES.has(map_file_name):
+		map_file_name = "demo-999-small.json"
+	map_generator.data_file_path = map_file_name
 	map_generator.generate_map()
+
+func get_generated_map_source_data_for_save() -> Dictionary:
+	return generated_map_source_data.duplicate(true)
 
 func _initialize_victory_conditions_from_custom_payload(payload: Dictionary) -> void:
 	var selected_condition: String = String(payload.get("victory_condition", "")).to_lower()
@@ -2324,7 +2339,8 @@ func _process_player_turn_start(player_id: int):
 		player_manager.decay_enemy_memory_for_player(player_id)
 		player_manager.decay_traded_resources_for_player(player_id, GameParameters.TRADE_RESET_RATE)
 	if _region_manager:
-		_region_manager.process_castle_progress_for_player(player_id)
+		var current_player: Player = player_manager.get_player(player_id)
+		_region_manager.process_castle_progress_for_player(player_id, current_player)
 		_region_manager.heal_wounded_for_player(player_id)
 		_region_manager.decrement_promotion_cooldowns_for_player(player_id)
 	if _army_manager:
@@ -2419,9 +2435,13 @@ func _process_resource_upkeep_for_player(player_id: int) -> void:
 	var food_after: int = maxi(0, food_before - food_upkeep)
 	var wood_after: int = maxi(0, wood_before - wood_upkeep)
 	var stone_after: int = maxi(0, stone_before - stone_upkeep)
+	var missing_wood: int = maxi(0, wood_upkeep - wood_before)
+	var missing_stone: int = maxi(0, stone_upkeep - stone_before)
 	player.set_resource_amount(ResourcesEnum.Type.FOOD, food_after)
 	player.set_resource_amount(ResourcesEnum.Type.WOOD, wood_after)
 	player.set_resource_amount(ResourcesEnum.Type.STONE, stone_after)
+	_region_manager.apply_castle_maintenance_penalty(player_id, ResourcesEnum.Type.WOOD, missing_wood)
+	_region_manager.apply_castle_maintenance_penalty(player_id, ResourcesEnum.Type.STONE, missing_stone)
 	DebugLogger.log_separator("ResourceCalculation")
 	DebugLogger.log("ResourceCalculation", "Resource upkeep deduction for Player " + str(player_id))
 	DebugLogger.log_calculation("ResourceCalculation", "Food upkeep", food_upkeep)
@@ -2433,6 +2453,8 @@ func _process_resource_upkeep_for_player(player_id: int) -> void:
 	DebugLogger.log_calculation("ResourceCalculation", "Wood after", wood_after)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone before", stone_before)
 	DebugLogger.log_calculation("ResourceCalculation", "Stone after", stone_after)
+	DebugLogger.log_calculation("ResourceCalculation", "Wood missing after upkeep", missing_wood)
+	DebugLogger.log_calculation("ResourceCalculation", "Stone missing after upkeep", missing_stone)
 
 func famine_regions(player_id: int, missing_food: float) -> Dictionary:
 	var clamped_missing_food: float = max(0.0, missing_food)

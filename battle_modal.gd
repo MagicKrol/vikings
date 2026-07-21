@@ -76,6 +76,8 @@ var _attacker_terrain_vigor_penalty_percent: int = 0
 var _ranged_terrain_penalty_percent: int = 0
 var _battle_logs_started: bool = false
 var _battle_withdrawal_logged_sides: Dictionary = {}
+var _attacker_casualty_breakdown: Dictionary = {}
+var _defender_casualty_breakdown: Dictionary = {}
 
 const POWER_PROGRESS_TEX_EMPTY: Texture2D = preload("res://images/progressbar_empty.png")
 const POWER_PROGRESS_TEX_GREEN: Texture2D = preload("res://images/progressbar_green.png")
@@ -773,6 +775,7 @@ func _on_battle_finished(report: BattleSimulator.BattleReport) -> void:
 
 	# Final display update
 	_update_display()
+	_append_casualty_summary()
 	if tutorial_manager != null:
 		tutorial_manager.handle_battle_finished()
 	
@@ -981,6 +984,8 @@ func _reset_battle_logs() -> void:
 	logs_data.clear()
 	_battle_logs_started = false
 	_battle_withdrawal_logged_sides.clear()
+	_attacker_casualty_breakdown.clear()
+	_defender_casualty_breakdown.clear()
 	_attacker_terrain_vigor_penalty_percent = 0
 	_ranged_terrain_penalty_percent = 0
 
@@ -1023,6 +1028,8 @@ func _append_withdrawal_log(side: int) -> void:
 func _append_battle_round_logs(round_data: Dictionary) -> void:
 	var attacker_breakdown: Dictionary = round_data.get("attacker_kill_breakdown", {}) as Dictionary
 	var defender_breakdown: Dictionary = round_data.get("defender_kill_breakdown", {}) as Dictionary
+	_merge_casualty_breakdown(_attacker_casualty_breakdown, attacker_breakdown)
+	_merge_casualty_breakdown(_defender_casualty_breakdown, defender_breakdown)
 	var is_volley: bool = round_data.has("is_ranged_volley") and bool(round_data["is_ranged_volley"])
 	var is_withdrawal: bool = round_data.has("is_withdrawal") and bool(round_data["is_withdrawal"])
 	if round_data.has("withdrawing_side"):
@@ -1047,6 +1054,48 @@ func _append_battle_round_logs(round_data: Dictionary) -> void:
 	var defender_logged: bool = _append_side_breakdown(defender_breakdown, false)
 	if not attacker_logged and not defender_logged:
 		_append_log_line(tr("No casulties inflicted."))
+
+func _merge_casualty_breakdown(total_breakdown: Dictionary, round_breakdown: Dictionary) -> void:
+	for attacker_unit_type in round_breakdown.keys():
+		var round_targets: Dictionary = round_breakdown.get(attacker_unit_type, {}) as Dictionary
+		if not total_breakdown.has(attacker_unit_type):
+			total_breakdown[attacker_unit_type] = {}
+		var total_targets: Dictionary = total_breakdown.get(attacker_unit_type, {}) as Dictionary
+		for target_unit_type in round_targets.keys():
+			total_targets[target_unit_type] = int(total_targets.get(target_unit_type, 0)) + int(round_targets.get(target_unit_type, 0))
+		total_breakdown[attacker_unit_type] = total_targets
+
+func _append_casualty_summary() -> void:
+	if _attacker_casualty_breakdown.is_empty() and _defender_casualty_breakdown.is_empty():
+		return
+	_append_log_line("")
+	_append_log_center(tr("Casualties inflicted"))
+	_append_log_line("")
+	_append_casualty_summary_side(_attacker_casualty_breakdown, true)
+	if not _attacker_casualty_breakdown.is_empty() and not _defender_casualty_breakdown.is_empty():
+		_append_log_line("")
+	_append_casualty_summary_side(_defender_casualty_breakdown, false)
+
+func _append_casualty_summary_side(side_breakdown: Dictionary, is_attacker_side: bool) -> void:
+	if side_breakdown.is_empty():
+		return
+	var side_label: String = attacker_header.text if is_attacker_side else defender_header.text
+	_append_log_line(side_label)
+	for attacker_unit_type in SoldierTypeEnum.get_all_types():
+		if not side_breakdown.has(attacker_unit_type):
+			continue
+		var target_losses: Dictionary = side_breakdown.get(attacker_unit_type, {}) as Dictionary
+		var attacker_name: String = SoldierTypeEnum.type_to_display_string(attacker_unit_type)
+		var has_target_casualties: bool = false
+		for target_unit_type in SoldierTypeEnum.get_all_types():
+			var casualties: int = int(target_losses.get(target_unit_type, 0))
+			if casualties <= 0:
+				continue
+			if not has_target_casualties:
+				_append_log_line(attacker_name + ":")
+				has_target_casualties = true
+			var target_name: String = SoldierTypeEnum.type_to_display_string(target_unit_type)
+			_append_log_line("    " + target_name + ": " + str(casualties))
 
 func _append_side_breakdown(side_breakdown: Dictionary, is_attacker_side: bool) -> bool:
 	var wrote_any: bool = false

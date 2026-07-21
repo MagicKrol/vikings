@@ -77,6 +77,7 @@ func _unhandled_input(event: InputEvent) -> void:
 @onready var _move_modal: MoveModal = get_node("../UI/MoveModal") as MoveModal
 @onready var _icons_modal: Control = get_node("../UI/IconsModal") as Control
 @onready var _speed_modal: Control = get_node("../UI/SpeedModal") as Control
+@onready var _map_filter_modal: MapFilterModal = get_node("../UI/Map") as MapFilterModal
 @onready var _game_manager: GameManager = get_node("../GameManager") as GameManager
 
 # Legacy manager references for backward compatibility during transition
@@ -152,6 +153,8 @@ func _on_map_click(screen_pos: Vector2, button_index: int) -> void:
 	if _is_ui_click(screen_pos, screen_pos):
 		DebugLogger.log("click", "ClickManager: UI click detected in _on_left_click")
 		return
+	if _map_filter_modal.visible:
+		_map_filter_modal.hide_modal()
 	if _tutorial_manager != null and _tutorial_manager.should_block_map_click():
 		DebugLogger.log("Tutorial", "Map click blocked for current tutorial step")
 		return
@@ -363,6 +366,11 @@ func _handle_mouse_motion() -> void:
 		return
 	if _game_manager == null:
 		_hovered_region_id_for_debug = -1
+		_hide_move_hover_tooltips()
+		return
+	if _ui_manager.is_map_filter_visible():
+		var visual_manager_map_filter: VisualManager = _game_manager.get_visual_manager()
+		visual_manager_map_filter.clear_interaction_highlights()
 		_hide_move_hover_tooltips()
 		return
 	if _ui_manager and _ui_manager.is_modal_active:

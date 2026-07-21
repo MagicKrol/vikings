@@ -45,6 +45,7 @@ var _map_hover_region_id: int = -1
 var _ready_highlight_regions: Dictionary = {}
 var _ready_highlight_player_id: int = -1
 var _ready_highlights_suspended: bool = false
+var _ready_highlights_suspended_for_map_filter: bool = false
 var _animated_highlight_regions: Dictionary = {}
 var _highlight_cycle_anchor_time: float = -1.0
 var _highlight_cycle_duration: float = 1.0
@@ -324,6 +325,22 @@ func _resume_ready_highlights_if_needed() -> void:
 	if not _ready_highlights_suspended:
 		return
 	_ready_highlights_suspended = false
+	_restore_ready_army_highlights()
+
+func set_ready_army_highlights_suspended_for_map_filter(suspended: bool) -> void:
+	if _ready_highlights_suspended_for_map_filter == suspended:
+		return
+	_ready_highlights_suspended_for_map_filter = suspended
+	if suspended:
+		for region_id in _ready_highlight_regions.keys():
+			if _region_highlight_tweens.has(region_id):
+				animate_region_highlight_off(region_id)
+		return
+	_restore_ready_army_highlights()
+
+func _restore_ready_army_highlights() -> void:
+	if _ready_highlights_suspended or _ready_highlights_suspended_for_map_filter:
+		return
 	if _ready_highlight_regions.is_empty():
 		return
 	for region_id in _ready_highlight_regions.keys():
@@ -510,7 +527,7 @@ func update_ready_army_highlights(player_id: int, region_ids: Array) -> void:
 		clear_ready_army_highlights()
 		_ready_highlight_player_id = player_id
 	var new_regions: Dictionary = {}
-	var apply_visuals := not _ready_highlights_suspended
+	var apply_visuals: bool = not _ready_highlights_suspended and not _ready_highlights_suspended_for_map_filter
 	for region_id in region_ids:
 		new_regions[region_id] = true
 		if apply_visuals and not _ready_highlight_regions.has(region_id) and not _move_highlight_ids.has(region_id) and region_id != _map_hover_region_id:

@@ -8,6 +8,23 @@ Sua economia não é só o que as regiões produzem. No início do turno, as reg
 Comida é, ao mesmo tempo, recurso econômico e militar. Um reino com boa renda de ouro, mas pouca base de comida, ainda pode perder campanhas por não conseguir manter os soldados vivos entre batalhas.
 
 
+[b][font_size=24]Impostos e renda de Ouro[/font_size][/b]
+
+Toda região controlada que não seja oceânica gera impostos com base em sua população. Uma região sempre fornece 1 Ouro base e adiciona mais 1 Ouro para cada faixa populacional completa. Níveis de região mais altos reduzem essas faixas, então a mesma população paga mais impostos após uma promoção.
+
+1. [b]Domínio (L1)[/b]: +1 Ouro a cada 150 de população
+2. [b]Condado (L2)[/b]: +1 Ouro a cada 135 de população
+3. [b]Marca (L3)[/b]: +1 Ouro a cada 120 de população
+4. [b]Ducado (L4)[/b]: +1 Ouro a cada 105 de população
+5. [b]Província (L5)[/b]: +1 Ouro a cada 90 de população
+
+Por exemplo, uma região com 450 de população gera 4 de Ouro como Domínio: 1 Ouro base mais 3 incrementos populacionais. Como Província, a mesma população gera 6 de Ouro: 1 Ouro base mais 5 incrementos.
+
+Passar de uma faixa de 150 pessoas no L1 para 90 no L5 gera incrementos de imposto populacional cerca de 66,7% mais rápido. Como apenas faixas completas contam e toda região também recebe 1 Ouro base, o aumento exato nos impostos totais depende da população.
+
+Impostos são separados de depósitos de Ouro. Um depósito descoberto soma sua produção regional normal aos impostos populacionais. Bônus de recursos por nível da região afetam a produção do depósito, não os impostos.
+
+
 [b][font_size=24]Como o crescimento regional funciona de fato[/font_size][/b]
 
 O crescimento populacional depende de vários fatores ao mesmo tempo: crescimento base, disponibilidade de recrutas, comida local e bônus de promoção por nível. A ideia mais importante é que recrutamento e crescimento estão ligados. Recrutar demais retira pessoas do pool da região, e um pool drenado desacelera o crescimento populacional futuro.
@@ -26,6 +43,17 @@ A promoção tem dois efeitos permanentes e um bônus curto de reposição.
 2. [b]Bônus de produção de recursos (permanente, por nível)[/b]: cada nível acima de L1 aumenta a produção local de recursos em 37,5%.
 
 3. [b]Bônus no pool de reposição de recrutas (temporário, 2 turnos)[/b]: após a promoção, a taxa base de reposição de recrutas é dobrada por 2 turnos.
+
+[b][font_size=24]Rebaixamento e recuperação[/font_size][/b]
+
+Uma promoção não é permanente. Uma região acima de L1 pode ser rebaixada em um nível quando você precisa reduzir sua carga de manutenção ou se recuperar de uma expansão excessiva.
+
+1. O rebaixamento leva 1 turno e é concluído no início do seu próximo turno.
+2. Rebaixar uma região devolve 5 de Comida.
+3. Uma região não pode ser promovida e rebaixada no mesmo turno.
+4. Regiões L1 não podem ser rebaixadas.
+
+O rebaixamento reduz a capacidade de recrutas, o bônus de crescimento e a produção de recursos da região. Use-o para estabilizar a economia, não como uma fonte regular de Comida.
 
 
 [b][font_size=24]Níveis de região e o que representam[/font_size][/b]
@@ -69,6 +97,16 @@ Manutenção de castelo por nível:
 3. Fortim: 2 Madeira, 2 Pedra
 4. Castelo: 2 Madeira, 4 Pedra
 5. Fortaleza: 2 Madeira, 6 Pedra
+
+[b][font_size=24]Quando a manutenção falta[/font_size][/b]
+
+Falta de Madeira e Pedra enfraquece os castelos que dependem desses materiais. Se seu saldo projetado de Madeira ou Pedra for negativo, cada recurso em falta cria 3% de degradação da defesa dos castelos naquele turno.
+
+A penalidade é distribuída pela manutenção. Falta de Madeira afeta todo castelo que exige Madeira. Falta de Pedra afeta apenas castelos que exigem Pedra, então Postos não são enfraquecidos por falta de Pedra.
+
+Por exemplo, uma falta de 2 Pedra cria um pool de penalidade de Pedra de 6%. Com três Fortins, cada um recebe 2% de degradação porque têm a mesma manutenção de Pedra.
+
+Essa degradação se acumula enquanto a falta continuar. A defesa do castelo é exibida e usada em batalha como uma porcentagem inteira, arredondada para baixo. Concluir um reparo remove a degradação de manutenção acumulada.
 
 
 [b][font_size=24]Dificuldade e pressão da abertura[/font_size][/b]

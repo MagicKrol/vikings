@@ -28,6 +28,7 @@ signal camera_zoomed_by_player(new_zoom: Vector2)
 @export var smooth_zoom: bool = true
 @export var pan_smoothing: float = 15.0
 @export var zoom_smoothing: float = 12.0
+@export var use_modal_input_blocking: bool = true
 
 # Touch tracking variables
 var touch_points: Dictionary = {}
@@ -46,7 +47,7 @@ var last_mouse_position: Vector2
 var touch_enabled: bool = true
 var drag_button: int = 0
 var tutorial_signal_enabled: bool = false
-@onready var ui_manager: UIManager = get_node("../UI/UIManager") as UIManager
+@onready var ui_manager: UIManager = get_node("../UI/UIManager") as UIManager if use_modal_input_blocking else null
 
 func _ready() -> void:
 	# Initialize target values to current values
@@ -60,6 +61,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Handle continuous keyboard input for smooth movement
 	_handle_continuous_keyboard_input(delta)
+	_clamp_target_position_to_limits()
 	
 	if not touch_enabled:
 		return
@@ -76,6 +78,19 @@ func _process(delta: float) -> void:
 		zoom = zoom.lerp(target_zoom, zoom_weight)
 	else:
 		zoom = target_zoom
+
+func _clamp_target_position_to_limits() -> void:
+	var half_viewport_size: Vector2 = get_viewport_rect().size / target_zoom * 0.5
+	var minimum_position: Vector2 = Vector2(float(limit_left), float(limit_top)) + half_viewport_size
+	var maximum_position: Vector2 = Vector2(float(limit_right), float(limit_bottom)) - half_viewport_size
+	if minimum_position.x > maximum_position.x:
+		target_position.x = (float(limit_left) + float(limit_right)) * 0.5
+	else:
+		target_position.x = clampf(target_position.x, minimum_position.x, maximum_position.x)
+	if minimum_position.y > maximum_position.y:
+		target_position.y = (float(limit_top) + float(limit_bottom)) * 0.5
+	else:
+		target_position.y = clampf(target_position.y, minimum_position.y, maximum_position.y)
 
 func _input(event: InputEvent) -> void:
 	# Handle keyboard controls for discrete actions (zoom, reset)
@@ -149,6 +164,8 @@ func _handle_mouse_motion(event: InputEventMouseMotion) -> void:
 
 func _handle_continuous_keyboard_input(delta: float) -> void:
 	"""Handle continuous keyboard input for smooth camera movement"""
+	if _is_text_input_focused():
+		return
 	if _is_pan_blocked_by_modal():
 		return
 	var pan_speed_per_second = 400.0 / zoom.x  # Pixels per second, scaled by zoom
@@ -173,6 +190,8 @@ func _handle_continuous_keyboard_input(delta: float) -> void:
 
 func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 	"""Handle discrete keyboard input for zoom and reset actions"""
+	if _is_text_input_focused():
+		return
 	var zoom_amount = 0.2  # Increased zoom speed
 
 	match event.keycode:
@@ -199,6 +218,9 @@ func _handle_discrete_keyboard_input(event: InputEventKey) -> void:
 				return
 			# Reset camera
 			reset_camera()
+
+func _is_text_input_focused() -> bool:
+	return get_viewport().gui_get_focus_owner() is LineEdit
 
 func _handle_touch_event(event: InputEventScreenTouch) -> void:
 	if event.pressed:
@@ -242,7 +264,9 @@ func _handle_magnify_gesture(event: InputEventMagnifyGesture) -> void:
 	_emit_camera_zoomed()
 
 func _is_zoom_blocked_by_modal() -> bool:
-	if ui_manager == null:
+	if not use_modal_input_blocking:
+		return false
+	if ui_manager.is_map_filter_visible():
 		return false
 	if not ui_manager.is_any_modal_visible():
 		return false
@@ -251,7 +275,9 @@ func _is_zoom_blocked_by_modal() -> bool:
 	return not ui_manager.is_only_info_or_message_modal_visible()
 
 func _is_pan_blocked_by_modal() -> bool:
-	if ui_manager == null:
+	if not use_modal_input_blocking:
+		return false
+	if ui_manager.is_map_filter_visible():
 		return false
 	if not ui_manager.is_any_modal_visible():
 		return false

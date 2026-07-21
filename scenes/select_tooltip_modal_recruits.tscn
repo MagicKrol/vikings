@@ -1,0 +1,111 @@
+[gd_scene load_steps=4 format=3 uid="uid://b3o20a3w3uyum"]
+
+[ext_resource type="Script" path="res://select_tooltip_modal_recruits.gd" id="1_recruits"]
+[ext_resource type="Texture2D" uid="uid://dlgqhkf1ufius" path="res://images/recruits.png" id="2_recruits"]
+[ext_resource type="Theme" uid="uid://kxd4fugkd3p1" path="res://themes/standard_text_theme.tres" id="3_text"]
+
+[node name="SelectTooltipModalRecruits" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 170.0
+offset_top = -199.0
+offset_right = 570.0
+offset_bottom = 41.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("3_text")
+script = ExtResource("1_recruits")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_recruits")
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Rows" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="RowTemplate" type="HBoxContainer" parent="MarginContainer/Rows"]
+visible = false
+custom_minimum_size = Vector2(350, 28)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Rows/RowTemplate"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="RegionName" type="Label" parent="MarginContainer/Rows/RowTemplate"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(180, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Region name"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Available" type="Label" parent="MarginContainer/Rows/RowTemplate"]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "20"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Slash" type="Label" parent="MarginContainer/Rows/RowTemplate"]
+custom_minimum_size = Vector2(10, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "/"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Maximum" type="Label" parent="MarginContainer/Rows/RowTemplate"]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "200"
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/Rows/RowTemplate"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="Replenish" type="Label" parent="MarginContainer/Rows/RowTemplate"]
+custom_minimum_size = Vector2(50, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.254902, 0.705882, 0.243137, 1)
+theme_override_font_sizes/font_size = 18
+text = "+10.0"
+vertical_alignment = 1

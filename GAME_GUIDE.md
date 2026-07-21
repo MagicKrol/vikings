@@ -83,6 +83,20 @@ Your economy is not only what your regions produce. At the start of your turn, o
 
 Food is therefore both an economic resource and a military resource. A realm with strong gold income but weak food can still lose campaigns because it cannot keep soldiers alive between battles.
 
+### Taxes and Gold income
+
+Every owned region generates taxes from its population. A region always provides 1 base Gold, then adds another 1 Gold for every full population band it contains. Higher region levels make those bands smaller, so the same population pays more tax after promotion.
+
+1. **Shire (L1)**: +1 Gold per 150 population
+2. **County (L2)**: +1 Gold per 135 population
+3. **March (L3)**: +1 Gold per 120 population
+4. **Duchy (L4)**: +1 Gold per 105 population
+5. **Province (L5)**: +1 Gold per 90 population
+
+For example, a region with 450 population generates 4 Gold as a Shire: 1 base Gold plus 3 population increments. The same 450 population generates 6 Gold as a Province: 1 base Gold plus 5 population increments.
+
+Taxes are separate from Gold deposits. A discovered Gold resource adds its normal regional resource production on top of population taxes, and region-level resource bonuses apply to that deposit output rather than to the tax calculation.
+
 ### How region growth actually works
 
 Population growth depends on several pressures at once: base growth, recruit availability, local food, and level-based promotion bonus. The most important idea is that recruitment and growth are linked. Heavy recruitment pulls people out of the region pool, and a drained recruit pool slows the region's future population growth.
@@ -101,6 +115,16 @@ Promotion has two ongoing effects and one short replenish boost.
 
 3. **Recruits replenish pool bonus (temporary, 2 turns)**: after promotion, the base recruit replenish rate is doubled for 2 turns.
 
+### Demotion and recovery
+
+Promotion is not permanent. A region above L1 can be demoted by one level when you need to reduce its upkeep burden or recover from overexpansion.
+
+1. Demotion takes 1 turn and completes at the start of your next turn.
+2. Demoting a region returns 5 Food.
+3. A region cannot be promoted and demoted in the same turn.
+4. L1 regions cannot be demoted.
+
+Demotion lowers the region's recruit capacity, growth bonus, and resource output, so it is best used to stabilize an economy rather than as a routine source of Food.
 
 ### Region levels and what they represent
 
@@ -142,6 +166,16 @@ Castle upkeep by tier:
 3. Keep: 2 Wood, 2 Stone
 4. Castle: 2 Wood, 4 Stone
 5. Stronghold: 2 Wood, 6 Stone
+
+### When upkeep falls short
+
+Wood and Stone shortages weaken the castles that depend on those materials. If your projected Wood or Stone balance is negative, each missing resource creates 3% of castle-defense degradation for that turn.
+
+The penalty is distributed by upkeep. Missing Wood affects every castle that requires Wood. Missing Stone affects only castles that require Stone, so Outposts are not weakened by a Stone shortage.
+
+For example, a 2-Stone shortage creates a 6% Stone penalty pool. With three Keeps, each Keep receives 2% degradation because they have equal Stone upkeep.
+
+This degradation accumulates while the shortage continues. Castle defense is displayed and used in battle as a whole percentage, rounded down. Completing a repair clears the accumulated maintenance degradation.
 
 ### Difficulty and opening pressure
 
@@ -222,6 +256,18 @@ Castles are the heart of advanced recruitment. Region levels increase recruit ca
 
 Damaged castles can be repaired. Repair cost scales with damage as a proportion of that castle's build cost, so light damage is cheaper to fix than a heavily battered fortress. Repair is part of siege warfare: after surviving a storm, you often need resources to restore the castle before the next attack.
 
+### Dismantling castles
+
+A castle can be dismantled by one tier when its upkeep or position no longer justifies the investment.
+
+1. Dismantling takes 1 turn and completes at the start of your next turn.
+2. You immediately pay 25% of the current castle tier's Gold build cost.
+3. When dismantling completes, you recover 25% of its Wood, Stone, and Iron build costs, rounded down.
+4. An Outpost can be dismantled completely; higher tiers become the next lower tier.
+5. A castle cannot be built, upgraded, or dismantled again in the same turn.
+
+Dismantling is a way to recover part of a fortress investment and reduce future upkeep, but it also reduces defense and available unit tiers.
+
 ### Unit traits and battlefield roles
 
 Unit traits are what make army composition more than a raw numbers contest. A force with the right traits for the terrain and opponent can outperform a larger but poorly matched army.
@@ -238,21 +284,37 @@ Unit traits are what make army composition more than a raw numbers contest. A fo
 
 **Multi Attack** - Multi Attack represents exceptional offensive output. These units can create more pressure than their count alone suggests, especially when protected and used in decisive engagements.
 
-**Armor Piercing** - Armor Piercing reduces enemy defensive protection. It is valuable against heavily defended or elite troops where normal attacks struggle to convert into kills.
+**Armor Piercing** - Armor Piercing first reduces the target unit's defense by 10 percentage points, to a minimum of 0%, then halves the remaining defense. It does not reduce castle defense. Crossbowmen use this trait, so their hits are resolved separately from other units' hits.
 
 **Siege Laborer** - Siege Laborer units generate siege points, which are required to buy ladders, rams, and trebuchets before castle assaults. Without laborers, even a large army can be poorly prepared for a siege.
 
-**Back Rank** - Back Rank units are protected by melee troops from direct close-combat pressure. They want a front line in front of them and become much more vulnerable when that protection collapses.
+**Back Rank** - Ranged units are protected from ordinary melee targeting until the attacking side has at least 3 non-ranged soldiers for every 1 non-ranged defender. Ranged attackers can always target the back rank, while Flankers ignore this ratio in open-field battles. During castle assaults, Flankers lose this exception and must obey the normal 3:1 rule.
 
-**Defender** - Defender units gain extra attack strength when defending. They are especially useful in garrisons and defensive armies where you expect the enemy to come to you.
+**Defender** - Doubles the unit's attack chance when fighting on the defending side. This trait is currently assigned to Spearmen.
 
 ## Battles and sieges
 
 ### How battle resolution works turn by turn
 
-Battles begin with 2 opening ranged volleys. These volleys let archers and crossbowmen inflict casualties before the main fight develops. After that, combat proceeds through normal rounds until one side is destroyed or withdrawal resolves.
+Battles begin with 1 opening ranged volley from every ranged unit on both sides. The two sides calculate their volley hits from the same starting state, then apply casualties, so neither side loses its opportunity to fire just because the other side scored kills. After that, combat proceeds through normal rounds until one side is destroyed or withdrawal resolves.
 
-Attacks are chance-based. Unit attack values determine how often soldiers generate hits, and unit defense values reduce how many of those hits become kills. Vigor changes how effectively an army fights; a tired or terrain-penalized attacker may look strong on paper but perform worse in the actual battle.
+Attacks are chance-based. Each soldier makes an attack roll using its unit attack chance. Vigor multiplies that chance: an Archer with 20% attack and 80% vigor attacks at 16%, while a Peasant with 5% attack and 80% vigor attacks at 4%. Terrain and traits can modify the result further.
+
+Each successful attack roll creates a hit. For each attacking unit type, those hits are randomly distributed among its valid enemy targets, weighted by how many soldiers of each target type are present. A unit's defense is then its chance to avoid an assigned hit. A hit that passes every applicable defense layer kills one soldier and removes it from the battlefield.
+
+Normal rounds are also simultaneous. Both sides calculate their attacks and casualties from the armies present at the start of the round, then both sets of kills are applied. Soldiers killed during a round therefore still make their attack rolls in that round.
+
+### Example battle calculation
+
+Imagine 10 Peasants and 5 Archers attacking 10 Spearmen and 5 Peasants in open terrain. The attackers have 80% vigor and the defenders have 100%.
+
+During the opening volley, only the 5 Archers attack because the attacking Peasants are not ranged and the defenders have no ranged units. The Archers make 5 rolls at 16% each: their normal 20% attack multiplied by 80% vigor. Suppose they score 1 hit.
+
+The defending force contains 15 soldiers: 10 Spearmen and 5 Peasants. That makes a Spearman the target with about 66.7% probability and a Peasant the target with about 33.3% probability. Suppose the hit is assigned to a Spearman. The Spearman has 25% defense, so it has a 25% chance to avoid the hit; otherwise, one Spearman is killed.
+
+In the first normal round, suppose the 10 attacking Peasants roll at 4% and score 2 hits, while the 5 Archers roll at 16% and score 1 hit. Each unit type's hits are distributed separately among valid defenders using the same unit-count weighting. If the result assigns 1 hit to a Peasant and 2 hits to Spearmen, the Peasant has an 8% defense chance against its hit and each Spearman has a 25% defense chance against its hit.
+
+The defenders calculate their attacks at the same time from their pre-casualty numbers. At 100% vigor, Peasants roll at their normal 5% attack. Spearmen have the Defender trait, so their normal 8% attack chance is doubled to 16%. After both armies finish calculating hits, target distribution, and defense, all casualties are applied together.
 
 Battle results are harsh. If attackers win, defending armies, garrison, and recruits are wiped out. If defenders win, attacking armies are wiped out. If withdrawal happens, both sides keep survivors but suffer withdrawal casualties. This makes choosing the battlefield and entering with enough strength more important than simply testing an enemy position.
 
@@ -266,7 +328,11 @@ The practical lesson is simple: do not judge a battle only by troop count. Terra
 
 ### Castle defense and siege pressure
 
-Castle battles add another defensive layer. Incoming attacks must overcome castle defensive avoidance before unit defense is even considered. This is why the same garrison can be much harder to kill behind walls than in open ground.
+Castle battles add two separate restrictions: assault access and castle defense. Assault access scales the attacker's non-ranged hits according to how much access ladders, destroyed walls, and broken gates provide. Ranged attacks are not reduced by assault access.
+
+After a hit reaches a defender, castle defense provides the first chance to avoid it. Any surviving hit then faces the target unit's own defense. This is why the same garrison can be much harder to kill behind walls than in open ground.
+
+The difference between defense values is more important than it first appears. Reducing castle defense from 50% to 40% raises the chance for a hit to pass the castle layer from 50% to 60%, which is a 20% relative increase. Reducing defense from 85% to 75% raises that pass chance from 15% to 25%, which is about a 66.7% relative increase. Trebuchet damage is therefore much more valuable against high-defense castles than the raw percentage-point change may suggest.
 
 Structural damage changes that equation. Trebuchets can damage and breach wall sections, lowering effective castle defense and increasing assault access. Gates can be pressured by rams over battle turns; as gates take damage or fall, the assault becomes easier to sustain. Ladders improve wall access for troops trying to attack over the defenses.
 
@@ -276,13 +342,13 @@ Castle tiers matter because higher tiers bring more walls, stronger gates, highe
 
 Siege points come from units with the Siege Laborer trait. Total siege-laborer units are divided by 10, rounded down, to determine how many siege points are available.
 
-**Ladders** cost 1 siege point and no wood. They improve assault access over walls and are useful when you need more soldiers to reach defenders despite intact castle defenses.
+**Ladders** cost 1 siege point and no wood. Each ladder provides 5 points of non-ranged assault access, with a cap of 4 ladders per wall section. Assault access is those points divided by the number of non-ranged attackers. For example, 2 ladders provide 10 access points, so an army with 20 non-ranged soldiers attacks at 50% assault access before any destroyed-wall or open-gate access is added. Ladders do not reduce castle defense; they only let more melee pressure reach the defenders.
 
-**Rams** cost 2 siege points and 2 Wood. They are a gamble: if they survive, they can open a gate and let a large force enter the castle more effectively; if defenders have enough archers, the rams may be destroyed before they do their work. One ram can attack one gate at a time, so extra rams wait in reserve until an active ram is destroyed or a gate falls.
+**Rams** cost 2 siege points and 2 Wood. One ram can attack each intact gate at a time, and extra rams wait in reserve until an active ram is destroyed or another intact gate needs one. A ram and its gate wear down across several battle rounds. If a gate falls, it immediately adds assault access and continues adding more access in later rounds, allowing an increasing share of the attacker's melee hits to reach the defenders.
 
-Defending archers can shoot at active rams. When several gates are attacked at once, defenders must split their ranged focus across those threats, which can reduce the chance that any one ram is destroyed quickly. This makes multi-gate pressure expensive, but dangerous for the defender if the attacker has enough wood, siege points, and bodies to sustain it.
+Defending ranged units are divided across the castle's gates when ram outcomes are determined. A ram facing fewer than 10 ranged defenders has better than a 50% full-breach chance, reaching certainty if no ranged defenders cover its gate. The chance falls nonlinearly as more ranged defenders are assigned: 50% at 10, 35% at 25, 20% at 50, and 15% at 60 or more. An unsuccessful ram can still make partial progress before it is lost. Attacking several gates at once forces the defender's ranged strength to split between them, but requires multiple rams.
 
-**Trebuchets** cost 4 siege points and 5 Wood. Each trebuchet fires 4 bombardment shots with a 50% hit chance per shot. Successful hits damage wall sections, can breach walls, reduce effective castle defense, and increase assault access before the main attack begins.
+**Trebuchets** cost 4 siege points and 5 Wood. Each trebuchet fires 4 bombardment shots with a 50% hit chance per shot before the main battle. Successful shots damage wall sections. A damaged section removes roughly half of that castle tier's per-section defense value; a destroyed section removes the full value and adds 20 points of non-ranged assault access. Castle defense cannot be reduced below the tier's minimum defense.
 
 A good siege plan matches equipment to the obstacle. Use trebuchets when walls and defense are the biggest obstacle. Use rams when you are willing to risk equipment for a chance to open gates and pour more soldiers into the castle. Use ladders when your army needs more direct assault access over the walls. Against serious castles, mixed preparation is often stronger than relying on one tool.
 
@@ -310,6 +376,8 @@ There are exceptions. If your kingdom has huge population and deep food reserves
 
 A healthy army reflects your frontier, economy, and plan. Defensive armies benefit from spears, defenders, ranged support, and enough bodies to absorb pressure. Aggressive armies need mobility, charge power, flankers, and enough siege laborers if they are expected to attack castles.
 
+Composition and terrain become increasingly important on higher difficulties and demanding scenarios. Raw numbers may carry an army through easier fights, but difficult battles reward matching Spearmen against cavalry, using Charge units on Grassland, protecting or flanking ranged troops, and bringing the right siege equipment for the castle tier.
+
 Resources decide what is realistic. Wood supports archers and siege equipment. Iron supports elite troops. Food decides how many soldiers you can keep. A good composition is not the same in every kingdom; it should match what your regions can actually sustain.
 
 ### Promote and build castles with timing
@@ -317,6 +385,8 @@ Resources decide what is realistic. Wood supports archers and siege equipment. I
 Promotions are strongest when they feed a plan: grow a food base, deepen a recruitment pool, or turn a border region into a long-term supply center. Promoting everywhere without purpose can waste resources that should have become troops, castles, or siege equipment.
 
 Castle placement and construction timing are even more dangerous. A castle under construction is an investment that has not started paying back yet, and the region can be captured before the work finishes. Build castles where you can defend the construction period, especially on borders, chokepoints, and valuable resource clusters.
+
+When the economy turns against you, consolidation can be as important as expansion. Demote regions that no longer support your plan, or dismantle castles that you cannot maintain. A negative Wood or Stone balance does not only drain resources: it steadily weakens the defenses that depend on it.
 
 ### Think in replacement cycles
 

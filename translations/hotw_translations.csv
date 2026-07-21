@@ -2,6 +2,16 @@ key,explanation or purpose,en,de,pl,br
 demo_map,,Demo Map,Demo-Karte,Mapa Demo,Mapa Demo
 Options,,Options,Optionen,Opcje,Opções
 Objective,Heading shown above the current custom map victory objective.,Objective,Ziel,Cel,Objetivo
+Map Overlay,Map overlay modal title.,Map Overlay,Kartenüberlagerung,Nakładka mapy,Sobreposição do mapa
+Map Overview,Keyboard mapping action for opening the map overlay.,Map Overview,Kartenübersicht,Przegląd mapy,Visão geral do mapa
+Ownership,Map filter option for showing player ownership colors.,Ownership,Besitz,Własność,Propriedade
+Player Only,Map filter option for limiting filters to the current player's regions.,Player Only,Nur Spieler,Tylko gracz,Apenas jogador
+Level Bonus,Map filter option for including region level resource bonuses.,Level Bonus,Stufenbonus,Bonus poziomu,Bônus de nível
+Yes,Map filter enabled option.,Yes,Ja,Tak,Sim
+No,Map filter disabled option.,No,Nein,Nie,Não
+Change regions' ownership visibility.,Map filter ownership option tooltip.,Change regions' ownership visibility.,Ändert die Sichtbarkeit der Regionsbesitzfarben.,Zmienia widoczność własności regionów.,Altera a visibilidade da propriedade das regiões.
+Show filters only for regions owned by the current player.,Map filter player-only option tooltip.,Show filters only for regions owned by the current player.,Filter nur für Regionen des aktuellen Spielers anzeigen.,Pokaż filtry tylko dla regionów należących do bieżącego gracza.,Mostra filtros apenas para regiões do jogador atual.
+Include region level bonuses in resource filters.,Map filter level-bonus option tooltip.,Include region level bonuses in resource filters.,Regionstufenboni in Ressourcenfiltern berücksichtigen.,Uwzględnia premie poziomu regionu w filtrach zasobów.,Inclui bônus de nível da região nos filtros de recursos.
 Exit,,Exit,Ausfrahrt,Koniec,Sair
 Population,Number of people in the region,Population,Bevölkerung,Ludność,População
 Food,Resource type,Food,Nahrung,Żywność,Alimentos
@@ -120,7 +130,7 @@ Music Volume,option to set music volume level,Music Volume,Musiklautstärke,Gło
 "%d wall sections destroyed, %d damaged by trebuchets.",Prebattle bombardment summary format showing destroyed and damaged wall section counts.,"%d wall sections destroyed, %d damaged by trebuchets.","%d Mauerabschnitte zerstört, %d durch Triboke beschädigt.","%d odcinków murów zniszczonych, %d uszkodzonych przez trebusze.","%d seções da muralha destruídas, %d danificadas por trabucos."
 %s Found,Ore search status format listing discovered ore names.,%s,%s,%s,%s
 %s Found!,Ore discovery popup header format showing the discovered ore type.,%s Found!,%s gefunden!,Znaleziono %s!,%s encontrado!
-%s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,%s obrońców,%s defensores
+%s defenders,Battle UI label format naming regional defenders.,%s defenders,%s Verteidiger,Obrońcy %s,%s defensores
 %s is being raised.,Notification format shown when a new army begins raising.,%s is being raised.,%s wird aufgestellt.,%s jest formowana.,%s está sendo levantado.
 %s of %s,Region title format combining region level display name and region name.,%s of %s,%s von %s,%s %s,%s de %s
 %s was discovered,Tooltip format indicating that a specific ore type has been discovered.,%s was discovered,%s wurde entdeckt,%s został odkryty,%s foi descoberto
@@ -146,6 +156,7 @@ Battle Logs,Battle logs panel title.,Battle Logs,Kampfprotokoll,Dziennik bitwy,L
 Battle Logs Button,Battle logs toggle button label; use | as line break marker.,Battle|Logs,Kampf|protokoll,Dziennik|bitwy,Logs da|batalha
 "Battle \nLogs",Battle logs button label split into two lines.,"Battle \nLogs","Kampf-\nprotokoll","Dziennik\nbitwy","Logs da\nbatalha"
 Battle starts,Battle log section label shown before round-by-round combat starts.,Battle starts,Schlacht beginnt,Bitwa rozpoczyna się,A batalha começa
+Casualties inflicted,Battle log heading for the cumulative unit-type casualty attribution shown after combat ends.,Casualties inflicted,Zugefügte Verluste,Zadane straty,Baixas infligidas
 Between %d and %d soldiers.,Prebattle scouting range text for enemy count estimates between bounds.,Between %d and %d soldiers.,Zwischen %d und %d Soldaten.,Między %d a %d żołnierzy.,Entre %d e %d soldados.
 Bombard,Primary prebattle action button text when trebuchet bombardment is available.,Bombard,Bombardieren,Bombardowanie,Bombardear
 Build,Generic build action button label in region management UI.,Build,Bauen,Buduj,Construir
@@ -201,6 +212,8 @@ Ore searches exhausted.,Ore search result message shown when all search attempts
 Ore size was estimated at %d units.,Ore discovery message format showing estimated deposit size.,Ore size was estimated at %d units.,Erzvorkommen auf etwa %d Einheiten geschätzt.,Wielkość złoża oszacowano na %d jednostek.,O tamanho do depósito foi estimado em %d unidades.
 Place Castle,Instruction label shown during the opening castle placement phase.,Place Castle,Burg platzieren,Umieść zamek,Posicionar Castelo
 Player %d,Player label format shown in turn and battle UI panels.,Player %d,Spieler %d,Gracz %d,Jogador %d
+Attacker (Player %d),Battle log cumulative casualty summary heading for the attacking side.,Attacker (Player %d),Angreifer (Spieler %d),Atakujący (Gracz %d),Atacante (Jogador %d)
+Defender (Player %d),Battle log cumulative casualty summary heading for the defending side.,Defender (Player %d),Verteidiger (Spieler %d),Obrońca (Gracz %d),Defensor (Jogador %d)
 Player %d is fighting in difficult terrain. Vigor reduced by %d%%.,Battle log line shown before combat when attacker suffers terrain vigor penalty.,Player %d is fighting in difficult terrain. Vigor reduced by %d%%.,Spieler %d kämpft in schwierigem Gelände. Kampfmoral um %d%% reduziert.,Gracz %d walczy w trudnym terenie. Wigor zmniejszony o %d%%.,Jogador %d luta em terreno difícil. Vigor reduzido em %d%%.
 Ranged units' effectiveness is reduced by dense forest by %d%%.,Battle log line shown before combat when forest terrain reduces archer and crossbow hits.,Ranged units' effectiveness is reduced by dense forest by %d%%.,Die Wirksamkeit von Fernkampfeinheiten wird durch dichten Wald um %d%% reduziert.,Skuteczność jednostek dystansowych jest zmniejszona przez gęsty las o %d%%.,A eficácia das unidades de alcance é reduzida por floresta densa em %d%%.
 Player %d withdraws,Battle log line shown when a side starts withdrawing.,Player %d withdraws,Spieler %d zieht sich zurück,Gracz %d się wycofuje,Jogador %d recua
@@ -219,12 +232,18 @@ Region,Column header label for region entries in call to arms modal.,Region,Regi
 Region Actions,Header shown in the region action selection modal.,Region Actions,Regionsaktionen,Akcje regionu,Ações da Região
 Region is already at the maximum level.,Tooltip warning shown when region promotion is no longer possible.,Region is already at the maximum level.,Region hat bereits die maximale Stufe erreicht.,Region osiągnął już maksymalny poziom.,A região já está no nível máximo.
 Region promoted to {level}\n(level {level_number}),Promotion result message format with new region level name and level number.,Region promoted to {level}\n(level {level_number}),Region befördert zu {level}\n(Stufe {level_number}),Region awansował do poziomu {level}\n(poziom {level_number}),Região promovida para {level}\n(nível {level_number})
+Region demotion started,Header text for the popup confirming region demotion has started.,Region demotion started,Herabstufung der Region begonnen,Rozpoczęto degradację krainy,Rebaixamento da região iniciado
+Demotion will be completed in 1 turn.,Region demotion confirmation message showing fixed one-turn duration.,Demotion will be completed in 1 turn.,Die Herabstufung wird in 1 Runde abgeschlossen.,Degradacja zostanie ukończona za 1 turę.,O rebaixamento será concluído em 1 turno.
+Demote the region by one level.,Tooltip text explaining region demotion.,Demote the region by one level.,Stufe die Region um eine Stufe herab.,Zdegraduj krainę o jeden poziom.,Rebaixe a região em um nível.
 Repair,Action label for repairing damaged castle structures.,Repair,Reparieren,Napraw,Reparar
 Repair %s,Region action label format for repairing a specific castle tier.,Repair %s,%s reparieren,Napraw %s,Reparar %s
 Repair started,Header text for the popup confirming castle repairs have started.,Repair started,Reparatur begonnen,Rozpoczęto naprawę,Reparo iniciado
 Repair the damaged walls and gates of your defenses.,Tooltip text explaining castle repair action purpose.,Repair the damaged walls and gates of your defenses.,Repariere beschädigte Mauern und Tore deiner Verteidigung.,Napraw uszkodzone mury i bramy swoich umocnień.,Repare as muralhas e portões danificados de suas defesas.
 Repairing,Button state label shown while repairs are currently in progress.,Repairing,In Reparatur,W naprawie,Reparando
 Repairs will finish in 1 turn.,Repair confirmation message showing fixed one-turn repair duration.,Repairs will finish in 1 turn.,Reparaturen werden in 1 Runde abgeschlossen sein.,Naprawy zakończą się za 1 turę.,Os reparos terminarão em 1 turno.
+Castle dismantling started,Header text for the popup confirming castle dismantling has started.,Castle dismantling started,Burgabbau begonnen,Rozpoczęto rozbiórkę zamku,Desmontagem do castelo iniciada
+Dismantling will be completed in 1 turn.,Castle dismantling confirmation message showing fixed one-turn duration.,Dismantling will be completed in 1 turn.,Der Abbau wird in 1 Runde abgeschlossen sein.,Rozbiórka zostanie ukończona za 1 turę.,A desmontagem será concluída em 1 turno.
+Dismantle the castle by one level.,Tooltip text explaining castle dismantling.,Dismantle the castle by one level.,Baue die Burg um eine Stufe zurück.,Obniż poziom zamku o jeden poziom.,Desmonte um nível do castelo.
 Needs Keep,Short requirement text shown in the Raise Army row when the region has no Keep.,Needs Keep,Benötigt Bergfried,Wymaga warowni,Requer Fortim
 Requires Keep,Tooltip requirement warning for actions that need at least a Keep.,Requires Keep,Benötigt Bergfried,Wymaga twierdzy,Requer Fortim de Menagem
 Requires Outpost,Tooltip requirement warning for actions that need at least an Outpost.,Requires Outpost,Benötigt Außenposten,Wymaga placówki,Requer Posto
@@ -361,7 +380,7 @@ trait_desc_mobility,Unit Trait,Allows chasing retreating units dealing additiona
 trait_desc_flanker,Unit Trait,Can directly attack enemy ranged units.,Kann feindliche Fernkampfeinheiten direkt angreifen.,Można bezpośrednio atakować jednostki dystansowe wroga.,Pode atacar diretamente unidades de longo alcance inimigas.
 trait_desc_charge,Unit Trait,Doubles attack power when fighting in lowland regions.,Verdoppelt die Angriffskraft beim Kampf in Tieflandregionen.,Podwaja siłę ataku w regionach nizinnych.,Dobra o poder de ataque ao lutar em regiões de planície.
 trait_desc_multi_attack,Unit Trait,Provides additional attack,Gewährt zusätzlichen Angriff.,Zapewnia dodatkowy atak.,Concede ataque adicional.
-trait_desc_armor_piercing,Unit Trait,Halves enemy defense.,Halbiert die Verteidigung des Gegners.,Zmniejsza obronę wroga o połowę.,Reduz a defesa do inimigo pela metade.
+trait_desc_armor_piercing,Unit Trait,"Reduces defense by 10 percentage points, then halves the remainder.","Verringert die Verteidigung um 10 Prozentpunkte und halbiert anschließend den Rest.","Zmniejsza obronę o 10 punktów procentowych, a następnie zmniejsza pozostałą wartość o połowę.","Reduz a defesa em 10 pontos percentuais e depois reduz o restante pela metade."
 trait_desc_siege_laborer,Unit Trait,Can constuct siege equipment.,Kann Belagerungsgeräte bauen.,Pozwala budować machiny oblężnicze.,Pode construir equipamentos de cerco.
 trait_desc_back_rank,Unit Trait,Protected by melee units from close combat damage.,Wird durch Nahkampfeinheiten vor Schaden im Nahkampf geschützt.,Chroniony przez jednostki walczące wręcz przed obrażeniami w zwarciu.,Protegido por unidades corpo a corpo contra dano em combate próximo.
 trait_desc_defender,Unit Trait,Doubled attack when defending.,Doppelter Angriff bei der Verteidigung.,Podwójny atak podczas obrony.,Ataque dobrado ao defender.
@@ -631,3 +650,43 @@ Barren Desert,Custom map display name key used in the custom map selection menu.
 Forgotten Island,Custom map display name key used in the custom map selection menu.,Forgotten Island,Forgotten Island,Forgotten Island,Forgotten Island
 Lakeland,Custom map display name key used in the custom map selection menu.,Lakeland,Lakeland,Lakeland,Lakeland
 Dominion,Custom map display name key used in the custom map selection menu.,Dominion,Dominion,Dominion,Dominion
+Dismantling,Downgrading a castle,Razing,Abriss,Burzenie,Demolindo
+Map Type,Map selection filter for choosing the map source.,Map Type,Kartentyp,Typ mapy,Tipo de mapa
+Original,Map type option for built-in maps.,Original,Original,Oryginalna,Original
+Random,Map type option for generated maps.,Random,Zufällig,Losowa,Aleatório
+Random2,Random seed generation button label.,Random,Zufallswert,Losuj,Sortear
+Saved,Map type option for user-saved maps.,Saved,Gespeichert,Zapisane,Salvos
+All,Map size filter that shows every size.,All,Alle,Wszystkie,Todos
+Map seed,Random map terrain layout seed label.,Map seed,Karten-Seed,Ziarno mapy,Semente do mapa
+Biome seed,Random map biome distribution seed label.,Biome seed,Biom-Seed,Ziarno biomu,Semente do bioma
+Forests,Random map forest density label.,Forests,Wälder,Lasy,Florestas
+Hills,Random map hill density label.,Hills,Hügel,Wzgórza,Colinas
+Mountains,Random map mountain density label.,Mountains,Berge,Góry,Montanhas
+Sea level,Random map sea level label.,Sea level,Meeresspiegel,Poziom morza,Nível do mar
+Edit Map,Button that opens the user map editor.,Edit Map,Karte bearbeiten,Edytuj mapę,Editar mapa
+Random Map,Display name for the generated random map.,Random Map,Zufällige Karte,Losowa mapa,Mapa aleatório
+Map Editor,User map editor title.,Map Editor,Karteneditor,Edytor map,Editor de mapas
+Click map to enlarge it,Map preview enlargement hint.,Click map to enlarge it,Karte zum Vergrößern anklicken,"Kliknij mapę, aby ją powiększyć",Clique no mapa para ampliá-lo
+Map,User map editor map tab label.,Map,Karte,Mapa,Mapa
+Mode,User map editor editing mode section label.,Mode,Modus,Tryb,Modo
+Paint,User map editor paint mode button.,Paint,Malen,Maluj,Pintar
+Region type,User map editor terrain selection section label.,Region type,Regionstyp,Typ regionu,Tipo de região
+Ocean,User map editor region type.,Ocean,Ozean,Ocean,Oceano
+Grassland,User map editor region type.,Grassland,Grasland,Równina,Planície
+Forest,User map editor region type.,Forest,Wald,Las,Floresta
+Hill,User map editor region type.,Hill,Hügel,Wzgórze,Colina
+Forest Hill,User map editor region type.,Forest Hill,Hügel Wald,Wzgórze Las,Colina Floresta
+Mountain,User map editor region type.,Mountain,Berg,Góra,Montanha
+Save map,User map editor save section label.,Save map,Karte speichern,Zapisz mapę,Salvar mapa
+Load map,User map editor load section label.,Load map,Karte laden,Wczytaj mapę,Carregar mapa
+Load Map,User map editor load button label.,Load Map,Karte laden,Wczytaj mapę,Carregar mapa
+Map name,User map editor saved map name placeholder.,Map name,Kartenname,Nazwa mapy,Nome do mapa
+Save,User map editor save button label.,Save,Speichern,Zapisz,Salvar
+Map saved,User map editor successful save status.,Map saved,Karte gespeichert,Mapa zapisana,Mapa salvo
+Saving error,User map editor failed save status.,Saving error,Fehler beim Speichern,Błąd zapisu,Erro ao salvar
+Done,User map editor button that accepts the edited map.,Done,Fertig,Gotowe,Concluído
+Confirm,Saved map deletion confirmation button.,Confirm,Bestätigen,Potwierdź,Confirmar
+Cancel,User map editor and confirmation modal cancel button.,Cancel,Abbrechen,Anuluj,Cancelar
+Delete saved map?,Default saved map deletion confirmation message.,Delete saved map?,Gespeicherte Karte löschen?,Usunąć zapisaną mapę?,Excluir mapa salvo?
+"Delete saved map ""%s""?",Saved map deletion confirmation with the map name.,"Delete saved map ""%s""?","Gespeicherte Karte ""%s"" löschen?","Usunąć zapisaną mapę ""%s""?","Excluir o mapa salvo ""%s""?"
+"Invalid Map: Some of the regions are inaccessible - surrounded by ocean, or mountains.",Map connectivity validation error shown in the editor and main menu.,"Invalid Map: Some of the regions are inaccessible - surrounded by ocean, or mountains.","Ungültige Karte: Einige Regionen sind nicht erreichbar - sie sind von Ozean oder Bergen umgeben.","Nieprawidłowa mapa: Niektóre regiony są niedostępne - otoczone oceanem lub górami.","Mapa inválido: algumas regiões estão inacessíveis - cercadas pelo oceano ou por montanhas."

@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=40 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="3_ewtj7"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bffane37woyxx" path="res://images/progressbar_green.png" id="8_qmsyv"]
 [ext_resource type="Theme" uid="uid://dkewxfwilb84d" path="res://themes/button_green_styles.tres" id="9_o2cfa"]
 [ext_resource type="Texture2D" uid="uid://c3kjm73refqbr" path="res://images/icons/village2.png" id="9_tnvml"]
+[ext_resource type="Theme" uid="uid://bauu428ch6bu7" path="res://themes/button_downgrade_styles.tres" id="10_downgrade_theme"]
 [ext_resource type="Texture2D" uid="uid://credmgxri3i5v" path="res://images/icons/new_food.png" id="11_21spt"]
 [ext_resource type="Texture2D" uid="uid://tojhejfduker" path="res://images/icons/new_forest.png" id="12_8s2uy"]
 [ext_resource type="Texture2D" uid="uid://4f1lhlu6nlp2" path="res://images/icons/castle_icon (4).png" id="13_4jjrl"]
@@ -31,6 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://bcaf2nlkhv16y" path="res://scenes/select_tooltip_modal_nores.tscn" id="28_kuof1"]
 [ext_resource type="PackedScene" uid="uid://ba4uqx2hhbwjg" path="res://scenes/select_tooltip_modal.tscn" id="29_fbacg"]
 [ext_resource type="PackedScene" uid="uid://dvl7q8v2dnpwh" path="res://scenes/select_tooltip_modal_upkeep.tscn" id="31_pd0lt"]
+[ext_resource type="PackedScene" uid="uid://b3o20a3w3uyum" path="res://scenes/select_tooltip_modal_recruits.tscn" id="33_p7ixf"]
 
 [sub_resource type="Theme" id="Theme_7jnog"]
 
@@ -449,7 +451,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("9_o2cfa")
 button_group = SubResource("ButtonGroup_l3w7x")
-text = "Upgrade"
+text = "Aufwerten"
 
 [node name="Resources" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/CastleLevel/ActionSection"]
 layout_mode = 2
@@ -773,17 +775,20 @@ theme_override_constants/separation = -1
 
 [node name="Population" type="HBoxContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources"]
 layout_mode = 2
+mouse_filter = 0
 theme_override_constants/separation = 1
 
 [node name="TextureRect" type="TextureRect" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("19_g5noc")
 expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
 custom_minimum_size = Vector2(3, 0)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Recruits" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
 custom_minimum_size = Vector2(10, 0)
@@ -810,6 +815,7 @@ text = "10"
 [node name="MarginContainer2" type="MarginContainer" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
 custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Replenish" type="Label" parent="RegionPanel/Body/Region/Actions/Garrison/VBoxContainer3/HBoxContainer/ActionSection/Resources/Population"]
 custom_minimum_size = Vector2(20, 0)
@@ -1995,3 +2001,34 @@ offset_bottom = -110.0
 
 [node name="ActionTooltipUpkeep" parent="." instance=ExtResource("31_pd0lt")]
 layout_mode = 1
+
+[node name="DowngradeCastle" type="Button" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_left = 456.0
+offset_top = 264.0
+offset_right = 496.0
+offset_bottom = 304.0
+size_flags_horizontal = 0
+theme = ExtResource("10_downgrade_theme")
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "↓"
+
+[node name="DowngradeRegion" type="Button" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_left = 456.0
+offset_top = 179.0
+offset_right = 496.0
+offset_bottom = 219.0
+size_flags_horizontal = 0
+theme = ExtResource("10_downgrade_theme")
+button_group = SubResource("ButtonGroup_l3w7x")
+text = "↓"
+
+[node name="SelectTooltipModalRecruits" parent="." instance=ExtResource("33_p7ixf")]
+layout_mode = 1
+offset_left = 278.0
+offset_top = 106.0
+offset_right = 678.0
+offset_bottom = 338.0
