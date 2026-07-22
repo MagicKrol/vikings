@@ -88,6 +88,7 @@ var _turn_controller: TurnController
 # Modal references  
 var _battle_modal: BattleModal
 var _prebattle_modal: PrebattleModal
+var _battle_summary_modal: BattleSummaryModal
 
 # Debug: disable AI battle modal and run instant background battles
 var debug_disable_battle_modal: bool = true
@@ -307,6 +308,7 @@ func initialize_managers(is_scenario: bool = false, skip_initial_flow: bool = fa
 	var ui_node = get_node("../UI")
 	_battle_modal = ui_node.get_node("BattleModal") as BattleModal
 	_prebattle_modal = ui_node.get_node("PrebattleModal") as PrebattleModal
+	_battle_summary_modal = ui_node.get_node("BattleSummaryModal") as BattleSummaryModal
 	_next_player_modal = ui_node.get_node("NextPlayerModal") as NextPlayerModal
 	if not _next_player_modal.continue_acknowledged.is_connected(_on_next_player_modal_continue_acknowledged):
 		_next_player_modal.continue_acknowledged.connect(_on_next_player_modal_continue_acknowledged)
@@ -3417,6 +3419,9 @@ func _should_trigger_battle(army: Army, target_region: Region) -> bool:
 
 func should_show_prebattle_for_army(army: Army) -> bool:
 	return is_player_human(army.get_player_id())
+
+func is_save_blocked_by_battle_flow() -> bool:
+	return _prebattle_modal.visible or _battle_modal.visible or _battle_summary_modal.visible or _battle_manager.is_finalization_in_progress()
 
 func show_prebattle_modal(army: Army, target_region: Region) -> void:
 	if _prebattle_modal.is_showing_for(army, target_region):

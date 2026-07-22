@@ -1013,6 +1013,9 @@ func await_finalize_complete() -> void:
 		return
 	await battle_finalization_complete
 
+func is_finalization_in_progress() -> bool:
+	return _finalization_in_progress or not _finalization_queue.is_empty()
+
 func _queue_battle_finalization(result_data: Dictionary) -> void:
 	_finalization_queue.append(result_data)
 	if _finalization_in_progress:
