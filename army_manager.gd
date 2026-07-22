@@ -957,6 +957,11 @@ func is_region_at_army_cap(region_container: Node) -> bool:
 	"""Check if the region already holds the maximum allowed armies."""
 	return get_army_count_in_region(region_container) >= GameParameters.MAX_ARMIES_PER_REGION
 
+func is_army_entry_blocked_by_region_cap(army: Army, region_container: Node) -> bool:
+	"""Block full-region entry unless the move immediately triggers a battle."""
+	var target_region: Region = region_container as Region
+	return is_region_at_army_cap(region_container) and not _should_trigger_battle(army, target_region)
+
 # Legacy constants - now using RegionTypeEnum for movement costs
 
 func can_army_move_to_region(army: Army, region_container: Node) -> bool:
@@ -976,8 +981,8 @@ func can_army_move_to_region(army: Army, region_container: Node) -> bool:
 	if not region.is_passable():
 		return false
 	
-	# Enforce army stack cap
-	if is_region_at_army_cap(region_container):
+	# Enforce army stack cap for non-combat entry
+	if is_army_entry_blocked_by_region_cap(army, region_container):
 		return false
 	
 	# Check if army has enough movement points (with ownership bonus)

@@ -130,7 +130,8 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 	#Human need to manually click "Withdraw" while AI need to make a decision based on the power ratio
 	_attacker_withdraw_allowed = _game_manager != null and _game_manager.is_player_computer(attacker.get_player_id())
 	_defender_withdraw_allowed = false
-	if owner_id != -1 and _game_manager and _game_manager.is_player_computer(owner_id) and defender_armies.size() > 0 and target_region.get_castle_type() == CastleTypeEnum.Type.NONE and owned_neighbors.size() > 0:
+	var has_defender_retreat_capacity: bool = _get_defender_retreat_capacity(owned_neighbors) >= defender_armies.size()
+	if owner_id != -1 and _game_manager and _game_manager.is_player_computer(owner_id) and defender_armies.size() > 0 and target_region.get_castle_type() == CastleTypeEnum.Type.NONE and has_defender_retreat_capacity:
 		_defender_withdraw_allowed = true
 
 	# Persist the pending contributors so we can apply proportional losses later
@@ -222,6 +223,13 @@ func start_battle(attacker: Army, target_region_id: int, attacker_effectiveness_
 func withdraw_attacking_army(attacker: Army) -> void:
 	"""Withdraw the attacking army before battle starts using standard retreat handling."""
 	await _handle_army_withdrawal(attacker)
+
+func _get_defender_retreat_capacity(owned_neighbors: Array) -> int:
+	var total_capacity: int = 0
+	for neighbor_id: int in owned_neighbors:
+		var neighbor_region: Region = _region_manager.map_generator.get_region_container_by_id(neighbor_id) as Region
+		total_capacity += maxi(0, GameParameters.MAX_ARMIES_PER_REGION - _army_manager.get_army_count_in_region(neighbor_region))
+	return total_capacity
 
 func _withdraw_defender_armies(defender_armies: Array[Army], from_region: Region, owned_neighbors: Array) -> bool:
 	var owner_id: int = _region_manager.get_region_owner(from_region.get_region_id())

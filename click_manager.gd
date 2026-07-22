@@ -595,7 +595,7 @@ func _is_potential_move_target(source_region_container: Node, target_region_cont
 		return false
 	if not target_region.is_passable():
 		return false
-	if _army_manager.is_region_at_army_cap(target_region_container):
+	if _army_manager.is_army_entry_blocked_by_region_cap(_army_manager.selected_army, target_region_container):
 		return false
 	return true
 

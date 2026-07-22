@@ -271,6 +271,8 @@ func _on_move_modal_control_mouse_entered(control: Control) -> void:
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
+	if get_viewport().gui_get_focus_owner() is LineEdit:
+		return
 	if _is_tutorial_mode_active():
 		return
 	if GameParameters.is_next_army_key_pressed(event):
@@ -300,6 +302,8 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	"""Handle ESC key to cancel move"""
 	if not visible:
+		return
+	if get_viewport().gui_get_focus_owner() is LineEdit:
 		return
 		
 	if event is InputEventKey and event.pressed:

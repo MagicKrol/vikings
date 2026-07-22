@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://h2augxohyp55"]
+[gd_scene load_steps=41 format=3 uid="uid://h2augxohyp55"]
 
 [ext_resource type="Script" path="res://info_modal.gd" id="1_7mumj"]
 [ext_resource type="Texture2D" uid="uid://bx1y3u4dlsr33" path="res://images/infobox_tab_armies.png" id="3_ewtj7"]
@@ -47,6 +47,12 @@ border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tiae5"]
 texture = ExtResource("27_army_item3")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_army_name_input"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ubvxf"]
 texture = ExtResource("7_4cu83")
@@ -234,6 +240,7 @@ offset_right = 500.0
 offset_bottom = 1021.0
 
 [node name="Region" type="VBoxContainer" parent="RegionPanel/Body"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -1151,7 +1158,6 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 
 [node name="Army" type="VBoxContainer" parent="RegionPanel/Body"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -1180,14 +1186,30 @@ offset_bottom = 170.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RegionPanel/Body/Army/Army1/Army1"]
 layout_mode = 2
-alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Army/Army1/Army1/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 
 [node name="ArmyName" type="Label" parent="RegionPanel/Body/Army/Army1/Army1/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 theme_override_font_sizes/font_size = 22
 text = "Army III"
 horizontal_alignment = 1
+
+[node name="ArmyNameInput" type="LineEdit" parent="RegionPanel/Body/Army/Army1/Army1/HBoxContainer"]
+visible = false
+z_index = 3
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_army_name_input")
+alignment = 1
+max_length = 10
 
 [node name="MP" type="HBoxContainer" parent="RegionPanel/Body/Army/Army1/Army1"]
 custom_minimum_size = Vector2(315, 0)
@@ -1276,6 +1298,19 @@ layout_mode = 2
 [node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Army/Army1/Army1"]
 layout_mode = 2
 
+[node name="Rename" type="Button" parent="RegionPanel/Body/Army/Army1"]
+z_index = 2
+layout_mode = 0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = 105.0
+offset_bottom = 31.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
+text = "[Rename]"
+flat = true
+
 [node name="Army2" type="Panel" parent="RegionPanel/Body/Army"]
 custom_minimum_size = Vector2(475, 172)
 layout_mode = 2
@@ -1301,14 +1336,30 @@ offset_bottom = 170.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RegionPanel/Body/Army/Army2/Army2"]
 layout_mode = 2
-alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Army/Army2/Army2/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 
 [node name="ArmyName" type="Label" parent="RegionPanel/Body/Army/Army2/Army2/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 theme_override_font_sizes/font_size = 22
 text = "Army III"
 horizontal_alignment = 1
+
+[node name="ArmyNameInput" type="LineEdit" parent="RegionPanel/Body/Army/Army2/Army2/HBoxContainer"]
+visible = false
+z_index = 3
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_army_name_input")
+alignment = 1
+max_length = 10
 
 [node name="MP" type="HBoxContainer" parent="RegionPanel/Body/Army/Army2/Army2"]
 custom_minimum_size = Vector2(315, 0)
@@ -1394,6 +1445,19 @@ horizontal_alignment = 1
 [node name="GarrisonInfo" parent="RegionPanel/Body/Army/Army2/Army2" instance=ExtResource("24_sykik")]
 layout_mode = 2
 
+[node name="Rename" type="Button" parent="RegionPanel/Body/Army/Army2"]
+z_index = 2
+layout_mode = 0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = 105.0
+offset_bottom = 31.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
+text = "[Rename]"
+flat = true
+
 [node name="Army3" type="Panel" parent="RegionPanel/Body/Army"]
 custom_minimum_size = Vector2(475, 172)
 layout_mode = 2
@@ -1419,14 +1483,30 @@ offset_bottom = 170.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RegionPanel/Body/Army/Army3/Army3"]
 layout_mode = 2
-alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Army/Army3/Army3/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 
 [node name="ArmyName" type="Label" parent="RegionPanel/Body/Army/Army3/Army3/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 theme_override_font_sizes/font_size = 22
 text = "Army III"
 horizontal_alignment = 1
+
+[node name="ArmyNameInput" type="LineEdit" parent="RegionPanel/Body/Army/Army3/Army3/HBoxContainer"]
+visible = false
+z_index = 3
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_army_name_input")
+alignment = 1
+max_length = 10
 
 [node name="MP" type="HBoxContainer" parent="RegionPanel/Body/Army/Army3/Army3"]
 custom_minimum_size = Vector2(315, 0)
@@ -1512,6 +1592,19 @@ horizontal_alignment = 1
 [node name="GarrisonInfo" parent="RegionPanel/Body/Army/Army3/Army3" instance=ExtResource("24_sykik")]
 layout_mode = 2
 
+[node name="Rename" type="Button" parent="RegionPanel/Body/Army/Army3"]
+z_index = 2
+layout_mode = 0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = 105.0
+offset_bottom = 31.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
+text = "[Rename]"
+flat = true
+
 [node name="Army4" type="Panel" parent="RegionPanel/Body/Army"]
 custom_minimum_size = Vector2(475, 172)
 layout_mode = 2
@@ -1537,14 +1630,30 @@ offset_bottom = 170.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RegionPanel/Body/Army/Army4/Army4"]
 layout_mode = 2
-alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Army/Army4/Army4/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 
 [node name="ArmyName" type="Label" parent="RegionPanel/Body/Army/Army4/Army4/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 theme_override_font_sizes/font_size = 22
 text = "Army III"
 horizontal_alignment = 1
+
+[node name="ArmyNameInput" type="LineEdit" parent="RegionPanel/Body/Army/Army4/Army4/HBoxContainer"]
+visible = false
+z_index = 3
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_army_name_input")
+alignment = 1
+max_length = 10
 
 [node name="MP" type="HBoxContainer" parent="RegionPanel/Body/Army/Army4/Army4"]
 custom_minimum_size = Vector2(315, 0)
@@ -1630,6 +1739,19 @@ horizontal_alignment = 1
 [node name="GarrisonInfo" parent="RegionPanel/Body/Army/Army4/Army4" instance=ExtResource("24_sykik")]
 layout_mode = 2
 
+[node name="Rename" type="Button" parent="RegionPanel/Body/Army/Army4"]
+z_index = 2
+layout_mode = 0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = 105.0
+offset_bottom = 31.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
+text = "[Rename]"
+flat = true
+
 [node name="Army5" type="Panel" parent="RegionPanel/Body/Army"]
 custom_minimum_size = Vector2(475, 172)
 layout_mode = 2
@@ -1655,14 +1777,30 @@ offset_bottom = 170.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RegionPanel/Body/Army/Army5/Army5"]
 layout_mode = 2
-alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="RegionPanel/Body/Army/Army5/Army5/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 
 [node name="ArmyName" type="Label" parent="RegionPanel/Body/Army/Army5/Army5/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 theme = ExtResource("4_header_theme")
 theme_override_font_sizes/font_size = 22
 text = "Army III"
 horizontal_alignment = 1
+
+[node name="ArmyNameInput" type="LineEdit" parent="RegionPanel/Body/Army/Army5/Army5/HBoxContainer"]
+visible = false
+z_index = 3
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_army_name_input")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_army_name_input")
+alignment = 1
+max_length = 10
 
 [node name="MP" type="HBoxContainer" parent="RegionPanel/Body/Army/Army5/Army5"]
 custom_minimum_size = Vector2(315, 0)
@@ -1747,6 +1885,19 @@ horizontal_alignment = 1
 
 [node name="GarrisonInfo" parent="RegionPanel/Body/Army/Army5/Army5" instance=ExtResource("24_sykik")]
 layout_mode = 2
+
+[node name="Rename" type="Button" parent="RegionPanel/Body/Army/Army5"]
+z_index = 2
+layout_mode = 0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = 105.0
+offset_bottom = 31.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
+text = "[Rename]"
+flat = true
 
 [node name="HeaderSection" type="VBoxContainer" parent="RegionPanel/Body/Army"]
 visible = false

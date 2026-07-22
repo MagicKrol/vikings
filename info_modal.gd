@@ -60,7 +60,9 @@ var _army_card_style_default: StyleBoxTexture
 var _army_card_style_hover: StyleBoxTexture
 var _army_card_armies: Array[Army] = []
 var _army_card_labels: Array[Label] = []
+var _army_card_name_inputs: Array[LineEdit] = []
 var _army_card_label_colors: Array[Color] = []
+var _editing_army_name_index: int = -1
 var _suppress_auto_select: bool = false
 var _action_tooltip_base_pos_nores: Vector2 = Vector2.ZERO
 var _action_tooltip_base_button_y: float = 0.0
@@ -146,19 +148,27 @@ func _initialize_army_cards() -> void:
 	_army_card_style_hover = StyleBoxTexture.new()
 	_army_card_style_hover.texture = ARMY_CARD_TEX_HOVER
 	_army_card_labels.clear()
+	_army_card_name_inputs.clear()
 	_army_card_label_colors.clear()
 	_army_card_armies.resize(_army_cards.size())
 	for i in range(_army_cards.size()):
-		var card = _army_cards[i]
+		var card: Panel = _army_cards[i]
 		card.add_theme_stylebox_override("panel", _army_card_style_default)
 		_set_cursor_shape_recursive(card, Control.CURSOR_POINTING_HAND)
 		card.mouse_entered.connect(Callable(self, "_on_army_card_mouse_entered").bind(i))
 		card.mouse_exited.connect(Callable(self, "_on_army_card_mouse_exited").bind(i))
 		card.gui_input.connect(Callable(self, "_on_army_card_gui_input").bind(i))
-		var label_path = NodePath(str(card.name) + "/HBoxContainer/ArmyName")
-		var label = card.get_node(label_path) as Label
+		var label_path: NodePath = NodePath(str(card.name) + "/HBoxContainer/ArmyName")
+		var label: Label = card.get_node(label_path) as Label
+		var input_path: NodePath = NodePath(str(card.name) + "/HBoxContainer/ArmyNameInput")
+		var name_input: LineEdit = card.get_node(input_path) as LineEdit
+		var rename_button: Button = card.get_node("Rename") as Button
 		_army_card_labels.append(label)
+		_army_card_name_inputs.append(name_input)
 		_army_card_label_colors.append(label.get_theme_color("font_color"))
+		rename_button.pressed.connect(Callable(self, "_on_army_rename_pressed").bind(i))
+		name_input.text_submitted.connect(Callable(self, "_on_army_name_submitted").bind(i))
+		name_input.focus_exited.connect(Callable(self, "_on_army_name_focus_exited").bind(i))
 
 func _initialize_region_actions() -> void:
 	_promote_button.pressed.connect(_on_promote_region_pressed)
@@ -590,6 +600,7 @@ func _is_human_turn() -> bool:
 
 func hide_modal(manage_modal_mode: bool = true) -> void:
 	"""Hide the modal but keep content intact"""
+	_finish_army_name_edit(_editing_army_name_index)
 	var was_visible: bool = visible
 	DebugLogger.log("click", "InfoModal: hide_modal manage=" + str(manage_modal_mode))
 	visible = false
@@ -603,6 +614,7 @@ func hide_modal(manage_modal_mode: bool = true) -> void:
 
 func close_modal() -> void:
 	"""Close the modal and clear all content"""
+	_finish_army_name_edit(_editing_army_name_index)
 	var was_visible: bool = visible
 	DebugLogger.log("click", "InfoModal: close_modal")
 	current_army = null
@@ -657,6 +669,8 @@ func _update_army_card(card: Panel, army: Army) -> void:
 	var is_selectable: bool = _is_army_selectable_for_current_player(army)
 	var show_intel_for_army: bool = intel_mode and not is_selectable
 	var selection_button = card.get_node("SelectionStatus") as Button
+	var rename_button: Button = card.get_node("Rename") as Button
+	rename_button.visible = is_selectable
 	if show_intel_for_army:
 		selection_button.disabled = true
 		selection_button.theme = BUTTON_DEFAULT_THEME
@@ -677,7 +691,7 @@ func _update_army_card(card: Panel, army: Army) -> void:
 		card.add_theme_stylebox_override("panel", _army_card_style_default)
 
 	var content = card.get_node(NodePath(str(card.name))) as VBoxContainer
-	var army_name_label = content.get_node("HBoxContainer/ArmyName") as Label
+	var army_name_label: Label = content.get_node("HBoxContainer/ArmyName") as Label
 	army_name_label.text = tr("Army %s") % army.number
 
 	var move_container = content.get_node("MP/MoveContainer") as HBoxContainer
@@ -1664,6 +1678,12 @@ func _on_army_card_mouse_exited(index: int) -> void:
 
 func _on_army_card_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var rename_button: Button = _army_cards[index].get_node("Rename") as Button
+		if rename_button.visible and rename_button.get_global_rect().has_point(get_global_mouse_position()):
+			_on_army_rename_pressed(index)
+			(_army_cards[index] as Control).accept_event()
+			get_viewport().set_input_as_handled()
+			return
 		var army = _army_card_armies[index]
 		if _is_current_region_intel_mode():
 			(_army_cards[index] as Control).accept_event()
@@ -1685,3 +1705,41 @@ func _on_army_card_gui_input(event: InputEvent, index: int) -> void:
 			_update_army_display()
 		(_army_cards[index] as Control).accept_event()
 		get_viewport().set_input_as_handled()
+
+func _on_army_rename_pressed(index: int) -> void:
+	var army: Army = _army_card_armies[index]
+	if army != null and _is_army_selectable_for_current_player(army):
+		_start_army_name_edit(index)
+
+func _start_army_name_edit(index: int) -> void:
+	if _editing_army_name_index != -1:
+		_finish_army_name_edit(_editing_army_name_index)
+	var army: Army = _army_card_armies[index]
+	var label: Label = _army_card_labels[index]
+	var name_input: LineEdit = _army_card_name_inputs[index]
+	_editing_army_name_index = index
+	label.visible = false
+	name_input.text = army.number
+	name_input.visible = true
+	name_input.grab_focus()
+	name_input.select_all()
+
+func _on_army_name_submitted(_new_text: String, index: int) -> void:
+	_finish_army_name_edit(index)
+
+func _on_army_name_focus_exited(index: int) -> void:
+	_finish_army_name_edit(index)
+
+func _finish_army_name_edit(index: int) -> void:
+	if index < 0 or index >= _army_card_name_inputs.size() or index != _editing_army_name_index:
+		return
+	var army: Army = _army_card_armies[index]
+	var label: Label = _army_card_labels[index]
+	var name_input: LineEdit = _army_card_name_inputs[index]
+	var new_name: String = name_input.text.strip_edges()
+	if army != null and new_name != "":
+		army.number = new_name
+		label.text = tr("Army %s") % army.number
+	name_input.visible = false
+	label.visible = true
+	_editing_army_name_index = -1
